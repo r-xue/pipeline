@@ -1,0 +1,19 @@
+pipeline.hif.tasks.polarization
+===============================
+
+.. automodule:: pipeline.hif.tasks.polarization
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Polarization
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   polarization

@@ -1,0 +1,30 @@
+pipeline.hifv.tasks.finalcals.display
+=====================================
+
+.. automodule:: pipeline.hifv.tasks.finalcals.display
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_maxphase_maxamp
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      finalAmpFreqCalPerAntennaChart
+      finalAmpTimeCalPerAntennaChart
+      finalAmpTimeCalPerAntennaPerSpwChart
+      finalDelaysPerAntennaChart
+      finalPhaseGainCalPerAntennaChart
+      finalPhaseGainCalPerAntennaPerSpwChart
+      finalbpSolAmpPerAntennaChart
+      finalbpSolAmpPerAntennaPerSpwChart
+      finalbpSolPhasePerAntennaChart
+      finalbpSolPhasePerAntennaPerSpwChart
+      finalbpSolPhaseShortPerAntennaChart
+      finalcalsSummaryChart
+      finalphaseGainPerAntennaChart
+   

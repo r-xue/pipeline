@@ -1,0 +1,26 @@
+pipeline.h.tasks package
+========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pipeline.h.tasks.applycal
+   pipeline.h.tasks.common
+   pipeline.h.tasks.exportdata
+   pipeline.h.tasks.flagging
+   pipeline.h.tasks.importdata
+   pipeline.h.tasks.mstransform
+   pipeline.h.tasks.restoredata
+   pipeline.h.tasks.tsyscal
+   pipeline.h.tasks.tsysflag
+
+Module contents
+---------------
+
+.. automodule:: pipeline.h.tasks
+   :members:
+   :undoc-members:
+   :show-inheritance:

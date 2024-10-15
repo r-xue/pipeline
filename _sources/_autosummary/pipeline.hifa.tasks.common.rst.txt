@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.common
+==========================
+
+.. automodule:: pipeline.hifa.tasks.common
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   displays

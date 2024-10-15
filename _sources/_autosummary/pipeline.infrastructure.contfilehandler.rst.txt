@@ -1,0 +1,20 @@
+pipeline.infrastructure.contfilehandler
+=======================================
+
+.. automodule:: pipeline.infrastructure.contfilehandler
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      contfile_to_chansel
+      contfile_to_spwsel
+      spwsel2chansel
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ContFileHandler
+   

@@ -1,0 +1,23 @@
+pipeline.hif.heuristics.imageparams\_factory
+============================================
+
+.. automodule:: pipeline.hif.heuristics.imageparams_factory
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ImageParamsHeuristicsALMA
+      ImageParamsHeuristicsALMAScal
+      ImageParamsHeuristicsALMASrdp
+      ImageParamsHeuristicsFactory
+      ImageParamsHeuristicsVLA
+      ImageParamsHeuristicsVLAScal
+      ImageParamsHeuristicsVlassQl
+      ImageParamsHeuristicsVlassSeCont
+      ImageParamsHeuristicsVlassSeContAWPP001
+      ImageParamsHeuristicsVlassSeContMosaic
+      ImageParamsHeuristicsVlassSeCube
+      ImageParamsHeuristicsVlassSeTaper
+   

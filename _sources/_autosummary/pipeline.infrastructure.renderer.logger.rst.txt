@@ -1,0 +1,22 @@
+pipeline.infrastructure.renderer.logger
+=======================================
+
+.. automodule:: pipeline.infrastructure.renderer.logger
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      THUMBNAIL_CMD
+      getPath
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Parameters
+      Plot
+      PlotGroup
+      Selector
+   

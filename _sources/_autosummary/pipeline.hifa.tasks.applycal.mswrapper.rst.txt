@@ -1,0 +1,20 @@
+pipeline.hifa.tasks.applycal.mswrapper
+======================================
+
+.. automodule:: pipeline.hifa.tasks.applycal.mswrapper
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      calc_vk
+      create_V_array
+      get_dtype
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MSWrapper
+   

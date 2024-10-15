@@ -1,0 +1,618 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.tasks.findcont.findcont &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.tasks.findcont.findcont</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.tasks.findcont.findcont</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.contfilehandler</span> <span class="k">as</span> <span class="nn">contfilehandler</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.mpihelpers</span> <span class="k">as</span> <span class="nn">mpihelpers</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.heuristics</span> <span class="kn">import</span> <span class="n">findcont</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">FindContResult</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FindContInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.findcont.html#pipeline.hif.tasks.findcont.findcont.FindContInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">FindContInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+    <span class="c1"># Must use empty data type list to allow for user override and</span>
+    <span class="c1"># automatic determination depending on specmode, field and spw.</span>
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">hm_perchanweightdensity</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">hm_weighting</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">datacolumn</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">null_input</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{}])</span>
+    <span class="k">def</span> <span class="nf">target_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Note that the deepcopy is necessary to avoid changing the</span>
+        <span class="c1"># context&#39;s clean_list inadvertently when removing the heuristics</span>
+        <span class="c1"># objects from the inputs&#39; clean_list.</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_mosweight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">hm_perchanweightdensity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_weighting</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FindContInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_list</span> <span class="o">=</span> <span class="n">target_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_mosweight</span> <span class="o">=</span> <span class="n">hm_mosweight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_perchanweightdensity</span> <span class="o">=</span> <span class="n">hm_perchanweightdensity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_weighting</span> <span class="o">=</span> <span class="n">hm_weighting</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacolumn</span> <span class="o">=</span> <span class="n">datacolumn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span></div>
+
+
+
+<div class="viewcode-block" id="FindCont">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.findcont.html#pipeline.hif.tasks.findcont.findcont.FindCont">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_findcont&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">FindCont</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FindContInputs</span>
+
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="FindCont.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.findcont.html#pipeline.hif.tasks.findcont.findcont.FindCont.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+
+        <span class="c1"># Check if this stage has been disabled for VLA (never set for ALMA)</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">vla_skip_mfs_and_cube_imaging</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">FindContResult</span><span class="p">({},</span> <span class="p">{},</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># Check for size mitigation errors.</span>
+        <span class="k">if</span> <span class="s1">&#39;status&#39;</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span> <span class="ow">and</span> \
+                <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;ERROR&#39;</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">FindContResult</span><span class="p">({},</span> <span class="p">{},</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">mitigation_error</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="n">qaTool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="c1"># make sure inputs.vis is a list, even if it is one that contains a</span>
+        <span class="c1"># single measurement set</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">datacolumn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">datacolumn</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">datacolumn</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">datacolumn</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># Select the correct vis list</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="p">[],</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">datatypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
+
+            <span class="n">ms_objects_and_columns</span><span class="p">,</span> <span class="n">selected_datatype</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_measurement_sets_of_type</span><span class="p">(</span><span class="n">dtypes</span><span class="o">=</span><span class="n">datatypes</span><span class="p">,</span> <span class="n">msonly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">ms_objects_and_columns</span> <span class="o">==</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">():</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No data found for continuum finding.&#39;</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">FindContResult</span><span class="p">({},</span> <span class="p">{},</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="k">return</span> <span class="n">result</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Using data type </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">selected_datatype</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1"> for continuum finding.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">selected_datatype</span> <span class="o">==</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Falling back to raw data for continuum finding.&#39;</span><span class="p">)</span>
+
+            <span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ms_objects_and_columns</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">column</span> <span class="o">==</span> <span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Data type based column selection changes among MSes: </span><span class="si">{</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">ms_objects_and_columns</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">datacolumn</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Manual override of datacolumn to </span><span class="si">{</span><span class="n">datacolumn</span><span class="si">}</span><span class="s1">. Data type based datacolumn would have been &quot;</span><span class="si">{</span><span class="s2">&quot;data&quot;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;DATA&quot;</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">&quot;corrected&quot;</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;DATA&#39;</span><span class="p">:</span>
+                    <span class="n">datacolumn</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span>
+                <span class="k">elif</span> <span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">:</span>
+                    <span class="n">datacolumn</span> <span class="o">=</span> <span class="s1">&#39;corrected&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown column name </span><span class="si">{</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">datacolumn</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+            <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">basename</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ms_objects_and_columns</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+
+        <span class="n">findcont_heuristics</span> <span class="o">=</span> <span class="n">findcont</span><span class="o">.</span><span class="n">FindContHeuristics</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="n">contfile_handler</span> <span class="o">=</span> <span class="n">contfilehandler</span><span class="o">.</span><span class="n">ContFileHandler</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">contfile</span><span class="p">)</span>
+        <span class="n">cont_ranges</span> <span class="o">=</span> <span class="n">contfile_handler</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="n">result_cont_ranges</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">joint_mask_names</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">num_found</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">num_total</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">single_range_channel_fractions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">target_list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                <span class="n">source_name</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dequote</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">])</span>
+                <span class="n">spw_name</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual_science_spw_ids</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">spwid</span><span class="p">)]</span>
+
+                <span class="c1"># get continuum ranges dict for this source, also setting it if accessed for first time</span>
+                <span class="n">source_continuum_ranges</span> <span class="o">=</span> <span class="n">result_cont_ranges</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">source_name</span><span class="p">,</span> <span class="p">{})</span>
+
+                <span class="c1"># get continuum ranges list for this source and spw, also setting them if accessed for first time</span>
+                <span class="n">cont_ranges_source_spw</span> <span class="o">=</span> <span class="n">cont_ranges</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">source_name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;spwname&#39;</span><span class="p">:</span> <span class="n">spw_name</span><span class="p">,</span> <span class="s1">&#39;ranges&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">[]})</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cont_ranges_source_spw</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using existing selection </span><span class="si">{!r}</span><span class="s1"> for field </span><span class="si">{!s}</span><span class="s1">, &#39;</span>
+                             <span class="s1">&#39;spw </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cont_ranges_source_spw</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">],</span> <span class="n">source_name</span><span class="p">,</span> <span class="n">spwid</span><span class="p">))</span>
+                    <span class="n">source_continuum_ranges</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s1">&#39;cont_ranges&#39;</span><span class="p">:</span> <span class="n">cont_ranges_source_spw</span><span class="p">,</span>
+                        <span class="s1">&#39;plotfile&#39;</span><span class="p">:</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;OLD&#39;</span>
+                    <span class="p">}</span>
+                    <span class="k">if</span> <span class="n">cont_ranges_source_spw</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="p">[</span><span class="s1">&#39;NONE&#39;</span><span class="p">]:</span>
+                        <span class="n">num_found</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Determining continuum ranges for field </span><span class="si">%s</span><span class="s1">, spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">source_name</span><span class="p">,</span> <span class="n">spwid</span><span class="p">))</span>
+
+                    <span class="n">findcont_basename</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.I.findcont&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                        <span class="s1">&#39;spw</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)),</span>
+                        <span class="s1">&#39;spw</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spwid</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;STAGENUMBER&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">stage</span><span class="p">)))</span>
+
+                    <span class="c1"># Determine the gridder mode</span>
+                    <span class="n">image_heuristics</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;heuristics&#39;</span><span class="p">]</span>
+                    <span class="n">gridder</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">gridder</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_mosweight</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                        <span class="n">mosweight</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_mosweight</span>
+                    <span class="k">elif</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;mosweight&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                        <span class="n">mosweight</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;mosweight&#39;</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">mosweight</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">mosweight</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">])</span>
+
+                    <span class="c1"># Determine weighting and perchanweightdensity parameters</span>
+                    <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_weighting</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                        <span class="n">weighting</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">weighting</span><span class="p">(</span><span class="s1">&#39;cube&#39;</span><span class="p">)</span>
+                        <span class="n">perchanweightdensity</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">perchanweightdensity</span><span class="p">(</span><span class="s1">&#39;cube&#39;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">weighting</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_weighting</span>
+                        <span class="n">perchanweightdensity</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_perchanweightdensity</span>
+
+                    <span class="c1"># Usually the inputs value takes precedence over the one from the target list.</span>
+                    <span class="c1"># For PIPE-557 it was necessary to fill target[&#39;vis&#39;] in hif_makeimlist to filter</span>
+                    <span class="c1"># out fully flagged selections. Using the default vislist one would have to</span>
+                    <span class="c1"># re-determine all dependendent parameters such as &quot;antenna&quot;, etc. here. Most</span>
+                    <span class="c1"># likely the use case of defining an explicit vislist for hif_findcont will</span>
+                    <span class="c1"># happen very rarely if at all. Thus changing the paradigm here for now.</span>
+                    <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]:</span>
+                        <span class="n">vislist</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
+                        <span class="n">scanidlist</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">get_scanidlist</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span>
+                                                                        <span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">scanidlist</span><span class="p">,</span> <span class="n">visindexlist</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">get_scanidlist</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span>
+                                                                                   <span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">])</span>
+                        <span class="c1"># Remove MSs that do not contain data for the given field(s)</span>
+                        <span class="n">vislist</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">visindexlist</span><span class="p">]</span>
+
+                    <span class="c1"># Need to make an LSRK or SOURCE/REST (ephemeris sources) cube to get</span>
+                    <span class="c1"># the real ranges in the source frame.</span>
+                    <span class="c1"># The LSRK or SOURCE/REST ranges will need to be translated to the</span>
+                    <span class="c1"># individual TOPO ranges for the involved MSs in hif_tclean.</span>
+                    <span class="k">if</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">is_eph_obj</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]):</span>
+                        <span class="n">frame</span> <span class="o">=</span> <span class="s1">&#39;REST&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">frame</span> <span class="o">=</span> <span class="s1">&#39;LSRK&#39;</span>
+
+                    <span class="c1"># To avoid noisy edge channels, use only the LSRK or SOURCE/REST frequency</span>
+                    <span class="c1"># intersection and skip one channel on either end.</span>
+                    <span class="c1"># Use only the current spw ID here !</span>
+                    <span class="n">if0</span><span class="p">,</span> <span class="n">if1</span><span class="p">,</span> <span class="n">channel_width</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">freq_intersection</span><span class="p">(</span><span class="n">vislist</span><span class="p">,</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">],</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">if0</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">if1</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No </span><span class="si">%s</span><span class="s1"> frequency intersect among selected MSs for Field </span><span class="si">%s</span><span class="s1"> &#39;</span>
+                                  <span class="s1">&#39;SPW </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">spwid</span><span class="p">))</span>
+                        <span class="n">cont_ranges</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="n">source_name</span><span class="p">][</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;spwname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_name</span>
+                        <span class="n">cont_ranges</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="n">source_name</span><span class="p">][</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;ranges&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NONE&#39;</span><span class="p">]</span>
+                        <span class="n">cont_ranges</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="n">source_name</span><span class="p">][</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;flags&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">result_cont_ranges</span><span class="p">[</span><span class="n">source_name</span><span class="p">][</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                            <span class="s1">&#39;cont_ranges&#39;</span><span class="p">:</span> <span class="n">cont_ranges</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="n">source_name</span><span class="p">][</span><span class="n">spwid</span><span class="p">],</span>
+                            <span class="s1">&#39;plotfile&#39;</span><span class="p">:</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;NEW&#39;</span>
+                        <span class="p">}</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># Check for manually supplied values</span>
+                    <span class="n">if0_auto</span> <span class="o">=</span> <span class="n">if0</span>
+                    <span class="n">if1_auto</span> <span class="o">=</span> <span class="n">if1</span>
+                    <span class="n">channel_width_auto</span> <span class="o">=</span> <span class="n">channel_width</span>
+
+                    <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">if0</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">],</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">if0</span> <span class="o">&lt;</span> <span class="n">if0_auto</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Supplied start frequency (</span><span class="si">%s</span><span class="s1"> GHz) &lt; f_low_native (</span><span class="si">%s</span><span class="s1"> GHz) for Field </span><span class="si">%s</span><span class="s1"> &#39;</span>
+                                      <span class="s1">&#39;SPW </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">if0</span><span class="o">/</span><span class="mf">1e9</span><span class="p">,</span> <span class="n">if0_auto</span><span class="o">/</span><span class="mf">1e9</span><span class="p">,</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]))</span>
+                            <span class="k">continue</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using supplied start frequency </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]))</span>
+
+                    <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Field </span><span class="si">%s</span><span class="s1"> SPW </span><span class="si">%s</span><span class="s1">: width and nbin are mutually exclusive&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span>
+                                                                                              <span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]))</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">channel_width_manual</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">],</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">channel_width_manual</span> <span class="o">&lt;</span> <span class="n">channel_width_auto</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;User supplied channel width (</span><span class="si">%s</span><span class="s1"> GHz) smaller than native value (</span><span class="si">%s</span><span class="s1"> GHz) for Field </span><span class="si">%s</span><span class="s1"> &#39;</span>
+                                      <span class="s1">&#39;SPW </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">channel_width_manual</span><span class="o">/</span><span class="mf">1e9</span><span class="p">,</span> <span class="n">channel_width_auto</span><span class="o">/</span><span class="mf">1e9</span><span class="p">,</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]))</span>
+                            <span class="k">continue</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using supplied width </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]))</span>
+                        <span class="n">channel_width</span> <span class="o">=</span> <span class="n">channel_width_manual</span>
+                        <span class="k">if</span> <span class="n">channel_width</span> <span class="o">&gt;</span> <span class="n">channel_width_auto</span><span class="p">:</span>
+                            <span class="n">target</span><span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">(</span><span class="n">channel_width</span> <span class="o">/</span> <span class="n">channel_width_auto</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Applying binning factor </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">]))</span>
+                        <span class="n">channel_width</span> <span class="o">*=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">]</span>
+
+                    <span class="c1"># Get real spwid</span>
+                    <span class="n">ref_ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vislist</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">real_spwid</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual2real_spw_id</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">spwid</span><span class="p">),</span> <span class="n">ref_ms</span><span class="p">)</span>
+                    <span class="n">real_spwid_obj</span> <span class="o">=</span> <span class="n">ref_ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">real_spwid</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">is_eph_obj</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]):</span>
+                        <span class="c1"># Determine extra channels to skip for ephemeris objects to</span>
+                        <span class="c1"># account for fast moving objects.</span>
+                        <span class="n">centre_frequency_TOPO</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">real_spwid_obj</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">))</span>
+                        <span class="n">channel_width_freq_TOPO</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">real_spwid_obj</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">getWidth</span><span class="p">()</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">))</span>
+                        <span class="n">freq0</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">centre_frequency_TOPO</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
+                        <span class="n">freq1</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">centre_frequency_TOPO</span> <span class="o">+</span> <span class="n">channel_width_freq_TOPO</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
+                        <span class="n">channel_width_velo_TOPO</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">frequency_to_velocity</span><span class="p">(</span><span class="n">freq1</span><span class="p">,</span> <span class="n">freq0</span><span class="p">),</span> <span class="s1">&#39;km/s&#39;</span><span class="p">)))</span>
+                        <span class="c1"># Skip 1 km/s</span>
+                        <span class="n">extra_skip_channels</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">channel_width_velo_TOPO</span><span class="p">)))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">extra_skip_channels</span> <span class="o">=</span> <span class="mi">0</span>
+
+                    <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;nchan&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                        <span class="n">if1</span> <span class="o">=</span> <span class="n">if0</span> <span class="o">+</span> <span class="n">channel_width</span> <span class="o">*</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;nchan&#39;</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">if1</span> <span class="o">&gt;</span> <span class="n">if1_auto</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Calculated stop frequency (</span><span class="si">%s</span><span class="s1"> GHz) &gt; f_high_native (</span><span class="si">%s</span><span class="s1"> GHz) for Field </span><span class="si">%s</span><span class="s1"> &#39;</span>
+                                      <span class="s1">&#39;SPW </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">if1</span><span class="o">/</span><span class="mf">1e9</span><span class="p">,</span> <span class="n">if1_auto</span><span class="o">/</span><span class="mf">1e9</span><span class="p">,</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]))</span>
+                            <span class="k">continue</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using supplied nchan </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;nchan&#39;</span><span class="p">]))</span>
+                        <span class="n">nchan</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;nchan&#39;</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Skip edge channels and extra channels if no nchan is supplied.</span>
+                        <span class="c1"># Adjust to binning since the normal nchan heuristics already includes it.</span>
+                        <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                            <span class="n">nchan</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">((</span><span class="n">if1</span> <span class="o">-</span> <span class="n">if0</span><span class="p">)</span> <span class="o">/</span> <span class="n">channel_width</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">extra_skip_channels</span> <span class="o">//</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">nchan</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">((</span><span class="n">if1</span> <span class="o">-</span> <span class="n">if0</span><span class="p">)</span> <span class="o">/</span> <span class="n">channel_width</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">extra_skip_channels</span>
+
+                    <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="c1"># tclean interprets the start frequency as the center of the</span>
+                        <span class="c1"># first channel. We have, however, an edge to edge range.</span>
+                        <span class="c1"># Thus shift by 0.5 channels if no start is supplied.</span>
+                        <span class="c1"># Additionally skipping the edge channel (cf. &quot;- 2&quot; above)</span>
+                        <span class="c1"># means a correction of 1.5 channels.</span>
+                        <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                            <span class="n">start</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%.10f</span><span class="s1">GHz&#39;</span> <span class="o">%</span> <span class="p">((</span><span class="n">if0</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.5</span> <span class="o">+</span> <span class="n">extra_skip_channels</span><span class="p">)</span> <span class="o">*</span> <span class="n">channel_width</span> <span class="o">/</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="mf">1e9</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">start</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%.10f</span><span class="s1">GHz&#39;</span> <span class="o">%</span> <span class="p">((</span><span class="n">if0</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.5</span> <span class="o">+</span> <span class="n">extra_skip_channels</span><span class="p">)</span> <span class="o">*</span> <span class="n">channel_width</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e9</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">start</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
+
+                    <span class="n">width</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%.7f</span><span class="s1">MHz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">channel_width</span> <span class="o">/</span> <span class="mf">1e6</span><span class="p">)</span>
+
+                    <span class="n">parallel</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">parse_mpi_input_parameter</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">parallel</span><span class="p">)</span>
+
+                    <span class="n">real_spwsel</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_real_spwsel</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spwid</span><span class="p">)]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">vislist</span><span class="p">),</span> <span class="n">vislist</span><span class="p">)</span>
+
+                    <span class="c1"># Set special phasecenter, frame and specmode for ephemeris objects.</span>
+                    <span class="c1"># Needs to be done here since the explicit coordinates are</span>
+                    <span class="c1"># used in heuristics methods upstream.</span>
+                    <span class="k">if</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">is_eph_obj</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]):</span>
+                        <span class="n">phasecenter</span> <span class="o">=</span> <span class="s1">&#39;TRACKFIELD&#39;</span>
+                        <span class="n">psf_phasecenter</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="c1"># &#39;REST&#39; does not yet work (see CAS-8965, CAS-9997)</span>
+                        <span class="c1">#outframe = &#39;REST&#39;</span>
+                        <span class="n">outframe</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                        <span class="n">specmode</span> <span class="o">=</span> <span class="s1">&#39;cubesource&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">phasecenter</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">gridder</span> <span class="o">==</span> <span class="s1">&#39;mosaic&#39;</span> <span class="ow">and</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;psf_phasecenter&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]:</span>
+                            <span class="n">psf_phasecenter</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;psf_phasecenter&#39;</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">psf_phasecenter</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="n">outframe</span> <span class="o">=</span> <span class="s1">&#39;LSRK&#39;</span>
+                        <span class="n">specmode</span> <span class="o">=</span> <span class="s1">&#39;cube&#39;</span>
+
+                    <span class="c1"># PIPE-107 requests using a fixed robust value of 1.0.</span>
+                    <span class="n">robust</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+                    <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;uvtaper&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">([],</span> <span class="kc">None</span><span class="p">):</span>
+                        <span class="n">uvtaper</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;uvtaper&#39;</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">uvtaper</span> <span class="o">=</span> <span class="kc">None</span>
+
+                    <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">([],</span> <span class="kc">None</span><span class="p">):</span>
+                        <span class="n">antenna</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">antenna</span> <span class="o">=</span> <span class="kc">None</span>
+
+                    <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;usepointing&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,):</span>
+                        <span class="n">usepointing</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;usepointing&#39;</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">usepointing</span> <span class="o">=</span> <span class="kc">None</span>
+
+                    <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">tclean</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vislist</span><span class="p">,</span> <span class="n">imagename</span><span class="o">=</span><span class="n">findcont_basename</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="n">datacolumn</span><span class="p">,</span>
+                                            <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">real_spwsel</span><span class="p">,</span>
+                                            <span class="n">intent</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">to_CASA_intent</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]),</span>
+                                            <span class="n">field</span><span class="o">=</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=</span><span class="n">nchan</span><span class="p">,</span>
+                                            <span class="n">outframe</span><span class="o">=</span><span class="n">outframe</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scanidlist</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="n">specmode</span><span class="p">,</span> <span class="n">gridder</span><span class="o">=</span><span class="n">gridder</span><span class="p">,</span>
+                                            <span class="n">mosweight</span><span class="o">=</span><span class="n">mosweight</span><span class="p">,</span> <span class="n">perchanweightdensity</span><span class="o">=</span><span class="n">perchanweightdensity</span><span class="p">,</span>
+                                            <span class="n">pblimit</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="s1">&#39;0mJy&#39;</span><span class="p">,</span> <span class="n">deconvolver</span><span class="o">=</span><span class="s1">&#39;hogbom&#39;</span><span class="p">,</span>
+                                            <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">imsize</span><span class="o">=</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;imsize&#39;</span><span class="p">],</span> <span class="n">cell</span><span class="o">=</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">],</span>
+                                            <span class="n">phasecenter</span><span class="o">=</span><span class="n">phasecenter</span><span class="p">,</span> <span class="n">psfphasecenter</span><span class="o">=</span><span class="n">psf_phasecenter</span><span class="p">,</span>
+                                            <span class="n">stokes</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="n">weighting</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span> <span class="n">uvtaper</span><span class="o">=</span><span class="n">uvtaper</span><span class="p">,</span>
+                                            <span class="n">npixels</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">restoration</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">restoringbeam</span><span class="o">=</span><span class="p">[],</span> <span class="n">pbcor</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                            <span class="n">usepointing</span><span class="o">=</span><span class="n">usepointing</span><span class="p">,</span> <span class="n">savemodel</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span>
+                                            <span class="n">fullsummary</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+                    <span class="c1"># Try detecting continuum frequency ranges</span>
+
+                    <span class="c1"># Determine the representative source name and spwid for the ms</span>
+                    <span class="n">repsource_name</span><span class="p">,</span> <span class="n">repsource_spwid</span> <span class="o">=</span> <span class="n">ref_ms</span><span class="o">.</span><span class="n">get_representative_source_spw</span><span class="p">()</span>
+
+                    <span class="c1"># Determine reprBW mode</span>
+                    <span class="n">repr_target</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">repr_spw</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">reprBW_mode</span><span class="p">,</span> <span class="n">real_repr_target</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">representative_target</span><span class="p">()</span>
+                    <span class="n">real_repr_spw</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual2real_spw_id</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">),</span> <span class="n">ref_ms</span><span class="p">)</span>
+                    <span class="n">real_repr_spw_obj</span> <span class="o">=</span> <span class="n">ref_ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">real_repr_spw</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">reprBW_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">,</span> <span class="s1">&#39;repr_spw&#39;</span><span class="p">]:</span>
+                        <span class="c1"># Approximate reprBW with nbin</span>
+                        <span class="n">physicalBW_of_1chan</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">real_repr_spw_obj</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">getWidth</span><span class="p">()</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                        <span class="n">reprBW_nbin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">repr_target</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;Hz&#39;</span><span class="p">))</span><span class="o">/</span><span class="n">physicalBW_of_1chan</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">reprBW_nbin</span> <span class="o">=</span> <span class="mi">1</span>
+
+                    <span class="n">spw_transitions</span> <span class="o">=</span> <span class="n">ref_ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">real_spwid</span><span class="p">)</span><span class="o">.</span><span class="n">transitions</span>
+                    <span class="n">single_continuum</span> <span class="o">=</span> <span class="nb">any</span><span class="p">([</span><span class="s1">&#39;Single_Continuum&#39;</span> <span class="ow">in</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">spw_transitions</span><span class="p">])</span>
+                    <span class="c1"># PIPE-1855: use spectralDynamicRangeBandWidth from SBSummary if available</span>
+                    <span class="n">dynrange_bw</span> <span class="o">=</span> <span class="n">ref_ms</span><span class="o">.</span><span class="n">science_goals</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spectralDynamicRangeBandWidth&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">dynrange_bw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># None means that a value was not provided, and it should remain None</span>
+                        <span class="n">dynrange_bw</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">dynrange_bw</span><span class="p">)</span>
+
+                    <span class="p">(</span><span class="n">cont_ranges_and_flags</span><span class="p">,</span> <span class="n">png</span><span class="p">,</span> <span class="n">single_range_channel_fraction</span><span class="p">,</span> <span class="n">warning_strings</span><span class="p">,</span> <span class="n">joint_mask_name</span><span class="p">)</span> <span class="o">=</span> \
+                        <span class="n">findcont_heuristics</span><span class="o">.</span><span class="n">find_continuum</span><span class="p">(</span><span class="n">dirty_cube</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.residual&#39;</span> <span class="o">%</span> <span class="n">findcont_basename</span><span class="p">,</span>
+                                                           <span class="n">pb_cube</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.pb&#39;</span> <span class="o">%</span> <span class="n">findcont_basename</span><span class="p">,</span>
+                                                           <span class="n">psf_cube</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.psf&#39;</span> <span class="o">%</span> <span class="n">findcont_basename</span><span class="p">,</span>
+                                                           <span class="n">single_continuum</span><span class="o">=</span><span class="n">single_continuum</span><span class="p">,</span>
+                                                           <span class="n">is_eph_obj</span><span class="o">=</span><span class="n">image_heuristics</span><span class="o">.</span><span class="n">is_eph_obj</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]),</span>
+                                                           <span class="n">ref_ms_name</span><span class="o">=</span><span class="n">ref_ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                                           <span class="n">nbin</span><span class="o">=</span><span class="n">reprBW_nbin</span><span class="p">,</span>
+                                                           <span class="n">dynrange_bw</span><span class="o">=</span><span class="n">dynrange_bw</span><span class="p">)</span>
+
+                    <span class="n">joint_mask_names</span><span class="p">[(</span><span class="n">source_name</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)]</span> <span class="o">=</span> <span class="n">joint_mask_name</span>
+
+                    <span class="c1"># PIPE-74</span>
+                    <span class="k">if</span> <span class="n">single_range_channel_fraction</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Only a single narrow range of channels was found for continuum in &#39;</span>
+                                    <span class="s1">&#39;</span><span class="si">{field}</span><span class="s1"> in spw </span><span class="si">{spw}</span><span class="s1">, so the continuum subtraction &#39;</span>
+                                    <span class="s1">&#39;may be poor for that spw.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">spw</span><span class="o">=</span><span class="n">spwid</span><span class="p">))</span>
+
+                    <span class="c1"># Internal findContinuum warnings</span>
+                    <span class="k">for</span> <span class="n">warning_msg</span> <span class="ow">in</span> <span class="n">warning_strings</span><span class="p">:</span>
+                        <span class="c1"># PIPE-2158: Exclude empty strings</span>
+                        <span class="k">if</span> <span class="n">warning_msg</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Field </span><span class="si">{field}</span><span class="s1">, spw </span><span class="si">{spw}</span><span class="s1">: </span><span class="si">{warning_msg}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">spw</span><span class="o">=</span><span class="n">spwid</span><span class="p">,</span> <span class="n">warning_msg</span><span class="o">=</span><span class="n">warning_msg</span><span class="p">))</span>
+
+                    <span class="n">is_repsource</span> <span class="o">=</span> <span class="p">(</span><span class="n">repsource_name</span> <span class="o">==</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">repsource_spwid</span> <span class="o">==</span> <span class="n">spwid</span><span class="p">)</span>
+                    <span class="n">chanfrac</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fraction&#39;</span>    <span class="p">:</span> <span class="n">single_range_channel_fraction</span><span class="p">,</span>
+                                <span class="s1">&#39;field&#39;</span>       <span class="p">:</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span>
+                                <span class="s1">&#39;spw&#39;</span>         <span class="p">:</span> <span class="n">spwid</span><span class="p">,</span>
+                                <span class="s1">&#39;is_repsource&#39;</span><span class="p">:</span> <span class="n">is_repsource</span><span class="p">}</span>
+
+                    <span class="n">single_range_channel_fractions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chanfrac</span><span class="p">)</span>
+
+                    <span class="n">cont_ranges</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="n">source_name</span><span class="p">][</span><span class="n">spwid</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cont_ranges_and_flags</span><span class="p">)</span>
+
+                    <span class="n">source_continuum_ranges</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s1">&#39;cont_ranges&#39;</span><span class="p">:</span> <span class="n">cont_ranges_and_flags</span><span class="p">,</span>
+                        <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                        <span class="s1">&#39;plotfile&#39;</span><span class="p">:</span> <span class="n">png</span><span class="p">,</span>
+                        <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;NEW&#39;</span>
+                    <span class="p">}</span>
+
+                    <span class="k">if</span> <span class="n">cont_ranges_and_flags</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[[</span><span class="s1">&#39;NONE&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="p">[]]:</span>
+                        <span class="n">num_found</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="n">num_total</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">FindContResult</span><span class="p">(</span><span class="n">result_cont_ranges</span><span class="p">,</span> <span class="n">cont_ranges</span><span class="p">,</span> <span class="n">joint_mask_names</span><span class="p">,</span> <span class="n">num_found</span><span class="p">,</span> <span class="n">num_total</span><span class="p">,</span> <span class="n">single_range_channel_fractions</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="FindCont.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.findcont.html#pipeline.hif.tasks.findcont.findcont.FindCont.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

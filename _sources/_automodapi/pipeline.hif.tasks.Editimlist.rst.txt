@@ -1,0 +1,29 @@
+Editimlist
+==========
+
+.. currentmodule:: pipeline.hif.tasks
+
+.. autoclass:: Editimlist
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~Editimlist.is_multi_vis_task
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~Editimlist.analyse
+      ~Editimlist.prepare
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: analyse
+   .. automethod:: prepare

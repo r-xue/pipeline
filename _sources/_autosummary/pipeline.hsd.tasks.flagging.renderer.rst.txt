@@ -1,0 +1,12 @@
+pipeline.hsd.tasks.flagging.renderer
+====================================
+
+.. automodule:: pipeline.hsd.tasks.flagging.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsFlagDeterAlmaSdRenderer
+   

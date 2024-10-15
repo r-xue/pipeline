@@ -1,0 +1,20 @@
+pipeline.hif.heuristics.findcont
+================================
+
+.. automodule:: pipeline.hif.heuristics.findcont
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      countChannelsInRanges
+      findContinuum
+      numberOfChannelsInCube
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FindContHeuristics
+   

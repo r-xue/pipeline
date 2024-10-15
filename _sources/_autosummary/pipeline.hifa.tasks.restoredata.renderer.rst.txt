@@ -1,0 +1,18 @@
+pipeline.hifa.tasks.restoredata.renderer
+========================================
+
+.. automodule:: pipeline.hifa.tasks.restoredata.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      make_repsource_table
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsRestoreDataRenderer
+   

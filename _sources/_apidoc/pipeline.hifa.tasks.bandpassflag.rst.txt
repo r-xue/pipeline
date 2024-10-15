@@ -1,0 +1,45 @@
+pipeline.hifa.tasks.bandpassflag package
+========================================
+
+Submodules
+----------
+
+pipeline.hifa.tasks.bandpassflag.bandpassflag module
+----------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.bandpassflag.bandpassflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.bandpassflag.qa module
+------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.bandpassflag.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.bandpassflag.renderer module
+------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.bandpassflag.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.bandpassflag.resultobjects module
+-----------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.bandpassflag.resultobjects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifa.tasks.bandpassflag
+   :members:
+   :undoc-members:
+   :show-inheritance:

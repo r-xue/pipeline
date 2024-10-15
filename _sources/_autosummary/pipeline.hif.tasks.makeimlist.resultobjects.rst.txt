@@ -1,0 +1,12 @@
+pipeline.hif.tasks.makeimlist.resultobjects
+===========================================
+
+.. automodule:: pipeline.hif.tasks.makeimlist.resultobjects
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MakeImListResult
+   

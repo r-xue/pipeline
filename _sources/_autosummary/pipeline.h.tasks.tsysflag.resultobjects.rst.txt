@@ -1,0 +1,16 @@
+pipeline.h.tasks.tsysflag.resultobjects
+=======================================
+
+.. automodule:: pipeline.h.tasks.tsysflag.resultobjects
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FullyFlaggedAntennasNotification
+      TsysflagDataResults
+      TsysflagResults
+      TsysflagViewResults
+      TsysflagspectraResults
+   

@@ -1,0 +1,28 @@
+pipeline.hif.tasks.bandpass
+===========================
+
+.. automodule:: pipeline.hif.tasks.bandpass
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BandpassMode
+      ChannelBandpass
+      PhcorBandpass
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   adapters
+   bandpassmode
+   bandpassworker
+   channelbandpass
+   common
+   phcorbandpass
+   qa
+   renderer

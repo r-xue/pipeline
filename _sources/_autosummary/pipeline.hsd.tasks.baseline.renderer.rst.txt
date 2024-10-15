@@ -1,0 +1,13 @@
+pipeline.hsd.tasks.baseline.renderer
+====================================
+
+.. automodule:: pipeline.hsd.tasks.baseline.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SingleDishClusterPlotsRenderer
+      T2_4MDetailsSingleDishBaselineRenderer
+   

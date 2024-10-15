@@ -1,0 +1,21 @@
+pipeline.hif.tasks.polcal package
+=================================
+
+Submodules
+----------
+
+pipeline.hif.tasks.polcal.polcalworker module
+---------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.polcal.polcalworker
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hif.tasks.polcal
+   :members:
+   :undoc-members:
+   :show-inheritance:

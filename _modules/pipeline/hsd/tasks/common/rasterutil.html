@@ -1,0 +1,908 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.common.rasterutil &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.common.rasterutil</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.common.rasterutil</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Extract various informations of raster.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">sub</span>
+<span class="kn">from</span> <span class="nn">matplotlib.animation</span> <span class="kn">import</span> <span class="n">FuncAnimation</span><span class="p">,</span> <span class="n">ImageMagickWriter</span>
+<span class="kn">from</span> <span class="nn">matplotlib.lines</span> <span class="kn">import</span> <span class="n">Line2D</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pipeline.domain.datatable</span> <span class="k">as</span> <span class="nn">datatable</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.datatable</span> <span class="kn">import</span> <span class="n">DataTableImpl</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">...heuristics</span> <span class="kn">import</span> <span class="n">rasterscan</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="n">MetaDataSet</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;MetaDataSet&#39;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="s1">&#39;dtrow&#39;</span><span class="p">,</span> <span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">,</span> <span class="s1">&#39;antenna&#39;</span><span class="p">,</span> <span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="s1">&#39;srctype&#39;</span><span class="p">,</span> <span class="s1">&#39;pflag&#39;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="distance">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.distance">[docs]</a>
+<span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">x0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">x1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y1</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute distance between two points (x0, y0) and (x1, y1).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x0: x-coordinate value for point 0</span>
+<span class="sd">        y0: y-coordinate value for point 0</span>
+<span class="sd">        x1: x-coordinate value for point 1</span>
+<span class="sd">        y1: y-coordinate value for point 1</span>
+
+<span class="sd">    Returns: distance between two points</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_dx</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span>
+    <span class="n">_dy</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">_dx</span><span class="p">,</span> <span class="n">_dy</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="is_multi_beam">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.is_multi_beam">[docs]</a>
+<span class="k">def</span> <span class="nf">is_multi_beam</span><span class="p">(</span><span class="n">datatable</span><span class="p">:</span> <span class="n">DataTableImpl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if given dataset is multi-beam or not.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        datatable (DataTableImpl): datatable instance</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if multi-beam dataset, otherwise False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;BEAM&#39;</span><span class="p">)))</span> <span class="o">!=</span> <span class="mi">1</span></div>
+
+
+
+<div class="viewcode-block" id="extract_dtrow_list">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.extract_dtrow_list">[docs]</a>
+<span class="k">def</span> <span class="nf">extract_dtrow_list</span><span class="p">(</span><span class="n">timetable</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]],</span> <span class="n">for_small_gap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert timetable into datatable row id list.&quot;&quot;&quot;</span>
+    <span class="n">tt_idx</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">for_small_gap</span> <span class="k">else</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">timetable</span><span class="p">[</span><span class="n">tt_idx</span><span class="p">]]</span></div>
+
+
+
+<div class="viewcode-block" id="read_readonly_data">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.read_readonly_data">[docs]</a>
+<span class="k">def</span> <span class="nf">read_readonly_data</span><span class="p">(</span><span class="n">table</span><span class="p">:</span> <span class="n">DataTableImpl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract necerrary data from datatable instance.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        table: datatable instance</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A tuple that stores arrays of time stamps, row IDs,</span>
+<span class="sd">        R.A., Dec., source types, antenna, field, and spw IDs</span>
+<span class="sd">        of all rows in datable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+    <span class="n">dtrow</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">timestamp</span><span class="p">))</span>
+    <span class="n">ra</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;OFS_RA&#39;</span><span class="p">)</span>
+    <span class="n">dec</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;OFS_DEC&#39;</span><span class="p">)</span>
+    <span class="n">srctype</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SRCTYPE&#39;</span><span class="p">)</span>
+    <span class="n">antenna</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA&#39;</span><span class="p">)</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FIELD_ID&#39;</span><span class="p">)</span>
+    <span class="n">spw</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;IF&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">dtrow</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">srctype</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span></div>
+
+
+
+<div class="viewcode-block" id="read_readwrite_data">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.read_readwrite_data">[docs]</a>
+<span class="k">def</span> <span class="nf">read_readwrite_data</span><span class="p">(</span><span class="n">table</span><span class="p">:</span> <span class="n">DataTableImpl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract necessary data from datatable instance.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        table: datatable instance</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pflag: np.ndarray of online flag status</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pflags</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FLAG_PERMANENT&#39;</span><span class="p">)</span>
+    <span class="n">pflag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">pflags</span><span class="p">[:,</span> <span class="n">datatable</span><span class="o">.</span><span class="n">OnlineFlagIndex</span><span class="p">,</span> <span class="p">:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pflag</span></div>
+
+
+
+<div class="viewcode-block" id="read_datatable">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.read_datatable">[docs]</a>
+<span class="k">def</span> <span class="nf">read_datatable</span><span class="p">(</span><span class="n">datatable</span><span class="p">:</span> <span class="n">DataTableImpl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MetaDataSet</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract necessary data from datatable instance.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        datatable: datatable instance</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        metadata: A MetaDataSet which stores arrays of time stamps,</span>
+<span class="sd">        row IDs, R.A., Dec., source types, antenna and field IDs</span>
+<span class="sd">        (each is in ndarray of column values taken from datatable).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">timestamp</span><span class="p">,</span> <span class="n">dtrow</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">srctype</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span> <span class="o">=</span> <span class="n">read_readonly_data</span><span class="p">(</span><span class="n">datatable</span><span class="p">)</span>
+    <span class="n">pflag</span> <span class="o">=</span> <span class="n">read_readwrite_data</span><span class="p">(</span><span class="n">datatable</span><span class="p">)</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">MetaDataSet</span><span class="p">(</span>
+        <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span>
+        <span class="n">dtrow</span><span class="o">=</span><span class="n">dtrow</span><span class="p">,</span>
+        <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span>
+        <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span>
+        <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span>
+        <span class="n">ra</span><span class="o">=</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="o">=</span><span class="n">dec</span><span class="p">,</span>
+        <span class="n">srctype</span><span class="o">=</span><span class="n">srctype</span><span class="p">,</span>
+        <span class="n">pflag</span><span class="o">=</span><span class="n">pflag</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">metadata</span></div>
+
+
+
+<div class="viewcode-block" id="from_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.from_context">[docs]</a>
+<span class="k">def</span> <span class="nf">from_context</span><span class="p">(</span><span class="n">context_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MetaDataSet</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read DataTable located in the context directory.</span>
+
+<span class="sd">    NOTE: only one DataTable will be loaded for multi-EB run</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context_dir: path to the pipeline context directory</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        metadata: A MetaDataSet which stores arrays of time stamps,</span>
+<span class="sd">        row IDs, R.A., Dec., source types, antenna and field IDs</span>
+<span class="sd">        (each is in ndarray of column values taken from datatable).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">datatable_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context_dir</span><span class="p">,</span> <span class="s1">&#39;MSDataTable.tbl&#39;</span><span class="p">)</span>
+    <span class="n">rotable</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">datatable_dir</span><span class="si">}</span><span class="s1">/*.ms/RO&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">rwtable</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">datatable_dir</span><span class="si">}</span><span class="s1">/*.ms/RW&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">tb</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">table</span>
+
+    <span class="n">tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">rotable</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">timestamp</span><span class="p">,</span> <span class="n">dtrow</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">srctype</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span> <span class="o">=</span> <span class="n">read_readonly_data</span><span class="p">(</span><span class="n">tb</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">tb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">rwtable</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">pflag</span> <span class="o">=</span> <span class="n">read_readwrite_data</span><span class="p">(</span><span class="n">tb</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">tb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">MetaDataSet</span><span class="p">(</span>
+        <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span>
+        <span class="n">dtrow</span><span class="o">=</span><span class="n">dtrow</span><span class="p">,</span>
+        <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span>
+        <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span>
+        <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span>
+        <span class="n">ra</span><span class="o">=</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="o">=</span><span class="n">dec</span><span class="p">,</span>
+        <span class="n">srctype</span><span class="o">=</span><span class="n">srctype</span><span class="p">,</span>
+        <span class="n">pflag</span><span class="o">=</span><span class="n">pflag</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">metadata</span></div>
+
+
+
+<div class="viewcode-block" id="get_science_target_fields">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.get_science_target_fields">[docs]</a>
+<span class="k">def</span> <span class="nf">get_science_target_fields</span><span class="p">(</span><span class="n">metadata</span><span class="p">:</span> <span class="n">MetaDataSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a list of unique field IDs of science targets.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        metadata: MetaDataSet extracted from a datatable</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray of field ids for science targets</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">field</span><span class="p">[</span><span class="n">metadata</span><span class="o">.</span><span class="n">srctype</span> <span class="o">==</span> <span class="mi">0</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="get_science_spectral_windows">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.get_science_spectral_windows">[docs]</a>
+<span class="k">def</span> <span class="nf">get_science_spectral_windows</span><span class="p">(</span><span class="n">metadata</span><span class="p">:</span> <span class="n">MetaDataSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a list of unique spw IDs of science targets.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        metadata: MetaDataSet extracted from a datatable</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray of spw ids for science targets</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">spw</span><span class="p">[</span><span class="n">metadata</span><span class="o">.</span><span class="n">srctype</span> <span class="o">==</span> <span class="mi">0</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="get_raster_distance">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.get_raster_distance">[docs]</a>
+<span class="k">def</span> <span class="nf">get_raster_distance</span><span class="p">(</span><span class="n">ra</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dtrow_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute distances between raster rows and the first row.</span>
+
+<span class="sd">    Compute distances between representative positions of raster rows and that of the first raster row.</span>
+<span class="sd">    Origin of the distance is the first raster row.</span>
+<span class="sd">    The representative position of each raster row is the mid point (mean position) of R.A. and Dec.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ra: np.ndarray of RA</span>
+<span class="sd">        dec: np.ndarray of Dec</span>
+<span class="sd">        dtrow_list: list of row ids for datatable rows per data chunk indicating</span>
+<span class="sd">                    single raster row.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray of the distances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">i1</span> <span class="o">=</span> <span class="n">dtrow_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">ra</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">y1</span> <span class="o">=</span> <span class="n">dec</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+    <span class="n">distance_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">distance</span><span class="p">(</span><span class="n">ra</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">dec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dtrow_list</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">distance_list</span></div>
+
+
+
+<div class="viewcode-block" id="flag_incomplete_raster">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.flag_incomplete_raster">[docs]</a>
+<span class="k">def</span> <span class="nf">flag_incomplete_raster</span><span class="p">(</span><span class="n">raster_index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">nd_raster</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">nd_row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return IDs of incomplete raster map.</span>
+
+<span class="sd">    N: number of data per raster map</span>
+<span class="sd">    M: number of data per raster row</span>
+<span class="sd">    MN: median of N =&gt; typical number of data per raster map</span>
+<span class="sd">    MM: median of M =&gt; typical number of data per raster row</span>
+<span class="sd">    logic:</span>
+<span class="sd">      - if N[x] &lt;= MN - MM then flag whole data in raster map x</span>
+<span class="sd">      - if N[x] &gt;= MN + MM then flag whole data in raster map x and later</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        raster_index_list: list of indices for metadata arrays per raster map</span>
+<span class="sd">        nd_raster: typical number of data per raster map (MN)</span>
+<span class="sd">        nd_row: typical number of data per raster row (MM)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray of index for raster map to flag.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">raster_index_list</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">nd_raster</span> <span class="o">&gt;=</span> <span class="n">nd_row</span>
+    <span class="n">upper_threshold</span> <span class="o">=</span> <span class="n">nd_raster</span> <span class="o">+</span> <span class="n">nd_row</span>
+    <span class="n">lower_threshold</span> <span class="o">=</span> <span class="n">nd_raster</span> <span class="o">-</span> <span class="n">nd_row</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;There are </span><span class="si">%s</span><span class="s1"> raster maps&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">nd</span><span class="p">))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;number of data points per raster map: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">nd</span><span class="p">)</span>
+
+    <span class="c1"># nd exceeds upper_threshold</span>
+    <span class="n">test_upper</span> <span class="o">=</span> <span class="n">nd</span> <span class="o">&gt;=</span> <span class="n">upper_threshold</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">test_upper</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">test_upper</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;test_upper=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">test_upper</span><span class="p">)</span>
+
+    <span class="c1"># nd is less than lower_threshold</span>
+    <span class="n">test_lower</span> <span class="o">=</span> <span class="n">nd</span> <span class="o">&lt;=</span> <span class="n">lower_threshold</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;test_lower=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">test_lower</span><span class="p">)</span>
+
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">test_upper</span><span class="p">,</span> <span class="n">test_lower</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">idx</span></div>
+
+
+
+<div class="viewcode-block" id="flag_worm_eaten_raster">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.flag_worm_eaten_raster">[docs]</a>
+<span class="k">def</span> <span class="nf">flag_worm_eaten_raster</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">MetaDataSet</span><span class="p">,</span> <span class="n">raster_index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">nd_row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return IDs of raster map where number of continuous flagged data exceeds upper limit given by nd_row.</span>
+
+<span class="sd">    M: number of data per raster row</span>
+<span class="sd">    MM: median of M =&gt; typical number of data per raster row</span>
+<span class="sd">    L: maximum length of continuous flagged data</span>
+<span class="sd">    logic:</span>
+<span class="sd">      - if L[x] &gt; MM then flag whole data in raster map x</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        meta: input MetaDataSet to analyze</span>
+<span class="sd">        raster_index_list: list of indices for metadata arrays per raster map</span>
+<span class="sd">        nd_row: typical number of data per raster row (MM)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray of index for raster map to flag.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check if there are at least MM continuously flagged data</span>
+    <span class="c1"># where MM is number of typical data points for one raster row</span>
+    <span class="c1">#</span>
+    <span class="c1"># flag</span>
+    <span class="c1"># 1: valid, 0: invalid</span>
+    <span class="n">flag_raster</span> <span class="o">=</span> <span class="p">[</span><span class="n">meta</span><span class="o">.</span><span class="n">pflag</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">raster_index_list</span><span class="p">]</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Typical number of data per raster row: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">nd_row</span><span class="p">)</span>
+    <span class="n">flag_continuous</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+            <span class="nb">map</span><span class="p">(</span><span class="nb">sum</span><span class="p">,</span> <span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">nd_row</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">-</span> <span class="n">nd_row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">flag_raster</span>
+    <span class="p">]</span>
+    <span class="n">min_count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">flag_continuous</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span>
+    <span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Minimum number of continuous valid data: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">min_count</span><span class="p">)</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="n">min_count</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;test_result=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
+
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">test</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">idx</span></div>
+
+
+
+<div class="viewcode-block" id="get_raster_flag_list">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.get_raster_flag_list">[docs]</a>
+<span class="k">def</span> <span class="nf">get_raster_flag_list</span><span class="p">(</span><span class="n">flagged1</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">flagged2</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">raster_index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Merge flag result and convert raster id to list of data index.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        flagged1: list of flagged raster id</span>
+<span class="sd">        flagged2: list of flagged raster id</span>
+<span class="sd">        raster_index_list: list of indices for metadata arrays per raster map</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray of data ids to be flagged</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">flagged</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">flagged1</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">flagged2</span><span class="p">))</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="n">raster_index_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">flagged</span><span class="p">)</span>
+    <span class="n">data_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">g</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data_ids</span></div>
+
+
+
+<div class="viewcode-block" id="flag_raster_map">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.flag_raster_map">[docs]</a>
+<span class="k">def</span> <span class="nf">flag_raster_map</span><span class="p">(</span><span class="n">datatable</span><span class="p">:</span> <span class="n">DataTableImpl</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="s1">&#39;MeasurementSet&#39;</span><span class="p">,</span> <span class="n">rasterscan_heuristics_result</span><span class="p">:</span> <span class="n">rasterscan</span><span class="o">.</span><span class="n">RasterScanHeuristicsResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return list of index to be flagged by flagging heuristics for raster scan.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        datatable (DataTableImpl): input datatable to analyze</span>
+<span class="sd">        ms (MeasurementSet): MeasurementSet domain object</span>
+<span class="sd">        rasterscan_heuristics_result (RasterScanHeuristicsResult): Result object of RasterScanHeuristics</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        per-antenna list of indice to be flagged</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rowdict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># rasterutil doesn&#39;t support multi-beam data</span>
+    <span class="k">if</span> <span class="n">is_multi_beam</span><span class="p">(</span><span class="n">datatable</span><span class="p">):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Currently rasterutil does not support multi-beam data. Raster flag is not applied.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rowdict</span>
+
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">read_datatable</span><span class="p">(</span><span class="n">datatable</span><span class="p">)</span>
+    <span class="n">vis</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getkeyword</span><span class="p">(</span><span class="s1">&#39;FILENAME&#39;</span><span class="p">)</span>
+    <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+    <span class="n">field_list</span> <span class="o">=</span> <span class="n">get_science_target_fields</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="n">spw_list</span> <span class="o">=</span> <span class="n">get_science_spectral_windows</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="n">antenna_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">antenna</span><span class="p">)</span>
+
+    <span class="c1"># use timetable (output of grouping heuristics) to distinguish raster rows</span>
+    <span class="n">dtrowdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">ndrowdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">antenna_id</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">field_list</span><span class="p">,</span> <span class="n">spw_list</span><span class="p">,</span> <span class="n">antenna_list</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">timetable</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">get_timetable</span><span class="p">(</span><span class="n">ant</span><span class="o">=</span><span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">pol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="n">basename</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">dtrow_list</span> <span class="o">=</span> <span class="n">extract_dtrow_list</span><span class="p">(</span><span class="n">timetable</span><span class="p">,</span> <span class="n">for_small_gap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">)</span>
+        <span class="n">dtrowdict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtrow_list</span>
+
+        <span class="c1"># typical number of data per raster row</span>
+        <span class="c1"># result is consolicated per field and spectralspec (PIPE-1990)</span>
+        <span class="n">num_data_per_raster_row</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dtrow_list</span><span class="p">]</span>
+        <span class="n">spectralspec</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spw_id</span><span class="p">)</span><span class="o">.</span><span class="n">spectralspec</span><span class="p">)</span>
+        <span class="n">result_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">spectralspec</span><span class="p">)</span>
+        <span class="n">ndrowdict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">result_key</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">num_data_per_raster_row</span><span class="p">)</span>
+
+    <span class="c1"># rastergapdict stores list of datatable row ids per raster map</span>
+    <span class="n">rastergapdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">ndmapdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">dtrow_list</span> <span class="ow">in</span> <span class="n">dtrowdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># Here, we need to re-execute find_raster_gap because we cannot</span>
+        <span class="c1"># rely on large gap stored in datatable to separate raster map.</span>
+        <span class="c1"># That is because there might be malformed raster scan which</span>
+        <span class="c1"># cannot be handled by rasterscan heuristic. In such case,</span>
+        <span class="c1"># traditional grouping2 heuristic, which is time-domain heuristic,</span>
+        <span class="c1"># is triggered.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">raster_gap</span> <span class="o">=</span> <span class="n">rasterscan</span><span class="o">.</span><span class="n">find_raster_gap</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span> <span class="n">dtrow_list</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">rasterscan</span><span class="o">.</span><span class="n">RasterScanHeuristicsFailure</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> This often happens when pointing pattern deviates from regular raster. You may want to check the pointings in observation.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">rasterscan_heuristics_result</span><span class="o">.</span><span class="n">set_result_fail</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="c1"># exclude combination of (field_id, spw_id, antenna_id) held by key</span>
+            <span class="c1"># from the subsequent analysis</span>
+            <span class="k">continue</span>
+
+        <span class="n">idx_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">dtrow_list</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">])</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">raster_gap</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">raster_gap</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="p">]</span>
+        <span class="n">rastergapdict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx_list</span>
+
+        <span class="c1"># compute number of data per raster map</span>
+        <span class="c1"># result is consolidated per field and spectralspec (PIPE-1990)</span>
+        <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="n">spectralspec</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spw_id</span><span class="p">)</span><span class="o">.</span><span class="n">spectralspec</span><span class="p">)</span>
+        <span class="n">result_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">spectralspec</span><span class="p">)</span>
+        <span class="n">ndmapdict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">result_key</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">idx_list</span><span class="p">)))</span>
+
+    <span class="n">repmapdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">ndmap</span> <span class="ow">in</span> <span class="n">ndmapdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">ndrow</span> <span class="o">=</span> <span class="n">ndrowdict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">field_id</span><span class="p">,</span> <span class="n">spectralspec</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;FIELD </span><span class="si">%s</span><span class="s1"> spectralSpec </span><span class="si">%s</span><span class="s1">: Number of data per raster row = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spectralspec</span><span class="p">,</span> <span class="n">ndrow</span><span class="p">)</span>
+        <span class="n">nd_per_row_rep</span> <span class="o">=</span> <span class="n">find_most_frequent</span><span class="p">(</span><span class="n">ndrow</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;FIELD </span><span class="si">%s</span><span class="s1"> spectralSpec </span><span class="si">%s</span><span class="s1">: number of raster row = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spectralspec</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndrow</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;FIELD </span><span class="si">%s</span><span class="s1"> spectralSpec </span><span class="si">%s</span><span class="s1">: most frequent # of data per raster row = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spectralspec</span><span class="p">,</span> <span class="n">nd_per_row_rep</span><span class="p">)</span>
+        <span class="n">nd_per_raster_rep</span> <span class="o">=</span> <span class="n">find_most_frequent</span><span class="p">(</span><span class="n">ndmap</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;FIELD </span><span class="si">%s</span><span class="s1"> spectralSpec </span><span class="si">%s</span><span class="s1">: number of raster map = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spectralspec</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndmap</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;FIELD </span><span class="si">%s</span><span class="s1"> spectralSpec </span><span class="si">%s</span><span class="s1">: most frequent # of data per raster map = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spectralspec</span><span class="p">,</span> <span class="n">nd_per_raster_rep</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;FIELD </span><span class="si">%s</span><span class="s1"> spectralSpec </span><span class="si">%s</span><span class="s1">: nominal number of row per raster map = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spectralspec</span><span class="p">,</span> <span class="n">nd_per_raster_rep</span> <span class="o">//</span> <span class="n">nd_per_row_rep</span><span class="p">)</span>
+        <span class="n">repmapdict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;row&#39;</span><span class="p">:</span> <span class="n">nd_per_row_rep</span><span class="p">,</span>
+            <span class="s1">&#39;map&#39;</span><span class="p">:</span> <span class="n">nd_per_raster_rep</span>
+        <span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">idx_list</span> <span class="ow">in</span> <span class="n">rastergapdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Processing FIELD </span><span class="si">%s</span><span class="s1">, SPW </span><span class="si">%s</span><span class="s1">, ANTENNA </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="c1"># nominal number of data per row and per raster map</span>
+        <span class="c1"># these numbers depend on field as well as spectral spec (PIPE-1990)</span>
+        <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">antenna_id</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="n">spectralspec</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spw_id</span><span class="p">)</span><span class="o">.</span><span class="n">spectralspec</span><span class="p">)</span>
+        <span class="n">result_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">spectralspec</span><span class="p">)</span>
+        <span class="n">nd_per_raster_rep</span> <span class="o">=</span> <span class="n">repmapdict</span><span class="p">[</span><span class="n">result_key</span><span class="p">][</span><span class="s1">&#39;map&#39;</span><span class="p">]</span>
+        <span class="n">nd_per_row_rep</span> <span class="o">=</span> <span class="n">repmapdict</span><span class="p">[</span><span class="n">result_key</span><span class="p">][</span><span class="s1">&#39;row&#39;</span><span class="p">]</span>
+
+        <span class="c1"># flag incomplete raster map</span>
+        <span class="n">flag_raster1</span> <span class="o">=</span> <span class="n">flag_incomplete_raster</span><span class="p">(</span><span class="n">idx_list</span><span class="p">,</span> <span class="n">nd_per_raster_rep</span><span class="p">,</span> <span class="n">nd_per_row_rep</span><span class="p">)</span>
+
+        <span class="c1"># flag raster map if it contains continuous flagged data</span>
+        <span class="c1"># whose length is larger than the number of data per raster row</span>
+        <span class="n">flag_raster2</span> <span class="o">=</span> <span class="n">flag_worm_eaten_raster</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">idx_list</span><span class="p">,</span> <span class="n">nd_per_row_rep</span><span class="p">)</span>
+
+        <span class="c1"># merge flag result and convert raster id to list of data index</span>
+        <span class="n">flag_list</span> <span class="o">=</span> <span class="n">get_raster_flag_list</span><span class="p">(</span><span class="n">flag_raster1</span><span class="p">,</span> <span class="n">flag_raster2</span><span class="p">,</span> <span class="n">idx_list</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">flag_list</span><span class="p">)</span>
+
+        <span class="c1"># convert to row list</span>
+        <span class="n">row_list</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">dtrow</span><span class="p">[</span><span class="n">flag_list</span><span class="p">]</span>
+
+        <span class="c1"># key for rowdict is (spw_id, antenna_id) tuple</span>
+        <span class="n">new_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">)</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">rowdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">new_key</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">dtrow</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="n">rowdict</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">row_list</span><span class="p">)</span>
+
+    <span class="c1"># sort row numbers</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">rowdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">rowdict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rowdict</span></div>
+
+
+
+<div class="viewcode-block" id="find_most_frequent">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.find_most_frequent">[docs]</a>
+<span class="k">def</span> <span class="nf">find_most_frequent</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the most frequent value in an input array.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        v: data</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        most frequent value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">values</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">max_count</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;max count: </span><span class="si">{</span><span class="n">max_count</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">modes</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">counts</span> <span class="o">==</span> <span class="n">max_count</span><span class="p">]</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;modes: </span><span class="si">{</span><span class="n">modes</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">modes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">modes</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">modes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;mode = </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mode</span></div>
+
+
+
+<div class="viewcode-block" id="get_aspect">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.get_aspect">[docs]</a>
+<span class="k">def</span> <span class="nf">get_aspect</span><span class="p">(</span><span class="n">ax</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute aspect ratio of matplotlib figure.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ax: Axes object to examine</span>
+
+<span class="sd">    Returns: aspect ratio</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Total figure size</span>
+    <span class="n">figW</span><span class="p">,</span> <span class="n">figH</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span><span class="o">.</span><span class="n">get_size_inches</span><span class="p">()</span>
+    <span class="c1"># Axis size on figure</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span><span class="o">.</span><span class="n">bounds</span>
+    <span class="c1"># Ratio of display units</span>
+    <span class="n">disp_ratio</span> <span class="o">=</span> <span class="p">(</span><span class="n">figH</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">figW</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span>
+    <span class="c1"># Ratio of data units</span>
+    <span class="c1"># Negative over negative because of the order of subtraction</span>
+    <span class="n">data_ratio</span> <span class="o">=</span> <span class="n">sub</span><span class="p">(</span><span class="o">*</span><span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">())</span> <span class="o">/</span> <span class="n">sub</span><span class="p">(</span><span class="o">*</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">disp_ratio</span> <span class="o">/</span> <span class="n">data_ratio</span></div>
+
+
+
+<div class="viewcode-block" id="get_angle">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.get_angle">[docs]</a>
+<span class="k">def</span> <span class="nf">get_angle</span><span class="p">(</span><span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">aspect_ratio</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute tangential angle taking into account aspect ratio.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dx: length along x-axis</span>
+<span class="sd">        dy: length along y-axis</span>
+<span class="sd">        aspect_ratio: aspect_ratio, defaults to 1</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tangential angle in degrees</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="mi">30</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">dy</span> <span class="o">*</span> <span class="n">aspect_ratio</span><span class="p">,</span> <span class="n">dx</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">theta</span></div>
+
+
+
+<div class="viewcode-block" id="anim_gen">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.anim_gen">[docs]</a>
+<span class="k">def</span> <span class="nf">anim_gen</span><span class="p">(</span><span class="n">ra</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dtrow_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">dist_list</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">cmap</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate position, color and boolean flag for generate_animation.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ra: np.ndarray of RA</span>
+<span class="sd">        dec: np.ndarray of Dec</span>
+<span class="sd">        dtrow_list: list of row ids for datatable rows per data chunk indicating</span>
+<span class="sd">                    single raster row.</span>
+<span class="sd">        dist_list: np.ndarray of distance</span>
+<span class="sd">        cmap: color map</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        position, color, and boolean flag to clear existing plot</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dist_prev</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">cidx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">raster_flag</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">dist</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dtrow_list</span><span class="p">,</span> <span class="n">dist_list</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> - </span><span class="si">{}</span><span class="s1"> = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">dist_prev</span><span class="p">,</span> <span class="n">dist</span> <span class="o">-</span> <span class="n">dist_prev</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">dist</span> <span class="o">-</span> <span class="n">dist_prev</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;updating cidx </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cidx</span><span class="p">))</span>
+            <span class="n">cidx</span> <span class="o">=</span> <span class="p">(</span><span class="n">cidx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">cmap</span><span class="o">.</span><span class="n">N</span>
+            <span class="n">raster_flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="n">cidx</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">ra</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">dec</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">color</span><span class="p">,</span> <span class="n">raster_flag</span>
+        <span class="n">dist_prev</span> <span class="o">=</span> <span class="n">dist</span>
+        <span class="n">raster_flag</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">raster_flag</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">cidx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="n">cidx</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">raster_flag</span></div>
+
+
+
+<div class="viewcode-block" id="animate">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.animate">[docs]</a>
+<span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Line2D</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate plot corresponding to single frame.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        i: position, color, and boolean flag to clear existing plot</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        lines for this frame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">flag</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># clear existing raster scan</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">l</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ra</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">ra</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">ra</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">dec</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">dec</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">aspect</span> <span class="o">=</span> <span class="n">get_aspect</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">())</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">get_angle</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">aspect</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">angle</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lines</span></div>
+
+
+
+<div class="viewcode-block" id="generate_animation">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.generate_animation">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_animation</span><span class="p">(</span><span class="n">ra</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dtrow_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">figfile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;movie.gif&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate animation GIF file to illustrate observing pattern.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ra: np.ndarray of RA</span>
+<span class="sd">        dec: np.ndarray of Dec</span>
+<span class="sd">        dtrow_list: list of row ids for datatable rows per data chunk indicating</span>
+<span class="sd">                    single raster row.</span>
+<span class="sd">        figfile: output file name, defaults to &#39;movie.gif&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">row_distance</span> <span class="o">=</span> <span class="n">get_raster_distance</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">dtrow_list</span><span class="p">)</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;tab10&#39;</span><span class="p">)</span>
+    <span class="n">all_rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">dtrow_list</span><span class="p">)</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+    <span class="n">anim</span> <span class="o">=</span> <span class="n">FuncAnimation</span><span class="p">(</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">animate</span><span class="p">,</span>
+        <span class="n">anim_gen</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">dtrow_list</span><span class="p">,</span> <span class="n">row_distance</span><span class="p">,</span> <span class="n">cmap</span><span class="p">),</span>
+        <span class="n">init_func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ra</span><span class="p">[</span><span class="n">all_rows</span><span class="p">],</span> <span class="n">dec</span><span class="p">[</span><span class="n">all_rows</span><span class="p">],</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+        <span class="n">blit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">anim</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">figfile</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="n">ImageMagickWriter</span><span class="p">(</span><span class="n">fps</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Generate gif animation of raster pattern. Matplotlib backend must be &quot;Agg&quot;.&#39;</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;context_dir&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;context directory&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="s1">&#39;--antenna&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;antenna&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;--field&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;DEBUG: antenna=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">antenna</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;DEBUG: field=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">field</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;DEBUG: context_dir=&quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">context_dir</span><span class="p">))</span>
+
+    <span class="n">datatable_root_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">context_dir</span><span class="p">,</span> <span class="s1">&#39;MSDataTable.tbl&#39;</span><span class="p">)</span>
+    <span class="n">datatable_subdir_list</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">datatable_root_dir</span><span class="si">}</span><span class="s1">/*.ms&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">datatable_subdir_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Failed to find DataTable in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">context_dir</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">datatable_path</span> <span class="o">=</span> <span class="n">datatable_subdir_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">DataTableImpl</span><span class="p">(</span><span class="n">datatable_path</span><span class="p">)</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">read_datatable</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+
+    <span class="n">_</span><span class="p">,</span> <span class="n">ms_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">datatable_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;DEBUG: ms_name=&quot;</span><span class="si">{</span><span class="n">ms_name</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+
+    <span class="c1"># pick one science spw from the list</span>
+    <span class="n">science_spws</span> <span class="o">=</span> <span class="n">get_science_spectral_windows</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">science_spws</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ERROR: no science spws exist&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">spw</span> <span class="o">=</span> <span class="n">science_spws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Field ID to process</span>
+    <span class="n">science_targets</span> <span class="o">=</span> <span class="n">get_science_target_fields</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;DEBUG: science target list: </span><span class="si">{</span><span class="n">science_targets</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">field</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="n">science_targets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">field</span>
+
+    <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">science_targets</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ERROR: science target field </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1"> does not exist&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">antenna</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">antenna</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">antenna</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">antenna_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">antenna</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">antenna_list</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ERROR: antnena </span><span class="si">{</span><span class="n">antenna</span><span class="si">}</span><span class="s1"> does not exist&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">timetable</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">get_timetable</span><span class="p">(</span>
+        <span class="n">ant</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">antenna</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="n">ms_name</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="n">field</span>
+    <span class="p">)</span>
+
+    <span class="n">ra</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;OFS_RA&#39;</span><span class="p">)</span>
+    <span class="n">dec</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;OFS_DEC&#39;</span><span class="p">)</span>
+    <span class="n">dtrow_list</span> <span class="o">=</span> <span class="n">extract_dtrow_list</span><span class="p">(</span><span class="n">timetable</span><span class="p">,</span> <span class="n">for_small_gap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">figfile</span> <span class="o">=</span> <span class="s1">&#39;pointing.field</span><span class="si">{}</span><span class="s1">ant</span><span class="si">{}</span><span class="s1">.gif&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">antenna</span><span class="p">)</span>
+    <span class="n">generate_animation</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">dtrow_list</span><span class="p">,</span> <span class="n">figfile</span><span class="o">=</span><span class="n">figfile</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

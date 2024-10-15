@@ -1,0 +1,12 @@
+pipeline.hifv.tasks.swpowcal.resultobjects
+==========================================
+
+.. automodule:: pipeline.hifv.tasks.swpowcal.resultobjects
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SwpowcalResults
+   

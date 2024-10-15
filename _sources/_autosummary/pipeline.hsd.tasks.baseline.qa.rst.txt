@@ -1,0 +1,13 @@
+pipeline.hsd.tasks.baseline.qa
+==============================
+
+.. automodule:: pipeline.hsd.tasks.baseline.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SDBaselineListQAHandler
+      SDBaselineQAHandler
+   

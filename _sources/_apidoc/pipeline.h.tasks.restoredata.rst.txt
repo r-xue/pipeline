@@ -1,0 +1,29 @@
+pipeline.h.tasks.restoredata package
+====================================
+
+Submodules
+----------
+
+pipeline.h.tasks.restoredata.qa module
+--------------------------------------
+
+.. automodule:: pipeline.h.tasks.restoredata.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.tasks.restoredata.restoredata module
+-----------------------------------------------
+
+.. automodule:: pipeline.h.tasks.restoredata.restoredata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.h.tasks.restoredata
+   :members:
+   :undoc-members:
+   :show-inheritance:

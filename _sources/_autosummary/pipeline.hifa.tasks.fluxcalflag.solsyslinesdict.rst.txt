@@ -1,0 +1,6 @@
+pipeline.hifa.tasks.fluxcalflag.solsyslinesdict
+===============================================
+
+.. automodule:: pipeline.hifa.tasks.fluxcalflag.solsyslinesdict
+
+   

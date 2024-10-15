@@ -1,0 +1,29 @@
+pipeline.hifv.tasks.gaincurves package
+======================================
+
+Submodules
+----------
+
+pipeline.hifv.tasks.gaincurves.gaincurves module
+------------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.gaincurves.gaincurves
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.gaincurves.resultobjects module
+---------------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.gaincurves.resultobjects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifv.tasks.gaincurves
+   :members:
+   :undoc-members:
+   :show-inheritance:

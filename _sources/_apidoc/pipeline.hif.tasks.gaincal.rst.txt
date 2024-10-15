@@ -1,0 +1,61 @@
+pipeline.hif.tasks.gaincal package
+==================================
+
+Submodules
+----------
+
+pipeline.hif.tasks.gaincal.common module
+----------------------------------------
+
+.. automodule:: pipeline.hif.tasks.gaincal.common
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.gaincal.gaincalmode module
+---------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.gaincal.gaincalmode
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.gaincal.gaincalworker module
+-----------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.gaincal.gaincalworker
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.gaincal.gsplinegaincal module
+------------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.gaincal.gsplinegaincal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.gaincal.gtypegaincal module
+----------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.gaincal.gtypegaincal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.gaincal.ktypegaincal module
+----------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.gaincal.ktypegaincal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hif.tasks.gaincal
+   :members:
+   :undoc-members:
+   :show-inheritance:

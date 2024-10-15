@@ -1,0 +1,20 @@
+pipeline.hifa.tasks.polcalflag.renderer
+=======================================
+
+.. automodule:: pipeline.hifa.tasks.polcalflag.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      copy_callibrary
+      get_plot_dicts
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsCorrectedampflagRenderer
+      T2_4MDetailsPolcalflagRenderer
+   

@@ -1,0 +1,757 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.tasks.tsysflag.renderer &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.h.tasks.tsysflag.renderer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.h.tasks.tsysflag.renderer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on 9 Sep 2014</span>
+
+<span class="sd">@author: sjw</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.filenamer</span> <span class="k">as</span> <span class="nn">filenamer</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.basetemplates</span> <span class="k">as</span> <span class="nn">basetemplates</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.rendererutils</span> <span class="k">as</span> <span class="nn">rendererutils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="kn">import</span> <span class="n">ResultsList</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">calibrationtableaccess</span> <span class="k">as</span> <span class="n">caltableaccess</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">flagging_renderer_utils</span> <span class="k">as</span> <span class="n">flagutils</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.displays</span> <span class="kn">import</span> <span class="n">image</span> <span class="k">as</span> <span class="n">image</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.displays</span> <span class="kn">import</span> <span class="nb">slice</span> <span class="k">as</span> <span class="n">slice_display</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.displays</span> <span class="kn">import</span> <span class="n">tsys</span> <span class="k">as</span> <span class="n">tsys</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.tsyscal</span> <span class="kn">import</span> <span class="n">renderer</span> <span class="k">as</span> <span class="n">tsyscalrenderer</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.flagging_renderer_utils</span> <span class="kn">import</span> <span class="n">FlagTotal</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="T2_4MDetailsTsysflagRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.T2_4MDetailsTsysflagRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">T2_4MDetailsTsysflagRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
+    <span class="c1"># list of intents to consider for the summary table (only the ones that actually exist will be shown)</span>
+    <span class="n">task_intents</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Renders detailed HTML output for the Tsysflag task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;tsysflag.mako&#39;</span><span class="p">,</span>
+                 <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Flag Tsys calibration&#39;</span><span class="p">,</span>
+                 <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsTsysflagRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
+
+<div class="viewcode-block" id="T2_4MDetailsTsysflagRenderer.update_mako_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.T2_4MDetailsTsysflagRenderer.update_mako_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                            <span class="n">mako_context</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+                            <span class="n">pipeline_context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
+                            <span class="n">results</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">):</span>
+        <span class="n">weblog_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pipeline_context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
+                                  <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">results</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+
+        <span class="c1"># Initialize items that are to be exported to the</span>
+        <span class="c1"># mako context</span>
+        <span class="n">task_incomplete_msg</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">flag_totals</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="n">summary_plots</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">subpages</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">eb_plots</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">last_results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">updated_refants</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">flagcmd_files</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">standard_plots</span> <span class="o">=</span> <span class="n">create_plot_detail_page</span><span class="p">(</span><span class="n">std_renderer_mapping</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+        <span class="n">extra_plots</span> <span class="o">=</span> <span class="n">create_plot_detail_page</span><span class="p">(</span><span class="n">extra_renderer_mapping</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+        <span class="c1"># For each result in the results list...</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+
+            <span class="c1"># If the result is marked as from a Tsysflag task that ended</span>
+            <span class="c1"># prematurely, then store the reason to be passed to mako context.</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">task_incomplete_reason</span><span class="p">:</span>
+                <span class="n">task_incomplete_msg</span><span class="p">[</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">task_incomplete_reason</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Otherwise, continue with generating all necessary reports</span>
+
+            <span class="c1"># Create flag totals from the summaries:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;caltable&#39;</span><span class="p">])</span>
+
+            <span class="c1"># summarise flag state on entry</span>
+            <span class="n">flag_totals</span><span class="p">[</span><span class="n">table</span><span class="p">][</span><span class="s1">&#39;before&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flags_for_result</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)</span>
+
+            <span class="c1"># summarise flagging by each step</span>
+            <span class="k">for</span> <span class="n">component</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">flag_totals</span><span class="p">[</span><span class="n">table</span><span class="p">][</span><span class="n">component</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flags_for_result</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">flag_totals</span><span class="p">[</span><span class="n">table</span><span class="p">][</span><span class="n">component</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="c1"># summarise flag state on exit</span>
+            <span class="n">flag_totals</span><span class="p">[</span><span class="n">table</span><span class="p">][</span><span class="s1">&#39;after&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flags_for_result</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span>
+
+            <span class="c1"># If a manual flagging template file was applied, copy the file to</span>
+            <span class="c1"># the weblog directory, and store information.</span>
+            <span class="k">if</span> <span class="s1">&#39;manual&#39;</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">components</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;filetemplate&#39;</span><span class="p">]):</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;filetemplate&#39;</span><span class="p">],</span> <span class="n">weblog_dir</span><span class="p">)</span>
+                <span class="n">flagcmd_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;filetemplate&#39;</span><span class="p">])</span>
+                <span class="n">flagcmd_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;stage</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">),</span> <span class="n">flagcmd_file</span><span class="p">)</span>
+                <span class="n">flagcmd_files</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s1">&#39;manual&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">table</span><span class="p">)]</span> <span class="o">=</span> <span class="n">flagcmd_path</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flagcmd_files</span><span class="p">[</span><span class="n">table</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="c1"># Generate the summary plots at end of flagging sequence,</span>
+            <span class="c1"># beware empty sequence</span>
+            <span class="n">lastflag</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">lastflag</span><span class="p">:</span>
+                <span class="n">lastflag</span> <span class="o">=</span> <span class="n">lastflag</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">lastresult</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">lastflag</span><span class="p">]</span>
+
+            <span class="n">calapp</span> <span class="o">=</span> <span class="n">lastresult</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">plotter</span> <span class="o">=</span> <span class="n">tsys</span><span class="o">.</span><span class="n">TsysSummaryChart</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">lastresult</span><span class="p">,</span> <span class="n">calapp</span><span class="p">)</span>
+            <span class="n">plots</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">lastresult</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+            <span class="n">summary_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">plots</span>
+
+            <span class="c1"># generate per-antenna plots</span>
+            <span class="n">plotter</span> <span class="o">=</span> <span class="n">tsys</span><span class="o">.</span><span class="n">TsysPerAntennaChart</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">lastresult</span><span class="p">)</span>
+            <span class="n">per_antenna_plots</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+            <span class="n">renderer</span> <span class="o">=</span> <span class="n">tsyscalrenderer</span><span class="o">.</span><span class="n">TsyscalPlotRenderer</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span>
+                                                           <span class="n">lastresult</span><span class="p">,</span>
+                                                           <span class="n">per_antenna_plots</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+                <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+                <span class="c1"># the filename is sanitised - the MS name is not. We need to</span>
+                <span class="c1"># map MS to sanitised filename for link construction.</span>
+                <span class="n">subpages</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">path</span>
+
+            <span class="n">eb_plots</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">per_antenna_plots</span><span class="p">)</span>
+            <span class="n">last_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lastresult</span><span class="p">)</span>
+
+            <span class="c1"># If the reference antenna list was updated, retrieve new refant</span>
+            <span class="c1"># list.</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">refants_to_remove</span> <span class="ow">or</span> <span class="n">result</span><span class="o">.</span><span class="n">refants_to_demote</span><span class="p">:</span>
+                <span class="n">ms</span> <span class="o">=</span> <span class="n">pipeline_context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span>
+                <span class="n">updated_refants</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">reference_antenna</span>
+
+        <span class="c1"># If there were any valid results, then additionally render plots</span>
+        <span class="c1"># for all EBs in one page</span>
+        <span class="k">if</span> <span class="n">last_results</span><span class="p">:</span>
+            <span class="n">renderer</span> <span class="o">=</span> <span class="n">tsyscalrenderer</span><span class="o">.</span><span class="n">TsyscalPlotRenderer</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">last_results</span><span class="p">,</span> <span class="n">eb_plots</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+                <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+                <span class="c1"># .. and we want the subpage links to go to this master page</span>
+                <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">subpages</span><span class="p">:</span>
+                    <span class="n">subpages</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">path</span>
+
+        <span class="c1"># Define which intents to show in the flagging summary table.</span>
+        <span class="n">flag_table_intents</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TOTAL&#39;</span><span class="p">]</span>
+        <span class="n">flag_table_intents</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="n">flagutils</span><span class="o">.</span><span class="n">intents_to_summarise</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">T2_4MDetailsTsysflagRenderer</span><span class="o">.</span><span class="n">task_intents</span><span class="p">))</span>
+
+        <span class="c1"># Retrieve the metric_order from the result.</span>
+        <span class="c1"># NOTE: metric_order is assumed to be the same</span>
+        <span class="c1"># for all results in a ResultsList.</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">metric_order</span>
+
+        <span class="c1"># Generate the HTML reports</span>
+        <span class="n">htmlreports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_htmlreports</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">components</span><span class="p">)</span>
+
+        <span class="c1"># Update the mako context.</span>
+        <span class="n">mako_context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+            <span class="s1">&#39;components&#39;</span><span class="p">:</span> <span class="n">components</span><span class="p">,</span>
+            <span class="s1">&#39;dirname&#39;</span><span class="p">:</span> <span class="n">weblog_dir</span><span class="p">,</span>
+            <span class="s1">&#39;extraplots&#39;</span><span class="p">:</span> <span class="n">extra_plots</span><span class="p">,</span>
+            <span class="s1">&#39;flagcmd_files&#39;</span><span class="p">:</span> <span class="n">flagcmd_files</span><span class="p">,</span>
+            <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="n">flag_totals</span><span class="p">,</span>
+            <span class="s1">&#39;htmlreports&#39;</span><span class="p">:</span> <span class="n">htmlreports</span><span class="p">,</span>
+            <span class="s1">&#39;stdplots&#39;</span><span class="p">:</span> <span class="n">standard_plots</span><span class="p">,</span>
+            <span class="s1">&#39;summary_plots&#39;</span><span class="p">:</span> <span class="n">summary_plots</span><span class="p">,</span>
+            <span class="s1">&#39;summary_subpage&#39;</span><span class="p">:</span> <span class="n">subpages</span><span class="p">,</span>
+            <span class="s1">&#39;task_incomplete_msg&#39;</span><span class="p">:</span> <span class="n">task_incomplete_msg</span><span class="p">,</span>
+            <span class="s1">&#39;updated_refants&#39;</span><span class="p">:</span> <span class="n">updated_refants</span><span class="p">,</span>
+            <span class="s1">&#39;flag_table_intents&#39;</span><span class="p">:</span> <span class="n">flag_table_intents</span><span class="p">,</span>
+        <span class="p">})</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_htmlreports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">components</span><span class="p">):</span>
+        <span class="n">report_dir</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">report_dir</span>
+        <span class="n">weblog_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">report_dir</span><span class="p">,</span>
+                                  <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">results</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+
+        <span class="n">htmlreports</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+            <span class="c1"># Skip report for manual flagging.</span>
+            <span class="k">if</span> <span class="n">component</span> <span class="o">==</span> <span class="s1">&#39;manual&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">htmlreports</span><span class="p">[</span><span class="n">component</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">for</span> <span class="n">msresult</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">msresult</span><span class="o">.</span><span class="n">task_incomplete_reason</span><span class="p">:</span>
+                    <span class="n">flagcmd_abspath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_flagcmd_to_disk</span><span class="p">(</span><span class="n">weblog_dir</span><span class="p">,</span> <span class="n">msresult</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">component</span><span class="p">],</span> <span class="n">component</span><span class="p">)</span>
+                    <span class="n">report_abspath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_report_to_disk</span><span class="p">(</span><span class="n">weblog_dir</span><span class="p">,</span> <span class="n">msresult</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">component</span><span class="p">],</span> <span class="n">component</span><span class="p">)</span>
+
+                    <span class="n">flagcmd_relpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">flagcmd_abspath</span><span class="p">,</span> <span class="n">report_dir</span><span class="p">)</span>
+                    <span class="n">report_relpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">report_abspath</span><span class="p">,</span> <span class="n">report_dir</span><span class="p">)</span>
+
+                    <span class="n">table_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">msresult</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">component</span><span class="p">]</span><span class="o">.</span><span class="n">table</span><span class="p">)</span>
+                    <span class="n">htmlreports</span><span class="p">[</span><span class="n">component</span><span class="p">][</span><span class="n">table_basename</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">flagcmd_relpath</span><span class="p">,</span> <span class="n">report_relpath</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">htmlreports</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_write_flagcmd_to_disk</span><span class="p">(</span><span class="n">weblog_dir</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="n">tablename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">table</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">weblog_dir</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">-flag_commands.txt&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">component</span><span class="p">))</span>
+
+        <span class="n">flagcmds</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">flagcmd</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">flagcmds</span><span class="p">()]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flagfile</span><span class="p">:</span>
+            <span class="n">flagfile</span><span class="o">.</span><span class="n">writelines</span><span class="p">([</span><span class="s1">&#39;# Flag commands for </span><span class="si">%s</span><span class="se">\n</span><span class="s1">#</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">tablename</span><span class="p">])</span>
+            <span class="n">flagfile</span><span class="o">.</span><span class="n">writelines</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">cmd</span> <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="n">flagcmds</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">flagcmds</span><span class="p">:</span>
+                <span class="n">flagfile</span><span class="o">.</span><span class="n">writelines</span><span class="p">([</span><span class="s1">&#39;# No flag commands generated</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">filename</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_write_report_to_disk</span><span class="p">(</span><span class="n">weblog_dir</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="c1"># now write printTsysFlags output to a report file</span>
+        <span class="n">tablename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">table</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weblog_dir</span><span class="p">,</span>
+                                <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">.report.html&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">component</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">filename</span>
+
+        <span class="n">rendererutils</span><span class="o">.</span><span class="n">printTsysFlags</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">table</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">filename</span>
+
+    <span class="k">def</span> <span class="nf">_flags_for_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">caltable</span>
+        <span class="n">tsystable</span> <span class="o">=</span> <span class="n">caltableaccess</span><span class="o">.</span><span class="n">CalibrationTableDataFiller</span><span class="o">.</span><span class="n">getcal</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">tsystable</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> 
+
+        <span class="n">summaries</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">summaries</span>
+        <span class="k">if</span> <span class="n">summary</span> <span class="o">==</span> <span class="s1">&#39;first&#39;</span><span class="p">:</span>
+            <span class="c1"># select only first summary, but keep as list</span>
+            <span class="n">summaries</span> <span class="o">=</span> <span class="n">summaries</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">summary</span> <span class="o">==</span> <span class="s1">&#39;last&#39;</span><span class="p">:</span>
+            <span class="c1"># select only last summary, but keep as list</span>
+            <span class="n">summaries</span> <span class="o">=</span> <span class="n">summaries</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="n">by_intent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flags_by_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">summaries</span><span class="p">)</span>
+        <span class="n">by_spw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flags_by_spws</span><span class="p">(</span><span class="n">summaries</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">dict_merge</span><span class="p">(</span><span class="n">by_intent</span><span class="p">,</span> <span class="n">by_spw</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_flags_by_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">summaries</span><span class="p">):</span>
+        <span class="c1"># create a dictionary of fields per observing intent, eg. &#39;PHASE&#39;:[&#39;3C273&#39;]</span>
+        <span class="n">intent_fields</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">T2_4MDetailsTsysflagRenderer</span><span class="o">.</span><span class="n">task_intents</span><span class="p">:</span>
+            <span class="c1"># use _name from field as we do want the raw name here as used</span>
+            <span class="c1"># in the summaries dict (not sometimes enclosed in &quot;...&quot;). Better</span>
+            <span class="c1"># perhaps to fix the summaries dict.</span>
+            <span class="n">intent_fields</span><span class="p">[</span><span class="n">intent</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">_name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">fields</span>
+                                     <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
+
+        <span class="c1"># while we&#39;re looping, get the total flagged by looking in all scans </span>
+        <span class="n">intent_fields</span><span class="p">[</span><span class="s1">&#39;TOTAL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">_name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">fields</span><span class="p">]</span>
+
+        <span class="n">total</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+
+        <span class="n">previous_summary</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">summary</span> <span class="ow">in</span> <span class="n">summaries</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fields</span> <span class="ow">in</span> <span class="n">intent_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">flagcount</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">totalcount</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]:</span>
+                        <span class="n">flagcount</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">summary</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+                        <span class="n">totalcount</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">summary</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">])</span>
+
+                    <span class="k">if</span> <span class="n">previous_summary</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">previous_summary</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]:</span>
+                            <span class="n">flagcount</span> <span class="o">-=</span> <span class="nb">int</span><span class="p">(</span><span class="n">previous_summary</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+                <span class="n">ft</span> <span class="o">=</span> <span class="n">FlagTotal</span><span class="p">(</span><span class="n">flagcount</span><span class="p">,</span> <span class="n">totalcount</span><span class="p">)</span>
+                <span class="c1"># The individual summaries may have been named differently from </span>
+                <span class="c1"># each other, but the renderer will expect a single summary, so </span>
+                <span class="c1"># consolidate summaries into a single summary named &quot;Summary&quot;</span>
+                <span class="n">total</span><span class="p">[</span><span class="s1">&#39;Summary&#39;</span><span class="p">][</span><span class="n">intent</span><span class="p">]</span> <span class="o">=</span> <span class="n">ft</span>
+
+            <span class="n">previous_summary</span> <span class="o">=</span> <span class="n">summary</span>
+
+        <span class="k">return</span> <span class="n">total</span> 
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_flags_by_spws</span><span class="p">(</span><span class="n">summaries</span><span class="p">):</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+
+        <span class="n">previous_summary</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">summary</span> <span class="ow">in</span> <span class="n">summaries</span><span class="p">:</span>
+            <span class="n">flagcount</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">totalcount</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">flagcount</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">summary</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">][</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+                    <span class="n">totalcount</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">summary</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">][</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">])</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+                <span class="k">if</span> <span class="n">previous_summary</span><span class="p">:</span>
+                    <span class="n">flagcount</span> <span class="o">-=</span> <span class="nb">int</span><span class="p">(</span><span class="n">previous_summary</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">][</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+            <span class="n">ft</span> <span class="o">=</span> <span class="n">FlagTotal</span><span class="p">(</span><span class="n">flagcount</span><span class="p">,</span> <span class="n">totalcount</span><span class="p">)</span>
+            <span class="n">total</span><span class="p">[</span><span class="n">summary</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]][</span><span class="s1">&#39;TSYS SPWS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ft</span>
+
+            <span class="n">previous_summary</span> <span class="o">=</span> <span class="n">summary</span>
+
+        <span class="k">return</span> <span class="n">total</span></div>
+
+
+
+<div class="viewcode-block" id="plot_slice_displays">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.plot_slice_displays">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_slice_displays</span><span class="p">(</span><span class="n">name_of_metric</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result_for_metric</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create Slice plots for the given Tsys metric.</span>
+
+<span class="sd">    :param name_of_metric: name of Tsys flagging metric</span>
+<span class="sd">    :param context: pipeline context</span>
+<span class="sd">    :param result_for_metric: result for Tsys flagging metric</span>
+<span class="sd">    :param reportdir: destination directory for plots</span>
+<span class="sd">    :return: list of Plot objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">plotter</span> <span class="o">=</span> <span class="n">slice_display</span><span class="o">.</span><span class="n">SliceDisplay</span><span class="p">()</span>
+    <span class="n">plots</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result_for_metric</span><span class="p">,</span> <span class="n">reportdir</span><span class="o">=</span><span class="n">reportdir</span><span class="p">,</span> <span class="n">plotbad</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">plot_only_flagged</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">name_of_metric</span><span class="p">)</span>
+
+    <span class="n">ensure_vis_in_plot_metadata</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">result_for_metric</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">plots</span></div>
+
+
+
+<div class="viewcode-block" id="plot_image_displays">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.plot_image_displays">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_image_displays</span><span class="p">(</span><span class="n">name_of_metric</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result_for_metric</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">):</span>
+    <span class="n">plotter</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">ImageDisplay</span><span class="p">()</span>
+    <span class="n">plots</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result_for_metric</span><span class="p">,</span> <span class="n">reportdir</span><span class="o">=</span><span class="n">reportdir</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">name_of_metric</span><span class="p">)</span>
+
+    <span class="n">ensure_vis_in_plot_metadata</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">result_for_metric</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">plots</span></div>
+
+
+
+<div class="viewcode-block" id="plot_tsys_spectra">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.plot_tsys_spectra">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_tsys_spectra</span><span class="p">(</span><span class="n">name_of_metric</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result_for_metric</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">):</span>
+    <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># plot Tsys spectra that were flagged</span>
+    <span class="k">for</span> <span class="n">flagcmd</span> <span class="ow">in</span> <span class="n">result_for_metric</span><span class="o">.</span><span class="n">flagcmds</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">result_for_metric</span><span class="o">.</span><span class="n">descriptions</span><span class="p">():</span>
+            <span class="n">tsysspectra</span> <span class="o">=</span> <span class="n">result_for_metric</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tsysspectra&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tsysspectra</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">tsys_desc</span> <span class="ow">in</span> <span class="n">tsysspectra</span><span class="o">.</span><span class="n">descriptions</span><span class="p">():</span>
+                <span class="n">tsysspectrum</span> <span class="o">=</span> <span class="n">tsysspectra</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">tsys_desc</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">flagcmd</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">tsysspectrum</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># have found flagged spectrum, now get the associated median spectrum</span>
+                <span class="n">medians</span> <span class="o">=</span> <span class="n">result_for_metric</span><span class="o">.</span><span class="n">last</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tsysmedians&#39;</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">median_desc</span> <span class="ow">in</span> <span class="n">medians</span><span class="o">.</span><span class="n">descriptions</span><span class="p">():</span>
+                    <span class="n">median_spectrum</span> <span class="o">=</span> <span class="n">medians</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">median_desc</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">median_spectrum</span><span class="o">.</span><span class="n">ant</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">median_spectrum</span><span class="o">.</span><span class="n">ant</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">tsysspectrum</span><span class="o">.</span><span class="n">ant</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                        <span class="c1"># do the plot</span>
+                        <span class="n">plotter</span> <span class="o">=</span> <span class="n">slice_display</span><span class="o">.</span><span class="n">SliceDisplay</span><span class="p">()</span>
+                        <span class="n">plots</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                            <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="o">=</span><span class="n">tsysspectra</span><span class="p">,</span>
+                            <span class="n">description_to_plot</span><span class="o">=</span><span class="n">tsys_desc</span><span class="p">,</span>
+                            <span class="n">overplot_spectrum</span><span class="o">=</span><span class="n">median_spectrum</span><span class="p">,</span>
+                            <span class="n">reportdir</span><span class="o">=</span><span class="n">reportdir</span><span class="p">,</span> <span class="n">plotbad</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+                        <span class="k">break</span>
+
+    <span class="n">ensure_vis_in_plot_metadata</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">result_for_metric</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+    <span class="n">convert_field_id_to_field_names</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">plots</span></div>
+
+
+
+<div class="viewcode-block" id="ensure_vis_in_plot_metadata">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.ensure_vis_in_plot_metadata">[docs]</a>
+<span class="k">def</span> <span class="nf">ensure_vis_in_plot_metadata</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update Plot parameters with the given vis metadata if required.</span>
+
+<span class="sd">    :param plots: list of Plots to update</span>
+<span class="sd">    :param vis: the vis value to set</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;vis&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+            <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vis</span></div>
+
+
+
+<div class="viewcode-block" id="convert_field_id_to_field_names">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.convert_field_id_to_field_names">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_field_id_to_field_names</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert field IDs in the Plot to field names where possible.</span>
+
+<span class="sd">    :param plots: list of Plot objects to process</span>
+<span class="sd">    :param context: pipeline context</span>
+<span class="sd">    :return: Plot objects with field IDs replaced with field names</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ms_cache</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">ms_cache</span><span class="p">:</span>
+                <span class="n">ms</span> <span class="o">=</span> <span class="n">ms_cache</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+                <span class="n">ms_cache</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">ms</span>
+            <span class="n">field_name</span><span class="p">,</span> <span class="n">field_id</span> <span class="o">=</span> <span class="p">[(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]))][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{!s}</span><span class="s1"> (#</span><span class="si">{!s}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">field_id</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">continue</span></div>
+
+
+
+<div class="viewcode-block" id="create_plot_detail_page">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.create_plot_detail_page">[docs]</a>
+<span class="k">def</span> <span class="nf">create_plot_detail_page</span><span class="p">(</span><span class="n">metric_mapping</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results_list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create and render any detail plots required for the Tsys result.</span>
+
+<span class="sd">    :param metric_mapping: a dict mapping Tsys metric to ComponentRendererMap objects</span>
+<span class="sd">    :param context: pipeline context</span>
+<span class="sd">    :param results_list: the Tsysflag results</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># find the flagging metrics present in the results list for which we have a mapping</span>
+    <span class="n">metrics_to_process</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">([</span><span class="n">metric_name</span>
+                                    <span class="k">for</span> <span class="n">ms_result</span> <span class="ow">in</span> <span class="n">results_list</span>
+                                    <span class="k">for</span> <span class="n">metric_name</span> <span class="ow">in</span> <span class="n">ms_result</span><span class="o">.</span><span class="n">components</span>
+                                    <span class="k">if</span> <span class="n">metric_name</span> <span class="ow">in</span> <span class="n">metric_mapping</span><span class="p">])</span>
+
+    <span class="c1"># this will hold the result dictionary - a map of flagging metric to the</span>
+    <span class="c1"># path of the HTML plot details page for that metric</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># for each metric to process..</span>
+    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics_to_process</span><span class="p">:</span>
+        <span class="c1"># . get the plotting function and Mako template for the metric..</span>
+        <span class="n">plot_fn</span> <span class="o">=</span> <span class="n">metric_mapping</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="o">.</span><span class="n">plot_fn</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">metric_mapping</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="o">.</span><span class="n">template</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Generating plots for </span><span class="si">%s</span><span class="s1"> metric&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
+        <span class="c1"># .. then use the plotting function to generate the plots..</span>
+        <span class="n">plots</span> <span class="o">=</span> <span class="n">get_plots</span><span class="p">(</span><span class="n">plot_fn</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results_list</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">plots</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;No plots generated for </span><span class="si">%s</span><span class="s1"> metric&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># .. and render the Mako template for the thumbnails page</span>
+        <span class="n">renderer</span> <span class="o">=</span> <span class="n">PlotDetailRenderer</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results_list</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Rendering Mako for </span><span class="si">%s</span><span class="s1"> metric to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">renderer</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+
+        <span class="c1"># inspect the plots to determine which MSes we generated plots for</span>
+        <span class="n">d</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="nb">frozenset</span><span class="p">([</span><span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">]):</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">metric</span><span class="p">][</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">renderer</span><span class="o">.</span><span class="n">shorttitle</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">d</span></div>
+
+
+
+<div class="viewcode-block" id="get_plots">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.get_plots">[docs]</a>
+<span class="k">def</span> <span class="nf">get_plots</span><span class="p">(</span><span class="n">plot_fn</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results_list</span><span class="p">,</span> <span class="n">name_of_metric</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate detail plots for a Tsys flagging metric, returning a list of Plot</span>
+<span class="sd">    objects.</span>
+
+<span class="sd">    :param plot_fn: plot generating function that returns Plot objects</span>
+<span class="sd">    :param context: pipeline context</span>
+<span class="sd">    :param results_list: list of results for Tsys</span>
+<span class="sd">    :param name_of_metric: name of Tsys metric</span>
+<span class="sd">    :return: list of Plot objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stage</span> <span class="o">=</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">results_list</span><span class="o">.</span><span class="n">stage_number</span>
+    <span class="n">reportdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="n">stage</span><span class="p">)</span>
+
+    <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ms_result</span> <span class="ow">in</span> <span class="n">results_list</span><span class="p">:</span>
+        <span class="c1"># not all MSes may have a result for this metric</span>
+        <span class="k">if</span> <span class="n">name_of_metric</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ms_result</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># we can only generate plots if the metric generated a flagging view</span>
+        <span class="n">component_result</span> <span class="o">=</span> <span class="n">ms_result</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">name_of_metric</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">component_result</span><span class="o">.</span><span class="n">view</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">component_plots</span> <span class="o">=</span> <span class="n">plot_fn</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">component_result</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">)</span>
+        <span class="n">plots</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">component_plots</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">plots</span></div>
+
+
+
+<div class="viewcode-block" id="PlotDetailRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.PlotDetailRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">PlotDetailRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Standard Mako renderer used to render all Tsys plot detail pages.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template_uri</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">component</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+        <span class="n">x_axis</span> <span class="o">=</span> <span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x_axis</span>
+        <span class="n">y_axis</span> <span class="o">=</span> <span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y_axis</span>
+
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_vs_</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">.html&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">y_axis</span><span class="p">,</span> <span class="n">x_axis</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">component</span><span class="p">))</span>
+
+        <span class="n">y_axis</span> <span class="o">=</span> <span class="n">y_axis</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;Tsys&#39;</span><span class="p">,</span> <span class="s1">&#39;T&lt;sub&gt;sys&lt;/sub&gt;&#39;</span><span class="p">)</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> vs </span><span class="si">%s</span><span class="s1"> for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">y_axis</span><span class="p">,</span> <span class="n">x_axis</span><span class="p">,</span> <span class="n">vis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shorttitle</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> vs </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">y_axis</span><span class="p">,</span> <span class="n">x_axis</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">PlotDetailRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">template_uri</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PlotDetailRenderer.update_json_dict">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.PlotDetailRenderer.update_json_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">plot</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;intent&#39;</span> <span class="ow">in</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span></div>
+</div>
+
+
+
+<span class="c1"># struct to hold a plotting function and the Mako template used to render the</span>
+<span class="c1"># results of that function</span>
+<span class="n">ComponentRendererMap</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;ComponentRendererMap&#39;</span><span class="p">,</span> <span class="s1">&#39;plot_fn template&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># hold a map of Tsys flagging metric to generator of standard plots</span>
+<span class="n">std_renderer_mapping</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;birdies&#39;</span><span class="p">:</span> <span class="n">ComponentRendererMap</span><span class="p">(</span>
+        <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">plot_slice_displays</span><span class="p">,</span> <span class="s1">&#39;birdies&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;generic_x_vs_y_spw_ant_plots.mako&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;derivative&#39;</span><span class="p">:</span> <span class="n">ComponentRendererMap</span><span class="p">(</span>
+        <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">plot_image_displays</span><span class="p">,</span> <span class="s1">&#39;derivative&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;generic_x_vs_y_per_spw_pol_and_field_plots.mako&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;edgechans&#39;</span><span class="p">:</span> <span class="n">ComponentRendererMap</span><span class="p">(</span>
+        <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">plot_slice_displays</span><span class="p">,</span> <span class="s1">&#39;edgechans&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;generic_x_vs_y_spw_intent_plots.mako&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;fieldshape&#39;</span><span class="p">:</span> <span class="n">ComponentRendererMap</span><span class="p">(</span>
+        <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">plot_image_displays</span><span class="p">,</span> <span class="s1">&#39;fieldshape&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;generic_x_vs_y_per_spw_pol_and_field_plots.mako&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;nmedian&#39;</span><span class="p">:</span> <span class="n">ComponentRendererMap</span><span class="p">(</span>
+        <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">plot_image_displays</span><span class="p">,</span> <span class="s1">&#39;nmedian&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;generic_x_vs_y_per_spw_pol_and_field_plots.mako&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;toomany&#39;</span><span class="p">:</span> <span class="n">ComponentRendererMap</span><span class="p">(</span>
+        <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">plot_image_displays</span><span class="p">,</span> <span class="s1">&#39;toomany&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;generic_x_vs_y_per_spw_pol_and_field_plots.mako&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># hold a map of Tsys flagging metric to generator of extra plots</span>
+<span class="n">extra_renderer_mapping</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;nmedian&#39;</span><span class="p">:</span> <span class="n">ComponentRendererMap</span><span class="p">(</span>
+        <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">plot_tsys_spectra</span><span class="p">,</span> <span class="s1">&#39;nmedian&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;generic_x_vs_y_ant_field_spw_pol_plots.mako&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;derivative&#39;</span><span class="p">:</span> <span class="n">ComponentRendererMap</span><span class="p">(</span>
+        <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">plot_tsys_spectra</span><span class="p">,</span> <span class="s1">&#39;derivative&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;generic_x_vs_y_ant_field_spw_pol_plots.mako&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;fieldshape&#39;</span><span class="p">:</span> <span class="n">ComponentRendererMap</span><span class="p">(</span>
+        <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">plot_tsys_spectra</span><span class="p">,</span> <span class="s1">&#39;fieldshape&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;generic_x_vs_y_ant_field_spw_pol_plots.mako&#39;</span><span class="p">),</span>
+<span class="p">}</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

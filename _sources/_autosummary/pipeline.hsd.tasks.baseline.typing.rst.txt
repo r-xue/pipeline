@@ -1,0 +1,12 @@
+pipeline.hsd.tasks.baseline.typing
+==================================
+
+.. automodule:: pipeline.hsd.tasks.baseline.typing
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      NewType
+   

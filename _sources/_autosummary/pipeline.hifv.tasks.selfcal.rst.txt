@@ -1,0 +1,21 @@
+pipeline.hifv.tasks.selfcal
+===========================
+
+.. automodule:: pipeline.hifv.tasks.selfcal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Selfcal
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   renderer
+   selfcal

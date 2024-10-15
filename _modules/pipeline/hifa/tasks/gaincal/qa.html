@@ -1,0 +1,697 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.gaincal.qa &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.gaincal.qa</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.gaincal.qa</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.pipelineqa</span> <span class="k">as</span> <span class="nn">pqa</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">import</span> <span class="nn">pipeline.qa.gpcal</span> <span class="k">as</span> <span class="nn">gpcal</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">commonhelpermethods</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.gaincal</span> <span class="kn">import</span> <span class="n">common</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TimegaincalQAPool">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalQAPool">[docs]</a>
+<span class="k">class</span> <span class="nc">TimegaincalQAPool</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScorePool</span><span class="p">):</span>
+    <span class="n">xy_x2x1_score_types</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;PHASE_SCORE_XY&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;XY_TOTAL&#39;</span><span class="p">,</span> <span class="s1">&#39;X-Y phase deviation&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;PHASE_SCORE_X2X1&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;X2X1_TOTAL&#39;</span><span class="p">,</span> <span class="s1">&#39;X2-X1 phase deviation&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="n">xy_x2x1_short_msg</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;PHASE_SCORE_XY&#39;</span><span class="p">:</span> <span class="s1">&#39;X-Y deviation&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PHASE_SCORE_X2X1&#39;</span><span class="p">:</span> <span class="s1">&#39;X2-X1 deviation&#39;</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase_qa_results_dict</span><span class="p">,</span> <span class="n">phase_offsets_qa_results_list</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TimegaincalQAPool</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phase_qa_results_dict</span> <span class="o">=</span> <span class="n">phase_qa_results_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phase_offsets_qa_results_list</span> <span class="o">=</span> <span class="n">phase_offsets_qa_results_list</span>
+
+<div class="viewcode-block" id="TimegaincalQAPool.update_scores">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalQAPool.update_scores">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">refant</span><span class="p">):</span>
+        <span class="c1"># Phase offsets scores</span>
+        <span class="n">hidden_phase_offsets_scores</span><span class="p">,</span> <span class="n">public_phase_offsets_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_phase_offset_scores</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">refant</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">public_phase_offsets_scores</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hidden_phase_offsets_scores</span><span class="p">)</span></div>
+
+
+        <span class="c1"># X-Y / X2-X1 scores</span>
+        <span class="c1">#</span>
+        <span class="c1"># PIPE-365: Revise hifa_timegaincal QA scores for Cy7</span>
+        <span class="c1">#</span>
+        <span class="c1"># Remy: Remove consideration of X-Y, X2-X1 phase vs. time metrics</span>
+        <span class="c1"># from QA scoring (keep evaluation for now - I will open a CASR to</span>
+        <span class="c1"># revise these evaluations)</span>
+        <span class="c1">#</span>
+        <span class="c1"># phase_field_ids = [field.id for field in ms.get_fields(intent=&#39;PHASE&#39;)]</span>
+        <span class="c1"># self.pool.extend([self._get_xy_x2x1_qascore(ms, phase_field_ids, t) for t in self.xy_x2x1_score_types])</span>
+
+    <span class="k">def</span> <span class="nf">_get_phase_offset_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">refant</span><span class="p">):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate phase offsets scores.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tbTool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">table</span>
+
+            <span class="c1"># Define thresholds (in degrees) a factors for QA tests</span>
+            <span class="n">NoiseThresh</span> <span class="o">=</span> <span class="mf">15.0</span>
+
+            <span class="n">QA1_Thresh1</span> <span class="o">=</span> <span class="mf">5.0</span>
+            <span class="n">QA1_Thresh2</span> <span class="o">=</span> <span class="mf">30.0</span>
+            <span class="n">QA1_Factor</span> <span class="o">=</span> <span class="mf">6.0</span>
+
+            <span class="n">QA2_Thresh1</span> <span class="o">=</span> <span class="mf">15.0</span>
+            <span class="n">QA2_Thresh2</span> <span class="o">=</span> <span class="mf">30.0</span>
+            <span class="n">QA2_Factor1</span> <span class="o">=</span> <span class="mf">2.0</span>
+            <span class="n">QA2_Factor2</span> <span class="o">=</span> <span class="mf">4.0</span>
+
+            <span class="n">QA3_Thresh1</span> <span class="o">=</span> <span class="mf">15.0</span>
+            <span class="n">QA3_Thresh2</span> <span class="o">=</span> <span class="mf">30.0</span>
+            <span class="n">QA3_Factor</span> <span class="o">=</span> <span class="mf">6.0</span>
+
+            <span class="c1"># define scores</span>
+            <span class="n">GOOD</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">NOISY</span> <span class="o">=</span> <span class="mf">0.82</span>
+            <span class="n">OUTLIER1</span> <span class="o">=</span> <span class="mf">0.8</span>
+            <span class="n">OUTLIER2</span> <span class="o">=</span> <span class="mf">0.5</span>
+            <span class="n">SPW_MAPPING_PENALTY</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># decrease the score for outliers by this much if the spw(s) are mapped</span>
+
+            <span class="n">phase_scan_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="s1">&#39;PHASE&#39;</span><span class="p">)])</span>
+
+            <span class="c1"># Create antenna ID to name translation dictionary, reject empty antenna name strings.</span>
+            <span class="n">antenna_id_to_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">ant</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span> <span class="k">if</span> <span class="n">ant</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()}</span>
+
+            <span class="c1"># Get refant ID</span>
+            <span class="n">refant_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">ant</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span> <span class="k">if</span> <span class="n">ant</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="n">refant</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">hidden_phase_offsets_scores</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">public_phase_offsets_scores</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">subscores</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">gaintable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase_offsets_qa_results_list</span><span class="p">:</span>
+                <span class="n">tbTool</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">gaintable</span><span class="p">)</span>
+                <span class="c1"># Get phase offsets in degrees, obeying any flags.</span>
+                <span class="n">phase_offsets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tbTool</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">),</span> <span class="n">mask</span><span class="o">=</span><span class="n">tbTool</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">))))</span>
+                <span class="n">scan_numbers</span> <span class="o">=</span> <span class="n">tbTool</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SCAN_NUMBER&#39;</span><span class="p">)</span>
+                <span class="n">spw_ids</span> <span class="o">=</span> <span class="n">tbTool</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID&#39;</span><span class="p">)</span>
+                <span class="n">ant_ids</span> <span class="o">=</span> <span class="n">tbTool</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA1&#39;</span><span class="p">)</span>
+                <span class="n">tbTool</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+                <span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">good_spw_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+                <span class="n">noisy_spw_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+                <span class="n">outlier_spws</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="c1"># PIPE-1762: add information about spw mapping (if any):</span>
+                <span class="c1"># the set contains all spws that are not mapped to itself in any field with intent==&quot;PHASE&quot;</span>
+                <span class="n">mapped_spws</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">ifld</span><span class="p">,</span> <span class="n">spwmap</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">spwmaps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">ifld</span><span class="o">.</span><span class="n">intent</span> <span class="o">!=</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">spwmap</span><span class="o">.</span><span class="n">combine</span><span class="p">:</span>
+                        <span class="n">mapped_spws</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spw_ids</span><span class="p">))</span>  <span class="c1"># all spws are mapped</span>
+                    <span class="k">elif</span> <span class="n">spwmap</span><span class="o">.</span><span class="n">spwmap</span><span class="p">:</span>
+                        <span class="n">mapped_spws</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spw</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spw_ids</span> <span class="k">if</span> <span class="n">spwmap</span><span class="o">.</span><span class="n">spwmap</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span> <span class="o">!=</span> <span class="n">spw</span><span class="p">))</span>
+
+                <span class="k">for</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spw_ids</span><span class="p">)):</span>
+                    <span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="c1"># Get names of polarization(s), and create polarization index</span>
+                    <span class="n">corr_type</span> <span class="o">=</span> <span class="n">commonhelpermethods</span><span class="o">.</span><span class="n">get_corr_axis</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">)</span>
+                    <span class="c1"># Estimate of the overall noise (all ant, pol, solutions) for a given EB and SPW</span>
+                    <span class="n">selection</span> <span class="o">=</span> <span class="n">phase_offsets</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">scan_numbers</span><span class="p">,</span> <span class="n">phase_scan_ids</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">spw_ids</span> <span class="o">==</span> <span class="n">spw_id</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ant_ids</span> <span class="o">!=</span> <span class="n">refant_id</span><span class="p">))]</span>
+                    <span class="c1"># MAD multiplied by a fudge factor that makes it equivalent to standard deviation</span>
+                    <span class="c1"># if the input values are normally distributed</span>
+                    <span class="n">Stot</span> <span class="o">=</span> <span class="mf">1.4826</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">selection</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">selection</span><span class="p">)))</span>
+                    <span class="k">if</span> <span class="n">Stot</span> <span class="o">&gt;</span> <span class="n">NoiseThresh</span><span class="p">:</span>
+                        <span class="c1"># Noise too high for further evaluation</span>
+                        <span class="n">noisy_spw_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">spw_id</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">ant_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ant_ids</span><span class="p">)</span><span class="o">-</span><span class="p">{</span><span class="n">refant_id</span><span class="p">}):</span>
+                            <span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                            <span class="c1"># PIPE-1628: in case when the given spw has only a single polarization</span>
+                            <span class="c1"># (this always means &#39;X&#39; in the current workflow), the phase_offsets table</span>
+                            <span class="c1"># still has two columns, but one of them is empty and should be ignored.</span>
+                            <span class="k">for</span> <span class="n">pol_id</span><span class="p">,</span> <span class="n">pol_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">corr_type</span><span class="p">):</span>
+                                <span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                                <span class="k">for</span> <span class="n">scorekey</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;QA1&#39;</span><span class="p">,</span> <span class="s1">&#39;QA2&#39;</span><span class="p">,</span> <span class="s1">&#39;QA3&#39;</span><span class="p">]:</span>
+                                    <span class="n">score</span> <span class="o">=</span> <span class="n">NOISY</span>
+                                    <span class="n">longmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Phase offsets too noisy to usefully evaluate </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                               <span class="sa">f</span><span class="s1">&#39;Antenna </span><span class="si">{</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">]</span><span class="si">}</span><span class="s1"> Polarization </span><span class="si">{</span><span class="n">pol_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                                    <span class="n">shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Phase offsets too noisy&#39;</span>
+                                    <span class="n">origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;Stot(EB, spw)&#39;</span><span class="p">,</span>
+                                                          <span class="n">metric_score</span><span class="o">=</span><span class="n">Stot</span><span class="p">,</span>
+                                                          <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;degrees&#39;</span><span class="p">)</span>
+                                    <span class="n">data_selection</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">(</span>
+                                        <span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">},</span> <span class="n">spw</span><span class="o">=</span><span class="p">{</span><span class="n">spw_id</span><span class="p">},</span> <span class="n">intent</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;PHASE&#39;</span><span class="p">},</span> <span class="n">ant</span><span class="o">=</span><span class="p">{</span><span class="n">ant_id</span><span class="p">},</span> <span class="n">pol</span><span class="o">=</span><span class="p">{</span><span class="n">pol_name</span><span class="p">})</span>
+                                    <span class="n">weblog_location</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">HIDDEN</span>
+                                    <span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="n">scorekey</span><span class="p">]</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="o">=</span><span class="n">score</span><span class="p">,</span>
+                                        <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span>
+                                        <span class="n">applies_to</span><span class="o">=</span><span class="n">data_selection</span><span class="p">,</span> <span class="n">weblog_location</span><span class="o">=</span><span class="n">weblog_location</span><span class="p">)</span>
+                                    <span class="n">hidden_phase_offsets_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="n">scorekey</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">ant_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ant_ids</span><span class="p">)</span><span class="o">-</span><span class="p">{</span><span class="n">refant_id</span><span class="p">}):</span>
+                            <span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                            <span class="c1"># PIPE-1628: loop over available polarizations, which could be fewer than the number of columns in the table</span>
+                            <span class="k">for</span> <span class="n">pol_id</span><span class="p">,</span> <span class="n">pol_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">corr_type</span><span class="p">):</span>
+                                <span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                                <span class="n">selection</span> <span class="o">=</span> <span class="n">phase_offsets</span><span class="p">[</span><span class="n">pol_id</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                                    <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">scan_numbers</span><span class="p">,</span> <span class="n">phase_scan_ids</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">spw_ids</span> <span class="o">==</span> <span class="n">spw_id</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ant_ids</span> <span class="o">==</span> <span class="n">ant_id</span><span class="p">))]</span>
+                                <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>  <span class="c1"># number of unflagged phase solutions for given spw, ant, pol selection</span>
+                                <span class="k">if</span> <span class="n">N</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                    <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
+                                    <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                                    <span class="n">MaxOff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">selection</span><span class="p">))</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="c1"># PIPE-1707: no data for the given pol/ant/spw combination exists - skip further evaluation</span>
+                                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No data to evaluate phase offsets for </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                             <span class="sa">f</span><span class="s1">&#39;Antenna </span><span class="si">{</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">]</span><span class="si">}</span><span class="s1"> Polarization </span><span class="si">{</span><span class="n">pol_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                                    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;QA1&#39;</span><span class="p">,</span> <span class="s1">&#39;QA2&#39;</span><span class="p">,</span> <span class="s1">&#39;QA3&#39;</span><span class="p">]:</span>
+                                        <span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="o">=</span><span class="n">GOOD</span><span class="p">,</span>
+                                            <span class="n">longmsg</span><span class="o">=</span><span class="s1">&#39;No data&#39;</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;No data&#39;</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span>
+                                            <span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;Number of solutions&#39;</span><span class="p">,</span> <span class="n">metric_score</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">))</span>
+                                    <span class="k">continue</span>
+
+                                <span class="c1"># Mean test</span>
+                                <span class="n">QA1_score</span> <span class="o">=</span> <span class="n">GOOD</span>
+                                <span class="n">QA1_longmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Phase offsets mean for </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                               <span class="sa">f</span><span class="s1">&#39;Antenna </span><span class="si">{</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">]</span><span class="si">}</span><span class="s1"> Polarization </span><span class="si">{</span><span class="n">pol_name</span><span class="si">}</span><span class="s1"> within range&#39;</span><span class="p">)</span>
+                                <span class="n">QA1_shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Phase offsets mean within range&#39;</span>
+                                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">M</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">QA1_Thresh1</span><span class="p">,</span> <span class="n">QA1_Factor</span> <span class="o">*</span> <span class="n">Stot</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">N</span><span class="p">)):</span>
+                                    <span class="n">QA1_score</span> <span class="o">=</span> <span class="n">OUTLIER1</span>
+                                    <span class="n">QA1_longmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Phase offsets mean for </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                                   <span class="sa">f</span><span class="s1">&#39;Antenna </span><span class="si">{</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">]</span><span class="si">}</span><span class="s1"> Polarization </span><span class="si">{</span><span class="n">pol_name</span><span class="si">}</span><span class="s1"> exceeding first threshold&#39;</span><span class="p">)</span>
+                                    <span class="n">QA1_shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Phase offsets mean too large&#39;</span>
+                                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">M</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">QA1_Thresh2</span><span class="p">,</span> <span class="n">QA1_Factor</span> <span class="o">*</span> <span class="n">Stot</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">N</span><span class="p">)):</span>
+                                    <span class="n">QA1_score</span> <span class="o">=</span> <span class="n">OUTLIER2</span>
+                                    <span class="n">QA1_longmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Phase offsets mean for </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                                   <span class="sa">f</span><span class="s1">&#39;Antenna </span><span class="si">{</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">]</span><span class="si">}</span><span class="s1"> Polarization </span><span class="si">{</span><span class="n">pol_name</span><span class="si">}</span><span class="s1"> exceeding second threshold&#39;</span><span class="p">)</span>
+                                    <span class="n">QA1_shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Phase offsets mean too large&#39;</span>
+                                <span class="n">QA1_origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;phase offsets mean&#39;</span><span class="p">,</span>
+                                                          <span class="n">metric_score</span><span class="o">=</span><span class="n">M</span><span class="p">,</span>
+                                                          <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;degrees&#39;</span><span class="p">)</span>
+                                <span class="n">QA1_data_selection</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">(</span>
+                                    <span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">},</span> <span class="n">spw</span><span class="o">=</span><span class="p">{</span><span class="n">spw_id</span><span class="p">},</span> <span class="n">intent</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;PHASE&#39;</span><span class="p">},</span> <span class="n">ant</span><span class="o">=</span><span class="p">{</span><span class="n">ant_id</span><span class="p">},</span> <span class="n">pol</span><span class="o">=</span><span class="p">{</span><span class="n">pol_name</span><span class="p">})</span>
+                                <span class="n">QA1_weblog_location</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">HIDDEN</span>
+                                <span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s1">&#39;QA1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="o">=</span><span class="n">QA1_score</span><span class="p">,</span>
+                                    <span class="n">longmsg</span><span class="o">=</span><span class="n">QA1_longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">QA1_shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">QA1_origin</span><span class="p">,</span>
+                                    <span class="n">applies_to</span><span class="o">=</span><span class="n">QA1_data_selection</span><span class="p">,</span> <span class="n">weblog_location</span><span class="o">=</span><span class="n">QA1_weblog_location</span><span class="p">)</span>
+                                <span class="n">hidden_phase_offsets_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s1">&#39;QA1&#39;</span><span class="p">])</span>
+
+                                <span class="k">if</span> <span class="n">N</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+                                    <span class="c1"># skip this test due to poor statistics when have too few solutions,</span>
+                                    <span class="c1"># and add a dummy GOOD score to the QA score pool as per PIPE-1762</span>
+                                    <span class="c1"># (need to add _something_ because the subsequent code still checks these scores)</span>
+                                    <span class="n">QA2_score</span> <span class="o">=</span> <span class="n">GOOD</span>
+                                    <span class="n">QA2_longmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Phase offsets with poor statistics for </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                                   <span class="sa">f</span><span class="s1">&#39;Antenna </span><span class="si">{</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">]</span><span class="si">}</span><span class="s1"> Polarization </span><span class="si">{</span><span class="n">pol_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                                    <span class="n">QA2_shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Poor phase offsets statistics&#39;</span>
+                                    <span class="n">QA2_origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;Number of solutions&#39;</span><span class="p">,</span>
+                                                          <span class="n">metric_score</span><span class="o">=</span><span class="n">N</span><span class="p">,</span>
+                                                          <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="c1"># Standard deviation test</span>
+                                    <span class="n">QA2_score</span> <span class="o">=</span> <span class="n">GOOD</span>
+                                    <span class="n">QA2_longmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Phase offsets standard deviation for </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                                   <span class="sa">f</span><span class="s1">&#39;Antenna </span><span class="si">{</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">]</span><span class="si">}</span><span class="s1"> Polarization </span><span class="si">{</span><span class="n">pol_name</span><span class="si">}</span><span class="s1"> within range&#39;</span><span class="p">)</span>
+                                    <span class="n">QA2_shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Phase offsets standard deviation within range&#39;</span>
+                                    <span class="k">if</span> <span class="n">S</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">QA2_Thresh1</span><span class="p">,</span> <span class="n">QA2_Factor1</span> <span class="o">*</span> <span class="n">Stot</span><span class="p">):</span>
+                                        <span class="n">QA2_score</span> <span class="o">=</span> <span class="n">OUTLIER1</span>
+                                        <span class="n">QA2_longmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Phase offsets standard deviation for </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                                       <span class="sa">f</span><span class="s1">&#39;Antenna </span><span class="si">{</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">]</span><span class="si">}</span><span class="s1"> Polarization </span><span class="si">{</span><span class="n">pol_name</span><span class="si">}</span><span class="s1"> exceeding first threshold&#39;</span><span class="p">)</span>
+                                        <span class="n">QA2_shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Phase offsets standard deviation too large&#39;</span>
+                                    <span class="k">if</span> <span class="n">S</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">QA2_Thresh2</span><span class="p">,</span> <span class="n">QA2_Factor2</span> <span class="o">*</span> <span class="n">Stot</span><span class="p">):</span>
+                                        <span class="n">QA2_score</span> <span class="o">=</span> <span class="n">OUTLIER2</span>
+                                        <span class="n">QA2_longmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Phase offsets standard deviation for </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                                       <span class="sa">f</span><span class="s1">&#39;Antenna </span><span class="si">{</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">]</span><span class="si">}</span><span class="s1"> Polarization </span><span class="si">{</span><span class="n">pol_name</span><span class="si">}</span><span class="s1"> exceeding second threshold&#39;</span><span class="p">)</span>
+                                        <span class="n">QA2_shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Phase offsets standard deviation too large&#39;</span>
+                                    <span class="n">QA2_origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;phase offsets standard deviation&#39;</span><span class="p">,</span>
+                                                              <span class="n">metric_score</span><span class="o">=</span><span class="n">S</span><span class="p">,</span>
+                                                              <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;degrees&#39;</span><span class="p">)</span>
+                                <span class="n">QA2_data_selection</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">(</span>
+                                    <span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">},</span> <span class="n">spw</span><span class="o">=</span><span class="p">{</span><span class="n">spw_id</span><span class="p">},</span> <span class="n">intent</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;PHASE&#39;</span><span class="p">},</span> <span class="n">ant</span><span class="o">=</span><span class="p">{</span><span class="n">ant_id</span><span class="p">},</span> <span class="n">pol</span><span class="o">=</span><span class="p">{</span><span class="n">pol_name</span><span class="p">})</span>
+                                <span class="n">QA2_weblog_location</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">HIDDEN</span>
+                                <span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s1">&#39;QA2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="o">=</span><span class="n">QA2_score</span><span class="p">,</span>
+                                    <span class="n">longmsg</span><span class="o">=</span><span class="n">QA2_longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">QA2_shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">QA2_origin</span><span class="p">,</span>
+                                    <span class="n">applies_to</span><span class="o">=</span><span class="n">QA2_data_selection</span><span class="p">,</span> <span class="n">weblog_location</span><span class="o">=</span><span class="n">QA2_weblog_location</span><span class="p">)</span>
+                                <span class="n">hidden_phase_offsets_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s1">&#39;QA2&#39;</span><span class="p">])</span>
+
+                                <span class="c1"># Maximum test</span>
+                                <span class="n">QA3_score</span> <span class="o">=</span> <span class="n">GOOD</span>
+                                <span class="n">QA3_longmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Phase offsets maximum for </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                               <span class="sa">f</span><span class="s1">&#39;Antenna </span><span class="si">{</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">]</span><span class="si">}</span><span class="s1"> Polarization </span><span class="si">{</span><span class="n">pol_name</span><span class="si">}</span><span class="s1"> within range&#39;</span><span class="p">)</span>
+                                <span class="n">QA3_shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Phase offsets maximum within range&#39;</span>
+                                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">MaxOff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">QA3_Thresh1</span><span class="p">,</span> <span class="n">QA3_Factor</span> <span class="o">*</span> <span class="n">Stot</span><span class="p">):</span>
+                                    <span class="n">QA3_score</span> <span class="o">=</span> <span class="n">OUTLIER1</span>
+                                    <span class="n">QA3_longmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Phase offsets maximum for </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                                   <span class="sa">f</span><span class="s1">&#39;Antenna </span><span class="si">{</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">]</span><span class="si">}</span><span class="s1"> Polarization </span><span class="si">{</span><span class="n">pol_name</span><span class="si">}</span><span class="s1"> exceeding first threshold&#39;</span><span class="p">)</span>
+                                    <span class="n">QA3_shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Phase offsets maximum too large&#39;</span>
+                                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">MaxOff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">QA3_Thresh2</span><span class="p">,</span> <span class="n">QA3_Factor</span> <span class="o">*</span> <span class="n">Stot</span><span class="p">):</span>
+                                    <span class="n">QA3_score</span> <span class="o">=</span> <span class="n">OUTLIER2</span>
+                                    <span class="n">QA3_longmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Phase offsets maximum for </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                                   <span class="sa">f</span><span class="s1">&#39;Antenna </span><span class="si">{</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">]</span><span class="si">}</span><span class="s1"> Polarization </span><span class="si">{</span><span class="n">pol_name</span><span class="si">}</span><span class="s1"> exceeding second threshold&#39;</span><span class="p">)</span>
+                                    <span class="n">QA3_shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Phase offsets maximum too large&#39;</span>
+                                <span class="n">QA3_origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;phase offsets maximum&#39;</span><span class="p">,</span>
+                                                          <span class="n">metric_score</span><span class="o">=</span><span class="n">MaxOff</span><span class="p">,</span>
+                                                          <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;degrees&#39;</span><span class="p">)</span>
+                                <span class="n">QA3_data_selection</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">(</span>
+                                    <span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">},</span> <span class="n">spw</span><span class="o">=</span><span class="p">{</span><span class="n">spw_id</span><span class="p">},</span> <span class="n">intent</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;PHASE&#39;</span><span class="p">},</span> <span class="n">ant</span><span class="o">=</span><span class="p">{</span><span class="n">ant_id</span><span class="p">},</span> <span class="n">pol</span><span class="o">=</span><span class="p">{</span><span class="n">pol_name</span><span class="p">})</span>
+                                <span class="n">QA3_weblog_location</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">HIDDEN</span>
+                                <span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s1">&#39;QA3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="o">=</span><span class="n">QA3_score</span><span class="p">,</span>
+                                    <span class="n">longmsg</span><span class="o">=</span><span class="n">QA3_longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">QA3_shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">QA3_origin</span><span class="p">,</span>
+                                    <span class="n">applies_to</span><span class="o">=</span><span class="n">QA3_data_selection</span><span class="p">,</span> <span class="n">weblog_location</span><span class="o">=</span><span class="n">QA3_weblog_location</span><span class="p">)</span>
+                                <span class="n">hidden_phase_offsets_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s1">&#39;QA3&#39;</span><span class="p">])</span>
+
+                <span class="c1"># Create aggregated scores</span>
+                <span class="k">for</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spw_ids</span><span class="p">)):</span>
+                    <span class="n">EB_spw_QA_scores</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="c1"># PIPE-1628: loop over available polarizations, which could be fewer than the number of columns in the table</span>
+                    <span class="n">corr_type</span> <span class="o">=</span> <span class="n">commonhelpermethods</span><span class="o">.</span><span class="n">get_corr_axis</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">ant_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ant_ids</span><span class="p">)</span><span class="o">-</span><span class="p">{</span><span class="n">refant_id</span><span class="p">}):</span>
+                        <span class="k">for</span> <span class="n">pol_id</span><span class="p">,</span> <span class="n">pol_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">corr_type</span><span class="p">):</span>
+                            <span class="c1"># Minimum of QA1, QA2, QA3 scores</span>
+                            <span class="n">QA_scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s1">&#39;QA1&#39;</span><span class="p">],</span>
+                                         <span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s1">&#39;QA2&#39;</span><span class="p">],</span>
+                                         <span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s1">&#39;QA3&#39;</span><span class="p">]]</span>
+                            <span class="n">min_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">([</span><span class="n">qas</span><span class="o">.</span><span class="n">score</span> <span class="k">for</span> <span class="n">qas</span> <span class="ow">in</span> <span class="n">QA_scores</span><span class="p">])</span>
+                            <span class="n">QA_score</span> <span class="o">=</span> <span class="n">QA_scores</span><span class="p">[</span><span class="n">min_index</span><span class="p">]</span><span class="o">.</span><span class="n">score</span>
+                            <span class="n">QA_longmsg</span> <span class="o">=</span> <span class="n">QA_scores</span><span class="p">[</span><span class="n">min_index</span><span class="p">]</span><span class="o">.</span><span class="n">longmsg</span>
+                            <span class="n">QA_shortmsg</span> <span class="o">=</span> <span class="n">QA_scores</span><span class="p">[</span><span class="n">min_index</span><span class="p">]</span><span class="o">.</span><span class="n">shortmsg</span>
+                            <span class="n">QA_origin</span> <span class="o">=</span> <span class="n">QA_scores</span><span class="p">[</span><span class="n">min_index</span><span class="p">]</span><span class="o">.</span><span class="n">origin</span>
+                            <span class="n">QA_data_selection</span> <span class="o">=</span> <span class="n">QA_scores</span><span class="p">[</span><span class="n">min_index</span><span class="p">]</span><span class="o">.</span><span class="n">applies_to</span>
+                            <span class="n">QA_weblog_location</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">HIDDEN</span>
+                            <span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s1">&#39;QA&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="o">=</span><span class="n">QA_score</span><span class="p">,</span>
+                                <span class="n">longmsg</span><span class="o">=</span><span class="n">QA_longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">QA_shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">QA_origin</span><span class="p">,</span>
+                                <span class="n">applies_to</span><span class="o">=</span><span class="n">QA_data_selection</span><span class="p">,</span> <span class="n">weblog_location</span><span class="o">=</span><span class="n">QA_weblog_location</span><span class="p">)</span>
+                            <span class="c1"># Just collect the scores for further aggregation. The minimum is already</span>
+                            <span class="c1"># in the hidden_phase_offsets_scores list.</span>
+                            <span class="n">EB_spw_QA_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s1">&#39;QA&#39;</span><span class="p">])</span>
+                            <span class="k">if</span> <span class="n">QA_score</span> <span class="o">&lt;=</span> <span class="n">OUTLIER1</span><span class="p">:</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Poor phase offsets score for </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                         <span class="sa">f</span><span class="s1">&#39;Antenna </span><span class="si">{</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">]</span><span class="si">}</span><span class="s1"> Polarization </span><span class="si">{</span><span class="n">pol_name</span><span class="si">}</span><span class="s1">: &#39;</span>
+                                         <span class="sa">f</span><span class="s1">&#39;QA score = </span><span class="si">{</span><span class="n">QA_score</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">, &#39;</span>
+                                         <span class="sa">f</span><span class="s1">&#39;mean phase offset = </span><span class="si">{</span><span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s2">&quot;QA1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">metric_score</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1"> deg, &#39;</span>
+                                         <span class="sa">f</span><span class="s1">&#39;standard deviation = </span><span class="si">{</span><span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s2">&quot;QA2&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">metric_score</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1"> deg, &#39;</span>
+                                         <span class="sa">f</span><span class="s1">&#39;max offset = </span><span class="si">{</span><span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s2">&quot;QA3&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">metric_score</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1"> deg&#39;</span><span class="p">)</span>
+                    <span class="c1"># Minimum of per aggregated ant/pol scores as per EB/spw score</span>
+                    <span class="n">EB_spw_min_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">([</span><span class="n">qas</span><span class="o">.</span><span class="n">score</span> <span class="k">for</span> <span class="n">qas</span> <span class="ow">in</span> <span class="n">EB_spw_QA_scores</span><span class="p">])</span>
+                    <span class="n">EB_spw_QA_score</span> <span class="o">=</span> <span class="n">EB_spw_QA_scores</span><span class="p">[</span><span class="n">EB_spw_min_index</span><span class="p">]</span><span class="o">.</span><span class="n">score</span>
+
+                    <span class="c1"># The aggregation of NOISY and GOOD scores is handled outside this loop,</span>
+                    <span class="c1"># and for outliers we collect the information about antennas and spws and aggregate it later.</span>
+                    <span class="k">if</span> <span class="n">EB_spw_QA_score</span> <span class="o">==</span> <span class="n">GOOD</span><span class="p">:</span>
+                        <span class="n">good_spw_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">spw_id</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">elif</span> <span class="n">EB_spw_QA_score</span> <span class="o">==</span> <span class="n">NOISY</span><span class="p">:</span>
+                        <span class="c1"># it was already added to the set of noisy_spw_ids</span>
+                        <span class="k">continue</span>
+                    <span class="k">elif</span> <span class="n">EB_spw_QA_score</span> <span class="ow">in</span> <span class="p">(</span><span class="n">OUTLIER1</span><span class="p">,</span> <span class="n">OUTLIER2</span><span class="p">):</span>
+                        <span class="n">antenna_names_list</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">spw_score</span> <span class="o">=</span> <span class="n">GOOD</span>
+                        <span class="k">for</span> <span class="n">ant_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ant_ids</span><span class="p">)</span><span class="o">-</span><span class="p">{</span><span class="n">refant_id</span><span class="p">}):</span>
+                            <span class="c1"># Get only the non-noisy antennas</span>
+                            <span class="n">per_antenna_score</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">subscores</span><span class="p">[</span><span class="n">gaintable</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="n">pol_id</span><span class="p">][</span><span class="s1">&#39;QA&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">score</span>
+                                                    <span class="k">for</span> <span class="n">pol_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">corr_type</span><span class="p">)))</span>
+                            <span class="n">spw_score</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">spw_score</span><span class="p">,</span> <span class="n">per_antenna_score</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">per_antenna_score</span> <span class="ow">in</span> <span class="p">(</span><span class="n">GOOD</span><span class="p">,</span> <span class="n">NOISY</span><span class="p">):</span>
+                                <span class="k">pass</span>
+                            <span class="k">elif</span> <span class="n">per_antenna_score</span> <span class="o">==</span> <span class="n">OUTLIER2</span><span class="p">:</span>
+                                <span class="c1"># Highlight bad antennas with an asterisk</span>
+                                <span class="n">antenna_names_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="o">+</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">])</span>
+                            <span class="k">elif</span> <span class="n">per_antenna_score</span> <span class="o">==</span> <span class="n">OUTLIER1</span><span class="p">:</span>
+                                <span class="n">antenna_names_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">])</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="c1"># should not have gotten here - debugging trap</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected QA score </span><span class="si">{</span><span class="n">per_antenna_score</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                    <span class="sa">f</span><span class="s1">&#39;SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> Antenna </span><span class="si">{</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">ant_id</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="c1"># PIPE-1762: aggregate the QA scores and messages about potential phase outliers.</span>
+                        <span class="c1"># One or more spws sharing the same unique set of antennas generates one message.</span>
+                        <span class="c1"># outlier_spws is a dict with keys being the unique sets of antennas (rather, tuples),</span>
+                        <span class="c1"># and values themselves are dicts with two elements: the set of spws and the lowest score.</span>
+                        <span class="n">antenna_names_list</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">antenna_names_list</span><span class="p">)</span>  <span class="c1"># convert list to tuple, to be used as dict key</span>
+                        <span class="k">if</span> <span class="n">antenna_names_list</span> <span class="ow">in</span> <span class="n">outlier_spws</span><span class="p">:</span>
+                            <span class="c1"># update the dict item associated with the same unique list of antennas</span>
+                            <span class="n">outlier_spws</span><span class="p">[</span><span class="n">antenna_names_list</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                                <span class="s1">&#39;spws&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">outlier_spws</span><span class="p">[</span><span class="n">antenna_names_list</span><span class="p">][</span><span class="s1">&#39;spws&#39;</span><span class="p">],</span> <span class="p">{</span><span class="n">spw_id</span><span class="p">}),</span>
+                                <span class="s1">&#39;min_score&#39;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">outlier_spws</span><span class="p">[</span><span class="n">antenna_names_list</span><span class="p">][</span><span class="s1">&#39;min_score&#39;</span><span class="p">],</span> <span class="n">spw_score</span><span class="p">),</span>
+                            <span class="p">}</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># create a new dict item for this list of antennas</span>
+                            <span class="n">outlier_spws</span><span class="p">[</span><span class="n">antenna_names_list</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                                <span class="s1">&#39;spws&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">spw_id</span><span class="p">},</span>
+                                <span class="s1">&#39;min_score&#39;</span><span class="p">:</span> <span class="n">spw_score</span><span class="p">,</span>
+                            <span class="p">}</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># should not have gotten here - the previous conditions check all possible cases</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected QA score </span><span class="si">{</span><span class="n">EB_spw_QA_score</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">good_spw_ids</span><span class="p">:</span>
+                    <span class="c1"># Add aggregated score for good spws</span>
+                    <span class="n">public_phase_offsets_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span>
+                        <span class="n">score</span><span class="o">=</span><span class="n">GOOD</span><span class="p">,</span>
+                        <span class="n">longmsg</span><span class="o">=</span><span class="s1">&#39;Phase offsets for </span><span class="si">{0}</span><span class="s1">, spw</span><span class="si">{1}</span><span class="s1"> within range&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                            <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">good_spw_ids</span><span class="p">),</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">multi_prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)),</span>
+                        <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;Phase offsets within range&#39;</span><span class="p">,</span>
+                        <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                        <span class="n">origin</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span>
+                            <span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;Stot / Mean / SD / MaxOff&#39;</span><span class="p">,</span>
+                            <span class="n">metric_score</span><span class="o">=-</span><span class="mi">999</span><span class="p">,</span>
+                            <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;degrees&#39;</span><span class="p">),</span>
+                        <span class="n">applies_to</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">(</span>
+                            <span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">},</span>
+                            <span class="n">spw</span><span class="o">=</span><span class="n">good_spw_ids</span><span class="p">,</span>
+                            <span class="n">intent</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;PHASE&#39;</span><span class="p">}),</span>
+                        <span class="n">weblog_location</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">ACCORDION</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="n">noisy_spw_ids</span><span class="p">:</span>
+                    <span class="c1"># Add aggregated score for noisy spws</span>
+                    <span class="n">public_phase_offsets_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span>
+                        <span class="n">score</span><span class="o">=</span><span class="n">NOISY</span><span class="p">,</span>
+                        <span class="n">longmsg</span><span class="o">=</span><span class="s1">&#39;Phase offsets too noisy to usefully evaluate for </span><span class="si">{0}</span><span class="s1">, spw</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                            <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">noisy_spw_ids</span><span class="p">),</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">multi_prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)),</span>
+                        <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;Phase offsets too noisy&#39;</span><span class="p">,</span>
+                        <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                        <span class="n">origin</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span>
+                            <span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;Stot(EB, spw)&#39;</span><span class="p">,</span>
+                            <span class="n">metric_score</span><span class="o">=-</span><span class="mi">999</span><span class="p">,</span>
+                            <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;degrees&#39;</span><span class="p">),</span>
+                        <span class="n">applies_to</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">(</span>
+                            <span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">},</span>
+                            <span class="n">spw</span><span class="o">=</span><span class="n">noisy_spw_ids</span><span class="p">,</span>
+                            <span class="n">intent</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;PHASE&#39;</span><span class="p">}),</span>
+                        <span class="n">weblog_location</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">ACCORDION</span><span class="p">))</span>
+
+                <span class="k">for</span> <span class="n">outlier_antennas</span><span class="p">,</span> <span class="n">outlier_spws_and_score</span> <span class="ow">in</span> <span class="n">outlier_spws</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="c1"># PIPE-1762: Add a message for each set of spws sharing the same list of antennas</span>
+                    <span class="c1"># marked as phase offset outliers</span>
+                    <span class="n">score</span> <span class="o">=</span> <span class="n">outlier_spws_and_score</span><span class="p">[</span><span class="s1">&#39;min_score&#39;</span><span class="p">]</span>
+                    <span class="n">mapped_spws_for_antennas</span> <span class="o">=</span> <span class="n">outlier_spws_and_score</span><span class="p">[</span><span class="s1">&#39;spws&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">mapped_spws</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">mapped_spws_for_antennas</span><span class="p">:</span>
+                        <span class="n">score</span> <span class="o">-=</span> <span class="n">SPW_MAPPING_PENALTY</span>
+                        <span class="n">mapping_msg</span> <span class="o">=</span> <span class="s1">&#39;SPW mapping used for spw</span><span class="si">{}</span><span class="s1">, so any offsets could affect calibration.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">mapped_spws_for_antennas</span><span class="p">),</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">multi_prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">mapping_msg</span> <span class="o">=</span> <span class="s1">&#39;No SPW mapping used, so any offsets should calibrate out.&#39;</span>
+                    <span class="n">public_phase_offsets_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span>
+                        <span class="n">score</span><span class="o">=</span><span class="n">score</span><span class="p">,</span>
+                        <span class="n">longmsg</span><span class="o">=</span><span class="s1">&#39;Potential phase offset outliers for </span><span class="si">{0}</span><span class="s1">, spw</span><span class="si">{1}</span><span class="s1">, antenna</span><span class="si">{2}</span><span class="s1">. </span><span class="si">{3}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                            <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">outlier_spws_and_score</span><span class="p">[</span><span class="s1">&#39;spws&#39;</span><span class="p">]),</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">multi_prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">),</span>
+                            <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">outlier_antennas</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">multi_prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">),</span>
+                            <span class="n">mapping_msg</span><span class="p">),</span>
+                        <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;Potential phase offset outliers&#39;</span><span class="p">,</span>
+                        <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                        <span class="n">applies_to</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">(</span>
+                            <span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">},</span>
+                            <span class="n">spw</span><span class="o">=</span><span class="n">outlier_spws_and_score</span><span class="p">[</span><span class="s1">&#39;spws&#39;</span><span class="p">],</span>
+                            <span class="n">intent</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;PHASE&#39;</span><span class="p">}),</span>
+                        <span class="n">weblog_location</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">ACCORDION</span><span class="p">))</span>
+
+            <span class="k">return</span> <span class="n">hidden_phase_offsets_scores</span><span class="p">,</span> <span class="n">public_phase_offsets_scores</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">traceback</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Phase offsets score calculation failed: </span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="p">[],</span> <span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="s1">&#39;Phase offsets score calculation failed&#39;</span><span class="p">,</span>
+                                    <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;Phase offsets score calculation failed&#39;</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)]</span>
+
+
+    <span class="k">def</span> <span class="nf">_get_xy_x2x1_qascore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">phase_field_ids</span><span class="p">,</span> <span class="n">score_type</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">total_score</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">ant_name</span><span class="p">,</span> <span class="n">spw_name</span><span class="p">)</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_xy_x2x1_total</span><span class="p">(</span><span class="n">phase_field_ids</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xy_x2x1_score_types</span><span class="p">[</span><span class="n">score_type</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">longmsg</span> <span class="o">=</span> <span class="s1">&#39;Total score for </span><span class="si">%s</span><span class="s1"> is </span><span class="si">%0.2f</span><span class="s1"> (</span><span class="si">%s</span><span class="s1"> field </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> spw </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">xy_x2x1_score_types</span><span class="p">[</span><span class="n">score_type</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">total_score</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">ant_name</span><span class="p">,</span> <span class="n">spw_name</span><span class="p">)</span>
+            <span class="n">shortmsg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xy_x2x1_short_msg</span><span class="p">[</span><span class="n">score_type</span><span class="p">]</span>
+
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;TimegaincalQAPool&#39;</span><span class="p">,</span>
+                                  <span class="n">metric_score</span><span class="o">=</span><span class="n">total_score</span><span class="p">,</span>
+                                  <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;Total gpcal QA score&#39;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">total_score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;X-Y / X2-X1 score calculation failed: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="s1">&#39;X-Y / X2-X1 score calculation failed&#39;</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;X-Y / X2-X1 score calculation failed&#39;</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_xy_x2x1_total</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase_field_ids</span><span class="p">,</span> <span class="n">score_key</span><span class="p">):</span>
+        <span class="c1"># attrs to hold score and QA identifiers</span>
+        <span class="n">total_score</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">total_table_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">total_field_name</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+        <span class="n">total_ant_name</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+        <span class="n">total_spw_name</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+
+        <span class="k">for</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">qa_result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase_qa_results_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">field_id</span> <span class="ow">in</span> <span class="n">phase_field_ids</span><span class="p">:</span>
+                <span class="n">qa_context_score</span> <span class="o">=</span> <span class="n">qa_result</span><span class="p">[</span><span class="s1">&#39;QASCORES&#39;</span><span class="p">][</span><span class="s1">&#39;SCORES&#39;</span><span class="p">][</span><span class="n">field_id</span><span class="p">][</span><span class="n">score_key</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">qa_context_score</span><span class="p">[</span><span class="s1">&#39;SCORE&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;C/C&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">qa_context_score</span><span class="p">[</span><span class="s1">&#39;SCORE&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">total_score</span><span class="p">:</span>
+                        <span class="n">total_score</span> <span class="o">=</span> <span class="n">qa_context_score</span><span class="p">[</span><span class="s1">&#39;SCORE&#39;</span><span class="p">]</span>
+                        <span class="n">total_field_name</span> <span class="o">=</span> <span class="n">qa_result</span><span class="p">[</span><span class="s1">&#39;QASCORES&#39;</span><span class="p">][</span><span class="s1">&#39;FIELDS&#39;</span><span class="p">][</span><span class="n">qa_context_score</span><span class="p">[</span><span class="s1">&#39;FIELD&#39;</span><span class="p">]]</span>
+                        <span class="n">total_ant_name</span> <span class="o">=</span> <span class="n">qa_result</span><span class="p">[</span><span class="s1">&#39;QASCORES&#39;</span><span class="p">][</span><span class="s1">&#39;ANTENNAS&#39;</span><span class="p">][</span><span class="n">qa_context_score</span><span class="p">[</span><span class="s1">&#39;ANTENNA&#39;</span><span class="p">]]</span>
+                        <span class="n">total_spw_name</span> <span class="o">=</span> <span class="n">qa_result</span><span class="p">[</span><span class="s1">&#39;QASCORES&#39;</span><span class="p">][</span><span class="s1">&#39;SPWS&#39;</span><span class="p">][</span><span class="n">qa_context_score</span><span class="p">[</span><span class="s1">&#39;SPW&#39;</span><span class="p">]]</span>
+                        <span class="n">total_table_name</span> <span class="o">=</span> <span class="n">table_name</span>
+
+        <span class="k">return</span> <span class="n">total_score</span><span class="p">,</span> <span class="n">total_table_name</span><span class="p">,</span> <span class="n">total_field_name</span><span class="p">,</span> <span class="n">total_ant_name</span><span class="p">,</span> <span class="n">total_spw_name</span></div>
+
+
+
+<div class="viewcode-block" id="TimegaincalQAHandler">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalQAHandler">[docs]</a>
+<span class="k">class</span> <span class="nc">TimegaincalQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    QA handler for an uncontained TimegaincalResult.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="TimegaincalQAHandler.handle">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalQAHandler.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="n">qa_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span> <span class="s1">&#39;qa&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">qa_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">qa_dir</span><span class="p">)</span>
+
+        <span class="n">phase_qa_results_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">phase_offsets_qa_results_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Get phase cal tables</span>
+            <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+                <span class="n">solint</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_origin_input_arg</span><span class="p">(</span><span class="n">calapp</span><span class="p">,</span> <span class="s1">&#39;solint&#39;</span><span class="p">)</span>
+                <span class="n">calmode</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_origin_input_arg</span><span class="p">(</span><span class="n">calapp</span><span class="p">,</span> <span class="s1">&#39;calmode&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">solint</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span> <span class="ow">and</span> <span class="n">calmode</span> <span class="o">==</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span>
+                    <span class="n">phase_qa_results_dict</span><span class="p">[</span><span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span><span class="p">]</span> <span class="o">=</span> <span class="n">gpcal</span><span class="o">.</span><span class="n">gpcal</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span>
+
+            <span class="c1"># Get phase offsets tables</span>
+            <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">phaseoffsetresult</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+                <span class="n">phase_offsets_qa_results_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span>
+
+            <span class="n">result</span><span class="o">.</span><span class="n">qa</span> <span class="o">=</span> <span class="n">TimegaincalQAPool</span><span class="p">(</span><span class="n">phase_qa_results_dict</span><span class="p">,</span> <span class="n">phase_offsets_qa_results_list</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">update_scores</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;refant&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Problem occurred running QA analysis. QA results will not be available for this task&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TimegaincalListQAHandler">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalListQAHandler">[docs]</a>
+<span class="k">class</span> <span class="nc">TimegaincalListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    QA handler for a list containing TimegaincalResults.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span>
+
+<div class="viewcode-block" id="TimegaincalListQAHandler.handle">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalListQAHandler.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="c1"># collate the QAScores from each child result, pulling them into our</span>
+        <span class="c1"># own QAscore list</span>
+        <span class="n">collated</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">])</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">collated</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

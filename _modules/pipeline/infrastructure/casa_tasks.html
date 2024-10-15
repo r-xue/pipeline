@@ -1,0 +1,679 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.casa_tasks &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.casa_tasks</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.casa_tasks</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module contains a wrapper function for every CASA task. The signature of</span>
+<span class="sd">each methods exactly matches that of the CASA task it mirrors. However, rather</span>
+<span class="sd">than executing the task directly when these methods are called,</span>
+<span class="sd">CASATaskJobGenerator returns a JobRequest for every invocation; these jobs</span>
+<span class="sd">then be examined and executed at a later date.</span>
+
+<span class="sd">The CASA task implementations are located at run-time and proxies for each</span>
+<span class="sd">task attached to this class at runtime. The name and signature of each</span>
+<span class="sd">method will match those of the tasks in the CASA environment when this</span>
+<span class="sd">module was imported.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">casatasks</span>
+<span class="kn">import</span> <span class="nn">casaplotms</span>
+
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">from</span> <span class="nn">.jobrequest</span> <span class="kn">import</span> <span class="n">JobRequest</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<span class="k">def</span> <span class="nf">register_task</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register a JobRequest generator function.&quot;&quot;&quot;</span>
+    <span class="n">__all__</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">func</span>
+
+
+<div class="viewcode-block" id="applycal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.applycal">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">applycal</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">applycal</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="bandpass">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.bandpass">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">bandpass</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">bandpass</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="calstat">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.calstat">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">calstat</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">calstat</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="clearcal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.clearcal">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">clearcal</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">clearcal</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="concat">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.concat">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">concat</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">concat</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="delmod">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.delmod">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">delmod</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">delmod</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="exportfits">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.exportfits">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">exportfits</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">exportfits</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="gaincal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.gaincal">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">gaincal</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">gaincal</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="flagcmd">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.flagcmd">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">flagcmd</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">flagcmd</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="flagdata">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.flagdata">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">flagdata</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="flagmanager">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.flagmanager">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">flagmanager</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="fluxscale">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.fluxscale">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">fluxscale</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">fluxscale</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="gencal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.gencal">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">gencal</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">gencal</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="hanningsmooth">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.hanningsmooth">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">hanningsmooth</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">hanningsmooth</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="imdev">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.imdev">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">imdev</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">imdev</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="imval">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.imval">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">imval</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">imval</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="imfit">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.imfit">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">imfit</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">imfit</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="imhead">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.imhead">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">imhead</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">imhead</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="immath">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.immath">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">immath</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">immath</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="immoments">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.immoments">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">immoments</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">immoments</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="imregrid">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.imregrid">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">imregrid</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">imregrid</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="imsmooth">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.imsmooth">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">imsmooth</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">imsmooth</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="impbcor">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.impbcor">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">impbcor</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">impbcor</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="importasdm">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.importasdm">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">importasdm</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">importasdm</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="imstat">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.imstat">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">imstat</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">imstat</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="imsubimage">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.imsubimage">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">imsubimage</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">imsubimage</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="initweights">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.initweights">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">initweights</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">initweights</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="listobs">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.listobs">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">listobs</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">listobs</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="mstransform">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.mstransform">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">mstransform</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">mstransform</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="partition">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.partition">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">partition</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">partition</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="plotants">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.plotants">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">plotants</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">plotants</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="plotbandpass">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.plotbandpass">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">plotbandpass</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">plotbandpass</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="plotms">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.plotms">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">plotms</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casaplotms</span><span class="o">.</span><span class="n">plotms</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="plotweather">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.plotweather">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">plotweather</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">plotweather</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="polcal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.polcal">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">polcal</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">polcal</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="polfromgain">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.polfromgain">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">polfromgain</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">polfromgain</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="setjy">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.setjy">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">setjy</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">setjy</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="split">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.split">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">split</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="statwt">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.statwt">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">statwt</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">statwt</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="tclean">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.tclean">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">tclean</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">tclean</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="uvcontsub">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.uvcontsub">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">uvcontsub</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">uvcontsub</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="wvrgcal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.wvrgcal">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">wvrgcal</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">wvrgcal</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="visstat">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.visstat">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">visstat</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">visstat</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="sdatmcor">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.sdatmcor">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">sdatmcor</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap casatasks.sdatmcor</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        JobRequest instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">sdatmcor</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="sdbaseline">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.sdbaseline">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">sdbaseline</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">sdbaseline</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="sdcal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.sdcal">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">sdcal</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">sdcal</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="sdimaging">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.sdimaging">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">sdimaging</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">sdimaging</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="tsdimaging">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.tsdimaging">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">tsdimaging</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">casatasks</span><span class="o">.</span><span class="n">tsdimaging</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="copyfile">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.copyfile">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">copyfile</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="copytree">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.copytree">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">copytree</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="rmtree">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.rmtree">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">rmtree</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="move">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tasks.move">[docs]</a>
+<span class="nd">@register_task</span>
+<span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobRequest</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">JobRequest</span><span class="p">(</span><span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span></div>
+
+
+
+<span class="k">class</span> <span class="nc">CasaTasks</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class to represent a collection of JobRequest-wrapped callables from CASA or Python modules.</span>
+
+<span class="sd">    CasaTasks wraps frequently-used CASA tasks and Python functions into individual class methods that</span>
+<span class="sd">    can create and execute JobRequests on-the-fly. Then their calls will be properly</span>
+<span class="sd">    logged and recorded by the Pipeline logging framework:</span>
+<span class="sd">        * casacalls-*.txt records all JobRequest executions.</span>
+<span class="sd">        * casa_commands.log records JobRequest executed by the PipelineTask Executor instances.</span>
+
+<span class="sd">    The &quot;immediate-execution&quot; interface offered by this class could help adapt extern Python</span>
+<span class="sd">    scripts/module into Pipeline with minimal changes.</span>
+
+<span class="sd">    Example 1):</span>
+
+<span class="sd">        from casatasks import tclean</span>
+
+<span class="sd">            can be replaced by:</span>
+
+<span class="sd">        from pipeline.infrastructure.casa_tasks import casa_tasks</span>
+<span class="sd">        tclean=casa_tasks.tclean</span>
+
+<span class="sd">    Example 2):</span>
+
+<span class="sd">        from pipeline.infrastructure.casa_tasks import CasaTasks</span>
+<span class="sd">        ct = CasaTasks()</span>
+<span class="sd">        ct.listobs(vis=&#39;my.ms&#39;)</span>
+<span class="sd">        help(ct.listobs) # this behaves like casatasks.listobs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tasklist</span> <span class="o">=</span> <span class="n">__all__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span> <span class="o">=</span> <span class="n">executor</span>
+        <span class="k">for</span> <span class="n">_fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tasklist</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_fn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logged_fn</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">],</span> <span class="n">_fn</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">_logged_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the wrapper function that can immediately create and execute JobRequest of a callable.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Executions will be logged in casacalls-.txt</span>
+            <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">func</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Executions will be logged in both casacalls-.txt and casa-command.txt</span>
+            <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">func</span>
+
+
+<span class="c1"># add an instance of executor-free CasaTasks under the module namespace</span>
+<span class="n">casa_tasks</span> <span class="o">=</span> <span class="n">CasaTasks</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

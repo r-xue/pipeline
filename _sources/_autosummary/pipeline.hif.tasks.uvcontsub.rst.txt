@@ -1,0 +1,22 @@
+pipeline.hif.tasks.uvcontsub
+============================
+
+.. automodule:: pipeline.hif.tasks.uvcontsub
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SerialUVcontSub
+      UVcontSub
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   qa
+   renderer
+   uvcontsub

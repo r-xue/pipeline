@@ -1,0 +1,17 @@
+pipeline.hifa.tasks.gaincal.display
+===================================
+
+.. automodule:: pipeline.hifa.tasks.gaincal.display
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GaincalAmpVsTimeDetailChart
+      GaincalAmpVsTimeSummaryChart
+      GaincalDetailChart
+      GaincalPhaseVsTimeDetailChart
+      GaincalPhaseVsTimeSummaryChart
+      GaincalSummaryChart
+   

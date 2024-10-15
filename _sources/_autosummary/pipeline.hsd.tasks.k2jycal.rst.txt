@@ -1,0 +1,23 @@
+pipeline.hsd.tasks.k2jycal
+==========================
+
+.. automodule:: pipeline.hsd.tasks.k2jycal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SDK2JyCal
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   jyperkreader
+   k2jycal
+   qa
+   renderer

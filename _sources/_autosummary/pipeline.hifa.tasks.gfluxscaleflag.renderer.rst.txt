@@ -1,0 +1,21 @@
+pipeline.hifa.tasks.gfluxscaleflag.renderer
+===========================================
+
+.. automodule:: pipeline.hifa.tasks.gfluxscaleflag.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      copy_callibrary
+      get_plot_dicts
+      relocate_plots
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsCorrectedampflagRenderer
+      T2_4MDetailsGfluxscaleflagRenderer
+   

@@ -1,0 +1,398 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.imaging.sdcombine &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.imaging.sdcombine</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.imaging.sdcombine</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;SDImageCombine classes&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NewType</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.imagelibrary</span> <span class="k">as</span> <span class="nn">imagelibrary</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">SDImagingResultItem</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+    <span class="n">Direction</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span> <span class="s1">&#39;Direction&#39;</span><span class="p">,</span> <span class="n">Dict</span> <span class="p">)</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SDImageCombineInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.sdcombine.SDImageCombineInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">SDImageCombineInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Inputs for image plane combination.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">inimages</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">outfile</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">org_directions</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">specmodes</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="nd">@inimages</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">inimages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">_check_image</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">_check_image</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">context</span><span class="p">:</span>        <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
+                 <span class="n">inimages</span><span class="p">:</span>       <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">outfile</span><span class="p">:</span>        <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">org_directions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Direction&#39;</span><span class="p">]],</span>
+                 <span class="n">specmodes</span><span class="p">:</span>      <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct SDImageCombineInputs instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context        : Pipeline context</span>
+<span class="sd">            inimages       : Imagenames to combine</span>
+<span class="sd">            outfile        : Output image name</span>
+<span class="sd">            org_directions : List of direction of origin for ephemeris objects</span>
+<span class="sd">            specmodes      : List of specmodes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDImageCombineInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inimages</span> <span class="o">=</span> <span class="n">inimages</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span> <span class="o">=</span> <span class="n">outfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">org_directions</span> <span class="o">=</span> <span class="n">org_directions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">specmodes</span> <span class="o">=</span> <span class="n">specmodes</span></div>
+
+
+
+<div class="viewcode-block" id="SDImageCombine">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.sdcombine.SDImageCombine">[docs]</a>
+<span class="k">class</span> <span class="nc">SDImageCombine</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDImageCombineInputs</span>
+
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="SDImageCombine.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.sdcombine.SDImageCombine.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">infiles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">inimages</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">outfile</span>
+        <span class="n">org_directions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">org_directions</span>
+        <span class="n">specmodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">specmodes</span>
+        <span class="n">inweights</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.weight&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">infiles</span><span class="p">]</span>
+        <span class="n">outweight</span> <span class="o">=</span> <span class="n">outfile</span> <span class="o">+</span> <span class="s2">&quot;.weight&quot;</span>
+        <span class="n">num_in</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">infiles</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">num_in</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No input image to combine. </span><span class="si">%s</span><span class="s2"> is not generated.&quot;</span> <span class="o">%</span> <span class="n">outfile</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">SDImagingResultItem</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                         <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># safe path to the image</span>
+        <span class="c1">#   - escape colon which has special meaning in LEL</span>
+        <span class="k">def</span> <span class="nf">get_safe_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="c1">#p = os.path.relpath(path, self.inputs.context.output_dir)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;original path = &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\:&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;:&#39;</span> <span class="ow">in</span> <span class="n">path</span> <span class="k">else</span> <span class="n">path</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;safe path = &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">p</span>
+
+        <span class="c1"># check uniformity of org_directions and feed org_direction</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="mf">1E-5</span>   <span class="c1">#deg</span>
+        <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+        <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">org_directions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">org_directions</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">org_directions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">org_directions</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span> <span class="s2">&quot;inconsistent org_directions </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">org_directions</span> <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">separation</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span> <span class="n">org_directions</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">org_directions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">),</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">separation</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span> <span class="s2">&quot;inconsistent org_directions (separation=</span><span class="si">{}</span><span class="s2"> deg) </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">separation</span><span class="p">,</span> <span class="n">org_directions</span><span class="p">)</span> <span class="p">)</span>
+        <span class="n">org_direction</span> <span class="o">=</span> <span class="n">org_directions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># check uniformity of specmodes</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">specmodes</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span> <span class="s2">&quot;inconsistent specmodes (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">specmodes</span><span class="p">)</span> <span class="p">)</span>
+        <span class="n">specmode</span> <span class="o">=</span> <span class="n">specmodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># combine weight images</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Generating combined weight image.&quot;</span><span class="p">)</span>
+        <span class="n">expr</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;IM</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_in</span><span class="p">)]</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_combine</span><span class="p">(</span><span class="n">inweights</span><span class="p">,</span> <span class="n">outweight</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">expr</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># combine images with weight</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Generating combined image.&quot;</span><span class="p">)</span>
+            <span class="n">in_images</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">infiles</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">inweights</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">outweight</span><span class="p">]</span>
+            <span class="n">expr</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;IM</span><span class="si">%d</span><span class="s2">*IM</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx</span><span class="o">+</span><span class="n">num_in</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_in</span><span class="p">)]</span>
+            <span class="n">expr</span> <span class="o">=</span> <span class="s2">&quot;(</span><span class="si">%s</span><span class="s2">)/IM</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">expr</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">in_images</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_combine</span><span class="p">(</span><span class="n">in_images</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">expr</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># Need to replace NaNs in masked pixels</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">ia</span><span class="p">:</span>
+                <span class="c1"># save default mask name</span>
+                <span class="n">default_mask</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">maskhandler</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># create mask for NaN pixels</span>
+                <span class="n">nan_mask</span> <span class="o">=</span> <span class="s1">&#39;nan&#39;</span>
+                <span class="n">ia</span><span class="o">.</span><span class="n">calcmask</span><span class="p">(</span><span class="s1">&#39;!ISNAN(&quot;</span><span class="si">{}</span><span class="s1">&quot;)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_safe_path</span><span class="p">(</span><span class="n">ia</span><span class="o">.</span><span class="n">name</span><span class="p">())),</span> <span class="n">name</span><span class="o">=</span><span class="n">nan_mask</span><span class="p">,</span> <span class="n">asdefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="n">stat</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">statistics</span><span class="p">()</span>
+                <span class="n">shape</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span>
+                <span class="c1"># replacemaskedpixels fails if all pixels are valid</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stat</span><span class="p">[</span><span class="s1">&#39;npts&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">shape</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">stat</span><span class="p">[</span><span class="s1">&#39;npts&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">ia</span><span class="o">.</span><span class="n">replacemaskedpixels</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+                <span class="c1"># restore default mask and delete tempral NaN mask</span>
+                <span class="n">ia</span><span class="o">.</span><span class="n">maskhandler</span><span class="p">(</span><span class="s1">&#39;set&#39;</span><span class="p">,</span> <span class="n">default_mask</span><span class="p">)</span>
+                <span class="n">ia</span><span class="o">.</span><span class="n">maskhandler</span><span class="p">(</span><span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="n">nan_mask</span><span class="p">)</span>
+
+            <span class="c1"># PIPE-313 re-evaluate image mask based on the combined weight image</span>
+            <span class="c1"># according to sdimaging code, image pixels will be masked if</span>
+            <span class="c1"># weight is less than (minweight * median(weight image)) where</span>
+            <span class="c1"># minweight is task parameter whose default is 0.1. Here, we use</span>
+            <span class="c1"># dedault value to align with the parameter setting for sdimaging</span>
+            <span class="c1"># (see worker.py).</span>
+            <span class="n">minweight</span> <span class="o">=</span> <span class="mf">0.1</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">outweight</span><span class="p">)</span> <span class="k">as</span> <span class="n">ia</span><span class="p">:</span>
+                <span class="c1"># exclude 0 (and negative weights)</span>
+                <span class="n">ia</span><span class="o">.</span><span class="n">calcmask</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; &gt; 0.0&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_safe_path</span><span class="p">(</span><span class="n">ia</span><span class="o">.</span><span class="n">name</span><span class="p">())),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;nonzero&#39;</span><span class="p">)</span>
+
+                <span class="n">stat</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">median_weight</span> <span class="o">=</span> <span class="n">stat</span><span class="p">[</span><span class="s1">&#39;median&#39;</span><span class="p">]</span>
+
+            <span class="c1"># re-evaluate mask</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="n">minweight</span> <span class="o">*</span> <span class="n">median_weight</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">imagename</span> <span class="ow">in</span> <span class="p">[</span><span class="n">outfile</span><span class="p">,</span> <span class="n">outweight</span><span class="p">]:</span>
+                <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">ia</span><span class="p">:</span>
+                    <span class="c1"># new mask name</span>
+                    <span class="n">updated_mask</span> <span class="o">=</span> <span class="s1">&#39;mask_combine&#39;</span>
+
+                    <span class="c1"># calculate mask from weight image</span>
+                    <span class="n">ia</span><span class="o">.</span><span class="n">calcmask</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; &gt;= </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_safe_path</span><span class="p">(</span><span class="n">outweight</span><span class="p">),</span> <span class="n">threshold</span><span class="p">),</span>
+                                <span class="n">name</span><span class="o">=</span><span class="n">updated_mask</span><span class="p">,</span>
+                                <span class="n">asdefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                    <span class="c1"># remove non-default masks</span>
+                    <span class="n">masks</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">maskhandler</span><span class="p">(</span><span class="s1">&#39;get&#39;</span><span class="p">)</span>
+                    <span class="n">masks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">masks</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">updated_mask</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">ia</span><span class="o">.</span><span class="n">maskhandler</span><span class="p">(</span><span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="n">masks</span><span class="p">)</span>
+
+            <span class="n">image_item</span> <span class="o">=</span> <span class="n">imagelibrary</span><span class="o">.</span><span class="n">ImageItem</span><span class="p">(</span><span class="n">imagename</span><span class="o">=</span><span class="n">outfile</span><span class="p">,</span>
+                                                <span class="n">sourcename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>  <span class="c1"># will be filled in later</span>
+                                                <span class="n">spwlist</span><span class="o">=</span><span class="p">[],</span>  <span class="c1"># will be filled in later</span>
+                                                <span class="n">specmode</span><span class="o">=</span><span class="n">specmode</span><span class="p">,</span>
+                                                <span class="n">sourcetype</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+                                                <span class="n">org_direction</span><span class="o">=</span><span class="n">org_direction</span><span class="p">)</span>
+            <span class="n">outcome</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;image&#39;</span><span class="p">:</span> <span class="n">image_item</span><span class="p">}</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">SDImagingResultItem</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                         <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                         <span class="n">outcome</span><span class="o">=</span><span class="n">outcome</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Combination failed due to missing valid data</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">SDImagingResultItem</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                         <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                         <span class="n">outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SDImageCombine.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.sdcombine.SDImageCombine.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_combine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">infiles</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">expr</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="p">):</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span>
+        <span class="n">combine_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">imagename</span><span class="o">=</span><span class="n">infiles</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="n">imagename</span><span class="p">,</span>
+                            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;evalexpr&#39;</span><span class="p">,</span> <span class="n">expr</span><span class="o">=</span><span class="n">expr</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Executing immath task: args=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">combine_args</span><span class="p">))</span>
+        <span class="n">combine_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">immath</span><span class="p">(</span><span class="o">**</span><span class="n">combine_args</span><span class="p">)</span>
+
+        <span class="c1"># execute job</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">combine_job</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_check_image</span><span class="p">(</span><span class="n">imagename</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="p">),</span> <span class="s1">&#39;Input image &quot;</span><span class="si">{0}</span><span class="s1">&quot; does not exist.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.weight&#39;</span><span class="p">),</span> <span class="s1">&#39;Weight image for &quot;</span><span class="si">{0}</span><span class="s1">&quot; does not exist.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

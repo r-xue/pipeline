@@ -1,0 +1,22 @@
+pipeline.hifa.tasks.spwphaseup
+==============================
+
+.. automodule:: pipeline.hifa.tasks.spwphaseup
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SpwPhaseup
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   qa
+   renderer
+   spwphaseup

@@ -1,0 +1,1129 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.heuristics.findrefant &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.heuristics.findrefant</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.heuristics.findrefant</h1><div class="highlight"><pre>
+<span></span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># findrefant.py</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This file contains the reference antenna heuristics.</span>
+
+<span class="c1"># The present heuristics are geometry and flagging.</span>
+
+<span class="c1"># Classes:</span>
+<span class="c1"># --------</span>
+<span class="c1"># RefAntHeuristics - This class chooses the reference antenna heuristics.</span>
+<span class="c1"># RefAntGeometry   - This class contains the geometry heuristics for the</span>
+<span class="c1">#                    reference antenna.</span>
+<span class="c1"># RefAntFlagging   - This class contains the flagging heuristics for the</span>
+<span class="c1">#                    reference antenna.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># Imports</span>
+<span class="c1"># -------</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># class RefAntHeuristics</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntHeuristics</span>
+<span class="c1"># ----------------</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This class chooses the reference antenna heuristics.</span>
+
+<span class="c1"># Inherited classes:</span>
+<span class="c1"># ------------------</span>
+<span class="c1"># api.Heuristics - The base class common to all types of heuristics.</span>
+
+<span class="c1"># Public member variables:</span>
+<span class="c1"># ------------------------</span>
+<span class="c1"># vis      - This python string contains the MS name.</span>
+<span class="c1">#</span>
+<span class="c1"># field    - This python string or list of strings contains the field numbers</span>
+<span class="c1">#            or IDs.  Presently it is used only for the flagging heuristic.</span>
+<span class="c1"># spw      - This python string or list of strings contains the spectral</span>
+<span class="c1">#            window numbers of IDs.  Presently it is used only for the</span>
+<span class="c1">#            flagging heuristic.</span>
+<span class="c1"># intent   - This python string or list of strings contains the intent(s).</span>
+<span class="c1">#            Presently it is used only for the flagging heuristic.</span>
+<span class="c1">#</span>
+<span class="c1"># geometry - This python boolean determines whether the geometry heuristic will</span>
+<span class="c1">#            be used.</span>
+<span class="c1"># flagging - This python boolean determines whether the flagging heuristic will</span>
+<span class="c1">#            be used.</span>
+
+<span class="c1"># Public member functions:</span>
+<span class="c1"># ------------------------</span>
+<span class="c1"># __init__  - This public member function constructs an instance of the</span>
+<span class="c1">#             RefAntHeuristics() class.</span>
+<span class="c1"># calculate - This public member function forms the reference antenna list</span>
+<span class="c1">#             calculated from the selected heuristics.</span>
+
+<span class="c1"># Private member functions:</span>
+<span class="c1"># -------------------------</span>
+<span class="c1"># _get_names - This private member function gets the antenna names from the MS.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version created with public member variables vis, field,</span>
+<span class="c1">#               spw, intent, geometry, and flagging; public member functions</span>
+<span class="c1">#               __init__() and calculate(); and private member function</span>
+<span class="c1">#               _get_names().</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="RefAntHeuristics">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntHeuristics">[docs]</a>
+<span class="k">class</span> <span class="nc">RefAntHeuristics</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">vdp</span><span class="o">.</span><span class="n">PipelineInputsMeta</span><span class="p">):</span>
+    <span class="n">refantignore</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntHeuristics::__init__</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This public member function constructs an instance of the RefAntHeuristics()</span>
+<span class="c1"># class.</span>
+
+<span class="c1"># The primary purpose of this class is to initialize the public member</span>
+<span class="c1"># variables.  The defaults for all parameters (except context) are None.</span>
+
+<span class="c1"># Inputs:</span>
+<span class="c1"># -------</span>
+<span class="c1"># vis        - This python string contains the MS name.</span>
+<span class="c1">#</span>
+<span class="c1"># field      - This python string or list of strings contains the field numbers</span>
+<span class="c1">#              or IDs.  Presently it is used only for the flagging heuristic.</span>
+<span class="c1"># spw        - This python string or list of strings contains the spectral</span>
+<span class="c1">#              window numbers of IDs.  Presently it is used only for the</span>
+<span class="c1">#              flagging heuristic.</span>
+<span class="c1"># intent     - This python string or list of strings contains the intent(s).</span>
+<span class="c1">#              Presently it is used only for the flagging heuristic.</span>
+<span class="c1">#</span>
+<span class="c1"># geometry   - This python boolean determines whether the geometry heuristic</span>
+<span class="c1">#              will be used in automatic mode.</span>
+<span class="c1"># flagging   - This python boolean determines whether the flagging heuristic</span>
+<span class="c1">#              will be used in automatic mode.</span>
+
+<span class="c1"># Outputs:</span>
+<span class="c1"># --------</span>
+<span class="c1"># None, returned via the function value.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">flagging</span><span class="p">,</span> <span class="n">refantignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="c1"># Initialize the public member variables of this class</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">geometry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flagging</span> <span class="o">=</span> <span class="n">flagging</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refantignore</span> <span class="o">=</span> <span class="n">refantignore</span>
+
+        <span class="c1"># Return None</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntHeuristics::calculate</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This public member function forms the reference antenna list calculated from</span>
+<span class="c1"># the selected heuristics.</span>
+
+<span class="c1"># NB: A total score is calculated from all heuristics.  The best antennas have</span>
+<span class="c1"># the highest scores, so a reverse sort is performed to obtain the final list.</span>
+
+<span class="c1"># Inputs:</span>
+<span class="c1"># -------</span>
+<span class="c1"># None.</span>
+
+<span class="c1"># Outputs:</span>
+<span class="c1"># --------</span>
+<span class="c1"># The numpy array of strings containing the ranked reference antenna list,</span>
+<span class="c1"># returned via the function value.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="RefAntHeuristics.calculate">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntHeuristics.calculate">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="c1"># If no heuristics are specified, return no reference antennas</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">flagging</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># Get the antenna names and initialize the score dictionary</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_names</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Got antenna name list </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
+
+        <span class="n">scores</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">}</span>
+
+        <span class="c1"># For each selected heuristic, add the score for each antenna</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="n">geoClass</span> <span class="o">=</span> <span class="n">RefAntGeometry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">geoScore</span> <span class="o">=</span> <span class="n">geoClass</span><span class="o">.</span><span class="n">calc_score</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">geoScore</span><span class="p">:</span>
+                    <span class="n">scores</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">+=</span> <span class="n">geoScore</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="s1">: Antenna </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1"> geometry score </span><span class="si">{</span><span class="n">geoScore</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="si">}</span><span class="s1">  total score </span><span class="si">{</span><span class="n">scores</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flagging</span><span class="p">:</span>
+            <span class="n">flagClass</span> <span class="o">=</span> <span class="n">RefAntFlagging</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+            <span class="n">flagScore</span> <span class="o">=</span> <span class="n">flagClass</span><span class="o">.</span><span class="n">calc_score</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">flagScore</span><span class="p">:</span>
+                    <span class="n">scores</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">+=</span> <span class="n">flagScore</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="s1">: Antenna </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1"> flagging score </span><span class="si">{</span><span class="n">flagScore</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="si">}</span><span class="s1"> total score </span><span class="si">{</span><span class="n">scores</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># PIPE-1805: identify antennas for which the flagging sub-score is</span>
+            <span class="c1"># zero. Remove these from the list of refants to consider, unless</span>
+            <span class="c1"># this would lead to an empty refant list.</span>
+            <span class="n">ants_to_remove</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span> <span class="k">for</span> <span class="n">ant</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">flagScore</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">score</span> <span class="o">==</span> <span class="mi">0</span><span class="p">}</span>
+            <span class="k">if</span> <span class="n">ants_to_remove</span><span class="p">:</span>
+                <span class="c1"># Ensure the ants to remove do not comprise all considered ants.</span>
+                <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">ants_to_remove</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="s2">: Removing antenna(s) </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ants_to_remove</span><span class="p">)</span><span class="si">}</span><span class="s2"> from consideration for&quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot; refant because flagging sub-score is zero.&quot;</span><span class="p">)</span>
+                    <span class="n">scores</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ants_to_remove</span><span class="p">}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="s2">: all antennas considered for refant have flagging sub-score of zero.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Calculate the final score and return the list of ranked</span>
+        <span class="c1"># reference antennas.  NB: The best antennas have the highest</span>
+        <span class="c1"># score, so a reverse sort is required.</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span></div>
+
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntHeuristics::_get_names</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This private member function gets the antenna names from the MS.</span>
+
+<span class="c1"># Inputs:</span>
+<span class="c1"># -------</span>
+<span class="c1"># None.</span>
+
+<span class="c1"># Outputs:</span>
+<span class="c1"># --------</span>
+<span class="c1"># The numpy array of strings containing the antenna names, returned via the</span>
+<span class="c1"># function value.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">antenna_table</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="s1">&#39;ANTENNA&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">antenna_table</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;NAME&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="c1"># Remove ignored antennas</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">refantignore</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Antennas to be ignored: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refantignore</span><span class="p">))</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span> <span class="k">if</span> <span class="n">n</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">refantignore</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+
+        <span class="c1"># Return the antenna names</span>
+        <span class="k">return</span> <span class="n">names</span></div>
+
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># class RefAntGeometry</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntGeometry</span>
+<span class="c1"># --------------</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This class contains the geometry heuristics for the reference antenna.</span>
+
+<span class="c1"># Algorithm:</span>
+<span class="c1"># ----------</span>
+<span class="c1"># * Calculate the antenna distances from the array center.</span>
+<span class="c1"># * Normalize the distances by the maximum distance.</span>
+<span class="c1"># * Calculate the score for each antenna, which is one minus the normalized</span>
+<span class="c1">#   distance.  The best antennas have the highest score.</span>
+<span class="c1"># * Sort according to score.</span>
+
+<span class="c1"># Public member variables:</span>
+<span class="c1"># ------------------------</span>
+<span class="c1"># vis - This python string contains the MS name.</span>
+
+<span class="c1"># Public member functions:</span>
+<span class="c1"># ------------------------</span>
+<span class="c1"># __init__   - This public member function constructs an instance of the</span>
+<span class="c1">#              RefAntGeometry() class.</span>
+<span class="c1"># calc_score - This public member function calculates the geometry score for</span>
+<span class="c1">#              each antenna.</span>
+
+<span class="c1"># Private member functions:</span>
+<span class="c1"># -------------------------</span>
+<span class="c1"># _get_info       - This private member function gets the information from the</span>
+<span class="c1">#                   antenna table of the MS.</span>
+<span class="c1"># _get_measures   - This private member function gets the measures from the</span>
+<span class="c1">#                   antenna table of the MS.</span>
+<span class="c1"># _get_latlongrad - This private member function gets the latitude, longitude</span>
+<span class="c1">#                   and radius (from the center of the earth) for each antenna.</span>
+<span class="c1"># _calc_distance  - This private member function calculates the antenna</span>
+<span class="c1">#                   distances from the array reference from the radii,</span>
+<span class="c1">#                   longitudes, and latitudes.</span>
+<span class="c1"># _calc_score     - This private member function calculates the geometry score</span>
+<span class="c1">#                   for each antenna.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="RefAntGeometry">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntGeometry">[docs]</a>
+<span class="k">class</span> <span class="nc">RefAntGeometry</span><span class="p">:</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntGeometry::__init__</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This public member function constructs an instance of the RefAntGeometry()</span>
+<span class="c1"># class.</span>
+
+<span class="c1"># Inputs:</span>
+<span class="c1"># -------</span>
+<span class="c1"># vis - This python string contains the MS name.</span>
+
+<span class="c1"># Outputs:</span>
+<span class="c1"># --------</span>
+<span class="c1"># None, returned via the function value.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">vis</span> <span class="p">):</span>
+
+        <span class="c1"># Set the public variables</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+
+
+        <span class="c1"># Return None</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntGeometry::calc_score</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This public member function calculates the geometry score for each antenna.</span>
+
+<span class="c1"># Inputs:</span>
+<span class="c1"># -------</span>
+<span class="c1"># None.</span>
+
+<span class="c1"># Outputs:</span>
+<span class="c1"># --------</span>
+<span class="c1"># The python dictionary containing the score for each antenna, returned via the</span>
+<span class="c1"># function value.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="RefAntGeometry.calc_score">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntGeometry.calc_score">[docs]</a>
+    <span class="k">def</span> <span class="nf">calc_score</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+
+        <span class="c1"># Get the antenna information, measures, and locations</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_info</span><span class="p">()</span>
+        <span class="n">measures</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_measures</span><span class="p">(</span> <span class="n">info</span> <span class="p">)</span>
+        <span class="n">radii</span><span class="p">,</span> <span class="n">longs</span><span class="p">,</span> <span class="n">lats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_latlongrad</span><span class="p">(</span> <span class="n">info</span><span class="p">,</span> <span class="n">measures</span> <span class="p">)</span>
+
+
+        <span class="c1"># Calculate the antenna distances and scores</span>
+
+        <span class="n">distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_distance</span><span class="p">(</span> <span class="n">radii</span><span class="p">,</span> <span class="n">longs</span><span class="p">,</span> <span class="n">lats</span> <span class="p">)</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_score</span><span class="p">(</span> <span class="n">distance</span> <span class="p">)</span>
+
+
+        <span class="c1"># Return the scores</span>
+
+        <span class="k">return</span> <span class="n">score</span></div>
+
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntGeometry::_get_info</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This private member function gets the information from the antenna table of</span>
+<span class="c1"># the MS.</span>
+
+<span class="c1"># Inputs:</span>
+<span class="c1"># -------</span>
+<span class="c1"># None.</span>
+
+<span class="c1"># Outputs:</span>
+<span class="c1"># --------</span>
+<span class="c1"># The python dictionary containing the antenna information, returned via the</span>
+<span class="c1"># function value.  The dictionary format is:</span>
+<span class="c1"># &#39;position&#39;          - This numpy array contains the antenna positions.</span>
+<span class="c1"># &#39;flag_row&#39;          - This numpy array of booleans contains the flag row</span>
+<span class="c1">#                       booleans.  NB: This element is of limited use now and</span>
+<span class="c1">#                       may be eliminated.</span>
+<span class="c1"># &#39;name&#39;              - This numpy array of strings contains the antenna names.</span>
+<span class="c1"># &#39;position_keywords&#39; - This python dictionary contains the antenna information.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># Create the local instance of the table tool and open it with</span>
+        <span class="c1"># the antenna subtable of the MS</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/ANTENNA&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+
+            <span class="c1"># Get the antenna information from the antenna table</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+            <span class="n">info</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;POSITION&#39;</span><span class="p">)</span>
+            <span class="n">info</span><span class="p">[</span><span class="s1">&#39;flag_row&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FLAG_ROW&#39;</span><span class="p">)</span>
+            <span class="n">info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;NAME&#39;</span><span class="p">)</span>
+            <span class="n">info</span><span class="p">[</span><span class="s1">&#39;position_keywords&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcolkeywords</span><span class="p">(</span><span class="s1">&#39;POSITION&#39;</span><span class="p">)</span>
+
+        <span class="c1"># The flag tool appears to return antenna names as upper case,</span>
+        <span class="c1"># which seems to be different from the antenna names stored in</span>
+        <span class="c1"># MSes.  Therefore, these names will be capitalized here.</span>
+        <span class="c1"># for r in range(len(info[&#39;name&#39;])):</span>
+        <span class="c1"># info[&#39;name&#39;][r] = info[&#39;name&#39;][r].upper()</span>
+
+        <span class="c1"># Return the antenna information</span>
+
+        <span class="k">return</span> <span class="n">info</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntGeometry::_get_measures</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This private member function gets the measures from the antenna table of the</span>
+<span class="c1"># MS.</span>
+
+<span class="c1"># Inputs:</span>
+<span class="c1"># -------</span>
+<span class="c1"># info - This python dictionary contains the antenna information from private</span>
+<span class="c1">#        member function _get_info().</span>
+
+<span class="c1"># Outputs:</span>
+<span class="c1"># --------</span>
+<span class="c1"># The python dictionary containing the antenna measures, returned via the</span>
+<span class="c1"># function value.  The dictionary format is:</span>
+<span class="c1"># &#39;&lt;antenna name&gt;&#39; - The python dictionary containing the antenna measures.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_measures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+
+        <span class="c1"># Create the local instances of the measures and quanta tools</span>
+        <span class="n">meLoc</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+        <span class="n">qaLoc</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="c1"># Initialize the measures dictionary and the position and</span>
+        <span class="c1"># position_keywords variables</span>
+
+        <span class="n">measures</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="n">position</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span>
+        <span class="n">position_keywords</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;position_keywords&#39;</span><span class="p">]</span>
+
+        <span class="n">rf</span> <span class="o">=</span> <span class="n">position_keywords</span><span class="p">[</span><span class="s1">&#39;MEASINFO&#39;</span><span class="p">][</span><span class="s1">&#39;Ref&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">ant</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]):</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;flag_row&#39;</span><span class="p">][</span><span class="n">row</span><span class="p">]:</span>
+
+                <span class="n">p</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="p">]</span>
+                <span class="n">pk</span> <span class="o">=</span> <span class="n">position_keywords</span><span class="p">[</span><span class="s1">&#39;QuantumUnits&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">v0</span> <span class="o">=</span> <span class="n">qaLoc</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">pk</span><span class="p">)</span>
+
+                <span class="n">p</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="p">]</span>
+                <span class="n">pk</span> <span class="o">=</span> <span class="n">position_keywords</span><span class="p">[</span><span class="s1">&#39;QuantumUnits&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">v1</span> <span class="o">=</span> <span class="n">qaLoc</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">pk</span><span class="p">)</span>
+
+                <span class="n">p</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">row</span><span class="p">]</span>
+                <span class="n">pk</span> <span class="o">=</span> <span class="n">position_keywords</span><span class="p">[</span><span class="s1">&#39;QuantumUnits&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">v2</span> <span class="o">=</span> <span class="n">qaLoc</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">pk</span><span class="p">)</span>
+
+                <span class="n">measures</span><span class="p">[</span><span class="n">ant</span><span class="p">]</span> <span class="o">=</span> <span class="n">meLoc</span><span class="o">.</span><span class="n">position</span><span class="p">(</span><span class="n">rf</span><span class="o">=</span><span class="n">rf</span><span class="p">,</span> <span class="n">v0</span><span class="o">=</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="o">=</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="o">=</span><span class="n">v2</span><span class="p">)</span>
+
+        <span class="c1"># Close the local instances of the measures and quanta tools</span>
+        <span class="n">qaLoc</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+        <span class="n">meLoc</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+        <span class="c1"># Return the measures</span>
+
+        <span class="k">return</span> <span class="n">measures</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntGeometry::_get_latlongrad</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This private member function gets the latitude, longitude and radius (from the</span>
+<span class="c1"># center of the earth) for each antenna.</span>
+
+<span class="c1"># Inputs:</span>
+<span class="c1"># -------</span>
+<span class="c1"># info     - This python dictionary contains the antenna information from</span>
+<span class="c1">#            private member function _get_info().</span>
+<span class="c1"># measures - This python dictionary contains the antenna measures from private</span>
+<span class="c1">#            member function _get_measures().</span>
+
+<span class="c1"># Outputs:</span>
+<span class="c1"># --------</span>
+<span class="c1"># The python tuple containing containing radius, longitude, and latitude python</span>
+<span class="c1"># dictionaries, returned via the function value.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_latlongrad</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">measures</span> <span class="p">):</span>
+
+        <span class="c1"># Create the local instance of the quanta tool</span>
+        <span class="n">qaLoc</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="c1"># Get the radii, longitudes, and latitudes</span>
+        <span class="n">radii</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">longs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">lats</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span>
+
+            <span class="n">value</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="s1">&#39;m2&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="s1">&#39;m2&#39;</span><span class="p">][</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span>
+            <span class="n">quantity</span> <span class="o">=</span> <span class="n">qaLoc</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span> <span class="n">value</span><span class="p">,</span> <span class="n">unit</span> <span class="p">)</span>
+            <span class="n">convert</span> <span class="o">=</span> <span class="n">qaLoc</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span> <span class="n">quantity</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span> <span class="p">)</span>
+            <span class="n">radii</span><span class="p">[</span><span class="n">ant</span><span class="p">]</span> <span class="o">=</span> <span class="n">qaLoc</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span> <span class="n">convert</span> <span class="p">)</span>
+
+            <span class="n">value</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span>
+            <span class="n">quantity</span> <span class="o">=</span> <span class="n">qaLoc</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span> <span class="n">value</span><span class="p">,</span> <span class="n">unit</span> <span class="p">)</span>
+            <span class="n">convert</span> <span class="o">=</span> <span class="n">qaLoc</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span> <span class="n">quantity</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span> <span class="p">)</span>
+            <span class="n">longs</span><span class="p">[</span><span class="n">ant</span><span class="p">]</span> <span class="o">=</span> <span class="n">qaLoc</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span> <span class="n">convert</span> <span class="p">)</span>
+
+            <span class="n">value</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="s1">&#39;m1&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="s1">&#39;m1&#39;</span><span class="p">][</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span>
+            <span class="n">quantity</span> <span class="o">=</span> <span class="n">qaLoc</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span> <span class="n">value</span><span class="p">,</span> <span class="n">unit</span> <span class="p">)</span>
+            <span class="n">convert</span> <span class="o">=</span> <span class="n">qaLoc</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span> <span class="n">quantity</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span> <span class="p">)</span>
+            <span class="n">lats</span><span class="p">[</span><span class="n">ant</span><span class="p">]</span> <span class="o">=</span> <span class="n">qaLoc</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span> <span class="n">convert</span> <span class="p">)</span>
+
+        <span class="c1"># Delete the local instance of the quanta tool</span>
+        <span class="n">qaLoc</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+        <span class="c1"># Return the tuple containing the radius, longitude, and</span>
+        <span class="c1"># latitude python dictionaries</span>
+        <span class="k">return</span> <span class="n">radii</span><span class="p">,</span> <span class="n">longs</span><span class="p">,</span> <span class="n">lats</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntGeometry::_calc_distance</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This private member function calculates the antenna distances from the array</span>
+<span class="c1"># reference from the radii, longitudes, and latitudes.</span>
+
+<span class="c1"># NB: The array reference is the median location.</span>
+
+<span class="c1"># Inputs:</span>
+<span class="c1"># -------</span>
+<span class="c1"># radii - This python dictionary contains the radius (from the center of the</span>
+<span class="c1">#         earth) for each antenna.</span>
+<span class="c1"># longs - This python dictionary contains the longitude for each antenna.</span>
+<span class="c1"># lats  - This python dictionary contains the latitude for each antenna.</span>
+
+<span class="c1"># Outputs:</span>
+<span class="c1"># --------</span>
+<span class="c1"># The python dictionary containing the antenna distances from the array</span>
+<span class="c1"># reference, returned via the function value.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_calc_distance</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">radii</span><span class="p">,</span> <span class="n">longs</span><span class="p">,</span> <span class="n">lats</span> <span class="p">):</span>
+
+        <span class="c1"># Convert the dictionaries to numpy float arrays.  The median</span>
+        <span class="c1"># longitude is subtracted.</span>
+        <span class="n">radiusValues</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">radii</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+        <span class="n">longValues</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">longs</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="n">longValues</span> <span class="o">-=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">longValues</span><span class="p">)</span>
+
+        <span class="n">latValues</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">lats</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+        <span class="c1"># Calculate the x and y antenna locations.  The medians are</span>
+        <span class="c1"># subtracted.</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">longValues</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">latValues</span><span class="p">)</span> <span class="o">*</span> <span class="n">radiusValues</span>
+        <span class="n">x</span> <span class="o">-=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="n">y</span> <span class="o">=</span> <span class="n">latValues</span> <span class="o">*</span> <span class="n">radiusValues</span>
+        <span class="n">y</span> <span class="o">-=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># Calculate the antenna distances from the array reference and</span>
+        <span class="c1"># return them</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">radii</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ant</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+            <span class="n">distance</span><span class="p">[</span><span class="n">ant</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">pow</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">distance</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntGeometry::_calc_score</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This private member function calculates the geometry score for each antenna.</span>
+
+<span class="c1"># Algorithm:</span>
+<span class="c1"># ----------</span>
+<span class="c1"># * Calculate the antenna distances from the array center.</span>
+<span class="c1"># * Normalize the distances by the maximum distance.</span>
+<span class="c1"># * Calculate the score for each antenna, which is one minus the normalized</span>
+<span class="c1">#   distance.  The best antennas have the highest score.</span>
+<span class="c1"># * Sort according to score.</span>
+
+<span class="c1"># Inputs:</span>
+<span class="c1"># -------</span>
+<span class="c1"># distance - This python dictionary contains the antenna distances from the</span>
+<span class="c1">#            array reference.  They are calculated in private member function</span>
+<span class="c1">#            _calc_distance().</span>
+
+<span class="c1"># Outputs:</span>
+<span class="c1"># --------</span>
+<span class="c1"># The python dictionary containing the score for each antenna, returned via the</span>
+<span class="c1"># function value.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_calc_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
+
+        <span class="c1"># Get the number of good data, calculate the fraction of good</span>
+        <span class="c1"># data, and calculate the good and bad weights</span>
+        <span class="n">far</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="nb">float</span><span class="p">)</span>
+        <span class="n">fFar</span> <span class="o">=</span> <span class="n">far</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">far</span><span class="p">))</span>
+
+        <span class="n">wFar</span> <span class="o">=</span> <span class="n">fFar</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">far</span><span class="p">)</span>
+        <span class="n">wClose</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">fFar</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">far</span><span class="p">)</span>
+
+        <span class="c1"># Calculate the score for each antenna and return them</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">wClose</span><span class="p">)):</span>
+            <span class="n">score</span><span class="p">[</span><span class="n">names</span><span class="p">[</span><span class="n">n</span><span class="p">]]</span> <span class="o">=</span> <span class="n">wClose</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">score</span></div>
+
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntFlagging</span>
+<span class="c1"># --------------</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This class contains the flagging heuristics for the reference antenna.</span>
+
+<span class="c1"># Algorithm:</span>
+<span class="c1"># ----------</span>
+<span class="c1"># * Get the number of unflagged (good) data for each antenna.</span>
+<span class="c1"># * Normalize the good data by the maximum good data.</span>
+<span class="c1"># * Calculate the score for each antenna, which is one minus the normalized</span>
+<span class="c1">#   number of good data.  The best antennas have the highest score.</span>
+<span class="c1"># * Sort according to score.</span>
+
+<span class="c1"># Public member variables:</span>
+<span class="c1"># ------------------------</span>
+<span class="c1"># vis    - This python string contains the MS name.</span>
+<span class="c1">#</span>
+<span class="c1"># field  - This python string or list of strings contains the field numbers or</span>
+<span class="c1">#          or IDs.</span>
+<span class="c1"># spw    - This python string or list of strings contains the spectral window</span>
+<span class="c1">#          numbers of IDs.</span>
+<span class="c1"># intent - This python string or list of strings contains the intent(s).</span>
+
+<span class="c1"># Public member functions:</span>
+<span class="c1"># ------------------------</span>
+<span class="c1"># __init__   - This public member function constructs an instance of the</span>
+<span class="c1">#              RefAntFlagging() class.</span>
+<span class="c1"># calc_score - This public member function calculates the flagging score for</span>
+<span class="c1">#              each antenna.</span>
+
+<span class="c1"># Private member functions:</span>
+<span class="c1"># -------------------------</span>
+<span class="c1"># _get_good   - This private member function gets the number of unflagged (good)</span>
+<span class="c1">#               data from the MS.</span>
+<span class="c1"># _calc_score - This private member function calculates the flagging score for</span>
+<span class="c1">#               each antenna.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="RefAntFlagging">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntFlagging">[docs]</a>
+<span class="k">class</span> <span class="nc">RefAntFlagging</span><span class="p">:</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntFlagging::__init__</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This public member function constructs an instance of the RefAntFlagging()</span>
+<span class="c1"># class.</span>
+
+<span class="c1"># Inputs:</span>
+<span class="c1"># -------</span>
+<span class="c1"># vis    - This python string contains the MS name.</span>
+<span class="c1">#</span>
+<span class="c1"># field  - This python string or list of strings contains the field numbers or</span>
+<span class="c1">#          or IDs.</span>
+<span class="c1"># spw    - This python string or list of strings contains the spectral window</span>
+<span class="c1">#          numbers of IDs.</span>
+<span class="c1"># intent - This python string or list of strings contains the intent(s).</span>
+
+<span class="c1"># Outputs:</span>
+<span class="c1"># --------</span>
+<span class="c1"># None, returned via the function value.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">intent</span> <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntFlagging::calc_score</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This public member function calculates the flagging score for each antenna.</span>
+
+<span class="c1"># Inputs:</span>
+<span class="c1"># -------</span>
+<span class="c1"># None.</span>
+
+<span class="c1"># Outputs:</span>
+<span class="c1"># --------</span>
+<span class="c1"># The python dictionary containing the score for each antenna, returned via the</span>
+<span class="c1"># function value.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="RefAntFlagging.calc_score">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntFlagging.calc_score">[docs]</a>
+    <span class="k">def</span> <span class="nf">calc_score</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the number of unflagged (good) measurements for each</span>
+<span class="sd">        antenna, determine the score, and return them.</span>
+
+<span class="sd">        PIPE-1805: first compute individual scores for each intent, then</span>
+<span class="sd">        combine into a single representative score.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary with antenna ID as key, and score as value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_scores</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+            <span class="c1"># Retrieve number of unflagged scans per antenna for current intent.</span>
+            <span class="n">good</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_good</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Get good antennas </span><span class="si">{</span><span class="n">good</span><span class="si">}</span><span class="s1"> for intent </span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Compute score per antenna for current intent.</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_score</span><span class="p">(</span><span class="n">good</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Get good antenna score </span><span class="si">{</span><span class="n">score</span><span class="si">}</span><span class="s1"> for intent </span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Add to combined score.</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">score</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">all_scores</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="c1"># For each antenna, combine the score-per-intent into a single</span>
+        <span class="c1"># representative score by taking the lowest score.</span>
+        <span class="n">combined_scores</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span> <span class="k">for</span> <span class="n">ant</span><span class="p">,</span> <span class="n">scores</span> <span class="ow">in</span> <span class="n">all_scores</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+        <span class="k">return</span> <span class="n">combined_scores</span></div>
+
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntFlagging::_get_good</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This private member function gets the number of unflagged (good) data from the</span>
+<span class="c1"># MS.</span>
+
+<span class="c1"># Inputs:</span>
+<span class="c1"># -------</span>
+<span class="c1"># None.</span>
+
+<span class="c1"># Outputs:</span>
+<span class="c1"># --------</span>
+<span class="c1"># The dictionary containing the number of unflagged (good) data from the MS,</span>
+<span class="c1"># returned via the function value.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_good</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="c1"># Update April 2015 to use the flagging task instead of the agent flagger</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span>          <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                     <span class="s1">&#39;mode&#39;</span>         <span class="p">:</span> <span class="s1">&#39;summary&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;field&#39;</span>        <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">,</span>
+                     <span class="s1">&#39;spw&#39;</span>          <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+                     <span class="s1">&#39;intent&#39;</span>       <span class="p">:</span> <span class="n">intent</span><span class="p">,</span>
+                     <span class="s1">&#39;display&#39;</span>      <span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;flagbackup&#39;</span>   <span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;savepars&#39;</span>     <span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+        <span class="c1"># Calculate the number of good data for each antenna and return them</span>
+        <span class="n">good</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">antennas</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">:</span>
+                <span class="n">good</span><span class="p">[</span><span class="n">ant</span><span class="p">]</span> <span class="o">=</span> <span class="n">antennas</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">antennas</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;The CASA &#39;flagdata&#39; task returned invalid results, unable to rank based on flagging score.&quot;</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">good</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># RefAntFlagging::_calc_score</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This private member function calculates the flagging score for each antenna.</span>
+
+<span class="c1"># Algorithm:</span>
+<span class="c1"># ----------</span>
+<span class="c1"># * Get the number of unflagged (good) data for each antenna.</span>
+<span class="c1"># * Normalize the good data by the maximum good data.</span>
+<span class="c1"># * Calculate the score for each antenna, which is one minus the normalized</span>
+<span class="c1">#   number of good data.  The best antennas have the highest score.</span>
+<span class="c1"># * Sort according to score.</span>
+
+<span class="c1"># Inputs:</span>
+<span class="c1"># -------</span>
+<span class="c1"># good - This python dictionary contains the number of unflagged (good) data</span>
+<span class="c1">#        from the MS.  They are obtained in private member function _get_good().</span>
+
+<span class="c1"># Outputs:</span>
+<span class="c1"># --------</span>
+<span class="c1"># The python dictionary containing the score for each antenna, returned via the</span>
+<span class="c1"># function value.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 21 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_calc_score</span><span class="p">(</span><span class="n">good</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">good</span><span class="p">:</span>
+            <span class="c1"># Maximum number of unflagged datapoints across all antennas.</span>
+            <span class="n">max_unflagged</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">good</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+            <span class="c1"># For each antenna, compute score as the fraction of unflagged</span>
+            <span class="c1"># datapoints over the maximum nr. of unflagged datapoints across</span>
+            <span class="c1"># all antennas, multiplied by the number of antennas for weighting.</span>
+            <span class="k">if</span> <span class="n">max_unflagged</span><span class="p">:</span>
+                <span class="n">score</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">good</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_unflagged</span> <span class="o">/</span> <span class="n">max_unflagged</span> <span class="k">for</span> <span class="n">ant</span><span class="p">,</span> <span class="n">n_unflagged</span> <span class="ow">in</span> <span class="n">good</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If no unflagged datapoints are found at all, then return a</span>
+                <span class="c1"># score of 0 for each antenna.</span>
+                <span class="n">score</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span><span class="p">:</span> <span class="mf">0.</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">good</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">return</span> <span class="n">score</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

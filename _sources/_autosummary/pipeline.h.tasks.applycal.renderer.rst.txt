@@ -1,0 +1,36 @@
+pipeline.h.tasks.applycal.renderer
+==================================
+
+.. automodule:: pipeline.h.tasks.applycal.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      copy_callibrary
+      deduplicate
+      get_brightest_field
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ApplycalAmpVsFreqPerAntSciencePlotRenderer
+      ApplycalAmpVsFreqPlotRenderer
+      ApplycalAmpVsFreqSciencePlotRenderer
+      ApplycalAmpVsTimePlotRenderer
+      ApplycalAmpVsUVPlotRenderer
+      ApplycalAmpVsUVSciencePlotRenderer
+      ApplycalPhaseVsFreqPlotRenderer
+      ApplycalPhaseVsTimePlotRenderer
+      ApplycalPhaseVsUVPlotRenderer
+      ApplycalResults
+      Context
+      JsonPlotRenderer
+      MeasurementSet
+      Plot
+      ResultsList
+      T2_4MDetailsApplycalRenderer
+      UVChart
+   

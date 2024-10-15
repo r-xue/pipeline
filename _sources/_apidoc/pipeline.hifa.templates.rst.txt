@@ -1,0 +1,10 @@
+pipeline.hifa.templates package
+===============================
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifa.templates
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,15 @@
+pipeline.hifv.tasks.finalcals.qa
+================================
+
+.. automodule:: pipeline.hifv.tasks.finalcals.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Finalcals
+      FinalcalsListQAHandler
+      FinalcalsQAHandler
+      FinalcalsResults
+   

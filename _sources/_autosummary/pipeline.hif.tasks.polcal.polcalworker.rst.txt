@@ -1,0 +1,14 @@
+pipeline.hif.tasks.polcal.polcalworker
+======================================
+
+.. automodule:: pipeline.hif.tasks.polcal.polcalworker
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PolcalWorker
+      PolcalWorkerInputs
+      PolcalWorkerResults
+   

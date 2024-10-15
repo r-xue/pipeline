@@ -1,0 +1,13 @@
+pipeline.hif.tasks.correctedampflag.qa
+======================================
+
+.. automodule:: pipeline.hif.tasks.correctedampflag.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CorrectedampflagListQAHandler
+      CorrectedampflagQAHandler
+   

@@ -1,0 +1,25 @@
+pipeline.hifa.tasks.fluxscale
+=============================
+
+.. automodule:: pipeline.hifa.tasks.fluxscale
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GcorFluxscale
+      GcorFluxscaleResults
+      SessionGcorFluxscale
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   fluxes
+   gcorfluxscale
+   qa
+   renderer

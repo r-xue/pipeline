@@ -1,0 +1,24 @@
+pipeline.h.tasks.common.flagging\_renderer\_utils
+=================================================
+
+.. automodule:: pipeline.h.tasks.common.flagging_renderer_utils
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      adjust_non_science_totals
+      flags_by_intent
+      flags_by_science_spws
+      flags_for_result
+      intents_to_summarise
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Context
+      FlagTotal
+      MeasurementSet
+   

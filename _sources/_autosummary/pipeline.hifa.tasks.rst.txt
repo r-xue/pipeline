@@ -1,0 +1,76 @@
+pipeline.hifa.tasks
+===================
+
+.. automodule:: pipeline.hifa.tasks
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ALMAAntpos
+      ALMAExportData
+      ALMAImportData
+      ALMAPhcorBandpass
+      ALMARestoreData
+      ALMATsysflag
+      Bandpassflag
+      BpSolint
+      DiffGaincal
+      FlagDeterALMA
+      FlagTargetsALMA
+      FluxcalFlag
+      GaincalSnr
+      GcorFluxscale
+      Gfluxscaleflag
+      ImagePreCheck
+      LockRefAnt
+      Polcal
+      Polcalflag
+      Renorm
+      SessionALMAPhcorBandpass
+      SessionGcorFluxscale
+      SessionRefAnt
+      SpwPhaseup
+      Targetflag
+      TimeGaincal
+      TsysFlagContamination
+      UnlockRefAnt
+      Wvrgcal
+      Wvrgcalflag
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   antpos
+   applycal
+   bandpass
+   bandpassflag
+   bpsolint
+   common
+   diffgaincal
+   exportdata
+   flagging
+   fluxcalflag
+   fluxscale
+   gaincal
+   gaincalsnr
+   gfluxscaleflag
+   imageprecheck
+   importdata
+   lock_refant
+   polcal
+   polcalflag
+   renorm
+   restoredata
+   sessionrefant
+   spwphaseup
+   targetflag
+   tsysflag
+   tsysflag_contamination
+   unlock_refant
+   wvrgcal
+   wvrgcalflag

@@ -1,0 +1,528 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.tasks.tclean.qa &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.tasks.tclean.qa</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.tasks.tclean.qa</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">import</span> <span class="nn">pipeline.h.tasks.exportdata.aqua</span> <span class="k">as</span> <span class="nn">aqua</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.pipelineqa</span> <span class="k">as</span> <span class="nn">pqa</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.qa.scorecalculator</span> <span class="k">as</span> <span class="nn">scorecalc</span>
+<span class="kn">import</span> <span class="nn">pipeline.qa.utility.scorers</span> <span class="k">as</span> <span class="nn">scorers</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">resultobjects</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TcleanQAHandler">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanQAHandler">[docs]</a>
+<span class="k">class</span> <span class="nc">TcleanQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">TcleanResult</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="TcleanQAHandler.handle">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanQAHandler.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+
+        <span class="n">qaTool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="n">data_selection</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">_vis</span><span class="p">)</span><span class="o">.</span><span class="n">session</span> <span class="k">for</span> <span class="n">_vis</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">)},</span>
+                                                 <span class="n">vis</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span> <span class="n">spw</span><span class="o">=</span><span class="p">{</span><span class="n">result</span><span class="o">.</span><span class="n">spw</span><span class="p">},</span> <span class="n">field</span><span class="o">=</span><span class="p">{</span><span class="n">result</span><span class="o">.</span><span class="n">sourcename</span><span class="p">},</span>
+                                                 <span class="n">intent</span><span class="o">=</span><span class="p">{</span><span class="n">result</span><span class="o">.</span><span class="n">intent</span><span class="p">},</span> <span class="n">pol</span><span class="o">=</span><span class="p">{</span><span class="n">result</span><span class="o">.</span><span class="n">stokes</span><span class="p">})</span>
+
+        <span class="c1"># calculate QA score comparing RMS against clean threshold</span>
+
+        <span class="c1"># Add offset of 0.34 to avoid any red scores</span>
+        <span class="n">min_score</span> <span class="o">=</span> <span class="mf">0.34</span>
+        <span class="n">imageScorer</span> <span class="o">=</span> <span class="n">scorers</span><span class="o">.</span><span class="n">erfScorer</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="n">min_score</span><span class="p">)</span>
+
+        <span class="c1"># For any VLA/SS imaging modes; not triggered for any ALMA data processing</span>
+
+        <span class="k">if</span> <span class="s1">&#39;VLA&#39;</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">imaging_mode</span><span class="p">:</span>
+
+            <span class="c1"># Check for any cleaning error or no-image condition and render a minimum score</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="s1">&#39;longmsg&#39;</span><span class="p">):</span>
+                    <span class="n">longmsg</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">longmsg</span>
+                    <span class="n">shortmsg</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">shortmsg</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">longmsg</span> <span class="o">=</span> <span class="n">shortmsg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
+                <span class="c1"># set the score to the lowest (but still yellow) value</span>
+                <span class="c1"># PIPE-677: consider htting niter-limit as false errors</span>
+                <span class="k">if</span> <span class="s1">&#39;tclean reached niter limit&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">longmsg</span><span class="p">:</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">min_score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span>
+                                                        <span class="n">weblog_location</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">UNSET</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">data_selection</span><span class="p">))</span>
+            <span class="c1"># PIPE-1790: if tclean failed to produce an image, skip any subsequent processing and report QAscore=0.34</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">longmsg</span> <span class="o">=</span> <span class="s1">&#39;tclean failed to produce an image&#39;</span>
+                <span class="n">shortmsg</span> <span class="o">=</span> <span class="s1">&#39;no image&#39;</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">min_score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span>
+                                                    <span class="n">weblog_location</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">UNSET</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">data_selection</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">:</span>
+                <span class="k">return</span>
+
+            <span class="c1"># QAs based on the image quality</span>
+            <span class="k">if</span> <span class="s1">&#39;VLASS&#39;</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">imaging_mode</span><span class="p">:</span>
+                <span class="c1"># VLASS imaging modes: a canonical value of 1.0</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="mf">1.0</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># VLA-PI imaging modes</span>
+                <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;cube&#39;</span><span class="p">,</span> <span class="s1">&#39;repBW&#39;</span><span class="p">):</span>
+                    <span class="c1"># PIPE-1346: score=1.0 for a succesfully imaged spectral line target.</span>
+                    <span class="n">longmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;cube imaging succeeded: field </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">sourcename</span><span class="si">}</span><span class="s1">, spw </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">spw</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="n">shortmsg</span> <span class="o">=</span> <span class="s1">&#39;cube imaging succeeded&#39;</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">data_selection</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># for cont/mfs imaging</span>
+                    <span class="n">snr</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">image_max</span> <span class="o">/</span> <span class="n">result</span><span class="o">.</span><span class="n">image_rms</span>
+                    <span class="n">score</span> <span class="o">=</span> <span class="n">scorecalc</span><span class="o">.</span><span class="n">linear_score</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">snr</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># CAS-10925</span>
+                    <span class="c1"># Set score messages and origin.</span>
+                    <span class="n">longmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> pbcor image max / non-pbcor image RMS = </span><span class="si">{:0.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">sourcename</span><span class="p">,</span> <span class="n">snr</span><span class="p">))</span>
+                    <span class="n">shortmsg</span> <span class="o">=</span> <span class="s1">&#39;snr = </span><span class="si">{:0.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">snr</span><span class="p">)</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">data_selection</span><span class="p">))</span>
+            <span class="k">return</span>
+
+        <span class="c1"># For all ALMA imaging modes</span>
+
+        <span class="c1"># Check for any cleaning error or no-image condition and render a minimum score</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="c1"># this variable may be either a string or an instance of CleanBaseError,</span>
+            <span class="c1"># which contains both long and short messages;</span>
+            <span class="c1"># we should eventually harmonise the usage convention, but for now need to correctly treat both cases</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="s1">&#39;longmsg&#39;</span><span class="p">):</span>
+                <span class="n">longmsg</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">longmsg</span>
+                <span class="n">shortmsg</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">shortmsg</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">longmsg</span> <span class="o">=</span> <span class="n">shortmsg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
+            <span class="c1"># set the score to the lowest (but still yellow) value</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">min_score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span>
+                                              <span class="n">weblog_location</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">UNSET</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">data_selection</span><span class="p">))</span>
+            <span class="k">return</span>
+
+        <span class="c1"># PIPE-1790: if tclean failed to produce an image, skip any subsequent processing and report QAscore=0.34</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">longmsg</span> <span class="o">=</span> <span class="s1">&#39;tclean failed to produce an image&#39;</span>
+            <span class="n">shortmsg</span> <span class="o">=</span> <span class="s1">&#39;no image&#39;</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">min_score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span>
+                                              <span class="n">weblog_location</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">UNSET</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">data_selection</span><span class="p">))</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Image RMS based score</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># For the score we compare the image RMS with the DR corrected</span>
+            <span class="c1"># sensitivity as an estimate of the expected RMS.</span>
+            <span class="n">rms_score</span> <span class="o">=</span> <span class="n">imageScorer</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">image_rms</span> <span class="o">/</span> <span class="n">result</span><span class="o">.</span><span class="n">dr_corrected_sensitivity</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">rms_score</span><span class="p">)):</span>
+                <span class="n">rms_score</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">longmsg</span> <span class="o">=</span> <span class="s1">&#39;Cleaning diverged, RMS is NaN. Field: </span><span class="si">%s</span><span class="s1"> Intent: </span><span class="si">%s</span><span class="s1"> SPW: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">result</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+                <span class="n">shortmsg</span> <span class="o">=</span> <span class="s1">&#39;RMS is NaN&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">rms_score</span> <span class="o">&gt;</span> <span class="mf">0.66</span><span class="p">:</span>
+                    <span class="n">longmsg</span> <span class="o">=</span> <span class="s1">&#39;RMS vs. DR corrected sensitivity. Field: </span><span class="si">%s</span><span class="s1"> Intent: </span><span class="si">%s</span><span class="s1"> SPW: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">result</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+                    <span class="n">shortmsg</span> <span class="o">=</span> <span class="s1">&#39;RMS vs. sensitivity&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># The level of 2.7 comes from the Erf scorer limits of 1 and 5.</span>
+                    <span class="c1"># The level needs to be adjusted if these limits are modified.</span>
+                    <span class="n">longmsg</span> <span class="o">=</span> <span class="s1">&#39;Observed RMS noise exceeds DR corrected sensitivity by more than 2.7. Field: </span><span class="si">%s</span><span class="s1"> Intent: </span><span class="si">%s</span><span class="s1"> SPW: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">result</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+                    <span class="n">shortmsg</span> <span class="o">=</span> <span class="s1">&#39;RMS vs. sensitivity&#39;</span>
+
+                <span class="c1"># Adjust RMS based score if there were PSF fit errors</span>
+                <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">bad_psf_channels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">bad_psf_channels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">:</span>
+                        <span class="n">rms_score</span> <span class="o">-=</span> <span class="mf">0.11</span>
+                        <span class="n">rms_score</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">rms_score</span><span class="p">)</span>
+                        <span class="n">longmsg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">. Between 1-10 channels show significantly deviant synthesized beam(s), this is usually indicative of bad data, if at cube edge can likely be ignored.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                            <span class="n">longmsg</span><span class="p">)</span>
+                        <span class="n">shortmsg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">. 1-10 channels masked.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">shortmsg</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">rms_score</span> <span class="o">-=</span> <span class="mf">0.34</span>
+                        <span class="n">rms_score</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">rms_score</span><span class="p">)</span>
+                        <span class="n">longmsg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">. More than 10 channels show significantly deviant synthesized beams, this is usually indicative of bad data, and should be investigated.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                            <span class="n">longmsg</span><span class="p">)</span>
+                        <span class="n">shortmsg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">. &gt; 10 channels masked.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">shortmsg</span><span class="p">)</span>
+
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;image rms / sensitivity&#39;</span><span class="p">,</span>
+                                  <span class="n">metric_score</span><span class="o">=</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">image_rms</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">dr_corrected_sensitivity</span><span class="p">),</span>
+                                  <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;Jy / beam&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Exception scoring imaging result by RMS: </span><span class="si">%s</span><span class="s1">. Setting score to -0.1.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">rms_score</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.1</span>
+            <span class="n">longmsg</span> <span class="o">=</span> <span class="s1">&#39;Exception scoring imaging result by RMS: </span><span class="si">%s</span><span class="s1">. Setting score to -0.1.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Exception scoring imaging result by RMS&#39;</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="n">metric_score</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Add score to pool</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">rms_score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">data_selection</span><span class="p">))</span>
+
+        <span class="c1"># psfphasecenter usage score</span>
+        <span class="c1"># PIPE-98 asked for a QA score of 0.9 when the psfphasecenter parameter</span>
+        <span class="c1"># is used in the tclean calls for odd-shaped mosaics.</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">used_psfphasecenter</span><span class="p">:</span>
+            <span class="n">psfpc_score</span> <span class="o">=</span> <span class="mf">0.9</span>
+            <span class="n">longmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Field </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">sourcename</span><span class="si">}</span><span class="s2"> has an odd-shaped mosaic - setting psfphasecenter to the position of the nearest pointing for SPW </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">spw</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Odd-shaped mosaic&#39;</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;psfphasecenter&#39;</span><span class="p">,</span> <span class="n">metric_score</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+            <span class="c1"># Add a hidden QA score. The psfphasecenter scores are aggregated in hif_makeimages to create</span>
+            <span class="c1"># scores per field and list of spws to be shown in the weblog.</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">psfpc_score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span>
+                                  <span class="n">applies_to</span><span class="o">=</span><span class="n">data_selection</span><span class="p">,</span> <span class="n">weblog_location</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">HIDDEN</span><span class="p">))</span>
+
+        <span class="c1"># MOM8_FC based score</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">mom8_fc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">mom8_fc_peak_snr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">mom8_fc_score</span> <span class="o">=</span> <span class="n">scorecalc</span><span class="o">.</span><span class="n">score_mom8_fc_image</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">mom8_fc</span><span class="p">,</span>
+                                                              <span class="n">result</span><span class="o">.</span><span class="n">mom8_fc_peak_snr</span><span class="p">,</span>
+                                                              <span class="n">result</span><span class="o">.</span><span class="n">mom8_10_fc_histogram_asymmetry</span><span class="p">,</span>
+                                                              <span class="n">result</span><span class="o">.</span><span class="n">mom8_fc_max_segment_beams</span><span class="p">,</span>
+                                                              <span class="n">result</span><span class="o">.</span><span class="n">mom8_fc_frac_max_segment</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mom8_fc_score</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Exception scoring MOM8 FC image result: </span><span class="si">%s</span><span class="s1">. Setting score to -0.1.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="s1">&#39;Exception scoring MOM8 FC image result: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="p">),</span>
+                                      <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;Exception scoring MOM8 FC image result&#39;</span><span class="p">,</span> <span class="n">weblog_location</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">UNSET</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">data_selection</span><span class="p">))</span>
+
+        <span class="c1"># Check source score</span>
+        <span class="c1"># Be careful about the source name vs field name issue</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;CHECK&#39;</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;mfs&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">mses</span> <span class="o">=</span> <span class="p">[</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]]</span>
+                <span class="n">fieldname</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">sourcename</span>
+                <span class="n">spwid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+                <span class="n">imagename</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">image</span>
+                <span class="n">rms</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">image_rms</span>
+
+                <span class="c1"># For now handling per EB case only</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">ms_do</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="n">field_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ms_do</span><span class="o">.</span><span class="n">fields</span> <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">dequote</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="n">utils</span><span class="o">.</span><span class="n">dequote</span><span class="p">(</span><span class="n">fieldname</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">real_spwid</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual2real_spw_id</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">ms_do</span><span class="p">)</span>
+                        <span class="n">fluxresult</span> <span class="o">=</span> <span class="p">[</span><span class="n">fr</span> <span class="k">for</span> <span class="n">fr</span> <span class="ow">in</span> <span class="n">ms_do</span><span class="o">.</span><span class="n">derived_fluxes</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">field_id</span><span class="p">)]</span> <span class="k">if</span> <span class="n">fr</span><span class="o">.</span><span class="n">spw_id</span> <span class="o">==</span> <span class="n">real_spwid</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">gfluxscale</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fluxresult</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">MILLIJANSKY</span><span class="p">))</span>
+                        <span class="n">gfluxscale_err</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fluxresult</span><span class="o">.</span><span class="n">uncertainty</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">MILLIJANSKY</span><span class="p">))</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="n">gfluxscale</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="n">gfluxscale_err</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">gfluxscale</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">gfluxscale_err</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="n">checkscore</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">offset_err</span><span class="p">,</span> <span class="n">beams</span><span class="p">,</span> <span class="n">beams_err</span><span class="p">,</span> <span class="n">fitflux</span><span class="p">,</span> <span class="n">fitflux_err</span><span class="p">,</span> <span class="n">fitpeak</span> <span class="o">=</span> <span class="n">scorecalc</span><span class="o">.</span><span class="n">score_checksources</span><span class="p">(</span>
+                    <span class="n">mses</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">rms</span><span class="p">,</span> <span class="n">gfluxscale</span><span class="p">,</span> <span class="n">gfluxscale_err</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">checkscore</span><span class="p">)</span>
+
+                <span class="n">result</span><span class="o">.</span><span class="n">check_source_fit</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;offset&#39;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span> <span class="s1">&#39;offset_err&#39;</span><span class="p">:</span> <span class="n">offset_err</span><span class="p">,</span> <span class="s1">&#39;beams&#39;</span><span class="p">:</span> <span class="n">beams</span><span class="p">,</span> <span class="s1">&#39;beams_err&#39;</span><span class="p">:</span> <span class="n">beams_err</span><span class="p">,</span> <span class="s1">&#39;fitflux&#39;</span><span class="p">:</span> <span class="n">fitflux</span><span class="p">,</span>
+                    <span class="s1">&#39;fitflux_err&#39;</span><span class="p">:</span> <span class="n">fitflux_err</span><span class="p">,</span> <span class="s1">&#39;fitpeak&#39;</span><span class="p">:</span> <span class="n">fitpeak</span><span class="p">,</span> <span class="s1">&#39;gfluxscale&#39;</span><span class="p">:</span> <span class="n">gfluxscale</span><span class="p">,</span> <span class="s1">&#39;gfluxscale_err&#39;</span><span class="p">:</span> <span class="n">gfluxscale_err</span><span class="p">}</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">check_source_fit</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;offset&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="s1">&#39;offset_err&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="s1">&#39;beams&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="s1">&#39;beams_err&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span>
+                                           <span class="s1">&#39;fitflux&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="s1">&#39;fitflux_err&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="s1">&#39;fitpeak&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="s1">&#39;gfluxscale&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="s1">&#39;gfluxscale_err&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">}</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Exception scoring check source fit: </span><span class="si">%s</span><span class="s1">. Setting score to -0.1.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="s1">&#39;Exception scoring check source fit: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                                      <span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;Exception scoring check source fit&#39;</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">data_selection</span><span class="p">))</span>
+
+        <span class="c1"># Polarization calibrators</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;POLARIZATION&#39;</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="s1">&#39;mfs&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">stokes</span> <span class="o">==</span> <span class="s1">&#39;IQUV&#39;</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">==</span> <span class="s1">&#39;ALMA&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Calculate POLI/POLA images</span>
+                <span class="n">imstat_arg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;imagename&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">residual</span><span class="p">,</span> <span class="s1">&#39;axes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">imstat</span><span class="p">(</span><span class="o">**</span><span class="n">imstat_arg</span><span class="p">)</span>
+                <span class="n">calstat</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+                <span class="n">rms</span> <span class="o">=</span> <span class="n">calstat</span><span class="p">[</span><span class="s1">&#39;rms&#39;</span><span class="p">]</span>
+                <span class="n">prms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">rms</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span> <span class="n">rms</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span><span class="p">)</span>
+
+                <span class="n">imagename</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">poli_imagename</span> <span class="o">=</span> <span class="n">imagename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;IQUV&#39;</span><span class="p">,</span> <span class="s1">&#39;POLI&#39;</span><span class="p">)</span>
+                <span class="n">immath_arg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;imagename&#39;</span><span class="p">:</span> <span class="n">imagename</span><span class="p">,</span> <span class="s1">&#39;outfile&#39;</span><span class="p">:</span> <span class="n">poli_imagename</span><span class="p">,</span> <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;poli&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma&#39;</span><span class="p">:</span> <span class="s1">&#39;0.0Jy/beam&#39;</span><span class="p">}</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">immath</span><span class="p">(</span><span class="o">**</span><span class="n">immath_arg</span><span class="p">)</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+                <span class="n">pola_imagename</span> <span class="o">=</span> <span class="n">imagename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;IQUV&#39;</span><span class="p">,</span> <span class="s1">&#39;POLA&#39;</span><span class="p">)</span>
+                <span class="n">immath_arg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;imagename&#39;</span><span class="p">:</span> <span class="n">imagename</span><span class="p">,</span> <span class="s1">&#39;outfile&#39;</span><span class="p">:</span> <span class="n">pola_imagename</span><span class="p">,</span> <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;pola&#39;</span><span class="p">,</span> <span class="s1">&#39;polithresh&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%.8f</span><span class="s1">Jy/beam&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">5.0</span><span class="o">*</span><span class="n">prms</span><span class="p">)}</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">immath</span><span class="p">(</span><span class="o">**</span><span class="n">immath_arg</span><span class="p">)</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+                <span class="c1"># Try fitting I, Q and U images planes</span>
+                <span class="n">error_msgs</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">imfit_arg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;imagename&#39;</span><span class="p">:</span> <span class="n">imagename</span><span class="p">,</span> <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="s1">&#39;110,110,145,145&#39;</span><span class="p">}</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">imfit</span><span class="p">(</span><span class="o">**</span><span class="n">imfit_arg</span><span class="p">)</span>
+                <span class="n">res_I</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">res_I</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">res_I</span><span class="p">[</span><span class="s1">&#39;converged&#39;</span><span class="p">]:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Fitting Stokes I for </span><span class="si">{</span><span class="n">imagename</span><span class="si">}</span><span class="s2"> (field </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> spw </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">) failed&quot;</span>
+                    <span class="n">error_msgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+                <span class="n">imfit_arg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;imagename&#39;</span><span class="p">:</span> <span class="n">imagename</span><span class="p">,</span> <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="s1">&#39;115,115,130,130&#39;</span><span class="p">}</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">imfit</span><span class="p">(</span><span class="o">**</span><span class="n">imfit_arg</span><span class="p">)</span>
+                <span class="n">res_Q</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">res_Q</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">res_Q</span><span class="p">[</span><span class="s1">&#39;converged&#39;</span><span class="p">]:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Fitting Stokes Q for </span><span class="si">{</span><span class="n">imagename</span><span class="si">}</span><span class="s2"> (field </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> spw </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">) failed&quot;</span>
+                    <span class="n">error_msgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+                <span class="n">imfit_arg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;imagename&#39;</span><span class="p">:</span> <span class="n">imagename</span><span class="p">,</span> <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="s1">&#39;110,110,145,145&#39;</span><span class="p">}</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">imfit</span><span class="p">(</span><span class="o">**</span><span class="n">imfit_arg</span><span class="p">)</span>
+                <span class="n">res_U</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">res_U</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">res_U</span><span class="p">[</span><span class="s1">&#39;converged&#39;</span><span class="p">]:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Fitting Stokes U for </span><span class="si">{</span><span class="n">imagename</span><span class="si">}</span><span class="s2"> (field </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> spw </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">) failed&quot;</span>
+                    <span class="n">error_msgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+                <span class="c1"># Raise exception if any fit failed because one cannot</span>
+                <span class="c1"># continue to compute the angle and ratio.</span>
+                <span class="k">if</span> <span class="n">error_msgs</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">error_msgs</span><span class="p">))</span>
+
+                <span class="c1"># Extract the flux and error values for each Stokes</span>
+                <span class="n">flux_I</span> <span class="o">=</span> <span class="n">res_I</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="s1">&#39;component0&#39;</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">unit_I</span> <span class="o">=</span> <span class="n">res_I</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="s1">&#39;component0&#39;</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span>
+                <span class="n">error_I</span> <span class="o">=</span> <span class="n">res_I</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="s1">&#39;component0&#39;</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="s1">&#39;error&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="n">flux_Q</span> <span class="o">=</span> <span class="n">res_Q</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="s1">&#39;component0&#39;</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">unit_Q</span> <span class="o">=</span> <span class="n">res_Q</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="s1">&#39;component0&#39;</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span>
+                <span class="n">error_Q</span> <span class="o">=</span> <span class="n">res_Q</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="s1">&#39;component0&#39;</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="s1">&#39;error&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="n">flux_U</span> <span class="o">=</span> <span class="n">res_U</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="s1">&#39;component0&#39;</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">unit_U</span> <span class="o">=</span> <span class="n">res_U</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="s1">&#39;component0&#39;</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span>
+                <span class="n">error_U</span> <span class="o">=</span> <span class="n">res_U</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="s1">&#39;component0&#39;</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="s1">&#39;error&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+
+                <span class="c1"># Now use these values to compute polarization intensity, angle and ratio, and their errors:</span>
+                <span class="n">flux_pol_intens</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">flux_Q</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">flux_U</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">err_pol_intens</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">flux_Q</span><span class="o">*</span><span class="n">error_U</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">flux_U</span><span class="o">*</span><span class="n">error_Q</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">flux_pol_intens</span>
+
+                <span class="n">pol_ratio</span> <span class="o">=</span> <span class="n">flux_pol_intens</span> <span class="o">/</span> <span class="n">flux_I</span>
+                <span class="n">err_pol_ratio</span> <span class="o">=</span> <span class="n">pol_ratio</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">err_pol_intens</span><span class="o">/</span><span class="n">flux_pol_intens</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">error_I</span><span class="o">/</span><span class="n">flux_I</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+                <span class="n">pol_angle</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">flux_U</span><span class="p">,</span> <span class="n">flux_Q</span><span class="p">))</span>
+                <span class="n">err_pol_angle</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">err_pol_intens</span> <span class="o">/</span> <span class="n">flux_pol_intens</span><span class="p">)</span>
+
+                <span class="n">result</span><span class="o">.</span><span class="n">polcal_fit</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;session&#39;</span><span class="p">:</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+                                     <span class="s1">&#39;converged&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="s1">&#39;flux_pol_intens&#39;</span><span class="p">:</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">flux_pol_intens</span><span class="p">,</span> <span class="n">unit_I</span><span class="p">),</span>
+                                     <span class="s1">&#39;err_pol_intens&#39;</span><span class="p">:</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">err_pol_intens</span><span class="p">,</span> <span class="n">unit_I</span><span class="p">),</span>
+                                     <span class="s1">&#39;pol_ratio&#39;</span><span class="p">:</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">pol_ratio</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="s1">&#39;%&#39;</span><span class="p">),</span>
+                                     <span class="s1">&#39;err_pol_ratio&#39;</span><span class="p">:</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">err_pol_ratio</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="s1">&#39;%&#39;</span><span class="p">),</span>
+                                     <span class="s1">&#39;pol_angle&#39;</span><span class="p">:</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">pol_angle</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">),</span>
+                                     <span class="s1">&#39;err_pol_angle&#39;</span><span class="p">:</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">err_pol_angle</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">),</span>
+                                     <span class="s1">&#39;err_msg&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+
+                <span class="n">origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;Stokes fits&#39;</span><span class="p">,</span>
+                                      <span class="n">metric_score</span><span class="o">=</span><span class="s1">&#39;Fit OK&#39;</span><span class="p">,</span>
+                                      <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span>
+                        <span class="mf">1.0</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Stokes fits for field </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> spw </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> succeeded&quot;</span><span class="p">,</span>
+                        <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;Stokes fits succeeded&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">data_selection</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">polcal_fit</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;session&#39;</span><span class="p">:</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+                                     <span class="s1">&#39;converged&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                     <span class="s1">&#39;flux_pol_intens&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;err_pol_intens&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;pol_ratio&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;err_pol_ratio&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;pol_angle&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;err_pol_angle&#39;</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;err_msg&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
+
+                <span class="n">origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;Stokes fits&#39;</span><span class="p">,</span>
+                                      <span class="n">metric_score</span><span class="o">=</span><span class="s1">&#39;Fit failed&#39;</span><span class="p">,</span>
+                                      <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="mf">0.34</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;Fitting Stokes parameter failed&#39;</span><span class="p">,</span>
+                                                  <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">data_selection</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TcleanListQAHandler">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanListQAHandler">[docs]</a>
+<span class="k">class</span> <span class="nc">TcleanListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">TcleanResult</span>
+
+<div class="viewcode-block" id="TcleanListQAHandler.handle">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanListQAHandler.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="c1"># collate the QAScores from each child result, pulling them into our</span>
+        <span class="c1"># own QAscore list</span>
+        <span class="n">collated</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">])</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">collated</span></div>
+</div>
+
+
+
+<span class="n">aqua_exporter</span> <span class="o">=</span> <span class="n">aqua</span><span class="o">.</span><span class="n">xml_generator_for_metric</span><span class="p">(</span><span class="s1">&#39;ScoreChecksources&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{:0.3}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">aqua</span><span class="o">.</span><span class="n">register_aqua_metric</span><span class="p">(</span><span class="n">aqua_exporter</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

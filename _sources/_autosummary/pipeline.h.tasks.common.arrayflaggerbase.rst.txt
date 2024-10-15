@@ -1,0 +1,20 @@
+pipeline.h.tasks.common.arrayflaggerbase
+========================================
+
+.. automodule:: pipeline.h.tasks.common.arrayflaggerbase
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      channel_ranges
+      consolidate_flagcmd_channels
+      median_and_mad
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FlagCmd
+   

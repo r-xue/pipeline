@@ -1,0 +1,21 @@
+pipeline.hifa.tasks.diffgaincal
+===============================
+
+.. automodule:: pipeline.hifa.tasks.diffgaincal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DiffGaincal
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   diffgaincal
+   qa
+   renderer

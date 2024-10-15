@@ -1,0 +1,16 @@
+pipeline.hif.tasks.editimlist.editimlist
+========================================
+
+.. automodule:: pipeline.hif.tasks.editimlist.editimlist
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CleanTarget
+      DataType
+      Editimlist
+      EditimlistInputs
+      EditimlistResult
+   

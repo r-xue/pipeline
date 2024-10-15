@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.domain &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Antenna" href="_automodapi/pipeline.domain.Antenna.html" />
+    <link rel="prev" title="Dependencies of Pipeline" href="dependencies.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">pipeline.domain</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.Antenna.html">Antenna</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.AntennaArray.html">AntennaArray</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.DataDescription.html">DataDescription</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.DataTable.html">DataTable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.DataType.html">DataType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.Field.html">Field</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.FluxMeasurement.html">FluxMeasurement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.MeasurementSet.html">MeasurementSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.ObservingRun.html">ObservingRun</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.Polarization.html">Polarization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.Scan.html">Scan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.Source.html">Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.SpectralWindow.html">SpectralWindow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.SpectralWindowWithChannelSelection.html">SpectralWindowWithChannelSelection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.State.html">State</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#class-inheritance-diagram">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.Context.html">Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.Pipeline.html">Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.domain</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/basics.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pipeline.domain">
+<span id="pipeline-domain"></span><h1>pipeline.domain<a class="headerlink" href="#module-pipeline.domain" title="Link to this heading"></a></h1>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.Antenna.html#pipeline.domain.Antenna" title="pipeline.domain.Antenna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Antenna</span></code></a>(antenna_id, name, station, position, ...)</p></td>
+<td><p>Antenna is a logical representation of an antenna.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray" title="pipeline.domain.AntennaArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AntennaArray</span></code></a>(name, position, antennas)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.DataDescription.html#pipeline.domain.DataDescription" title="pipeline.domain.DataDescription"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataDescription</span></code></a>(dd_id, spw, pol_id)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.DataTable.html#pipeline.domain.DataTable" title="pipeline.domain.DataTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataTable</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="_apidoc/pipeline.domain.html#pipeline.domain.datatable.DataTableImpl" title="pipeline.domain.datatable.DataTableImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataTableImpl</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType" title="pipeline.domain.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataType</span></code></a>(value)</p></td>
+<td><p>A class to define DataType enum.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.Field.html#pipeline.domain.Field" title="pipeline.domain.Field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Field</span></code></a>(field_id, name, source_id, time, direction)</p></td>
+<td><p>A class to store logical representation of a field.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.FluxMeasurement.html#pipeline.domain.FluxMeasurement" title="pipeline.domain.FluxMeasurement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxMeasurement</span></code></a>(spw_id, I[, Q, U, V, spix, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet" title="pipeline.domain.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a>(name[, session])</p></td>
+<td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.ObservingRun.html#pipeline.domain.ObservingRun" title="pipeline.domain.ObservingRun"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObservingRun</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.Polarization.html#pipeline.domain.Polarization" title="pipeline.domain.Polarization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Polarization</span></code></a>(pol_id, num_corr, corr_type, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.Scan.html#pipeline.domain.Scan" title="pipeline.domain.Scan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Scan</span></code></a>([id, antennas, intents, fields, ...])</p></td>
+<td><p>Class containing info about a single scan.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.Source.html#pipeline.domain.Source" title="pipeline.domain.Source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Source</span></code></a>(source_id, name, direction, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow" title="pipeline.domain.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpectralWindow</span></code></a>(spw_id, name, spw_type, ...)</p></td>
+<td><p>SpectralWindow is a logical representation of a spectral window (spw).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.SpectralWindowWithChannelSelection.html#pipeline.domain.SpectralWindowWithChannelSelection" title="pipeline.domain.SpectralWindowWithChannelSelection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpectralWindowWithChannelSelection</span></code></a>(subject, ...)</p></td>
+<td><p>SpectralWindowWithChannelSelection decorates a SpectralWindow so that the spectral window ID also contains a channel selection.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.State.html#pipeline.domain.State" title="pipeline.domain.State"><code class="xref py py-obj docutils literal notranslate"><span class="pre">State</span></code></a>(state_id, obs_mode)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="class-inheritance-diagram">
+<h2>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Link to this heading"></a></h2>
+<div class="graphviz"><img src="_images/inheritance-01e9c970594ba3746021688febde7efea7bbacf7.png" alt="Inheritance diagram of pipeline.domain.antenna.Antenna, pipeline.domain.antennaarray.AntennaArray, pipeline.domain.datadescription.DataDescription, pipeline.domain.datatable.DataTableImpl, pipeline.domain.datatype.DataType, pipeline.domain.field.Field, pipeline.domain.fluxmeasurement.FluxMeasurement, pipeline.domain.measurementset.MeasurementSet, pipeline.domain.observingrun.ObservingRun, pipeline.domain.polarization.Polarization, pipeline.domain.scan.Scan, pipeline.domain.source.Source, pipeline.domain.spectralwindow.SpectralWindow, pipeline.domain.spectralwindow.SpectralWindowWithChannelSelection, pipeline.domain.state.State" usemap="#inheritancebb19f298fa" class="inheritance graphviz" /></div>
+<map id="inheritancebb19f298fa" name="inheritancebb19f298fa">
+<area shape="rect" id="node1" href="_apidoc/pipeline.domain.html#pipeline.domain.antenna.Antenna" target="_top" title="Antenna is a logical representation of an antenna. " alt="" coords="122,733,211,761"/>
+<area shape="rect" id="node2" href="_apidoc/pipeline.domain.html#pipeline.domain.antennaarray.AntennaArray" target="_top" title="AntennaArray" alt="" coords="101,681,233,709"/>
+<area shape="rect" id="node3" href="_apidoc/pipeline.domain.html#pipeline.domain.datadescription.DataDescription" target="_top" title="DataDescription" alt="" coords="91,629,242,657"/>
+<area shape="rect" id="node4" href="_apidoc/pipeline.domain.html#pipeline.domain.datatable.DataTableImpl" target="_top" title="DataTable is an object to hold meta data of scantable on memory." alt="" coords="99,577,235,605"/>
+<area shape="rect" id="node5" href="_apidoc/pipeline.domain.html#pipeline.domain.datatype.DataType" target="_top" title="A class to define DataType enum." alt="" coords="376,525,472,553"/>
+<area shape="rect" id="node7" href="_apidoc/pipeline.domain.html#pipeline.domain.field.Field" target="_top" title="A class to store logical representation of a field." alt="" coords="131,473,203,501"/>
+<area shape="rect" id="node8" href="_apidoc/pipeline.domain.html#pipeline.domain.fluxmeasurement.FluxMeasurement" target="_top" title="FluxMeasurement" alt="" coords="85,421,249,449"/>
+<area shape="rect" id="node9" href="_apidoc/pipeline.domain.html#pipeline.domain.measurementset.MeasurementSet" target="_top" title="A class to store logical representation of a MeasurementSet (MS)." alt="" coords="87,369,246,397"/>
+<area shape="rect" id="node10" href="_apidoc/pipeline.domain.html#pipeline.domain.observingrun.ObservingRun" target="_top" title="ObservingRun" alt="" coords="100,317,233,345"/>
+<area shape="rect" id="node11" href="_apidoc/pipeline.domain.html#pipeline.domain.polarization.Polarization" target="_top" title="Polarization" alt="" coords="109,265,224,293"/>
+<area shape="rect" id="node12" href="_apidoc/pipeline.domain.html#pipeline.domain.scan.Scan" target="_top" title="Class containing info about a single scan." alt="" coords="131,213,203,241"/>
+<area shape="rect" id="node13" href="_apidoc/pipeline.domain.html#pipeline.domain.source.Source" target="_top" title="Source" alt="" coords="128,161,205,189"/>
+<area shape="rect" id="node14" href="_apidoc/pipeline.domain.html#pipeline.domain.spectralwindow.SpectralWindow" target="_top" title="SpectralWindow is a logical representation of a spectral window (spw)." alt="" coords="91,109,242,137"/>
+<area shape="rect" id="node15" href="_apidoc/pipeline.domain.html#pipeline.domain.spectralwindow.SpectralWindowWithChannelSelection" target="_top" title="SpectralWindowWithChannelSelection decorates a SpectralWindow so that the" alt="" coords="5,57,328,85"/>
+<area shape="rect" id="node16" href="_apidoc/pipeline.domain.html#pipeline.domain.state.State" target="_top" title="State" alt="" coords="131,5,203,33"/>
+</map></section>
+</section>
+<section id="module-pipeline.infrastructure.launcher">
+<span id="pipeline-infrastructure-launcher"></span><h1>pipeline.infrastructure.launcher<a class="headerlink" href="#module-pipeline.infrastructure.launcher" title="Link to this heading"></a></h1>
+<p>The launcher module contains classes to initialize the pipeline, potentially
+from a saved context state.</p>
+<section id="id1">
+<h2>Classes<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a>([name])</p></td>
+<td><p>Context holds all pipeline state, consisting of metadata describing the data set, objects describing the pipeline calibration state, the tree of Results objects summarising the results of each pipeline task, and a small number of internal pipeline variables and objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextCreatedEvent</span></code>([context_name, output_dir])</p></td>
+<td><p>Emitted when a pipeline Context is created.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextResumedEvent</span></code>([context_name, output_dir])</p></td>
+<td><p>Emitted when a pipeline Context is resumed.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline" title="pipeline.infrastructure.launcher.Pipeline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pipeline</span></code></a>([context, loglevel, ...])</p></td>
+<td><p>Pipeline is the entry point for initialising the pipeline.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id2">
+<h2>Class Inheritance Diagram<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<div class="graphviz"><img src="_images/inheritance-db7a437872d88534c5e86c53d2f0f55629f9ac73.png" alt="Inheritance diagram of pipeline.infrastructure.launcher.Context, pipeline.infrastructure.launcher.Pipeline" usemap="#inheritance039991ec37" class="inheritance graphviz" /></div>
+<map id="inheritance039991ec37" name="inheritance039991ec37">
+<area shape="rect" id="node1" href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" target="_top" title="Context holds all pipeline state, consisting of metadata describing the" alt="" coords="5,57,89,85"/>
+<area shape="rect" id="node2" href="_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline" target="_top" title="Pipeline is the entry point for initialising the pipeline. It is" alt="" coords="6,5,89,33"/>
+</map></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="dependencies.html" class="btn btn-neutral float-left" title="Dependencies of Pipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_automodapi/pipeline.domain.Antenna.html" class="btn btn-neutral float-right" title="Antenna" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

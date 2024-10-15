@@ -1,0 +1,768 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.baselineflag.SDFlagPlotter &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.baselineflag.SDFlagPlotter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.baselineflag.SDFlagPlotter</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Classes and methods to create SD Flag Plots.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib</span>  
+<span class="kn">import</span> <span class="nn">matplotlib.figure</span> <span class="k">as</span> <span class="nn">figure</span> 
+<span class="kn">from</span> <span class="nn">matplotlib.axes._axes</span> <span class="kn">import</span> <span class="n">Axes</span> <span class="k">as</span> <span class="n">MplAxes</span>
+
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">MeasurementSet</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.displays.plotstyle</span> <span class="kn">import</span> <span class="n">casa5style_plot</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">SDFlagRule</span>
+<span class="kn">from</span> <span class="nn">.SDFlagRule</span> <span class="kn">import</span> <span class="n">INVALID_STAT</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">display</span> <span class="k">as</span> <span class="n">sd_display</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">sdutils</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">DPIDetail</span> <span class="o">=</span> <span class="mi">130</span>
+<span class="n">FIGSIZE_INCHES</span> <span class="o">=</span> <span class="p">(</span><span class="mf">7.0</span><span class="p">,</span> <span class="mf">2.9</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SDFlagPlotter">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.SDFlagPlotter.SDFlagPlotter">[docs]</a>
+<span class="k">class</span> <span class="nc">SDFlagPlotter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to create Flag Plots for hsd_blflag weblog.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">msobj</span><span class="p">:</span><span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">datatable</span><span class="p">:</span><span class="n">DataTable</span><span class="p">,</span> <span class="n">antid</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">spwid</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span>
+                  <span class="n">time_gap</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">FigFileDir</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct SDFlagPlotter instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            msobj          : Measurementset object</span>
+<span class="sd">            datatable      : DataTable</span>
+<span class="sd">            antid          : antenna ID</span>
+<span class="sd">            spwid          : SpW ID</span>
+<span class="sd">            time_gap       : time gap</span>
+<span class="sd">            FigFileDir     : directory to output figure files</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (none)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msobj</span> <span class="o">=</span> <span class="n">msobj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span> <span class="o">=</span> <span class="n">datatable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antid</span> <span class="o">=</span> <span class="n">antid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwid</span> <span class="o">=</span> <span class="n">spwid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_gap</span> <span class="o">=</span> <span class="n">time_gap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FigFileDir</span> <span class="o">=</span> <span class="n">FigFileDir</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pollist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_baselined_dict</span>   <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FlagRule_local_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PermanentFlag_dict</span>  <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">NPp_dict</span>            <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold_dict</span>      <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">return</span>
+
+
+<div class="viewcode-block" id="SDFlagPlotter.register_data">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.SDFlagPlotter.SDFlagPlotter.register_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">register_data</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">pol</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span>
+                         <span class="n">is_baselined</span><span class="p">:</span><span class="nb">bool</span><span class="p">,</span> <span class="n">FlagRule_local</span><span class="p">:</span><span class="n">Dict</span><span class="p">,</span>
+                         <span class="n">PermanentFlag</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">NPp</span><span class="p">:</span><span class="n">Dict</span><span class="p">,</span>
+                         <span class="n">threshold</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resiter data to be plotted.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pol            : polarization</span>
+<span class="sd">            is_baselined   : True if baselined, False if not</span>
+<span class="sd">            FlagRule_local : FlagRule</span>
+<span class="sd">            PermanentFlag  : permanent Flag</span>
+<span class="sd">            NPp            : flagging data summarized for weblog</span>
+<span class="sd">            threshold      : threshold</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (none)</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError if attempted to register data for existing pol</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pollist</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span> <span class="s2">&quot;Attempted to register existing pol=</span><span class="si">{}</span><span class="s2"> in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pollist</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pollist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pol</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_baselined_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span>   <span class="o">=</span> <span class="n">is_baselined</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span> <span class="o">=</span> <span class="n">FlagRule_local</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PermanentFlag_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span>  <span class="o">=</span> <span class="n">PermanentFlag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span>            <span class="o">=</span> <span class="n">NPp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span>      <span class="o">=</span> <span class="n">threshold</span>
+
+        <span class="k">return</span></div>
+
+
+
+<div class="viewcode-block" id="SDFlagPlotter.create_plots">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.SDFlagPlotter.SDFlagPlotter.create_plots">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_plots</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">FigFileRoot</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create Summary plots.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            FigFileRoot : basename of figure files</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            List of dictonaries of plot data</span>
+<span class="sd">                &#39;file&#39; : List of Figure filenames (basename only)</span>
+<span class="sd">                &#39;type&#39; : Type string for selector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">msobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msobj</span>
+        <span class="n">datatable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span>
+        <span class="n">antid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">antid</span>
+        <span class="n">spwid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spwid</span>
+        <span class="n">time_gap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_gap</span>
+        <span class="n">FigFileDir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FigFileDir</span>
+
+        <span class="n">pollist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pollist</span>
+        <span class="n">is_baselined_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_baselined_dict</span>
+        <span class="n">FlagRule_local_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FlagRule_local_dict</span>
+        <span class="n">PermanentFlag_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PermanentFlag_dict</span>
+        <span class="n">NPp_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NPp_dict</span>
+        <span class="n">threshold_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold_dict</span>
+
+        <span class="n">ant_name</span> <span class="o">=</span> <span class="n">msobj</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">antid</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">bunit</span> <span class="o">=</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">get_brightness_unit</span><span class="p">(</span> <span class="n">msobj</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">defaultunit</span><span class="o">=</span><span class="s1">&#39;Jy/beam&#39;</span> <span class="p">)</span>
+        <span class="n">PosGap</span> <span class="o">=</span> <span class="n">time_gap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">TimeGap</span> <span class="o">=</span> <span class="n">time_gap</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># prepare PlotData</span>
+        <span class="n">PlotData_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;ms_name&#39;</span><span class="p">:</span> <span class="n">msobj</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s1">&#39;ant_name&#39;</span> <span class="p">:</span> <span class="n">ant_name</span><span class="p">,</span>
+                <span class="s1">&#39;spw&#39;</span> <span class="p">:</span> <span class="n">spwid</span><span class="p">,</span>
+                <span class="s1">&#39;pol&#39;</span> <span class="p">:</span> <span class="n">pol</span>
+            <span class="p">}</span>
+
+        <span class="n">flag_desc</span> <span class="o">=</span> <span class="n">SDFlagRule</span><span class="o">.</span><span class="n">SDFlag_Desc</span>
+        <span class="c1"># Tsys flag</span>
+        <span class="n">timeCol</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+        <span class="n">PosGapInTime</span> <span class="o">=</span> <span class="n">timeCol</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">PosGap</span><span class="p">)</span>
+        <span class="n">TimeGapInTime</span> <span class="o">=</span> <span class="n">timeCol</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">TimeGap</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;row&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;rows&#39;</span><span class="p">][</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">][</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;thre&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">threshold_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="mi">4</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;gap&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="p">[</span><span class="n">PosGapInTime</span><span class="p">,</span> <span class="n">TimeGapInTime</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Tsys (K)&quot;</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;xlabel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Time (UTC)&quot;</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;ylabel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Tsys (K)&quot;</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;permanentflag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PermanentFlag_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;threType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;line&quot;</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;threDesc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:.1f}</span><span class="s2"> sigma threshold&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">][</span><span class="s1">&#39;Threshold&#39;</span><span class="p">])</span>
+        <span class="n">figfilename</span> <span class="o">=</span> <span class="n">FigFileRoot</span> <span class="o">+</span> <span class="s1">&#39;_0.png&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StatisticsPlot</span><span class="p">(</span> <span class="n">pollist</span><span class="p">,</span> <span class="n">PlotData_dict</span><span class="p">,</span> <span class="n">FigFileDir</span><span class="p">,</span> <span class="n">figfilename</span> <span class="p">)</span>
+        <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">{</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span><span class="n">figfilename</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">flag_desc</span><span class="p">[</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">]</span> <span class="p">}</span> <span class="p">)</span>
+
+        <span class="c1"># RMS flag before baseline fit</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;row&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;rows&#39;</span><span class="p">][</span><span class="s1">&#39;BaselineFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="s1">&#39;BaselineFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">][</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;thre&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">threshold_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Baseline RMS (</span><span class="si">{}</span><span class="s2">) before baseline subtraction&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bunit</span><span class="p">)</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;ylabel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Baseline RMS (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bunit</span><span class="p">)</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;threDesc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:.1f}</span><span class="s2"> sigma threshold&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;Threshold&#39;</span><span class="p">])</span>
+        <span class="n">figfilename</span> <span class="o">=</span> <span class="n">FigFileRoot</span> <span class="o">+</span> <span class="s1">&#39;_1.png&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StatisticsPlot</span><span class="p">(</span> <span class="n">pollist</span><span class="p">,</span> <span class="n">PlotData_dict</span><span class="p">,</span> <span class="n">FigFileDir</span><span class="p">,</span> <span class="n">figfilename</span> <span class="p">)</span>
+        <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">{</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span><span class="n">figfilename</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">flag_desc</span><span class="p">[</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">]</span> <span class="p">}</span> <span class="p">)</span>
+
+        <span class="c1"># RMS flag after baseline fit</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">is_baselined_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">][</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;thre&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">threshold_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Baseline RMS (</span><span class="si">{}</span><span class="s2">) after baseline subtraction&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bunit</span><span class="p">)</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;threDesc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:.1f}</span><span class="s2"> sigma threshold&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;Threshold&#39;</span><span class="p">])</span>
+        <span class="n">figfilename</span> <span class="o">=</span> <span class="n">FigFileRoot</span> <span class="o">+</span> <span class="s1">&#39;_2.png&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StatisticsPlot</span><span class="p">(</span> <span class="n">pollist</span><span class="p">,</span> <span class="n">PlotData_dict</span><span class="p">,</span> <span class="n">FigFileDir</span><span class="p">,</span> <span class="n">figfilename</span> <span class="p">)</span>
+        <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">{</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span><span class="n">figfilename</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">flag_desc</span><span class="p">[</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">]</span> <span class="p">}</span> <span class="p">)</span>
+
+        <span class="c1"># Running mean flag before baseline fit</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">][</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;thre&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">threshold_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;RMS (</span><span class="si">{}</span><span class="s2">) for Baseline Deviation from the running mean (Nmean=</span><span class="si">{:d}</span><span class="s2">) before baseline subtraction&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bunit</span><span class="p">,</span> <span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;Nmean&#39;</span><span class="p">])</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;threDesc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:.1f}</span><span class="s2"> sigma threshold&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;Threshold&#39;</span><span class="p">])</span>
+        <span class="n">figfilename</span> <span class="o">=</span> <span class="n">FigFileRoot</span> <span class="o">+</span> <span class="s1">&#39;_3.png&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StatisticsPlot</span><span class="p">(</span> <span class="n">pollist</span><span class="p">,</span> <span class="n">PlotData_dict</span><span class="p">,</span> <span class="n">FigFileDir</span><span class="p">,</span> <span class="n">figfilename</span> <span class="p">)</span>
+        <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">{</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span><span class="n">figfilename</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">flag_desc</span><span class="p">[</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">]</span> <span class="p">}</span> <span class="p">)</span>
+
+        <span class="c1"># Running mean flag after baseline fit</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">is_baselined_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">][</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;thre&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">threshold_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;RMS (</span><span class="si">{}</span><span class="s2">) for Baseline Deviation from the running mean (Nmean=</span><span class="si">{:d}</span><span class="s2">) after baseline subtraction&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bunit</span><span class="p">,</span> <span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;Nmean&#39;</span><span class="p">])</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;threDesc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:.1f}</span><span class="s2"> sigma threshold&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;Threshold&#39;</span><span class="p">])</span>
+        <span class="n">figfilename</span> <span class="o">=</span> <span class="n">FigFileRoot</span> <span class="o">+</span> <span class="s1">&#39;_4.png&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StatisticsPlot</span><span class="p">(</span> <span class="n">pollist</span><span class="p">,</span> <span class="n">PlotData_dict</span><span class="p">,</span> <span class="n">FigFileDir</span><span class="p">,</span> <span class="n">figfilename</span><span class="p">)</span>
+        <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">{</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span><span class="n">figfilename</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">flag_desc</span><span class="p">[</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">]</span> <span class="p">}</span> <span class="p">)</span>
+
+        <span class="c1"># Expected RMS flag before baseline fit</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">][</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;thre&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">]]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Baseline RMS (</span><span class="si">{}</span><span class="s2">) compared with the expected RMS calculated from Tsys before baseline subtraction&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bunit</span><span class="p">)</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;threType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;plot&quot;</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;threDesc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;threshold with scaling factor = </span><span class="si">{:.1f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;Threshold&#39;</span><span class="p">])</span>
+        <span class="n">figfilename</span> <span class="o">=</span> <span class="n">FigFileRoot</span> <span class="o">+</span> <span class="s1">&#39;_5.png&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StatisticsPlot</span><span class="p">(</span> <span class="n">pollist</span><span class="p">,</span> <span class="n">PlotData_dict</span><span class="p">,</span> <span class="n">FigFileDir</span><span class="p">,</span> <span class="n">figfilename</span> <span class="p">)</span>
+        <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">{</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span><span class="n">figfilename</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">flag_desc</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">]</span> <span class="p">}</span> <span class="p">)</span>
+
+        <span class="c1"># Expected RMS flag after baseline fit</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">is_baselined_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">][</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;thre&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">NPp_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">]]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Baseline RMS (</span><span class="si">{}</span><span class="s2">) compared with the expected RMS calculated from Tsys after baseline subtraction&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bunit</span><span class="p">)</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;threType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;plot&quot;</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;threDesc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;threshold with scaling factor = </span><span class="si">{:.1f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">FlagRule_local_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;Threshold&#39;</span><span class="p">])</span>
+        <span class="n">figfilename</span> <span class="o">=</span> <span class="n">FigFileRoot</span> <span class="o">+</span> <span class="s1">&#39;_6.png&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StatisticsPlot</span><span class="p">(</span> <span class="n">pollist</span><span class="p">,</span> <span class="n">PlotData_dict</span><span class="p">,</span> <span class="n">FigFileDir</span><span class="p">,</span> <span class="n">figfilename</span> <span class="p">)</span>
+        <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">{</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span><span class="n">figfilename</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">flag_desc</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">]</span> <span class="p">}</span> <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">plots</span></div>
+
+
+
+    <span class="nd">@casa5style_plot</span>
+    <span class="k">def</span> <span class="nf">StatisticsPlot</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">pollist</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">PlotData_dict</span><span class="p">:</span><span class="n">Dict</span><span class="p">,</span> <span class="n">FigFileDir</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">figfilename</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create blflag statistics plot.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pollist         : list of pols</span>
+<span class="sd">            PlotData_dict   : dictonary of PlotData</span>
+<span class="sd">                                PlotData_dict[pol] = {</span>
+<span class="sd">                                    ms_name: MeasurementSet name</span>
+<span class="sd">                                    ant_name:  Antenna name</span>
+<span class="sd">                                    spw:  spwid</span>
+<span class="sd">                                    pol:  polarization</span>
+<span class="sd">                                    row:  [row], # row number of the spectrum</span>
+<span class="sd">                                    time: [time], # timestamp</span>
+<span class="sd">                                    data: [data],</span>
+<span class="sd">                                    flag: [flag], # 0: flag out, 1: normal, 2: exclude from the plot</span>
+<span class="sd">                                    sigma: &quot;Clipping Sigma&quot;</span>
+<span class="sd">                                    thre: [threshold(s) max, min(if any)], # holizontal line</span>
+<span class="sd">                                    gap:  [gap(s)], # vertical tick: [[PosGap], [TimeGap]]</span>
+<span class="sd">                                    title: &quot;title&quot;,</span>
+<span class="sd">                                    xlabel: &quot;xlabel&quot;,</span>
+<span class="sd">                                    ylabel: &quot;ylabel&quot;</span>
+<span class="sd">                                    permanentflag: [PermanentFlag rows]</span>
+<span class="sd">                                    isActive: True/False</span>
+<span class="sd">                                    threType: &quot;line&quot; or &quot;plot&quot; # if &quot;plot&quot; then thre should be a list</span>
+<span class="sd">                                       having the equal length of row</span>
+<span class="sd">                                    threDesc: description of the threshold (for legend)</span>
+<span class="sd">                                }</span>
+<span class="sd">            FigFileDir      : directory to create figure files</span>
+<span class="sd">            figfilename     : figure filename</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (none)</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError if number of pols exceeds the limit of 4</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pollist</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">4</span><span class="p">:</span>   <span class="c1"># max number of pols=4</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span> <span class="s2">&quot;Number of polarizations (</span><span class="si">{}</span><span class="s2">) exceeds limit of 4.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pollist</span><span class="p">))</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="n">FigFileDir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># create listofplots.txt</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">FigFileDir</span><span class="o">+</span><span class="s1">&#39;listofplots.txt&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">F_OK</span><span class="p">):</span>
+            <span class="n">BrowserFile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">FigFileDir</span><span class="o">+</span><span class="s1">&#39;listofplots.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">BrowserFile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">FigFileDir</span><span class="o">+</span><span class="s1">&#39;listofplots.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;TITLE: BF_Stat&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">BrowserFile</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;FIELDS: Stat IF POL Iteration Page&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">BrowserFile</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;COMMENT: Statistics of spectra&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">BrowserFile</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span> <span class="n">figfilename</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">BrowserFile</span><span class="p">)</span>
+        <span class="n">BrowserFile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c1"># pack data into working vars</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">xlim</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ylim</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ScaleOut</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">LowRange</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">pol</span><span class="p">],</span> <span class="n">xlim</span><span class="p">[</span><span class="n">pol</span><span class="p">],</span> <span class="n">ylim</span><span class="p">[</span><span class="n">pol</span><span class="p">],</span> <span class="n">ScaleOut</span><span class="p">[</span><span class="n">pol</span><span class="p">],</span> <span class="n">LowRange</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pack_data</span><span class="p">(</span> <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span> <span class="p">)</span>
+        <span class="c1"># do the plots!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plot</span><span class="p">(</span> <span class="n">FigFileDir</span><span class="p">,</span> <span class="n">figfilename</span><span class="p">,</span> <span class="n">pollist</span><span class="p">,</span> <span class="n">PlotData_dict</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span><span class="p">,</span> <span class="n">ScaleOut</span><span class="p">,</span> <span class="n">LowRange</span> <span class="p">)</span>
+
+        <span class="k">return</span>
+
+
+    <span class="k">def</span> <span class="nf">_pack_data</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">plotdata</span><span class="p">:</span><span class="n">Dict</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Dict</span> <span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pack data for plotting for each pol.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            plotdata: dictionary of PlotData</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            data:     dictionary of plotting data</span>
+<span class="sd">            xlim:     x-limits calculated</span>
+<span class="sd">            ylim:     y-limits calculated</span>
+<span class="sd">            ScaleOut: dictionary of ScaleOut</span>
+<span class="sd">            LowRange: dictionary of LowRange</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">LowRange</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LowRange</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;threType&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;plot&quot;</span><span class="p">:</span>
+                    <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]),</span> <span class="nb">min</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])))</span>
+
+            <span class="c1"># Calculate X-scale</span>
+            <span class="n">xlim</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">min</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span> <span class="p">]</span>
+
+            <span class="c1"># Calculate Y-scale</span>
+            <span class="k">if</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;threType&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;plot&quot;</span><span class="p">:</span>
+                <span class="n">yrange</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">yrange</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+                    <span class="n">yrange</span> <span class="o">=</span> <span class="mf">1.0</span>
+                <span class="n">ymin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">yrange</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+                <span class="n">ymax</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">ymin</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.3333333333</span> <span class="o">+</span> <span class="n">ymin</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">yrange</span> <span class="o">=</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">yrange</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+                    <span class="n">yrange</span> <span class="o">=</span> <span class="mf">1.0</span>
+                <span class="n">ymin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">yrange</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+                <span class="n">ymax</span> <span class="o">=</span> <span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">ymin</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.3333333333</span> <span class="o">+</span> <span class="n">ymin</span>
+            <span class="n">ylim</span> <span class="o">=</span> <span class="p">[</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="p">]</span>
+            <span class="n">yy</span> <span class="o">=</span> <span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span>
+            <span class="n">ScaleOut</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ymax</span> <span class="o">-</span> <span class="n">yy</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">-</span> <span class="n">yy</span> <span class="o">*</span> <span class="mf">0.04</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">ymin</span> <span class="o">+</span> <span class="n">yy</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">ymin</span> <span class="o">+</span> <span class="n">yy</span> <span class="o">*</span> <span class="mf">0.04</span><span class="p">]]</span>
+
+            <span class="c1"># Make Plot Data</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;online_x&#39;</span>    <span class="p">:</span> <span class="p">[],</span>
+                <span class="s1">&#39;online_y&#39;</span>    <span class="p">:</span> <span class="p">[],</span>
+                <span class="s1">&#39;deviator_x&#39;</span>  <span class="p">:</span> <span class="p">[],</span>
+                <span class="s1">&#39;deviator_y&#39;</span>  <span class="p">:</span> <span class="p">[],</span>
+                <span class="s1">&#39;normal_x&#39;</span>    <span class="p">:</span> <span class="p">[],</span>
+                <span class="s1">&#39;normal_y&#39;</span>    <span class="p">:</span> <span class="p">[]</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">Pflag</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;permanentflag&#39;</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">Pflag</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="n">INVALID_STAT</span><span class="p">:</span>  <span class="c1"># Flag-out case</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;online_x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">ScaleOut</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="n">INVALID_STAT</span><span class="p">:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;online_y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ScaleOut</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">LowRange</span> <span class="ow">and</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">ScaleOut</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;online_y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ScaleOut</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;online_y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;flag&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># Flag-out case</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;deviator_x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">ScaleOut</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;deviator_y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ScaleOut</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">LowRange</span> <span class="ow">and</span> <span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">ScaleOut</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;deviator_y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ScaleOut</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;deviator_y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># Normal case</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;normal_x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">])</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;normal_y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plotdata</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># &quot;NO DATA&quot; case</span>
+            <span class="n">xlim</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">ylim</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">ScaleOut</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">LowRange</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span><span class="p">,</span> <span class="n">ScaleOut</span><span class="p">,</span> <span class="n">LowRange</span>
+
+
+    <span class="k">def</span> <span class="nf">_plot</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">figfiledir</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">figfilename</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+               <span class="n">pollist</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+               <span class="n">PlotData_dict</span><span class="p">:</span><span class="n">Dict</span><span class="p">,</span> <span class="n">data_dict</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span>
+               <span class="n">xlim_dict</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">ylim_dict</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span>
+               <span class="n">ScaleOut_dict</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">LowRange_dict</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create actual plots.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            figfiledir    : directory to write the figure file</span>
+<span class="sd">            figfilename   : filename of the figure file</span>
+<span class="sd">            pollist       : list of polarization</span>
+<span class="sd">            PlotData_dict : dictionary of PlotData (for all pols)</span>
+<span class="sd">            data_dict     : dictionary of plotting data (for all pols)</span>
+<span class="sd">            xlim_dict     : dictionary of x-limits (for all pols)</span>
+<span class="sd">            ylim_dict     : dictionary of y-limits (for all pols)</span>
+<span class="sd">            ScaleOut_dict : dictionary of Scaleout (for all pols)</span>
+<span class="sd">            LowRange_dict : dictionary of LowRange (for all pols)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (none)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># do nothing if no plots are going to be saved on file</span>
+        <span class="k">if</span> <span class="n">figfiledir</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">figfilename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># initial settings &amp; hold original plot configurations</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span> <span class="n">figsize</span><span class="o">=</span><span class="n">FIGSIZE_INCHES</span> <span class="p">)</span>
+
+        <span class="c1"># pick the widest limits</span>
+        <span class="n">xlim_values</span> <span class="o">=</span> <span class="p">[</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xlim_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span> <span class="p">]</span>
+        <span class="n">ylim_values</span> <span class="o">=</span> <span class="p">[</span> <span class="n">y</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ylim_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">y</span> <span class="p">]</span>
+        <span class="n">global_xlim</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">min</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">xlim_values</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">xlim_values</span><span class="p">)</span> <span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xlim_values</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span> <span class="k">else</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">global_ylim</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">min</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ylim_values</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ylim_values</span><span class="p">)</span> <span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ylim_values</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span> <span class="k">else</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># create plots for each pol on individual axes</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">npol</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">pollist</span> <span class="p">)</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.13</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">0.72</span><span class="o">-</span><span class="mf">0.04</span><span class="o">*</span><span class="p">(</span><span class="n">npol</span><span class="o">-</span><span class="mi">1</span><span class="p">)],</span> <span class="n">label</span><span class="o">=</span><span class="n">pol</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__plot_frame_to_axes</span><span class="p">(</span> <span class="n">pollist</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">PlotData_dict</span><span class="p">,</span> <span class="n">global_xlim</span><span class="p">,</span> <span class="n">global_ylim</span> <span class="p">)</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__plot_data_to_axes</span><span class="p">(</span> <span class="n">pollist</span><span class="p">,</span> <span class="n">ax</span><span class="p">[</span><span class="n">pol</span><span class="p">],</span>
+                                      <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">],</span> <span class="n">data_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">],</span> <span class="n">ScaleOut_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">],</span> <span class="n">LowRange_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span> <span class="p">)</span>
+
+        <span class="c1"># save the entire plot to png file</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">figfiledir</span> <span class="o">+</span> <span class="n">figfilename</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">DPIDetail</span> <span class="p">)</span>
+
+        <span class="k">return</span>
+
+
+    <span class="k">def</span> <span class="nf">__plot_frame_to_axes</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">pollist</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span><span class="n">Dict</span><span class="p">,</span> <span class="n">PlotData_dict</span><span class="p">:</span><span class="n">Dict</span><span class="p">,</span>
+                              <span class="n">xlim</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">ylim</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare the frame on axes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pollist:  list of pols</span>
+<span class="sd">            ax:       axes to plot</span>
+<span class="sd">            Plotdata: PlotData to plot</span>
+<span class="sd">            xlim:     xlimits</span>
+<span class="sd">            ylim:     ylimits</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (none)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check consistency</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span> <span class="s2">&quot;No statistics data to show for Active flags: ant:</span><span class="si">{}</span><span class="s2"> spw:</span><span class="si">{}</span><span class="s2"> pol:</span><span class="si">{}</span><span class="s2"> </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;ant_name&#39;</span><span class="p">],</span>
+                    <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span>
+                    <span class="n">pol</span><span class="p">,</span>
+                    <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
+                <span class="p">)</span> <span class="p">)</span>
+
+        <span class="c1"># loop over pols</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+            <span class="c1"># X-axis label format</span>
+            <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="n">sd_display</span><span class="o">.</span><span class="n">mjd_to_plotval</span><span class="p">(</span> <span class="n">xlim</span> <span class="p">)</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span> <span class="p">[</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ylim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ylim</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="p">)</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">sd_display</span><span class="o">.</span><span class="n">utc_locator</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">xlim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end_time</span><span class="o">=</span><span class="n">xlim</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">sd_display</span><span class="o">.</span><span class="n">utc_formatter</span><span class="p">())</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span> <span class="s2">&quot;off&quot;</span> <span class="p">)</span>   <span class="c1"># skip drawing frame</span>
+
+        <span class="c1"># find the first pol with data</span>
+        <span class="n">pol0</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">pol0</span> <span class="o">=</span> <span class="n">pol</span>
+                <span class="k">break</span>
+
+        <span class="c1"># pick one axes (=axf) to draw frame and header</span>
+        <span class="n">polf</span> <span class="o">=</span> <span class="n">pollist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">pol0</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">pol0</span>
+        <span class="n">axf</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="n">polf</span><span class="p">]</span>
+        <span class="n">axf</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span> <span class="s2">&quot;on&quot;</span> <span class="p">)</span>
+        <span class="c1"># determine the position of title and Active flag with respect to axes size</span>
+        <span class="n">axpos</span> <span class="o">=</span> <span class="n">axf</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+        <span class="n">loc_y</span> <span class="o">=</span> <span class="mf">1.07</span> <span class="o">*</span> <span class="mf">0.72</span><span class="o">/</span><span class="p">(</span><span class="n">axpos</span><span class="o">.</span><span class="n">y1</span> <span class="o">-</span> <span class="n">axpos</span><span class="o">.</span><span class="n">y0</span><span class="p">)</span>
+        <span class="n">title_text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="se">\n</span><span class="s2">MS: </span><span class="si">{}</span><span class="s2">    Antenna: </span><span class="si">{}</span><span class="s2">    SpW: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">polf</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">],</span> <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">polf</span><span class="p">][</span><span class="s1">&#39;ms_name&#39;</span><span class="p">],</span> <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">polf</span><span class="p">][</span><span class="s1">&#39;ant_name&#39;</span><span class="p">],</span> <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">polf</span><span class="p">][</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span>
+        <span class="c1"># pol info goes to title when there are no overplottings</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pollist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">title_text</span> <span class="o">=</span> <span class="n">title_text</span> <span class="o">+</span> <span class="s2">&quot;    Pol: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">polf</span><span class="p">][</span><span class="s1">&#39;pol&#39;</span><span class="p">]</span> <span class="p">)</span>
+        <span class="n">axf</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span> <span class="n">title_text</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">loc_y</span> <span class="p">)</span>
+        <span class="n">axf</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span> <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;xlabel&#39;</span><span class="p">],</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">6</span> <span class="p">)</span>
+        <span class="n">axf</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span> <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="s1">&#39;ylabel&#39;</span><span class="p">],</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span> <span class="p">)</span>
+        <span class="n">axf</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">6</span> <span class="p">)</span>
+        <span class="c1"># show ACTIVE/INACTIVE flags on left-top corner (isActive should be pol independent)</span>
+        <span class="k">if</span> <span class="n">PlotData_dict</span><span class="p">[</span><span class="n">polf</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]:</span>
+            <span class="n">axf</span><span class="o">.</span><span class="n">text</span><span class="p">(</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">loc_y</span><span class="p">,</span> <span class="s2">&quot;ACTIVE&quot;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axf</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                          <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+                          <span class="n">style</span><span class="o">=</span><span class="s1">&#39;italic&#39;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">axf</span><span class="o">.</span><span class="n">text</span><span class="p">(</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">loc_y</span><span class="p">,</span> <span class="s2">&quot;INACTIVE&quot;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axf</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                          <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+                          <span class="n">style</span><span class="o">=</span><span class="s1">&#39;italic&#39;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span> <span class="p">)</span>
+
+        <span class="c1"># if there are no data at all, draw a big &#39;NO DATA&#39; to the first axes</span>
+        <span class="k">if</span> <span class="n">pol0</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">pollist</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;NO DATA&quot;</span><span class="p">,</span>
+                                 <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">pollist</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                                 <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Gray&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span>
+                                 <span class="n">style</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+                <span class="n">ax</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">ax</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span>
+
+
+    <span class="k">def</span> <span class="nf">__plot_data_to_axes</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">pollist</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">ax</span><span class="p">:</span><span class="n">MplAxes</span><span class="p">,</span>
+                             <span class="n">PlotData</span><span class="p">:</span><span class="n">Dict</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span>
+                             <span class="n">ScaleOut</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">LowRange</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot data to axes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pollist     : List of pols</span>
+<span class="sd">            ax          : axes to plot</span>
+<span class="sd">            Plotdata    : PlotData to plot</span>
+<span class="sd">            data        : data to plot</span>
+<span class="sd">            ScaleOut    : scale out values  (optional for NO DATA case)</span>
+<span class="sd">            LowRange    : Low Range flag    (optional for NO DATA case)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (none)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pol info goes to legend when overplotting multiple pols</span>
+        <span class="n">pp</span> <span class="o">=</span> <span class="n">pollist</span><span class="o">.</span><span class="n">index</span><span class="p">(</span> <span class="n">PlotData</span><span class="p">[</span><span class="s1">&#39;pol&#39;</span><span class="p">]</span> <span class="p">)</span>
+        <span class="n">legend_loc_y</span> <span class="o">=</span> <span class="mf">0.99</span> <span class="o">+</span> <span class="mf">0.04</span> <span class="o">*</span> <span class="p">(</span> <span class="nb">len</span><span class="p">(</span><span class="n">pollist</span><span class="p">)</span><span class="o">-</span><span class="n">pp</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pollist</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">polstr</span> <span class="o">=</span> <span class="s2">&quot;Pol: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="n">PlotData</span><span class="p">[</span><span class="s1">&#39;pol&#39;</span><span class="p">]</span> <span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span> <span class="mf">0.00</span><span class="p">,</span> <span class="n">legend_loc_y</span><span class="p">,</span> <span class="n">polstr</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span> <span class="p">)</span>
+
+        <span class="c1"># mark &#39;NO DATA&#39; for NO DATA case</span>
+        <span class="k">if</span> <span class="n">PlotData</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span> <span class="mf">0.07</span><span class="p">,</span> <span class="n">legend_loc_y</span><span class="p">,</span> <span class="s2">&quot;NO DATA&quot;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span> <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># color and alpha defs (used for each pol)</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span> <span class="s1">&#39;online&#39;</span><span class="p">:</span> <span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="s1">&#39;normal&#39;</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span>  <span class="s1">&#39;deviator&#39;</span> <span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;thre&#39;</span><span class="p">:</span> <span class="s1">&#39;cyan&#39;</span><span class="p">,</span>  <span class="s1">&#39;scaleout&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;gap0&#39;</span><span class="p">:</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;gap1&#39;</span><span class="p">:</span><span class="s1">&#39;cyan&#39;</span> <span class="p">},</span>
+            <span class="p">{</span> <span class="s1">&#39;online&#39;</span><span class="p">:</span> <span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="s1">&#39;normal&#39;</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span>  <span class="s1">&#39;deviator&#39;</span> <span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;thre&#39;</span><span class="p">:</span> <span class="s1">&#39;cyan&#39;</span><span class="p">,</span>  <span class="s1">&#39;scaleout&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;gap0&#39;</span><span class="p">:</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;gap1&#39;</span><span class="p">:</span><span class="s1">&#39;cyan&#39;</span> <span class="p">},</span>
+            <span class="p">{</span> <span class="s1">&#39;online&#39;</span><span class="p">:</span> <span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="s1">&#39;normal&#39;</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span>  <span class="s1">&#39;deviator&#39;</span> <span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;thre&#39;</span><span class="p">:</span> <span class="s1">&#39;cyan&#39;</span><span class="p">,</span>  <span class="s1">&#39;scaleout&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;gap0&#39;</span><span class="p">:</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;gap1&#39;</span><span class="p">:</span><span class="s1">&#39;cyan&#39;</span> <span class="p">},</span>
+            <span class="p">{</span> <span class="s1">&#39;online&#39;</span><span class="p">:</span> <span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="s1">&#39;normal&#39;</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span>  <span class="s1">&#39;deviator&#39;</span> <span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;thre&#39;</span><span class="p">:</span> <span class="s1">&#39;cyan&#39;</span><span class="p">,</span>  <span class="s1">&#39;scaleout&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;gap0&#39;</span><span class="p">:</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;gap1&#39;</span><span class="p">:</span><span class="s1">&#39;cyan&#39;</span> <span class="p">}</span>
+        <span class="p">]</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.16</span><span class="p">,</span> <span class="mf">0.064</span> <span class="p">]</span>
+
+        <span class="c1"># Regular Plot</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">sd_display</span><span class="o">.</span><span class="n">mjd_to_plotval</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;online_x&#39;</span><span class="p">]),</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;online_y&#39;</span><span class="p">],</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span>
+                 <span class="n">markersize</span><span class="o">=</span><span class="mf">1.7</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">[</span><span class="n">pp</span><span class="p">][</span><span class="s1">&#39;online&#39;</span><span class="p">],</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">[</span><span class="n">pp</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;flagged (online)&#39;</span> <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">sd_display</span><span class="o">.</span><span class="n">mjd_to_plotval</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;normal_x&#39;</span><span class="p">]),</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;normal_y&#39;</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span>
+                 <span class="n">markersize</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">[</span><span class="n">pp</span><span class="p">][</span><span class="s1">&#39;normal&#39;</span><span class="p">],</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">[</span><span class="n">pp</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;data below threshold&#39;</span> <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">sd_display</span><span class="o">.</span><span class="n">mjd_to_plotval</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;deviator_x&#39;</span><span class="p">]),</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;deviator_y&#39;</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span>
+                 <span class="n">markersize</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">[</span><span class="n">pp</span><span class="p">][</span><span class="s1">&#39;deviator&#39;</span><span class="p">],</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">[</span><span class="n">pp</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;deviator&#39;</span> <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span> <span class="n">y</span><span class="o">=</span><span class="n">ScaleOut</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">[</span><span class="n">pp</span><span class="p">][</span><span class="s1">&#39;scaleout&#39;</span><span class="p">],</span>
+                    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;vertical limit(s)&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">[</span><span class="n">pp</span><span class="p">]</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="n">PlotData</span><span class="p">[</span><span class="s1">&#39;threType&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;plot&quot;</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span> <span class="n">y</span><span class="o">=</span><span class="n">PlotData</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">[</span><span class="n">pp</span><span class="p">][</span><span class="s1">&#39;thre&#39;</span><span class="p">],</span>
+                        <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">[</span><span class="n">pp</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">PlotData</span><span class="p">[</span><span class="s1">&#39;threDesc&#39;</span><span class="p">]</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="n">LowRange</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span> <span class="n">y</span><span class="o">=</span><span class="n">PlotData</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">[</span><span class="n">pp</span><span class="p">][</span><span class="s1">&#39;thre&#39;</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">[</span><span class="n">pp</span><span class="p">]</span> <span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span> <span class="n">y</span><span class="o">=</span><span class="n">ScaleOut</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">[</span><span class="n">pp</span><span class="p">][</span><span class="s1">&#39;scaleout&#39;</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">[</span><span class="n">pp</span><span class="p">]</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">sd_display</span><span class="o">.</span><span class="n">mjd_to_plotval</span><span class="p">(</span><span class="n">PlotData</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]),</span> <span class="n">PlotData</span><span class="p">[</span><span class="s1">&#39;thre&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span>
+                     <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">[</span><span class="n">pp</span><span class="p">][</span><span class="s1">&#39;thre&#39;</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">[</span><span class="n">pp</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">PlotData</span><span class="p">[</span><span class="s1">&#39;threDesc&#39;</span><span class="p">]</span> <span class="p">)</span>
+
+        <span class="c1"># plot gaps</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">PlotData</span><span class="p">[</span><span class="s1">&#39;gap&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sd_display</span><span class="o">.</span><span class="n">mjd_to_plotval</span><span class="p">(</span><span class="n">PlotData</span><span class="p">[</span><span class="s1">&#39;gap&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">[</span><span class="n">pp</span><span class="p">][</span><span class="s1">&#39;gap0&#39;</span><span class="p">],</span> <span class="n">ymin</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">[</span><span class="n">pp</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">PlotData</span><span class="p">[</span><span class="s1">&#39;gap&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sd_display</span><span class="o">.</span><span class="n">mjd_to_plotval</span><span class="p">(</span><span class="n">PlotData</span><span class="p">[</span><span class="s1">&#39;gap&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">[</span><span class="n">pp</span><span class="p">][</span><span class="s1">&#39;gap1&#39;</span><span class="p">],</span> <span class="n">ymin</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">[</span><span class="n">pp</span><span class="p">])</span>
+
+        <span class="c1"># legends</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center left&#39;</span><span class="p">,</span> <span class="n">numpoints</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                  <span class="n">prop</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                  <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.06</span><span class="p">,</span> <span class="n">legend_loc_y</span><span class="p">),</span>
+                  <span class="n">borderpad</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">handletextpad</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                  <span class="n">handlelength</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">columnspacing</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                  <span class="n">markerscale</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

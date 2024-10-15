@@ -1,0 +1,858 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.applycal.qa &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.applycal.qa</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.applycal.qa</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">QA plugins for the ALMA applycal task.</span>
+
+<span class="sd">This module demonstrates how to target QAScore messages at particular sections</span>
+<span class="sd">of the web log.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Reversible</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.h.tasks.applycal.applycal</span> <span class="k">as</span> <span class="nn">h_applycal</span>
+<span class="kn">import</span> <span class="nn">pipeline.hif.tasks.applycal.ifapplycal</span> <span class="k">as</span> <span class="nn">hif_applycal</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.pipelineqa</span> <span class="k">as</span> <span class="nn">pqa</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ampphase_vs_freq_qa</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># Maps outlier reasons to a text snippet that can be used in a QAScore message</span>
+<span class="n">REASONS_TO_TEXT</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;amp_vs_freq.intercept,amp.slope&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Amp vs frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;zero point and slope outliers&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;amp_vs_freq.intercept&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Amp vs frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;zero point outliers&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;amp_vs_freq.slope&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Amp vs frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;slope outliers&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;amp_vs_freq&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Amp vs frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;outliers&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;phase_vs_freq.intercept,phase_vs_freq.slope&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Phase vs frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;zero point and slope outliers&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;phase_vs_freq.intercept&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Phase vs frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;zero point outliers&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;phase_vs_freq.slope&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Phase vs frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;slope outliers&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;phase_vs_freq&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Phase vs frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;outliers&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;gt90deg_offset_phase_vs_freq.intercept,phase_vs_freq.slope&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Phase vs frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;zero point and slope outliers&#39;</span><span class="p">,</span> <span class="s1">&#39;; phase offset &gt; 90deg detected&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;gt90deg_offset_phase_vs_freq.intercept&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Phase vs frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;zero point outliers&#39;</span><span class="p">,</span> <span class="s1">&#39;; phase offset &gt; 90deg detected&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;gt90deg_offset_phase_vs_freq.slope&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Phase vs frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;slope outliers&#39;</span><span class="p">,</span> <span class="s1">&#39;; phase offset &gt; 90deg detected&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;gt90deg_offset_phase_vs_freq&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Phase vs frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;outliers&#39;</span><span class="p">,</span> <span class="s1">&#39;; phase offset &gt; 90deg detected&#39;</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="c1"># PIPE356Switches is a struct used to hold various options for outlier</span>
+<span class="c1"># detection and reporting</span>
+<span class="n">PIPE356Switches</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;PIPE356Switches&#39;</span><span class="p">,</span> <span class="s1">&#39;calculate_metrics export_outliers export_messages include_scores outlier_score flag_all&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># PIPE356_MODES defines some preset modes for outlier detection and reporting</span>
+<span class="n">PIPE356_MODES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;TEST_REAL_OUTLIERS&#39;</span><span class="p">:</span> <span class="n">PIPE356Switches</span><span class="p">(</span><span class="n">calculate_metrics</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">export_outliers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">export_messages</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                          <span class="n">include_scores</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">outlier_score</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">flag_all</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="s1">&#39;TEST_FAKE_OUTLIERS&#39;</span><span class="p">:</span> <span class="n">PIPE356Switches</span><span class="p">(</span><span class="n">calculate_metrics</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">export_outliers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">export_messages</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                          <span class="n">include_scores</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">outlier_score</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">flag_all</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="s1">&#39;ON&#39;</span><span class="p">:</span> <span class="n">PIPE356Switches</span><span class="p">(</span><span class="n">calculate_metrics</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">export_outliers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">export_messages</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_scores</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">outlier_score</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">flag_all</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="s1">&#39;DEBUG&#39;</span><span class="p">:</span> <span class="n">PIPE356Switches</span><span class="p">(</span><span class="n">calculate_metrics</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">export_outliers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">export_messages</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_scores</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                             <span class="n">outlier_score</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">flag_all</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="s1">&#39;OFF&#39;</span><span class="p">:</span> <span class="n">PIPE356Switches</span><span class="p">(</span><span class="n">calculate_metrics</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">export_outliers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">export_messages</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_scores</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                           <span class="n">outlier_score</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">flag_all</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="p">}</span>
+
+
+<span class="c1"># Tuple to hold data selection parameters. The field order is important as it</span>
+<span class="c1"># sets in which order the dimensions are rolled up. With the order below,</span>
+<span class="c1"># scores are merged first by pol, then ant, then spw, etc.</span>
+<span class="n">DataSelection</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;DataSelection&#39;</span><span class="p">,</span> <span class="s1">&#39;vis intent scan spw ant pol&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># The key data structure used to consolidate and merge QA scores: a dict</span>
+<span class="c1"># mapping data selections to the QA scores that cover that data selection. The</span>
+<span class="c1"># DataSelection keys are simple tuples, with index relating to a data</span>
+<span class="c1"># selection parameter (e.g., vis=[0], intent=[1], scan=[2], etc.).</span>
+<span class="n">DataSelectionToScores</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="n">DataSelection</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="ALMAApplycalListQAHandler">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler">[docs]</a>
+<span class="k">class</span> <span class="nc">ALMAApplycalListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    QA plugin to process lists of ALMA applycal results.</span>
+
+<span class="sd">    This plugin is required to overwrite how representative is set. We want</span>
+<span class="sd">    the representative score to be a headline banner score pulled from the</span>
+<span class="sd">    per-EB representative scores, not a lower priority score pulled from the</span>
+<span class="sd">    general score pool. The latter would be done by default, hence we</span>
+<span class="sd">    overwrite the handle() implementation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="n">h_applycal</span><span class="o">.</span><span class="n">ApplycalResults</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">hif_applycal</span><span class="o">.</span><span class="n">SerialIFApplycal</span>
+
+<div class="viewcode-block" id="ALMAApplycalListQAHandler.handle">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="c1"># The default representative implementation filters on all scores in</span>
+        <span class="c1"># the pool. Overwrite that selection by selecting a representative</span>
+        <span class="c1"># from all representative scores</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">representative</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">representative</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">],</span>
+                                       <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ALMAApplycalQAHandler">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler">[docs]</a>
+<span class="k">class</span> <span class="nc">ALMAApplycalQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    QA plugin to handle an applycal result for a single ALMA EB.</span>
+
+<span class="sd">    This plugin does outlier detection and QA score reprocessing to generate</span>
+<span class="sd">    messages targeted at different sections of the web log.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Register this QAPlugin as handling singular ApplycalResults object</span>
+    <span class="c1"># returned by IFApplycal only</span>
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">h_applycal</span><span class="o">.</span><span class="n">ApplycalResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">hif_applycal</span><span class="o">.</span><span class="n">SerialIFApplycal</span>
+
+<div class="viewcode-block" id="ALMAApplycalQAHandler.handle">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">h_applycal</span><span class="o">.</span><span class="n">ApplycalResults</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># skip if this is a VLA data set</span>
+        <span class="k">if</span> <span class="s1">&#39;ALMA&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">pipe356_mode</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PIPE356_QA_MODE&#39;</span><span class="p">,</span> <span class="s1">&#39;ON&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="n">mode_switches</span> <span class="o">=</span> <span class="n">PIPE356_MODES</span><span class="p">[</span><span class="n">pipe356_mode</span><span class="p">]</span>
+
+        <span class="c1"># dict to hold all QA scores, keyed by intended web log destination</span>
+        <span class="n">qa_scores</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># calculate the outliers and convert to scores</span>
+        <span class="k">if</span> <span class="n">mode_switches</span><span class="o">.</span><span class="n">calculate_metrics</span><span class="p">:</span>
+            <span class="c1"># calculate the raw QA scores</span>
+            <span class="n">raw_qa_scores</span> <span class="o">=</span> <span class="n">get_qa_scores</span><span class="p">(</span>
+                <span class="n">ms</span><span class="p">,</span> <span class="n">mode_switches</span><span class="o">.</span><span class="n">export_outliers</span><span class="p">,</span> <span class="n">mode_switches</span><span class="o">.</span><span class="n">outlier_score</span><span class="p">,</span> <span class="n">mode_switches</span><span class="o">.</span><span class="n">flag_all</span>
+            <span class="p">)</span>
+            <span class="c1"># group and summarise as required by PIPE-477</span>
+            <span class="n">qa_scores</span> <span class="o">=</span> <span class="n">summarise_scores</span><span class="p">(</span><span class="n">raw_qa_scores</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
+
+        <span class="c1"># dump weblog messages to a separate file if requested</span>
+        <span class="k">if</span> <span class="n">qa_scores</span> <span class="ow">and</span> <span class="n">mode_switches</span><span class="o">.</span><span class="n">export_messages</span><span class="p">:</span>
+            <span class="n">targets_to_log</span> <span class="o">=</span> <span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">ACCORDION</span><span class="p">,</span> <span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">BANNER</span><span class="p">]</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;PIPE356_messages.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">export_file</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">weblog_target</span> <span class="ow">in</span> <span class="n">targets_to_log</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">qa_score</span> <span class="ow">in</span> <span class="n">qa_scores</span><span class="p">[</span><span class="n">weblog_target</span><span class="p">]:</span>
+                        <span class="n">export_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qa_score</span><span class="o">.</span><span class="n">longmsg</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">qa_scores</span> <span class="ow">and</span> <span class="n">mode_switches</span><span class="o">.</span><span class="n">include_scores</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">score_list</span> <span class="ow">in</span> <span class="n">qa_scores</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">score_list</span><span class="p">)</span>
+
+        <span class="c1"># pick the minimum score of all (flagging and outliers) as</span>
+        <span class="c1"># representative, i.e. task score</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">representative</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="get_qa_scores">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.get_qa_scores">[docs]</a>
+<span class="k">def</span> <span class="nf">get_qa_scores</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">export_outliers</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">outlier_score</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">flag_all</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate amp/phase vs freq outliers for an EB and convert to QA scores.</span>
+
+<span class="sd">    This is the key entry point for applycal QA metric calculation. It</span>
+<span class="sd">    delegates to the detailed metric implementation in ampphase_vs_freq_qa.py</span>
+<span class="sd">    to detect outliers, converting the outlier descriptions to normalised QA</span>
+<span class="sd">    scores.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">intents</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">]</span>
+
+    <span class="n">all_scores</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># if requested, write outlier file header</span>
+    <span class="k">if</span> <span class="n">export_outliers</span><span class="p">:</span>
+        <span class="n">debug_path</span> <span class="o">=</span> <span class="s1">&#39;applycalQA_outliers.txt&#39;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">debug_path</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">debug_file</span><span class="p">:</span>
+            <span class="n">debug_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AMPLITUDE_SLOPE_THRESHOLD: </span><span class="si">{</span><span class="n">ampphase_vs_freq_qa</span><span class="o">.</span><span class="n">AMPLITUDE_SLOPE_THRESHOLD</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">debug_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AMPLITUDE_INTERCEPT_THRESHOLD: </span><span class="si">{</span><span class="n">ampphase_vs_freq_qa</span><span class="o">.</span><span class="n">AMPLITUDE_INTERCEPT_THRESHOLD</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">debug_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PHASE_SLOPE_THRESHOLD: </span><span class="si">{</span><span class="n">ampphase_vs_freq_qa</span><span class="o">.</span><span class="n">PHASE_SLOPE_THRESHOLD</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">debug_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PHASE_INTERCEPT_THRESHOLD: </span><span class="si">{</span><span class="n">ampphase_vs_freq_qa</span><span class="o">.</span><span class="n">PHASE_INTERCEPT_THRESHOLD</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intents</span><span class="p">:</span>
+        <span class="c1"># delegate to dedicated module for outlier detection</span>
+        <span class="n">outliers</span> <span class="o">=</span> <span class="n">ampphase_vs_freq_qa</span><span class="o">.</span><span class="n">score_all_scans</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">flag_all</span><span class="o">=</span><span class="n">flag_all</span><span class="p">)</span>
+
+        <span class="c1"># if requested, export outlier descriptions to a file</span>
+        <span class="k">if</span> <span class="n">export_outliers</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">debug_path</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">debug_file</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">outliers</span><span class="p">):</span>
+                    <span class="c1"># Filter doubles from sources with multiple intents</span>
+                    <span class="n">duplicate_entry</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">vis</span> <span class="o">==</span> <span class="n">outliers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">vis</span> <span class="ow">and</span> \
+                           <span class="n">o</span><span class="o">.</span><span class="n">scan</span> <span class="o">==</span> <span class="n">outliers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">scan</span> <span class="ow">and</span> \
+                           <span class="n">o</span><span class="o">.</span><span class="n">spw</span> <span class="o">==</span> <span class="n">outliers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">spw</span> <span class="ow">and</span> \
+                           <span class="n">o</span><span class="o">.</span><span class="n">ant</span> <span class="o">==</span> <span class="n">outliers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">ant</span> <span class="ow">and</span> \
+                           <span class="n">o</span><span class="o">.</span><span class="n">pol</span> <span class="o">==</span> <span class="n">outliers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">pol</span> <span class="ow">and</span> \
+                           <span class="n">o</span><span class="o">.</span><span class="n">reason</span> <span class="o">==</span> <span class="n">outliers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">reason</span> <span class="ow">and</span> \
+                           <span class="n">o</span><span class="o">.</span><span class="n">num_sigma</span> <span class="o">==</span> <span class="n">outliers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">num_sigma</span><span class="p">:</span>
+                            <span class="n">duplicate_entry</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="k">break</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">duplicate_entry</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">scan</span> <span class="o">==</span> <span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">}:</span>
+                            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">intent</span><span class="si">}</span><span class="s1"> scan=</span><span class="se">{{</span><span class="s1">all</span><span class="se">}}</span><span class="s1"> spw=</span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">spw</span><span class="si">}</span><span class="s1"> ant=</span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">ant</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;pol=</span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">pol</span><span class="si">}</span><span class="s1"> reason=</span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s1"> sigma_deviation=</span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">num_sigma</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">intent</span><span class="si">}</span><span class="s1"> scan=</span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">scan</span><span class="si">}</span><span class="s1"> spw=</span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">spw</span><span class="si">}</span><span class="s1"> ant=</span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">ant</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;pol=</span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">pol</span><span class="si">}</span><span class="s1"> reason=</span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s1"> sigma_deviation=</span><span class="si">{</span><span class="n">o</span><span class="o">.</span><span class="n">num_sigma</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="n">debug_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+
+        <span class="c1"># convert outliers to QA scores</span>
+        <span class="n">scores_for_intent</span> <span class="o">=</span> <span class="n">outliers_to_qa_scores</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">outliers</span><span class="p">,</span> <span class="n">outlier_score</span><span class="p">)</span>
+        <span class="n">all_scores</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scores_for_intent</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">all_scores</span></div>
+
+
+
+<div class="viewcode-block" id="QAMessage">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.QAMessage">[docs]</a>
+<span class="k">class</span> <span class="nc">QAMessage</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    QAMessage constructs a user-friendly QA message for an Outlier.</span>
+
+<span class="sd">    The QAMessage instance has two attributes, full_message and short_message,</span>
+<span class="sd">    that are of interest. full_message holds the text to be used when the</span>
+<span class="sd">    message is the first to be printed. short_message holds the text to be</span>
+<span class="sd">    used when this message is to be appended to the text of other QAMessages.</span>
+<span class="sd">    Naturally, this assumes the the calling code only concatenates messages</span>
+<span class="sd">    that originate from the same reason.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">outlier</span><span class="p">,</span> <span class="n">reason</span><span class="p">):</span>
+        <span class="n">metric_axes</span><span class="p">,</span> <span class="n">outlier_description</span><span class="p">,</span> <span class="n">extra_description</span> <span class="o">=</span> <span class="n">REASONS_TO_TEXT</span><span class="p">[</span><span class="n">reason</span><span class="p">]</span>
+
+        <span class="c1"># convert pol=0,1 to pol=XX,YY</span>
+        <span class="c1"># corr axis should be the same for all windows so just pick the first</span>
+        <span class="k">if</span> <span class="n">outlier</span><span class="o">.</span><span class="n">pol</span><span class="p">:</span>
+            <span class="n">spw_id</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">outlier</span><span class="o">.</span><span class="n">spw</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">corr_axes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw_id</span><span class="p">)</span><span class="o">.</span><span class="n">corr_axis</span><span class="p">))</span>
+            <span class="n">corrs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">corr_axes</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">outlier</span><span class="o">.</span><span class="n">pol</span><span class="p">])</span>
+            <span class="n">corr_msg</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">corrs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">corr_msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">outlier</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">intent_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">outlier</span><span class="o">.</span><span class="n">intent</span><span class="p">),</span><span class="w"> </span><span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="si">}</span><span class="s1"> calibrator&#39;</span> <span class="k">if</span> <span class="n">outlier</span><span class="o">.</span><span class="n">intent</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">spw_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; spw </span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">(</span><span class="n">outlier</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">outlier</span><span class="o">.</span><span class="n">spw</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">in</span> <span class="n">outlier</span><span class="o">.</span><span class="n">scan</span><span class="p">:</span>
+            <span class="c1"># outlier.scan can be a set or a tuple</span>
+            <span class="n">tmp_scan</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">outlier</span><span class="o">.</span><span class="n">scan</span><span class="p">))</span>
+            <span class="n">tmp_scan</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">scan_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; scan </span><span class="si">{</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">(</span><span class="n">tmp_scan</span><span class="p">)])))</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scan_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; scan </span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">(</span><span class="n">outlier</span><span class="o">.</span><span class="n">scan</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">outlier</span><span class="o">.</span><span class="n">scan</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># convert ant=1,3,5 to ant=DV03,CM05,CM08 etc.</span>
+        <span class="n">ant_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">ant</span><span class="o">.</span><span class="n">name</span>
+                            <span class="k">for</span> <span class="n">ant_id</span> <span class="ow">in</span> <span class="n">outlier</span><span class="o">.</span><span class="n">ant</span>
+                            <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span>
+                            <span class="k">if</span> <span class="n">ant</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">ant_id</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ant_names</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">):</span>
+            <span class="n">ant_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;all antennas&#39;</span><span class="p">]</span>
+        <span class="n">ant_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ant_names</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">ant_names</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">corr_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">corr_msg</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">corr_msg</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">short_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">metric_axes</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">outlier_description</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">full_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">short_msg</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">vis</span><span class="si">}{</span><span class="n">intent_msg</span><span class="si">}{</span><span class="n">spw_msg</span><span class="si">}{</span><span class="n">ant_msg</span><span class="si">}{</span><span class="n">corr_msg</span><span class="si">}{</span><span class="n">scan_msg</span><span class="si">}{</span><span class="n">extra_description</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">short_message</span> <span class="o">=</span> <span class="n">short_msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_message</span> <span class="o">=</span> <span class="n">full_msg</span></div>
+
+
+
+<div class="viewcode-block" id="outliers_to_qa_scores">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.outliers_to_qa_scores">[docs]</a>
+<span class="k">def</span> <span class="nf">outliers_to_qa_scores</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span>
+                          <span class="n">outliers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ampphase_vs_freq_qa</span><span class="o">.</span><span class="n">Outlier</span><span class="p">],</span>
+                          <span class="n">outlier_score</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a list of consolidated Outliers into a list of equivalent</span>
+<span class="sd">    QAScores.</span>
+
+<span class="sd">    The MeasurementSet argument is required to convert antenna IDs to antenna</span>
+<span class="sd">    names.</span>
+
+<span class="sd">    All generated QAScores will be assigned the numeric score given in</span>
+<span class="sd">    outlier_score.</span>
+
+<span class="sd">    :param ms: MeasurementSet domain object for the DataSelections</span>
+<span class="sd">    :param outliers: list of Outliers</span>
+<span class="sd">    :param outlier_score: score to assign to generated QAScores</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">hashable</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">outlier</span> <span class="ow">in</span> <span class="n">outliers</span><span class="p">:</span>
+        <span class="c1"># convert [&#39;amp.slope&#39;,&#39;amp.intercept&#39;] into &#39;amp.slope,amp.intercept&#39;, etc.</span>
+        <span class="n">hashable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ampphase_vs_freq_qa</span><span class="o">.</span><span class="n">Outlier</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                                                    <span class="n">intent</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+                                                    <span class="n">scan</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">scan</span><span class="p">,</span>
+                                                    <span class="n">spw</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+                                                    <span class="n">ant</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">ant</span><span class="p">,</span>
+                                                    <span class="n">pol</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">pol</span><span class="p">,</span>
+                                                    <span class="n">num_sigma</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">num_sigma</span><span class="p">,</span>
+                                                    <span class="n">phase_offset_gt90deg</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">phase_offset_gt90deg</span><span class="p">,</span>
+                                                    <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">outlier</span><span class="o">.</span><span class="n">reason</span><span class="p">))))</span>
+    <span class="n">reasons</span> <span class="o">=</span> <span class="p">{</span><span class="n">outlier</span><span class="o">.</span><span class="n">reason</span> <span class="k">for</span> <span class="n">outlier</span> <span class="ow">in</span> <span class="n">hashable</span><span class="p">}</span>
+
+    <span class="n">qa_scores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">reason</span> <span class="ow">in</span> <span class="n">reasons</span><span class="p">:</span>
+        <span class="n">outliers_for_reason</span> <span class="o">=</span> <span class="p">[</span><span class="n">outlier</span> <span class="k">for</span> <span class="n">outlier</span> <span class="ow">in</span> <span class="n">hashable</span> <span class="k">if</span> <span class="n">outlier</span><span class="o">.</span><span class="n">reason</span> <span class="o">==</span> <span class="n">reason</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">outliers_for_reason</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">outlier</span> <span class="ow">in</span> <span class="n">outliers_for_reason</span><span class="p">:</span>
+            <span class="n">msgs</span> <span class="o">=</span> <span class="n">QAMessage</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">outlier</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">reason</span><span class="p">)</span>
+
+            <span class="n">applies_to</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">scan</span><span class="p">,</span>
+                                                 <span class="n">intent</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+                                                 <span class="n">ant</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">pol</span><span class="p">)</span>
+
+            <span class="n">score</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">outlier_score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">msgs</span><span class="o">.</span><span class="n">full_message</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">msgs</span><span class="o">.</span><span class="n">short_message</span><span class="p">,</span>
+                                <span class="n">applies_to</span><span class="o">=</span><span class="n">applies_to</span><span class="p">,</span> <span class="n">hierarchy</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
+                                <span class="n">weblog_location</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">ACCORDION</span><span class="p">)</span>
+            <span class="n">score</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
+                                        <span class="n">metric_score</span><span class="o">=</span><span class="n">outlier</span><span class="o">.</span><span class="n">num_sigma</span><span class="p">,</span>
+                                        <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;sigma deviation from reference fit&#39;</span><span class="p">)</span>
+            <span class="n">qa_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">qa_scores</span></div>
+
+
+
+<div class="viewcode-block" id="to_data_selection">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.to_data_selection">[docs]</a>
+<span class="k">def</span> <span class="nf">to_data_selection</span><span class="p">(</span><span class="n">tds</span><span class="p">:</span> <span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataSelection</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a pipeline QA TargetDataSelection object to a DataSelection tuple.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">hashable_vals</span> <span class="o">=</span> <span class="p">{</span><span class="n">attr</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">tds</span><span class="p">,</span> <span class="n">attr</span><span class="p">)))</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">DataSelection</span><span class="o">.</span><span class="n">_fields</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">DataSelection</span><span class="p">(</span><span class="o">**</span><span class="n">hashable_vals</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="in_casa_format">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.in_casa_format">[docs]</a>
+<span class="k">def</span> <span class="nf">in_casa_format</span><span class="p">(</span><span class="n">data_selections</span><span class="p">:</span> <span class="n">DataSelectionToScores</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataSelectionToScores</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Restate data selections in concise CASA format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># we need a neat way to format each message from the indices. This dict</span>
+    <span class="c1"># states how each field should be formatted</span>
+    <span class="n">formatters</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">l</span><span class="p">),</span>
+        <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">l</span><span class="p">),</span>
+        <span class="c1"># scan, spw, and ant can be expressed in compressed CASA syntax</span>
+        <span class="c1"># e.g., 1,3,4,5,7 = 1,3~5,7</span>
+        <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">(</span><span class="n">l</span><span class="p">),</span>
+        <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">(</span><span class="n">l</span><span class="p">),</span>
+        <span class="s1">&#39;ant&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">(</span><span class="n">l</span><span class="p">),</span>
+        <span class="s1">&#39;pol&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">l</span><span class="p">))</span>
+    <span class="p">}</span>
+
+    <span class="n">formatted</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">ds</span><span class="p">,</span> <span class="n">scores</span> <span class="ow">in</span> <span class="n">data_selections</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">formatted_args</span> <span class="o">=</span> <span class="p">{</span><span class="n">attr</span><span class="p">:</span> <span class="n">formatters</span><span class="p">[</span><span class="n">attr</span><span class="p">](</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">new_ds</span> <span class="o">=</span> <span class="n">DataSelection</span><span class="p">(</span><span class="o">**</span><span class="n">formatted_args</span><span class="p">)</span>
+        <span class="n">formatted</span><span class="p">[</span><span class="n">new_ds</span><span class="p">]</span> <span class="o">=</span> <span class="n">scores</span>
+    <span class="k">return</span> <span class="n">formatted</span></div>
+
+
+
+<div class="viewcode-block" id="summarise_scores">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.summarise_scores">[docs]</a>
+<span class="k">def</span> <span class="nf">summarise_scores</span><span class="p">(</span><span class="n">all_scores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">],</span> <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Process a list of QAscores, replacing the detailed and highly specific</span>
+<span class="sd">    input scores with compressed representations intended for display in the</span>
+<span class="sd">    web log accordion, and even more generalised summaries intended for</span>
+<span class="sd">    display as warning banners.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># list to hold the final QA scores: non-combined hidden scores, plus the</span>
+    <span class="c1"># summarised (and less specific) accordion scores and banner scores</span>
+    <span class="n">final_scores</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># we don&#39;t want the non-combined scores reported in the web log. They&#39;re</span>
+    <span class="c1"># useful for the QA report written to disk, but for the web log the</span>
+    <span class="c1"># individual scores will be aggregated into general, less specific QA</span>
+    <span class="c1"># scores.</span>
+    <span class="n">hidden_scores</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">all_scores</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">hidden_scores</span><span class="p">:</span>
+        <span class="n">score</span><span class="o">.</span><span class="n">weblog_location</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">HIDDEN</span>
+    <span class="n">final_scores</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">HIDDEN</span><span class="p">]</span> <span class="o">=</span> <span class="n">hidden_scores</span>
+
+    <span class="c1"># JH update to spec for PIPE-477:</span>
+    <span class="c1">#</span>
+    <span class="c1"># After looking at the current messages, I have come to the conclusion</span>
+    <span class="c1"># that its really not necessary for the message to relate whether the</span>
+    <span class="c1"># outlier is slope or offset or both, or that the pol is XX or YY or both,</span>
+    <span class="c1"># since these are easily discerned once the antenna and scan are known. So</span>
+    <span class="c1"># that level of detail can be suppressed to keep the number of accordion</span>
+    <span class="c1"># messages down. I have changed the example in the description accordingly.</span>
+
+    <span class="n">accordion_scores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Collect scores. The phase scores (normal and &gt; 90 deg offset) should</span>
+    <span class="c1"># get just one single 1.0 score in case of no outliers.</span>
+    <span class="k">for</span> <span class="n">hierarchy_roots</span> <span class="ow">in</span> <span class="p">[[</span><span class="s1">&#39;amp_vs_freq&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;phase_vs_freq&#39;</span><span class="p">,</span> <span class="s1">&#39;gt90deg_offset_phase_vs_freq&#39;</span><span class="p">]]:</span>
+        <span class="c1"># erase just the polarisation dimension for accordion messages,</span>
+        <span class="c1"># leaving the messages specific enough to identify the plot that</span>
+        <span class="c1"># caused the problem</span>
+        <span class="n">discard</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pol&#39;</span><span class="p">]</span>
+        <span class="n">num_scores</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">hierarchy_root</span> <span class="ow">in</span> <span class="n">hierarchy_roots</span><span class="p">:</span>
+            <span class="n">msgs</span> <span class="o">=</span> <span class="n">combine_scores</span><span class="p">(</span><span class="n">all_scores</span><span class="p">,</span> <span class="n">hierarchy_root</span><span class="p">,</span> <span class="n">discard</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">ACCORDION</span><span class="p">)</span>
+            <span class="n">num_scores</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">msgs</span><span class="p">)</span>
+            <span class="n">accordion_scores</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">msgs</span><span class="p">)</span>
+
+        <span class="c1"># add a single 1.0 accordion score for metrics that generated no outlier</span>
+        <span class="k">if</span> <span class="n">num_scores</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">metric_axes</span><span class="p">,</span> <span class="n">outlier_description</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">REASONS_TO_TEXT</span><span class="p">[</span><span class="n">hierarchy_roots</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="c1"># Correct capitalisation as we&#39;ll prefix the metric with &#39;No &#39;</span>
+            <span class="n">metric_axes</span> <span class="o">=</span> <span class="n">metric_axes</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">short_msg</span> <span class="o">=</span> <span class="s1">&#39;No </span><span class="si">{}</span><span class="s1"> outliers&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">metric_axes</span><span class="p">)</span>
+            <span class="n">long_msg</span> <span class="o">=</span> <span class="s1">&#39;No </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> detected for </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">metric_axes</span><span class="p">,</span> <span class="n">outlier_description</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span>
+                                <span class="n">longmsg</span><span class="o">=</span><span class="n">long_msg</span><span class="p">,</span>
+                                <span class="n">shortmsg</span><span class="o">=</span><span class="n">short_msg</span><span class="p">,</span>
+                                <span class="n">hierarchy</span><span class="o">=</span><span class="n">hierarchy_roots</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                <span class="n">weblog_location</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">ACCORDION</span><span class="p">,</span>
+                                <span class="n">applies_to</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">}))</span>
+            <span class="n">score</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="n">hierarchy_roots</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                        <span class="n">metric_score</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                        <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;number of outliers&#39;</span><span class="p">)</span>
+            <span class="n">accordion_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+
+    <span class="n">final_scores</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">ACCORDION</span><span class="p">]</span> <span class="o">=</span> <span class="n">accordion_scores</span>
+
+    <span class="n">banner_scores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">hierarchy_root</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;amp_vs_freq&#39;</span><span class="p">,</span> <span class="s1">&#39;phase_vs_freq&#39;</span><span class="p">,</span> <span class="s1">&#39;gt90deg_offset_phase_vs_freq&#39;</span><span class="p">]:</span>
+        <span class="c1"># erase several dimensions for banner messages. These messages outline</span>
+        <span class="c1"># just the vis, spw, and intent. For specific info, people should look</span>
+        <span class="c1"># at the accordion messages.</span>
+        <span class="n">msgs</span> <span class="o">=</span> <span class="n">combine_scores</span><span class="p">(</span><span class="n">all_scores</span><span class="p">,</span> <span class="n">hierarchy_root</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;pol&#39;</span><span class="p">,</span> <span class="s1">&#39;ant&#39;</span><span class="p">,</span> <span class="s1">&#39;scan&#39;</span><span class="p">],</span> <span class="n">ms</span><span class="p">,</span> <span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">BANNER</span><span class="p">)</span>
+        <span class="n">banner_scores</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">msgs</span><span class="p">)</span>
+    <span class="n">final_scores</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">BANNER</span><span class="p">]</span> <span class="o">=</span> <span class="n">banner_scores</span>
+
+    <span class="c1"># JH request from 8/4/20:</span>
+    <span class="c1">#</span>
+    <span class="c1"># The one thing I&#39;d like to ask is to list the accordion messages ordered</span>
+    <span class="c1"># by {ms; intent; spw} so that they appear in &quot;figure order&quot; (currently</span>
+    <span class="c1"># they seem to be ordered by {ms; intent; scan}</span>
+    <span class="c1">#</span>
+    <span class="k">for</span> <span class="n">destination</span><span class="p">,</span> <span class="n">unsorted_scores</span> <span class="ow">in</span> <span class="n">final_scores</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">sorted_scores</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">unsorted_scores</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">score</span><span class="p">:</span> <span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">score</span><span class="o">.</span><span class="n">applies_to</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span>
+                                                                   <span class="nb">sorted</span><span class="p">(</span><span class="n">score</span><span class="o">.</span><span class="n">applies_to</span><span class="o">.</span><span class="n">intent</span><span class="p">),</span>
+                                                                   <span class="nb">sorted</span><span class="p">(</span><span class="n">score</span><span class="o">.</span><span class="n">applies_to</span><span class="o">.</span><span class="n">spw</span><span class="p">),</span>
+                                                                   <span class="nb">sorted</span><span class="p">(</span><span class="n">score</span><span class="o">.</span><span class="n">applies_to</span><span class="o">.</span><span class="n">scan</span><span class="p">)))</span>
+        <span class="n">final_scores</span><span class="p">[</span><span class="n">destination</span><span class="p">]</span> <span class="o">=</span> <span class="n">sorted_scores</span>
+
+    <span class="k">return</span> <span class="n">final_scores</span></div>
+
+
+
+<div class="viewcode-block" id="combine_scores">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.combine_scores">[docs]</a>
+<span class="k">def</span> <span class="nf">combine_scores</span><span class="p">(</span><span class="n">all_scores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">],</span>
+                   <span class="n">hierarchy_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                   <span class="n">discard</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                   <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span>
+                   <span class="n">location</span><span class="p">:</span> <span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Combine and summarise a list of QA scores.</span>
+
+<span class="sd">    QA scores that share a base metric type and/or differ only in the data</span>
+<span class="sd">    selection dimensions given in discard are aggregated and summarised</span>
+<span class="sd">    together.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">all_scores</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">all_scores</span><span class="p">)</span>
+
+    <span class="c1"># We&#39;re going to merge slope and offset outliers together into a single</span>
+    <span class="c1"># record. We do not need to group or partition the input data by QA score</span>
+    <span class="c1"># as every outlier gets the same score. If that condition changes, the</span>
+    <span class="c1"># algorithm below will need to change to group and process by score value</span>
+    <span class="c1"># too.</span>
+
+    <span class="c1"># create a filter function to leave the scores we want to process</span>
+    <span class="n">filter_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">qa_score</span><span class="p">:</span> <span class="n">qa_score</span><span class="o">.</span><span class="n">hierarchy</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">hierarchy_base</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># get all QA scores generated by a &#39;&lt;metric&gt; vs X&#39; algorithm</span>
+    <span class="n">scores_for_metric</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">all_scores</span> <span class="k">if</span> <span class="n">filter_fn</span><span class="p">(</span><span class="n">o</span><span class="p">)]</span>
+
+    <span class="c1"># create a data structure that map data selections to the scores that</span>
+    <span class="c1"># apply to them</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">map_data_selection_to_scores</span><span class="p">(</span><span class="n">scores_for_metric</span><span class="p">)</span>
+
+    <span class="c1"># Combine data selections that differ only by polarisation. This erases</span>
+    <span class="c1"># the distinction between pol=0 and pol=1, placing QA scores in a single</span>
+    <span class="c1"># data selection that spans all polarisations (other data selection</span>
+    <span class="c1"># dimensions aside).</span>
+    <span class="n">no_pols</span> <span class="o">=</span> <span class="n">discard_dimension</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">discard</span><span class="p">)</span>
+
+    <span class="c1"># hierarchically merge adjacent data selections</span>
+    <span class="n">merged_scores</span> <span class="o">=</span> <span class="n">compress_data_selections</span><span class="p">(</span><span class="n">no_pols</span><span class="p">,</span> <span class="n">DataSelection</span><span class="o">.</span><span class="n">_fields</span><span class="p">)</span>
+
+    <span class="c1"># filter out to leave one QA score, the score with the highest-valued</span>
+    <span class="c1"># metric, in the list. This also resets the QAScore.applies_to to match</span>
+    <span class="c1"># the data selection.</span>
+    <span class="n">as_min</span> <span class="o">=</span> <span class="n">take_min_as_representative</span><span class="p">(</span><span class="n">merged_scores</span><span class="p">)</span>
+
+    <span class="c1"># we can now discard the DataSelection keys, as the QAScore has now been</span>
+    <span class="c1"># updated with the correct data selection</span>
+    <span class="n">qa_scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">score</span> <span class="k">for</span> <span class="n">score_list</span> <span class="ow">in</span> <span class="n">as_min</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">score_list</span><span class="p">]</span>
+
+    <span class="c1"># rewrite the score messages</span>
+    <span class="k">for</span> <span class="n">qa_score</span> <span class="ow">in</span> <span class="n">qa_scores</span><span class="p">:</span>
+        <span class="c1"># QAMessage takes an Outlier namedtuple, but TargetDataSelection</span>
+        <span class="c1"># shares enough of the Outlier interface (vis, spw, scan, intent,</span>
+        <span class="c1"># etc.) that we can pass QAMessage directly without converting to</span>
+        <span class="c1"># an Outlier</span>
+        <span class="n">msgs</span> <span class="o">=</span> <span class="n">QAMessage</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">qa_score</span><span class="o">.</span><span class="n">applies_to</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="n">hierarchy_base</span><span class="p">)</span>
+        <span class="n">qa_score</span><span class="o">.</span><span class="n">shortmsg</span> <span class="o">=</span> <span class="n">msgs</span><span class="o">.</span><span class="n">short_message</span>
+        <span class="n">qa_score</span><span class="o">.</span><span class="n">longmsg</span> <span class="o">=</span> <span class="n">msgs</span><span class="o">.</span><span class="n">full_message</span>
+        <span class="n">qa_score</span><span class="o">.</span><span class="n">hierarchy</span> <span class="o">=</span> <span class="n">hierarchy_base</span>
+        <span class="n">qa_score</span><span class="o">.</span><span class="n">weblog_location</span> <span class="o">=</span> <span class="n">location</span>
+
+    <span class="k">return</span> <span class="n">qa_scores</span></div>
+
+
+
+<div class="viewcode-block" id="take_min_as_representative">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.take_min_as_representative">[docs]</a>
+<span class="k">def</span> <span class="nf">take_min_as_representative</span><span class="p">(</span><span class="n">to_merge</span><span class="p">:</span> <span class="n">DataSelectionToScores</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataSelectionToScores</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Filter out all but the worst score per data selection.</span>
+
+<span class="sd">    Note that this function also rewrites QAScore.applies_to to match the data</span>
+<span class="sd">    selection the QA score applies to.</span>
+
+<span class="sd">    This function operates on a dict that maps DataSelections to list of QA</span>
+<span class="sd">    scores. For each list, it discards all but the worst score as determined</span>
+<span class="sd">    by the metric. The selection will be biased towards metrics whose value</span>
+<span class="sd">    distribution tends higher than other metrics, but it seem the best we can</span>
+<span class="sd">    do.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">DataSelectionToScores</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">ds</span><span class="p">,</span> <span class="n">all_scores_for_ds</span> <span class="ow">in</span> <span class="n">to_merge</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># get score with worst metric</span>
+        <span class="n">scores_and_metrics</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="o">-</span><span class="n">o</span><span class="o">.</span><span class="n">score</span><span class="p">,</span> <span class="n">o</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">metric_score</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">all_scores_for_ds</span><span class="p">]</span>
+
+        <span class="c1"># PIPE-634: hif_applycal crashes with TypeError: &#39;&gt;&#39; not supported</span>
+        <span class="c1"># between instances of &#39;QAScore&#39; and &#39;QAScore&#39;</span>
+        <span class="c1">#</span>
+        <span class="c1"># When the score and metric score are equal, max starts comparing the</span>
+        <span class="c1"># QAScores themselves, which fails as the comparison operators are</span>
+        <span class="c1"># not implemented. From the perspective of a &#39;worst score&#39; calculation</span>
+        <span class="c1"># the scores are equal so it doesn&#39;t matter which one we take. Hence,</span>
+        <span class="c1"># we can supply an ordering function which simply excludes the QAScore</span>
+        <span class="c1"># object from the calculation.</span>
+        <span class="k">def</span> <span class="nf">omit_qascore_instance</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">worst_score</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">scores_and_metrics</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">omit_qascore_instance</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">worst_score</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">applies_to</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">(</span><span class="o">**</span><span class="n">ds</span><span class="o">.</span><span class="n">_asdict</span><span class="p">())</span>
+
+        <span class="n">result</span><span class="p">[</span><span class="n">ds</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="discard_dimension">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.discard_dimension">[docs]</a>
+<span class="k">def</span> <span class="nf">discard_dimension</span><span class="p">(</span><span class="n">to_merge</span><span class="p">:</span> <span class="n">DataSelectionToScores</span><span class="p">,</span> <span class="n">attrs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DataSelectionToScores</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aggregate QA scores held in one or more DataSelection dimensions,</span>
+<span class="sd">    discarding data selection indices for those dimensions.</span>
+
+<span class="sd">    This function discards DataSelection dimensions. Say four QA scores were</span>
+<span class="sd">    registered, one each to spws 16, 18, 20, and 22. Calling this function</span>
+<span class="sd">    with attrs=[&#39;spw&#39;] would combine those scores into a single DataSelection</span>
+<span class="sd">    with spw=&#39;&#39;, i.e., spw data selection is left unspecified.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">new_dsts</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">data_selection</span><span class="p">,</span> <span class="n">qa_scores</span> <span class="ow">in</span> <span class="n">to_merge</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">new_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="n">attr</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">()</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">}</span>
+        <span class="n">new_ds</span> <span class="o">=</span> <span class="n">data_selection</span><span class="o">.</span><span class="n">_replace</span><span class="p">(</span><span class="o">**</span><span class="n">new_attrs</span><span class="p">)</span>
+
+        <span class="c1"># note that the QA scores themselves still have the data selection</span>
+        <span class="c1"># specifiers in their .applies_to. For example, when asked to discard</span>
+        <span class="c1"># pol, the DataSelection keys in the the result object would have</span>
+        <span class="c1"># pol=&#39;&#39; but the list of QA scores held as a value for that key would</span>
+        <span class="c1"># still have pol=0 or pol=1, etc.</span>
+        <span class="k">if</span> <span class="n">new_ds</span> <span class="ow">in</span> <span class="n">new_dsts</span><span class="p">:</span>
+            <span class="n">new_dsts</span><span class="p">[</span><span class="n">new_ds</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">qa_scores</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_dsts</span><span class="p">[</span><span class="n">new_ds</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">qa_scores</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_dsts</span></div>
+
+
+
+<div class="viewcode-block" id="map_data_selection_to_scores">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.map_data_selection_to_scores">[docs]</a>
+<span class="k">def</span> <span class="nf">map_data_selection_to_scores</span><span class="p">(</span><span class="n">scores</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DataSelectionToScores</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Expand QAScores to a dict-based data structure that maps data selections</span>
+<span class="sd">    to the QA scores applicable to that selection.</span>
+
+<span class="sd">    :param scores: scores to decompose</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">to_data_selection</span><span class="p">(</span><span class="n">score</span><span class="o">.</span><span class="n">applies_to</span><span class="p">):</span> <span class="p">[</span><span class="n">score</span><span class="p">]</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">scores</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="compress_data_selections">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.compress_data_selections">[docs]</a>
+<span class="k">def</span> <span class="nf">compress_data_selections</span><span class="p">(</span><span class="n">to_merge</span><span class="p">:</span> <span class="n">DataSelectionToScores</span><span class="p">,</span>
+                             <span class="n">attrs_to_merge</span><span class="p">:</span> <span class="n">Reversible</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DataSelectionToScores</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Combine adjacent data selections to give a new data structure that</span>
+<span class="sd">    expresses the same data selection but in a more compressed form.</span>
+
+<span class="sd">    A data selection applies over various dimensions: spw, field, pol, etc..</span>
+<span class="sd">    This function merges data selections hierarchically, identifying adjacent</span>
+<span class="sd">    data selections per data selection dimension given in attrs_to_merge, and</span>
+<span class="sd">    concatenating those adjacent dimension indices together.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">to_merge</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">to_merge</span><span class="p">)</span>
+
+    <span class="c1"># We can identify data selections that apply to the same data except for a</span>
+    <span class="c1"># particular field by creating a new tuple that omits that field and</span>
+    <span class="c1"># sorting/grouping on the reduced tuple. This function is used to create</span>
+    <span class="c1"># the reduced tuple that &#39;ignores&#39; the specified field(s)</span>
+    <span class="k">def</span> <span class="nf">get_keyfunc</span><span class="p">(</span><span class="n">cols_to_ignore</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">def</span> <span class="nf">keyfunc</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">DataSelection</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">_fields</span> <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cols_to_ignore</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">keyfunc</span>
+
+    <span class="c1"># hierarchical merging of tuple fields, grouping/merging in reverse order of</span>
+    <span class="c1"># DataSelection fields. This has the effect of merging DataSelections from</span>
+    <span class="c1"># the bottom up, e.g., first merge data selections that differ only in pol,</span>
+    <span class="c1"># then merge data selections that differ only in ant, etc.</span>
+    <span class="n">keys_to_merge</span> <span class="o">=</span> <span class="n">to_merge</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">attrs_to_merge</span><span class="p">):</span>
+        <span class="n">key_func</span> <span class="o">=</span> <span class="n">get_keyfunc</span><span class="p">([</span><span class="n">attr</span><span class="p">])</span>
+        <span class="n">keys_to_merge</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">keys_to_merge</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key_func</span><span class="p">)</span>
+        <span class="n">to_add</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">to_del</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">keys_to_merge</span><span class="p">,</span> <span class="n">key_func</span><span class="p">):</span>
+            <span class="c1"># k is the data selection minus the ignored field, while g</span>
+            <span class="c1"># iterates over the data selections matching k that differ only in</span>
+            <span class="c1"># the ignored field. These selections in g can be merged.</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+            <span class="c1"># convert from ((1, ), (2, ), (5, )) to (1, 2, 5)</span>
+            <span class="n">merged_vals</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">group</span><span class="p">)))</span>
+
+            <span class="c1"># we now need to reconstruct the full data selection tuple from the</span>
+            <span class="c1"># reduced tuple in k plus the values we&#39;ve just merged. We do this</span>
+            <span class="c1"># by created a dict of DataSelection named arguments for everything</span>
+            <span class="c1"># except the field we&#39;ve merged...</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="n">o</span><span class="p">:</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">DataSelection</span><span class="o">.</span><span class="n">_fields</span> <span class="k">if</span> <span class="n">f</span> <span class="o">!=</span> <span class="n">attr</span><span class="p">))}</span>
+            <span class="c1"># ... and then adding the merged field with the merged value</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">merged_vals</span>
+
+            <span class="n">merged_ds</span> <span class="o">=</span> <span class="n">DataSelection</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
+            <span class="n">to_add</span><span class="p">[</span><span class="n">merged_ds</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">to_merge</span><span class="p">[</span><span class="n">o</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">group</span><span class="p">]))</span>
+            <span class="n">to_del</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">to_del</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">to_merge</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">to_merge</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">to_add</span><span class="p">)</span>
+
+        <span class="c1"># replace the original unmerged data with our merged selections and</span>
+        <span class="c1"># we&#39;re ready to go round again for the next field</span>
+        <span class="n">keys_to_merge</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">to_merge</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">to_merge</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

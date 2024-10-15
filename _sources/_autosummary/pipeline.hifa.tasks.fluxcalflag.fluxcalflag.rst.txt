@@ -1,0 +1,15 @@
+pipeline.hifa.tasks.fluxcalflag.fluxcalflag
+===========================================
+
+.. automodule:: pipeline.hifa.tasks.fluxcalflag.fluxcalflag
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FluxcalFlag
+      FluxcalFlagInputs
+      FluxcalFlagResults
+      MolecularLine
+   

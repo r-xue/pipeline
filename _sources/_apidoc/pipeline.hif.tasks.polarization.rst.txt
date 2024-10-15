@@ -1,0 +1,21 @@
+pipeline.hif.tasks.polarization package
+=======================================
+
+Submodules
+----------
+
+pipeline.hif.tasks.polarization.polarization module
+---------------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.polarization.polarization
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hif.tasks.polarization
+   :members:
+   :undoc-members:
+   :show-inheritance:

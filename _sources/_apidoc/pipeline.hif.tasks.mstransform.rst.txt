@@ -1,0 +1,37 @@
+pipeline.hif.tasks.mstransform package
+======================================
+
+Submodules
+----------
+
+pipeline.hif.tasks.mstransform.mstransform module
+-------------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.mstransform.mstransform
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.mstransform.qa module
+----------------------------------------
+
+.. automodule:: pipeline.hif.tasks.mstransform.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.mstransform.renderer module
+----------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.mstransform.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hif.tasks.mstransform
+   :members:
+   :undoc-members:
+   :show-inheritance:

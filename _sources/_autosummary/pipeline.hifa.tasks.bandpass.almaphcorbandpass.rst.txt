@@ -1,0 +1,24 @@
+pipeline.hifa.tasks.bandpass.almaphcorbandpass
+==============================================
+
+.. automodule:: pipeline.hifa.tasks.bandpass.almaphcorbandpass
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      centre_datetime_from_epochs
+      get_time_delta_seconds
+      round_up
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ALMAPhcorBandpass
+      ALMAPhcorBandpassInputs
+      BandpassResults
+      SessionALMAPhcorBandpass
+      SessionALMAPhcorBandpassInputs
+   

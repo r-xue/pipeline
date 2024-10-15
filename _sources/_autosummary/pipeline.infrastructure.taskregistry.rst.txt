@@ -1,0 +1,13 @@
+pipeline.infrastructure.taskregistry
+====================================
+
+.. automodule:: pipeline.infrastructure.taskregistry
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TaskMapping
+      TaskRegistry
+   

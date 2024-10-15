@@ -1,0 +1,586 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.common.displays.phaseoffset &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.common.displays.phaseoffset</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.common.displays.phaseoffset</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">matplotlib.gridspec</span> <span class="k">as</span> <span class="nn">gridspec</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.logger</span> <span class="k">as</span> <span class="nn">logger</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.displays</span> <span class="kn">import</span> <span class="n">common</span> <span class="k">as</span> <span class="n">common</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PhaseOffsetPlotHelper">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlotHelper">[docs]</a>
+<span class="k">class</span> <span class="nc">PhaseOffsetPlotHelper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">colour_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;BEFORE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
+                             <span class="s1">&#39;R&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="s1">&#39;sandybrown&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
+                             <span class="s1">&#39;X&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;lightslategray&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
+                             <span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="s1">&#39;lightslategray&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
+                             <span class="s1">&#39;XX&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;lightslategray&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
+                             <span class="s1">&#39;YY&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="s1">&#39;lightslategray&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)},</span>
+                  <span class="s1">&#39;AFTER&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
+                            <span class="s1">&#39;R&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
+                            <span class="s1">&#39;X&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
+                            <span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
+                            <span class="s1">&#39;XX&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
+                            <span class="s1">&#39;YY&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)}}</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    caltable_map should be a dictionary mapping the state to caltable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rootdir</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">caltable_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot_per_antenna</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">PhaseOffsetPlotHelper</span><span class="o">.</span><span class="n">colour_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">caltable_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span>\
+            <span class="s1">&#39;caltables argument defines states not in colour_map&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rootdir</span> <span class="o">=</span> <span class="n">rootdir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span> <span class="o">=</span> <span class="n">prefix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable_map</span> <span class="o">=</span> <span class="n">caltable_map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_per_antenna</span> <span class="o">=</span> <span class="n">plot_per_antenna</span>
+
+<div class="viewcode-block" id="PhaseOffsetPlotHelper.get_symbol_and_colour">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlotHelper.get_symbol_and_colour">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_symbol_and_colour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">colour_map</span><span class="p">[</span><span class="n">state</span><span class="p">][</span><span class="n">pol</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="PhaseOffsetPlotHelper.get_figfile">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlotHelper.get_figfile">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">antenna</span> <span class="o">=</span> <span class="s1">&#39;.ant</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">antennas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">antenna</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rootdir</span><span class="p">,</span> 
+                            <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">.spw</span><span class="si">%0.2d</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="PhaseOffsetPlotHelper.group_antennas">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlotHelper.group_antennas">[docs]</a>
+    <span class="k">def</span> <span class="nf">group_antennas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_per_antenna</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[[</span><span class="n">ant</span><span class="p">]</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">antennas</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="PhaseOffsetPlotHelper.label_antenna">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlotHelper.label_antenna">[docs]</a>
+    <span class="k">def</span> <span class="nf">label_antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_per_antenna</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">antennas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;All Antennas&#39;</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.89</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">text</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                 <span class="n">transform</span><span class="o">=</span><span class="n">fig</span><span class="o">.</span><span class="n">transFigure</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PhaseOffsetPlot">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlot">[docs]</a>
+<span class="k">class</span> <span class="nc">PhaseOffsetPlot</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">plothelper</span><span class="p">,</span> <span class="n">scan_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan_spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">score_retriever</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ms</span> <span class="o">=</span> <span class="n">ms</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plothelper</span> <span class="o">=</span> <span class="n">plothelper</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scans</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="n">scan_id</span><span class="p">,</span> <span class="n">scan_intent</span><span class="o">=</span><span class="n">scan_intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">scan_spw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_score_retriever</span> <span class="o">=</span> <span class="n">score_retriever</span> <span class="k">if</span> <span class="n">score_retriever</span> <span class="k">else</span> <span class="n">common</span><span class="o">.</span><span class="n">NullScoreFinder</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_caltables_loaded</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_caltables</span><span class="p">(</span><span class="n">plothelper</span><span class="o">.</span><span class="n">caltable_map</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_load_caltables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable_map</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caltables_loaded</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[(</span><span class="n">state</span><span class="p">,</span> <span class="n">common</span><span class="o">.</span><span class="n">CaltableWrapper</span><span class="o">.</span><span class="n">from_caltable</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">caltable_map</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+
+        <span class="c1"># some sanity checks, as unequal caltables have bit me before</span>
+        <span class="c1"># this doesn&#39;t work when WVR data are missing and should be interpolated over</span>
+<span class="c1">#         if len(data) &gt; 1:</span>
+<span class="c1">#             wrapper1 = data[0][1]</span>
+<span class="c1">#             for state, wrapper2 in data[1:]:</span>
+<span class="c1">#                 assert utils.areEqual(wrapper1.time, wrapper2.time), &#39;Time columns are not equal&#39;</span>
+<span class="c1">#                 assert utils.areEqual(wrapper1.antenna, wrapper2.antenna), &#39;Antenna columns are not equal&#39;</span>
+<span class="c1">#                 assert utils.areEqual(wrapper1.spw, wrapper2.spw), &#39;Spw columns are not equal&#39;</span>
+<span class="c1">#                 assert utils.areEqual(wrapper1.scan, wrapper2.scan), &#39;Scan columns are not equal&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_caltables_loaded</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="PhaseOffsetPlot.plot">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlot.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># these function arguments are used for debugging the plot routines,</span>
+        <span class="c1"># so we can call plot for a particular troublesome spw/antenna.</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ms</span>
+        <span class="n">plothelper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plothelper</span>
+
+        <span class="c1"># get the spw IDs common to all caltables..</span>
+        <span class="n">all_spw_ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+        <span class="n">common_spw_ids</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">all_spw_ids</span><span class="p">)</span>        
+        <span class="c1"># .. filter to match those specified as function arguments..</span>
+        <span class="k">if</span> <span class="n">spw_ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">common_spw_ids</span> <span class="o">=</span> <span class="n">common_spw_ids</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spw_ids</span><span class="p">))</span>
+        <span class="c1"># .. before converting to domain objects</span>
+        <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span> 
+                <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">common_spw_ids</span><span class="p">]</span>
+
+        <span class="c1"># Do the same for antenna IDs, finding those common to all caltables..</span>
+        <span class="n">all_antenna_ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">antenna</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+        <span class="n">common_antenna_ids</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">all_antenna_ids</span><span class="p">)</span>
+        <span class="c1"># .. filtering to match those specified as function arguments..</span>
+        <span class="k">if</span> <span class="n">antenna_ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">common_antenna_ids</span> <span class="o">=</span> <span class="n">common_antenna_ids</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">antenna_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">named_antenna_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span> <span class="k">if</span> <span class="n">ant</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">antenna_names</span><span class="p">}</span>
+            <span class="n">common_antenna_ids</span> <span class="o">=</span> <span class="n">common_antenna_ids</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">named_antenna_ids</span><span class="p">)</span>
+        <span class="c1"># .. before converting to domain objects</span>
+        <span class="n">antennas</span> <span class="o">=</span> <span class="p">[</span><span class="n">ant</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span>
+                    <span class="k">if</span> <span class="n">ant</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">common_antenna_ids</span><span class="p">]</span> 
+
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">spws</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;No common spws to plot in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">filename</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;No common antennas to plot in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">filename</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+
+        <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">antenna_group</span> <span class="ow">in</span> <span class="n">plothelper</span><span class="o">.</span><span class="n">group_antennas</span><span class="p">(</span><span class="n">antennas</span><span class="p">):</span>
+                <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scans</span><span class="p">,</span> <span class="n">antenna_group</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="PhaseOffsetPlot.create_plot">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlot.create_plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
+        <span class="c1"># get the fields and scan intents from the list of scans. These are</span>
+        <span class="c1"># used in the plot title, eg. NGC123 (PHASE)</span>
+        <span class="n">scan_fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">:</span>
+            <span class="n">scan_fields</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">fields</span><span class="p">])</span>
+        <span class="n">scan_fields</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">scan_fields</span><span class="p">)</span>
+
+        <span class="n">scan_intents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">:</span>
+            <span class="n">scan_intents</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span>
+        <span class="n">scan_intents</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="s1">&#39;WVR&#39;</span><span class="p">)</span>
+        <span class="n">scan_intents</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">scan_intents</span><span class="p">)</span>
+
+        <span class="n">num_scans</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span>
+
+        <span class="n">autoscale_yaxis_range</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">]</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+
+        <span class="c1"># size subplots proportional to the scan time</span>
+        <span class="n">integration_times</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">time_on_source</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">]</span>        
+        <span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_scans</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="n">integration_times</span><span class="p">)</span>
+        <span class="n">ax0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sharey</span><span class="o">=</span><span class="n">ax0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_scans</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">axis</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">():</span>
+                <span class="n">label</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">axes</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ax0</span><span class="p">)</span>
+
+        <span class="c1"># if num_scans is 1, axes will be a scalar instead of a list</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">axes</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">axis</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">axes</span><span class="p">):</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_linestyle</span><span class="p">(</span><span class="s1">&#39;dotted&#39;</span><span class="p">)</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span>
+                <span class="n">left</span><span class="o">=</span><span class="kc">True</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">top</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">bottom</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">labelbottom</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">labelright</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+        <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_linestyle</span><span class="p">(</span><span class="s1">&#39;solid&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Deviation from Scan Median Phase (degrees)&#39;</span> <span class="o">%</span> <span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">plothelper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plothelper</span>
+        <span class="n">flag_annotate</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">scan_idx</span><span class="p">,</span> <span class="n">scan</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">scans</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">:</span>    
+                <span class="n">axis</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">scan_idx</span><span class="p">]</span>
+                <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">legends</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">state_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">state_data</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">scan</span><span class="o">=</span><span class="p">[</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">],</span> 
+                                                 <span class="n">antenna</span><span class="o">=</span><span class="p">[</span><span class="n">antenna</span><span class="o">.</span><span class="n">id</span><span class="p">],</span> 
+                                                 <span class="n">spw</span><span class="o">=</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">])</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="c1"># scan/antenna/id not in caltable, probably flagged.</span>
+
+                        <span class="c1"># create fake masked slices and data arrays so we can </span>
+                        <span class="c1"># plot flagged annotation </span>
+                        <span class="k">class</span> <span class="nc">dummy</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+                            <span class="k">pass</span>
+
+                        <span class="n">dummy_slice</span> <span class="o">=</span> <span class="n">dummy</span><span class="p">()</span>
+                        <span class="n">dummy_slice</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">dummy_slice</span><span class="o">.</span><span class="n">stop</span> <span class="o">=</span> <span class="mi">1</span>
+
+                        <span class="n">dummy_time</span> <span class="o">=</span> <span class="n">dummy</span><span class="p">()</span>
+                        <span class="n">start_dt</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_epoch_as_datetime</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">start_time</span><span class="p">)</span>
+                        <span class="n">end_dt</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_epoch_as_datetime</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">end_time</span><span class="p">)</span>
+                        <span class="n">dummy_time</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">dates</span><span class="o">.</span><span class="n">date2num</span><span class="p">(</span><span class="n">start_dt</span><span class="p">),</span> 
+                                           <span class="n">matplotlib</span><span class="o">.</span><span class="n">dates</span><span class="o">.</span><span class="n">date2num</span><span class="p">(</span><span class="n">end_dt</span><span class="p">)]</span>
+
+                        <span class="n">dummy_data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                        <span class="n">axis</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">dummy_time</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">dummy_data</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+                        <span class="n">_</span><span class="p">,</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">dummy_time</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">dummy_data</span><span class="p">)</span>
+
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_flagged_data</span><span class="p">(</span><span class="n">dummy_time</span><span class="p">,</span> <span class="n">dummy_slice</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span>
+                                                <span class="kc">True</span><span class="p">,</span> <span class="n">annotation</span><span class="o">=</span><span class="s1">&#39;NO DATA&#39;</span><span class="p">)</span>
+
+                        <span class="n">axis</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">dummy_time</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dummy_time</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">autoscale_yaxis_range</span><span class="p">)</span>
+
+                        <span class="k">continue</span>
+
+                    <span class="c1"># get the polarisations for this scan</span>
+                    <span class="n">corr_axes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">dd</span><span class="o">.</span><span class="n">polarizations</span><span class="p">)</span> <span class="k">for</span> <span class="n">dd</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">data_descriptions</span>
+                                 <span class="k">if</span> <span class="n">dd</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+                    <span class="c1"># discard WVR and other strange data descriptions</span>
+                    <span class="n">corr_axes</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">corr_axes</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[(),</span> <span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,)]}</span>
+                    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">corr_axes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;Data descriptions have different &#39;</span>
+                                                 <span class="s1">&#39;corr axes for scan </span><span class="si">%s</span><span class="s1">. Got </span><span class="si">%s</span><span class="s1">&#39;</span>
+                                                 <span class="s1">&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">corr_axes</span><span class="p">))</span>
+                    <span class="c1"># go from set((&#39;XX&#39;, &#39;YY&#39;)) to the (&#39;XX&#39;, &#39;YY&#39;)</span>
+                    <span class="n">corr_axes</span> <span class="o">=</span> <span class="n">corr_axes</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+                    <span class="k">for</span> <span class="n">corr_idx</span><span class="p">,</span> <span class="n">corr_axis</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">corr_axes</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No data to plot for antenna </span><span class="si">%s</span><span class="s1"> scan </span><span class="si">%s</span><span class="s1"> corr </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                                     <span class="p">(</span><span class="n">antenna</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">corr_axis</span><span class="p">))</span>
+                            <span class="k">continue</span>
+
+                        <span class="n">phase_for_corr</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="n">corr_idx</span><span class="p">]</span>
+                        <span class="n">rad_phase</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">phase_for_corr</span><span class="p">)</span>
+                        <span class="n">unwrapped_phase</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">rad_phase</span><span class="p">)</span>
+                        <span class="n">offset_rad</span> <span class="o">=</span> <span class="n">unwrapped_phase</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">unwrapped_phase</span><span class="p">)</span>
+                        <span class="c1"># the operation above removed the mask, so add it back.</span>
+                        <span class="n">offset_rad</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">(</span><span class="n">offset_rad</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">phase_for_corr</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+                        <span class="n">offset_deg</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">offset_rad</span><span class="p">)</span>
+
+                        <span class="k">for</span> <span class="n">masked_slice</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">clump_masked</span><span class="p">(</span><span class="n">offset_deg</span><span class="p">):</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_flagged_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">masked_slice</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">flag_annotate</span><span class="p">)</span>
+
+                        <span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">=</span> <span class="n">plothelper</span><span class="o">.</span><span class="n">get_symbol_and_colour</span><span class="p">(</span><span class="n">corr_axis</span><span class="p">,</span> 
+                                                                                  <span class="n">state</span><span class="p">)</span>
+                        <span class="n">axis</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">offset_deg</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
+                                       <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+                        <span class="n">p</span><span class="p">,</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">offset_deg</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span>
+                                            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+
+                        <span class="n">legend_entry</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">corr_axis</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+                        <span class="k">if</span> <span class="n">legend_entry</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">legends</span><span class="p">:</span>
+                            <span class="n">legends</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">legend_entry</span><span class="p">)</span>
+                            <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+                        <span class="c1"># shrink the x axis range by a couple of integrations</span>
+                        <span class="c1"># so that the first/last scan symbols are not clipped </span>
+<span class="c1">#                         delta = numpy.mean(numpy.diff(data.time)) / 2</span>
+                        <span class="n">axis</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">autoscale_yaxis_range</span><span class="p">)</span>
+
+                <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+        <span class="c1"># shrink the y height slightly to make room for the legend</span>
+        <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+            <span class="n">box</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">set_position</span><span class="p">([</span><span class="n">box</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">y0</span> <span class="o">+</span> <span class="n">box</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="mf">0.04</span><span class="p">,</span>
+                               <span class="n">box</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="mf">0.96</span><span class="p">])</span>
+
+<span class="c1">#         # sort legend and associated plots by legend text </span>
+<span class="c1">#         legends, plots = zip(*sorted(zip(legends, plots)))</span>
+
+        <span class="n">axes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">legends</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">},</span> <span class="n">numpoints</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper center&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.07</span><span class="p">),</span>
+                        <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">legends</span><span class="p">),</span>
+                        <span class="n">bbox_transform</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">transFigure</span><span class="p">)</span>
+
+        <span class="n">spw_msg</span> <span class="o">=</span> <span class="s1">&#39;SPW </span><span class="si">%s</span><span class="s1"> Correlation</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> 
+                <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">corr_axes</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">multi_prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.013</span><span class="p">,</span> <span class="n">spw_msg</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                 <span class="n">transform</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.945</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">scan_fields</span><span class="p">,</span> <span class="n">scan_intents</span><span class="p">),</span>
+                 <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">fig</span><span class="o">.</span><span class="n">transFigure</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">plothelper</span><span class="o">.</span><span class="n">label_antenna</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">antennas</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.07</span><span class="p">,</span> <span class="s1">&#39;Scan&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">fig</span><span class="o">.</span><span class="n">transFigure</span><span class="p">,</span>
+                 <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+        <span class="n">scan_ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">]</span>
+        <span class="n">max_scans_for_msg</span> <span class="o">=</span> <span class="mi">8</span>
+
+        <span class="c1"># print &#39;Scans 4, 8, 12 ... 146&#39; if there are too many scans to </span>
+        <span class="c1"># print</span>
+        <span class="k">if</span> <span class="n">num_scans</span> <span class="o">&gt;</span> <span class="n">max_scans_for_msg</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">scan_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">max_scans_for_msg</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">scan_ids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">scan_txt</span> <span class="o">=</span> <span class="s1">&#39;s </span><span class="si">%s</span><span class="s1"> ... </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scan_txt</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">scan_ids</span><span class="p">,</span> <span class="n">multi_prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> 
+                                     <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.013</span><span class="p">,</span> <span class="s1">&#39;Scan</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">scan_txt</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span>
+                 <span class="n">transform</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+
+        <span class="n">figfile</span> <span class="o">=</span> <span class="n">plothelper</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">antennas</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="PhaseOffsetPlot.get_plot_wrapper">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlot.get_plot_wrapper">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
+        <span class="n">plothelper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plothelper</span>
+
+        <span class="n">antenna_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">ant</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">]</span>
+
+        <span class="n">figfile</span> <span class="o">=</span> <span class="n">plothelper</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">antennas</span><span class="p">)</span>
+        <span class="n">wrapper</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">figfile</span><span class="p">,</span>
+                              <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                              <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;phase&#39;</span><span class="p">,</span>
+                              <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                                          <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                          <span class="s1">&#39;ant&#39;</span><span class="p">:</span> <span class="n">antenna_names</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="n">plothelper</span><span class="o">.</span><span class="n">plot_per_antenna</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">wrapper</span><span class="o">.</span><span class="n">qa_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_score_retriever</span><span class="o">.</span><span class="n">get_score</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">antennas</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">figfile</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Phase offset plot for antenna </span><span class="si">%s</span><span class="s1"> spw </span><span class="si">%s</span><span class="s1"> not found.&#39;</span>
+                      <span class="s1">&#39; Creating new plot: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">antenna_names</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">figfile</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">create_plot</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">antennas</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not create phase offset plot for antenna&#39;</span>
+                          <span class="s1">&#39; </span><span class="si">%s</span><span class="s1"> spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">antenna_names</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># the plot may not be created if all data for that antenna are flagged</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">figfile</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">wrapper</span>            
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_plot_flagged_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">masked_slice</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">annotate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">annotation</span><span class="o">=</span><span class="s1">&#39;FLAGGED&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot flagged data.</span>
+
+<span class="sd">        data -- the CaltableWrapper for the data selection</span>
+<span class="sd">        masked_slice -- the Slice object defining the flagged extent</span>
+<span class="sd">        axis -- the Axis object to be used for plotting</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">idx_start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">masked_slice</span><span class="o">.</span><span class="n">start</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">idx_stop</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">masked_slice</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">idx_start</span><span class="p">]</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">idx_stop</span><span class="p">]</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">stop</span> <span class="o">-</span> <span class="n">start</span>
+
+        <span class="c1"># the x coords of this transformation are data, and the</span>
+        <span class="c1"># y coord are axes</span>
+        <span class="n">trans</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">blended_transform_factory</span><span class="p">(</span><span class="n">axis</span><span class="o">.</span><span class="n">transData</span><span class="p">,</span>
+                                                                <span class="n">axis</span><span class="o">.</span><span class="n">transAxes</span><span class="p">)</span>
+
+        <span class="c1"># We want x to be in data coordinates and y to</span>
+        <span class="c1"># span from 0..1 in axes coords</span>
+        <span class="n">rect</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                            <span class="n">transform</span><span class="o">=</span><span class="n">trans</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#EEEEEE&#39;</span><span class="p">,</span>
+                                            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+        <span class="n">axis</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">annotate</span><span class="p">:</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">annotation</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">trans</span><span class="p">,</span>
+                      <span class="n">size</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

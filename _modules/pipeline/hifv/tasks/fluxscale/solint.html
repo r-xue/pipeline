@@ -1,0 +1,782 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.fluxscale.solint &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.fluxscale.solint</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.fluxscale.solint</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.hif.heuristics.findrefant</span> <span class="k">as</span> <span class="nn">findrefant</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics</span> <span class="kn">import</span> <span class="n">getCalFlaggedSoln</span><span class="p">,</span> <span class="n">uvrange</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="solint_rounded_to_integer_integrations">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.solint_rounded_to_integer_integrations">[docs]</a>
+<span class="k">def</span> <span class="nf">solint_rounded_to_integer_integrations</span><span class="p">(</span><span class="n">solint</span><span class="p">,</span><span class="n">integration_time</span><span class="p">):</span>
+    <span class="c1"># code to return a solint that is an even number of integrations</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">test_n_integrations</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">solint</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">/</span> <span class="n">integration_time</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">test_n_integrations</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">test_n_integrations</span><span class="p">))</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">test_n_integrations</span><span class="o">*</span><span class="n">integration_time</span></div>
+
+
+
+<div class="viewcode-block" id="SolintInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.SolintInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">SolintInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for the hifv_solint pipeline task.  Used on VLA measurement sets.</span>
+
+<span class="sd">    The class inherits from vdp.StandardInputs.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">limit_short_solint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">refantignore</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">refant</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit_short_solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refantignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            context (:obj:): Pipeline context</span>
+<span class="sd">            vis(str, optional): String name of the measurement set</span>
+<span class="sd">            limit_short_solint(str):  Limit to the short solution interval</span>
+<span class="sd">            refantignore(str):  csv string of reference antennas to ignore - &#39;ea24,ea15,ea08&#39;</span>
+<span class="sd">            refant(str): A csv string of reference antenna(s). When used, disables refantignore.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SolintInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">limit_short_solint</span> <span class="o">=</span> <span class="n">limit_short_solint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refantignore</span> <span class="o">=</span> <span class="n">refantignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gain_solint1</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gain_solint2</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refant</span> <span class="o">=</span> <span class="n">refant</span></div>
+
+
+
+<div class="viewcode-block" id="SolintResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.SolintResults">[docs]</a>
+<span class="k">class</span> <span class="nc">SolintResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class for the hifv_solint pipeline task.  Used on VLA measurement sets.</span>
+
+<span class="sd">    The class inherits from basetask.Results.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preceding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gain_solint2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">shortsol2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">short_solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">new_gain_solint1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">bpdgain_touse</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+
+<span class="sd">            vis(str, optional): String name of the measurement set</span>
+<span class="sd">            final(List, optional): Calibration list applied - not used</span>
+<span class="sd">            pool(List, optional): Calibration list assesed - not used</span>
+<span class="sd">            preceding(List, optional): DEPRECATED results from worker tasks executed by this task</span>
+<span class="sd">            longsolint(float): numerical value of the long solution interval</span>
+<span class="sd">            gain_solint2(str):  str representation of longsolint with &#39;s&#39; seconds units</span>
+<span class="sd">            shortsol2(float): values based on the vla max integration time</span>
+<span class="sd">            short_solint(float): short solution interval numerical value</span>
+<span class="sd">            new_gain_solint1(str): str representation of short_solint with &#39;s&#39; seconds units.</span>
+<span class="sd">            bpdgain_touse(Dict):  Dictionary of tables per band</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">final</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">final</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">preceding</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">preceding</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SolintResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">pool</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="n">final</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preceding</span> <span class="o">=</span> <span class="n">preceding</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">longsolint</span> <span class="o">=</span> <span class="n">longsolint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gain_solint2</span> <span class="o">=</span> <span class="n">gain_solint2</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortsol2</span> <span class="o">=</span> <span class="n">shortsol2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">short_solint</span> <span class="o">=</span> <span class="n">short_solint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_gain_solint1</span> <span class="o">=</span> <span class="n">new_gain_solint1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpdgain_touse</span> <span class="o">=</span> <span class="n">bpdgain_touse</span>
+
+<div class="viewcode-block" id="SolintResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.SolintResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>    
+        <span class="n">m</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">gain_solint2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gain_solint2</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">longsolint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">longsolint</span>
+
+        <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">shortsol2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shortsol2</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">short_solint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">short_solint</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">new_gain_solint1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_gain_solint1</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Solint">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.Solint">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_solint&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Solint</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for the solint pipeline task.  Used on VLA measurement sets.</span>
+
+<span class="sd">    The class inherits from basetask.StandardTaskTemplate</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SolintInputs</span>
+
+<div class="viewcode-block" id="Solint.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.Solint.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Bulk of task execution occurs here.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SolintResults()</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">spw2band</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_spw2band</span><span class="p">()</span>
+        <span class="n">band2spw</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">spwobjlist</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">listspws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwobjlist</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">spw2band</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">listspws</span><span class="p">:</span>  <span class="c1"># Science intents only</span>
+                <span class="n">band2spw</span><span class="p">[</span><span class="n">band</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">))</span>
+
+        <span class="n">longsolint</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">gain_solint2</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">shortsol2</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">short_solint</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">new_gain_solint1</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">bpdgain_touse</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">calMs</span> <span class="o">=</span> <span class="s1">&#39;calibrators.ms&#39;</span>
+        <span class="n">split_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_split</span><span class="p">(</span><span class="n">calMs</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">spwlist</span> <span class="ow">in</span> <span class="n">band2spw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">longsolint_band</span><span class="p">,</span> <span class="n">gain_solint2_band</span><span class="p">,</span> <span class="n">shortsol2_band</span><span class="p">,</span> <span class="n">short_solint_band</span><span class="p">,</span> \
+            <span class="n">new_gain_solint1_band</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">bpdgain_touse_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_solint</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">,</span> <span class="n">calMs</span><span class="p">)</span>
+
+            <span class="n">longsolint</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">longsolint_band</span>
+            <span class="n">gain_solint2</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">gain_solint2_band</span>
+            <span class="n">shortsol2</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">shortsol2_band</span>
+            <span class="n">short_solint</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">short_solint_band</span>
+            <span class="n">new_gain_solint1</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_gain_solint1_band</span>
+            <span class="n">bpdgain_touse</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">bpdgain_touse_band</span>
+
+        <span class="k">return</span> <span class="n">SolintResults</span><span class="p">(</span><span class="n">longsolint</span><span class="o">=</span><span class="n">longsolint</span><span class="p">,</span> <span class="n">gain_solint2</span><span class="o">=</span><span class="n">gain_solint2</span><span class="p">,</span> <span class="n">shortsol2</span><span class="o">=</span><span class="n">shortsol2</span><span class="p">,</span>
+                             <span class="n">short_solint</span><span class="o">=</span><span class="n">short_solint</span><span class="p">,</span> <span class="n">new_gain_solint1</span><span class="o">=</span><span class="n">new_gain_solint1</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span>
+                             <span class="n">bpdgain_touse</span><span class="o">=</span><span class="n">bpdgain_touse</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Solint.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.Solint.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the best parameters by analysing the given jobs before returning any final jobs to execute.</span>
+
+<span class="sd">        Override method of basetask.StandardTaskTemplate.analyze()</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            results (list of class: `~pipeline.infrastructure.jobrequest.JobRequest`):</span>
+<span class="sd">                the job requests generated by :func:`~SimpleTask.prepare`</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            class:`~pipeline.api.Result`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_solint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">,</span> <span class="n">calMs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute solint heuristics per band and spwlist</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            band(str):  String band single letter identifier -  &#39;L&#39;  &#39;U&#39;  &#39;X&#39; etc.</span>
+<span class="sd">            spwlist(List):  List of string values for spws - [&#39;0&#39;, &#39;1&#39;, &#39;2&#39;, &#39;3&#39;]</span>
+<span class="sd">            calMs(str):  Split off calibrators MS</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            longsolint(float): numerical value of the long solution interval</span>
+<span class="sd">            gain_solint2(str):  str representation of longsolint with &#39;s&#39; seconds units</span>
+<span class="sd">            shortsol2(float): values based on the vla max integration time</span>
+<span class="sd">            short_solint(float): short solution interval numerical value</span>
+<span class="sd">            new_gain_solint1(str): str representation of short_solint with &#39;s&#39; seconds units.</span>
+<span class="sd">            vis(str):  MS name</span>
+<span class="sd">            bpdgain_touse(Dict):  Dictionary of tables per band</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Solint section</span>
+
+        <span class="p">(</span><span class="n">longsolint</span><span class="p">,</span> <span class="n">gain_solint2</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_determine_solint</span><span class="p">(</span><span class="n">calMs</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setjy_results</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">setjy_results</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">stage_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stage_number</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">stage_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">stage_number</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="n">tableprefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="s1">&#39;hifv_solint.s&#39;</span>
+
+        <span class="c1"># Testgains section</span>
+        <span class="n">tablebase</span> <span class="o">=</span> <span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_1.&#39;</span> <span class="o">+</span> <span class="s1">&#39;testgaincal&#39;</span>
+        <span class="n">table_suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_</span><span class="si">{!s}</span><span class="s1">.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">),</span> <span class="s1">&#39;3_</span><span class="si">{!s}</span><span class="s1">.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">),</span>
+                        <span class="s1">&#39;10_</span><span class="si">{!s}</span><span class="s1">.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">),</span> <span class="s1">&#39;scan_</span><span class="si">{!s}</span><span class="s1">.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">),</span> <span class="s1">&#39;limit_</span><span class="si">{!s}</span><span class="s1">.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">)]</span>
+        <span class="n">soltimes</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">]</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">soltimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">get_vla_max_integration_time</span><span class="p">()</span> <span class="o">*</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">soltimes</span><span class="p">]</span>
+
+        <span class="n">solints</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">soltimes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">soltimes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;s&#39;</span><span class="p">]</span>
+        <span class="n">soltime</span> <span class="o">=</span> <span class="n">soltimes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">solint</span> <span class="o">=</span> <span class="n">solints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">shortsol1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">shortsol1</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+        <span class="n">combtime</span> <span class="o">=</span> <span class="s1">&#39;scan&#39;</span>
+
+        <span class="n">refantfield</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">calibrator_field_select_string</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignorerefant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">ignorerefant</span>
+        <span class="c1"># PIPE-1637: adding &#39;,&#39; in the manual and auto refantignore parameter</span>
+        <span class="n">refantignore</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">refantignore</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ignorerefant</span><span class="p">])</span>
+        <span class="c1"># PIPE-595: if refant list is not provided, compute refants else use provided refant list.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">refantobj</span> <span class="o">=</span> <span class="n">findrefant</span><span class="o">.</span><span class="n">RefAntHeuristics</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">calMs</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">refantfield</span><span class="p">,</span>
+                                                    <span class="n">geometry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flagging</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                    <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">refantignore</span><span class="o">=</span><span class="n">refantignore</span><span class="p">)</span>
+
+            <span class="n">RefAntOutput</span> <span class="o">=</span> <span class="n">refantobj</span><span class="o">.</span><span class="n">calculate</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">RefAntOutput</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+        <span class="n">refAnt</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">RefAntOutput</span><span class="p">)</span>
+
+        <span class="n">bpdgain_touse</span> <span class="o">=</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">testgains_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_gtype_testgains</span><span class="p">(</span><span class="n">calMs</span><span class="p">,</span> <span class="n">bpdgain_touse</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span>
+                                                    <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">combtime</span><span class="o">=</span><span class="n">combtime</span><span class="p">,</span>
+                                                    <span class="n">refAnt</span><span class="o">=</span><span class="n">refAnt</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+
+        <span class="n">flaggedSolnResult1</span> <span class="o">=</span> <span class="n">getCalFlaggedSoln</span><span class="p">(</span><span class="n">bpdgain_touse</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;For solint = &quot;</span> <span class="o">+</span> <span class="n">solint</span> <span class="o">+</span> <span class="s2">&quot; fraction of flagged solutions = &quot;</span> <span class="o">+</span>
+                 <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult1</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Median fraction of flagged solutions per antenna = &quot;</span> <span class="o">+</span>
+                 <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult1</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="n">flaggedSolnResult1</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fracFlaggedSolns1</span> <span class="o">=</span> <span class="n">flaggedSolnResult1</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fracFlaggedSolns1</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="n">shortsol2</span> <span class="o">=</span> <span class="n">soltime</span>
+
+        <span class="k">if</span> <span class="n">fracFlaggedSolns1</span> <span class="o">&gt;</span> <span class="mf">0.05</span><span class="p">:</span>
+            <span class="n">soltime</span> <span class="o">=</span> <span class="n">soltimes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">solint</span> <span class="o">=</span> <span class="n">solints</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">testgains_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_gtype_testgains</span><span class="p">(</span><span class="n">calMs</span><span class="p">,</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span>
+                                                        <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">combtime</span><span class="o">=</span><span class="n">combtime</span><span class="p">,</span>
+                                                        <span class="n">refAnt</span><span class="o">=</span><span class="n">refAnt</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+            <span class="n">flaggedSolnResult3</span> <span class="o">=</span> <span class="n">getCalFlaggedSoln</span><span class="p">(</span><span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;For solint = &quot;</span> <span class="o">+</span> <span class="n">solint</span> <span class="o">+</span> <span class="s2">&quot; fraction of flagged solutions = &quot;</span> <span class="o">+</span>
+                     <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult3</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Median fraction of flagged solutions per antenna = &quot;</span> <span class="o">+</span>
+                     <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult3</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+
+            <span class="k">if</span> <span class="n">flaggedSolnResult3</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">fracFlaggedSolns3</span> <span class="o">=</span> <span class="n">flaggedSolnResult3</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fracFlaggedSolns3</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+            <span class="k">if</span> <span class="n">fracFlaggedSolns3</span> <span class="o">&lt;</span> <span class="n">fracFlaggedSolns1</span><span class="p">:</span>
+                <span class="n">shortsol2</span> <span class="o">=</span> <span class="n">soltime</span>
+                <span class="n">bpdgain_touse</span> <span class="o">=</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">fracFlaggedSolns3</span> <span class="o">&gt;</span> <span class="mf">0.05</span><span class="p">:</span>
+                    <span class="n">soltime</span> <span class="o">=</span> <span class="n">soltimes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">solint</span> <span class="o">=</span> <span class="n">solints</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+                    <span class="n">testgains_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_gtype_testgains</span><span class="p">(</span><span class="n">calMs</span><span class="p">,</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span>
+                                                                <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">combtime</span><span class="o">=</span><span class="n">combtime</span><span class="p">,</span>
+                                                                <span class="n">refAnt</span><span class="o">=</span><span class="n">refAnt</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+                    <span class="n">flaggedSolnResult10</span> <span class="o">=</span> <span class="n">getCalFlaggedSoln</span><span class="p">(</span><span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;For solint = &quot;</span> <span class="o">+</span> <span class="n">solint</span> <span class="o">+</span> <span class="s2">&quot; fraction of flagged solutions = &quot;</span> <span class="o">+</span>
+                             <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult3</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Median fraction of flagged solutions per antenna = &quot;</span> <span class="o">+</span>
+                             <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult3</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+
+                    <span class="k">if</span> <span class="n">flaggedSolnResult10</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">fracFlaggedSolns10</span> <span class="o">=</span> <span class="n">flaggedSolnResult10</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">fracFlaggedSolns10</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+                    <span class="k">if</span> <span class="n">fracFlaggedSolns10</span> <span class="o">&lt;</span> <span class="n">fracFlaggedSolns3</span><span class="p">:</span>
+                        <span class="n">shortsol2</span> <span class="o">=</span> <span class="n">soltime</span>
+                        <span class="n">bpdgain_touse</span> <span class="o">=</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+                        <span class="k">if</span> <span class="n">fracFlaggedSolns10</span> <span class="o">&gt;</span> <span class="mf">0.05</span><span class="p">:</span>
+                            <span class="n">solint</span> <span class="o">=</span> <span class="s1">&#39;inf&#39;</span>
+                            <span class="n">combtime</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                            <span class="n">testgains_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_gtype_testgains</span><span class="p">(</span><span class="n">calMs</span><span class="p">,</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                                                                        <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+                                                                        <span class="n">combtime</span><span class="o">=</span><span class="n">combtime</span><span class="p">,</span> <span class="n">refAnt</span><span class="o">=</span><span class="n">refAnt</span><span class="p">,</span>
+                                                                        <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+                            <span class="n">flaggedSolnResultScan</span> <span class="o">=</span> <span class="n">getCalFlaggedSoln</span><span class="p">(</span><span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;For solint = &quot;</span> <span class="o">+</span> <span class="n">solint</span> <span class="o">+</span> <span class="s2">&quot; fraction of flagged solutions = &quot;</span> <span class="o">+</span>
+                                     <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult3</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Median fraction of flagged solutions per antenna = &quot;</span> <span class="o">+</span>
+                                     <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult3</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+
+                            <span class="k">if</span> <span class="n">flaggedSolnResultScan</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="n">fracFlaggedSolnsScan</span> <span class="o">=</span> <span class="n">flaggedSolnResultScan</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">fracFlaggedSolnsScan</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+                            <span class="k">if</span> <span class="n">fracFlaggedSolnsScan</span> <span class="o">&lt;</span> <span class="n">fracFlaggedSolns10</span><span class="p">:</span>
+                                <span class="n">shortsol2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">longsolint</span>
+                                <span class="n">bpdgain_touse</span> <span class="o">=</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+                                <span class="k">if</span> <span class="n">fracFlaggedSolnsScan</span> <span class="o">&gt;</span> <span class="mf">0.05</span><span class="p">:</span>
+                                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Warning, large fraction of flagged solutions.  &quot;</span> <span class="o">+</span>
+                                                <span class="s2">&quot;There might be something wrong with your data&quot;</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ShortSol1: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">shortsol1</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ShortSol2: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">shortsol2</span><span class="p">))</span>
+
+        <span class="n">short_solint</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">shortsol1</span><span class="p">,</span> <span class="n">shortsol2</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Short_solint determined from heuristics: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">short_solint</span><span class="p">))</span>
+        <span class="n">new_gain_solint1</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">short_solint</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;s&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">limit_short_solint</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Short Solint limited by user keyword input to &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">limit_short_solint</span><span class="p">))</span>
+            <span class="n">limit_short_solint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">limit_short_solint</span>
+
+            <span class="n">short_solint_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:.12f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">short_solint</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">limit_short_solint</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">:</span>
+                <span class="n">limit_short_solint</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>
+                <span class="n">combtime</span> <span class="o">=</span> <span class="s1">&#39;scan&#39;</span>
+                <span class="n">short_solint</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit_short_solint</span><span class="p">)</span>
+                <span class="n">new_gain_solint1</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">short_solint</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;s&#39;</span>
+            <span class="k">elif</span> <span class="n">limit_short_solint</span> <span class="o">==</span> <span class="s1">&#39;inf&#39;</span><span class="p">:</span>
+                <span class="n">combtime</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="n">short_solint</span> <span class="o">=</span> <span class="n">limit_short_solint</span>
+                <span class="n">new_gain_solint1</span> <span class="o">=</span> <span class="n">short_solint</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;   Note that since &#39;inf&#39; was specified then combine=&#39;&#39; for gaincal.&quot;</span><span class="p">)</span>
+            <span class="c1"># This comparison needed to change for Python 3</span>
+            <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">limit_short_solint</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">short_solint_str</span><span class="p">:</span>
+                <span class="n">short_solint</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit_short_solint</span><span class="p">)</span>
+                <span class="n">new_gain_solint1</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">short_solint</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;s&#39;</span>
+                <span class="n">combtime</span> <span class="o">=</span> <span class="s1">&#39;scan&#39;</span>
+        <span class="c1"># PIPE-460.  Use solint=&#39;int&#39; when the minimum solution interval corresponds to one integration</span>
+        <span class="c1"># PIPE-696.  Need to compare short solint with int time and limit the precision.</span>
+        <span class="k">if</span> <span class="n">short_solint</span> <span class="o">==</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:.6f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get_vla_max_integration_time</span><span class="p">())):</span>
+            <span class="n">new_gain_solint1</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;The short solution interval used is: </span><span class="si">{!s}</span><span class="s1"> (</span><span class="si">{!s}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">new_gain_solint1</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">short_solint</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;s&#39;</span><span class="p">))</span>
+
+            <span class="n">testgains_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_gtype_testgains</span><span class="p">(</span><span class="n">calMs</span><span class="p">,</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">solint</span><span class="o">=</span><span class="n">new_gain_solint1</span><span class="p">,</span>
+                                                        <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">combtime</span><span class="o">=</span><span class="n">combtime</span><span class="p">,</span>
+                                                        <span class="n">refAnt</span><span class="o">=</span><span class="n">refAnt</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+            <span class="n">bpdgain_touse</span> <span class="o">=</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using short solint = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">new_gain_solint1</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">longsolint</span> <span class="o">-</span> <span class="n">short_solint</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">soltime</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Short solint = long solint +/- integration time of </span><span class="si">{}</span><span class="s1">s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">soltime</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">longsolint</span><span class="p">,</span> <span class="n">gain_solint2</span><span class="p">,</span> <span class="n">shortsol2</span><span class="p">,</span> <span class="n">short_solint</span><span class="p">,</span> <span class="n">new_gain_solint1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">bpdgain_touse</span>
+
+    <span class="k">def</span> <span class="nf">_do_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calMs</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute CASA task split on the calibrator scan select string</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            calMs(str):  outputvis parameter name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Executed job</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">calibrator_scan_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">calibrator_scan_select_string</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Splitting out calibrators into &quot;</span> <span class="o">+</span> <span class="n">calMs</span><span class="p">)</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                     <span class="s1">&#39;outputvis&#39;</span><span class="p">:</span> <span class="n">calMs</span><span class="p">,</span>
+                     <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;keepmms&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                     <span class="s1">&#39;antenna&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;timebin&#39;</span><span class="p">:</span> <span class="s1">&#39;0s&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;timerange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">calibrator_scan_select_string</span><span class="p">,</span>
+                     <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;array&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;observation&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;keepflags&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_determine_solint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calMs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Code to determine solution interval</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            calMs(str):  split off calibrators MS</span>
+<span class="sd">            spw(str):  spw selection  &#39;2,3,4&#39;, etc.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            longsolint</span>
+<span class="sd">            gain_solint2</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">durations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">old_spws</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">old_field</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="n">calMs</span><span class="p">)</span> <span class="k">as</span> <span class="n">ms</span><span class="p">:</span>
+            <span class="n">scan_summary</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">getscansummary</span><span class="p">()</span>    
+
+            <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+            <span class="n">phase_scan_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">phase_scan_select_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="n">phase_scan_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">phase_scan_list</span><span class="p">]</span>
+
+            <span class="c1"># Sub-select phase scan list per band</span>
+            <span class="n">phase_scanids_perband</span> <span class="o">=</span> <span class="p">[</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="n">phase_scan_list</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)]</span>
+
+            <span class="k">for</span> <span class="n">kk</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">phase_scan_list</span><span class="p">)):</span>
+                <span class="n">ii</span> <span class="o">=</span> <span class="n">phase_scan_list</span><span class="p">[</span><span class="n">kk</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">phase_scanids_perband</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="c1"># Collect beginning and ending times</span>
+                        <span class="c1"># Take max of end times and min of beginning times</span>
+                        <span class="n">endtimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">scan_summary</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)][</span><span class="n">scankey</span><span class="p">][</span><span class="s1">&#39;EndTime&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">scankey</span> <span class="ow">in</span> <span class="n">scan_summary</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)]]</span>
+                        <span class="n">begintimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">scan_summary</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)][</span><span class="n">scankey</span><span class="p">][</span><span class="s1">&#39;BeginTime&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">scankey</span> <span class="ow">in</span> <span class="n">scan_summary</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)]]</span>
+
+                        <span class="n">end_time</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">endtimes</span><span class="p">)</span>
+                        <span class="n">begin_time</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">begintimes</span><span class="p">)</span>
+
+                        <span class="n">new_spws</span> <span class="o">=</span> <span class="n">scan_summary</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)][</span><span class="s1">&#39;0&#39;</span><span class="p">][</span><span class="s1">&#39;SpwIds&#39;</span><span class="p">]</span>
+                        <span class="n">new_field</span> <span class="o">=</span> <span class="n">scan_summary</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)][</span><span class="s1">&#39;0&#39;</span><span class="p">][</span><span class="s1">&#39;FieldId&#39;</span><span class="p">]</span>
+
+                        <span class="k">if</span> <span class="p">((</span><span class="n">kk</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">phase_scan_list</span><span class="p">[</span><span class="n">kk</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">ii</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span>
+                                <span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">new_spws</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">old_spws</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="n">new_field</span> <span class="o">==</span> <span class="n">old_field</span><span class="p">)</span> <span class="ow">and</span>
+                                <span class="p">(</span><span class="n">phase_scan_list</span><span class="p">[</span><span class="n">kk</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">phase_scanids_perband</span><span class="p">)):</span>
+                            <span class="c1"># if contiguous scans, just increase the time on the previous one</span>
+                            <span class="n">add_duration</span> <span class="o">=</span> <span class="mi">86400</span> <span class="o">*</span> <span class="p">(</span><span class="n">end_time</span> <span class="o">-</span> <span class="n">old_begin_time</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">add_duration</span> <span class="o">&lt;</span> <span class="mf">1000.0</span><span class="p">:</span>
+                                <span class="n">durations</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">add_duration</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;End time, old begin time </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end_time</span><span class="p">,</span> <span class="n">old_begin_time</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;End time, begin time </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end_time</span><span class="p">,</span> <span class="n">begin_time</span><span class="p">))</span>
+                            <span class="n">durations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">86400</span><span class="o">*</span><span class="p">(</span><span class="n">end_time</span> <span class="o">-</span> <span class="n">begin_time</span><span class="p">))</span>
+                            <span class="n">old_begin_time</span> <span class="o">=</span> <span class="n">begin_time</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Append durations, old, begin </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">:&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">durations</span><span class="p">,</span> <span class="n">old_begin_time</span><span class="p">,</span> <span class="n">begin_time</span><span class="p">))</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Scan &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; has &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">durations</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;s on source&quot;</span><span class="p">)</span>
+                        <span class="n">old_spws</span> <span class="o">=</span> <span class="n">new_spws</span>
+                        <span class="n">old_field</span> <span class="o">=</span> <span class="n">new_field</span>
+
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;WARNING: scan &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; is completely flagged and missing from &quot;</span> <span class="o">+</span> <span class="n">calMs</span><span class="p">)</span>
+
+        <span class="n">orig_durations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">durations</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">durations</span> <span class="o">=</span> <span class="n">orig_durations</span><span class="p">[(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">zscore</span><span class="p">(</span><span class="n">orig_durations</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">)]</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No statistical outliers in list of determined durations.&quot;</span><span class="p">)</span>
+            <span class="n">durations</span> <span class="o">=</span> <span class="n">orig_durations</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">durations</span><span class="o">.</span><span class="n">tolist</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No statistical outliers in list of determined durations.&quot;</span><span class="p">)</span>
+            <span class="n">durations</span> <span class="o">=</span> <span class="n">orig_durations</span>
+
+        <span class="n">nsearch</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">integration_time</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_max_integration_time</span><span class="p">()</span>
+        <span class="n">integration_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">integration_time</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">search_results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nsearch</span><span class="p">)</span>
+        <span class="n">longest_scan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">orig_durations</span><span class="p">))</span>
+        <span class="n">zscore_solint</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">durations</span><span class="p">)</span>
+        <span class="n">solint_integer_integrations</span> <span class="o">=</span> <span class="n">solint_rounded_to_integer_integrations</span><span class="p">(</span><span class="n">zscore_solint</span> <span class="o">*</span> <span class="mf">1.01</span><span class="p">,</span> <span class="n">integration_time</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">solint_integer_integrations</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsearch</span><span class="p">):</span>
+                <span class="c1"># print(&#39;testing solint&#39;, solint_integer_integrations + i * integration_time)</span>
+                <span class="n">search_results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">longest_scan</span> <span class="o">/</span> <span class="p">(</span><span class="n">solint_integer_integrations</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">integration_time</span><span class="p">)</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">longest_scan</span> <span class="o">/</span> <span class="p">(</span><span class="n">solint_integer_integrations</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">integration_time</span><span class="p">))</span>
+            <span class="n">longsolint</span> <span class="o">=</span> <span class="n">solint_integer_integrations</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">search_results</span><span class="p">)</span> <span class="o">*</span> <span class="n">integration_time</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">longsolint</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">durations</span><span class="p">))</span> <span class="o">*</span> <span class="mf">1.01</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Using alternate long solint calculation.&quot;</span><span class="p">)</span>
+
+        <span class="n">gain_solint2</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">longsolint</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;s&#39;</span>
+
+        <span class="k">return</span> <span class="n">longsolint</span><span class="p">,</span> <span class="n">gain_solint2</span>
+
+    <span class="k">def</span> <span class="nf">_do_gtype_testgains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calMs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">solint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">combtime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                            <span class="n">refAnt</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform a G-Type delay calibration with CASA task gaincal</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            calMs(str): split off calibrators for use in the gaincal vis parameter</span>
+<span class="sd">            caltable(str): Name of the caltable to be created</span>
+<span class="sd">            solint</span>
+<span class="sd">            context (:obj:): Pipeline context</span>
+<span class="sd">            combtime(str):  gaincal parameter default of &#39;scan&#39;</span>
+<span class="sd">            refAnt(str): csv string of reference antennas</span>
+<span class="sd">            spw(str):  spw selection  &#39;2,3,4&#39;, etc.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="n">calibrator_scan_select_string</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">calibrator_scan_select_string</span>
+
+        <span class="n">scanlist</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">calibrator_scan_select_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+        <span class="n">scanids_perband</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="n">scanlist</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)])</span>
+
+        <span class="n">minBL_for_cal</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">vla_minbaselineforcal</span><span class="p">()</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">calMs</span><span class="p">,</span>
+                     <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+                     <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                     <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scanids_perband</span><span class="p">,</span>
+                     <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="n">solint</span><span class="p">,</span>
+                     <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="n">combtime</span><span class="p">,</span>
+                     <span class="s1">&#39;preavg&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                     <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">refAnt</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+                     <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">minBL_for_cal</span><span class="p">,</span>
+                     <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span>
+                     <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;smodel&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                     <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;ap&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;append&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;gainfield&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;interp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                     <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+        <span class="n">calscanslist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">scanids_perband</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span>
+        <span class="n">scanobjlist</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="n">calscanslist</span><span class="p">,</span>
+                                  <span class="n">scan_intent</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">,</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">])</span>
+        <span class="n">fieldidlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scanobj</span> <span class="ow">in</span> <span class="n">scanobjlist</span><span class="p">:</span>
+            <span class="n">fieldobj</span><span class="p">,</span> <span class="o">=</span> <span class="n">scanobj</span><span class="o">.</span><span class="n">fields</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">fieldobj</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fieldidlist</span><span class="p">:</span>
+                <span class="n">fieldidlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fieldobj</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">fieldidstring</span> <span class="ow">in</span> <span class="n">fieldidlist</span><span class="p">:</span>
+            <span class="n">fieldid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fieldidstring</span><span class="p">)</span>
+            <span class="n">uvrangestring</span> <span class="o">=</span> <span class="n">uvrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">)</span>
+            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldidstring</span>
+            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uvrangestring</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">caltable</span><span class="p">):</span>
+                <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;append&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">gaincal</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

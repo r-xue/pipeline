@@ -1,0 +1,15 @@
+pipeline.hsd.tasks.imaging.sdcombine
+====================================
+
+.. automodule:: pipeline.hsd.tasks.imaging.sdcombine
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      NewType
+      SDImageCombine
+      SDImageCombineInputs
+      SDImagingResultItem
+   

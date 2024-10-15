@@ -1,0 +1,20 @@
+pipeline.hifv.tasks.flagging.displaycheckflag
+=============================================
+
+.. automodule:: pipeline.hifv.tasks.flagging.displaycheckflag
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      griddata
+      make_axes_locatable
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      checkflagPercentageMap
+      checkflagSummaryChart
+   

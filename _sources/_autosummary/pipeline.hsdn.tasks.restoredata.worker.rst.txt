@@ -1,0 +1,14 @@
+pipeline.hsdn.tasks.restoredata.worker
+======================================
+
+.. automodule:: pipeline.hsdn.tasks.restoredata.worker
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SDAmpCalWorker
+      SDAmpCalWorkerInputs
+      SDAmpCalWorkerResults
+   

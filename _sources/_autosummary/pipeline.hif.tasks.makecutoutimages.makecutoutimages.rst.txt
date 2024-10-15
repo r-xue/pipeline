@@ -1,0 +1,22 @@
+pipeline.hif.tasks.makecutoutimages.makecutoutimages
+====================================================
+
+.. automodule:: pipeline.hif.tasks.makecutoutimages.makecutoutimages
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_stokes
+      imstat_items
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      Makecutoutimages
+      MakecutoutimagesInputs
+      MakecutoutimagesResults
+   

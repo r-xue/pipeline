@@ -1,0 +1,13 @@
+pipeline.hifv.tasks.swpowcal.swpowcal
+=====================================
+
+.. automodule:: pipeline.hifv.tasks.swpowcal.swpowcal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Swpowcal
+      SwpowcalInputs
+   

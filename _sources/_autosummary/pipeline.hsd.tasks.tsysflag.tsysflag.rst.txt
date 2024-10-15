@@ -1,0 +1,14 @@
+pipeline.hsd.tasks.tsysflag.tsysflag
+====================================
+
+.. automodule:: pipeline.hsd.tasks.tsysflag.tsysflag
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SerialTsysflag
+      Tsysflag
+      TsysflagInputs
+   

@@ -1,0 +1,13 @@
+pipeline.hif.heuristics.imageparams\_vla\_scal
+==============================================
+
+.. automodule:: pipeline.hif.heuristics.imageparams_vla_scal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ImageParamsHeuristicsVLA
+      ImageParamsHeuristicsVLAScal
+   

@@ -1,0 +1,790 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.imageprecheck.imageprecheck &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.imageprecheck.imageprecheck</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.imageprecheck.imageprecheck</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.sensitivity</span> <span class="kn">import</span> <span class="n">Sensitivity</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics</span> <span class="kn">import</span> <span class="n">imageprecheck</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.heuristics</span> <span class="kn">import</span> <span class="n">imageparams_factory</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ImagePreCheckResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.imageprecheck.html#pipeline.hifa.tasks.imageprecheck.imageprecheck.ImagePreCheckResults">[docs]</a>
+<span class="k">class</span> <span class="nc">ImagePreCheckResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">real_repr_target</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">repr_target</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">repr_source</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">repr_spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">reprBW_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reprBW_nbin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">minAcceptableAngResolution</span><span class="o">=</span><span class="s1">&#39;0.0arcsec&#39;</span><span class="p">,</span> <span class="n">maxAcceptableAngResolution</span><span class="o">=</span><span class="s1">&#39;0.0arcsec&#39;</span><span class="p">,</span>
+                 <span class="n">maxAllowedBeamAxialRatio</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">user_minAcceptableAngResolution</span><span class="o">=</span><span class="s1">&#39;0.0arcsec&#39;</span><span class="p">,</span>
+                 <span class="n">user_maxAcceptableAngResolution</span><span class="o">=</span><span class="s1">&#39;0.0arcsec&#39;</span><span class="p">,</span> <span class="n">user_maxAllowedBeamAxialRatio</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                 <span class="n">sensitivityGoal</span><span class="o">=</span><span class="s1">&#39;0mJy&#39;</span><span class="p">,</span> <span class="n">hm_robust</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">hm_uvtaper</span><span class="o">=</span><span class="p">[],</span>
+                 <span class="n">sensitivities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sensitivity_bandwidth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">single_continuum</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">per_spw_cont_sensitivities_all_chan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">synthesized_beams</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beamRatios</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">error_msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ImagePreCheckResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">sensitivities</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sensitivities</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">real_repr_target</span> <span class="o">=</span> <span class="n">real_repr_target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repr_target</span> <span class="o">=</span> <span class="n">repr_target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repr_source</span> <span class="o">=</span> <span class="n">repr_source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repr_spw</span> <span class="o">=</span> <span class="n">repr_spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reprBW_mode</span> <span class="o">=</span> <span class="n">reprBW_mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reprBW_nbin</span> <span class="o">=</span> <span class="n">reprBW_nbin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minAcceptableAngResolution</span> <span class="o">=</span> <span class="n">minAcceptableAngResolution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxAcceptableAngResolution</span> <span class="o">=</span> <span class="n">maxAcceptableAngResolution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxAllowedBeamAxialRatio</span> <span class="o">=</span> <span class="n">maxAllowedBeamAxialRatio</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sensitivityGoal</span> <span class="o">=</span> <span class="n">sensitivityGoal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_robust</span> <span class="o">=</span> <span class="n">hm_robust</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_uvtaper</span> <span class="o">=</span> <span class="n">hm_uvtaper</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sensitivities</span> <span class="o">=</span> <span class="n">sensitivities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sensitivities_for_aqua</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sensitivity_bandwidth</span> <span class="o">=</span> <span class="n">sensitivity_bandwidth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">score</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">single_continuum</span> <span class="o">=</span> <span class="n">single_continuum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">per_spw_cont_sensitivities_all_chan</span> <span class="o">=</span> <span class="n">per_spw_cont_sensitivities_all_chan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">synthesized_beams</span> <span class="o">=</span> <span class="n">synthesized_beams</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beamRatios</span> <span class="o">=</span> <span class="n">beamRatios</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">error</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_msg</span> <span class="o">=</span> <span class="n">error_msg</span>
+
+        <span class="c1"># Update these values for the weblog</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_minAcceptableAngResolution</span> <span class="o">=</span> <span class="n">user_minAcceptableAngResolution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_maxAcceptableAngResolution</span> <span class="o">=</span> <span class="n">user_maxAcceptableAngResolution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_maxAllowedBeamAxialRatio</span> <span class="o">=</span> <span class="n">user_maxAllowedBeamAxialRatio</span>
+
+<div class="viewcode-block" id="ImagePreCheckResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.imageprecheck.html#pipeline.hifa.tasks.imageprecheck.imageprecheck.ImagePreCheckResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Calculated sensitivities for later stages</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">per_spw_cont_sensitivities_all_chan</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;recalc&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">per_spw_cont_sensitivities_all_chan</span><span class="p">:</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">per_spw_cont_sensitivities_all_chan</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">per_spw_cont_sensitivities_all_chan</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">context</span><span class="o">.</span><span class="n">per_spw_cont_sensitivities_all_chan</span><span class="p">[</span><span class="s1">&#39;recalc&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">utils</span><span class="o">.</span><span class="n">update_sens_dict</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">per_spw_cont_sensitivities_all_chan</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">per_spw_cont_sensitivities_all_chan</span><span class="p">)</span>
+
+        <span class="c1"># Calculated beams for later stages</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">synthesized_beams</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;recalc&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">synthesized_beams</span><span class="p">:</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">synthesized_beams</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">synthesized_beams</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">context</span><span class="o">.</span><span class="n">synthesized_beams</span><span class="p">[</span><span class="s1">&#39;recalc&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">utils</span><span class="o">.</span><span class="n">update_beams_dict</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">synthesized_beams</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">synthesized_beams</span><span class="p">)</span>
+
+        <span class="c1"># Store calculated robust and uvtaper values in the context for later stages</span>
+        <span class="c1">#</span>
+        <span class="c1"># Note: For Cycle 6 the robust heuristic is used in subsequent stages.</span>
+        <span class="c1">#       The uvtaper heuristic is not yet to be used for the ALMA PI pipeline,</span>
+        <span class="c1">#       but is used for SRDP. </span>
+        <span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span><span class="p">[</span><span class="s1">&#39;robust&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_robust</span>
+        <span class="k">if</span> <span class="s1">&#39;uvtaper&#39;</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">del</span> <span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span><span class="p">[</span><span class="s1">&#39;uvtaper&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_uvtaper</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span><span class="p">[</span><span class="s1">&#39;uvtaper&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_uvtaper</span>
+
+        <span class="c1"># It was decided not use a file based transport for the time being (03/2018)</span>
+        <span class="c1"># Write imageparams.dat file</span>
+        <span class="c1">#imageparams_filehandler = imageparamsfilehandler.ImageParamsFileHandler()</span>
+        <span class="c1">#imageparams_filehandler.write(self.hm_robust, self.hm_uvtaper)</span>
+
+        <span class="c1"># Add sensitivities to be reported to AQUA</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sensitivities_for_aqua</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensitivities</span> <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;robust&#39;</span><span class="p">]</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">hm_robust</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;uvtaper&#39;</span><span class="p">]</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">hm_uvtaper</span><span class="p">])</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;ImagePreCheckResults:</span><span class="se">\n\t</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;robust=</span><span class="si">%.2f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hm_robust</span><span class="p">),</span> <span class="s1">&#39;uvtaper=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hm_uvtaper</span><span class="p">)]))</span></div>
+
+
+
+<div class="viewcode-block" id="ImagePreCheckInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.imageprecheck.html#pipeline.hifa.tasks.imageprecheck.imageprecheck.ImagePreCheckInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">ImagePreCheckInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+    <span class="c1"># Search order of input vis</span>
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
+
+    <span class="n">calcsb</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">)</span>
+    <span class="n">desired_angular_resolution</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">desired_angular_resolution</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calcsb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">desired_angular_resolution</span> <span class="o">=</span> <span class="n">desired_angular_resolution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calcsb</span> <span class="o">=</span> <span class="n">calcsb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span></div>
+
+
+
+<span class="c1"># tell the infrastructure to give us mstransformed data when possible by</span>
+<span class="c1"># registering our preference for imaging measurement sets</span>
+<span class="c1">#api.ImagingMeasurementSetsPreferred.register(ImagePreCheckInputs)</span>
+
+
+<div class="viewcode-block" id="ImagePreCheck">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.imageprecheck.html#pipeline.hifa.tasks.imageprecheck.imageprecheck.ImagePreCheck">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_imageprecheck&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ImagePreCheck</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">ImagePreCheckInputs</span>
+
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="ImagePreCheck.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.imageprecheck.html#pipeline.hifa.tasks.imageprecheck.imageprecheck.ImagePreCheck.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+
+        <span class="n">cqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="n">calcsb</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">calcsb</span>
+        <span class="n">parallel</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">parallel</span>
+
+        <span class="n">known_per_spw_cont_sensitivities_all_chan</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">per_spw_cont_sensitivities_all_chan</span>
+        <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">synthesized_beams</span>
+
+        <span class="n">imageprecheck_heuristics</span> <span class="o">=</span> <span class="n">imageprecheck</span><span class="o">.</span><span class="n">ImagePreCheckHeuristics</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+        <span class="n">image_heuristics_factory</span> <span class="o">=</span> <span class="n">imageparams_factory</span><span class="o">.</span><span class="n">ImageParamsHeuristicsFactory</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">desired_angular_resolution</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
+            <span class="n">imaging_mode</span> <span class="o">=</span> <span class="s1">&#39;ALMA&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># This &#39;ALMA-SRDP&#39; imaging mode is used when a value was</span>
+            <span class="c1"># provided for desired_angular_resolution. This is only done</span>
+            <span class="c1"># as part of the SRDP recipe (See: PIPE-1712)</span>
+            <span class="c1">#</span>
+            <span class="c1"># It&#39;s possible for the SRDP recipe to set</span>
+            <span class="c1"># desired_angular_resolution to &#39;&#39;, but in this case,</span>
+            <span class="c1"># the &#39;ALMA&#39; imaging mode can be used, because without</span>
+            <span class="c1"># a desired_angular_resolution, SRDP falls back to the</span>
+            <span class="c1"># default &#39;ALMA&#39; behavior (no uvtaper).</span>
+            <span class="c1">#</span>
+            <span class="c1"># In the future, this could be expanded to be a more</span>
+            <span class="c1"># complete imaging mode.</span>
+            <span class="n">imaging_mode</span> <span class="o">=</span> <span class="s1">&#39;ALMA-SRDP&#39;</span>
+
+        <span class="n">image_heuristics</span> <span class="o">=</span> <span class="n">image_heuristics_factory</span><span class="o">.</span><span class="n">getHeuristics</span><span class="p">(</span>
+            <span class="n">vislist</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">observing_run</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="p">,</span>
+            <span class="n">imagename_prefix</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">project_structure</span><span class="o">.</span><span class="n">ousstatus_entity_id</span><span class="p">,</span>
+            <span class="n">proj_params</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">project_performance_parameters</span><span class="p">,</span>
+            <span class="n">contfile</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">contfile</span><span class="p">,</span>
+            <span class="n">linesfile</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">linesfile</span><span class="p">,</span>
+            <span class="n">imaging_params</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span><span class="p">,</span>
+            <span class="n">imaging_mode</span><span class="o">=</span><span class="n">imaging_mode</span>
+        <span class="p">)</span>
+
+        <span class="n">repr_target</span><span class="p">,</span> <span class="n">repr_source</span><span class="p">,</span> <span class="n">repr_spw</span><span class="p">,</span> <span class="n">repr_freq</span><span class="p">,</span> <span class="n">reprBW_mode</span><span class="p">,</span> <span class="n">real_repr_target</span><span class="p">,</span> \
+            <span class="n">minAcceptableAngResolution</span><span class="p">,</span> <span class="n">maxAcceptableAngResolution</span><span class="p">,</span> <span class="n">maxAllowedBeamAxialRatio</span><span class="p">,</span> \
+            <span class="n">sensitivityGoal</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">representative_target</span><span class="p">()</span>
+
+        <span class="c1"># Store PI selected angular resolution</span>
+        <span class="n">pi_minAcceptableAngResolution</span> <span class="o">=</span> <span class="n">minAcceptableAngResolution</span>
+        <span class="n">pi_maxAcceptableAngResolution</span> <span class="o">=</span> <span class="n">maxAcceptableAngResolution</span>
+        <span class="n">pi_maxAllowedBeamAxialRatio</span> <span class="o">=</span> <span class="n">maxAllowedBeamAxialRatio</span>
+
+        <span class="c1"># Fetch angular resolution goals if they were entered via the task interface</span>
+        <span class="c1"># See: PIPE-708, used only for SRDP, and PIPE-1712</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">desired_angular_resolution</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
+            <span class="c1"># Parse user angular resolution goal</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">desired_angular_resolution</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="n">userAngResolution</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">desired_angular_resolution</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">userAngResolution</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.3g</span><span class="s1">arcsec&#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">desired_angular_resolution</span><span class="p">)</span>
+            <span class="c1"># Assume symmetric beam for now</span>
+            <span class="n">user_desired_beam</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;minor&#39;</span><span class="p">:</span> <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">userAngResolution</span><span class="p">,</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">),</span>
+                                 <span class="s1">&#39;major&#39;</span><span class="p">:</span> <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">userAngResolution</span><span class="p">,</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">),</span>
+                                 <span class="s1">&#39;positionangle&#39;</span><span class="p">:</span> <span class="s1">&#39;0.0deg&#39;</span><span class="p">}</span>
+            <span class="c1"># Determine</span>
+            <span class="n">userAngResolution</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">user_desired_beam</span><span class="p">[</span><span class="s1">&#39;minor&#39;</span><span class="p">],</span><span class="mi">2</span><span class="p">),</span>
+                                                         <span class="n">cqa</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">user_desired_beam</span><span class="p">[</span><span class="s1">&#39;major&#39;</span><span class="p">],</span><span class="mi">2</span><span class="p">)),</span>
+                                                 <span class="mf">2.0</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Setting user specified desired angular resolution to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">cqa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">userAngResolution</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">userAngResolution</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.3g</span><span class="s1">arcsec&#39;</span> <span class="o">%</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="c1"># Store user selected angular resolution (if task interface entered)</span>
+        <span class="n">user_minAcceptableAngResolution</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">userAngResolution</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+        <span class="n">user_maxAcceptableAngResolution</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">userAngResolution</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">)</span>
+        <span class="n">user_maxAllowedBeamAxialRatio</span> <span class="o">=</span> <span class="n">maxAllowedBeamAxialRatio</span>
+
+        <span class="c1"># Use user selected angular resolution for calculation, if specified</span>
+        <span class="k">if</span> <span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">userAngResolution</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">minAcceptableAngResolution</span> <span class="o">=</span> <span class="n">user_minAcceptableAngResolution</span>
+            <span class="n">maxAcceptableAngResolution</span> <span class="o">=</span> <span class="n">user_maxAcceptableAngResolution</span>
+            <span class="n">maxAllowedBeamAxialRatio</span> <span class="o">=</span> <span class="n">user_maxAllowedBeamAxialRatio</span>
+
+        <span class="n">repr_field</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">image_heuristics</span><span class="o">.</span><span class="n">field_intent_list</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">repr_source</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">repr_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">real_repr_spw</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual2real_spw_id</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">),</span> <span class="n">repr_ms</span><span class="p">)</span>
+        <span class="n">real_repr_spw_obj</span> <span class="o">=</span> <span class="n">repr_ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">real_repr_spw</span><span class="p">)</span>
+        <span class="n">single_continuum</span> <span class="o">=</span> <span class="nb">any</span><span class="p">([</span><span class="s1">&#39;Single_Continuum&#39;</span> <span class="ow">in</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">real_repr_spw_obj</span><span class="o">.</span><span class="n">transitions</span><span class="p">])</span>
+
+        <span class="c1"># Get the array</span>
+        <span class="n">diameter</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">diameter</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">repr_ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">diameter</span> <span class="o">==</span> <span class="mf">7.0</span><span class="p">:</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="s1">&#39;7m&#39;</span>
+            <span class="n">robust_values_to_check</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="s1">&#39;12m&#39;</span>
+            <span class="n">robust_values_to_check</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
+
+        <span class="c1"># Approximate reprBW with nbin</span>
+        <span class="k">if</span> <span class="n">reprBW_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">,</span> <span class="s1">&#39;repr_spw&#39;</span><span class="p">]:</span>
+            <span class="n">physicalBW_of_1chan</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">real_repr_spw_obj</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">getWidth</span><span class="p">()</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">nbin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">repr_target</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;Hz&#39;</span><span class="p">))</span><span class="o">/</span><span class="n">physicalBW_of_1chan</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">cont_sens_bw_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;aggBW&#39;</span><span class="p">]</span>
+            <span class="n">scale_aggBW_to_repBW</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">reprBW_mode</span> <span class="o">==</span> <span class="s1">&#39;multi_spw&#39;</span><span class="p">:</span>
+            <span class="n">nbin</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">cont_sens_bw_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;repBW&#39;</span><span class="p">,</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">]</span>
+            <span class="n">scale_aggBW_to_repBW</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nbin</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">cont_sens_bw_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;repBW&#39;</span><span class="p">,</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">]</span>
+            <span class="n">scale_aggBW_to_repBW</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">primary_beam_size</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">largest_primary_beam_size</span><span class="p">(</span><span class="n">spwspec</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">),</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+        <span class="n">gridder</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">gridder</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">repr_field</span><span class="p">)</span>
+        <span class="n">field_ids</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">repr_field</span><span class="p">)</span>
+        <span class="n">cont_spwids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual_science_spw_ids</span><span class="p">)</span>
+        <span class="n">repr_field_obj</span> <span class="o">=</span> <span class="n">repr_ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">repr_field</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">filtered_cont_spwids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">real2virtual_spw_id</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">repr_ms</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">repr_field_obj</span><span class="o">.</span><span class="n">valid_spws</span>
+             <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">real2virtual_spw_id</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">repr_ms</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">cont_spwids</span><span class="p">))])</span>
+        <span class="n">cont_spw</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">filtered_cont_spwids</span><span class="p">))</span>
+        <span class="n">num_cont_spw</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">filtered_cont_spwids</span><span class="p">)</span>
+
+        <span class="c1"># Get default heuristics uvtaper value</span>
+        <span class="n">default_uvtaper</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">uvtaper</span><span class="p">()</span>
+        <span class="n">beams</span> <span class="o">=</span> <span class="p">{(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">):</span> <span class="kc">None</span><span class="p">,</span> \
+                 <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">):</span> <span class="kc">None</span><span class="p">,</span> \
+                 <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">):</span> <span class="kc">None</span><span class="p">,</span> \
+                 <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">):</span> <span class="kc">None</span><span class="p">,</span> \
+                 <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">):</span> <span class="kc">None</span><span class="p">,</span> \
+                 <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">):</span> <span class="kc">None</span><span class="p">,</span> \
+                 <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">):</span> <span class="kc">None</span><span class="p">,</span> \
+                 <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">):</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="n">cells</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">imsizes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">sensitivities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sensitivity_bandwidth</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">robust</span> <span class="ow">in</span> <span class="n">robust_values_to_check</span><span class="p">:</span>
+            <span class="c1"># Calculate nbin / reprBW sensitivity if necessary</span>
+            <span class="k">if</span> <span class="n">reprBW_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">,</span> <span class="s1">&#39;repr_spw&#39;</span><span class="p">]:</span>
+
+                <span class="n">beams</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span> <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">synthesized_beam</span><span class="p">(</span>
+                    <span class="p">[(</span><span class="n">repr_field</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">)],</span> <span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">),</span> <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span> <span class="n">uvtaper</span><span class="o">=</span><span class="n">default_uvtaper</span><span class="p">,</span>
+                    <span class="n">known_beams</span><span class="o">=</span><span class="n">known_synthesized_beams</span><span class="p">,</span> <span class="n">force_calc</span><span class="o">=</span><span class="n">calcsb</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="c1"># If the beam is invalid, error and return.</span>
+                <span class="k">if</span> <span class="n">beams</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)]</span> <span class="o">==</span> <span class="s1">&#39;invalid&#39;</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Beam for repBW and robust value of </span><span class="si">%.1f</span><span class="s1"> is invalid. Cannot continue.&#39;</span> <span class="o">%</span> <span class="n">robust</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">ImagePreCheckResults</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">error_msg</span><span class="o">=</span><span class="s1">&#39;Invalid beam&#39;</span><span class="p">)</span>
+
+                <span class="n">cells</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">beams</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)])</span>
+                <span class="n">imsizes</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">imsize</span><span class="p">(</span><span class="n">field_ids</span><span class="p">,</span> <span class="n">cells</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span> <span class="n">primary_beam_size</span><span class="p">,</span> <span class="n">centreonly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">sensitivity</span><span class="p">,</span> <span class="n">eff_ch_bw</span><span class="p">,</span> <span class="n">sens_bw</span><span class="p">,</span> <span class="n">known_per_spw_cont_sensitivities_all_chan</span> <span class="o">=</span> \
+                        <span class="n">image_heuristics</span><span class="o">.</span><span class="n">calc_sensitivities</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">repr_field</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">),</span> <span class="n">nbin</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">&#39;cube&#39;</span><span class="p">,</span> <span class="n">gridder</span><span class="p">,</span> <span class="n">cells</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span> <span class="n">imsizes</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span> <span class="s1">&#39;briggs&#39;</span><span class="p">,</span> <span class="n">robust</span><span class="p">,</span> <span class="n">default_uvtaper</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">known_per_spw_cont_sensitivities_all_chan</span><span class="p">,</span> <span class="n">calcsb</span><span class="p">)</span>
+                    <span class="c1"># Set calcsb flag to False since the first calculations of beam</span>
+                    <span class="c1"># and sensitivity will have already reset the dictionaries.</span>
+                    <span class="n">calcsb</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Sensitivity</span><span class="p">(</span>
+                        <span class="n">array</span><span class="o">=</span><span class="n">array</span><span class="p">,</span>
+                        <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+                        <span class="n">field</span><span class="o">=</span><span class="n">repr_field</span><span class="p">,</span>
+                        <span class="n">spw</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">),</span>
+                        <span class="n">is_representative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">bandwidth</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sens_bw</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">),</span>
+                        <span class="n">bwmode</span><span class="o">=</span><span class="s1">&#39;repBW&#39;</span><span class="p">,</span>
+                        <span class="n">beam</span><span class="o">=</span><span class="n">beams</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span>
+                        <span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cells</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">),</span>
+                              <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cells</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)],</span>
+                        <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span>
+                        <span class="n">uvtaper</span><span class="o">=</span><span class="n">default_uvtaper</span><span class="p">,</span>
+                        <span class="n">sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">)))</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Sensitivity</span><span class="p">(</span>
+                        <span class="n">array</span><span class="o">=</span><span class="n">array</span><span class="p">,</span>
+                        <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+                        <span class="n">field</span><span class="o">=</span><span class="n">repr_field</span><span class="p">,</span>
+                        <span class="n">spw</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">),</span>
+                        <span class="n">is_representative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">bandwidth</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">),</span>
+                        <span class="n">bwmode</span><span class="o">=</span><span class="s1">&#39;repBW&#39;</span><span class="p">,</span>
+                        <span class="n">beam</span><span class="o">=</span><span class="n">beams</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span>
+                        <span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">,</span> <span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">],</span>
+                        <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span>
+                        <span class="n">uvtaper</span><span class="o">=</span><span class="n">default_uvtaper</span><span class="p">,</span>
+                        <span class="n">sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">)))</span>
+                    <span class="n">sens_bw</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+                <span class="n">sensitivity_bandwidth</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sens_bw</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
+
+            <span class="n">beams</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span> <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">synthesized_beam</span><span class="p">(</span>
+                <span class="p">[(</span><span class="n">repr_field</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">)],</span> <span class="n">cont_spw</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span> <span class="n">uvtaper</span><span class="o">=</span><span class="n">default_uvtaper</span><span class="p">,</span>
+                <span class="n">known_beams</span><span class="o">=</span><span class="n">known_synthesized_beams</span><span class="p">,</span> <span class="n">force_calc</span><span class="o">=</span><span class="n">calcsb</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># If the beam is invalid, error and return.</span>
+            <span class="k">if</span> <span class="n">beams</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)]</span> <span class="o">==</span> <span class="s1">&#39;invalid&#39;</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Beam for aggBW and robust value of </span><span class="si">%.1f</span><span class="s1"> is invalid. Cannot continue.&#39;</span> <span class="o">%</span> <span class="n">robust</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">ImagePreCheckResults</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">error_msg</span><span class="o">=</span><span class="s1">&#39;Invalid beam&#39;</span><span class="p">)</span>
+
+            <span class="n">cells</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">beams</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)])</span>
+            <span class="n">imsizes</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">imsize</span><span class="p">(</span><span class="n">field_ids</span><span class="p">,</span> <span class="n">cells</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span> <span class="n">primary_beam_size</span><span class="p">,</span> <span class="n">centreonly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Calculate full cont sensitivity (no frequency ranges excluded)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sensitivity</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">sens_bw</span><span class="p">,</span> <span class="n">known_per_spw_cont_sensitivities_all_chan</span> <span class="o">=</span> \
+                    <span class="n">image_heuristics</span><span class="o">.</span><span class="n">calc_sensitivities</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">repr_field</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">cont_spw</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">&#39;cont&#39;</span><span class="p">,</span> <span class="n">gridder</span><span class="p">,</span> <span class="n">cells</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span> <span class="n">imsizes</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span> <span class="s1">&#39;briggs&#39;</span><span class="p">,</span> <span class="n">robust</span><span class="p">,</span> <span class="n">default_uvtaper</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">known_per_spw_cont_sensitivities_all_chan</span><span class="p">,</span> <span class="n">calcsb</span><span class="p">)</span>
+                <span class="c1"># Set calcsb flag to False since the first calculations of beam</span>
+                <span class="c1"># and sensitivity will have already reset the dictionaries.</span>
+                <span class="n">calcsb</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">cont_sens_bw_mode</span> <span class="ow">in</span> <span class="n">cont_sens_bw_modes</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">scale_aggBW_to_repBW</span> <span class="ow">and</span> <span class="n">cont_sens_bw_mode</span> <span class="o">==</span> <span class="s1">&#39;repBW&#39;</span><span class="p">:</span>
+                        <span class="c1"># Handle scaling to repSPW_BW &lt; repBW &lt;= 0.9 * aggBW case</span>
+                        <span class="n">_bandwidth</span> <span class="o">=</span> <span class="n">repr_target</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="n">_sensitivity</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">),</span> <span class="n">cqa</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sens_bw</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">),</span> <span class="n">repr_target</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">_bandwidth</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">sens_bw</span><span class="p">,</span> <span class="n">num_cont_spw</span> <span class="o">*</span> <span class="mf">1.875e9</span><span class="p">),</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
+                        <span class="n">_sensitivity</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">)</span>
+
+                    <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Sensitivity</span><span class="p">(</span>
+                        <span class="n">array</span><span class="o">=</span><span class="n">array</span><span class="p">,</span>
+                        <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+                        <span class="n">field</span><span class="o">=</span><span class="n">repr_field</span><span class="p">,</span>
+                        <span class="n">spw</span><span class="o">=</span><span class="n">cont_spw</span><span class="p">,</span>
+                        <span class="n">is_representative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">bandwidth</span><span class="o">=</span><span class="n">_bandwidth</span><span class="p">,</span>
+                        <span class="n">bwmode</span><span class="o">=</span><span class="n">cont_sens_bw_mode</span><span class="p">,</span>
+                        <span class="n">beam</span><span class="o">=</span><span class="n">beams</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span>
+                        <span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cells</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">),</span>
+                              <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cells</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)],</span>
+                        <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span>
+                        <span class="n">uvtaper</span><span class="o">=</span><span class="n">default_uvtaper</span><span class="p">,</span>
+                        <span class="n">sensitivity</span><span class="o">=</span><span class="n">_sensitivity</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">cont_sens_bw_modes</span><span class="p">:</span>
+                    <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Sensitivity</span><span class="p">(</span>
+                        <span class="n">array</span><span class="o">=</span><span class="n">array</span><span class="p">,</span>
+                        <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+                        <span class="n">field</span><span class="o">=</span><span class="n">repr_field</span><span class="p">,</span>
+                        <span class="n">spw</span><span class="o">=</span><span class="n">cont_spw</span><span class="p">,</span>
+                        <span class="n">is_representative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">bandwidth</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">),</span>
+                        <span class="n">bwmode</span><span class="o">=</span><span class="s1">&#39;aggBW&#39;</span><span class="p">,</span>
+                        <span class="n">beam</span><span class="o">=</span><span class="n">beams</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span>
+                        <span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">,</span> <span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">],</span>
+                        <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span>
+                        <span class="n">uvtaper</span><span class="o">=</span><span class="n">default_uvtaper</span><span class="p">,</span>
+                        <span class="n">sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">)))</span>
+                <span class="n">sens_bw</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+            <span class="k">if</span> <span class="n">sensitivity_bandwidth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sensitivity_bandwidth</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">_bandwidth</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Apply robust heuristic based on beam sizes for the used robust values.</span>
+        <span class="k">if</span> <span class="n">reprBW_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">,</span> <span class="s1">&#39;repr_spw&#39;</span><span class="p">]:</span>
+            <span class="n">hm_robust</span><span class="p">,</span> <span class="n">hm_robust_score</span><span class="p">,</span> <span class="n">beamRatio_0p0</span><span class="p">,</span> <span class="n">beamRatio_0p5</span><span class="p">,</span> <span class="n">beamRatio_1p0</span><span class="p">,</span> <span class="n">beamRatio_2p0</span> <span class="o">=</span> \
+                <span class="n">imageprecheck_heuristics</span><span class="o">.</span><span class="n">compare_beams</span><span class="p">(</span> \
+                    <span class="n">beams</span><span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span> \
+                    <span class="n">beams</span><span class="p">[(</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span> \
+                    <span class="n">beams</span><span class="p">[(</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span> \
+                    <span class="n">beams</span><span class="p">[(</span><span class="mf">2.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span> \
+                    <span class="n">minAcceptableAngResolution</span><span class="p">,</span> \
+                    <span class="n">maxAcceptableAngResolution</span><span class="p">,</span> \
+                    <span class="n">maxAllowedBeamAxialRatio</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hm_robust</span><span class="p">,</span> <span class="n">hm_robust_score</span><span class="p">,</span> <span class="n">beamRatio_0p0</span><span class="p">,</span> <span class="n">beamRatio_0p5</span><span class="p">,</span> <span class="n">beamRatio_1p0</span><span class="p">,</span> <span class="n">beamRatio_2p0</span> <span class="o">=</span> \
+                <span class="n">imageprecheck_heuristics</span><span class="o">.</span><span class="n">compare_beams</span><span class="p">(</span> \
+                    <span class="n">beams</span><span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span> \
+                    <span class="n">beams</span><span class="p">[(</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span> \
+                    <span class="n">beams</span><span class="p">[(</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span> \
+                    <span class="n">beams</span><span class="p">[(</span><span class="mf">2.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span> \
+                    <span class="n">minAcceptableAngResolution</span><span class="p">,</span> \
+                    <span class="n">maxAcceptableAngResolution</span><span class="p">,</span> \
+                    <span class="n">maxAllowedBeamAxialRatio</span><span class="p">)</span>
+
+        <span class="c1"># Save beam ratios for weblog</span>
+        <span class="n">beamRatios</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">)):</span> <span class="n">beamRatio_0p0</span><span class="p">,</span>
+            <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">)):</span> <span class="n">beamRatio_0p5</span><span class="p">,</span>
+            <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">)):</span> <span class="n">beamRatio_1p0</span><span class="p">,</span>
+            <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">)):</span> <span class="n">beamRatio_2p0</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">imaging_mode</span> <span class="o">!=</span> <span class="s1">&#39;ALMA-SRDP&#39;</span><span class="p">:</span>
+            <span class="c1"># The below is for the ALMA-PI pipeline. userAngResolution)[0] will be 0.0 because desired_angular_resolution is not provided.</span>
+            <span class="c1"># It&#39;s equal to this code block:</span>
+            <span class="c1">#   https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/hifa/tasks/imageprecheck/imageprecheck.py?until=24152b4b508ec7e19a7dd360ff30c5c71755802e&amp;untilPath=pipeline%2Fhifa%2Ftasks%2Fimageprecheck%2Fimageprecheck.py#357-462</span>
+            <span class="c1"># with the disabled code block removed to avoid duplication from the SRDP-specific code from PIPE-1712.</span>
+            <span class="k">if</span> <span class="n">real_repr_target</span><span class="p">:</span>
+                <span class="n">hm_uvtaper</span> <span class="o">=</span> <span class="n">default_uvtaper</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">hm_robust</span> <span class="o">=</span> <span class="mf">0.5</span>
+                <span class="n">hm_uvtaper</span> <span class="o">=</span> <span class="n">default_uvtaper</span>
+                <span class="n">minAcceptableAngResolution</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)</span>
+                <span class="n">maxAcceptableAngResolution</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)</span>
+            <span class="c1"># The default ALMA IF recipe (non-SRDP) always uses the default_uvtaper</span>
+            <span class="n">hm_uvtaper</span> <span class="o">=</span> <span class="n">default_uvtaper</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># The below block is only run for SRDP where userAngResolution)[0] is not 0.0</span>
+            <span class="c1">#</span>
+            <span class="c1"># Determine non-default UV taper value if the best robust is 2.0 and the user requested resolution parameter</span>
+            <span class="c1"># (desired_angular_resolution) is set for SRDP. (PIPE-708)</span>
+            <span class="c1">#</span>
+            <span class="c1"># Compute uvtaper for representative targets and also if representative target cannot be determined</span>
+            <span class="c1"># (real_repr_target = False) for representative targets and if user set angular resolution goal.</span>
+            <span class="c1">#</span>
+            <span class="c1"># Note that uvtaper is not computed for the ACA (7m) array, because robust of 2.0 is not in the checked range</span>
+            <span class="c1"># (see robust_values_to_check).</span>
+            <span class="k">if</span> <span class="n">hm_robust</span> <span class="o">==</span> <span class="mf">2.0</span><span class="p">:</span>
+                <span class="c1"># Calculate the length of the 190th baseline, used to set the upper limit on uvtaper. See PIPE-1104.</span>
+                <span class="n">length_of_190th_baseline</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">calc_length_of_nth_baseline</span><span class="p">(</span><span class="mi">190</span><span class="p">)</span>
+                <span class="n">reprBW_mode_string</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;repBW&#39;</span> <span class="k">if</span> <span class="n">reprBW_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">,</span> <span class="s1">&#39;repr_spw&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">]</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">hm_uvtaper</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">uvtaper</span><span class="p">(</span><span class="n">beam_natural</span><span class="o">=</span><span class="n">beams</span><span class="p">[(</span><span class="mf">2.0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="n">reprBW_mode_string</span><span class="p">[</span><span class="mi">0</span><span class="p">])],</span>
+                                                          <span class="n">beam_user</span><span class="o">=</span><span class="n">user_desired_beam</span><span class="p">,</span>
+                                                          <span class="n">tapering_limit</span><span class="o">=</span><span class="n">length_of_190th_baseline</span><span class="p">,</span> <span class="n">repr_freq</span><span class="o">=</span><span class="n">repr_freq</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">hm_uvtaper</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">if</span> <span class="n">hm_uvtaper</span> <span class="o">!=</span> <span class="p">[]:</span>
+                    <span class="c1"># Add sensitivity entries with actual tapering</span>
+                    <span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span> <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">synthesized_beam</span><span class="p">(</span>
+                        <span class="p">[(</span><span class="n">repr_field</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">)],</span> <span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">),</span> <span class="n">robust</span><span class="o">=</span><span class="n">hm_robust</span><span class="p">,</span> <span class="n">uvtaper</span><span class="o">=</span><span class="n">hm_uvtaper</span><span class="p">,</span>
+                        <span class="n">known_beams</span><span class="o">=</span><span class="n">known_synthesized_beams</span><span class="p">,</span> <span class="n">force_calc</span><span class="o">=</span><span class="n">calcsb</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                    <span class="c1"># If the beam is invalid, error and return.</span>
+                    <span class="k">if</span> <span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)]</span> <span class="o">==</span> <span class="s1">&#39;invalid&#39;</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Beam for uvtaper repBW is invalid. Cannot continue.&#39;</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="n">ImagePreCheckResults</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">error_msg</span><span class="o">=</span><span class="s1">&#39;Invalid beam&#39;</span><span class="p">)</span>
+
+                    <span class="n">cells</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)])</span>
+                    <span class="n">imsizes</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">imsize</span><span class="p">(</span>
+                        <span class="n">field_ids</span><span class="p">,</span> <span class="n">cells</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span> <span class="n">primary_beam_size</span><span class="p">,</span> <span class="n">centreonly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">reprBW_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">,</span> <span class="s1">&#39;repr_spw&#39;</span><span class="p">]:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">sensitivity</span><span class="p">,</span> <span class="n">eff_ch_bw</span><span class="p">,</span> <span class="n">sens_bw</span><span class="p">,</span> <span class="n">known_per_spw_cont_sensitivities_all_chan</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">calc_sensitivities</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">repr_field</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">),</span> <span class="n">nbin</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">&#39;cube&#39;</span><span class="p">,</span> <span class="n">gridder</span><span class="p">,</span> <span class="n">cells</span><span class="p">[(</span>
+                                <span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span> <span class="n">imsizes</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span> <span class="s1">&#39;briggs&#39;</span><span class="p">,</span> <span class="n">hm_robust</span><span class="p">,</span> <span class="n">hm_uvtaper</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">known_per_spw_cont_sensitivities_all_chan</span><span class="p">,</span> <span class="n">calcsb</span><span class="p">)</span>
+                            <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Sensitivity</span><span class="p">(</span>
+                                <span class="n">array</span><span class="o">=</span><span class="n">array</span><span class="p">,</span>
+                                <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+                                <span class="n">field</span><span class="o">=</span><span class="n">repr_field</span><span class="p">,</span>
+                                <span class="n">spw</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">),</span>
+                                <span class="n">is_representative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="n">bandwidth</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sens_bw</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">),</span>
+                                <span class="n">bwmode</span><span class="o">=</span><span class="s1">&#39;repBW&#39;</span><span class="p">,</span>
+                                <span class="n">beam</span><span class="o">=</span><span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span>
+                                <span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cells</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">),</span>
+                                      <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cells</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)],</span>
+                                <span class="n">robust</span><span class="o">=</span><span class="n">hm_robust</span><span class="p">,</span>
+                                <span class="n">uvtaper</span><span class="o">=</span><span class="n">hm_uvtaper</span><span class="p">,</span>
+                                <span class="n">sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">)))</span>
+                        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                            <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Sensitivity</span><span class="p">(</span>
+                                <span class="n">array</span><span class="o">=</span><span class="n">array</span><span class="p">,</span>
+                                <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+                                <span class="n">field</span><span class="o">=</span><span class="n">repr_field</span><span class="p">,</span>
+                                <span class="n">spw</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">),</span>
+                                <span class="n">is_representative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="n">bandwidth</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">),</span>
+                                <span class="n">bwmode</span><span class="o">=</span><span class="s1">&#39;repBW&#39;</span><span class="p">,</span>
+                                <span class="n">beam</span><span class="o">=</span><span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)],</span>
+                                <span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">,</span> <span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">],</span>
+                                <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span>
+                                <span class="n">uvtaper</span><span class="o">=</span><span class="n">hm_uvtaper</span><span class="p">,</span>
+                                <span class="n">sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">)))</span>
+
+                    <span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span> <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">synthesized_beam</span><span class="p">(</span>
+                        <span class="p">[(</span><span class="n">repr_field</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">)],</span> <span class="n">cont_spw</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="n">hm_robust</span><span class="p">,</span> <span class="n">uvtaper</span><span class="o">=</span><span class="n">hm_uvtaper</span><span class="p">,</span>
+                        <span class="n">known_beams</span><span class="o">=</span><span class="n">known_synthesized_beams</span><span class="p">,</span> <span class="n">force_calc</span><span class="o">=</span><span class="n">calcsb</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                    <span class="c1"># If the beam is invalid, error and return.</span>
+                    <span class="k">if</span> <span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)]</span> <span class="o">==</span> <span class="s1">&#39;invalid&#39;</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Beam for uvtaper aggBW is invalid. Cannot continue.&#39;</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="n">ImagePreCheckResults</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">error_msg</span><span class="o">=</span><span class="s1">&#39;Invalid beam&#39;</span><span class="p">)</span>
+
+                    <span class="n">cells</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)])</span>
+                    <span class="n">imsizes</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">imsize</span><span class="p">(</span>
+                        <span class="n">field_ids</span><span class="p">,</span> <span class="n">cells</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span> <span class="n">primary_beam_size</span><span class="p">,</span> <span class="n">centreonly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">sensitivity</span><span class="p">,</span> <span class="n">eff_ch_bw</span><span class="p">,</span> <span class="n">sens_bw</span><span class="p">,</span> <span class="n">known_per_spw_cont_sensitivities_all_chan</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">calc_sensitivities</span><span class="p">(</span>
+                            <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">repr_field</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">cont_spw</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">{},</span>
+                            <span class="s1">&#39;cont&#39;</span><span class="p">,</span> <span class="n">gridder</span><span class="p">,</span> <span class="n">cells</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span>
+                                                    <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span>
+                            <span class="n">imsizes</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span>
+                                     <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span>
+                            <span class="s1">&#39;briggs&#39;</span><span class="p">,</span> <span class="n">hm_robust</span><span class="p">,</span> <span class="n">hm_uvtaper</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">known_per_spw_cont_sensitivities_all_chan</span><span class="p">,</span> <span class="n">calcsb</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">scale_aggBW_to_repBW</span> <span class="ow">and</span> <span class="n">cont_sens_bw_mode</span> <span class="o">==</span> <span class="s1">&#39;repBW&#39;</span><span class="p">:</span>
+                            <span class="c1"># Handle scaling to repSPW_BW &lt; repBW &lt;= 0.9 * aggBW case</span>
+                            <span class="n">_bandwidth</span> <span class="o">=</span> <span class="n">repr_target</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                            <span class="n">_sensitivity</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">),</span>
+                                                   <span class="n">cqa</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sens_bw</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">),</span> <span class="n">repr_target</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">_bandwidth</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">sens_bw</span><span class="p">,</span> <span class="n">num_cont_spw</span> <span class="o">*</span> <span class="mf">1.875e9</span><span class="p">),</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
+                            <span class="n">_sensitivity</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">)</span>
+
+                        <span class="k">for</span> <span class="n">cont_sens_bw_mode</span> <span class="ow">in</span> <span class="n">cont_sens_bw_modes</span><span class="p">:</span>
+                            <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Sensitivity</span><span class="p">(</span>
+                                <span class="n">array</span><span class="o">=</span><span class="n">array</span><span class="p">,</span>
+                                <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+                                <span class="n">field</span><span class="o">=</span><span class="n">repr_field</span><span class="p">,</span>
+                                <span class="n">spw</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">),</span>
+                                <span class="n">is_representative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="n">bandwidth</span><span class="o">=</span><span class="n">_bandwidth</span><span class="p">,</span>
+                                <span class="n">bwmode</span><span class="o">=</span><span class="n">cont_sens_bw_mode</span><span class="p">,</span>
+                                <span class="n">beam</span><span class="o">=</span><span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span>
+                                <span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cells</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">),</span>
+                                      <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cells</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)],</span>
+                                <span class="n">robust</span><span class="o">=</span><span class="n">hm_robust</span><span class="p">,</span>
+                                <span class="n">uvtaper</span><span class="o">=</span><span class="n">hm_uvtaper</span><span class="p">,</span>
+                                <span class="n">sensitivity</span><span class="o">=</span><span class="n">_sensitivity</span><span class="p">))</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">cont_sens_bw_modes</span><span class="p">:</span>
+                            <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Sensitivity</span><span class="p">(</span>
+                                <span class="n">array</span><span class="o">=</span><span class="n">array</span><span class="p">,</span>
+                                <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+                                <span class="n">field</span><span class="o">=</span><span class="n">repr_field</span><span class="p">,</span>
+                                <span class="n">spw</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">),</span>
+                                <span class="n">is_representative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="n">bandwidth</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">),</span>
+                                <span class="n">bwmode</span><span class="o">=</span><span class="s1">&#39;repBW&#39;</span><span class="p">,</span>
+                                <span class="n">beam</span><span class="o">=</span><span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span>
+                                <span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">,</span> <span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">],</span>
+                                <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span>
+                                <span class="n">uvtaper</span><span class="o">=</span><span class="n">hm_uvtaper</span><span class="p">,</span>
+                                <span class="n">sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">)))</span>
+                    <span class="c1"># Update beamRatios</span>
+                    <span class="k">if</span> <span class="n">reprBW_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">,</span> <span class="s1">&#39;repr_spw&#39;</span><span class="p">]:</span>
+                        <span class="n">beamRatios</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">))]</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span>
+                                                                                          <span class="s1">&#39;repBW&#39;</span><span class="p">)][</span><span class="s1">&#39;major&#39;</span><span class="p">],</span>
+                                                                                   <span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span>
+                                                                                          <span class="s1">&#39;repBW&#39;</span><span class="p">)][</span><span class="s1">&#39;minor&#39;</span><span class="p">]),</span>
+                                                                           <span class="mi">2</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">beamRatios</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">))]</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span>
+                                                                                          <span class="s1">&#39;aggBW&#39;</span><span class="p">)][</span><span class="s1">&#39;major&#39;</span><span class="p">],</span>
+                                                                                   <span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span>
+                                                                                          <span class="s1">&#39;aggBW&#39;</span><span class="p">)][</span><span class="s1">&#39;minor&#39;</span><span class="p">]),</span>
+                                                                           <span class="mi">2</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">hm_uvtaper</span> <span class="o">=</span> <span class="n">default_uvtaper</span>
+        <span class="k">return</span> <span class="n">ImagePreCheckResults</span><span class="p">(</span>
+            <span class="n">real_repr_target</span><span class="p">,</span>
+            <span class="n">repr_target</span><span class="p">,</span>
+            <span class="n">repr_source</span><span class="p">,</span>
+            <span class="n">repr_spw</span><span class="p">,</span>
+            <span class="n">reprBW_mode</span><span class="p">,</span>
+            <span class="n">nbin</span><span class="p">,</span>
+            <span class="n">minAcceptableAngResolution</span><span class="o">=</span><span class="n">pi_minAcceptableAngResolution</span><span class="p">,</span>
+            <span class="n">maxAcceptableAngResolution</span><span class="o">=</span><span class="n">pi_maxAcceptableAngResolution</span><span class="p">,</span>
+            <span class="n">maxAllowedBeamAxialRatio</span><span class="o">=</span><span class="n">pi_maxAllowedBeamAxialRatio</span><span class="p">,</span>
+            <span class="n">user_minAcceptableAngResolution</span><span class="o">=</span><span class="n">user_minAcceptableAngResolution</span><span class="p">,</span>
+            <span class="n">user_maxAcceptableAngResolution</span><span class="o">=</span><span class="n">user_maxAcceptableAngResolution</span><span class="p">,</span>
+            <span class="n">user_maxAllowedBeamAxialRatio</span><span class="o">=</span><span class="n">user_maxAllowedBeamAxialRatio</span><span class="p">,</span>
+            <span class="n">sensitivityGoal</span><span class="o">=</span><span class="n">sensitivityGoal</span><span class="p">,</span>
+            <span class="n">hm_robust</span><span class="o">=</span><span class="n">hm_robust</span><span class="p">,</span>
+            <span class="n">hm_uvtaper</span><span class="o">=</span><span class="n">hm_uvtaper</span><span class="p">,</span>
+            <span class="n">sensitivities</span><span class="o">=</span><span class="n">sensitivities</span><span class="p">,</span>
+            <span class="n">sensitivity_bandwidth</span><span class="o">=</span><span class="n">sensitivity_bandwidth</span><span class="p">,</span>
+            <span class="n">score</span><span class="o">=</span><span class="n">hm_robust_score</span><span class="p">,</span>
+            <span class="n">single_continuum</span><span class="o">=</span><span class="n">single_continuum</span><span class="p">,</span>
+            <span class="n">per_spw_cont_sensitivities_all_chan</span><span class="o">=</span><span class="n">known_per_spw_cont_sensitivities_all_chan</span><span class="p">,</span>
+            <span class="n">synthesized_beams</span><span class="o">=</span><span class="n">known_synthesized_beams</span><span class="p">,</span>
+            <span class="n">beamRatios</span><span class="o">=</span><span class="n">beamRatios</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ImagePreCheck.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.imageprecheck.html#pipeline.hifa.tasks.imageprecheck.imageprecheck.ImagePreCheck.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

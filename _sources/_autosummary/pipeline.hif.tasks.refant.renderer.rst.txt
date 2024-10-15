@@ -1,0 +1,19 @@
+pipeline.hif.tasks.refant.renderer
+==================================
+
+.. automodule:: pipeline.hif.tasks.refant.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      make_refant_table
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      RefantTR
+      T2_4MDetailsRefantRenderer
+   

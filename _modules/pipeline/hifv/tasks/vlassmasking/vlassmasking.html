@@ -1,0 +1,656 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.vlassmasking.vlassmasking &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.vlassmasking.vlassmasking</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.vlassmasking.vlassmasking</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">casatasks</span> <span class="kn">import</span> <span class="n">imsmooth</span>
+
+<span class="kn">from</span> <span class="nn">pipeline</span> <span class="kn">import</span> <span class="n">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics.vip_helper_functions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">edit_pybdsf_islands</span><span class="p">,</span>
+                                                           <span class="n">mask_from_catalog</span><span class="p">,</span>
+                                                           <span class="n">run_bdsf</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="p">(</span><span class="n">basetask</span><span class="p">,</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span>
+                                     <span class="n">task_registry</span><span class="p">,</span> <span class="n">vdp</span><span class="p">)</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="VlassmaskingResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.vlassmasking.html#pipeline.hifv.tasks.vlassmasking.vlassmasking.VlassmaskingResults">[docs]</a>
+<span class="k">class</span> <span class="nc">VlassmaskingResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class for the hifv_vlassmasking pipeline smoothing task.  Used on VLASS measurement sets.</span>
+
+<span class="sd">    The class inherits from basetask.Results</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog_fits_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">catalog_search_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">tier1mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tier2mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">combinedmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_islands_found</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">number_islands_found_onedeg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">num_rejected_islands</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_rejected_islands_onedeg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pixelfractions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">relativefraction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">relativefraction_onedeg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">plotmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">maskingmode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            final(list): final list of tables (not used in this task)</span>
+<span class="sd">            pool(list): pool list (not used in this task)</span>
+<span class="sd">            preceding(list): preceding list (not used in this task)</span>
+<span class="sd">            catalog_fits_files(str): Path to a PyBDSF sky catalog in FITS format.</span>
+<span class="sd">                                     Default at AOC is &#39;/home/vlass/packages/VLASS1Q.fits&#39;</span>
+<span class="sd">            outfile(str): Output file - sum of masks</span>
+<span class="sd">            combinedmask(str):  Final combined mask</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">catalog_fits_file</span> <span class="o">=</span> <span class="n">catalog_fits_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">catalog_search_size</span> <span class="o">=</span> <span class="n">catalog_search_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tier1mask</span> <span class="o">=</span> <span class="n">tier1mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tier2mask</span> <span class="o">=</span> <span class="n">tier2mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span> <span class="o">=</span> <span class="n">outfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">combinedmask</span> <span class="o">=</span> <span class="n">combinedmask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_islands_found</span> <span class="o">=</span> <span class="n">number_islands_found</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_islands_found_onedeg</span> <span class="o">=</span> <span class="n">number_islands_found_onedeg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_rejected_islands</span> <span class="o">=</span> <span class="n">num_rejected_islands</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_rejected_islands_onedeg</span> <span class="o">=</span> <span class="n">num_rejected_islands_onedeg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixelfractions</span> <span class="o">=</span> <span class="n">pixelfractions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relativefraction</span> <span class="o">=</span> <span class="n">relativefraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relativefraction_onedeg</span> <span class="o">=</span> <span class="n">relativefraction_onedeg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plotmask</span> <span class="o">=</span> <span class="n">plotmask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maskingmode</span> <span class="o">=</span> <span class="n">maskingmode</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_casa_task</span> <span class="o">=</span> <span class="s1">&#39;Vlassmasking&#39;</span>
+
+<div class="viewcode-block" id="VlassmaskingResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.vlassmasking.html#pipeline.hifv.tasks.vlassmasking.vlassmasking.VlassmaskingResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            context(:obj:): Pipeline context object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Update the mask name in clean list pending.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Clean list pending is empty. Mask name was not set for imaging target.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="s1">&#39;mask&#39;</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;mask&#39;</span><span class="p">]:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Updating existing clean list pending mask selection with </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">combinedmask</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Setting clean list pending mask selection to </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">combinedmask</span><span class="p">))</span>
+
+        <span class="c1"># Is mask is a list then insert new mask to appropriate position (0 if tier-1 mode i.e.</span>
+        <span class="c1"># iter1, 1 if tier-2 mode i.e. iter2)</span>
+        <span class="n">clp_mask</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">clp_mask</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">maskingmode</span> <span class="o">==</span> <span class="s1">&#39;vlass-se-tier-2&#39;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">combinedmask</span><span class="p">)</span>
+        <span class="c1"># Cleaning with pb mask only must always be on last place, see PIPE-977</span>
+        <span class="k">elif</span> <span class="n">clp_mask</span> <span class="o">==</span> <span class="s1">&#39;pb&#39;</span><span class="p">:</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">combinedmask</span><span class="p">,</span> <span class="s1">&#39;pb&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">clp_mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">combinedmask</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maskingmode</span> <span class="o">==</span> <span class="s1">&#39;vlass-se-tier-2&#39;</span>
+                                                                                      <span class="ow">and</span> <span class="n">clp_mask</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">combinedmask</span>
+        <span class="k">return</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># return &#39;VlassmaskingResults:\n\t{0}&#39;.format(</span>
+        <span class="c1">#    &#39;\n\t&#39;.join([ms.name for ms in self.mses]))</span>
+        <span class="k">return</span> <span class="s1">&#39;VlassmaskingResults:&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="VlassmaskingInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.vlassmasking.html#pipeline.hifv.tasks.vlassmasking.vlassmasking.VlassmaskingInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">VlassmaskingInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for the hifv_vlassmasking pipeline task.  Used in conjunction with VLASS measurement sets.</span>
+
+<span class="sd">    The class inherits from vdp.StandardInputs.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vlass_ql_database</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;/home/vlass/packages/VLASS1Q.fits&#39;</span><span class="p">)</span>
+    <span class="n">maskingmode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;vlass-se-tier-1&#39;</span><span class="p">)</span>
+    <span class="n">catalog_search_size</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vlass_ql_database</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maskingmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">catalog_search_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Args:</span>
+<span class="sd">            context (:obj:): Pipeline context</span>
+<span class="sd">            vis(str, optional): String name of the measurement set</span>
+<span class="sd">            vlass_ql_database(str): Path to a PyBDSF sky catalog in FITS format.</span>
+<span class="sd">                                    Default at AOC is &#39;/home/vlass/packages/VLASS1Q.fits&#39;</span>
+<span class="sd">            maskingmode(str): Two modes are: vlass-se-tier-1 (QL mask) and vlass-se-tier-2 (combined mask)</span>
+<span class="sd">            catalog_search_size (float): The half-width (in degrees) of the catalog search centered on the</span>
+<span class="sd">                                        image&#39;s reference pixel.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vlass_ql_database</span> <span class="o">=</span> <span class="n">vlass_ql_database</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maskingmode</span> <span class="o">=</span> <span class="n">maskingmode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">catalog_search_size</span> <span class="o">=</span> <span class="n">catalog_search_size</span></div>
+
+
+
+<div class="viewcode-block" id="Vlassmasking">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.vlassmasking.html#pipeline.hifv.tasks.vlassmasking.vlassmasking.Vlassmasking">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_vlassmasking&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Add your task description for inclusion in casa_commands.log&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Vlassmasking</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for the hifv_vlassmasking pipeline task.  Used on VLASS measurement sets.</span>
+
+<span class="sd">        The class inherits from basetask.StandardTaskTemplate</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">VlassmaskingInputs</span>
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="Vlassmasking.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.vlassmasking.html#pipeline.hifv.tasks.vlassmasking.vlassmasking.Vlassmasking.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method where the VLASS Masking operation is executed.</span>
+
+<span class="sd">        The mask creation steps are critical pieces of the VIP workflow. Mask creation uses islands</span>
+<span class="sd">        identified using pyBDSF and the process is described in detail in VLASS Memo #15. If the</span>
+<span class="sd">        image to be produced is in a region of the sky where no components were identified, this step</span>
+<span class="sd">        and subsequent steps will not succeed. Thus, several metrics are needed to evaluate the efficacy</span>
+<span class="sd">        of mask creation in this step.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            VlassmaskingResults() type object, with final output mask name and metadata information</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;This Vlassmasking class is running.&quot;</span><span class="p">)</span>
+
+        <span class="n">maskname_base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_maskname_base</span><span class="p">()</span>
+
+        <span class="n">shapelist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span>
+        <span class="n">mask_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">shapelist</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shapelist</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">phasecenter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span>
+        <span class="n">frequency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span>
+        <span class="n">QLmask</span> <span class="o">=</span> <span class="s1">&#39;.QLcatmask-tier1.mask&#39;</span>
+        <span class="n">catalog_fits_file</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">tier1mask</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">tier2mask</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">combinedmask</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">plotmask</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">number_islands_found</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">number_islands_found_onedeg</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">num_rejected_islands</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">num_rejected_islands_onedeg</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">pixelfractions</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;tier1&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                          <span class="s1">&#39;tier1_onedeg&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                          <span class="s1">&#39;tier2&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                          <span class="s1">&#39;tier2_onedeg&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                          <span class="s1">&#39;final&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                          <span class="s1">&#39;final_onedeg&#39;</span><span class="p">:</span> <span class="mf">0.0</span>
+                          <span class="p">}</span>
+        <span class="n">relativefraction</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">relativefraction_onedeg</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">widthdeg</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="c1"># Work around for CAS-13338</span>
+        <span class="n">mask_csys_rec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;heuristics&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_parallel_cont_synthesis_imager_csys</span><span class="p">(</span>
+            <span class="n">phasecenter</span><span class="p">,</span> <span class="n">imsize</span><span class="o">=</span><span class="n">shapelist</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="n">cell</span><span class="p">)</span>
+
+        <span class="c1"># Test parameters for reference</span>
+        <span class="c1"># Location of catalog file at the AOC</span>
+        <span class="c1"># catalog_fits_file = &#39;/home/vlass/packages/VLASS1Q.fits&#39;</span>
+        <span class="c1"># imsize = shapelist[0]</span>
+        <span class="c1"># wprojplanes = 32</span>
+        <span class="c1"># cfcache = &#39;./cfcache_imsize&#39; + str(imsize) + &#39;_cell&#39; + cell + &#39;_w&#39; + str(wprojplanes) + &#39;_conjT.cf&#39;</span>
+        <span class="c1"># cfcache_nowb = &#39;./cfcache_imsize&#39; + str(imsize) + &#39;_cell&#39; + cell + &#39;_w&#39; + str(</span>
+        <span class="c1">#     wprojplanes) + &#39;_conjT_psf_wbawp_False.cf&#39;</span>
+        <span class="c1"># phasecenter = &#39;J2000 13:33:35.814 +16.44.04.255&#39;</span>
+        <span class="c1"># mask_shape = np.array([imsize, imsize, 1, 1])</span>
+        <span class="c1"># frequency = &#39;3.0GHz&#39;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing with masking mode: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maskingmode</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maskingmode</span> <span class="o">==</span> <span class="s1">&#39;vlass-se-tier-1&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vlass_ql_database</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maskingmode</span> <span class="o">==</span> <span class="s1">&#39;vlass-se-tier-1&#39;</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;VLASS Quicklook database file </span><span class="si">{!s}</span><span class="s2"> does not exist.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vlass_ql_database</span><span class="p">))</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Executing mask_from_catalog masking mode = </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maskingmode</span><span class="p">))</span>
+
+            <span class="n">catalog_fits_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vlass_ql_database</span>
+
+            <span class="n">tier1mask</span> <span class="o">=</span> <span class="n">maskname_base</span> <span class="o">+</span> <span class="n">QLmask</span>
+
+            <span class="n">number_islands_found</span><span class="p">,</span> \
+                <span class="n">number_islands_found_onedeg</span> <span class="o">=</span> <span class="n">mask_from_catalog</span><span class="p">(</span><span class="n">catalog_fits_file</span><span class="o">=</span><span class="n">catalog_fits_file</span><span class="p">,</span>
+                                                                <span class="n">catalog_search_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">catalog_search_size</span><span class="p">,</span>
+                                                                <span class="n">mask_shape</span><span class="o">=</span><span class="n">mask_shape</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="n">cell</span><span class="p">,</span>
+                                                                <span class="n">phasecenter</span><span class="o">=</span><span class="n">phasecenter</span><span class="p">,</span>
+                                                                <span class="n">mask_name</span><span class="o">=</span><span class="n">tier1mask</span><span class="p">,</span> <span class="n">csys_rec</span><span class="o">=</span><span class="n">mask_csys_rec</span><span class="p">)</span>
+
+            <span class="c1"># Compute fraction of pixels enclosed in the tier-1 mask</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">tier1mask</span><span class="p">)</span> <span class="k">as</span> <span class="n">myia</span><span class="p">:</span>
+                <span class="n">computechunk</span> <span class="o">=</span> <span class="n">myia</span><span class="o">.</span><span class="n">getchunk</span><span class="p">()</span>
+                <span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;tier1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">computechunk</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">computechunk</span><span class="o">.</span><span class="n">size</span>
+
+            <span class="c1"># Compute fraction of pixels enclosed in the inner square degree for the tier-1 mask</span>
+            <span class="n">pixelsum</span><span class="p">,</span> <span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;tier1_onedeg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_computepixelfraction</span><span class="p">(</span><span class="n">widthdeg</span><span class="p">,</span> <span class="n">tier1mask</span><span class="p">)</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Pixel fraction over entire tier-1 mask: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;tier1&#39;</span><span class="p">]))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Pixel fraction over inner </span><span class="si">{!s}</span><span class="s2"> degree of tier-1 mask: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">widthdeg</span><span class="p">,</span>
+                                                                                         <span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;tier1_onedeg&#39;</span><span class="p">]))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+            <span class="n">combinedmask</span> <span class="o">=</span> <span class="n">tier1mask</span>
+            <span class="n">plotmask</span> <span class="o">=</span> <span class="n">combinedmask</span>
+
+            <span class="k">if</span> <span class="n">number_islands_found_onedeg</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;tier1_onedeg&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No islands found or pixel fraction is zero.&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maskingmode</span> <span class="o">==</span> <span class="s1">&#39;vlass-se-tier-2&#39;</span><span class="p">:</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Executing mask_from_catalog masking mode = </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maskingmode</span><span class="p">))</span>
+
+            <span class="c1"># Obtain Tier 1 mask name</span>
+            <span class="n">imaging_target_mask_list</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;mask&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">imaging_target_mask_list</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="c1"># pb string is a placeholder for cleaning without mask</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">imaging_target_mask_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;pb&#39;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="c1"># Always take first mask in the list</span>
+                <span class="k">finally</span><span class="p">:</span>
+                    <span class="n">imaging_target_mask_list</span> <span class="o">=</span> <span class="n">imaging_target_mask_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">imaging_target_mask_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">tier1mask</span> <span class="o">=</span> <span class="n">maskname_base</span> <span class="o">+</span> <span class="n">QLmask</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">imaging_target_mask_list</span> <span class="k">else</span> <span class="n">imaging_target_mask_list</span>
+
+            <span class="c1"># Obtain image name</span>
+            <span class="n">imagename_base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bdsf_imagename</span><span class="p">(</span><span class="n">maskname_base</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">initial_catalog_fits_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdsfcompute</span><span class="p">(</span><span class="n">imagename_base</span><span class="p">)</span>
+
+            <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;.secondmask.mask&quot;</span>
+            <span class="n">tier2mask</span> <span class="o">=</span> <span class="n">maskname_base</span> <span class="o">+</span> <span class="n">suffix</span>
+
+            <span class="n">catalog_fits_file</span><span class="p">,</span> <span class="n">num_rejected_islands</span><span class="p">,</span> <span class="n">num_rejected_islands_onedeg</span>\
+                <span class="o">=</span> <span class="n">edit_pybdsf_islands</span><span class="p">(</span><span class="n">catalog_fits_file</span><span class="o">=</span><span class="n">initial_catalog_fits_file</span><span class="p">,</span> <span class="n">phasecenter</span><span class="o">=</span><span class="n">phasecenter</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">catalog_fits_file</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Catalog file </span><span class="si">{!s}</span><span class="s2"> does not exist.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">catalog_fits_file</span><span class="p">))</span>
+
+            <span class="n">number_islands_found</span><span class="p">,</span> \
+                <span class="n">number_islands_found_onedeg</span> <span class="o">=</span> <span class="n">mask_from_catalog</span><span class="p">(</span><span class="n">catalog_fits_file</span><span class="o">=</span><span class="n">catalog_fits_file</span><span class="p">,</span>
+                                                                <span class="n">catalog_search_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">catalog_search_size</span><span class="p">,</span>
+                                                                <span class="n">mask_shape</span><span class="o">=</span><span class="n">mask_shape</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="n">cell</span><span class="p">,</span>
+                                                                <span class="n">phasecenter</span><span class="o">=</span><span class="n">phasecenter</span><span class="p">,</span>
+                                                                <span class="n">mask_name</span><span class="o">=</span><span class="n">tier2mask</span><span class="p">,</span> <span class="n">csys_rec</span><span class="o">=</span><span class="n">mask_csys_rec</span><span class="p">)</span>
+
+            <span class="c1"># combine first and second order masks</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">outfile</span> <span class="o">=</span> <span class="n">maskname_base</span> <span class="o">+</span> <span class="s1">&#39;.sum_of_masks.mask&#39;</span>
+                <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">immath</span><span class="p">(</span><span class="n">imagename</span><span class="o">=</span><span class="p">[</span><span class="n">tier2mask</span><span class="p">,</span> <span class="n">tier1mask</span><span class="p">],</span> <span class="n">expr</span><span class="o">=</span><span class="s1">&#39;IM0+IM1&#39;</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="n">outfile</span><span class="p">)</span>
+                <span class="n">runtask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to combine mask files </span><span class="si">{</span><span class="n">tier1mask</span><span class="si">}</span><span class="s1"> and </span><span class="si">{</span><span class="n">tier2mask</span><span class="si">}</span><span class="s1"> with exception </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">myim</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">imager</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing imager.mask()...&quot;</span><span class="p">)</span>
+            <span class="n">combinedmask</span> <span class="o">=</span> <span class="n">maskname_base</span> <span class="o">+</span> <span class="s1">&#39;.combined-tier2.mask&#39;</span>
+            <span class="n">myim</span><span class="o">.</span><span class="n">mask</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">outfile</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">combinedmask</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">myim</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+            <span class="c1"># Compute fraction of pixels enclosed in the tier-1 mask</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">tier1mask</span><span class="p">)</span> <span class="k">as</span> <span class="n">myia</span><span class="p">:</span>
+                <span class="n">computechunk</span> <span class="o">=</span> <span class="n">myia</span><span class="o">.</span><span class="n">getchunk</span><span class="p">()</span>
+                <span class="n">tier1pixelsum</span> <span class="o">=</span> <span class="n">computechunk</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                <span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;tier1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">computechunk</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">computechunk</span><span class="o">.</span><span class="n">size</span>
+
+            <span class="c1"># Compute fraction of pixels enclosed in the inner square degree for the tier-1 mask</span>
+            <span class="n">tier1pixelsum_onedeg</span><span class="p">,</span> <span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;tier1_onedeg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_computepixelfraction</span><span class="p">(</span><span class="n">widthdeg</span><span class="p">,</span> <span class="n">tier1mask</span><span class="p">)</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Pixel fraction over entire tier-1 mask: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;tier1&#39;</span><span class="p">]))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Pixel fraction over inner </span><span class="si">{!s}</span><span class="s2"> degree of tier-1 mask: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;tier1&#39;</span><span class="p">],</span>
+                                                                                         <span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;tier1_onedeg&#39;</span><span class="p">]))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+            <span class="c1"># Compute fraction of pixels enclosed in the tier-2 mask</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">tier2mask</span><span class="p">)</span> <span class="k">as</span> <span class="n">myia</span><span class="p">:</span>
+                <span class="n">computechunk</span> <span class="o">=</span> <span class="n">myia</span><span class="o">.</span><span class="n">getchunk</span><span class="p">()</span>
+                <span class="n">tier2pixelsum</span> <span class="o">=</span> <span class="n">computechunk</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                <span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;tier2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">computechunk</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">computechunk</span><span class="o">.</span><span class="n">size</span>
+
+            <span class="c1"># Compute fraction of pixels enclosed in the inner square degree for the tier-2 mask</span>
+            <span class="n">tier2pixelsum_onedeg</span><span class="p">,</span> <span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;tier2_onedeg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_computepixelfraction</span><span class="p">(</span><span class="n">widthdeg</span><span class="p">,</span> <span class="n">tier2mask</span><span class="p">)</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Pixel fraction over entire tier-2 mask: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;tier2&#39;</span><span class="p">]))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Pixel fraction over inner </span><span class="si">{!s}</span><span class="s2"> degree of tier-2 mask: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">widthdeg</span><span class="p">,</span>
+                                                                                         <span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;tier2_onedeg&#39;</span><span class="p">]))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+            <span class="c1"># Compute fraction of pixels enclosed in the final mask</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">combinedmask</span><span class="p">)</span> <span class="k">as</span> <span class="n">myia</span><span class="p">:</span>
+                <span class="n">computechunk</span> <span class="o">=</span> <span class="n">myia</span><span class="o">.</span><span class="n">getchunk</span><span class="p">()</span>
+                <span class="n">finalpixelsum</span> <span class="o">=</span> <span class="n">computechunk</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                <span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;final&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">computechunk</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">computechunk</span><span class="o">.</span><span class="n">size</span>
+
+            <span class="c1"># Compute fraction of pixels enclosed in the inner square degree for the final combined mask</span>
+            <span class="n">finalpixelsum_onedeg</span><span class="p">,</span> <span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;final_onedeg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_computepixelfraction</span><span class="p">(</span><span class="n">widthdeg</span><span class="p">,</span> <span class="n">combinedmask</span><span class="p">)</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Pixel fraction over entire final combined mask: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;final&#39;</span><span class="p">]))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Pixel fraction over inner </span><span class="si">{!s}</span><span class="s2"> degree of final combined mask: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">widthdeg</span><span class="p">,</span>
+                                                                                                 <span class="n">pixelfractions</span><span class="p">[</span><span class="s1">&#39;final_onedeg&#39;</span><span class="p">]))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+            <span class="c1"># Compute the fractional increase of masked pixels in Final mask relative to Quicklook Mask</span>
+            <span class="c1"># Compute the fractional increase of masked pixels in Final mask relative to Quicklook Mask in the inner</span>
+            <span class="c1"># square degree</span>
+            <span class="n">relativefraction_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">finalpixelsum</span> <span class="o">-</span> <span class="n">tier1pixelsum</span><span class="p">)</span> <span class="o">/</span> <span class="n">tier1pixelsum</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; =  ((&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">finalpixelsum</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; - &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">tier1pixelsum</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;) /&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">tier1pixelsum</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+            <span class="n">relativefraction_onedeg_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">((</span><span class="n">finalpixelsum_onedeg</span> <span class="o">-</span> <span class="n">tier1pixelsum_onedeg</span><span class="p">)</span> <span class="o">/</span> <span class="n">tier1pixelsum_onedeg</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; =  ((&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span>
+                <span class="n">finalpixelsum_onedeg</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; - &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">tier1pixelsum_onedeg</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;) /&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">tier1pixelsum_onedeg</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Relative fraction: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">relativefraction_str</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Relative fraction (inner square degree): </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">relativefraction_onedeg_str</span><span class="p">))</span>
+
+            <span class="n">relativefraction</span> <span class="o">=</span> <span class="p">(</span><span class="n">finalpixelsum</span> <span class="o">-</span> <span class="n">tier1pixelsum</span><span class="p">)</span> <span class="o">/</span> <span class="n">tier1pixelsum</span>
+            <span class="n">relativefraction_onedeg</span> <span class="o">=</span> <span class="p">(</span><span class="n">finalpixelsum_onedeg</span> <span class="o">-</span> <span class="n">tier1pixelsum_onedeg</span><span class="p">)</span> <span class="o">/</span> <span class="n">tier1pixelsum_onedeg</span>
+
+            <span class="n">plotmask</span> <span class="o">=</span> <span class="n">combinedmask</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Invalid maskingmode input.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">VlassmaskingResults</span><span class="p">(</span><span class="n">catalog_fits_file</span><span class="o">=</span><span class="n">catalog_fits_file</span><span class="p">,</span>
+                                   <span class="n">catalog_search_size</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+                                   <span class="n">tier1mask</span><span class="o">=</span><span class="n">tier1mask</span><span class="p">,</span> <span class="n">tier2mask</span><span class="o">=</span><span class="n">tier2mask</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="n">outfile</span><span class="p">,</span>
+                                   <span class="n">combinedmask</span><span class="o">=</span><span class="n">combinedmask</span><span class="p">,</span> <span class="n">number_islands_found</span><span class="o">=</span><span class="n">number_islands_found</span><span class="p">,</span>
+                                   <span class="n">number_islands_found_onedeg</span><span class="o">=</span><span class="n">number_islands_found_onedeg</span><span class="p">,</span>
+                                   <span class="n">num_rejected_islands</span><span class="o">=</span><span class="n">num_rejected_islands</span><span class="p">,</span>
+                                   <span class="n">num_rejected_islands_onedeg</span><span class="o">=</span><span class="n">num_rejected_islands_onedeg</span><span class="p">,</span>
+                                   <span class="n">pixelfractions</span><span class="o">=</span><span class="n">pixelfractions</span><span class="p">,</span>
+                                   <span class="n">relativefraction</span><span class="o">=</span><span class="n">relativefraction</span><span class="p">,</span>
+                                   <span class="n">relativefraction_onedeg</span><span class="o">=</span><span class="n">relativefraction_onedeg</span><span class="p">,</span>
+                                   <span class="n">plotmask</span><span class="o">=</span><span class="n">plotmask</span><span class="p">,</span>
+                                   <span class="n">maskingmode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maskingmode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Vlassmasking.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.vlassmasking.html#pipeline.hifv.tasks.vlassmasking.vlassmasking.Vlassmasking.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="Vlassmasking.bdsfcompute">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.vlassmasking.html#pipeline.hifv.tasks.vlassmasking.vlassmasking.Vlassmasking.bdsfcompute">[docs]</a>
+    <span class="k">def</span> <span class="nf">bdsfcompute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename_base</span><span class="p">):</span>
+
+        <span class="n">imsmooth</span><span class="p">(</span><span class="n">imagename</span><span class="o">=</span><span class="n">imagename_base</span> <span class="o">+</span> <span class="s2">&quot;.tt0&quot;</span><span class="p">,</span> <span class="n">major</span><span class="o">=</span><span class="s1">&#39;5arcsec&#39;</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="s1">&#39;5arcsec&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">=</span><span class="s1">&#39;0deg&#39;</span><span class="p">,</span>
+                 <span class="n">outfile</span><span class="o">=</span><span class="n">imagename_base</span> <span class="o">+</span> <span class="s2">&quot;.smooth5.tt0&quot;</span><span class="p">)</span>
+
+        <span class="n">fitsimage</span> <span class="o">=</span> <span class="n">imagename_base</span> <span class="o">+</span> <span class="s2">&quot;.smooth5.fits&quot;</span>
+        <span class="n">export_task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">exportfits</span><span class="p">(</span><span class="n">imagename</span><span class="o">=</span><span class="n">imagename_base</span> <span class="o">+</span> <span class="s2">&quot;.smooth5.tt0&quot;</span><span class="p">,</span>
+                                            <span class="n">fitsimage</span><span class="o">=</span><span class="n">fitsimage</span><span class="p">)</span>
+        <span class="n">runtask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">export_task</span><span class="p">)</span>
+
+        <span class="n">bdsf_result</span> <span class="o">=</span> <span class="n">run_bdsf</span><span class="p">(</span><span class="n">infile</span><span class="o">=</span><span class="n">fitsimage</span><span class="p">)</span>
+
+        <span class="c1"># Return the catalogue fits file name</span>
+        <span class="k">return</span> <span class="n">fitsimage</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.fits&#39;</span><span class="p">,</span> <span class="s1">&#39;.cat.fits&#39;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_maskname_base</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns base name for the mask.</span>
+
+<span class="sd">        If context.clean_list_pending is populated, then it will take &#39;imagename&#39; parameter from the first imlist entry.</span>
+<span class="sd">        The &#39;STAGENUMBER&#39; substring is replaced by the current stage number.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># context.stage is defined as &#39;{context.task_counter}_{context.subtask_counter}&#39;</span>
+        <span class="c1"># Because this is a not multi_vis task (is_multi_vis_task=False, in contrast of hif_makeimages), the mask creation is done</span>
+        <span class="c1"># as a subtask, with subtask_counter increases for each MS. Here we use &#39;{context.task_counter}_0&#39; to keep the</span>
+        <span class="c1"># consistency with the naming convention of imaging products.</span>
+
+        <span class="k">if</span> <span class="s1">&#39;imagename&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;STAGENUMBER&#39;</span><span class="p">,</span>
+                                                                                  <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_0&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                                                                      <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;VIP_&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_get_bdsf_imagename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename_base</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Image file name to be used as input to BDSF blob finder.</span>
+
+<span class="sd">        Obtain the image name from the latest MakeImagesResult object in context.results. The iter parameter controlls</span>
+<span class="sd">        which iteration image name should be returned. In the current VLASS-SE-CONT workflow, iter=1.</span>
+
+<span class="sd">        If hif_makimages result is not found, then construct image name from imagename_base argument. This replicates </span>
+<span class="sd">        the image name used in the VLASS Memo 15 VIP script.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">result_meta</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result_meta</span><span class="p">,</span> <span class="s1">&#39;pipeline_casa_task&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">result_meta</span><span class="o">.</span><span class="n">pipeline_casa_task</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;hif_makeimages&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">result_meta</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="nb">iter</span><span class="p">][</span><span class="s1">&#39;image&#39;</span><span class="p">]</span>
+
+        <span class="c1"># In case hif_makeimages result was not found.</span>
+        <span class="k">return</span> <span class="n">imagename_base</span> <span class="o">+</span> <span class="s1">&#39;iter1b.image&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_computepixelfraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widthdeg</span><span class="p">,</span> <span class="n">maskimage</span><span class="p">):</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">maskimage</span><span class="p">)</span> <span class="k">as</span> <span class="n">myia</span><span class="p">:</span>
+            <span class="c1"># myia = casa_tools.image</span>
+            <span class="c1"># myia.open(maskimage)</span>
+            <span class="n">mask_csys</span> <span class="o">=</span> <span class="n">myia</span><span class="o">.</span><span class="n">coordsys</span><span class="p">()</span>
+
+            <span class="n">xpixel</span> <span class="o">=</span> <span class="n">mask_csys</span><span class="o">.</span><span class="n">torecord</span><span class="p">()[</span><span class="s1">&#39;direction0&#39;</span><span class="p">][</span><span class="s1">&#39;crpix&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ypixel</span> <span class="o">=</span> <span class="n">mask_csys</span><span class="o">.</span><span class="n">torecord</span><span class="p">()[</span><span class="s1">&#39;direction0&#39;</span><span class="p">][</span><span class="s1">&#39;crpix&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">xdelta</span> <span class="o">=</span> <span class="n">mask_csys</span><span class="o">.</span><span class="n">torecord</span><span class="p">()[</span><span class="s1">&#39;direction0&#39;</span><span class="p">][</span><span class="s1">&#39;cdelt&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># in radians</span>
+            <span class="n">ydelta</span> <span class="o">=</span> <span class="n">mask_csys</span><span class="o">.</span><span class="n">torecord</span><span class="p">()[</span><span class="s1">&#39;direction0&#39;</span><span class="p">][</span><span class="s1">&#39;cdelt&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># in radians</span>
+            <span class="n">onedeg</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>  <span class="c1"># conversion</span>
+            <span class="c1"># widthdeg = 0.4  # degrees</span>
+            <span class="n">boxhalfxwidth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="n">onedeg</span> <span class="o">*</span> <span class="n">widthdeg</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">xdelta</span><span class="p">)</span>
+            <span class="n">boxhalfywidth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="n">onedeg</span> <span class="o">*</span> <span class="n">widthdeg</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">ydelta</span><span class="p">)</span>
+
+            <span class="n">blcx</span> <span class="o">=</span> <span class="n">xpixel</span> <span class="o">-</span> <span class="n">boxhalfxwidth</span>
+            <span class="n">blcy</span> <span class="o">=</span> <span class="n">ypixel</span> <span class="o">-</span> <span class="n">boxhalfywidth</span>
+            <span class="k">if</span> <span class="n">blcx</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">blcx</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">blcy</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">blcy</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">blc</span> <span class="o">=</span> <span class="p">[</span><span class="n">blcx</span><span class="p">,</span> <span class="n">blcy</span><span class="p">]</span>
+
+            <span class="n">trcx</span> <span class="o">=</span> <span class="n">xpixel</span> <span class="o">+</span> <span class="n">boxhalfxwidth</span>
+            <span class="n">trcy</span> <span class="o">=</span> <span class="n">ypixel</span> <span class="o">+</span> <span class="n">boxhalfywidth</span>
+            <span class="k">if</span> <span class="n">trcx</span> <span class="o">&gt;</span> <span class="n">myia</span><span class="o">.</span><span class="n">getchunk</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">trcx</span> <span class="o">=</span> <span class="n">myia</span><span class="o">.</span><span class="n">getchunk</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">trcy</span> <span class="o">&gt;</span> <span class="n">myia</span><span class="o">.</span><span class="n">getchunk</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">trcy</span> <span class="o">=</span> <span class="n">myia</span><span class="o">.</span><span class="n">getchunk</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">trc</span> <span class="o">=</span> <span class="p">[</span><span class="n">trcx</span><span class="p">,</span> <span class="n">trcy</span><span class="p">]</span>
+
+            <span class="n">myrg</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">regionmanager</span>
+            <span class="n">r1</span> <span class="o">=</span> <span class="n">myrg</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="n">blc</span><span class="o">=</span><span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="o">=</span><span class="n">trc</span><span class="p">)</span>
+
+            <span class="n">y</span> <span class="o">=</span> <span class="n">myia</span><span class="o">.</span><span class="n">getregion</span><span class="p">(</span><span class="n">r1</span><span class="p">)</span>
+            <span class="n">pixelsum</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">pixelfraction</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">y</span><span class="o">.</span><span class="n">size</span>
+
+            <span class="c1"># myia.done()</span>
+            <span class="n">myrg</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">pixelsum</span><span class="p">,</span> <span class="n">pixelfraction</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,895 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.executeppr &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.executeppr</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.executeppr</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Execute the pipeline processing request.</span>
+
+<span class="sd">Code first as module and convert to class if appropriate</span>
+<span class="sd">Factor and document properly  when details worked out</span>
+
+<span class="sd">Raises:</span>
+<span class="sd">    exceptions.PipelineException</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">..extern</span> <span class="kn">import</span> <span class="n">XmlObjectifier</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">exceptions</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">filenamer</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">project</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">cli</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="n">launcher</span> <span class="kn">import</span> <span class="nn">Context</span>
+
+
+<div class="viewcode-block" id="executeppr">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.executeppr.executeppr">[docs]</a>
+<span class="k">def</span> <span class="nf">executeppr</span><span class="p">(</span><span class="n">pprXmlFile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">importonly</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="nb">breakpoint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;breakpoint&#39;</span><span class="p">,</span> <span class="n">bpaction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ignore&#39;</span><span class="p">,</span>
+               <span class="n">loglevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">interactive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Runs Pipeline Processing Request (PPR).</span>
+
+<span class="sd">    Executes pipeline tasks based on instructions described in pprXmlFile.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pprXmlFile: A path to PPR file.</span>
+<span class="sd">        importonly: Whether or not to indicate to stop processing after</span>
+<span class="sd">            importing data. If True, execution of PPR stops after</span>
+<span class="sd">            h*_importdata stage. The parameter has no effect if there is no</span>
+<span class="sd">            h*_importdata stage in PPR.</span>
+<span class="sd">        breakpoint: A name of command that should be considered as a break point.</span>
+<span class="sd">        bpaction: An action to be taken at the breakpoint.</span>
+<span class="sd">            Available actions are,</span>
+<span class="sd">            &#39;ignore&#39;: ignores breakpoint in pprXmlFile.</span>
+<span class="sd">            &#39;break&#39;: stop execution at the breakpoint in pprXmlFile.</span>
+<span class="sd">            &#39;resume&#39;: resume the last context and restart processing after the</span>
+<span class="sd">                breakpoint in pprXmlFile.</span>
+<span class="sd">        loglevel: A logging level. Available levels are, &#39;critical&#39;, &#39;error&#39;,</span>
+<span class="sd">            &#39;warning&#39;, &#39;info&#39;, &#39;debug&#39;, &#39;todo&#39;, and &#39;trace&#39;.</span>
+<span class="sd">        plotlevel: A plot level. Available levels are, &#39;all&#39;, &#39;default&#39;, and</span>
+<span class="sd">            &#39;summary&#39;</span>
+<span class="sd">        interactive: If True, print pipeline log to STDOUT.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">       Only import EBs.</span>
+<span class="sd">       &gt;&gt;&gt; executeppr(&#39;PPR_uid___A001_X14c3_X1dd.xml&#39;)</span>
+
+<span class="sd">       Full execution of PPR.</span>
+<span class="sd">       &gt;&gt;&gt; executeppr(&#39;PPR_uid___A001_X14c3_X1dd.xml&#39;, importonly=False)</span>
+
+<span class="sd">       Run pipeline tasks up to the &#39;breakpoint&#39; in PPR and save context.</span>
+<span class="sd">       &gt;&gt;&gt; executeppr(&#39;PPR_uid___A001_X14c3_X1dd.xml&#39;, importonly=False, bpaction=&#39;break&#39;)</span>
+
+<span class="sd">       Resume execution from the &#39;breakpoint&#39; in PPR.</span>
+<span class="sd">       &gt;&gt;&gt; executeppr(&#39;PPR_uid___A001_X14c3_X1dd.xml&#39;, importonly=False, bpaction=&#39;resume&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># save existing context to disk</span>
+    <span class="n">save_existing_context</span><span class="p">()</span>
+
+    <span class="c1"># Useful mode parameters</span>
+    <span class="n">echo_to_screen</span> <span class="o">=</span> <span class="n">interactive</span>
+    <span class="n">workingDir</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Decode the processing request</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Analyzing pipeline processing request ...&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">,</span> <span class="n">structure</span><span class="p">,</span> <span class="n">relativePath</span><span class="p">,</span> <span class="n">intentsDict</span><span class="p">,</span> <span class="n">asdmList</span><span class="p">,</span> <span class="n">procedureName</span><span class="p">,</span> <span class="n">commandsList</span> <span class="o">=</span> \
+            <span class="n">_getFirstRequest</span><span class="p">(</span><span class="n">pprXmlFile</span><span class="p">)</span>
+
+        <span class="c1"># Set the directories</span>
+        <span class="k">if</span> <span class="s1">&#39;SCIPIPE_ROOTDIR&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="n">workingDir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="s1">&#39;$SCIPIPE_ROOTDIR&#39;</span><span class="p">),</span> <span class="n">relativePath</span><span class="p">,</span> <span class="s1">&#39;working&#39;</span><span class="p">)</span>
+            <span class="n">rawDir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="s1">&#39;$SCIPIPE_ROOTDIR&#39;</span><span class="p">),</span> <span class="n">relativePath</span><span class="p">,</span> <span class="s1">&#39;rawdata&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># PIPE-2093: if $SCIPIPE_ROOTDIR doesn&#39;t exist, we likely run in a local dev/test environment.</span>
+            <span class="c1"># Then we will override the typical production workingDir/rawDIR values that are traditionally</span>
+            <span class="c1"># constructed from $SCIPIPE_ROOTDIR and the PPR &lt;RelativePath&gt; field. Note that we assume that</span>
+            <span class="c1"># any executeppr call here happens inside the &quot;working/&quot; directory.</span>
+            <span class="n">workingDir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;working&#39;</span><span class="p">))</span>
+            <span class="n">rawDir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;rawdata&#39;</span><span class="p">))</span>
+
+        <span class="c1"># Check for the breakpoint</span>
+        <span class="n">bpset</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">breakpoint</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">commandsList</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">breakpoint</span><span class="p">:</span>
+                    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;    Found break point: &quot;</span> <span class="o">+</span> <span class="nb">breakpoint</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+                    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;    Break point action is: &quot;</span> <span class="o">+</span> <span class="n">bpaction</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+                    <span class="n">bpset</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+
+        <span class="c1"># Get the pipeline context</span>
+        <span class="c1">#     Resumes from the last context. Consider adding name</span>
+        <span class="k">if</span> <span class="n">bpset</span> <span class="ow">and</span> <span class="n">bpaction</span> <span class="o">==</span> <span class="s1">&#39;resume&#39;</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="n">cli</span><span class="o">.</span><span class="n">h_resume</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span>
+            <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;    Resuming from last context&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="n">cli</span><span class="o">.</span><span class="n">h_init</span><span class="p">(</span><span class="n">loglevel</span><span class="o">=</span><span class="n">loglevel</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="n">plotlevel</span><span class="p">)</span>
+            <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;    Creating new pipeline context&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Beginning pipeline run ...&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;For processing request: &quot;</span> <span class="o">+</span> <span class="n">pprXmlFile</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+        <span class="n">errstr</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="n">errstr</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Terminating procedure execution ...&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+        <span class="n">errorfile</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">write_errorexit_file</span><span class="p">(</span><span class="n">workingDir</span><span class="p">,</span> <span class="s1">&#39;errorexit&#39;</span><span class="p">,</span> <span class="s1">&#39;txt&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Request decoded, starting run.</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Beginning pipeline run ...&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;For processing request: &quot;</span> <span class="o">+</span> <span class="n">pprXmlFile</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+
+    <span class="c1"># Check for common error conditions.</span>
+    <span class="k">if</span> <span class="n">relativePath</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;    Undefined relative data path&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Terminating pipeline execution ...&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+        <span class="n">errorfile</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">write_errorexit_file</span><span class="p">(</span><span class="n">workingDir</span><span class="p">,</span> <span class="s1">&#39;errorexit&#39;</span><span class="p">,</span> <span class="s1">&#39;txt&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">asdmList</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;    Empty ASDM list&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Terminating pipeline execution ...&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+        <span class="n">errorfile</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">write_errorexit_file</span><span class="p">(</span><span class="n">workingDir</span><span class="p">,</span> <span class="s1">&#39;errorexit&#39;</span><span class="p">,</span> <span class="s1">&#39;txt&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">commandsList</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;    Empty commands list&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Terminating pipeline execution ...&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+        <span class="n">errorfile</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">write_errorexit_file</span><span class="p">(</span><span class="n">workingDir</span><span class="p">,</span> <span class="s1">&#39;errorexit&#39;</span><span class="p">,</span> <span class="s1">&#39;txt&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c1"># List project summary information</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Project summary&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">info</span><span class="p">:</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;    &quot;</span> <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">project_summary</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">ProjectSummary</span><span class="p">(</span>
+        <span class="n">proposal_code</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;proposal_code&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">proposal_title</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">,</span>
+        <span class="n">piname</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">,</span>
+        <span class="n">observatory</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;observatory&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">telescope</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;telescope&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># List project structure information</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Project structure&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">structure</span><span class="p">:</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;    &quot;</span> <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">project_structure</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">ProjectStructure</span><span class="p">(</span>
+        <span class="n">ous_entity_id</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ous_entity_id&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">ous_part_id</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ous_part_id&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">ous_title</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ous_title&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">ous_type</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ous_type&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">ps_entity_id</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ps_entity_id&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ousstatus_entity_id&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">ppr_file</span><span class="o">=</span><span class="n">pprXmlFile</span><span class="p">,</span>
+        <span class="n">recipe_name</span><span class="o">=</span><span class="n">procedureName</span><span class="p">)</span>
+
+    <span class="c1"># Create performance parameters object</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">project_performance_parameters</span> <span class="o">=</span> <span class="n">_getPerformanceParameters</span><span class="p">(</span><span class="n">intentsDict</span><span class="p">)</span>
+
+    <span class="c1"># Get the session info from the intents dictionary</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">intentsDict</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">sessionsDict</span> <span class="o">=</span> <span class="n">_getSessions</span><span class="p">(</span><span class="n">intentsDict</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sessionsDict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Print the relative path</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Directory structure&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;    Working directory: &quot;</span> <span class="o">+</span> <span class="n">workingDir</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;    Raw data directory: &quot;</span> <span class="o">+</span> <span class="n">rawDir</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+
+    <span class="c1"># Construct the ASDM list</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Number of ASDMs: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">asdmList</span><span class="p">)),</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">sessions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">defsession</span> <span class="o">=</span> <span class="s1">&#39;session_1&#39;</span>
+    <span class="k">for</span> <span class="n">asdm</span> <span class="ow">in</span> <span class="n">asdmList</span><span class="p">:</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">defsession</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">sessionsDict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize_for_ms</span><span class="p">(</span><span class="n">asdm</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">session</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="k">break</span>
+
+        <span class="n">sessions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+        <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rawDir</span><span class="p">,</span> <span class="n">asdm</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;    Session: &quot;</span> <span class="o">+</span> <span class="n">session</span> <span class="o">+</span> <span class="s2">&quot;  ASDM: &quot;</span> <span class="o">+</span> <span class="n">asdm</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+
+    <span class="c1"># Paths for all these ASDM should be the same</span>
+    <span class="c1">#     Add check for this ?</span>
+
+    <span class="c1"># Beginning execution</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Starting procedure execution ...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Procedure name: &quot;</span> <span class="o">+</span> <span class="n">procedureName</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+
+    <span class="c1"># Names of import tasks that need special treatment:</span>
+    <span class="n">import_tasks</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;h_importdata&#39;</span><span class="p">,</span> <span class="s1">&#39;hifa_importdata&#39;</span><span class="p">,</span> <span class="s1">&#39;hifv_importdata&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;hsd_importdata&#39;</span><span class="p">,</span> <span class="s1">&#39;hsdn_importdata&#39;</span><span class="p">)</span>
+    <span class="n">restore_tasks</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;h_restoredata&#39;</span><span class="p">,</span> <span class="s1">&#39;hifa_restoredata&#39;</span><span class="p">,</span> <span class="s1">&#39;hifv_restoredata&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;hsd_restoredata&#39;</span><span class="p">)</span>
+    <span class="n">restore_tasks_no_session</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;hsdn_restoredata&#39;</span><span class="p">,)</span>
+
+    <span class="c1"># Loop over the commands</span>
+    <span class="n">errstr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">foundbp</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">tracebacks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">commandsList</span><span class="p">:</span>
+
+        <span class="c1"># Get task name and arguments lists.</span>
+        <span class="n">pipeline_task_name</span> <span class="o">=</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">set_log_origin</span><span class="p">(</span><span class="n">fromwhere</span><span class="o">=</span><span class="n">pipeline_task_name</span><span class="p">)</span>
+
+        <span class="c1"># Handle break point if one is set</span>
+        <span class="k">if</span> <span class="n">bpset</span><span class="p">:</span>
+            <span class="c1"># Found the break point</span>
+            <span class="c1">#    Set the found flag</span>
+            <span class="c1">#    Ignore it  or</span>
+            <span class="c1">#    Break the loop or</span>
+            <span class="c1">#    Resume execution</span>
+            <span class="k">if</span> <span class="n">pipeline_task_name</span> <span class="o">==</span> <span class="nb">breakpoint</span><span class="p">:</span>
+                <span class="n">foundbp</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">bpaction</span> <span class="o">==</span> <span class="s1">&#39;ignore&#39;</span><span class="p">:</span>
+                    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Ignoring breakpoint &quot;</span> <span class="o">+</span> <span class="n">pipeline_task_name</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">elif</span> <span class="n">bpaction</span> <span class="o">==</span> <span class="s1">&#39;break&#39;</span><span class="p">:</span>
+                    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Terminating execution at breakpoint &quot;</span> <span class="o">+</span> <span class="n">pipeline_task_name</span><span class="p">,</span>
+                                           <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">bpaction</span> <span class="o">==</span> <span class="s1">&#39;resume&#39;</span><span class="p">:</span>
+                    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Resuming execution after breakpoint &quot;</span> <span class="o">+</span> <span class="n">pipeline_task_name</span><span class="p">,</span>
+                                           <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+                    <span class="k">continue</span>
+            <span class="c1"># Not the break point so check the resume case</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">foundbp</span> <span class="ow">and</span> <span class="n">bpaction</span> <span class="o">==</span> <span class="s1">&#39;resume&#39;</span><span class="p">:</span>
+                <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Skipping task &quot;</span> <span class="o">+</span> <span class="n">pipeline_task_name</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+        <span class="c1"># Execute the command</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Executing command ...&quot;</span> <span class="o">+</span> <span class="n">pipeline_task_name</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pipeline_task</span> <span class="o">=</span> <span class="n">cli</span><span class="o">.</span><span class="n">get_pipeline_task_with_name</span><span class="p">(</span><span class="n">pipeline_task_name</span><span class="p">)</span>
+
+            <span class="c1"># List parameters</span>
+            <span class="k">for</span> <span class="n">keyword</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">task_args</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;    Parameter: &quot;</span> <span class="o">+</span> <span class="n">keyword</span> <span class="o">+</span> <span class="s2">&quot; = &quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+
+            <span class="c1"># For import/restore tasks, set vis and session explicitly (not inferred from context).</span>
+            <span class="k">if</span> <span class="n">pipeline_task_name</span> <span class="ow">in</span> <span class="n">import_tasks</span> <span class="ow">or</span> <span class="n">pipeline_task_name</span> <span class="ow">in</span> <span class="n">restore_tasks</span><span class="p">:</span>
+                <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">files</span>
+                <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;session&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sessions</span>
+            <span class="k">elif</span> <span class="n">pipeline_task_name</span> <span class="ow">in</span> <span class="n">restore_tasks_no_session</span><span class="p">:</span>
+                <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">files</span>
+
+            <span class="n">results</span> <span class="o">=</span> <span class="n">pipeline_task</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+            <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s1">&#39;Results &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">importonly</span> <span class="ow">and</span> <span class="n">pipeline_task_name</span> <span class="ow">in</span> <span class="n">import_tasks</span><span class="p">:</span>
+                <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Terminating execution after running &quot;</span> <span class="o">+</span> <span class="n">pipeline_task_name</span><span class="p">,</span>
+                                       <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+                <span class="k">break</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="c1"># Log message if an exception occurred that was not handled by</span>
+            <span class="c1"># standardtask template (not turned into failed task result).</span>
+            <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Unhandled error in executeppr while running pipeline task </span><span class="si">{}</span><span class="s2">&quot;</span>
+                                   <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pipeline_task_name</span><span class="p">),</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+            <span class="n">errstr</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+            <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="n">errstr</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+
+        <span class="c1"># Check whether any exceptions were raised either during the task</span>
+        <span class="c1"># (shown as traceback in task results) or after the task during results</span>
+        <span class="c1"># acceptance.</span>
+        <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">tracebacks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">get_tracebacks</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">errstr</span><span class="p">:</span>
+            <span class="n">tracebacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">errstr</span><span class="p">)</span>
+        <span class="c1"># If we have a traceback from an exception, then create local error</span>
+        <span class="c1"># exit file, and export both error file and weblog to the products</span>
+        <span class="c1"># directory.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tracebacks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">errorfile</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">write_errorexit_file</span><span class="p">(</span><span class="n">workingDir</span><span class="p">,</span> <span class="s1">&#39;errorexit&#39;</span><span class="p">,</span> <span class="s1">&#39;txt&#39;</span><span class="p">)</span>
+            <span class="n">export_on_exception</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">errorfile</span><span class="p">)</span>
+
+            <span class="c1"># Save the context</span>
+            <span class="n">cli</span><span class="o">.</span><span class="n">h_save</span><span class="p">()</span>
+            <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Terminating procedure execution ...&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+            <span class="n">casa_tools</span><span class="o">.</span><span class="n">set_log_origin</span><span class="p">(</span><span class="n">fromwhere</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+            <span class="n">previous_tracebacks_as_string</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">tb</span> <span class="k">for</span> <span class="n">tb</span> <span class="ow">in</span> <span class="n">tracebacks</span><span class="p">]))</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">PipelineException</span><span class="p">(</span><span class="n">previous_tracebacks_as_string</span><span class="p">)</span>
+
+    <span class="c1"># Save the context</span>
+    <span class="n">cli</span><span class="o">.</span><span class="n">h_save</span><span class="p">()</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Terminating procedure execution ...&quot;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="n">echo_to_screen</span><span class="p">)</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">set_log_origin</span><span class="p">(</span><span class="n">fromwhere</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+
+<div class="viewcode-block" id="save_existing_context">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.executeppr.save_existing_context">[docs]</a>
+<span class="k">def</span> <span class="nf">save_existing_context</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save existing context to disk.</span>
+
+<span class="sd">    Save existing global pipeline context to avoid</span>
+<span class="sd">    being overwritten by newly created one.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cli</span><span class="o">.</span><span class="n">h_save</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="c1"># Since h_save raises exception if no context is registered,</span>
+        <span class="c1"># just continue processing in this case</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Last-saved context in the current working directory should be</span>
+        <span class="c1"># the one saved by the h_save task above.</span>
+        <span class="n">context_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">()</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.context&#39;</span><span class="p">)),</span>
+            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">st_mtime</span>
+        <span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">context_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="n">context_file</span> <span class="o">=</span> <span class="n">context_files</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Saved existing context </span><span class="si">{</span><span class="n">context_file</span><span class="si">}</span><span class="s1"> to disk.&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="export_on_exception">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.executeppr.export_on_exception">[docs]</a>
+<span class="k">def</span> <span class="nf">export_on_exception</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">errorfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># Define path for exporting output products, and ensure path exists.</span>
+    <span class="n">products_dir</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_products_dir</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+    <span class="n">utils</span><span class="o">.</span><span class="n">ensure_products_dir_exists</span><span class="p">(</span><span class="n">products_dir</span><span class="p">)</span>
+
+    <span class="c1"># Copy error file to products.</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">errorfile</span><span class="p">):</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">errorfile</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">errorfile</span><span class="p">)))</span>
+
+    <span class="c1"># Attempt to export weblog.</span>
+    <span class="k">try</span><span class="p">:</span>
+         <span class="n">utils</span><span class="o">.</span><span class="n">export_weblog_as_tar</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">,</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">PipelineProductNameBuilder</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Unable to export weblog to products.&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># Return the intents list, the ASDM list, and the processing commands</span>
+<span class="c1"># for the first processing request. There should in general be only</span>
+<span class="c1"># one but the schema permits more. Generalize later if necessary.</span>
+<span class="k">def</span> <span class="nf">_getFirstRequest</span><span class="p">(</span><span class="n">pprXmlFile</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]]:</span>
+    <span class="c1"># Initialize</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">relativePath</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">intentsDict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">commandsList</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">asdmList</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Turn the XML file into an object</span>
+    <span class="n">pprObject</span> <span class="o">=</span> <span class="n">_getPprObject</span><span class="p">(</span><span class="n">pprXmlFile</span><span class="o">=</span><span class="n">pprXmlFile</span><span class="p">)</span>
+
+    <span class="c1"># Count the processing requests.</span>
+    <span class="n">numRequests</span> <span class="o">=</span> <span class="n">_getNumRequests</span><span class="p">(</span><span class="n">pprObject</span><span class="o">=</span><span class="n">pprObject</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">numRequests</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Terminating execution: No valid processing requests&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">info</span><span class="p">,</span> <span class="n">relativePath</span><span class="p">,</span> <span class="n">intentsDict</span><span class="p">,</span> <span class="n">asdmList</span><span class="p">,</span> <span class="n">commandsList</span>
+    <span class="k">elif</span> <span class="n">numRequests</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Warning: More than one processing request&quot;</span><span class="p">)</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s1">&#39;Number of processing requests: &#39;</span><span class="p">,</span> <span class="n">numRequests</span><span class="p">)</span>
+
+    <span class="c1"># Get brief project summary</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">_getProjectSummary</span><span class="p">(</span><span class="n">pprObject</span><span class="p">)</span>
+
+    <span class="c1"># Get project structure.</span>
+    <span class="n">structure</span> <span class="o">=</span> <span class="n">_getProjectStructure</span><span class="p">(</span><span class="n">pprObject</span><span class="p">)</span>
+
+    <span class="c1"># Get the intents dictionary</span>
+    <span class="n">numIntents</span><span class="p">,</span> <span class="n">intentsDict</span> <span class="o">=</span> <span class="n">_getIntents</span><span class="p">(</span><span class="n">pprObject</span><span class="o">=</span><span class="n">pprObject</span><span class="p">,</span> <span class="n">requestId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">numRequests</span><span class="o">=</span><span class="n">numRequests</span><span class="p">)</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s1">&#39;Number of intents: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numIntents</span><span class="p">))</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s1">&#39;Intents dictionary: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">intentsDict</span><span class="p">))</span>
+
+    <span class="c1"># Get the commands list</span>
+    <span class="n">procedureName</span><span class="p">,</span> <span class="n">numCommands</span><span class="p">,</span> <span class="n">commandsList</span> <span class="o">=</span> <span class="n">_getCommands</span><span class="p">(</span><span class="n">pprObject</span><span class="o">=</span><span class="n">pprObject</span><span class="p">,</span> <span class="n">requestId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">numRequests</span><span class="o">=</span><span class="n">numRequests</span><span class="p">)</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s1">&#39;Number of commands: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numCommands</span><span class="p">))</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s1">&#39;Commands list: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">commandsList</span><span class="p">))</span>
+
+    <span class="c1"># Count the scheduling block sets. Normally there should be only</span>
+    <span class="c1"># one although the schema allows multiple sets. Check for this</span>
+    <span class="c1"># condition and process only the first.</span>
+    <span class="n">numSbSets</span> <span class="o">=</span> <span class="n">_getNumSchedBlockSets</span><span class="p">(</span><span class="n">pprObject</span><span class="o">=</span><span class="n">pprObject</span><span class="p">,</span> <span class="n">requestId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">numRequests</span><span class="o">=</span><span class="n">numRequests</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">numSbSets</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Terminating execution: No valid scheduling block sets&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">info</span><span class="p">,</span> <span class="n">relativePath</span><span class="p">,</span> <span class="n">intentsDict</span><span class="p">,</span> <span class="n">asdmList</span><span class="p">,</span> <span class="n">commandsList</span>
+    <span class="k">elif</span> <span class="n">numSbSets</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s2">&quot;Warning: More than one scheduling block set&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Get the ASDM list</span>
+    <span class="n">relativePath</span><span class="p">,</span> <span class="n">numAsdms</span><span class="p">,</span> <span class="n">asdmList</span> <span class="o">=</span> <span class="n">_getAsdmList</span><span class="p">(</span><span class="n">pprObject</span><span class="o">=</span><span class="n">pprObject</span><span class="p">,</span> <span class="n">sbsetId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">numSbSets</span><span class="o">=</span><span class="n">numSbSets</span><span class="p">,</span> <span class="n">requestId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                                    <span class="n">numRequests</span><span class="o">=</span><span class="n">numRequests</span><span class="p">)</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s1">&#39;Relative path: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">relativePath</span><span class="p">))</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s1">&#39;Number of Asdms: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numAsdms</span><span class="p">))</span>
+    <span class="n">casa_tools</span><span class="o">.</span><span class="n">post_to_log</span><span class="p">(</span><span class="s1">&#39;ASDM list: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">asdmList</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">info</span><span class="p">,</span> <span class="n">structure</span><span class="p">,</span> <span class="n">relativePath</span><span class="p">,</span> <span class="n">intentsDict</span><span class="p">,</span> <span class="n">asdmList</span><span class="p">,</span> <span class="n">procedureName</span><span class="p">,</span> <span class="n">commandsList</span>
+
+
+<span class="c1"># Give the path to the pipeline processing request XML file return the pipeline</span>
+<span class="c1"># processing request object.</span>
+<span class="k">def</span> <span class="nf">_getPprObject</span><span class="p">(</span><span class="n">pprXmlFile</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">XmlObjectifier</span><span class="o">.</span><span class="n">XmlObject</span><span class="p">:</span>
+    <span class="n">pprObject</span> <span class="o">=</span> <span class="n">XmlObjectifier</span><span class="o">.</span><span class="n">XmlObject</span><span class="p">(</span><span class="n">fileName</span><span class="o">=</span><span class="n">pprXmlFile</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pprObject</span>
+
+
+<span class="c1"># Given the pipeline processing request object print some project summary</span>
+<span class="c1"># information. Returns a list of tuples to preserve order (key, (prompt, value))</span>
+<span class="k">def</span> <span class="nf">_getProjectSummary</span><span class="p">(</span><span class="n">pprObject</span><span class="p">:</span> <span class="n">XmlObjectifier</span><span class="o">.</span><span class="n">XmlObject</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+    <span class="n">ppr_summary</span> <span class="o">=</span> <span class="n">pprObject</span><span class="o">.</span><span class="n">SciPipeRequest</span><span class="o">.</span><span class="n">ProjectSummary</span>
+    <span class="n">summaryList</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">summaryList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;proposal_code&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;Proposal code: &#39;</span><span class="p">,</span> <span class="n">ppr_summary</span><span class="o">.</span><span class="n">ProposalCode</span><span class="o">.</span><span class="n">getValue</span><span class="p">())))</span>
+    <span class="n">summaryList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;observatory&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;Observatory: &#39;</span><span class="p">,</span> <span class="n">ppr_summary</span><span class="o">.</span><span class="n">Observatory</span><span class="o">.</span><span class="n">getValue</span><span class="p">())))</span>
+    <span class="n">summaryList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;telescope&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;Telescope: &#39;</span><span class="p">,</span> <span class="n">ppr_summary</span><span class="o">.</span><span class="n">Telescope</span><span class="o">.</span><span class="n">getValue</span><span class="p">())))</span>
+    <span class="k">return</span> <span class="n">summaryList</span>
+
+
+<span class="c1"># Given the pipeline processing request object print some project structure</span>
+<span class="c1"># information.</span>
+<span class="k">def</span> <span class="nf">_getProjectStructure</span><span class="p">(</span><span class="n">pprObject</span><span class="p">:</span> <span class="n">XmlObjectifier</span><span class="o">.</span><span class="n">XmlObject</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+
+    <span class="c1"># backwards compatibility test</span>
+    <span class="n">ppr_project</span> <span class="o">=</span> <span class="n">pprObject</span><span class="o">.</span><span class="n">SciPipeRequest</span><span class="o">.</span><span class="n">ProjectStructure</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">entityid</span> <span class="o">=</span> <span class="n">ppr_project</span><span class="o">.</span><span class="n">OUSStatusRef</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="s1">&#39;entityId&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">ppr_project</span> <span class="o">=</span> <span class="n">ppr_project</span><span class="o">.</span><span class="n">AlmaStructure</span>
+
+    <span class="n">structureList</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">structureList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;ous_entity_type&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;ObsUnitSet Entity Type: &#39;</span><span class="p">,</span> <span class="n">ppr_project</span><span class="o">.</span><span class="n">ObsUnitSetRef</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="s1">&#39;entityTypeName&#39;</span><span class="p">))))</span>
+    <span class="n">structureList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;ous_entity_id&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;ObsUnitSet Entity Id: &#39;</span><span class="p">,</span> <span class="n">ppr_project</span><span class="o">.</span><span class="n">ObsUnitSetRef</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="s1">&#39;entityId&#39;</span><span class="p">))))</span>
+    <span class="n">structureList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;ous_part_id&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;ObsUnitSet Part Id: &#39;</span><span class="p">,</span> <span class="n">ppr_project</span><span class="o">.</span><span class="n">ObsUnitSetRef</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="s1">&#39;partId&#39;</span><span class="p">))))</span>
+    <span class="n">structureList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;ous_title&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;ObsUnitSet Title: &#39;</span><span class="p">,</span> <span class="n">ppr_project</span><span class="o">.</span><span class="n">ObsUnitSetTitle</span><span class="o">.</span><span class="n">getValue</span><span class="p">())))</span>
+    <span class="n">structureList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;ous_type&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;ObsUnitSet Type: &#39;</span><span class="p">,</span> <span class="n">ppr_project</span><span class="o">.</span><span class="n">ObsUnitSetType</span><span class="o">.</span><span class="n">getValue</span><span class="p">())))</span>
+    <span class="n">structureList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;ps_entity_type&#39;</span><span class="p">,</span>
+         <span class="p">(</span><span class="s1">&#39;ProjectStatus Entity Type: &#39;</span><span class="p">,</span> <span class="n">ppr_project</span><span class="o">.</span><span class="n">ProjectStatusRef</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="s1">&#39;entityTypeName&#39;</span><span class="p">))))</span>
+    <span class="n">structureList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;ps_entity_id&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;ProjectStatus Entity Id: &#39;</span><span class="p">,</span> <span class="n">ppr_project</span><span class="o">.</span><span class="n">ProjectStatusRef</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="s1">&#39;entityId&#39;</span><span class="p">))))</span>
+    <span class="n">structureList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;ousstatus_entity_type&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;OUSStatus Entity Type: &#39;</span><span class="p">,</span> <span class="n">ppr_project</span><span class="o">.</span><span class="n">OUSStatusRef</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="s1">&#39;entityTypeName&#39;</span><span class="p">))))</span>
+    <span class="n">structureList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;ousstatus_entity_id&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;OUSStatus Entity Id: &#39;</span><span class="p">,</span> <span class="n">ppr_project</span><span class="o">.</span><span class="n">OUSStatusRef</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="s1">&#39;entityId&#39;</span><span class="p">))))</span>
+
+    <span class="k">return</span> <span class="n">structureList</span>
+
+
+<span class="c1"># Given the pipeline processing request object return the number of processing</span>
+<span class="c1"># requests. This should normally be 1.</span>
+<span class="k">def</span> <span class="nf">_getNumRequests</span><span class="p">(</span><span class="n">pprObject</span><span class="p">:</span> <span class="n">XmlObjectifier</span><span class="o">.</span><span class="n">XmlObject</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+
+    <span class="n">ppr_prequests</span> <span class="o">=</span> <span class="n">pprObject</span><span class="o">.</span><span class="n">SciPipeRequest</span><span class="o">.</span><span class="n">ProcessingRequests</span>
+
+    <span class="n">numRequests</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Try single element / single scheduling block first.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">relative_path</span> <span class="o">=</span> <span class="n">ppr_prequests</span><span class="o">.</span><span class="n">ProcessingRequest</span><span class="o">.</span><span class="n">DataSet</span><span class="o">.</span><span class="n">SchedBlockSet</span><span class="o">.</span><span class="n">SchedBlockIdentifier</span><span class="o">.</span><span class="n">RelativePath</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+        <span class="n">numRequests</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">numRequests</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Try single element / multiple scheduling block next.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">relative_path</span> <span class="o">=</span> <span class="n">ppr_prequests</span><span class="o">.</span><span class="n">ProcessingRequest</span><span class="o">.</span><span class="n">DataSet</span><span class="o">.</span><span class="n">SchedBlockSet</span><span class="o">.</span><span class="n">SchedBlockIdentifier</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">RelativePath</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+        <span class="n">numRequests</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">numRequests</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Next try multiple elements  / single scheduling block</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">search</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">relative_path</span> <span class="o">=</span> <span class="n">ppr_prequests</span><span class="o">.</span><span class="n">ProcessingRequest</span><span class="p">[</span><span class="n">numRequests</span><span class="p">]</span><span class="o">.</span><span class="n">DataSet</span><span class="o">.</span><span class="n">SchedBlockSet</span><span class="o">.</span><span class="n">SchedBlockIdentifier</span><span class="o">.</span><span class="n">RelativePath</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+            <span class="n">numRequests</span> <span class="o">=</span> <span class="n">numRequests</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">search</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">numRequests</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">numRequests</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+    <span class="c1"># Next try multiple elements  / multiple scheduling block</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">search</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">relative_path</span> <span class="o">=</span> <span class="n">ppr_prequests</span><span class="o">.</span><span class="n">ProcessingRequest</span><span class="p">[</span><span class="n">numRequests</span><span class="p">]</span><span class="o">.</span><span class="n">DataSet</span><span class="o">.</span><span class="n">SchedBlockSet</span><span class="o">.</span><span class="n">SchedBlockIdentifier</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">RelativePath</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+            <span class="n">numRequests</span> <span class="o">=</span> <span class="n">numRequests</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">search</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">numRequests</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">numRequests</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+    <span class="c1"># Return the number of requests.</span>
+    <span class="k">return</span> <span class="n">numRequests</span>
+
+
+<span class="c1"># Given the pipeline processing request object return a list of processing</span>
+<span class="c1"># intents in the form of a keyword and value dictionary</span>
+<span class="k">def</span> <span class="nf">_getIntents</span><span class="p">(</span><span class="n">pprObject</span><span class="p">:</span> <span class="n">XmlObjectifier</span><span class="o">.</span><span class="n">XmlObject</span><span class="p">,</span> <span class="n">requestId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">numRequests</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+
+    <span class="k">if</span> <span class="n">numRequests</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">ppr_intents</span> <span class="o">=</span> <span class="n">pprObject</span><span class="o">.</span><span class="n">SciPipeRequest</span><span class="o">.</span><span class="n">ProcessingRequests</span><span class="o">.</span><span class="n">ProcessingRequest</span><span class="o">.</span><span class="n">ProcessingIntents</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ppr_intents</span> <span class="o">=</span> <span class="n">pprObject</span><span class="o">.</span><span class="n">SciPipeRequest</span><span class="o">.</span><span class="n">ProcessingRequests</span><span class="o">.</span><span class="n">ProcessingRequest</span><span class="p">[</span><span class="n">requestId</span><span class="p">]</span><span class="o">.</span><span class="n">ProcessingIntents</span>
+
+    <span class="n">intentsDict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">numIntents</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">intentName</span> <span class="o">=</span> <span class="n">ppr_intents</span><span class="o">.</span><span class="n">Intents</span><span class="o">.</span><span class="n">Keyword</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">intentValue</span> <span class="o">=</span> <span class="n">ppr_intents</span><span class="o">.</span><span class="n">Intents</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">intentValue</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">numIntents</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">intentsDict</span><span class="p">[</span><span class="n">intentName</span><span class="p">]</span> <span class="o">=</span> <span class="n">intentValue</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">search</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">search</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">intentName</span> <span class="o">=</span> <span class="n">ppr_intents</span><span class="o">.</span><span class="n">Intents</span><span class="p">[</span><span class="n">numIntents</span><span class="p">]</span><span class="o">.</span><span class="n">Keyword</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">intentValue</span> <span class="o">=</span> <span class="n">ppr_intents</span><span class="o">.</span><span class="n">Intents</span><span class="p">[</span><span class="n">numIntents</span><span class="p">]</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">intentValue</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">numIntents</span> <span class="o">=</span> <span class="n">numIntents</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">intentsDict</span><span class="p">[</span><span class="n">intentName</span><span class="p">]</span> <span class="o">=</span> <span class="n">intentValue</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">search</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">numIntents</span><span class="p">,</span> <span class="n">intentsDict</span>
+
+
+<span class="k">def</span> <span class="nf">_getPerformanceParameters</span><span class="p">(</span><span class="n">intentsDict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">project</span><span class="o">.</span><span class="n">PerformanceParameters</span><span class="p">:</span>
+    <span class="n">performanceParams</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">PerformanceParameters</span><span class="p">()</span>
+
+    <span class="c1"># No performance parameters</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">intentsDict</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">performanceParams</span>
+
+    <span class="c1"># Set supported attributes</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">intentsDict</span><span class="p">:</span>
+        <span class="c1"># Parameter not defined in __init__ method</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">performanceParams</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">performanceParams</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">intentsDict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">performanceParams</span>
+
+
+<span class="k">def</span> <span class="nf">_getSessions</span><span class="p">(</span><span class="n">intentsDict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">sessionsDict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">searching</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">ptr</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">searching</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;SESSION_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">intentsDict</span><span class="p">:</span>
+            <span class="n">asdmList</span> <span class="o">=</span> <span class="n">intentsDict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; | &#39;</span><span class="p">)</span>
+            <span class="n">asdmList</span> <span class="o">=</span> <span class="p">[</span><span class="n">asdm</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="s1">&#39;:/&#39;</span><span class="p">,</span> <span class="s1">&#39;__&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">asdm</span> <span class="ow">in</span> <span class="n">asdmList</span><span class="p">]</span>
+            <span class="n">sessionsDict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">asdmList</span>
+            <span class="n">ptr</span> <span class="o">=</span> <span class="n">ptr</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">searching</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">sessionsDict</span>
+
+
+<span class="c1"># Given the pipeline processing request object return a list of processing</span>
+<span class="c1"># commands where each element in the list is a tuple consisting of the</span>
+<span class="c1"># processing command name and the parameter set dictionary.</span>
+<span class="k">def</span> <span class="nf">_getCommands</span><span class="p">(</span><span class="n">pprObject</span><span class="p">:</span> <span class="n">XmlObjectifier</span><span class="o">.</span><span class="n">XmlObject</span><span class="p">,</span> <span class="n">requestId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">numRequests</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">numRequests</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">ppr_cmds</span> <span class="o">=</span> <span class="n">pprObject</span><span class="o">.</span><span class="n">SciPipeRequest</span><span class="o">.</span><span class="n">ProcessingRequests</span><span class="o">.</span><span class="n">ProcessingRequest</span><span class="o">.</span><span class="n">ProcessingProcedure</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ppr_cmds</span> <span class="o">=</span> <span class="n">pprObject</span><span class="o">.</span><span class="n">SciPipeRequest</span><span class="o">.</span><span class="n">ProcessingRequests</span><span class="o">.</span><span class="n">ProcessingRequest</span><span class="p">[</span><span class="n">requestId</span><span class="p">]</span><span class="o">.</span><span class="n">ProcessingProcedure</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">procedureName</span> <span class="o">=</span> <span class="n">ppr_cmds</span><span class="o">.</span><span class="n">ProcedureTitle</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">procedureName</span> <span class="o">=</span> <span class="s2">&quot;Undefined&quot;</span>
+    <span class="n">commandsList</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">numCommands</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cmdName</span> <span class="o">=</span> <span class="n">ppr_cmds</span><span class="o">.</span><span class="n">ProcessingCommand</span><span class="o">.</span><span class="n">Command</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+        <span class="n">ppr_params</span> <span class="o">=</span> <span class="n">ppr_cmds</span><span class="o">.</span><span class="n">ProcessingCommand</span><span class="o">.</span><span class="n">ParameterSet</span>
+        <span class="n">numParams</span><span class="p">,</span> <span class="n">paramsDict</span> <span class="o">=</span> <span class="n">_getParameters</span><span class="p">(</span><span class="n">ppr_params</span><span class="p">)</span>
+        <span class="n">numCommands</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">commandsList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cmdName</span><span class="p">,</span> <span class="n">paramsDict</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">search</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">search</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cmdName</span> <span class="o">=</span> <span class="n">ppr_cmds</span><span class="o">.</span><span class="n">ProcessingCommand</span><span class="p">[</span><span class="n">numCommands</span><span class="p">]</span><span class="o">.</span><span class="n">Command</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+                <span class="n">ppr_params</span> <span class="o">=</span> <span class="n">ppr_cmds</span><span class="o">.</span><span class="n">ProcessingCommand</span><span class="p">[</span><span class="n">numCommands</span><span class="p">]</span><span class="o">.</span><span class="n">ParameterSet</span>
+                <span class="n">numParams</span><span class="p">,</span> <span class="n">paramsDict</span> <span class="o">=</span> <span class="n">_getParameters</span><span class="p">(</span><span class="n">ppr_params</span><span class="p">)</span>
+                <span class="n">numCommands</span> <span class="o">=</span> <span class="n">numCommands</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">commandsList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cmdName</span><span class="p">,</span> <span class="n">paramsDict</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">search</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">procedureName</span><span class="p">,</span> <span class="n">numCommands</span><span class="p">,</span> <span class="n">commandsList</span>
+
+
+<span class="c1"># Given the pipeline processing request object return the number of scheduling</span>
+<span class="c1"># block sets.</span>
+<span class="k">def</span> <span class="nf">_getNumSchedBlockSets</span><span class="p">(</span><span class="n">pprObject</span><span class="p">:</span> <span class="n">XmlObjectifier</span><span class="o">.</span><span class="n">XmlObject</span><span class="p">,</span> <span class="n">requestId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">numRequests</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">numRequests</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">ppr_dset</span> <span class="o">=</span> <span class="n">pprObject</span><span class="o">.</span><span class="n">SciPipeRequest</span><span class="o">.</span><span class="n">ProcessingRequests</span><span class="o">.</span><span class="n">ProcessingRequest</span><span class="o">.</span><span class="n">DataSet</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ppr_dset</span> <span class="o">=</span> <span class="n">pprObject</span><span class="o">.</span><span class="n">SciPipeRequest</span><span class="o">.</span><span class="n">ProcessingRequests</span><span class="o">.</span><span class="n">ProcessingRequest</span><span class="p">[</span><span class="n">requestId</span><span class="p">]</span><span class="o">.</span><span class="n">DataSet</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">ppr_dset</span><span class="o">.</span><span class="n">SchedBlockSet</span><span class="o">.</span><span class="n">SchedBlockIdentifier</span><span class="o">.</span><span class="n">RelativePath</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+        <span class="n">numSchedBlockSets</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">numSchedBlockSets</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">numSchedBlockSets</span>
+
+
+<span class="c1"># Given the pipeline processing request object return a list of ASDMs</span>
+<span class="c1"># where each element in the list is a tuple consisting of the path</span>
+<span class="c1"># to the ASDM, the name of the ASDM, and the UID of the ASDM.</span>
+<span class="k">def</span> <span class="nf">_getAsdmList</span><span class="p">(</span><span class="n">pprObject</span><span class="p">:</span> <span class="n">XmlObjectifier</span><span class="o">.</span><span class="n">XmlObject</span><span class="p">,</span> <span class="n">sbsetId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">numSbSets</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">requestId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">numRequests</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">numRequests</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">ppr_dset</span> <span class="o">=</span> <span class="n">pprObject</span><span class="o">.</span><span class="n">SciPipeRequest</span><span class="o">.</span><span class="n">ProcessingRequests</span><span class="o">.</span><span class="n">ProcessingRequest</span><span class="o">.</span><span class="n">DataSet</span>
+        <span class="k">if</span> <span class="n">numSbSets</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ppr_dset</span> <span class="o">=</span> <span class="n">ppr_dset</span><span class="o">.</span><span class="n">SchedBlockSet</span><span class="o">.</span><span class="n">SchedBlockIdentifier</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ppr_dset</span> <span class="o">=</span> <span class="n">ppr_dset</span><span class="o">.</span><span class="n">SchedBlockSet</span><span class="p">[</span><span class="n">sbsetId</span><span class="p">]</span><span class="o">.</span><span class="n">SchedBlockIdentifier</span>
+        <span class="n">relativePath</span> <span class="o">=</span> <span class="n">ppr_dset</span><span class="o">.</span><span class="n">RelativePath</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ppr_dset</span> <span class="o">=</span> <span class="n">pprObject</span><span class="o">.</span><span class="n">SciPipeRequest</span><span class="o">.</span><span class="n">ProcessingRequests</span><span class="o">.</span><span class="n">ProcessingRequest</span><span class="p">[</span><span class="n">requestId</span><span class="p">]</span><span class="o">.</span><span class="n">DataSet</span>
+        <span class="k">if</span> <span class="n">numSbSets</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ppr_dset</span> <span class="o">=</span> <span class="n">ppr_dset</span><span class="o">.</span><span class="n">SchedBlockSet</span><span class="o">.</span><span class="n">SchedBlockIdentifier</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ppr_dset</span> <span class="o">=</span> <span class="n">ppr_dset</span><span class="o">.</span><span class="n">SchedBlockSet</span><span class="p">[</span><span class="n">sbsetId</span><span class="p">]</span><span class="o">.</span><span class="n">SchedBlockIdentifier</span>
+        <span class="n">relativePath</span> <span class="o">=</span> <span class="n">ppr_dset</span><span class="o">.</span><span class="n">RelativePath</span><span class="o">.</span><span class="n">getValue</span>
+
+    <span class="n">numAsdms</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">asdmList</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">asdmName</span> <span class="o">=</span> <span class="n">ppr_dset</span><span class="o">.</span><span class="n">AsdmIdentifier</span><span class="o">.</span><span class="n">AsdmDiskName</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+        <span class="n">asdmUid</span> <span class="o">=</span> <span class="n">ppr_dset</span><span class="o">.</span><span class="n">AsdmIdentifier</span><span class="o">.</span><span class="n">AsdmRef</span><span class="o">.</span><span class="n">ExecBlockId</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+        <span class="n">asdmList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">relativePath</span><span class="p">,</span> <span class="n">asdmName</span><span class="p">,</span> <span class="n">asdmUid</span><span class="p">))</span>
+        <span class="n">numAsdms</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">search</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">search</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">asdmName</span> <span class="o">=</span> <span class="n">ppr_dset</span><span class="o">.</span><span class="n">AsdmIdentifier</span><span class="p">[</span><span class="n">numAsdms</span><span class="p">]</span><span class="o">.</span><span class="n">AsdmDiskName</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+                <span class="n">asdmUid</span> <span class="o">=</span> <span class="n">ppr_dset</span><span class="o">.</span><span class="n">AsdmIdentifier</span><span class="p">[</span><span class="n">numAsdms</span><span class="p">]</span><span class="o">.</span><span class="n">AsdmRef</span><span class="o">.</span><span class="n">ExecBlockId</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+                <span class="n">numAsdms</span> <span class="o">=</span> <span class="n">numAsdms</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">asdmList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">relativePath</span><span class="p">,</span> <span class="n">asdmName</span><span class="p">,</span> <span class="n">asdmUid</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">search</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">relativePath</span><span class="p">,</span> <span class="n">numAsdms</span><span class="p">,</span> <span class="n">asdmList</span>
+
+
+<span class="c1"># Given a parameter set object retrieve the parameter set dictionary for</span>
+<span class="c1"># each command.</span>
+<span class="k">def</span> <span class="nf">_getParameters</span><span class="p">(</span><span class="n">ppsetObject</span><span class="p">:</span> <span class="n">XmlObjectifier</span><span class="o">.</span><span class="n">XmlObject</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+    <span class="n">numParams</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">paramsDict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">paramName</span> <span class="o">=</span> <span class="n">ppsetObject</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">Keyword</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">paramValue</span> <span class="o">=</span> <span class="n">ppsetObject</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">paramValue</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">numParams</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">paramsDict</span><span class="p">[</span><span class="n">paramName</span><span class="p">]</span> <span class="o">=</span> <span class="n">paramValue</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">search</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">search</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">paramName</span> <span class="o">=</span> <span class="n">ppsetObject</span><span class="o">.</span><span class="n">Parameter</span><span class="p">[</span><span class="n">numParams</span><span class="p">]</span><span class="o">.</span><span class="n">Keyword</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">paramValue</span> <span class="o">=</span> <span class="n">ppsetObject</span><span class="o">.</span><span class="n">Parameter</span><span class="p">[</span><span class="n">numParams</span><span class="p">]</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">paramValue</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">numParams</span> <span class="o">=</span> <span class="n">numParams</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">paramsDict</span><span class="p">[</span><span class="n">paramName</span><span class="p">]</span> <span class="o">=</span> <span class="n">paramValue</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">search</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">numParams</span><span class="p">,</span> <span class="n">paramsDict</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

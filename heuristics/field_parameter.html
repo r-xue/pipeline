@@ -1,0 +1,523 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Field parameter &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pipeline Flagging Tasks" href="FlaggingTasks.html" />
+    <link rel="prev" title="pipeline.infrastructure.launcher" href="../_autosummary/pipeline.infrastructure.launcher.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Field parameter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#background-info-on-usage-of-field-in-alma-and-casa">Background info on usage of ‘field’ in ALMA and CASA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#definition-of-field-in-pipeline">Definition of Field in Pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#conversion-of-field-names-for-casa">Conversion of ‘field’ names for CASA</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#use-case-for-field-in-pipeline">Use-case for ‘field’ in Pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#field-as-a-input-parameter-to-select-visibility-data">‘field’ as a input parameter to select visibility data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#heuristics-to-derive-field-from-intent">Heuristics to derive field from intent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#intent-to-field-pattern-1">Intent-to-field pattern 1:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#intent-to-field-pattern-2">Intent-to-field pattern 2:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#intent-to-field-pattern-3">Intent-to-field pattern 3:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#intent-to-field-pattern-4">Intent-to-field pattern 4:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#intent-to-field-pattern-5">Intent-to-field pattern 5:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#intent-to-field-pattern-6">Intent-to-field pattern 6:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#future-development-ideas">Future development ideas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Field parameter</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/heuristics/field_parameter.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="field-parameter">
+<h1>Field parameter<a class="headerlink" href="#field-parameter" title="Link to this heading"></a></h1>
+<p>This note aims to document how Pipeline currently handles the “field” input,
+prompted by discussions on “fields”, “mosaics”, and future “group processing” at
+the 2022 and 2023 F2F meetings, see also the tickets PIPE-1666 and PIPE-1887.</p>
+<section id="background-info-on-usage-of-field-in-alma-and-casa">
+<h2>Background info on usage of ‘field’ in ALMA and CASA<a class="headerlink" href="#background-info-on-usage-of-field-in-alma-and-casa" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The MeasurementSet v2 definition from January 2020: https://casa.nrao.edu/Memos/229.html
+specifies the following: fields are stored in the MeasurementSet in the FIELD table.
+The field ID is implicitly set by the row number, while field name is an explicit
+column NAME, with value specified by the PI. The table also supports a SOURCE_ID
+column to point each field to an entry in the optional SOURCE subtable.</p></li>
+<li><p>In the MS v3 definition, the field ID is proposed to become an explicit FIELD_ID
+column, see beta MS v3 from July 2019: https://casacore.github.io/casacore-notes/264.html</p></li>
+<li><p>“field” is one of the key data selection parameters in CASA tasks, alongside spw.</p></li>
+<li><p>In ALMA datasets, field names are not guaranteed to be unique, i.e. there
+can be multiple fields (with different field IDs) present that share the same field
+name. As such, selecting data or storing data based on just field name is usually
+not safe to do.</p></li>
+<li><p>CASA tasks accept ‘field’ as a string that may contain a mix of field ID integers
+and/or field names; it includes regular expression syntax that means that
+certain special characters should not be part of a field name.</p>
+<ul>
+<li><p>As a consequence of accepting field IDs, CASA cannot accept a field name
+that’s purely numerical. For reference, see the note at the bottom of “field”
+section at https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter.</p></li>
+</ul>
+</li>
+<li><p>In the ALMA Observing Tool (OT), a mosaic can be defined in two ways:</p>
+<ol class="simple">
+<li><p>for a given source, one can set target type = “rectangular field”, resulting
+in OT generating a series of pointings representing a rectangular mosaic of
+spatially contiguous pointings around the source; or</p></li>
+<li><p>for a given source, one can set target type to “multiple pointings” where
+the user can manually define a series of pointings around the source, though
+OT will force the user to define pointings that still connect together as
+belonging to the same source (it’ll complain if the pointings are unconnected
+/ too far apart).</p></li>
+</ol>
+</li>
+<li><p>In an ALMA observational dataset, these mosaics will show up as a series of
+fields that all cover TARGET intent and all share the same field name (related
+to what the PI entered as the source name) but with different IDs and pointings.
+Pipeline currently (as of 2023 release) does not have an entity to represent
+this as a mosaic. Field names are not guaranteed to be uniquely used by just that
+science target; there have been examples where the same field name, but with
+different id and/or coordinates, is also covered by different intent scans.</p></li>
+<li><p>In ALMA Single-Dish, there is a distinction between on-source and off-source,
+but these normally have the same field name, and are also observed in the same
+scans. Any potential refactoring of handling of identifying field should take
+this into account.</p></li>
+</ul>
+</section>
+<section id="definition-of-field-in-pipeline">
+<h2>Definition of Field in Pipeline<a class="headerlink" href="#definition-of-field-in-pipeline" title="Link to this heading"></a></h2>
+<p>Pipeline has defined a Field domain class in pipeline.domain.field.Field, including
+the attributes:</p>
+<ul class="simple">
+<li><p>name: str,  populated from msmd.namesforfields()</p></li>
+<li><p>id: int,  populated by range(msmd.nfields())</p></li>
+<li><p>intents: list,  populated based on msmd.statesforscans() or source_type</p></li>
+</ul>
+<p>Since before 2013, PL has internally used for field.name the CASA-safe field name
+(uses double-quote in presence of illegal chars).</p>
+<p>Since 2015 (CAS-7295), the internal field.name also converts “digits-only” to
+CASA-safe names (i.e. wrap in double quote).</p>
+<p>Consequence: any user-provided values for “field” should be made CASA-safe (if
+it isn’t already) before field name comparisons.</p>
+<section id="conversion-of-field-names-for-casa">
+<h3>Conversion of ‘field’ names for CASA<a class="headerlink" href="#conversion-of-field-names-for-casa" title="Link to this heading"></a></h3>
+<p>Pipeline includes two conversion utility functions to convert any given field
+name to a “CASA-safe” field name.</p>
+<ul>
+<li><p>infrastructure/utils/utils.py: fieldname_for_casa(field: str) -&gt; str</p>
+<p>This returns a string with field name in double quotes if field name was
+numerical or contains special characters; otherwise returns unchanged.</p>
+</li>
+<li><p>infrastructure/utils/dequote.py: dequote(s: str) -&gt; str</p>
+<p>Conversion utility to remove safety quotes from field names; removes any
+occurrence of “ or ‘.</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="use-case-for-field-in-pipeline">
+<h2>Use-case for ‘field’ in Pipeline<a class="headerlink" href="#use-case-for-field-in-pipeline" title="Link to this heading"></a></h2>
+<section id="field-as-a-input-parameter-to-select-visibility-data">
+<h3>‘field’ as a input parameter to select visibility data<a class="headerlink" href="#field-as-a-input-parameter-to-select-visibility-data" title="Link to this heading"></a></h3>
+<p>Pipeline predominantly operates on data that is selected based on “intent”, e.g.
+create a bandpass correction from scans taken with the BANDPASS intent.</p>
+<p>There are a number of Pipeline tasks that expose “field” as an input parameter.
+For these, field is set by default to an empty string to signify that it will be
+automatically populated based on intent (and MS being processed), but “field” is
+available for user-override.</p>
+<p>The use-case for what should happen when a user overrides the “field” parameter
+will naturally vary from task to task, and this behaviour is currently not
+always explicitly specified or documented. For example, hifa_timegaincal comprises
+multiple gaincal steps that each operate on a separate set of intents (that determine
+what “field” should be), yet the task only supports a single “intent” and “field” input
+parameter. As such, it is not specified what the task should do if a crucial field
+is explicitly left out (presently, this likely leads to a failure to create a
+necessary caltable).</p>
+<p>The following is a non-exhaustive list of Pipeline tasks that support a public
+“field” input parameter:</p>
+<ul class="simple">
+<li><p>[h*]_applycal</p></li>
+<li><p>hsd_atmcor</p></li>
+<li><p>hsd_blflag</p></li>
+<li><p>hif_correctedampflag</p></li>
+<li><p>hif_editimlist</p></li>
+<li><p>hif_makeimlist</p></li>
+<li><p>hif_mstransform</p></li>
+<li><p>hif_refant</p></li>
+<li><p>hif_setjy</p></li>
+<li><p>hifa_bpsolint</p></li>
+<li><p>hifa_fluxcalflag</p></li>
+<li><p>hifa_gaincalsnr</p></li>
+<li><p>hifa_gfluxscaleflag</p></li>
+<li><p>hifv_vlasetjy</p></li>
+<li><p>hifa_gfluxscale  (calls it “transfer” instead of “field”)</p></li>
+</ul>
+<p>By contrast, there are a couple of tasks that do not expose “field”, including:</p>
+<ul class="simple">
+<li><p>hif_lowgainflag</p></li>
+<li><p>hif_rawflagchans</p></li>
+<li><p>[h*]_tsysflag</p></li>
+</ul>
+</section>
+</section>
+<section id="heuristics-to-derive-field-from-intent">
+<h2>Heuristics to derive field from intent<a class="headerlink" href="#heuristics-to-derive-field-from-intent" title="Link to this heading"></a></h2>
+<p>When selecting what data to operate on, most (if not all) Pipeline tasks need to
+convert an “intent” to a list of fields. This conversion from “intent” to “field”
+is currently implemented in individual tasks, typically in the definition
+of default value of “field” in the task Inputs class. There are different approaches
+taken by different tasks, and it is not clear if that was always intentional.
+There is potentially scope to consolidate these heuristics for converting “intent”
+to “field”, but that will require careful validation to ensure it’s not changing
+behaviour in a way that is undesired.</p>
+<p>The following aims to summarize the different heuristics that are presently in
+use in Pipeline:</p>
+<section id="intent-to-field-pattern-1">
+<h3>Intent-to-field pattern 1:<a class="headerlink" href="#intent-to-field-pattern-1" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field_finder</span> <span class="o">=</span> <span class="n">IntentFieldnames</span><span class="p">()</span>
+<span class="n">intent_fields</span> <span class="o">=</span> <span class="n">field_finder</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+<span class="n">fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="n">intent_fields</span><span class="p">))</span>
+<span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>Used by:</p>
+<ul class="simple">
+<li><p>h_applycal</p></li>
+<li><p>hsd_atmcor</p></li>
+<li><p>hsd_blflag</p></li>
+<li><p>hif.tasks.common.commoncalinputs.VdpCommonCalibrationInputs</p></li>
+</ul>
+<p>This uses a “common” field finder heuristic from module
+h.heuristics.fieldnames.IntentFieldnames, with the key selection happening in:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      <span class="n">identifiers</span> <span class="o">=</span> <span class="p">[]</span>
+      <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="n">with_intent</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">],</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)</span>
+        <span class="n">any_intent</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">with_intent</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">any_intent</span><span class="p">):</span>
+            <span class="n">identifiers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">identifiers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">identifiers</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>This common heuristic will first identify a list of fields based on the scans in
+the MS that cover a given inputs.intent. Then, for each field, it is determined
+if its field name uniquely appears only among the fields for given inputs.intent,
+or whether the field name is also used for one of the other non-specified intents.
+If the former, then it returns that field by name, otherwise it’ll return it as
+a string of its integer ID. Finally, the returned value is “safely split”, added
+to a set, and recombined into a string. The returned string can contain a mix of
+field names and field IDs.</p>
+<p>Note: IntentFieldnames does not already return a unique set; if the “intent”
+parameter covers multiple intents, then there can be two or more fields (with
+different IDs) that could have the same name, but each covering only one of the
+intents, and for those IntentFieldnames would return the identifier twice.
+This is why the above-mentioned pattern takes the extra step of converting to a
+set and then back to a string.</p>
+<p>This highlights a potential issue:
+Because IntentFieldnames() currently returns all field identifiers as a comma
+separated string of string values (regardless of whether the original value was
+a field name or ID), the current step that consolidates the identifiers into a
+unique set could do the wrong thing: If one of the field names is a short integer,
+e.g. field.id=0, field.name=”1”, and one of the other fields was added by ID,
+say field.id=1, field.name=”non-unique-name”, then these would show up as “1,1”,
+and be consolidated to just “1”, thus unintentionally dropping field ID 0 in a
+typical CASA task call (without double-quotes around the integer, it would
+interpret “1” as field ID 1).</p>
+</section>
+<section id="intent-to-field-pattern-2">
+<h3>Intent-to-field pattern 2:<a class="headerlink" href="#intent-to-field-pattern-2" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+    <span class="n">unique_field_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
+    <span class="n">field_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_field_names</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_ids</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unique_field_names</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">field_ids</span><span class="p">])</span> 
+</pre></div>
+</div>
+<p>Used by:</p>
+<ul class="simple">
+<li><p>infrastructure.callibrary.CalToIdAdapter</p></li>
+<li><p>hif_refant</p></li>
+<li><p>hifv_vlasetjy</p></li>
+<li><p>hif_uvcontfit</p></li>
+<li><p>hif_setjy</p></li>
+</ul>
+<p>This approach identifies fields for given inputs.intent, and then checks if the
+number of fields by ID is the same as the number of unique field names. If so,
+it returns the fields by name, but if not, it will return a string of fields by
+ID (all of them). This ensures for example that a for loop over fields would
+treat each field (pointing) separately, even if some share name.</p>
+</section>
+<section id="intent-to-field-pattern-3">
+<h3>Intent-to-field pattern 3:<a class="headerlink" href="#intent-to-field-pattern-3" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+    <span class="n">field_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
+    <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">field_names</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>Used by:</p>
+<ul class="simple">
+<li><p>hifa_fluxcalflag</p></li>
+<li><p>hifa_gaincalsnr (variation)</p></li>
+</ul>
+<p>This identifies fields for given inputs.intent, and still filters for duplicate
+field names, but does not filter against any fields (by ID) that share the name
+but don’t cover the intent. This could potentially be an issue, unless the task
+consistently also uses “intent” in conjunction to further down select.</p>
+<p>hifa_gaincalsnr uses a more convoluted version, but appears to ultimately return
+the same kind of string of unique field names.</p>
+</section>
+<section id="intent-to-field-pattern-4">
+<h3>Intent-to-field pattern 4:<a class="headerlink" href="#intent-to-field-pattern-4" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">fieldids</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fieldids</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>Used by:</p>
+<ul class="simple">
+<li><p>hif_correctedampflag</p></li>
+<li><p>hifa_gfluxscaleflag</p></li>
+</ul>
+<p>This returns fields for given inputs.intent, only by name (despite name of variable),
+and does not filter against duplicate field names, nor does it filter against
+fields (by ID) that do not cover the given intent, i.e. this may pick up fields
+(by name) that cover other intents. It is possible that the remainder of the task
+performs further explicit data selection by restricting to both field and intent.</p>
+</section>
+<section id="intent-to-field-pattern-5">
+<h3>Intent-to-field pattern 5:<a class="headerlink" href="#intent-to-field-pattern-5" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="n">fields_by_id</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">))</span>
+        <span class="n">last_field</span> <span class="o">=</span> <span class="n">fields_by_id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">last_field</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">last_field</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">requested_spws</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">last_field</span><span class="o">.</span><span class="n">valid_spws</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">requested_spws</span><span class="p">):</span>
+                <span class="n">fields</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">last_field</span><span class="p">)</span>
+
+    <span class="n">unique_field_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
+    <span class="n">field_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_field_names</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_ids</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unique_field_names</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">field_ids</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Used by:</p>
+<ul class="simple">
+<li><p>hif_mstransform</p></li>
+</ul>
+<p>This is a variation on earlier patterns. It identifies fields for the given
+inputs.intent, but in addition filters out the last field (i.e. field with highest ID)
+if that field does not have an associated “source” or if that field does not cover
+any of the requested SpWs specified in inputs.spw. It then performs the same check
+as above w.r.t. whether nr. of unique field names is same as nr. of field IDs.
+If so, it returns fields by name, otherwise by field ID.</p>
+</section>
+<section id="intent-to-field-pattern-6">
+<h3>Intent-to-field pattern 6:<a class="headerlink" href="#intent-to-field-pattern-6" title="Link to this heading"></a></h3>
+<p>For some PL tasks, the top-level “intent” parameter may contain multiple intents
+that are each to be treated separately within the task. In these cases, the task
+often employs either if statements or for loops to go through different paths for
+each intent, and within those if/for blocks, there are typically separate local
+definitions for identifying which fields belong to current given intent.</p>
+<p>Examples are found in hifa_gfluxscaleflag, hifa_spwphaseup, and hifa_timegaincal,
+that use e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">):</span> 
+</pre></div>
+</div>
+<p>or some variation, and subsequently may use field.name inside the loop.
+This approach bypasses the sanity check (seen in above-mentioned approaches)
+of whether a field name is unique for that intent.</p>
+<p>As an aside: these tasks usually do still support a top-level “intent” and
+“field” input parameter (that might even employ one of the above-mentioned common
+patterns), but in practice, they do not really use these input parameters, because
+the heuristics are so specifically written for particular intents. I.e. a user
+could remove “PHASE” from the inputs.intent in hifa_timegaincal, but that would
+effectively undermine the purpose of the task, with likely unexpected outcome in
+the task result. In fact, I note in hifa_spwphaseup that the actual intents it
+operates on are now hard-coded inside the task, with no way for users to override.</p>
+</section>
+</section>
+<section id="future-development-ideas">
+<h2>Future development ideas<a class="headerlink" href="#future-development-ideas" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Is there scope to consolidate the ‘intent’-to-’field’ conversion into fewer variations?</p></li>
+<li><p>Consider renaming “field” parameter in Pipeline tasks to “hm_field” and
+“intent” to “hm_intent”, to distinguish clearly from CASA.</p></li>
+<li><p>Enforce type of parameters? E.g. field=1 means field ID 1, while field=’1’
+means field name “1”.</p></li>
+<li><p>Consider converting field.name during setter instead of getter.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../_autosummary/pipeline.infrastructure.launcher.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.launcher" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="FlaggingTasks.html" class="btn btn-neutral float-right" title="Pipeline Flagging Tasks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

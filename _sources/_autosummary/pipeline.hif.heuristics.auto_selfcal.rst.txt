@@ -1,0 +1,14 @@
+pipeline.hif.heuristics.auto\_selfcal
+=====================================
+
+.. automodule:: pipeline.hif.heuristics.auto_selfcal
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   auto_selfcal
+   selfcal_helpers

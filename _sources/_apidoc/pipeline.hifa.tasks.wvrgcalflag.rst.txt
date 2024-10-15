@@ -1,0 +1,61 @@
+pipeline.hifa.tasks.wvrgcalflag package
+=======================================
+
+Submodules
+----------
+
+pipeline.hifa.tasks.wvrgcalflag.display module
+----------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.wvrgcalflag.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.wvrgcalflag.qa module
+-----------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.wvrgcalflag.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.wvrgcalflag.renderer module
+-----------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.wvrgcalflag.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.wvrgcalflag.resultobjects module
+----------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.wvrgcalflag.resultobjects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag module
+--------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.wvrgcalflag.wvrgcalflagsetter module
+--------------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.wvrgcalflag.wvrgcalflagsetter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifa.tasks.wvrgcalflag
+   :members:
+   :undoc-members:
+   :show-inheritance:

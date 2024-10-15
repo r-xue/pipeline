@@ -1,0 +1,564 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.refantflag &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.refantflag</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.refantflag</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">DefaultDict</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.arrayflaggerbase</span> <span class="kn">import</span> <span class="n">FlagCmd</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.flaggableviewresults</span> <span class="kn">import</span> <span class="n">FlaggableViewResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="kn">import</span> <span class="n">Results</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Tuple of field(string) and intent(string) used as a dict key</span>
+<span class="n">FieldIntent</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span>
+    <span class="s1">&#39;FieldIntent&#39;</span><span class="p">,</span> <span class="p">((</span><span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;intent&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="c1"># Tuple of field(string), intent(string) and antenna name(string) used as a dict key</span>
+<span class="n">FieldIntentAntenna</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span>
+    <span class="s1">&#39;FieldIntentAntenna&#39;</span><span class="p">,</span> <span class="p">((</span><span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;intent&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;antenna&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="c1"># Tuple of field(string), intent(string) and spw id(int) used as a key</span>
+<span class="c1"># in the dict of fully flagged antennas in several flagging tasks.</span>
+<span class="n">FieldIntentSpw</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span>
+    <span class="s1">&#39;FieldIntentSpw&#39;</span><span class="p">,</span> <span class="p">((</span><span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;intent&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;spw&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="c1"># Element in the list of notifications about fully flagged antennas:</span>
+<span class="c1"># for each field(string), there may be one or more intents(tuple of strings),</span>
+<span class="c1"># one or more spws(tuple of ints or a single string &quot;all spws&quot;),</span>
+<span class="c1"># and one or more antennas (tuple of strings).</span>
+<span class="n">FullyFlaggedAntennasNotification</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span>
+    <span class="s1">&#39;FullyFlaggedAntennasNotification&#39;</span><span class="p">,</span>
+    <span class="p">((</span><span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;intents&#39;</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;spws&#39;</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]),</span> <span class="p">(</span><span class="s1">&#39;antennas&#39;</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]))</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="identify_fully_flagged_antennas_from_flagcmds">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagcmds">[docs]</a>
+<span class="k">def</span> <span class="nf">identify_fully_flagged_antennas_from_flagcmds</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FlagCmd</span><span class="p">])</span> \
+        <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="n">FieldIntentSpw</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identify the set of antennas that were fully flagged in at least one spw</span>
+<span class="sd">    considered in the given flagging task, for any of the fields or intents,</span>
+<span class="sd">    by analyzing the flagging commands.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        ms: measurement set.</span>
+<span class="sd">        flags: list of flagging commands.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a dict of antennas that are fully flagged in one or more spws:</span>
+<span class="sd">        each element (antenna name) is a set containing all combinations of</span>
+<span class="sd">        field(str), intent(str) and spw(int) in which this antenna is fully flagged.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Create antenna ID to name translation dictionary.</span>
+    <span class="n">antenna_id_to_name</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="p">(</span><span class="n">ant</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">ant</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">ant</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                                          <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">}</span>
+
+    <span class="n">fully_flagged_antennas</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="n">FieldIntentSpw</span><span class="p">]]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+
+    <span class="c1"># Create a summary of the flagging state by going through each flagging command.</span>
+    <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
+        <span class="c1"># Only consider flagging commands with a specified antenna and</span>
+        <span class="c1"># without a specified timestamp.</span>
+        <span class="k">if</span> <span class="n">flag</span><span class="o">.</span><span class="n">antenna</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">flag</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Skip flagging commands for baselines.</span>
+            <span class="k">if</span> <span class="s1">&#39;&amp;&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">flag</span><span class="o">.</span><span class="n">antenna</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="c1"># Convert CASA intent from flagging command to pipeline intent;</span>
+            <span class="c1"># field is already a string, and spw is an int.</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">FieldIntentSpw</span><span class="p">(</span><span class="n">flag</span><span class="o">.</span><span class="n">field</span><span class="p">,</span>
+                                 <span class="n">utils</span><span class="o">.</span><span class="n">to_pipeline_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">flag</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span> <span class="k">if</span> <span class="n">flag</span><span class="o">.</span><span class="n">intent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                                 <span class="n">flag</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+            <span class="n">ant_name</span> <span class="o">=</span> <span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">flag</span><span class="o">.</span><span class="n">antenna</span><span class="p">]</span>
+            <span class="n">fully_flagged_antennas</span><span class="p">[</span><span class="n">ant_name</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fully_flagged_antennas</span></div>
+
+
+
+<div class="viewcode-block" id="identify_fully_flagged_antennas_from_flagview">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagview">[docs]</a>
+<span class="k">def</span> <span class="nf">identify_fully_flagged_antennas_from_flagview</span><span class="p">(</span>
+        <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span>
+        <span class="n">results</span><span class="p">:</span> <span class="n">FlaggableViewResults</span><span class="p">,</span>
+        <span class="n">scan_to_field_names</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]],</span>
+        <span class="n">intents_of_interest</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
+        <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="n">FieldIntentSpw</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identify the set of antennas that were fully flagged in at least one spw</span>
+<span class="sd">    considered in the given flagging task, for any of the fields or intents,</span>
+<span class="sd">    by analyzing the flagging view.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        ms: measurement set.</span>
+<span class="sd">        results: a FlaggableViewResults object containing one or more flagging views,</span>
+<span class="sd">            which are two-dimensional arrays with 0th axis enumerating the scans</span>
+<span class="sd">            and 1st axis enumerating the antennas.</span>
+<span class="sd">        scan_to_field_names: a dictionary providing the translation between scans and fields.</span>
+<span class="sd">            the scans (0th axis) may be enumerated not only by scan index, but by any other</span>
+<span class="sd">            parameter that uniquely determines the scan (such as the timestamp), which serves</span>
+<span class="sd">            as the dict key, while its value contains the field(s) corresponding to each scan.</span>
+<span class="sd">        intents_of_interest: if provided, lists the intents to be considered in this analysis.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a dict of antennas that are fully flagged in one or more spws:</span>
+<span class="sd">        each element (antenna name) is a set containing all combinations of</span>
+<span class="sd">        field(str), intent(str) and spw(int) in which this antenna is fully flagged.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Perform test separately for each of these intents.</span>
+
+    <span class="c1"># Create translation of field -&gt; intent for intents of interest.</span>
+    <span class="n">intents_for_field</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">field</span><span class="o">.</span><span class="n">intents</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">fields</span><span class="p">}</span>
+
+    <span class="c1"># Create antenna ID to name translation dictionary.</span>
+    <span class="n">antenna_id_to_name</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="p">(</span><span class="n">ant</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">ant</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">ant</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                                          <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">}</span>
+
+    <span class="c1"># Create an empty dictionary for aggregating information of fully flagged antenna.</span>
+    <span class="n">fully_flagged_antennas</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="n">FieldIntentSpw</span><span class="p">]]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+
+    <span class="c1"># Going through each view product for the specified metric, search for fully flagged antenna</span>
+    <span class="c1"># for each combination of field, intent, and spw, and collect their information for the return.</span>
+    <span class="k">for</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">descriptions</span><span class="p">():</span>
+
+        <span class="c1"># Get final view.</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">last</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+
+        <span class="c1"># Initialize the flagging state dict:</span>
+        <span class="c1"># keys are combinations of field, intent, and spw, and values are</span>
+        <span class="c1"># 2d arrays (assembled as lists of arrays), with rows corresponding</span>
+        <span class="c1"># to scans, columns to antennas, and values indicating whether</span>
+        <span class="c1"># the antenna is fully flagged in the given scan.</span>
+        <span class="n">flagging_state</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">FieldIntentSpw</span><span class="p">,</span> <span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+        <span class="c1"># Go through each scan within view.</span>
+        <span class="k">for</span> <span class="n">scan_index</span><span class="p">,</span> <span class="n">scan_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+
+            <span class="c1"># Get flags per antenna for current scan</span>
+            <span class="n">flag_per_scan</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">flag</span><span class="p">[:,</span> <span class="n">scan_index</span><span class="p">]</span>
+
+            <span class="c1"># Obtain the list of field names corresponding to the given scan</span>
+            <span class="c1"># (either a single value or a list)</span>
+            <span class="n">field_names</span> <span class="o">=</span> <span class="n">scan_to_field_names</span><span class="p">[</span><span class="n">scan_id</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field_names</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">field_names</span> <span class="o">=</span> <span class="p">(</span><span class="n">field_names</span><span class="p">,)</span>
+
+            <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">:</span>
+                <span class="c1"># Get field ID and intent(s) for current scan</span>
+                <span class="n">intents_scan</span> <span class="o">=</span> <span class="n">intents_for_field</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
+                <span class="c1"># For each intent that this scan belongs to:</span>
+                <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intents_scan</span><span class="p">:</span>
+                    <span class="c1"># If this scan is for an intent of interest, then append</span>
+                    <span class="c1"># this scan (i.e. flags for all antennas) to the list.</span>
+                    <span class="k">if</span> <span class="n">intents_of_interest</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intents_of_interest</span><span class="p">:</span>
+                        <span class="n">flagging_state</span><span class="p">[</span><span class="n">FieldIntentSpw</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">view</span><span class="o">.</span><span class="n">spw</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flag_per_scan</span><span class="p">)</span>
+
+        <span class="c1"># Consider the 2d array with rows corresponding to scans and columns to antennas,</span>
+        <span class="c1"># and collect the information about antennas that are fully flagged in all rows.</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">flagging_state</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">idx_ant</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="c1"># PIPE-2147: mapping view column indices (corresponding to antennas) to antenna ids using</span>
+                <span class="c1"># the flagging view x-axis data.</span>
+                <span class="n">antenna_id</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx_ant</span><span class="p">]</span>
+                <span class="n">fully_flagged_antennas</span><span class="p">[</span><span class="n">antenna_id_to_name</span><span class="p">[</span><span class="n">antenna_id</span><span class="p">]]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fully_flagged_antennas</span></div>
+
+
+
+<div class="viewcode-block" id="mark_antennas_for_refant_update">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.mark_antennas_for_refant_update">[docs]</a>
+<span class="k">def</span> <span class="nf">mark_antennas_for_refant_update</span><span class="p">(</span>
+        <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">Results</span><span class="p">,</span>
+        <span class="n">fully_flagged_antennas</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="n">FieldIntentSpw</span><span class="p">]],</span>
+        <span class="n">all_spwids</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Modify result to set antennas to be demoted/removed if/when result</span>
+<span class="sd">    gets accepted into the pipeline context.</span>
+<span class="sd">    Antennas are demoted if they are fully flagged in at least one spw</span>
+<span class="sd">    in any field, and removed if they are flagged in all spws.</span>
+<span class="sd">    If list of antennas to demote and/or remove comprises all antennas,</span>
+<span class="sd">    then skip demotion/removal and raise a warning.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ms: measurement set.</span>
+<span class="sd">        result: a subclass of basetask.Results, such as TsysflagResults or</span>
+<span class="sd">            BandpassflagResults, containing the sets of ants_to_demote,</span>
+<span class="sd">            ants_to_remove, and a list of fully_flagged_antenna_notifications.</span>
+<span class="sd">        all_spwids: set of all spws considered in the given task.</span>
+<span class="sd">        fully_flagged_antennas: dict containing the sets of fully flagged</span>
+<span class="sd">            combinations of field/intent/spw for each antenna.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        result object with updated list of refants.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fully_flagged_antennas</span><span class="p">:</span>  <span class="c1"># nothing to do</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="s1">&#39;reference_antenna&#39;</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">reference_antenna</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - no reference antennas found in MS, cannot update &#39;</span>
+            <span class="s1">&#39;the reference antenna list.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="c1"># Assemble the dict of antennas that are fully flagged in all spws:</span>
+    <span class="c1"># each element (antenna name) is a set containing all intents in which this antenna</span>
+    <span class="c1"># is fully flagged in all spws.</span>
+    <span class="n">fully_flagged_antennas_in_all_spws</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+
+    <span class="c1"># Iterate over antennas...</span>
+    <span class="k">for</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">field_intent_spw_combinations</span> <span class="ow">in</span> <span class="n">fully_flagged_antennas</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># For each combination of field+intent, assemble the set of spws</span>
+        <span class="c1"># in which the current antenna is fully flagged.</span>
+        <span class="n">spws_for_field_intent</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">field_intent_spw_combinations</span><span class="p">:</span>
+            <span class="n">spws_for_field_intent</span><span class="p">[(</span><span class="n">item</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">intent</span><span class="p">)]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+
+        <span class="c1"># If any of these sets of spws comprise all spws for any field+intent combination,</span>
+        <span class="c1"># add the current antenna and the corresponding intent to the dict of antennas</span>
+        <span class="c1"># that are fully flagged in all spws.</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">),</span> <span class="n">spws</span> <span class="ow">in</span> <span class="n">spws_for_field_intent</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">spws</span> <span class="o">==</span> <span class="n">all_spwids</span><span class="p">:</span>
+                <span class="n">fully_flagged_antennas_in_all_spws</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+
+    <span class="c1"># Obtain the current list of reference antennas from the MS.</span>
+    <span class="n">refant</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">reference_antenna</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Sets of candidate antennas for demotion and removal from the refant list.</span>
+    <span class="n">ants_to_demote</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">fully_flagged_antennas</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">ants_to_remove</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">fully_flagged_antennas_in_all_spws</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="c1"># Identify intersection between refants and fully flagged antennas and store in result.</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">refants_to_remove</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">intents_for_refants_to_remove</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">refant</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ants_to_remove</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">refants_to_remove</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ant</span><span class="p">)</span>
+            <span class="n">intents_for_refants_to_remove</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fully_flagged_antennas_in_all_spws</span><span class="p">[</span><span class="n">ant</span><span class="p">]))</span>
+
+    <span class="c1"># Check if removal of refants would result in an empty refant list,</span>
+    <span class="c1"># in which case the refant update is skipped and a warning is emitted.</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">refants_to_remove</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">refant</span><span class="p">):</span>
+        <span class="n">ant_list</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">refants_to_remove</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">intent_list</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">intents_for_refants_to_remove</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">multi_prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+        <span class="n">many_ants</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">refants_to_remove</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - the following reference antenna</span><span class="si">{1}</span><span class="s1"> fully flagged &#39;</span>
+            <span class="s1">&#39;in all spws for one or more fields with intent</span><span class="si">{2}</span><span class="s1">, &#39;</span>
+            <span class="s1">&#39;but </span><span class="si">{3}</span><span class="s1"> *NOT* removed from the refant list because doing so &#39;</span>
+            <span class="s1">&#39;would result in an empty refant list: </span><span class="si">{4}</span><span class="s1">&#39;</span><span class="o">.</span>
+            <span class="nb">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="s1">&#39;s are&#39;</span> <span class="k">if</span> <span class="n">many_ants</span> <span class="k">else</span> <span class="s1">&#39; is&#39;</span><span class="p">,</span>
+                   <span class="n">intent_list</span><span class="p">,</span> <span class="s1">&#39;are&#39;</span> <span class="k">if</span> <span class="n">many_ants</span> <span class="k">else</span> <span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="n">ant_list</span><span class="p">))</span>
+
+        <span class="c1"># Reset the refant removal list in the result to be empty.</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">refants_to_remove</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="c1"># Identify intersection between refants and candidate antennas to demote,</span>
+    <span class="c1"># skipping those that are to be removed entirely, and store this list in the result.</span>
+    <span class="c1"># These antennas should be moved to the end of the refant list (demoted)</span>
+    <span class="c1"># upon merging the result into the context.</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">refants_to_demote</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">intents_for_refants_to_demote</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">refant</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ants_to_demote</span> <span class="ow">and</span> <span class="n">ant</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">refants_to_remove</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">refants_to_demote</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ant</span><span class="p">)</span>
+            <span class="n">intents_for_refants_to_demote</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">intent</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">fully_flagged_antennas</span><span class="p">[</span><span class="n">ant</span><span class="p">])</span>
+
+    <span class="c1"># Check if the list of refants-to-demote comprises all refants,</span>
+    <span class="c1"># in which case the re-ordering of refants is skipped and a warning is emitted.</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">refants_to_demote</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">refant</span><span class="p">):</span>
+        <span class="n">ant_list</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">refants_to_demote</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">intent_list</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">intents_for_refants_to_demote</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">multi_prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+        <span class="n">many_ants</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">refants_to_demote</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - the following antenna</span><span class="si">{1}</span><span class="s1"> fully flagged &#39;</span>
+            <span class="s1">&#39;for one or more spws in one or more fields with intent</span><span class="si">{2}</span><span class="s1">, &#39;</span>
+            <span class="s1">&#39;but since </span><span class="si">{3}</span><span class="s1">, the refant list is *NOT* reordered: </span><span class="si">{4}</span><span class="s1">&#39;</span><span class="o">.</span>
+            <span class="nb">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="s1">&#39;s are&#39;</span> <span class="k">if</span> <span class="n">many_ants</span> <span class="k">else</span> <span class="s1">&#39; is&#39;</span><span class="p">,</span> <span class="n">intent_list</span><span class="p">,</span>
+                   <span class="s1">&#39;these comprise all refants&#39;</span> <span class="k">if</span> <span class="n">many_ants</span> <span class="k">else</span> <span class="s1">&#39;it is the only refant&#39;</span><span class="p">,</span> <span class="n">ant_list</span><span class="p">))</span>
+
+        <span class="c1"># Reset the refant demotion list in the result to be empty.</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">refants_to_demote</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="aggregate_fully_flagged_antenna_notifications">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.aggregate_fully_flagged_antenna_notifications">[docs]</a>
+<span class="k">def</span> <span class="nf">aggregate_fully_flagged_antenna_notifications</span><span class="p">(</span>
+        <span class="n">fully_flagged_antennas</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="n">FieldIntentSpw</span><span class="p">]],</span>
+        <span class="n">all_spwids</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> \
+        <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">FullyFlaggedAntennasNotification</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aggregate the list of notifications about fully flagged antennas for the subsequent QA scoring.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        fully_flagged_antennas:  dict with tuples(field, intent, spwid) as keys and sets of antenna ids as values.</span>
+<span class="sd">        all_spwids:              set of all spw ids considered in this flagging task, used to replace</span>
+<span class="sd">                                 the tuple of flagged spws by a string &quot;all spws&quot; when this is the case.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        list of notifications for QA, each item is a named tuple with the following items:</span>
+<span class="sd">            field:    the name of the field;</span>
+<span class="sd">            intents:  a tuple of intents;</span>
+<span class="sd">            spws:     a tuple of spws, or &#39;all spws&#39; if all relevant spws are flagged;</span>
+<span class="sd">            antennas: a tuple of antenna names.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Step 1: Swap the aggregation order of antennas and spws.</span>
+    <span class="c1"># Input dict:        sets of one or more antennas for each combination of field, intent and spw.</span>
+    <span class="c1"># Intermediate dict: sets of one or more spws for each combination of field, intent and antenna.</span>
+    <span class="c1"># The resulting list is aggregated by spws only.</span>
+    <span class="n">spws_for_field_intent_antenna</span><span class="p">:</span> \
+        <span class="n">DefaultDict</span><span class="p">[</span><span class="n">FieldIntentAntenna</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> \
+        <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">field_intent_spw_combinations</span> <span class="ow">in</span> <span class="n">fully_flagged_antennas</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">field_intent_spw_combinations</span><span class="p">:</span>
+            <span class="n">spws_for_field_intent_antenna</span><span class="p">[</span><span class="n">FieldIntentAntenna</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">antenna</span><span class="p">)]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+
+    <span class="c1"># Step 2: Collect all groups of spws assembled at the previous stage,</span>
+    <span class="c1"># and for each unique group of one or more spws, create a dictionary indexed by</span>
+    <span class="c1"># the field+intent pair and containing sets of all affected antennas.</span>
+    <span class="c1"># The result is aggregated by _both_ spws and antennas, in that order.</span>
+    <span class="n">antennas_for_spws_and_field_intent_pairs</span><span class="p">:</span> \
+        <span class="n">DefaultDict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">[</span><span class="n">FieldIntent</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> \
+        <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">set_of_spws</span> <span class="ow">in</span> <span class="n">spws_for_field_intent_antenna</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># convert set of spws to tuple or string, to be used as a dict key</span>
+        <span class="n">spws</span> <span class="o">=</span> <span class="s1">&#39;all spws&#39;</span> <span class="k">if</span> <span class="n">set_of_spws</span> <span class="o">==</span> <span class="n">all_spwids</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">set_of_spws</span><span class="p">))</span>
+        <span class="n">field_intent_pair</span> <span class="o">=</span> <span class="n">FieldIntent</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">field_intent_pair</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">antennas_for_spws_and_field_intent_pairs</span><span class="p">[</span><span class="n">spws</span><span class="p">]:</span>
+            <span class="n">antennas_for_spws_and_field_intent_pairs</span><span class="p">[</span><span class="n">spws</span><span class="p">][</span><span class="n">field_intent_pair</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">antenna</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">antennas_for_spws_and_field_intent_pairs</span><span class="p">[</span><span class="n">spws</span><span class="p">][</span><span class="n">field_intent_pair</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">antenna</span><span class="p">)</span>
+
+    <span class="c1"># Step 3: Aggregate by intents: for each unique group of spws, loop over</span>
+    <span class="c1"># all field+intent pairs and examine the corresponding sets of antennas.</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">spws</span><span class="p">,</span> <span class="n">antennas_for_field_intent_pair</span> <span class="ow">in</span> <span class="n">antennas_for_spws_and_field_intent_pairs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">intents_for_antennas_and_field</span><span class="p">:</span> \
+            <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> \
+            <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+
+        <span class="c1"># For each unique set of antennas, create a dictionary</span>
+        <span class="c1"># indexed by the field name and containing all affected intents.</span>
+        <span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">antenna_set</span> <span class="ow">in</span> <span class="n">antennas_for_field_intent_pair</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">antennas</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">antenna_set</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">intents_for_antennas_and_field</span><span class="p">[</span><span class="n">antennas</span><span class="p">]:</span>
+                <span class="n">intents_for_antennas_and_field</span><span class="p">[</span><span class="n">antennas</span><span class="p">][</span><span class="n">item</span><span class="o">.</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">intent</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">intents_for_antennas_and_field</span><span class="p">[</span><span class="n">antennas</span><span class="p">][</span><span class="n">item</span><span class="o">.</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+
+        <span class="c1"># Loop over the sets of antennas and create one notification for the given group of spws</span>
+        <span class="c1"># sharing the same field, one or more intents, and one or more antennas.</span>
+        <span class="k">for</span> <span class="n">antennas</span><span class="p">,</span> <span class="n">intents_for_field</span> <span class="ow">in</span> <span class="n">intents_for_antennas_and_field</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">intents</span> <span class="ow">in</span> <span class="n">intents_for_field</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullyFlaggedAntennasNotification</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">intents</span><span class="p">)),</span> <span class="n">spws</span><span class="p">,</span> <span class="n">antennas</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="format_fully_flagged_antenna_notification">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.format_fully_flagged_antenna_notification">[docs]</a>
+<span class="k">def</span> <span class="nf">format_fully_flagged_antenna_notification</span><span class="p">(</span><span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">notification</span><span class="p">:</span> <span class="n">FullyFlaggedAntennasNotification</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Format the notification message for fully flagged antennas.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis:  the name of the ms.</span>
+<span class="sd">        notification:  the tuple containing the information about fully flagged antennas.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        the text for the notification message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># build the specification of intent, field and spw, omitting missing items</span>
+    <span class="n">spec_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">notification</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">notification</span><span class="o">.</span><span class="n">intents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">spec_str</span> <span class="o">+=</span> <span class="s1">&#39;intent</span><span class="si">{}</span><span class="s1">, &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">notification</span><span class="o">.</span><span class="n">intents</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">multi_prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">field</span><span class="p">:</span>
+        <span class="n">spec_str</span> <span class="o">+=</span> <span class="s1">&#39;field </span><span class="si">{}</span><span class="s1">, &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">notification</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">notification</span><span class="o">.</span><span class="n">spws</span> <span class="o">==</span> <span class="s1">&#39;all spws&#39;</span><span class="p">:</span>
+        <span class="n">spec_str</span> <span class="o">+=</span> <span class="s1">&#39;all spws, &#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">spec_str</span> <span class="o">+=</span> <span class="s1">&#39;spw</span><span class="si">{}</span><span class="s1">, &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">notification</span><span class="o">.</span><span class="n">spws</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">multi_prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: For </span><span class="si">{}</span><span class="s1"> the following antenna</span><span class="si">{}</span><span class="s1"> fully flagged: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">vis</span><span class="p">,</span> <span class="n">spec_str</span><span class="p">,</span>
+        <span class="s1">&#39;s are&#39;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">notification</span><span class="o">.</span><span class="n">antennas</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39; is&#39;</span><span class="p">,</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">notification</span><span class="o">.</span><span class="n">antennas</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

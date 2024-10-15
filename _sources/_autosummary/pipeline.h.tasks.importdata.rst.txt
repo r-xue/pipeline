@@ -1,0 +1,22 @@
+pipeline.h.tasks.importdata
+===========================
+
+.. automodule:: pipeline.h.tasks.importdata
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ImportData
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fluxes
+   importdata
+   qa
+   renderer

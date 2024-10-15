@@ -1,0 +1,661 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.sessionutils &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.sessionutils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.sessionutils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
+
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">basetask</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">exceptions</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">mpihelpers</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">vdp</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;as_list&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;group_into_sessions&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;parallel_inputs_impl&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ParallelTemplate&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;remap_spw_int&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;remap_spw_str&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;VDPTaskFactory&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;VisResultTuple&#39;</span>
+<span class="p">]</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># VisResultTuple is a data structure used by VDPTaskFactor to group</span>
+<span class="c1"># inputs and results.</span>
+<span class="n">VisResultTuple</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;VisResultTuple&#39;</span><span class="p">,</span> <span class="s1">&#39;vis inputs result&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="parallel_inputs_impl">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.sessionutils.parallel_inputs_impl">[docs]</a>
+<span class="k">def</span> <span class="nf">parallel_inputs_impl</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a vis-independent property implementation for a parallel</span>
+<span class="sd">    Inputs argument.</span>
+
+<span class="sd">    :return: Inputs property implementation</span>
+<span class="sd">    :rtype: property</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">fget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span>
+
+    <span class="k">def</span> <span class="nf">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">allowed</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="s1">&#39;automatic&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;</span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Value not in allowed value set (</span><span class="si">{!s}</span><span class="s1">): </span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="as_list">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.sessionutils.as_list">[docs]</a>
+<span class="k">def</span> <span class="nf">as_list</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">o</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">o</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="group_into_sessions">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.sessionutils.group_into_sessions">[docs]</a>
+<span class="k">def</span> <span class="nf">group_into_sessions</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">all_results</span><span class="p">,</span> <span class="n">measurement_sets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return results grouped into lists by session.</span>
+
+<span class="sd">    Sessions and results are sorted chronologically.</span>
+
+<span class="sd">    In terms of the returned dictionary, it means that keys and</span>
+<span class="sd">    each list associated with the key are all sorted chronologically.</span>
+
+<span class="sd">    :param context: pipeline context</span>
+<span class="sd">    :type context: Context</span>
+<span class="sd">    :param all_results: result to be grouped</span>
+<span class="sd">    :type all_results: list</span>
+<span class="sd">    :param measurement_sets: additional measurementset list (optional)</span>
+<span class="sd">    :type measurement_sets: list</span>
+<span class="sd">    :return: dict of sessions to results for that session</span>
+<span class="sd">    :rtype: dict {session name: [result, result, ...]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ms_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">measurement_sets</span><span class="p">:</span>
+        <span class="n">ms_set</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">measurement_sets</span><span class="p">)</span>
+
+    <span class="n">session_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">session</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">ms_set</span><span class="p">}</span>
+
+    <span class="n">ms_start_times</span> <span class="o">=</span> <span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_epoch_as_datetime</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">start_time</span><span class="p">)</span>
+                      <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">ms_set</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">get_session</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+        <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">session_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span> <span class="s1">&#39;Shared&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_start_time</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+        <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">ms_start_times</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">chrono_sort_results</span><span class="p">(</span><span class="n">arg_tuple</span><span class="p">):</span>
+        <span class="n">session_id</span><span class="p">,</span> <span class="n">results</span> <span class="o">=</span> <span class="n">arg_tuple</span>
+        <span class="k">return</span> <span class="n">session_id</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">get_start_time</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_session_start_time</span><span class="p">(</span><span class="n">arg_tuple</span><span class="p">):</span>
+        <span class="c1"># precondition: results are sorted within session in advance</span>
+        <span class="n">session_id</span><span class="p">,</span> <span class="n">results</span> <span class="o">=</span> <span class="n">arg_tuple</span>
+        <span class="c1"># start time of the session is start time of the first MS in the session</span>
+        <span class="k">return</span> <span class="n">get_start_time</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># group results by session, and sort results chronologically within session</span>
+    <span class="n">results_grouped_by_session</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span>
+        <span class="n">chrono_sort_results</span><span class="p">,</span>
+        <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">all_results</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">get_session</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="n">get_session</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># sort session chronologically and generate ordered dictionary</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">results_grouped_by_session</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">get_session_start_time</span><span class="p">))</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">group_vislist_into_sessions</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vislist</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Group the specified list of measurement sets &#39;vislist&#39; by their session,</span>
+<span class="sd">    and return a dictionary that maps a session name to the corresponding list</span>
+<span class="sd">    of measurement sets.</span>
+
+<span class="sd">    :param context: pipeline context</span>
+<span class="sd">    :type context: :class:`~pipeline.infrastructure.launcher.Context`</span>
+<span class="sd">    :param vislist: list of vis to be grouped</span>
+<span class="sd">    :type vislist: list</span>
+<span class="sd">    :return: dictionary of sessions to vislist for that session</span>
+<span class="sd">    :rtype: dict {session name: [vis, vis, ...]}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sessions</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+        <span class="n">sessions</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">),</span> <span class="s1">&#39;session&#39;</span><span class="p">,</span> <span class="s1">&#39;Shared&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sessions</span>
+
+
+<span class="k">def</span> <span class="nf">get_vislist_for_session</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return list of measurement sets for specified session name.</span>
+
+<span class="sd">    :param context: pipeline context</span>
+<span class="sd">    :type context: :class:`~pipeline.infrastructure.launcher.Context`</span>
+<span class="sd">    :param session: name of session for which to retrieve list of vis</span>
+<span class="sd">    :type session: str</span>
+<span class="sd">    :return: list of vis for session</span>
+<span class="sd">    :rtype: list [vis, vis, ...]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_measurement_sets</span><span class="p">()</span> <span class="k">if</span> <span class="n">ms</span><span class="o">.</span><span class="n">session</span> <span class="o">==</span> <span class="n">session</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="VDPTaskFactory">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.sessionutils.VDPTaskFactory">[docs]</a>
+<span class="k">class</span> <span class="nc">VDPTaskFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    VDPTaskFactory is a class that implements the Factory design</span>
+<span class="sd">    pattern, returning tasks that execute on an MPI client or locally</span>
+<span class="sd">    as appropriate.</span>
+
+<span class="sd">    The correctness of this task is dependent on the correct mapping of</span>
+<span class="sd">    Inputs arguments to measurement set, hence it is dependent on</span>
+<span class="sd">    Inputs objects that sub-class VDP StandardInputs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">executor</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new VDPTaskFactory.</span>
+
+<span class="sd">        :param inputs: inputs for the task</span>
+<span class="sd">        :type inputs: class that extends vdp.StandardInputs</span>
+<span class="sd">        :param executor: pipeline task executor</span>
+<span class="sd">        :type executor: basetask.Executor</span>
+<span class="sd">        :param task: task to execute</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__inputs</span> <span class="o">=</span> <span class="n">inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__context</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span> <span class="o">=</span> <span class="n">executor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__task</span> <span class="o">=</span> <span class="n">task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># If there&#39;s a possibility that we&#39;ll submit MPI jobs, save the context</span>
+        <span class="c1"># to disk ready for import by the MPI servers.</span>
+        <span class="k">if</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">mpiclient</span><span class="p">:</span>
+            <span class="c1"># Use the tempfile module to generate a unique temporary filename,</span>
+            <span class="c1"># which we use as the output path for our pickled context</span>
+            <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.context&#39;</span><span class="p">,</span>
+                                                  <span class="nb">dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                                                  <span class="n">delete</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span> <span class="o">=</span> <span class="n">tmpfile</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">tmpfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">__context</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VDPTaskFactory.get_task">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.sessionutils.VDPTaskFactory.get_task">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create and return a SyncTask or AsyncTask for the job.</span>
+
+<span class="sd">        :param vis: measurement set to create a job for</span>
+<span class="sd">        :type vis: str</span>
+<span class="sd">        :return: task object ready for execution</span>
+<span class="sd">        :rtype: a tuple of (task arguments, (SyncTask|AsyncTask)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get the task arguments for the targetted MS</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_task_args</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Validate the task arguments against the signature expected by</span>
+        <span class="c1"># the task. This is necessary as self.__inputs could be a</span>
+        <span class="c1"># different type from the Inputs instance associated with the</span>
+        <span class="c1"># task, and hence and hence have a different signature. For</span>
+        <span class="c1"># instance, the session-aware Inputs classes accept a</span>
+        <span class="c1"># &#39;parallel&#39; argument, which the non-session tasks do not.</span>
+        <span class="c1">#</span>
+        <span class="c1"># To make things complicated, ModeInputs are a special case.</span>
+        <span class="c1"># Here we shouldn&#39;t inspect the constructor signature of the</span>
+        <span class="c1"># task as it doesn&#39;t reflect that of the active task, which is</span>
+        <span class="c1"># the one that we would want to filter on. So, if the task&#39;s</span>
+        <span class="c1"># Inputs are ModeInputs, dereference the task&#39;s Inputs class.</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__task</span><span class="o">.</span><span class="n">Inputs</span><span class="p">,</span> <span class="n">vdp</span><span class="o">.</span><span class="n">ModeInputs</span><span class="p">):</span>
+            <span class="n">active_mode_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__task</span><span class="o">.</span><span class="n">Inputs</span><span class="o">.</span><span class="n">_modes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__inputs</span><span class="o">.</span><span class="n">mode</span><span class="p">]</span>
+            <span class="n">task_inputs_cls</span> <span class="o">=</span> <span class="n">active_mode_task</span><span class="o">.</span><span class="n">Inputs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">task_inputs_cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__task</span><span class="o">.</span><span class="n">Inputs</span>
+        <span class="n">valid_args</span> <span class="o">=</span> <span class="n">validate_args</span><span class="p">(</span><span class="n">task_inputs_cls</span><span class="p">,</span> <span class="n">task_args</span><span class="p">)</span>
+
+        <span class="n">is_mpi_ready</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">is_mpi_ready</span><span class="p">()</span>
+        <span class="n">is_tier0_job</span> <span class="o">=</span> <span class="n">is_mpi_ready</span>
+
+        <span class="n">parallel_wanted</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">parse_mpi_input_parameter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__inputs</span><span class="o">.</span><span class="n">parallel</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-2114: always execute per-EB &quot;SerialTasks&quot; from the MPI client process in a single-EB</span>
+        <span class="c1"># data processing session.</span>
+        <span class="k">if</span> <span class="n">parallel_wanted</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">as_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Only a single EB is detected in the input vis list; switch to parallel=False &#39;</span>
+                      <span class="s1">&#39;to execute the task on the MPIclient.&#39;</span><span class="p">)</span>
+            <span class="n">parallel_wanted</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">is_tier0_job</span> <span class="ow">and</span> <span class="n">parallel_wanted</span><span class="p">:</span>
+            <span class="n">executable</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">Tier0PipelineTask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__task</span><span class="p">,</span> <span class="n">valid_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">valid_args</span><span class="p">,</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">AsyncTask</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__context</span><span class="p">,</span> <span class="o">**</span><span class="n">valid_args</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__task</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">valid_args</span><span class="p">,</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">SyncTask</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__get_task_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__inputs</span>
+
+        <span class="n">original_vis</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+            <span class="n">task_args</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+            <span class="c1"># support for single-dish tasks</span>
+            <span class="k">if</span> <span class="s1">&#39;infiles&#39;</span> <span class="ow">in</span> <span class="n">task_args</span><span class="p">:</span>
+                <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;infiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">original_vis</span>
+
+        <span class="k">return</span> <span class="n">task_args</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">remove_unexpected_args</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">fn_args</span><span class="p">):</span>
+    <span class="c1"># get the argument names for the function</span>
+    <span class="n">arg_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">signature</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+
+    <span class="c1"># identify arguments that are not expected by the function</span>
+    <span class="n">unexpected</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">fn_args</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">arg_names</span><span class="p">]</span>
+
+    <span class="c1"># return the fn args purged of any unexpected items</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">fn_args</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unexpected</span><span class="p">}</span>
+
+    <span class="c1"># LOG.info(&#39;Arg names: {!s}&#39;.format(arg_names))</span>
+    <span class="c1"># LOG.info(&#39;Unexpected: {!s}&#39;.format(unexpected))</span>
+    <span class="c1"># LOG.info(&#39;Valid: {!s}&#39;.format(x))</span>
+
+    <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="k">def</span> <span class="nf">validate_args</span><span class="p">(</span><span class="n">inputs_cls</span><span class="p">,</span> <span class="n">task_args</span><span class="p">):</span>
+    <span class="n">inputs_constructor_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">inputs_cls</span><span class="p">,</span> <span class="s1">&#39;__init__&#39;</span><span class="p">)</span>
+    <span class="n">valid_args</span> <span class="o">=</span> <span class="n">remove_unexpected_args</span><span class="p">(</span><span class="n">inputs_constructor_fn</span><span class="p">,</span> <span class="n">task_args</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">valid_args</span>
+
+
+<span class="k">def</span> <span class="nf">get_spwmap</span><span class="p">(</span><span class="n">source_ms</span><span class="p">,</span> <span class="n">target_ms</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a map of spectral windows IDs that map from a source spw ID in</span>
+<span class="sd">    the source MS to its equivalent spw in the target MS.</span>
+
+<span class="sd">    :param source_ms: the MS to map spws from</span>
+<span class="sd">    :type source_ms: domain.MeasurementSet</span>
+<span class="sd">    :param target_ms: the MS to map spws to</span>
+<span class="sd">    :type target_ms: domain.MeasurementSet</span>
+<span class="sd">    :return: dict of integer spw IDs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># spw names are not guaranteed to be unique. They seem to be unique</span>
+    <span class="c1"># across science intents, but they could be repeated for other</span>
+    <span class="c1"># scans (pointing, sideband, etc.) in non-science spectral windows.</span>
+    <span class="c1"># if not eliminated, these non-science window names collide with</span>
+    <span class="c1"># the science windows and you end up having science windows map to</span>
+    <span class="c1"># non-science windows and vice versa. Not what we want! This set</span>
+    <span class="c1"># will be used to filter for the spectral windows we want to</span>
+    <span class="c1"># consider.</span>
+    <span class="n">science_intents</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">}</span>
+
+    <span class="c1"># map spw id to spw name for source MS - just for science intents</span>
+    <span class="n">id_to_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">spw</span><span class="o">.</span><span class="n">name</span>
+                  <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">source_ms</span><span class="o">.</span><span class="n">spectral_windows</span>
+                  <span class="k">if</span> <span class="ow">not</span> <span class="n">science_intents</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">intents</span><span class="p">)}</span>
+
+    <span class="c1"># map spw name to spw id for target MS - just for science intents</span>
+    <span class="n">name_to_id</span> <span class="o">=</span> <span class="p">{</span><span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
+                  <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">target_ms</span><span class="o">.</span><span class="n">spectral_windows</span>
+                  <span class="k">if</span> <span class="ow">not</span> <span class="n">science_intents</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">intents</span><span class="p">)}</span>
+
+    <span class="c1"># note the get(v, k) here. This says that for non-science windows,</span>
+    <span class="c1"># which have been filtered from the maps, use the original spw ID -</span>
+    <span class="c1"># hence non-science spws are not remapped.</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">name_to_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">id_to_name</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">name_to_id</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="remap_spw_int">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.sessionutils.remap_spw_int">[docs]</a>
+<span class="k">def</span> <span class="nf">remap_spw_int</span><span class="p">(</span><span class="n">source_ms</span><span class="p">,</span> <span class="n">target_ms</span><span class="p">,</span> <span class="n">spws</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Map integer spw arguments from one MS to their equivalent spw in</span>
+<span class="sd">    the target ms.</span>
+
+<span class="sd">    :param source_ms: the MS to map spws from</span>
+<span class="sd">    :type source_ms: domain.MeasurementSet</span>
+<span class="sd">    :param target_ms: the MS to map spws to</span>
+<span class="sd">    :type target_ms: domain.MeasurementSet</span>
+<span class="sd">    :param spws: the spw argument to convert</span>
+<span class="sd">    :return: a list of remapped integer spw IDs</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">int_spw_map</span> <span class="o">=</span> <span class="n">get_spwmap</span><span class="p">(</span><span class="n">source_ms</span><span class="p">,</span> <span class="n">target_ms</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">int_spw_map</span><span class="p">[</span><span class="n">spw_id</span><span class="p">]</span> <span class="k">for</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="remap_spw_str">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.sessionutils.remap_spw_str">[docs]</a>
+<span class="k">def</span> <span class="nf">remap_spw_str</span><span class="p">(</span><span class="n">source_ms</span><span class="p">,</span> <span class="n">target_ms</span><span class="p">,</span> <span class="n">spws</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remap a string spw argument, e.g., &#39;16,18,20,22&#39;, from one MS to</span>
+<span class="sd">    the equivalent map in the target ms.</span>
+
+<span class="sd">    :param source_ms: the MS to map spws from</span>
+<span class="sd">    :type source_ms: domain.MeasurementSet</span>
+<span class="sd">    :param target_ms: the MS to map spws to</span>
+<span class="sd">    :type target_ms: domain.MeasurementSet</span>
+<span class="sd">    :param spws: the spw argument to convert</span>
+<span class="sd">    :return: a list of remapped integer spw IDs</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">spw_ints</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spws</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">remap_spw_int</span><span class="p">(</span><span class="n">source_ms</span><span class="p">,</span> <span class="n">target_ms</span><span class="p">,</span> <span class="n">spw_ints</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">l</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="ParallelTemplate">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.sessionutils.ParallelTemplate">[docs]</a>
+<span class="k">class</span> <span class="nc">ParallelTemplate</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractproperty</span>
+    <span class="k">def</span> <span class="nf">Task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A reference to the :class:`Task` class containing the implementation</span>
+<span class="sd">        for this pipeline stage.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ParallelTemplate</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+    <span class="nd">@basetask</span><span class="o">.</span><span class="n">result_finaliser</span>
+    <span class="k">def</span> <span class="nf">get_result_for_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exception</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">basetask</span><span class="o">.</span><span class="n">FailedTaskResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate FailedTaskResults with exception raised.</span>
+
+<span class="sd">        This provides default implementation of exception handling.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vis: List of input visibility data</span>
+<span class="sd">            exception: Exception occurred</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            a results object with exception raised</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error processing </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">)))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exception</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">exception</span><span class="p">)))</span>
+        <span class="n">tb</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">tb</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;None&#39;</span><span class="p">):</span>
+            <span class="n">tb</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exception</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">exception</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">basetask</span><span class="o">.</span><span class="n">FailedTaskResults</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ParallelTemplate.prepare">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.sessionutils.ParallelTemplate.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># this will hold the tuples of ms, jobs and results</span>
+        <span class="n">assessed</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">vis_list</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">VDPTaskFactory</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Task</span><span class="p">)</span> <span class="k">as</span> <span class="n">factory</span><span class="p">:</span>
+            <span class="n">task_queue</span> <span class="o">=</span> <span class="p">[(</span><span class="n">vis</span><span class="p">,</span> <span class="n">factory</span><span class="o">.</span><span class="n">get_task</span><span class="p">(</span><span class="n">vis</span><span class="p">))</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vis_list</span><span class="p">]</span>
+
+            <span class="c1"># Jobs must complete within the scope of the VDPTaskFactory as the</span>
+            <span class="c1"># context copies used by the MPI clients are removed on __exit__.</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="p">(</span><span class="n">task_args</span><span class="p">,</span> <span class="n">task</span><span class="p">))</span> <span class="ow">in</span> <span class="n">task_queue</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">worker_result</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">get_result</span><span class="p">()</span>
+
+                    <span class="c1"># for importdata/restoredata tasks, input and output vis</span>
+                    <span class="c1"># can be different. sessionutils seems to require vis to</span>
+                    <span class="c1"># be output vis</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">worker_result</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="n">worker_result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="n">worker_result</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;mses&#39;</span><span class="p">):</span>
+                        <span class="n">vis</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">mses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">PipelineException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">assessed</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">vis</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">assessed</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">vis</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">worker_result</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">assessed</span></div>
+
+
+<div class="viewcode-block" id="ParallelTemplate.analyse">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.sessionutils.ParallelTemplate.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assessed</span><span class="p">):</span>
+        <span class="c1"># all results will be added to this object</span>
+        <span class="n">final_result</span> <span class="o">=</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">()</span>
+
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+
+        <span class="c1"># if results are generated by importdata task,</span>
+        <span class="c1"># retrieve measurementset domain objects from the results</span>
+        <span class="n">mses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">vis_result</span> <span class="ow">in</span> <span class="n">assessed</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vis_result</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">vis_result</span><span class="p">:</span>
+                    <span class="n">mses</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s1">&#39;mses&#39;</span><span class="p">,</span> <span class="p">[]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mses</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">vis_result</span><span class="p">,</span> <span class="s1">&#39;mses&#39;</span><span class="p">,</span> <span class="p">[]))</span>
+
+        <span class="n">session_groups</span> <span class="o">=</span> <span class="n">group_into_sessions</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">assessed</span><span class="p">,</span> <span class="n">measurement_sets</span><span class="o">=</span><span class="n">mses</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">session_id</span><span class="p">,</span> <span class="n">session_results</span> <span class="ow">in</span> <span class="n">session_groups</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">vis_result</span> <span class="ow">in</span> <span class="n">session_results</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vis_result</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
+                    <span class="n">fake_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_result_for_exception</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">vis_result</span><span class="p">)</span>
+                    <span class="n">fake_result</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">task_args</span>
+                    <span class="n">final_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fake_result</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vis_result</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+                        <span class="n">final_result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">vis_result</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">final_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vis_result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">final_result</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

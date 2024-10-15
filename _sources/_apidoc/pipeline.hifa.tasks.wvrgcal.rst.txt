@@ -1,0 +1,37 @@
+pipeline.hifa.tasks.wvrgcal package
+===================================
+
+Submodules
+----------
+
+pipeline.hifa.tasks.wvrgcal.resultobjects module
+------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.wvrgcal.resultobjects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.wvrgcal.wvrg\_qa module
+-------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.wvrgcal.wvrg_qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.wvrgcal.wvrgcal module
+------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.wvrgcal.wvrgcal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifa.tasks.wvrgcal
+   :members:
+   :undoc-members:
+   :show-inheritance:

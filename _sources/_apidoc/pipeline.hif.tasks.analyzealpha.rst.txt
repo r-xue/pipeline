@@ -1,0 +1,21 @@
+pipeline.hif.tasks.analyzealpha package
+=======================================
+
+Submodules
+----------
+
+pipeline.hif.tasks.analyzealpha.analyzealpha module
+---------------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.analyzealpha.analyzealpha
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hif.tasks.analyzealpha
+   :members:
+   :undoc-members:
+   :show-inheritance:

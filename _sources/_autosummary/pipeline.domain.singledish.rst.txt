@@ -1,0 +1,13 @@
+pipeline.domain.singledish
+==========================
+
+.. automodule:: pipeline.domain.singledish
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MSReductionGroupDesc
+      MSReductionGroupMember
+   

@@ -1,0 +1,17 @@
+pipeline.hifv.heuristics.bandpass
+=================================
+
+.. automodule:: pipeline.hifv.heuristics.bandpass
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      computeChanFlag
+      do_bandpass
+      do_bandpassweakbp
+      removeRows
+      uvrange
+      weakbp
+   

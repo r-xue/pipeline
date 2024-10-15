@@ -1,0 +1,938 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.k2jycal package &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.k2jycal package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/pipeline.hsd.tasks.k2jycal.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hsd-tasks-k2jycal-package">
+<h1>pipeline.hsd.tasks.k2jycal package<a class="headerlink" href="#pipeline-hsd-tasks-k2jycal-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pipeline.hsd.tasks.k2jycal.display">
+<span id="pipeline-hsd-tasks-k2jycal-display-module"></span><h2>pipeline.hsd.tasks.k2jycal.display module<a class="headerlink" href="#module-pipeline.hsd.tasks.k2jycal.display" title="Link to this heading"></a></h2>
+<p>Plotting class for k2jycal stage.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.display.K2JyHistDisplay">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">K2JyHistDisplay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_factors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/display.html#K2JyHistDisplay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.display.K2JyHistDisplay" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A display class to generate histogram of Jy/K factors.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.display.K2JyHistDisplay.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.logger.Plot" title="pipeline.infrastructure.renderer.logger.Plot"><span class="pre">Plot</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/display.html#K2JyHistDisplay.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.display.K2JyHistDisplay.plot" title="Link to this definition"></a></dt>
+<dd><p>Generate histogram plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of histogram plots.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.display.collect_dict_values">
+<span class="sig-name descname"><span class="pre">collect_dict_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/display.html#collect_dict_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.display.collect_dict_values" title="Link to this definition"></a></dt>
+<dd><p>Return a list of values in in_value.</p>
+<p>When in_value = dict(a=1, b=dict(c=2, d=4)), the method collects
+all values in tips of branches and returns, [1, 2, 4].
+When in_value is a simple number or an array, it returns a list
+of the number or the array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>in_value</strong> – A dictionary, number or array to collect values and construct a list</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of True or False and the flat list of values contained in in_value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hsd.tasks.k2jycal.jyperkreader">
+<span id="pipeline-hsd-tasks-k2jycal-jyperkreader-module"></span><h2>pipeline.hsd.tasks.k2jycal.jyperkreader module<a class="headerlink" href="#module-pipeline.hsd.tasks.k2jycal.jyperkreader" title="Link to this heading"></a></h2>
+<p>Module to read Jy/K factor file.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerK">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">JyPerK</span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/jyperkreader.html#JyPerK"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerK" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Parse session based jyperk csv and store.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>meta stores meta data information from the lines in the form, ‘#name=value’,</dt><dd><p>as a dictionary, meta[name]=value.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>header stores column label from the line in the form ‘#header0, header1, …’</dt><dd><p>as a list, header = [‘header0’, ‘header1’, …]</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>data stores values in csv file as a dictionary,</dt><dd><p>data[‘header0’] = [data00, data01, …]</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerK.register_data">
+<span class="sig-name descname"><span class="pre">register_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/jyperkreader.html#JyPerK.register_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerK.register_data" title="Link to this definition"></a></dt>
+<dd><p>Register data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>content</strong> – Contents of the file as a list of string.
+Should be list of data as strings.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerK.register_meta">
+<span class="sig-name descname"><span class="pre">register_meta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/jyperkreader.html#JyPerK.register_meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerK.register_meta" title="Link to this definition"></a></dt>
+<dd><p>Register meta data for the contents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>content</strong> – Contents of the file as a list or a tuple of string.
+Should be either tuple of (key, value) format, or
+a list of column names.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerKDataParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">JyPerKDataParser</span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/jyperkreader.html#JyPerKDataParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerKDataParser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Utility class to convert session based factors file into MS based one.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerKDataParser.get_content">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/jyperkreader.html#JyPerKDataParser.get_content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerKDataParser.get_content" title="Link to this definition"></a></dt>
+<dd><p>Sanitize the string.</p>
+<p>Strip some special characters from the string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>line</strong> – String to be sanitized</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sanitized string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerKDataParser.parse_data">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/jyperkreader.html#JyPerKDataParser.parse_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerKDataParser.parse_data" title="Link to this definition"></a></dt>
+<dd><p>Parse comma-separated data string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>line</strong> – Comma-separated data string</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of data or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerKDataParser.parse_header">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/jyperkreader.html#JyPerKDataParser.parse_header"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerKDataParser.parse_header" title="Link to this definition"></a></dt>
+<dd><p>Parse single header string.</p>
+<p>Header string may contain,</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>meta data in “key=value” format</p></li>
+<li><p>data header as a comma separated list of column names</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>line</strong> – Single line of header</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Contents of the header string. If given string is not a header,
+None is returned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.jyperkreader.associate">
+<span class="sig-name descname"><span class="pre">associate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><span class="pre">Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">factors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerK" title="pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerK"><span class="pre">JyPerK</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">TextIO</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/jyperkreader.html#associate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.jyperkreader.associate" title="Link to this definition"></a></dt>
+<dd><p>Provide an interface to access “Session-Based” data like “MS-Based” one.</p>
+<p>Convert data collected from session based jyperk csv as JyPerK object
+to MS-beased csv, i.e., a string list of [‘MS,ant,spwid,polid,factor’, …].</p>
+<p>This is intended to be used in combination with “with” statement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – Pipeline context</p></li>
+<li><p><strong>factors</strong> – JyPerK instance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p>StringIO instance that caller of this function can handle the return value
+as if it accessed to the file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.jyperkreader.inspect_coverage">
+<span class="sig-name descname"><span class="pre">inspect_coverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Number</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Number</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/jyperkreader.html#inspect_coverage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.jyperkreader.inspect_coverage" title="Link to this definition"></a></dt>
+<dd><p>Inspect overlapped region of given two ranges.</p>
+<p>Compute a fraction of the overlapped region of given two ranges
+specified by (minval, maxval) and (minref, maxref). If reference
+range (minref, maxref) is too broad (&gt; 110%) compared with
+(minval, maxval), returned value will be 0 regardless of actual
+fraction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>minval</strong> – minimum value of the range</p></li>
+<li><p><strong>maxval</strong> – maximum value of the range</p></li>
+<li><p><strong>minref</strong> – minimum value of the reference range</p></li>
+<li><p><strong>maxref</strong> – maximum value of the reference range</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Fraction of the overlapped region. Ranges from 0 to 1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.jyperkreader.inspect_type">
+<span class="sig-name descname"><span class="pre">inspect_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/jyperkreader.html#inspect_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.jyperkreader.inspect_type" title="Link to this definition"></a></dt>
+<dd><p>Inspect file type.</p>
+<p>Read the first line and check its contents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – Name of the file to read</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>‘Session-Based’ or ‘MS-Based’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.jyperkreader.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><span class="pre">Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/jyperkreader.html#read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.jyperkreader.read" title="Link to this definition"></a></dt>
+<dd><p>Read jyperk factors from a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – Pipeline context</p></li>
+<li><p><strong>filename</strong> – Name of the file to read</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>String list of [[‘MS’,’ant’,’spwid’,’polid’,’factor’], …]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.jyperkreader.read_ms_based">
+<span class="sig-name descname"><span class="pre">read_ms_based</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reffile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/jyperkreader.html#read_ms_based"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.jyperkreader.read_ms_based" title="Link to this definition"></a></dt>
+<dd><p>Read “MS-Based” jyperk factor file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>reffile</strong> – Name of the file to read</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>String list of [[‘MS’,’ant’,’spwid’,’polid’,’factor’], …]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.jyperkreader.read_session_based">
+<span class="sig-name descname"><span class="pre">read_session_based</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><span class="pre">Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/jyperkreader.html#read_session_based"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.jyperkreader.read_session_based" title="Link to this definition"></a></dt>
+<dd><p>Read “Session-Based” jyperk factor file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – Pipeline context</p></li>
+<li><p><strong>reffile</strong> – Name of the file to read</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>String list of [[‘MS’,’ant’,’spwid’,’polid’,’factor’], …]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hsd.tasks.k2jycal.k2jycal">
+<span id="pipeline-hsd-tasks-k2jycal-k2jycal-module"></span><h2>pipeline.hsd.tasks.k2jycal.k2jycal module<a class="headerlink" href="#module-pipeline.hsd.tasks.k2jycal.k2jycal" title="Link to this heading"></a></h2>
+<p>The k2jycal task to perform the calibration of Jy/K conversion.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SDK2JyCal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/k2jycal.html#SDK2JyCal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCal" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.StandardTaskTemplate" title="pipeline.infrastructure.basetask.StandardTaskTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">StandardTaskTemplate</span></code></a></p>
+<p>Generate calibration table of Jy/K factors.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCal.Inputs">
+<span class="sig-name descname"><span class="pre">Inputs</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCal.Inputs" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs" title="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">SDK2JyCalInputs</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCal.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults" title="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults"><span class="pre">SDK2JyCalResults</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults" title="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults"><span class="pre">SDK2JyCalResults</span></a></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/k2jycal.html#SDK2JyCal.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCal.analyse" title="Link to this definition"></a></dt>
+<dd><p>Analyse SDK2JyCalResults instance produced by prepare.</p>
+<ol class="arabic simple">
+<li><p>Define factors actually used and analyze if the factors are provided to all relevant data in MS.</p></li>
+</ol>
+<p>2. Check if caltables in the pool exist to validate the CalApplication, and register valid CalApplication’s to final
+attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>result</strong> – SDK2JyCalResults instance</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated SDK2JyCalResults instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCal.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults" title="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults"><span class="pre">SDK2JyCalResults</span></a></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/k2jycal.html#SDK2JyCal.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCal.execute" title="Link to this definition"></a></dt>
+<dd><p>remove existing QUERIED_FACTOR_FILE before the first run</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parameters</strong> – parameters</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Returns</dt><dd><p>SDK2JyCalResults</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCal.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults" title="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults"><span class="pre">SDK2JyCalResults</span></a></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/k2jycal.html#SDK2JyCal.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCal.prepare" title="Link to this definition"></a></dt>
+<dd><p>Retrieve Jy/K facors from the DB and save them in QUERIED_FACTOR_FILE if dbaccess is True</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SDK2JyCalResults</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SDK2JyCalInputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><span class="pre">Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbservice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/k2jycal.html#SDK2JyCalInputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.vdp.StandardInputs" title="pipeline.infrastructure.vdp.StandardInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">StandardInputs</span></code></a></p>
+<p>Inputs class for SDK2JyCal task.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.caltable">
+<span class="sig-name descname"><span class="pre">caltable</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.caltable" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.caltype">
+<span class="sig-name descname"><span class="pre">caltype</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.caltype" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.dbservice">
+<span class="sig-name descname"><span class="pre">dbservice</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.dbservice" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.endpoint">
+<span class="sig-name descname"><span class="pre">endpoint</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.endpoint" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.infiles">
+<span class="sig-name descname"><span class="pre">infiles</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.infiles" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.reffile">
+<span class="sig-name descname"><span class="pre">reffile</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.reffile" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.to_casa_args">
+<span class="sig-name descname"><span class="pre">to_casa_args</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/k2jycal.html#SDK2JyCalInputs.to_casa_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.to_casa_args" title="Link to this definition"></a></dt>
+<dd><p>Convert Inputs instance into dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>kwargs for CASA task</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SDK2JyCalResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.callibrary.CalApplication" title="pipeline.infrastructure.callibrary.CalApplication"><span class="pre">CalApplication</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pool</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_ok</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbstatus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/k2jycal.html#SDK2JyCalResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.Results" title="pipeline.infrastructure.basetask.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
+<p>Class to hold processing result of SDK2JyCal task.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults.merge_with_context">
+<span class="sig-name descname"><span class="pre">merge_with_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><span class="pre">Context</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/k2jycal.html#SDK2JyCalResults.merge_with_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults.merge_with_context" title="Link to this definition"></a></dt>
+<dd><p>Merge result instance into context.</p>
+<p>Merge of the result instance of Jy/K calibration task includes
+the following updates to Pipeline context,</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>register CalApplication instances to callibrary</p></li>
+<li><p>register Jy/K conversion factors to MS domain object</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong> – Pipeline context</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.k2jycal.export_jyperk">
+<span class="sig-name descname"><span class="pre">export_jyperk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factors_used</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/k2jycal.html#export_jyperk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.k2jycal.export_jyperk" title="Link to this definition"></a></dt>
+<dd><p>Export conversion factors to file.</p>
+<p>Format of the output file is CSV.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outfile</strong> – Name of the output file</p></li>
+<li><p><strong>vis</strong> – Name of MS</p></li>
+<li><p><strong>factors</strong> – List of conversion factors with meta data</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hsd.tasks.k2jycal.qa">
+<span id="pipeline-hsd-tasks-k2jycal-qa-module"></span><h2>pipeline.hsd.tasks.k2jycal.qa module<a class="headerlink" href="#module-pipeline.hsd.tasks.k2jycal.qa" title="Link to this heading"></a></h2>
+<p>QA score handlers for k2jycal task.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalListQAHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SDK2JyCalListQAHandler</span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/qa.html#SDK2JyCalListQAHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalListQAHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin" title="pipeline.infrastructure.pipelineqa.QAPlugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">QAPlugin</span></code></a></p>
+<p>Class to handle QA score for a list of k2jycal results.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalListQAHandler.child_cls">
+<span class="sig-name descname"><span class="pre">child_cls</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalListQAHandler.child_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults" title="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">SDK2JyCalResults</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalListQAHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><span class="pre">Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.ResultsList" title="pipeline.infrastructure.basetask.ResultsList"><span class="pre">ResultsList</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/qa.html#SDK2JyCalListQAHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalListQAHandler.handle" title="Link to this definition"></a></dt>
+<dd><p>Evaluate QA score for a list of k2jycal results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – Pipeline context (not used)</p></li>
+<li><p><strong>result</strong> – List of SDK2JyCalResults instances</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalListQAHandler.result_cls">
+<span class="sig-name descname"><span class="pre">result_cls</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalListQAHandler.result_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalQAHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SDK2JyCalQAHandler</span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/qa.html#SDK2JyCalQAHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalQAHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin" title="pipeline.infrastructure.pipelineqa.QAPlugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">QAPlugin</span></code></a></p>
+<p>Class to handle QA score for k2jycal result.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalQAHandler.child_cls">
+<span class="sig-name descname"><span class="pre">child_cls</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalQAHandler.child_cls" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalQAHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><span class="pre">Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults" title="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults"><span class="pre">SDK2JyCalResults</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/qa.html#SDK2JyCalQAHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalQAHandler.handle" title="Link to this definition"></a></dt>
+<dd><p>Evaluate QA score for k2jycal result.</p>
+<p>Score is 0.0 if</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>there is missing Jy/K factor, or,</p></li>
+<li><p>accessed Jy/K DB and failed.</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – Pipeline context (not used)</p></li>
+<li><p><strong>result</strong> – SDK2JyCalResults instance</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalQAHandler.result_cls">
+<span class="sig-name descname"><span class="pre">result_cls</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalQAHandler.result_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults" title="pipeline.hsd.tasks.k2jycal.k2jycal.SDK2JyCalResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">SDK2JyCalResults</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hsd.tasks.k2jycal.renderer">
+<span id="pipeline-hsd-tasks-k2jycal-renderer-module"></span><h2>pipeline.hsd.tasks.k2jycal.renderer module<a class="headerlink" href="#module-pipeline.hsd.tasks.k2jycal.renderer" title="Link to this heading"></a></h2>
+<p>Renderer for k2jycal task.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.JyperKTR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">JyperKTR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.JyperKTR" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.JyperKTR.antenna">
+<span class="sig-name descname"><span class="pre">antenna</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.JyperKTR.antenna" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.JyperKTR.factor">
+<span class="sig-name descname"><span class="pre">factor</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.JyperKTR.factor" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.JyperKTR.msname">
+<span class="sig-name descname"><span class="pre">msname</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.JyperKTR.msname" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.JyperKTR.pol">
+<span class="sig-name descname"><span class="pre">pol</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.JyperKTR.pol" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.JyperKTR.spw">
+<span class="sig-name descname"><span class="pre">spw</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.JyperKTR.spw" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.JyperKTRV">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">JyperKTRV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">virtualspw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">realspw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.JyperKTRV" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.JyperKTRV.antenna">
+<span class="sig-name descname"><span class="pre">antenna</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.JyperKTRV.antenna" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.JyperKTRV.factor">
+<span class="sig-name descname"><span class="pre">factor</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.JyperKTRV.factor" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.JyperKTRV.msname">
+<span class="sig-name descname"><span class="pre">msname</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.JyperKTRV.msname" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.JyperKTRV.pol">
+<span class="sig-name descname"><span class="pre">pol</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.JyperKTRV.pol" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.JyperKTRV.realspw">
+<span class="sig-name descname"><span class="pre">realspw</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.JyperKTRV.realspw" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.JyperKTRV.virtualspw">
+<span class="sig-name descname"><span class="pre">virtualspw</span></span><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.JyperKTRV.virtualspw" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.T2_4MDetailsSingleDishK2JyCalRenderer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">T2_4MDetailsSingleDishK2JyCalRenderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'hsd_k2jycal.mako'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Generate</span> <span class="pre">Kelvin</span> <span class="pre">to</span> <span class="pre">Jy</span> <span class="pre">calibration</span> <span class="pre">table.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_rerender</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/renderer.html#T2_4MDetailsSingleDishK2JyCalRenderer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.T2_4MDetailsSingleDishK2JyCalRenderer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer" title="pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer"><code class="xref py py-class docutils literal notranslate"><span class="pre">T2_4MDetailsDefaultRenderer</span></code></a></p>
+<p>Weblog renderer class for k2jycal task.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.k2jycal.renderer.T2_4MDetailsSingleDishK2JyCalRenderer.update_mako_context">
+<span class="sig-name descname"><span class="pre">update_mako_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><span class="pre">Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.ResultsList" title="pipeline.infrastructure.basetask.ResultsList"><span class="pre">ResultsList</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/k2jycal/renderer.html#T2_4MDetailsSingleDishK2JyCalRenderer.update_mako_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.k2jycal.renderer.T2_4MDetailsSingleDishK2JyCalRenderer.update_mako_context" title="Link to this definition"></a></dt>
+<dd><p>Update context for weblog rendering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Context for weblog rendering</p></li>
+<li><p><strong>context</strong> – Pipeline context</p></li>
+<li><p><strong>results</strong> – ResultsList instance. Should hold a list of SDK2JyCalResults instance.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hsd.tasks.k2jycal">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline.hsd.tasks.k2jycal" title="Link to this heading"></a></h2>
+<p>k2jycal stage.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

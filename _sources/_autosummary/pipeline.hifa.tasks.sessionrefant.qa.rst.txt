@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.sessionrefant.qa
+====================================
+
+.. automodule:: pipeline.hifa.tasks.sessionrefant.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SessionRefAntListQAHandler
+      SessionRefAntQAHandler
+   

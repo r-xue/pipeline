@@ -1,0 +1,463 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsdn.tasks.exportdata.nrotemplategenerator &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsdn.tasks.exportdata.nrotemplategenerator</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsdn.tasks.exportdata.nrotemplategenerator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Template files generator for NRO data reduction.</span>
+
+<span class="sd">This class is called by exportdata task of NRO, and generates thease files</span>
+<span class="sd">into products folder:</span>
+<span class="sd">- scale file: norscalefile.csv</span>
+<span class="sd">- reduction template: rebase_and_image.py</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.singledish</span> <span class="kn">import</span> <span class="n">MSReductionGroupDesc</span><span class="p">,</span> <span class="n">MSReductionGroupMember</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">import</span> <span class="nn">pipeline.hsd.tasks.common.observatory_policy</span> <span class="k">as</span> <span class="nn">observatory_policy</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+
+<span class="c1"># the logger for this module</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="generate_template">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.exportdata.html#pipeline.hsdn.tasks.exportdata.nrotemplategenerator.generate_template">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_template</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate template using a specified file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filename : template file name</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        template text</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">template</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">template</span></div>
+
+
+
+<div class="viewcode-block" id="export_template">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.exportdata.html#pipeline.hsdn.tasks.exportdata.nrotemplategenerator.export_template">[docs]</a>
+<span class="k">def</span> <span class="nf">export_template</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">txt</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save a text string to a file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filename : file name to export</span>
+<span class="sd">        txt : a text string to save</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="indent">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.exportdata.html#pipeline.hsdn.tasks.exportdata.nrotemplategenerator.indent">[docs]</a>
+<span class="k">def</span> <span class="nf">indent</span><span class="p">(</span><span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate indent string.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        level : indent level. Defaults to 0.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        indent spaces</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s1">&#39;    &#39;</span> <span class="o">*</span> <span class="n">level</span></div>
+
+
+
+<div class="viewcode-block" id="space">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.exportdata.html#pipeline.hsdn.tasks.exportdata.nrotemplategenerator.space">[docs]</a>
+<span class="k">def</span> <span class="nf">space</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate space string.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        n : space count. Defaults to 0.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        spaces</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">n</span></div>
+
+
+
+<div class="viewcode-block" id="get_template">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.exportdata.html#pipeline.hsdn.tasks.exportdata.nrotemplategenerator.get_template">[docs]</a>
+<span class="k">def</span> <span class="nf">get_template</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get path of template file placed same place of this script.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name : template file name</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        template path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">script_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="generate_group_entries">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.exportdata.html#pipeline.hsdn.tasks.exportdata.nrotemplategenerator.generate_group_entries">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_group_entries</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span>
+                           <span class="n">member_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MSReductionGroupMember</span><span class="p">])</span>\
+        <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Yield a CSV string for NRO scale file corresponding to ms and member_list.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ms : a MeasurementSet to filter member_list</span>
+<span class="sd">        member_list : a list of MSReductionGroupMember</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        Entries for CSV</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># filter members by MS</span>
+    <span class="n">basename</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span>
+    <span class="n">filtered_by_ms</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span> <span class="o">==</span> <span class="n">basename</span><span class="p">,</span> <span class="n">member_list</span><span class="p">)</span>
+
+    <span class="c1"># generate list of antenna ID and spw ID pairs</span>
+    <span class="n">antenna_spw_pairs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(((</span><span class="n">m</span><span class="o">.</span><span class="n">antenna</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">filtered_by_ms</span><span class="p">))</span>
+
+    <span class="c1"># yield entries</span>
+    <span class="k">for</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
+            <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">antenna</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">antenna_spw_pairs</span><span class="p">:</span>
+            <span class="n">data_desc</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="c1"># number of lines to be yielded is equal to number of correlations</span>
+                <span class="p">[</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">basename</span><span class="p">,</span> <span class="n">antenna</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="n">corr</span><span class="p">,</span> <span class="s1">&#39;1.0&#39;</span><span class="p">])</span>
+                 <span class="k">for</span> <span class="n">corr</span> <span class="ow">in</span> <span class="n">data_desc</span><span class="o">.</span><span class="n">corr_axis</span><span class="p">]</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="generate_csv_entries">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.exportdata.html#pipeline.hsdn.tasks.exportdata.nrotemplategenerator.generate_csv_entries">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_csv_entries</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate CSV entries of all MS and reduction groups in context.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context : pipeline context</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        Entries for CSV</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># reduction group</span>
+    <span class="n">reduction_group</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_reduction_group</span>
+    <span class="n">member_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">reduction_group</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
+
+    <span class="c1"># measurement sets</span>
+    <span class="n">mses</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span>
+
+    <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mses</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">generate_group_entries</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">member_list</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">entry</span>
+
+    <span class="c1"># finally EOF marker is yielded</span>
+    <span class="k">yield</span> <span class="s1">&#39;#----------------------------------------------------------------------------------------------&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="generate_csv">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.exportdata.html#pipeline.hsdn.tasks.exportdata.nrotemplategenerator.generate_csv">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_csv</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">datafile</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate CSV file using template file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context : pipeline context</span>
+<span class="sd">        datafile : CSV datafile generated</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        whether CSV file was generated or not</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">get_template</span><span class="p">(</span><span class="s1">&#39;scalefile.txt&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">csv_entries</span> <span class="o">=</span> <span class="n">generate_csv_entries</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+    <span class="n">txt</span> <span class="o">=</span> <span class="n">txt</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">csv_entries</span><span class="p">))</span>
+    <span class="n">export_template</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="n">txt</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">datafile</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="generate_script">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.exportdata.html#pipeline.hsdn.tasks.exportdata.nrotemplategenerator.generate_script">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_script</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">scriptname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">configname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate NRO data reduction template script file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context : pipeline context</span>
+<span class="sd">        scriptname : NRO data reduction template script: rebase_and_image.py</span>
+<span class="sd">        configname : NRO data refuction configuration script:</span>
+<span class="sd">                     rebase_and_image_config.py</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        whether script was generated and configfile exists or not</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">get_template</span><span class="p">(</span><span class="s1">&#39;template.txt&#39;</span><span class="p">)</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">generate_template</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+
+    <span class="n">myms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">myms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+    <span class="n">nspw</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spws</span><span class="p">)</span>
+
+    <span class="c1"># processing flags</span>
+    <span class="n">processspw</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">indent</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;True&#39;</span> <span class="o">+</span> <span class="n">indent</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;# SPW</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">])</span>
+    <span class="n">processspw</span> <span class="o">=</span> <span class="n">processspw</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;True &#39;</span><span class="p">,</span> <span class="s1">&#39;True,&#39;</span><span class="p">,</span> <span class="n">nspw</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># baseline masks</span>
+    <span class="n">blrange</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">indent</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&#39;&#39;&quot;</span> <span class="o">+</span> <span class="n">indent</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;# baseline_range for spw</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">])</span>
+    <span class="n">blrange</span> <span class="o">=</span> <span class="n">blrange</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&#39; &quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;&#39;,&quot;</span><span class="p">,</span> <span class="n">nspw</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># rest frequencies</span>
+    <span class="n">images</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;*.spw*.cube.I.iter*.image.sd&#39;</span><span class="p">)</span>
+    <span class="n">rest_freqs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">]</span>
+    <span class="n">nchan</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">cell</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">imsize</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">phasecenter</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+    <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">6</span><span class="p">]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;spw&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">spws</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="k">as</span> <span class="n">ia</span><span class="p">:</span>
+                <span class="n">coordsys</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">coordsys</span><span class="p">()</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">imshape</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span>
+                    <span class="n">imsize</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">imshape</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="n">nchan</span> <span class="o">=</span> <span class="n">imshape</span><span class="p">[</span><span class="n">coordsys</span><span class="o">.</span><span class="n">findaxisbyname</span><span class="p">(</span><span class="s1">&#39;Spectral&#39;</span><span class="p">)]</span>
+                    <span class="n">rest_freq</span> <span class="o">=</span> <span class="n">coordsys</span><span class="o">.</span><span class="n">restfrequency</span><span class="p">()</span>
+                    <span class="n">increments</span> <span class="o">=</span> <span class="n">coordsys</span><span class="o">.</span><span class="n">increment</span><span class="p">()[</span><span class="s1">&#39;numeric&#39;</span><span class="p">]</span>
+                    <span class="n">units</span> <span class="o">=</span> <span class="n">coordsys</span><span class="o">.</span><span class="n">units</span><span class="p">()</span>
+                    <span class="n">_cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)</span>
+                             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">increments</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">units</span><span class="p">[:</span><span class="mi">2</span><span class="p">]))]</span>
+                    <span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{value}{unit}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">_cell</span><span class="p">]</span>
+                    <span class="n">refcode</span> <span class="o">=</span> <span class="n">coordsys</span><span class="o">.</span><span class="n">referencecode</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">dummy</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">imshape</span><span class="p">)</span>
+                    <span class="n">dummy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">imshape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+                    <span class="n">dummy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">imshape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+                    <span class="n">world</span> <span class="o">=</span> <span class="n">coordsys</span><span class="o">.</span><span class="n">toworld</span><span class="p">(</span><span class="n">dummy</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)[</span><span class="s1">&#39;string&#39;</span><span class="p">]</span>
+                    <span class="c1"># Coordinate values may be in numerical value with unit</span>
+                    <span class="c1"># instead of HMS/DMS format. Even so, leave the values as</span>
+                    <span class="c1"># they are to keep precision</span>
+                    <span class="n">lon</span> <span class="o">=</span> <span class="n">world</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                    <span class="n">lat</span> <span class="o">=</span> <span class="n">world</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                    <span class="n">phasecenter</span> <span class="o">=</span> <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">refcode</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
+                <span class="k">finally</span><span class="p">:</span>
+                    <span class="n">coordsys</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="s1">&#39;unit&#39;</span> <span class="ow">in</span> <span class="n">rest_freq</span> <span class="ow">and</span> <span class="s1">&#39;value&#39;</span> <span class="ow">in</span> <span class="n">rest_freq</span><span class="p">:</span>
+                <span class="n">rest_freqs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">rest_freq</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">rest_freq</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">])</span>
+
+    <span class="n">restfreqs</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">indent</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">+</span> <span class="n">indent</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;# Rest frequency of SPW</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">rest_freqs</span><span class="p">,</span> <span class="n">spws</span><span class="p">)])</span>
+    <span class="n">restfreqs</span> <span class="o">=</span> <span class="n">restfreqs</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39; &quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;,&quot;</span><span class="p">,</span> <span class="n">nspw</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">vis</span> <span class="o">=</span> <span class="n">myms</span><span class="o">.</span><span class="n">basename</span>
+    <span class="n">antennalist</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">myms</span><span class="o">.</span><span class="n">antennas</span><span class="p">]</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">myms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">clean_name</span>
+    <span class="n">imaging_policy</span> <span class="o">=</span> <span class="n">observatory_policy</span><span class="o">.</span><span class="n">get_imaging_policy</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+    <span class="n">convsupport</span> <span class="o">=</span> <span class="n">imaging_policy</span><span class="o">.</span><span class="n">get_convsupport</span><span class="p">()</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">safe_substitute</span><span class="p">(</span><span class="n">processspw</span><span class="o">=</span><span class="n">processspw</span><span class="p">,</span>
+                                 <span class="n">baselinerange</span><span class="o">=</span><span class="n">blrange</span><span class="p">,</span>
+                                 <span class="n">restfreqs</span><span class="o">=</span><span class="n">restfreqs</span><span class="p">,</span>
+                                 <span class="n">nchan</span><span class="o">=</span><span class="n">nchan</span><span class="p">,</span>
+                                 <span class="n">cell</span><span class="o">=</span><span class="n">cell</span><span class="p">,</span>
+                                 <span class="n">phasecenter</span><span class="o">=</span><span class="n">phasecenter</span><span class="p">,</span>
+                                 <span class="n">imsize</span><span class="o">=</span><span class="n">imsize</span><span class="p">,</span>
+                                 <span class="n">convsupport</span><span class="o">=</span><span class="n">convsupport</span><span class="p">,</span>
+                                 <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span>
+                                 <span class="n">antennalist</span><span class="o">=</span><span class="n">antennalist</span><span class="p">,</span>
+                                 <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
+                                 <span class="n">config</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">configname</span><span class="p">))</span>
+
+    <span class="n">export_template</span><span class="p">(</span><span class="n">scriptname</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">scriptname</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">configname</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

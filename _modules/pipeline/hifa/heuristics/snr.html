@@ -1,0 +1,1473 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.heuristics.snr &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.heuristics.snr</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.heuristics.snr</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.importdata.fluxes</span> <span class="kn">import</span> <span class="n">ORIGIN_XML</span><span class="p">,</span> <span class="n">ORIGIN_ANALYSIS_UTILS</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.tasks.importdata.dbfluxes</span> <span class="kn">import</span> <span class="n">ORIGIN_DB</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils.math</span> <span class="kn">import</span> <span class="n">round_up</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The ALMA receiver band, nominal tsys, and sensitivity info.</span>
+<span class="sd">    This information should go elsewhere in the next release</span>
+<span class="sd">    The ALMA receiver bands are defined per pipeline convention</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">ALMA_BANDS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ALMA Band 1&#39;</span><span class="p">,</span> <span class="s1">&#39;ALMA Band 2&#39;</span><span class="p">,</span> <span class="s1">&#39;ALMA Band 3&#39;</span><span class="p">,</span> <span class="s1">&#39;ALMA Band 4&#39;</span><span class="p">,</span> <span class="s1">&#39;ALMA Band 5&#39;</span><span class="p">,</span> <span class="s1">&#39;ALMA Band 6&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;ALMA Band 7&#39;</span><span class="p">,</span> <span class="s1">&#39;ALMA Band 8&#39;</span><span class="p">,</span> <span class="s1">&#39;ALMA Band 9&#39;</span><span class="p">,</span> <span class="s1">&#39;ALMA Band 10&#39;</span><span class="p">]</span>
+<span class="n">ALMA_TSYS</span> <span class="o">=</span> <span class="p">[</span><span class="mf">56.0</span><span class="p">,</span> <span class="mf">65.0</span><span class="p">,</span> <span class="mf">75.0</span><span class="p">,</span> <span class="mf">86.0</span><span class="p">,</span> <span class="mf">120.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">150.0</span><span class="p">,</span> <span class="mf">387.0</span><span class="p">,</span> <span class="mf">1200.0</span><span class="p">,</span> <span class="mf">1515.0</span><span class="p">]</span>
+<span class="c1"># Sensitivities in mJy (for 16*12 m antennas, 1 minute, 8 GHz, 2pol)</span>
+<span class="n">ALMA_SENSITIVITIES</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.16</span><span class="p">,</span> <span class="mf">0.19</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">,</span> <span class="mf">0.37</span><span class="p">,</span> <span class="mf">0.27</span><span class="p">,</span> <span class="mf">0.50</span><span class="p">,</span> <span class="mf">1.29</span><span class="p">,</span> <span class="mf">5.32</span><span class="p">,</span> <span class="mf">8.85</span><span class="p">]</span>
+<span class="n">ALMA_FIDUCIAL_NUM_ANTENNAS</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">ALMA_FIDUCIAL_EXP_TIME</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># minutes</span>
+<span class="n">ALMA_FIDUCIAL_BANDWIDTH</span> <span class="o">=</span> <span class="mf">8.0e9</span>  <span class="c1"># Hz</span>
+
+<span class="c1"># origins with smaller numbers are preferred over those with larger numbers</span>
+<span class="c1"># this is a dict rather than a list so that a default preference order can be</span>
+<span class="c1"># provided for origins not listed here (setjy, etc.)</span>
+<span class="c1"># Note the str() - this is so we get the value of the constant, not the name</span>
+<span class="c1"># of the constant!</span>
+<span class="n">PREFERRED_ORIGIN_ORDER</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nb">str</span><span class="p">(</span><span class="n">ORIGIN_ANALYSIS_UTILS</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nb">str</span><span class="p">(</span><span class="n">ORIGIN_DB</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="nb">str</span><span class="p">(</span><span class="n">ORIGIN_XML</span><span class="p">):</span> <span class="mi">3</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="estimate_gaincalsnr">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.estimate_gaincalsnr">[docs]</a>
+<span class="k">def</span> <span class="nf">estimate_gaincalsnr</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">compute_nantennas</span><span class="p">,</span>
+                        <span class="n">max_fracflagged</span><span class="p">,</span> <span class="n">edge_fraction</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate the signal to noise of the phase measurements and return it</span>
+<span class="sd">    in the form of a dictionary.</span>
+
+<span class="sd">    Input Parameters</span>
+<span class="sd">                   ms: The pipeline context ms object</span>
+<span class="sd">        fieldnamelist: The list of field names to be selected</span>
+<span class="sd">               intent: The intent of the fields to be selected</span>
+<span class="sd">            spwidlist: The list of spw ids to be selected</span>
+<span class="sd">    compute_nantennas: The algorithm for computing the number of unflagged antennas (&#39;all&#39;, &#39;flagged&#39;)</span>
+<span class="sd">      max_fracflagged: The maximum fraction of an antenna can be flagged, e.g. 0.90</span>
+
+<span class="sd">    The output SNR dictionary</span>
+
+<span class="sd">    The SNR dictionary keys and values</span>
+<span class="sd">        key: the spw id     value: The science spw id as an integer</span>
+
+<span class="sd">    The SNR dictionary keys and values</span>
+<span class="sd">        TBD</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Get the flux dictionary from the pipeline context</span>
+    <span class="n">flux_dict</span> <span class="o">=</span> <span class="n">get_fluxinfo</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">flux_dict</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No flux values&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="c1"># Get the Tsys dictionary</span>
+    <span class="c1">#    This dictionary defines the science to Tsys scan mapping and the</span>
+    <span class="c1">#    science spw to Tsys spw mapping.</span>
+    <span class="c1">#    Return if there are no Tsys spws for the bandpass calibrator.</span>
+    <span class="n">tsys_dict</span> <span class="o">=</span> <span class="n">get_tsysinfo</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tsys_dict</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No Tsys spws&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="c1"># Construct the Tsys spw list and the associated phase scan list.</span>
+    <span class="c1"># from the Tsys dictionary</span>
+    <span class="n">tsys_spwlist</span><span class="p">,</span> <span class="n">scan_list</span> <span class="o">=</span> <span class="n">make_tsyslists</span><span class="p">(</span><span class="n">spwidlist</span><span class="p">,</span> <span class="n">tsys_dict</span><span class="p">)</span>
+    <span class="n">tsystemp_dict</span> <span class="o">=</span> <span class="n">get_mediantemp</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">tsys_spwlist</span><span class="p">,</span> <span class="n">scan_list</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">temptype</span><span class="o">=</span><span class="s1">&#39;tsys&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tsystemp_dict</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No Tsys estimates&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="c1"># Get the observing characteristics dictionary as a function of spw</span>
+    <span class="c1">#    This includes the spw configuration, time on source and</span>
+    <span class="c1">#    integration information</span>
+    <span class="n">obs_dict</span> <span class="o">=</span> <span class="n">get_obsinfo</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">compute_nantennas</span><span class="o">=</span><span class="n">compute_nantennas</span><span class="p">,</span>
+                           <span class="n">max_fracflagged</span><span class="o">=</span><span class="n">max_fracflagged</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">obs_dict</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No observation scans&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="c1"># Combine all the dictionariies</span>
+    <span class="n">spw_dict</span> <span class="o">=</span> <span class="n">join_dicts</span><span class="p">(</span><span class="n">spwidlist</span><span class="p">,</span> <span class="n">tsys_dict</span><span class="p">,</span> <span class="n">flux_dict</span><span class="p">,</span> <span class="n">tsystemp_dict</span><span class="p">,</span> <span class="n">obs_dict</span><span class="p">)</span>
+
+    <span class="c1"># Compute the gain SNR values for each spw</span>
+    <span class="n">gaincalsnr_dict</span> <span class="o">=</span> <span class="n">compute_gaincalsnr</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">spw_dict</span><span class="p">,</span> <span class="n">edge_fraction</span><span class="o">=</span><span class="n">edge_fraction</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gaincalsnr_dict</span></div>
+
+
+
+<div class="viewcode-block" id="estimate_bpsolint">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.estimate_bpsolint">[docs]</a>
+<span class="k">def</span> <span class="nf">estimate_bpsolint</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">compute_nantennas</span><span class="p">,</span> <span class="n">max_fracflagged</span><span class="p">,</span> <span class="n">phaseupsnr</span><span class="p">,</span>
+                      <span class="n">minphaseupints</span><span class="p">,</span> <span class="n">bpsnr</span><span class="p">,</span> <span class="n">minbpnchan</span><span class="p">,</span> <span class="n">evenbpsolints</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate the optimal solint for the selected bandpass data and return</span>
+<span class="sd">    the solution in the form of a dictionary.</span>
+
+<span class="sd">    Input Parameters</span>
+<span class="sd">                   ms: The pipeline context ms object</span>
+<span class="sd">        fieldnamelist: The list of field names to be selected</span>
+<span class="sd">               intent: The intent of the fields to be selected</span>
+<span class="sd">            spwidlist: The list of spw ids to be selected</span>
+<span class="sd">    compute_nantennas: The algorithm for computing the number of unflagged antennas (&#39;all&#39;, &#39;flagged&#39;)</span>
+<span class="sd">      max_fracflagged: The maximum fraction of an antenna can be flagged, e.g. 0.90</span>
+<span class="sd">           phaseupsnr: The desired phaseup gain solution SNR, e.g. 20.0</span>
+<span class="sd">       minphaseupints: The minimum number of phaseup solution intervals, e.g. 2</span>
+<span class="sd">                bpsnr: The desired bandpass solution SNR, e.g. 50.0</span>
+<span class="sd">           minbpnchan: The minimum number of bandpass solution intervals, e.g. 8</span>
+
+<span class="sd">    The output solution interval dictionary</span>
+
+<span class="sd">    The bandpass preaveraging dictionary keys and values</span>
+<span class="sd">        key: the spw id     value: The science spw id as an integer</span>
+
+<span class="sd">    The preaveraging parameter dictionary keys and values</span>
+<span class="sd">        key: &#39;band&#39;               value: The ALMA receiver band</span>
+<span class="sd">        key: &#39;frequency_Hz&#39;       value: The frequency of the spw</span>
+<span class="sd">        key: &#39;nchan_total&#39;        value: The total number of channels</span>
+<span class="sd">        key: &#39;chanwidth_Hz&#39;       value: The median channel width in Hz</span>
+
+<span class="sd">        key: &#39;tsys_spw&#39;           value: The tsys spw id as an integer</span>
+<span class="sd">        key: &#39;median_tsys&#39;        value: The median tsys value</span>
+
+<span class="sd">        key: &#39;flux_Jy&#39;            value: The flux of the source in Jy</span>
+<span class="sd">        key: &#39;exptime_minutes&#39;    value: The exposure time in minutes</span>
+<span class="sd">        key: &#39;snr_per_channel&#39;    value: The signal to noise per channel</span>
+<span class="sd">        key: &#39;sensitivity_per_channel_mJy&#39;    value: The sensitivity in mJy per channel</span>
+
+<span class="sd">        key: &#39;bpsolint&#39;           value: The frequency solint in MHz</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Get the flux dictionary from the pipeline context</span>
+    <span class="n">flux_dict</span> <span class="o">=</span> <span class="n">get_fluxinfo</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">flux_dict</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No flux values&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="c1"># Get the Tsys dictionary</span>
+    <span class="c1">#    This dictionary defines the science to Tsys scan mapping and the</span>
+    <span class="c1">#    science spw to Tsys spw mapping.</span>
+    <span class="c1">#    Return if there are no Tsys spws for the bandpass calibrator.</span>
+    <span class="n">tsys_dict</span> <span class="o">=</span> <span class="n">get_tsysinfo</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tsys_dict</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No Tsys spws&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="c1"># Construct the Tsys spw list and the associated bandpass scan list.</span>
+    <span class="c1"># from the Tsys dictionary</span>
+    <span class="n">tsys_spwlist</span><span class="p">,</span> <span class="n">scan_list</span> <span class="o">=</span> <span class="n">make_tsyslists</span><span class="p">(</span><span class="n">spwidlist</span><span class="p">,</span> <span class="n">tsys_dict</span><span class="p">)</span>
+    <span class="n">tsystemp_dict</span> <span class="o">=</span> <span class="n">get_mediantemp</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">tsys_spwlist</span><span class="p">,</span> <span class="n">scan_list</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">temptype</span><span class="o">=</span><span class="s1">&#39;tsys&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tsystemp_dict</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No Tsys estimates&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="c1"># Get the observing characteristics dictionary as a function of spw</span>
+    <span class="c1">#    This includes the spw configuration, time on source and</span>
+    <span class="c1">#    integration information</span>
+    <span class="n">obs_dict</span> <span class="o">=</span> <span class="n">get_obsinfo</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">compute_nantennas</span><span class="o">=</span><span class="n">compute_nantennas</span><span class="p">,</span>
+                           <span class="n">max_fracflagged</span><span class="o">=</span><span class="n">max_fracflagged</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">obs_dict</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No observation scans&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="c1"># Combine all the dictionariies</span>
+    <span class="n">spw_dict</span> <span class="o">=</span> <span class="n">join_dicts</span><span class="p">(</span><span class="n">spwidlist</span><span class="p">,</span> <span class="n">tsys_dict</span><span class="p">,</span> <span class="n">flux_dict</span><span class="p">,</span> <span class="n">tsystemp_dict</span><span class="p">,</span> <span class="n">obs_dict</span><span class="p">)</span>
+
+    <span class="c1"># Compute the bandpass solint parameters and return a solution</span>
+    <span class="c1"># dictionary</span>
+    <span class="n">solint_dict</span> <span class="o">=</span> <span class="n">compute_bpsolint</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">spw_dict</span><span class="p">,</span> <span class="n">phaseupsnr</span><span class="p">,</span> <span class="n">minphaseupints</span><span class="p">,</span> <span class="n">bpsnr</span><span class="p">,</span> <span class="n">minbpnchan</span><span class="p">,</span>
+                                   <span class="n">evenbpsolints</span><span class="o">=</span><span class="n">evenbpsolints</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">solint_dict</span></div>
+
+
+
+<div class="viewcode-block" id="get_fluxinfo">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.get_fluxinfo">[docs]</a>
+<span class="k">def</span> <span class="nf">get_fluxinfo</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldnamelist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve the fluxes of selected sources from the pipeline context</span>
+<span class="sd">    as a function of spw id and return the results in a dictinary indexed</span>
+<span class="sd">    by spw id.</span>
+
+<span class="sd">    The input parameters</span>
+<span class="sd">               ms: The pipeline context ms object</span>
+<span class="sd">    fieldnamelist: The list of field names to be selected</span>
+<span class="sd">           intent: The intent of the fields to be selected</span>
+<span class="sd">          spwlist: The list of spw ids to be selected</span>
+
+<span class="sd">    The output flux dictionary fluxdict</span>
+
+<span class="sd">    The flux dictionary key and value</span>
+<span class="sd">        key: The spw id      value: The source flux dictionary</span>
+
+<span class="sd">    The source flux dictionary keys and values</span>
+<span class="sd">        key: &#39;field_name&#39;    value: The name of the source, e.g. &#39;3C286&#39;</span>
+<span class="sd">        key: &#39;flux&#39;          value: The flux of the source in Jy, e.g. 1.53</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Initialize the flux dictionary as an ordered dictionary</span>
+    <span class="n">fluxdict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Finding sources fluxes&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Loop over the science spectral windows</span>
+    <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwidlist</span><span class="p">:</span>
+
+        <span class="c1"># Get the spectral window object.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Loop over field names. There is normally only one.</span>
+        <span class="k">for</span> <span class="n">fieldname</span> <span class="ow">in</span> <span class="n">fieldnamelist</span><span class="p">:</span>
+
+            <span class="c1"># Get fields associated with the name and intent.</span>
+            <span class="c1">#    There should be only one. If there is more</span>
+            <span class="c1">#    than one pick the first field.</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">fieldname</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># Check for flux densities</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">flux_densities</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Find the flux for the spw, sorted by origin</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">flux</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">fd</span> <span class="k">for</span> <span class="n">fd</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">flux_densities</span> <span class="k">if</span> <span class="n">fd</span><span class="o">.</span><span class="n">spw_id</span> <span class="o">==</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">],</span>
+                           <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">PREFERRED_ORIGIN_ORDER</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="mf">1e9</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="c1"># no flux for this spectral window</span>
+                <span class="k">continue</span>
+
+            <span class="n">I</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">flux</span><span class="o">.</span><span class="n">casa_flux_density</span>
+            <span class="n">fluxdict</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+            <span class="n">fluxdict</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="s1">&#39;field_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldname</span>
+            <span class="n">fluxdict</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">I</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Setting flux for field </span><span class="si">{}</span><span class="s1"> spw </span><span class="si">{}</span><span class="s1"> to </span><span class="si">{:0.4f}</span><span class="s1"> Jy&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fieldname</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">I</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">fluxdict</span></div>
+
+
+
+<div class="viewcode-block" id="get_tsysinfo">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.get_tsysinfo">[docs]</a>
+<span class="k">def</span> <span class="nf">get_tsysinfo</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldnamelist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the tsys information as functions of spw and return a dictionary.</span>
+
+<span class="sd">    Input parameters</span>
+<span class="sd">               ms: The pipeline context ms object</span>
+<span class="sd">    fieldnamelist: The list of field names to be selected</span>
+<span class="sd">           intent: The intent of the fields to be selected</span>
+<span class="sd">       spwidlist: The list of spw ids to be selected</span>
+
+<span class="sd">    The output dictionary</span>
+
+<span class="sd">    The tsys dictionary tsysdict keys and values</span>
+<span class="sd">        key: The spw id       value: The Tsys source dictionary</span>
+
+<span class="sd">    The tsys source dictionary keys and values</span>
+<span class="sd">        key: &#39;tsys_field_name&#39;  value: The name of the Tsys field source, e.g. &#39;3C286&#39; (was &#39;atm_field_name&#39;)</span>
+<span class="sd">        key: &#39;intent&#39;           value: The intent of the selected source, e.g. &#39;BANDPASS&#39;</span>
+<span class="sd">        key: &#39;snr_scan&#39;         value: The scan associated with Tsys used to compute the SNR, e.g. 4</span>
+<span class="sd">        key: &#39;tsys_scan&#39;        value: The Tsys scan to be used for Tsys computation, e.g. 3</span>
+<span class="sd">        key: &#39;tsys_spw&#39;         value: The Tsys spw associated with the science spw id, e.g. 13</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Initialize</span>
+    <span class="n">tsysdict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Matching spws&#39;</span><span class="p">)</span>
+
+    <span class="c1">##### Helper function</span>
+    <span class="k">def</span> <span class="nf">get_scans_for_field_intent</span><span class="p">(</span><span class="n">msobj</span><span class="p">,</span> <span class="n">fieldname_list</span><span class="p">,</span> <span class="n">scan_intent</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a list of scan object that matches an intent and</span>
+<span class="sd">        the list of field names</span>
+
+<span class="sd">        Inputs:</span>
+<span class="sd">            msobj: Measurementset object</span>
+<span class="sd">            fieldname_list: a list of field names</span>
+<span class="sd">            scan_intent: a Pipeline scan intent string</span>
+<span class="sd">        Retruns: a list of scan objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the list of unique field names</span>
+        <span class="n">fieldset</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">fieldname_list</span><span class="p">)</span>
+
+        <span class="c1"># Get scans with the intent associated with the field name list</span>
+        <span class="n">scans</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">msobj</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">scan_intent</span><span class="p">):</span>
+            <span class="c1"># Remove scans not associated with the input field names</span>
+            <span class="n">scanfieldset</span> <span class="o">=</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">fields</span><span class="p">}</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fieldset</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">scanfieldset</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">scans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scans</span>
+    <span class="c1">###### End: helper function</span>
+
+    <span class="c1"># Get atmospheric scans associated with the field name list</span>
+    <span class="n">atmscans</span> <span class="o">=</span> <span class="n">get_scans_for_field_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldnamelist</span><span class="p">,</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">)</span>
+
+    <span class="c1"># If no atmospheric scans were found, and the intent specifies a phase</span>
+    <span class="c1"># calibrator or check source, then try to find atmospheric scans associated</span>
+    <span class="c1"># with the science target fields.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">atmscans</span> <span class="ow">and</span> <span class="n">intent</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">]:</span>
+        <span class="n">fieldlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">fieldlist</span><span class="p">:</span>
+            <span class="n">atmscans</span> <span class="o">=</span> <span class="n">get_scans_for_field_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">)</span>
+
+    <span class="c1"># If still no atmospheric scans were found, and the intent specifies a</span>
+    <span class="c1"># check source, then try to find atmospheric scans associated with the</span>
+    <span class="c1"># phase calibrator fields.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">atmscans</span> <span class="ow">and</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">:</span>
+        <span class="n">fieldlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;PHASE&#39;</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">fieldlist</span><span class="p">:</span>
+            <span class="n">atmscans</span> <span class="o">=</span> <span class="n">get_scans_for_field_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Still no atmospheric scans found</span>
+    <span class="c1">#    Return</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">atmscans</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tsysdict</span>
+
+    <span class="c1"># Get the scans associated with the field name list and intent</span>
+    <span class="n">obscans</span> <span class="o">=</span> <span class="n">get_scans_for_field_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldnamelist</span><span class="p">,</span> <span class="n">intent</span><span class="p">)</span>
+
+    <span class="c1"># No data scans found</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">obscans</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tsysdict</span>
+
+    <span class="c1"># Loop over the science spws</span>
+    <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwidlist</span><span class="p">:</span>
+
+        <span class="c1"># Get spectral window</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Find best atmospheric spw</span>
+        <span class="c1">#    This dictionary is created only if the spw id is valid</span>
+        <span class="n">ftsysdict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">atmscan</span> <span class="ow">in</span> <span class="n">atmscans</span><span class="p">:</span>
+
+            <span class="c1"># Get field name</span>
+            <span class="n">scanfieldlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">atmscan</span><span class="o">.</span><span class="n">fields</span><span class="p">]</span>
+            <span class="n">fieldname</span> <span class="o">=</span> <span class="n">scanfieldlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># Get tsys spws and spw ids</span>
+            <span class="n">scanspwlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">scanspw</span> <span class="k">for</span> <span class="n">scanspw</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">atmscan</span><span class="o">.</span><span class="n">spws</span><span class="p">)</span>
+                           <span class="k">if</span> <span class="n">scanspw</span><span class="o">.</span><span class="n">num_channels</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">exclude_num_chans</span><span class="p">]</span>
+            <span class="n">scanspwidlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">scanspw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">scanspw</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">atmscan</span><span class="o">.</span><span class="n">spws</span><span class="p">)</span>
+                             <span class="k">if</span> <span class="n">scanspw</span><span class="o">.</span><span class="n">num_channels</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">exclude_num_chans</span><span class="p">]</span>
+
+            <span class="c1"># Match the Tsys spw to the science spw</span>
+            <span class="c1">#   Match first by id then by frequency</span>
+            <span class="n">bestspwid</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">scanspwidlist</span><span class="p">:</span>
+                <span class="c1"># bestspwid = scanspw.id</span>
+                <span class="n">bestspwid</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mindiff</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">float_info</span><span class="o">.</span><span class="n">max</span>
+                <span class="k">for</span> <span class="n">scanspw</span> <span class="ow">in</span> <span class="n">scanspwlist</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">band</span> <span class="o">!=</span> <span class="n">scanspw</span><span class="o">.</span><span class="n">band</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">baseband</span> <span class="o">!=</span> <span class="n">scanspw</span><span class="o">.</span><span class="n">baseband</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="n">scanspw</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="n">mindiff</span><span class="p">:</span>
+                        <span class="n">bestspwid</span> <span class="o">=</span> <span class="n">scanspw</span><span class="o">.</span><span class="n">id</span>
+                        <span class="n">mindiff</span> <span class="o">=</span> <span class="n">diff</span>
+
+            <span class="c1"># No spw match found</span>
+            <span class="k">if</span> <span class="n">bestspwid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Create dictionary entry based on first scan matched.</span>
+            <span class="n">ftsysdict</span><span class="p">[</span><span class="s1">&#39;tsys_field_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldname</span>
+            <span class="n">ftsysdict</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">intent</span>
+
+            <span class="c1"># Pick the first obs scan following the Tsys scan</span>
+            <span class="c1">#    This should deal with the shared phase / science target</span>
+            <span class="c1">#    scans</span>
+            <span class="k">for</span> <span class="n">obscan</span> <span class="ow">in</span> <span class="n">obscans</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">obscan</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="n">atmscan</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+                    <span class="n">ftsysdict</span><span class="p">[</span><span class="s1">&#39;snr_scan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obscan</span><span class="o">.</span><span class="n">id</span>
+                    <span class="k">break</span>
+
+            <span class="c1"># PIPE-1154: if no scan for field name list and intent occurred</span>
+            <span class="c1"># after the Tsys scan, then fall back to picking the most recent</span>
+            <span class="c1"># scan that occurred before the Tsys scan (assuming obscans are</span>
+            <span class="c1"># sorted chronologically).</span>
+            <span class="k">if</span> <span class="s1">&#39;snr_scan&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ftsysdict</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">obscan</span> <span class="ow">in</span> <span class="n">obscans</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">obscan</span><span class="o">.</span><span class="n">id</span> <span class="o">&lt;</span> <span class="n">atmscan</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+                        <span class="n">ftsysdict</span><span class="p">[</span><span class="s1">&#39;snr_scan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obscan</span><span class="o">.</span><span class="n">id</span>
+
+            <span class="n">ftsysdict</span><span class="p">[</span><span class="s1">&#39;tsys_scan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atmscan</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">ftsysdict</span><span class="p">[</span><span class="s1">&#39;tsys_spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bestspwid</span>
+            <span class="k">break</span>
+
+        <span class="c1"># Update the spw dictionary</span>
+        <span class="k">if</span> <span class="n">ftsysdict</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    Matched spw </span><span class="si">%d</span><span class="s1"> to a Tsys spw </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">bestspwid</span><span class="p">))</span>
+            <span class="n">tsysdict</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="n">ftsysdict</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;    Cannot match spw </span><span class="si">%d</span><span class="s1"> to a Tsys spw in MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">tsysdict</span></div>
+
+
+
+<div class="viewcode-block" id="make_tsyslists">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.make_tsyslists">[docs]</a>
+<span class="k">def</span> <span class="nf">make_tsyslists</span><span class="p">(</span><span class="n">spwlist</span><span class="p">,</span> <span class="n">tsysdict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Utility routine for constructing the tsys spw list and the observing</span>
+<span class="sd">    scan list from the tysdict produced by get_tsysinfo.</span>
+
+<span class="sd">    Input Parameters</span>
+<span class="sd">         spwlist: The science spw list, e.g. [13, 15]</span>
+<span class="sd">        tsysdict: The Tsys dictionary created by get_tsysinfo</span>
+
+<span class="sd">    Returned values</span>
+<span class="sd">        tsys_spwlist: The Tsys spw id list corresponding to spwlist</span>
+<span class="sd">            scanlist: The list of snr scans for each Tsys window</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tsys_spwlist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">scan_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwlist</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tsysdict</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="s1">&#39;tsys_spw&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tsysdict</span><span class="p">[</span><span class="n">spw</span><span class="p">]:</span>
+            <span class="k">continue</span>
+        <span class="n">tsys_spwlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tsysdict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;tsys_spw&#39;</span><span class="p">])</span>
+        <span class="n">scan_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tsysdict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;snr_scan&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">tsys_spwlist</span><span class="p">,</span> <span class="n">scan_list</span></div>
+
+
+
+<div class="viewcode-block" id="get_mediantemp">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.get_mediantemp">[docs]</a>
+<span class="k">def</span> <span class="nf">get_mediantemp</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">tsys_spwlist</span><span class="p">,</span> <span class="n">scan_list</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">temptype</span><span class="o">=</span><span class="s1">&#39;tsys&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get median Tsys, Trx, or Tsky temperatures as a function of spw and return</span>
+<span class="sd">    a dictionary</span>
+
+<span class="sd">    Input parameters</span>
+<span class="sd">              ms: The pipeline measurement set object</span>
+<span class="sd">    tsys_spwlist: The list of Tsys spw ids, e.g. [9,11,13,15]</span>
+<span class="sd">       scan_list: The list of associated observation scan numbers, e.g. [4,8]</span>
+<span class="sd">         antenna: The antenna selectionm &#39;&#39; for all antennas, or a single antenna id or name</span>
+<span class="sd">        temptype: The temperature type &#39;tsys&#39; (default), &#39;trx&#39; or &#39;tsky&#39;</span>
+
+<span class="sd">    The output dictionary</span>
+
+<span class="sd">    The median temperature dictionary keys and values</span>
+<span class="sd">        key: the spw id         value: The median Tsys temperature in degrees K</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># PIPE-775: Output the call to the function. The second and third arguments (tsys_spwlist and scan_list)</span>
+    <span class="c1">#  should have the same length</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s2">&quot;Called get_mediantemp(</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">, antenna=&#39;</span><span class="si">{}</span><span class="s2">&#39;, temptype=&#39;</span><span class="si">{}</span><span class="s2">&#39;)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">ms</span><span class="p">,</span> <span class="n">tsys_spwlist</span><span class="p">,</span> <span class="n">scan_list</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">temptype</span><span class="p">))</span>
+
+    <span class="c1"># Initialize</span>
+    <span class="n">medtempsdict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Estimating Tsys temperatures&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Temperature type must be one of &#39;tsys&#39; or &#39;trx&#39; or &#39;tsky&#39;</span>
+    <span class="k">if</span> <span class="n">temptype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;tsys&#39;</span><span class="p">,</span> <span class="s1">&#39;trx&#39;</span><span class="p">,</span> <span class="s1">&#39;tsky&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">medtempsdict</span>
+
+    <span class="c1"># Get list of unique scan ids.</span>
+    <span class="n">unique_scans</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">scan_list</span><span class="p">))</span>
+
+    <span class="c1"># Get the associated spws for each scan id</span>
+    <span class="n">scans_spws</span> <span class="o">=</span> <span class="p">{</span><span class="n">scan</span><span class="p">:</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="n">scan</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">spws</span><span class="p">]</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">unique_scans</span><span class="p">}</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Scan spws: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scans_spws</span><span class="p">))</span>
+
+    <span class="c1"># Determine the start and end times for each unique scan</span>
+    <span class="n">begin_scan_times</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">end_scan_times</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">unique_scans</span><span class="p">:</span>
+        <span class="n">reqscan</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="n">scan</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">reqscan</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Cannot find observation scan </span><span class="si">%d</span><span class="s1"> in MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">medtempsdict</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">reqscan</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">start_time</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">reqscan</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">end_time</span>
+        <span class="n">begin_scan_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+        <span class="n">end_scan_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end_time</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;scan </span><span class="si">%d</span><span class="s1"> start </span><span class="si">%s</span><span class="s1"> end </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">))</span>
+
+    <span class="c1"># Get the syscal table meta data.</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;SYSCAL&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+
+        <span class="c1"># Get the antenna ids</span>
+        <span class="n">tsys_antennas</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA_ID&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tsys_antennas</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The SYSCAL table is blank in MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">medtempsdict</span>
+
+        <span class="c1"># Get columns and tools needed to understand the tsys times</span>
+        <span class="n">time_colkeywords</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcolkeywords</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+        <span class="n">time_unit</span> <span class="o">=</span> <span class="n">time_colkeywords</span><span class="p">[</span><span class="s1">&#39;QuantumUnits&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">time_ref</span> <span class="o">=</span> <span class="n">time_colkeywords</span><span class="p">[</span><span class="s1">&#39;MEASINFO&#39;</span><span class="p">][</span><span class="s1">&#39;Ref&#39;</span><span class="p">]</span>
+        <span class="n">mt</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+        <span class="n">qt</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="c1"># Get time and intervals</span>
+        <span class="n">tsys_times</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+        <span class="n">tsys_intervals</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;INTERVAL&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Compute the time range of validity for each tsys measurement</span>
+        <span class="c1">#    Worry about memory efficiency later</span>
+        <span class="c1"># PIPE-775: This considers the time to be the central time</span>
+        <span class="n">tsys_start_times</span> <span class="o">=</span> <span class="n">tsys_times</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">tsys_intervals</span>
+        <span class="n">tsys_end_times</span> <span class="o">=</span> <span class="n">tsys_start_times</span> <span class="o">+</span> <span class="n">tsys_intervals</span>
+
+        <span class="c1"># Get the spw ids</span>
+        <span class="n">tsys_spws</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID&#39;</span><span class="p">)</span>
+        <span class="n">tsys_uniqueSpws</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">tsys_spws</span><span class="p">)</span>
+
+        <span class="c1"># Create a scan id array and populate it with zeros</span>
+        <span class="n">scanids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tsys_start_times</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="c1"># Determine if a tsys measurement matches the scan interval</span>
+        <span class="c1">#    If it does  set the scan to the scan id</span>
+        <span class="n">nmatch</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tsys_start_times</span><span class="p">)):</span>
+
+            <span class="c1"># Time conversions</span>
+            <span class="c1">#    Not necessary if scan begin and end times are not converted</span>
+            <span class="n">tstart</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="n">time_ref</span><span class="p">,</span> <span class="n">qt</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">tsys_start_times</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">time_unit</span><span class="p">))</span>
+            <span class="n">tend</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="n">time_ref</span><span class="p">,</span> <span class="n">qt</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">tsys_end_times</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">time_unit</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;row </span><span class="si">%d</span><span class="s1"> start </span><span class="si">%s</span><span class="s1"> end </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">tstart</span><span class="p">,</span> <span class="n">tend</span><span class="p">))</span>
+
+            <span class="c1"># Scan starts after end of validity interval or ends before</span>
+            <span class="c1"># the beginning of the validity interval.</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">scan</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unique_scans</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">begin_scan_times</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tend</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="ow">or</span>
+                    <span class="n">end_scan_times</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">tstart</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]):</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">scanids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">scanids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">unique_scans</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                    <span class="n">nmatch</span> <span class="o">=</span> <span class="n">nmatch</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">nmatch</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No SYSCAL table row matches for scans </span><span class="si">%s</span><span class="s1"> tsys spws </span><span class="si">%s</span><span class="s1"> in MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="n">unique_scans</span><span class="p">,</span> <span class="n">tsys_spwlist</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">medtempsdict</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    SYSCAL table row matches for scans </span><span class="si">%s</span><span class="s1"> Tsys spws </span><span class="si">%s</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> / </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span>
+                     <span class="p">(</span><span class="n">unique_scans</span><span class="p">,</span> <span class="n">tsys_spwlist</span><span class="p">,</span> <span class="n">nmatch</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tsys_start_times</span><span class="p">)))</span>
+
+    <span class="c1"># Get a list of unique antenna ids.</span>
+    <span class="k">if</span> <span class="n">antenna</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">unique_antenna_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">()]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">unique_antenna_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">search_term</span><span class="o">=</span><span class="n">antenna</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+
+    <span class="c1"># Loop over the spw and scan list which have the same length</span>
+    <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">scan</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tsys_spwlist</span><span class="p">,</span> <span class="n">scan_list</span><span class="p">):</span>
+
+        <span class="c1"># If no Tsys data skip to the next window</span>
+        <span class="k">if</span> <span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tsys_uniqueSpws</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Tsys spw </span><span class="si">%d</span><span class="s1"> is not in the SYSCAL table for MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="k">continue</span>
+            <span class="c1"># return medtempsdict</span>
+
+        <span class="c1"># Loop over the rows</span>
+        <span class="n">medians</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;SYSCAL&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tsys_antennas</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">tsys_spws</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">spw</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">tsys_antennas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unique_antenna_ids</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">scan</span> <span class="o">!=</span> <span class="n">scanids</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">temptype</span> <span class="o">==</span> <span class="s1">&#39;tsys&#39;</span><span class="p">:</span>
+                    <span class="n">tsys</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;TSYS_SPECTRUM&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">temptype</span> <span class="o">==</span> <span class="s1">&#39;trx&#39;</span><span class="p">:</span>
+                    <span class="n">tsys</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;TRX_SPECTRUM&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">temptype</span> <span class="o">==</span> <span class="s1">&#39;tsky&#39;</span><span class="p">:</span>
+                    <span class="n">tsys</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;TSKY_SPECTRUM&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                <span class="n">medians</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">tsys</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">medians</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">medtempsdict</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">medians</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;    Median Tsys </span><span class="si">%s</span><span class="s2"> value for Tsys spw </span><span class="si">%2d</span><span class="s2"> = </span><span class="si">%.1f</span><span class="s2"> K&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">temptype</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">medtempsdict</span><span class="p">[</span><span class="n">spw</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;    No Tsys data for spw </span><span class="si">%d</span><span class="s1"> scan </span><span class="si">%d</span><span class="s1"> in MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+
+    <span class="c1"># Return median temperature per spw and scan.</span>
+    <span class="k">return</span> <span class="n">medtempsdict</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_get_unflagged_antennas</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">scanidlist</span><span class="p">,</span> <span class="n">ants12m</span><span class="p">,</span> <span class="n">ants7m</span><span class="p">,</span> <span class="n">max_fracflagged</span><span class="o">=</span><span class="mf">0.90</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Internal method for determining the number of unflagged 12m and 7m</span>
+<span class="sd">    antennas.</span>
+
+<span class="sd">    Loop over the scans in scanlist. Compute the list of unflagged</span>
+<span class="sd">    and flagged 12m and 7m antennas for each scan. In most cases</span>
+<span class="sd">    there will be only one scan. Return the number of unflagged</span>
+<span class="sd">    12m and 7m antennas</span>
+
+<span class="sd">    Input Parameters</span>
+<span class="sd">                vis: The name of the MS</span>
+<span class="sd">         scanidlist: The input scan id list, e.g. [3,4,5]</span>
+<span class="sd">            ants12m: The list of 12m antennas</span>
+<span class="sd">             ants7m: The list of 7m antennas</span>
+<span class="sd">    max_fracflagged:</span>
+
+<span class="sd">    Return values</span>
+<span class="sd">        nunflagged_12mantennas: number of unflagged 12m antennas</span>
+<span class="sd">        nunflagged_7mantennas: number of unflagged 7m antennas</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Execute the CASA flagdata task for the specified bandpass scans</span>
+    <span class="c1">#     Format the id list for CASA</span>
+    <span class="c1">#     Execute task</span>
+    <span class="n">scanidstr</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">scanid</span><span class="p">)</span> <span class="k">for</span> <span class="n">scanid</span> <span class="ow">in</span> <span class="n">scanidlist</span><span class="p">])</span>
+    <span class="n">flagdata_task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scanidstr</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span>
+    <span class="n">flagdata_result</span> <span class="o">=</span> <span class="n">flagdata_task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+    <span class="c1"># Initialize the statistics per scan</span>
+    <span class="n">unflagged_12mantennas</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">flagged_12mantennas</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">unflagged_7mantennas</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">flagged_7mantennas</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Add up the antennas</span>
+    <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">flagdata_result</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">]):</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">flagdata_result</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">][</span><span class="n">antenna</span><span class="p">]</span>
+        <span class="n">fraction</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="s1">&#39;flagged&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">points</span><span class="p">[</span><span class="s1">&#39;total&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">ants12m</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fraction</span> <span class="o">&lt;</span> <span class="n">max_fracflagged</span><span class="p">:</span>
+                <span class="n">unflagged_12mantennas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">antenna</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flagged_12mantennas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">antenna</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">ants7m</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fraction</span> <span class="o">&lt;</span> <span class="n">max_fracflagged</span><span class="p">:</span>
+                <span class="n">unflagged_7mantennas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">antenna</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flagged_7mantennas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">antenna</span><span class="p">)</span>
+
+    <span class="c1"># Compute the number of unflagged antennas per scan</span>
+    <span class="n">nunflagged_12mantennas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">unflagged_12mantennas</span><span class="p">)</span>
+    <span class="n">nunflagged_7mantennas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">unflagged_7mantennas</span><span class="p">)</span>
+
+    <span class="c1"># nflagged_12mantennas = len(flagged_12mantennas)</span>
+    <span class="c1"># nflagged_7mantennas = len(flagged_7mantennas)</span>
+
+    <span class="c1"># Return the number of unflagged antennas</span>
+    <span class="k">return</span> <span class="n">nunflagged_12mantennas</span><span class="p">,</span> <span class="n">nunflagged_7mantennas</span>
+
+
+<div class="viewcode-block" id="get_obsinfo">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.get_obsinfo">[docs]</a>
+<span class="k">def</span> <span class="nf">get_obsinfo</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldnamelist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">compute_nantennas</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">max_fracflagged</span><span class="o">=</span><span class="mf">0.90</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the observing information as a function of spw id  and return a dictionary.</span>
+
+<span class="sd">    Input parameters</span>
+<span class="sd">                   ms: The pipeline context ms object</span>
+<span class="sd">        fieldnamelist: The list of field names to be selected</span>
+<span class="sd">               intent: The intent of the fields to be selected</span>
+<span class="sd">            spwidlist: The list of spw ids to be selected</span>
+<span class="sd">    compute_nantennas: The algorithm for computing the number of unflagged antennas (&#39;all&#39;, &#39;flagged&#39;)</span>
+<span class="sd">                       (was &#39;hm_nantennas&#39;)</span>
+<span class="sd">      max_fracflagged: The maximum fraction of an antenna can be flagged</span>
+
+<span class="sd">    The output observing dictionary obsdict</span>
+
+<span class="sd">    The observing dictionary key and value</span>
+<span class="sd">        key: the spw id         value: The observing scans dictionary</span>
+
+<span class="sd">    The observing scans dictionary keys and values</span>
+<span class="sd">        key: &#39;snr_scans&#39;        value: The list of snr source scans, e.g. [4,8]</span>
+<span class="sd">        key: &#39;num_12mantenna&#39;   value: The max number of 12m antennas, e.g. 32</span>
+<span class="sd">        key: &#39;num_7mantenna&#39;    value: The max number of 7m antennas, e.g. 7</span>
+<span class="sd">        key: &#39;exptime&#39;          value: The exposure time in minutes, e.g. 6.32</span>
+<span class="sd">        key: &#39;integrationtime&#39;  value: The mean integration time in minutes, e.g. 0.016</span>
+<span class="sd">        key: &#39;band&#39;             value: The ALMA receiver band, e.g. &#39;ALMA Band 3&#39;</span>
+<span class="sd">        key: &#39;bandcenter&#39;       value: The receiver band center frequency in Hz, e.g. 9.6e9</span>
+<span class="sd">        key: &#39;bandwidth&#39;        value: The band width in Hz, e.g. 2.0e9</span>
+<span class="sd">        key: &#39;nchan&#39;            value: The number of channels, e.g. 28</span>
+<span class="sd">        key: &#39;chanwidths&#39;       value: The median channel width in Hz, e.g. 7.3e7</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">obsdict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Observation summary&#39;</span><span class="p">)</span>
+    <span class="n">fieldset</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">fieldnamelist</span><span class="p">)</span>
+
+    <span class="c1"># Get the scans associated with the field name list and intent</span>
+    <span class="n">obscans</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">intent</span><span class="p">):</span>
+        <span class="c1"># Remove scans not associated with the input field names</span>
+        <span class="n">scanfieldset</span> <span class="o">=</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">fields</span><span class="p">}</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fieldset</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">scanfieldset</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">obscans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span>
+
+    <span class="c1"># No data scans found</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">obscans</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">obsdict</span>
+
+    <span class="c1"># Loop over the spws</span>
+    <span class="n">prev_spwid</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">prev_scanids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwidlist</span><span class="p">:</span>
+
+        <span class="c1"># Get spectral window</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Find scans associated with the spw. They may be different from</span>
+        <span class="c1"># one spw to the next</span>
+        <span class="n">spwscans</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">obscan</span> <span class="ow">in</span> <span class="n">obscans</span><span class="p">:</span>
+            <span class="n">scanspwset</span> <span class="o">=</span> <span class="p">{</span><span class="n">scanspw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">scanspw</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">obscan</span><span class="o">.</span><span class="n">spws</span><span class="p">)</span>
+                          <span class="k">if</span> <span class="n">scanspw</span><span class="o">.</span><span class="n">num_channels</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">exclude_num_chans</span><span class="p">}</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">({</span><span class="n">spwid</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">scanspwset</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">spwscans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obscan</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">spwscans</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Limit the scans per spw to those for the first field</span>
+        <span class="c1">#    in the scan sequence.</span>
+        <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">spwscans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fields</span><span class="p">]</span>
+        <span class="n">fieldname</span> <span class="o">=</span> <span class="n">fieldnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">fscans</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">spwscans</span><span class="p">:</span>
+            <span class="n">fnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">fields</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">fieldname</span> <span class="o">!=</span> <span class="n">fnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="n">fscans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fscans</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">obsdict</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">scanids</span> <span class="o">=</span> <span class="p">[</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">fscans</span><span class="p">]</span>
+        <span class="n">obsdict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;snr_scans&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scanids</span>
+
+        <span class="c1"># Figure out the number of 7m and 12 m antennas</span>
+        <span class="c1">#   Note comparison of floating point numbers is tricky ...</span>
+        <span class="c1">#</span>
+        <span class="k">if</span> <span class="n">compute_nantennas</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="c1"># Use numbers from the scan with the minimum number of</span>
+            <span class="c1"># antennas</span>
+            <span class="n">n7mant</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
+            <span class="n">n12mant</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
+            <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">fscans</span><span class="p">:</span>
+                <span class="n">n7mant</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n7mant</span><span class="p">,</span> <span class="nb">len</span><span class="p">([</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">antennas</span>
+                                          <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">diameter</span> <span class="o">==</span> <span class="mf">7.0</span><span class="p">]))</span>
+                <span class="n">n12mant</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n12mant</span><span class="p">,</span> <span class="nb">len</span><span class="p">([</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">antennas</span>
+                                            <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">diameter</span> <span class="o">==</span> <span class="mf">12.0</span><span class="p">]))</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">scanids</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">prev_scanids</span><span class="p">)))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Get the lists of unique 7m and 12m antennas</span>
+            <span class="n">ant7m</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">ant12m</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">fscans</span><span class="p">:</span>
+                <span class="n">ant7m</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">antennas</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">diameter</span> <span class="o">==</span> <span class="mf">7.0</span><span class="p">])</span>
+                <span class="n">ant12m</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">antennas</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">diameter</span> <span class="o">==</span> <span class="mf">12.0</span><span class="p">])</span>
+            <span class="n">ant12m</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ant12m</span><span class="p">))</span>
+            <span class="n">ant7m</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ant7m</span><span class="p">))</span>
+            <span class="c1"># Get the number of unflagged antennas</span>
+            <span class="n">n12mant</span><span class="p">,</span> <span class="n">n7mant</span> <span class="o">=</span> <span class="n">_get_unflagged_antennas</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">scanids</span><span class="p">,</span> <span class="n">ant12m</span><span class="p">,</span> <span class="n">ant7m</span><span class="p">,</span> <span class="n">max_fracflagged</span><span class="o">=</span><span class="n">max_fracflagged</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use values from previous spw</span>
+            <span class="n">n7mant</span> <span class="o">=</span> <span class="n">obsdict</span><span class="p">[</span><span class="n">prev_spwid</span><span class="p">][</span><span class="s1">&#39;num_7mantenna&#39;</span><span class="p">]</span>
+            <span class="n">n12mant</span> <span class="o">=</span> <span class="n">obsdict</span><span class="p">[</span><span class="n">prev_spwid</span><span class="p">][</span><span class="s1">&#39;num_12mantenna&#39;</span><span class="p">]</span>
+
+        <span class="n">obsdict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_12mantenna&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n12mant</span>
+        <span class="n">obsdict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_7mantenna&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n7mant</span>
+
+        <span class="c1"># Retrieve total exposure time and mean integration time in minutes</span>
+        <span class="c1">#    Add to dictionary</span>
+        <span class="n">exposureTime</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">meanInterval</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">fscans</span><span class="p">:</span>
+            <span class="c1"># scanTime = float (scan.time_on_source.total_seconds()) / 60.0</span>
+            <span class="n">scanTime</span> <span class="o">=</span> <span class="n">scan</span><span class="o">.</span><span class="n">exposure_time</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span> <span class="mf">60.0</span>
+            <span class="n">exposureTime</span> <span class="o">=</span> <span class="n">exposureTime</span> <span class="o">+</span> <span class="n">scanTime</span>
+            <span class="c1"># intTime = scan.mean_interval(spw.id).total_seconds() / 60.0</span>
+            <span class="n">intTime</span> <span class="o">=</span> <span class="n">scan</span><span class="o">.</span><span class="n">mean_interval</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">intTime</span> <span class="o">=</span> <span class="p">(</span><span class="n">intTime</span><span class="o">.</span><span class="n">seconds</span> <span class="o">+</span> <span class="n">intTime</span><span class="o">.</span><span class="n">microseconds</span> <span class="o">*</span> <span class="mf">1.0e-6</span><span class="p">)</span> <span class="o">/</span> <span class="mf">60.0</span>
+            <span class="n">meanInterval</span> <span class="o">=</span> <span class="n">meanInterval</span> <span class="o">+</span> <span class="n">intTime</span>
+        <span class="n">obsdict</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="s1">&#39;exptime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exposureTime</span>
+        <span class="n">obsdict</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="s1">&#39;integrationtime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meanInterval</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">fscans</span><span class="p">)</span>
+
+        <span class="c1"># Retrieve spw characteristics</span>
+        <span class="c1">#    Receiver band, center frequency, bandwidth, number of</span>
+        <span class="c1">#    channels, and median channel width</span>
+        <span class="c1">#    Add to dictionary</span>
+        <span class="n">obsdict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;band&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">band</span>
+        <span class="n">obsdict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bandcenter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">obsdict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bandwidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">obsdict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nchan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span>
+        <span class="n">channels</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">channels</span>
+        <span class="n">chanwidths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span><span class="p">):</span>
+            <span class="n">chanwidths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">high</span> <span class="o">-</span> <span class="n">channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">low</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">obsdict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;chanwidths&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">chanwidths</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;For field </span><span class="si">%s</span><span class="s1"> spw </span><span class="si">%2d</span><span class="s1"> scans </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fieldname</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">scanids</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    </span><span class="si">%2d</span><span class="s1"> 12m antennas  </span><span class="si">%2d</span><span class="s1"> 7m antennas  exposure </span><span class="si">%0.3f</span><span class="s1"> minutes  interval </span><span class="si">%0.3f</span><span class="s1"> minutes&#39;</span> <span class="o">%</span>
+                 <span class="p">(</span><span class="n">obsdict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_12mantenna&#39;</span><span class="p">],</span> <span class="n">obsdict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_7mantenna&#39;</span><span class="p">],</span> <span class="n">exposureTime</span><span class="p">,</span>
+                  <span class="n">meanInterval</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">fscans</span><span class="p">)))</span>
+
+        <span class="n">prev_spwid</span> <span class="o">=</span> <span class="n">spwid</span>
+        <span class="n">prev_scanids</span> <span class="o">=</span> <span class="n">scanids</span>
+
+    <span class="k">return</span> <span class="n">obsdict</span></div>
+
+
+
+<div class="viewcode-block" id="join_dicts">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.join_dicts">[docs]</a>
+<span class="k">def</span> <span class="nf">join_dicts</span><span class="p">(</span><span class="n">spwlist</span><span class="p">,</span> <span class="n">tsys_dict</span><span class="p">,</span> <span class="n">flux_dict</span><span class="p">,</span> <span class="n">tsystemp_dict</span><span class="p">,</span> <span class="n">obs_dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine all the input dictionaries and output the spw dictionary.</span>
+<span class="sd">    This dictionary contains all the information needed to compute the SNR</span>
+<span class="sd">    estimates.</span>
+
+<span class="sd">    The input parameters</span>
+
+<span class="sd">    The output dictionary spw_dict</span>
+
+<span class="sd">    The spw dictionary spw_dict  key and value</span>
+<span class="sd">        key: The spw id       value: The spw source dictionary</span>
+
+<span class="sd">    The spw source dictionary keys and values</span>
+<span class="sd">        key: &#39;tsys_field_name&#39;  value: The name of the Tsys field source, e.g. &#39;3C286&#39;</span>
+<span class="sd">        key: &#39;intent&#39;           value: The intent of the field source, e.g. &#39;BANDPASS&#39;</span>
+<span class="sd">        key: &#39;snr_scan&#39;         value: The scan associated with Tsys used to compute the SNR, e.g. 4</span>
+<span class="sd">        key: &#39;tsys_scan&#39;        value: The Tsys scan to be used for Tsys computation, e.g. 3</span>
+<span class="sd">        key: &#39;tsys_spw&#39;         value: The Tsys spw associated with the science spw id, e.g. 13</span>
+
+<span class="sd">        key: &#39;field_name&#39;       value: The name of the field source, e.g. &#39;3C286&#39;</span>
+<span class="sd">        key: &#39;flux&#39;             value: The flux of the field source in Jy, e.g. 5.305</span>
+
+<span class="sd">        key: &#39;median_tsys&#39;      value: The median Tsys value in degrees K, e.g. 45.5</span>
+
+<span class="sd">        key: &#39;snr_scans&#39;        value: The list of snr source scans, e.g. [4,8]</span>
+<span class="sd">        key: &#39;num_12mantenna&#39;   value: The max number of 12m antennas, e.g. 32</span>
+<span class="sd">        key: &#39;num_7mantenna&#39;    value: The max number of 7m antennas, e.g. 7</span>
+<span class="sd">        key: &#39;exptime&#39;          value: The exposure time in minutes, e.g. 6.32</span>
+<span class="sd">        key: &#39;integrationtime&#39;  value: The mean integration time in minutes, e.g. 0.016</span>
+<span class="sd">        key: &#39;band&#39;             value: The ALMA receiver band, e.g. &#39;ALMA Band 3&#39;</span>
+<span class="sd">        key: &#39;bandcenter&#39;       value: The receiver band center frequency in Hz, e.g. 9.6e9</span>
+<span class="sd">        key: &#39;bandwidth&#39;        value: The band width in Hz, e.g. 2.0e9</span>
+<span class="sd">        key: &#39;nchan&#39;            value: The number of channels, e.g. 28</span>
+<span class="sd">        key: &#39;chanwidths&#39;       value: The median channel width in Hz, e.g. 7.3e7</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Initialize the spw dictionary from the Tsys dictionary</span>
+    <span class="c1">#    Make a deep copy of this dictionary</span>
+    <span class="n">spw_dict</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">tsys_dict</span><span class="p">)</span>
+
+    <span class="c1"># Transfer flux information to the spw dictionary.</span>
+    <span class="n">_transfer_fluxes</span><span class="p">(</span><span class="n">spwlist</span><span class="p">,</span> <span class="n">spw_dict</span><span class="p">,</span> <span class="n">flux_dict</span><span class="p">)</span>
+
+    <span class="c1"># Transfer the tsys temperature information to the spw dictionary</span>
+    <span class="n">_transfer_temps</span><span class="p">(</span><span class="n">spwlist</span><span class="p">,</span> <span class="n">spw_dict</span><span class="p">,</span> <span class="n">tsystemp_dict</span><span class="p">)</span>
+
+    <span class="c1"># Transfer the observing information to the spw dictionary</span>
+    <span class="n">_transfer_obsinfo</span><span class="p">(</span><span class="n">spwlist</span><span class="p">,</span> <span class="n">spw_dict</span><span class="p">,</span> <span class="n">obs_dict</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">spw_dict</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_transfer_fluxes</span><span class="p">(</span><span class="n">spwlist</span><span class="p">,</span> <span class="n">spw_dict</span><span class="p">,</span> <span class="n">flux_dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transfer flux information from the flux dictionary to the spw dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwlist</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">flux_dict</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spw_dict</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="c1"># if spw_dict[spw][&#39;tsys_field_name&#39;] != flux_dict[spw][&#39;field_name&#39;]:</span>
+        <span class="c1">#     continue</span>
+        <span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;field_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flux_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;field_name&#39;</span><span class="p">]</span>
+        <span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flux_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_transfer_temps</span><span class="p">(</span><span class="n">spwlist</span><span class="p">,</span> <span class="n">spw_dict</span><span class="p">,</span> <span class="n">tsystemp_dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transfer the tsys temp information to the spw dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwlist</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spw_dict</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;tsys_spw&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tsystemp_dict</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;median_tsys&#39;</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">tsystemp_dict</span><span class="p">[</span><span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;tsys_spw&#39;</span><span class="p">]]</span>
+
+
+<span class="k">def</span> <span class="nf">_transfer_obsinfo</span><span class="p">(</span><span class="n">spwlist</span><span class="p">,</span> <span class="n">spw_dict</span><span class="p">,</span> <span class="n">obs_dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transfer the observing information to the spw dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwlist</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spw_dict</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obs_dict</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;snr_scans&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;snr_scans&#39;</span><span class="p">]</span>
+        <span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;exptime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;exptime&#39;</span><span class="p">]</span>
+        <span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;integrationtime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;integrationtime&#39;</span><span class="p">]</span>
+        <span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;num_7mantenna&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;num_7mantenna&#39;</span><span class="p">]</span>
+        <span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;num_12mantenna&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;num_12mantenna&#39;</span><span class="p">]</span>
+        <span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;band&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;band&#39;</span><span class="p">]</span>
+        <span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;bandcenter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;bandcenter&#39;</span><span class="p">]</span>
+        <span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;bandwidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;bandwidth&#39;</span><span class="p">]</span>
+        <span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;nchan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;nchan&#39;</span><span class="p">]</span>
+        <span class="n">spw_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;chanwidths&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;chanwidths&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="compute_gaincalsnr">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.compute_gaincalsnr">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_gaincalsnr</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">,</span> <span class="n">spw_dict</span><span class="p">,</span> <span class="n">edge_fraction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the gain to signal-to-noise given the spw list and the spw</span>
+<span class="sd">    dictionary.</span>
+
+<span class="sd">    This code assumes that the science spws are observed in both the</span>
+<span class="sd">    calibrator and the science target.</span>
+
+<span class="sd">    The input parameters</span>
+<span class="sd">        spwlist                     The list of spw ids</span>
+<span class="sd">        spw_dict                    The spw dictionary</span>
+<span class="sd">        edge_fraction               Fraction of the edge that is flagged</span>
+
+<span class="sd">    The output SNR dictionary.</span>
+
+<span class="sd">    The SNR dictionary keys and values</span>
+<span class="sd">        key: the spw id     value: The science spw id as an integer</span>
+
+<span class="sd">    The preaveraging parameter dictionary keys and values</span>
+<span class="sd">        key: &#39;band&#39;                       value: The ALMA receiver band</span>
+<span class="sd">        key: &#39;frequency_Hz&#39;               value: The frequency of the spw</span>
+<span class="sd">        key: &#39;nchan_total&#39;                value: The total number of channels</span>
+<span class="sd">        key: &#39;chanwidth_Hz&#39;               value: The median channel width in Hz</span>
+
+<span class="sd">        key: &#39;tsys_spw&#39;                   value: The tsys spw id as an integer</span>
+<span class="sd">        key: &#39;median_tsys&#39;                value: The median tsys value</span>
+
+<span class="sd">        key: &#39;flux_Jy&#39;                    value: The flux of the source in Jy</span>
+<span class="sd">        key: &#39;scantime_minutes&#39;           value: The exposure time in minutes</span>
+<span class="sd">        key: &#39;inttime_minutes&#39;            value: The exposure time in minutes</span>
+<span class="sd">        key: &#39;sensitivity_per_scan_mJy    value: The sensitivity per scan in mJy</span>
+<span class="sd">        key: &#39;snr_per_scan                value: The snr per scan</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Initialize the output solution interval dictionary</span>
+    <span class="n">snr_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+
+    <span class="n">maxEffectiveBW</span> <span class="o">=</span> <span class="mf">2.0e9</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">edge_fraction</span><span class="p">)</span>
+
+    <span class="c1"># PIPE-788: retrieve the fraction of flagged data</span>
+    <span class="n">scans</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;snr_scans&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwlist</span><span class="p">]))</span>
+    <span class="n">flag_task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">scans</span><span class="p">))),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span>
+    <span class="n">flag_result</span> <span class="o">=</span> <span class="n">flag_task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Signal to noise summary&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwlist</span><span class="p">:</span>
+
+        <span class="c1"># Determine the receiver band</span>
+        <span class="n">bandidx</span> <span class="o">=</span> <span class="n">ALMA_BANDS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;band&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Compute the various generic SNR factors</span>
+        <span class="k">if</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;median_tsys&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">relativeTsys</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Spw </span><span class="si">%d</span><span class="s1"> &lt;= 0K in MS </span><span class="si">%s</span><span class="s1"> assuming nominal Tsys&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">relativeTsys</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;median_tsys&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">ALMA_TSYS</span><span class="p">[</span><span class="n">bandidx</span><span class="p">]</span>
+        <span class="n">nbaselines</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_7mantenna&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_12mantenna&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">arraySizeFactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ALMA_FIDUCIAL_NUM_ANTENNAS</span> <span class="o">*</span> <span class="p">(</span><span class="n">ALMA_FIDUCIAL_NUM_ANTENNAS</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="n">nbaselines</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_7mantenna&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">areaFactor</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">elif</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_12mantenna&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">areaFactor</span> <span class="o">=</span> <span class="p">(</span><span class="mf">12.0</span> <span class="o">/</span> <span class="mf">7.0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># general case:  eq. 6 in arXiv:2306.07420</span>
+            <span class="n">areaFactor</span> <span class="o">=</span> <span class="p">(</span><span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_12mantenna&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_7mantenna&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mf">12.</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> \
+                         <span class="p">(</span><span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_12mantenna&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_7mantenna&#39;</span><span class="p">])</span>
+        <span class="n">polarizationFactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+
+        <span class="c1"># SNR computation</span>
+        <span class="n">timeFactor</span> <span class="o">=</span> <span class="n">ALMA_FIDUCIAL_EXP_TIME</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;exptime&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;snr_scans&#39;</span><span class="p">]))</span>
+        <span class="n">bandwidthFactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ALMA_FIDUCIAL_BANDWIDTH</span> <span class="o">/</span> <span class="nb">min</span><span class="p">(</span><span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bandwidth&#39;</span><span class="p">],</span> <span class="n">maxEffectiveBW</span><span class="p">))</span>
+        <span class="c1"># PIPE-788: multiply the exposure time by the fraction of unflagged data</span>
+        <span class="n">flagFactor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">flag_result</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">spwid</span><span class="p">)][</span><span class="s1">&#39;flagged&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">flag_result</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">spwid</span><span class="p">)][</span><span class="s1">&#39;total&#39;</span><span class="p">])</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="n">relativeTsys</span> <span class="o">*</span> <span class="n">timeFactor</span> <span class="o">*</span> <span class="n">arraySizeFactor</span> <span class="o">*</span> \
+            <span class="n">areaFactor</span> <span class="o">*</span> <span class="n">bandwidthFactor</span> <span class="o">*</span> <span class="n">polarizationFactor</span> <span class="o">*</span> <span class="n">flagFactor</span>
+        <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">ALMA_SENSITIVITIES</span><span class="p">[</span><span class="n">bandidx</span><span class="p">]</span> <span class="o">*</span> <span class="n">factor</span>
+        <span class="k">if</span> <span class="s1">&#39;flux&#39;</span> <span class="ow">in</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">]:</span>
+            <span class="n">snrPerScan</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1000.0</span> <span class="o">/</span> <span class="n">sensitivity</span>  <span class="c1"># factor of 1000 converting from Jy to mJy</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">snrPerScan</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Fill in the dictionary</span>
+        <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="c1"># Science spw info</span>
+        <span class="c1">#    Channel information probably not required</span>
+        <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;band&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;band&#39;</span><span class="p">]</span>
+        <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;frequency_Hz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bandcenter&#39;</span><span class="p">]</span>
+        <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bandwidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bandwidth&#39;</span><span class="p">]</span>
+        <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nchan_total&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nchan&#39;</span><span class="p">]</span>
+        <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;chanwidth_Hz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;chanwidths&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Tsys spw info</span>
+        <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;tsys_spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;tsys_spw&#39;</span><span class="p">]</span>
+        <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;median_tsys&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;median_tsys&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Sensitivity info</span>
+        <span class="k">if</span> <span class="s1">&#39;flux&#39;</span> <span class="ow">in</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">]:</span>
+            <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;flux_Jy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;flux_Jy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;inttime_minutes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;integrationtime&#39;</span><span class="p">]</span>
+        <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;scantime_minutes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;exptime&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;snr_scans&#39;</span><span class="p">])</span>
+        <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;sensitivity_per_scan_mJy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sensitivity</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">snrPerScan</span><span class="p">:</span>
+            <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;snr_per_scan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Spw </span><span class="si">%3d</span><span class="s2">  scan (minutes) </span><span class="si">%6.3f</span><span class="s2">  integration (minutes) </span><span class="si">%6.3f</span><span class="s2">  sensitivity (mJy) </span><span class="si">%7.3f</span><span class="s2">  SNR unknown&quot;</span> <span class="o">%</span>
+                     <span class="p">(</span><span class="n">spwid</span><span class="p">,</span>
+                      <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;scantime_minutes&#39;</span><span class="p">],</span>
+                      <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;inttime_minutes&#39;</span><span class="p">],</span>
+                      <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;sensitivity_per_scan_mJy&#39;</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;snr_per_scan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">snrPerScan</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Spw </span><span class="si">%3d</span><span class="s2">  scan (minutes) </span><span class="si">%6.3f</span><span class="s2">  integration (minutes) </span><span class="si">%6.3f</span><span class="s2">  sensitivity (mJy) </span><span class="si">%7.3f</span><span class="s2">  SNR </span><span class="si">%10.3f</span><span class="s2">&quot;</span> <span class="o">%</span>
+                     <span class="p">(</span><span class="n">spwid</span><span class="p">,</span>
+                      <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;scantime_minutes&#39;</span><span class="p">],</span>
+                      <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;inttime_minutes&#39;</span><span class="p">],</span>
+                      <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;sensitivity_per_scan_mJy&#39;</span><span class="p">],</span>
+                      <span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;snr_per_scan&#39;</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">snr_dict</span></div>
+
+
+
+<div class="viewcode-block" id="compute_bpsolint">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.compute_bpsolint">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_bpsolint</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">,</span> <span class="n">spw_dict</span><span class="p">,</span> <span class="n">reqPhaseupSnr</span><span class="p">,</span> <span class="n">minBpNintervals</span><span class="p">,</span> <span class="n">reqBpSnr</span><span class="p">,</span> <span class="n">minBpNchan</span><span class="p">,</span> <span class="n">evenbpsolints</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the optimal bandpass frequency solution intervals given the spw list</span>
+<span class="sd">    and the spw dictionary.</span>
+
+<span class="sd">    The input parameters</span>
+<span class="sd">        spwlist             The list of spw ids</span>
+<span class="sd">        spw_dict            The spw dictionary</span>
+<span class="sd">        reqPhaseupSnr       The requested phaseup SNR</span>
+<span class="sd">        minBpNintervals     The minimum number of phase up time intervals, e.g. 2</span>
+<span class="sd">        reqBpSnr            The requested bandpass SNR</span>
+<span class="sd">        minBpNchan          The minimum number of bandpass channel solutions, e.g. 8</span>
+
+<span class="sd">    The output solution interval dictionary.</span>
+
+<span class="sd">    The bandpass preaveraging dictionary keys and values</span>
+<span class="sd">        key: the spw id     value: The science spw id as an integer</span>
+
+<span class="sd">    The preaveraging parameter dictionary keys and values</span>
+<span class="sd">        key: &#39;band&#39;               value: The ALMA receiver band</span>
+<span class="sd">        key: &#39;frequency_Hz&#39;       value: The frequency of the spw</span>
+<span class="sd">        key: &#39;nchan_total&#39;        value: The total number of channels</span>
+<span class="sd">        key: &#39;chanwidth_Hz&#39;       value: The median channel width in Hz</span>
+
+<span class="sd">        key: &#39;tsys_spw&#39;           value: The tsys spw id as an integer</span>
+<span class="sd">        key: &#39;median_tsys&#39;        value: The median tsys value</span>
+
+<span class="sd">        key: &#39;flux_Jy&#39;            value: The flux of the source in Jy</span>
+<span class="sd">        key: &#39;exptime_minutes&#39;    value: The exposure time in minutes</span>
+<span class="sd">        key: &#39;snr_per_channel&#39;    value: The signal to noise per channel</span>
+<span class="sd">        key: &#39;sensitivity_per_channel_mJy&#39;    value: The sensitivity in mJy per channel</span>
+
+<span class="sd">        key: &#39;bpsolint&#39;           value: The frequency solint in MHz</span>
+<span class="sd">        key: &#39;nchan_bpsolint&#39;     value: The total number of solint channels</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">evenbpsolints</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Forcing bandpass frequency solint to divide evenly into bandpass&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Initialize the output solution interval dictionary</span>
+    <span class="n">solint_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwlist</span><span class="p">:</span>
+
+        <span class="c1"># Determine the receiver band</span>
+        <span class="n">bandidx</span> <span class="o">=</span> <span class="n">ALMA_BANDS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;band&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Compute the various SNR factors</span>
+        <span class="c1">#    The following are shared between the phaseup time solint and</span>
+        <span class="c1">#    the bandpass frequency solint</span>
+        <span class="k">if</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;median_tsys&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">relativeTsys</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Spw </span><span class="si">%d</span><span class="s1"> &lt;= 0K in MS </span><span class="si">%s</span><span class="s1"> assuming nominal Tsys&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">relativeTsys</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;median_tsys&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">ALMA_TSYS</span><span class="p">[</span><span class="n">bandidx</span><span class="p">]</span>
+        <span class="n">nbaselines</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_7mantenna&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_12mantenna&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="c1"># PIPE-408: do not continue if there are no unflagged baselines for current spw; this will cause this spw</span>
+        <span class="c1"># to be absent from the solution interval dictionary that is returned.</span>
+        <span class="k">if</span> <span class="n">nbaselines</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Cannot compute optimal bandpass frequency solution interval for spw </span><span class="si">{}</span><span class="s2"> in MS </span><span class="si">{}</span><span class="s2">; no (unflagged)&quot;</span>
+                        <span class="s2">&quot; baselines were found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="k">continue</span>
+
+        <span class="n">arraySizeFactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">15</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nbaselines</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_7mantenna&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">areaFactor</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">elif</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_12mantenna&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">areaFactor</span> <span class="o">=</span> <span class="p">(</span><span class="mf">12.0</span> <span class="o">/</span> <span class="mf">7.0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Not sure this is correct</span>
+            <span class="n">ntotant</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_7mantenna&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_12mantenna&#39;</span><span class="p">]</span>
+            <span class="n">areaFactor</span> <span class="o">=</span> <span class="p">(</span><span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_12mantenna&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mf">12.0</span> <span class="o">/</span> <span class="mf">7.0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;num_7mantenna&#39;</span><span class="p">])</span> <span class="o">/</span> \
+                <span class="n">ntotant</span>
+        <span class="n">polarizationFactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+
+        <span class="c1"># Phaseup bandpasstime solint</span>
+        <span class="n">putimeFactor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;integrationtime&#39;</span><span class="p">])</span>
+        <span class="n">pubandwidthFactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">8.0e9</span> <span class="o">/</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bandwidth&#39;</span><span class="p">])</span>
+        <span class="n">pufactor</span> <span class="o">=</span> <span class="n">relativeTsys</span> <span class="o">*</span> <span class="n">putimeFactor</span> <span class="o">*</span> <span class="n">arraySizeFactor</span> <span class="o">*</span> \
+            <span class="n">areaFactor</span> <span class="o">*</span> <span class="n">pubandwidthFactor</span> <span class="o">*</span> <span class="n">polarizationFactor</span>
+        <span class="n">pusensitivity</span> <span class="o">=</span> <span class="n">ALMA_SENSITIVITIES</span><span class="p">[</span><span class="n">bandidx</span><span class="p">]</span> <span class="o">*</span> <span class="n">pufactor</span>
+        <span class="n">snrPerIntegration</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1000.0</span> <span class="o">/</span> <span class="n">pusensitivity</span>
+        <span class="n">requiredIntegrations</span> <span class="o">=</span> <span class="p">(</span><span class="n">reqPhaseupSnr</span> <span class="o">/</span> <span class="n">snrPerIntegration</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+
+        <span class="c1"># Bandpass frequency solint</span>
+        <span class="n">bptimeFactor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;exptime&#39;</span><span class="p">])</span>
+        <span class="n">bpbandwidthFactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">8.0e9</span> <span class="o">/</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;chanwidths&#39;</span><span class="p">])</span>
+        <span class="n">bpfactor</span> <span class="o">=</span> <span class="n">relativeTsys</span> <span class="o">*</span> <span class="n">bptimeFactor</span> <span class="o">*</span> <span class="n">arraySizeFactor</span> <span class="o">*</span> \
+            <span class="n">areaFactor</span> <span class="o">*</span> <span class="n">bpbandwidthFactor</span> <span class="o">*</span> <span class="n">polarizationFactor</span>
+        <span class="n">bpsensitivity</span> <span class="o">=</span> <span class="n">ALMA_SENSITIVITIES</span><span class="p">[</span><span class="n">bandidx</span><span class="p">]</span> <span class="o">*</span> <span class="n">bpfactor</span>
+        <span class="n">snrPerChannel</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1000.0</span> <span class="o">/</span> <span class="n">bpsensitivity</span>
+        <span class="n">requiredChannels</span> <span class="o">=</span> <span class="p">(</span><span class="n">reqBpSnr</span> <span class="o">/</span> <span class="n">snrPerChannel</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;spw=</span><span class="si">{}</span><span class="s2">, band=</span><span class="si">{}</span><span class="s2">, alma_sensitivity=</span><span class="si">{}</span><span class="s2">, bpfactor=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">spwid</span><span class="p">,</span> <span class="n">bandidx</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ALMA_SENSITIVITIES</span><span class="p">[</span><span class="n">bandidx</span><span class="p">],</span> <span class="n">bpfactor</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;requiredChannels=</span><span class="si">{}</span><span class="s2">, repBpSnr=</span><span class="si">{}</span><span class="s2">, snrPerChannel=</span><span class="si">{}</span><span class="s2">, spw flux=</span><span class="si">{}</span><span class="s2">, bpsensitivity=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">requiredChannels</span><span class="p">,</span> <span class="n">reqBpSnr</span><span class="p">,</span> <span class="n">snrPerChannel</span><span class="p">,</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">],</span> <span class="n">bpsensitivity</span><span class="p">))</span>
+        <span class="n">evenChannels</span> <span class="o">=</span> <span class="n">nextHighestDivisibleInt</span><span class="p">(</span><span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nchan&#39;</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">requiredChannels</span><span class="p">)))</span>
+
+        <span class="c1"># Fill in the dictionary</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="c1"># Science spw info</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;band&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;band&#39;</span><span class="p">]</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;frequency_Hz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bandcenter&#39;</span><span class="p">]</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bandwidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bandwidth&#39;</span><span class="p">]</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nchan_total&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nchan&#39;</span><span class="p">]</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;chanwidth_Hz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;chanwidths&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Tsys spw info</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;tsys_spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;tsys_spw&#39;</span><span class="p">]</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;median_tsys&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;median_tsys&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Sensitivity info</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;flux_Jy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;flux&#39;</span><span class="p">]</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;integration_minutes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;integrationtime&#39;</span><span class="p">]</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;sensitivity_per_integration_mJy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pusensitivity</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;snr_per_integration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">snrPerIntegration</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;exptime_minutes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;exptime&#39;</span><span class="p">]</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;snr_per_channel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">snrPerChannel</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;sensitivity_per_channel_mJy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bpsensitivity</span>
+
+        <span class="c1"># Phaseup bandpass solution info</span>
+        <span class="k">if</span> <span class="n">requiredIntegrations</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;phaseup_solint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span>
+            <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nint_phaseup_solint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;phaseup_solint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;integration_minutes&#39;</span><span class="p">]</span> <span class="o">*</span>
+                                                            <span class="n">requiredIntegrations</span> <span class="o">*</span> <span class="mf">60.0</span><span class="p">)</span>
+            <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nint_phaseup_solint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">requiredIntegrations</span><span class="p">))</span>
+        <span class="n">solInts</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;exptime_minutes&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;integration_minutes&#39;</span><span class="p">]))</span> <span class="o">//</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">requiredIntegrations</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">solInts</span> <span class="o">&lt;</span> <span class="n">minBpNintervals</span><span class="p">:</span>
+            <span class="n">tooFewIntervals</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">asterisks</span> <span class="o">=</span> <span class="s1">&#39;***&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tooFewIntervals</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">asterisks</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">spw </span><span class="si">%2d</span><span class="s2"> (</span><span class="si">%6.3f</span><span class="s2">min) requires phaseup solint=&#39;</span><span class="si">%0.3g</span><span class="s2">sec&#39; (</span><span class="si">%d</span><span class="s2"> time intervals in solution) to reach S/N=</span><span class="si">%.0f</span><span class="s2">&quot;</span> <span class="o">%</span>
+                 <span class="p">(</span><span class="n">asterisks</span><span class="p">,</span>
+                  <span class="n">spwid</span><span class="p">,</span>
+                  <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;exptime_minutes&#39;</span><span class="p">],</span>
+                  <span class="mf">60.0</span> <span class="o">*</span> <span class="n">requiredIntegrations</span> <span class="o">*</span> <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;integration_minutes&#39;</span><span class="p">],</span>
+                  <span class="n">solInts</span><span class="p">,</span>
+                  <span class="n">reqPhaseupSnr</span><span class="p">))</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nphaseup_solutions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">solInts</span>
+        <span class="k">if</span> <span class="n">tooFewIntervals</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> Spw </span><span class="si">%d</span><span class="s1"> would have less than </span><span class="si">%d</span><span class="s1"> time intervals in its solution in MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="n">asterisks</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">minBpNintervals</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+
+        <span class="c1"># Bandpass solution</span>
+        <span class="c1">#    Determine frequency interval in MHz</span>
+        <span class="c1">#</span>
+        <span class="c1"># Get number of channels.</span>
+        <span class="k">if</span> <span class="n">requiredChannels</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">evenbpsolints</span><span class="p">:</span>
+                <span class="n">nchan</span> <span class="o">=</span> <span class="n">evenChannels</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nchan</span> <span class="o">=</span> <span class="n">requiredChannels</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nchan</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># PIPE-2036: work-around for potential issue caused by:</span>
+        <span class="c1">#   * PL converts nr. of channels to frequency interval</span>
+        <span class="c1">#   * the frequency interval is passed with limited precision (typically</span>
+        <span class="c1">#     in MHz with 6 decimals, i.e. a precision of Hz)</span>
+        <span class="c1">#   * CASA&#39;s bandpass converts the frequency interval back to nr. of</span>
+        <span class="c1">#     channels and then take the floor</span>
+        <span class="c1">#</span>
+        <span class="c1"># This could have resulted in e.g. a required nr. of channels of 5</span>
+        <span class="c1"># corresponding to 4.8828125 MHz but getting passed as 4.882812 MHz,</span>
+        <span class="c1"># then converted back to 4.999999 channels, and floored to 4.</span>
+        <span class="c1">#</span>
+        <span class="c1"># As a work-around, check whether the converted frequency interval would</span>
+        <span class="c1"># trigger this, and if so, then round *up* the frequency interval to</span>
+        <span class="c1"># nearest Hz.</span>
+        <span class="n">solint</span> <span class="o">=</span> <span class="n">nchan</span> <span class="o">*</span> <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;chanwidth_Hz&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="n">solint</span><span class="p">)</span> <span class="o">/</span> <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;chanwidth_Hz&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">nchan</span><span class="p">):</span>
+            <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bpsolint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">round_up</span><span class="p">(</span><span class="n">solint</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1.e-6</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">MHz&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bpsolint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">solint</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1.e-6</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">MHz&quot;</span>
+
+        <span class="c1"># Determine the number of channels in the bandpass</span>
+        <span class="c1"># solution and the number of solutions</span>
+        <span class="k">if</span> <span class="n">evenbpsolints</span><span class="p">:</span>
+            <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nchan_bpsolint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">evenChannels</span><span class="p">))</span>
+            <span class="n">solChannels</span> <span class="o">=</span> <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nchan_total&#39;</span><span class="p">]</span> <span class="o">//</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">evenChannels</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nchan_bpsolint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">requiredChannels</span><span class="p">))</span>
+            <span class="n">solChannels</span> <span class="o">=</span> <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nchan_total&#39;</span><span class="p">]</span> <span class="o">//</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">requiredChannels</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">solChannels</span> <span class="o">&lt;</span> <span class="n">minBpNchan</span><span class="p">:</span>
+            <span class="n">tooFewChannels</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">asterisks</span> <span class="o">=</span> <span class="s1">&#39;***&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tooFewChannels</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">asterisks</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="c1">#LOG.info(&quot;%sspw %2d (%4.0fMHz) requires solint=&#39;%0.3gMHz&#39; (%d channels intervals in solution) to reach S/N=%.0f&quot; % \</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">spw </span><span class="si">%2d</span><span class="s2"> (</span><span class="si">%4.0f</span><span class="s2">MHz) requires solint=&#39;</span><span class="si">%s</span><span class="s2">&#39; (</span><span class="si">%d</span><span class="s2"> channels intervals in solution) to reach S/N=</span><span class="si">%.0f</span><span class="s2">&quot;</span> <span class="o">%</span>
+                 <span class="p">(</span><span class="n">asterisks</span><span class="p">,</span>
+                  <span class="n">spwid</span><span class="p">,</span>
+                  <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bandwidth&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1.0e-6</span><span class="p">,</span>
+                  <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bpsolint&#39;</span><span class="p">],</span>
+                  <span class="n">solChannels</span><span class="p">,</span>
+                  <span class="n">reqBpSnr</span><span class="p">))</span>
+        <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nbandpass_solutions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">solChannels</span>
+        <span class="k">if</span> <span class="n">tooFewChannels</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> Spw </span><span class="si">%d</span><span class="s1"> would have less than </span><span class="si">%d</span><span class="s1"> channels in its solution in MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="n">asterisks</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">minBpNchan</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">solint_dict</span></div>
+
+
+
+<div class="viewcode-block" id="nextHighestDivisibleInt">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.nextHighestDivisibleInt">[docs]</a>
+<span class="k">def</span> <span class="nf">nextHighestDivisibleInt</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks whether an integer is evenly divisible by a second</span>
+<span class="sd">    integer, and if not, finds the next higher integer that is.</span>
+
+<span class="sd">    n: larger integer</span>
+<span class="sd">    d: smaller integer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dd</span> <span class="o">=</span> <span class="n">d</span>
+    <span class="k">while</span> <span class="n">n</span> <span class="o">%</span> <span class="n">dd</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">dd</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+        <span class="n">dd</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">dd</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

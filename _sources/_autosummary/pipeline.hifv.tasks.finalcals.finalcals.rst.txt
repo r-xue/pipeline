@@ -1,0 +1,25 @@
+pipeline.hifv.tasks.finalcals.finalcals
+=======================================
+
+.. automodule:: pipeline.hifv.tasks.finalcals.finalcals
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      do_bandpass
+      find_EVLA_band
+      getCalFlaggedSoln
+      standard_sources
+      uvrange
+      weakbp
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Finalcals
+      FinalcalsInputs
+      FinalcalsResults
+   

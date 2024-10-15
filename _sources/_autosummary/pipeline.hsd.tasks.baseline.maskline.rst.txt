@@ -1,0 +1,17 @@
+pipeline.hsd.tasks.baseline.maskline
+====================================
+
+.. automodule:: pipeline.hsd.tasks.baseline.maskline
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataTable
+      DataTableIndexer
+      DataType
+      MaskLine
+      MaskLineInputs
+      MaskLineResults
+   

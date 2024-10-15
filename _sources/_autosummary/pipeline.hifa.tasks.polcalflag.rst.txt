@@ -1,0 +1,21 @@
+pipeline.hifa.tasks.polcalflag
+==============================
+
+.. automodule:: pipeline.hifa.tasks.polcalflag
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Polcalflag
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   polcalflag
+   qa
+   renderer

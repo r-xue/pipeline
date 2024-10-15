@@ -1,0 +1,22 @@
+pipeline.h.tasks.flagging
+=========================
+
+.. automodule:: pipeline.h.tasks.flagging
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FlagdataSetter
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   flagdatasetter
+   flagdeterbase
+   qa
+   renderer

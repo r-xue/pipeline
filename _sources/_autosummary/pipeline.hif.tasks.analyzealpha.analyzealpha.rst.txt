@@ -1,0 +1,14 @@
+pipeline.hif.tasks.analyzealpha.analyzealpha
+============================================
+
+.. automodule:: pipeline.hif.tasks.analyzealpha.analyzealpha
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Analyzealpha
+      AnalyzealphaInputs
+      AnalyzealphaResults
+   

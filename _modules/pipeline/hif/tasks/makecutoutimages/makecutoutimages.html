@@ -1,0 +1,539 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.tasks.makecutoutimages.makecutoutimages &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.tasks.makecutoutimages.makecutoutimages</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.tasks.makecutoutimages.makecutoutimages</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.imagelibrary</span> <span class="k">as</span> <span class="nn">imagelibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">get_stokes</span><span class="p">,</span> <span class="n">imstat_items</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="MakecutoutimagesResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makecutoutimages.html#pipeline.hif.tasks.makecutoutimages.makecutoutimages.MakecutoutimagesResults">[docs]</a>
+<span class="k">class</span> <span class="nc">MakecutoutimagesResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preceding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">subimagelist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subimagenames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">stats</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">final</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">final</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">preceding</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">preceding</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">subimagelist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">subimagelist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">subimagenames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">subimagenames</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">pool</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="n">final</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preceding</span> <span class="o">=</span> <span class="n">preceding</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subimagelist</span> <span class="o">=</span> <span class="n">subimagelist</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subimagenames</span> <span class="o">=</span> <span class="n">subimagenames</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="o">=</span> <span class="n">image_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="n">stats</span>
+
+<div class="viewcode-block" id="MakecutoutimagesResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makecutoutimages.html#pipeline.hif.tasks.makecutoutimages.makecutoutimages.MakecutoutimagesResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># subimagelist is a list of dictionaries</span>
+        <span class="c1"># Use the same format and information from sciimlist, save for the image name and image plot</span>
+
+        <span class="k">for</span> <span class="n">subitem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subimagelist</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">imageitem</span> <span class="o">=</span> <span class="n">imagelibrary</span><span class="o">.</span><span class="n">ImageItem</span><span class="p">(</span>
+                    <span class="n">imagename</span><span class="o">=</span><span class="n">subitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.subim&#39;</span><span class="p">,</span> <span class="n">sourcename</span><span class="o">=</span><span class="n">subitem</span><span class="p">[</span><span class="s1">&#39;sourcename&#39;</span><span class="p">],</span>
+                    <span class="n">spwlist</span><span class="o">=</span><span class="n">subitem</span><span class="p">[</span><span class="s1">&#39;spwlist&#39;</span><span class="p">],</span> <span class="n">specmode</span><span class="o">=</span><span class="n">subitem</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">],</span>
+                    <span class="n">sourcetype</span><span class="o">=</span><span class="n">subitem</span><span class="p">[</span><span class="s1">&#39;sourcetype&#39;</span><span class="p">],</span>
+                    <span class="n">multiterm</span><span class="o">=</span><span class="n">subitem</span><span class="p">[</span><span class="s1">&#39;multiterm&#39;</span><span class="p">],</span>
+                    <span class="n">metadata</span><span class="o">=</span><span class="n">subitem</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">],</span>
+                    <span class="n">imageplot</span><span class="o">=</span><span class="n">subitem</span><span class="p">[</span><span class="s1">&#39;imageplot&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">subitem</span><span class="p">[</span><span class="s1">&#39;sourcetype&#39;</span><span class="p">]:</span>
+                    <span class="n">context</span><span class="o">.</span><span class="n">subimlist</span><span class="o">.</span><span class="n">add_item</span><span class="p">(</span><span class="n">imageitem</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;MakecutoutimagesResults:&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="MakecutoutimagesInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makecutoutimages.html#pipeline.hif.tasks.makecutoutimages.makecutoutimages.MakecutoutimagesInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">MakecutoutimagesInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">offsetblc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span>   <span class="c1"># Units of arcseconds</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">offsettrc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span>   <span class="c1"># Units of arcseconds</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetblc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsettrc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MakecutoutimagesInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offsetblc</span> <span class="o">=</span> <span class="n">offsetblc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offsettrc</span> <span class="o">=</span> <span class="n">offsettrc</span></div>
+
+
+
+<div class="viewcode-block" id="Makecutoutimages">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makecutoutimages.html#pipeline.hif.tasks.makecutoutimages.makecutoutimages.Makecutoutimages">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_makecutoutimages&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Makecutoutimages</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">MakecutoutimagesInputs</span>
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="Makecutoutimages.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makecutoutimages.html#pipeline.hif.tasks.makecutoutimages.makecutoutimages.Makecutoutimages.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">imlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">sciimlist</span><span class="o">.</span><span class="n">get_imlist</span><span class="p">()</span>
+        <span class="n">imagenames</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">is_vlass_se_cont</span> <span class="o">=</span> <span class="n">is_vlass_se_cube</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;VLASS-SE-CONT&#39;</span><span class="p">):</span>
+                <span class="n">is_vlass_se_cont</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;VLASS-SE-CUBE&#39;</span><span class="p">):</span>
+                <span class="n">is_vlass_se_cube</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># PIPE-1048: hif_makecutoutimages should only process final products in the VLASS-SE-CONT mode</span>
+        <span class="k">if</span> <span class="n">is_vlass_se_cont</span><span class="p">:</span>
+            <span class="n">imlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">imlist</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+
+        <span class="c1"># Per VLASS Tech Specs page 22</span>
+        <span class="k">for</span> <span class="n">imageitem</span> <span class="ow">in</span> <span class="n">imlist</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;multiterm&#39;</span><span class="p">]:</span>
+                <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.tt0&#39;</span><span class="p">))</span>  <span class="c1"># non-pbcor</span>
+                <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                    <span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.residual&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;*.tt0&#39;</span><span class="p">))</span>  <span class="c1"># non-pbcor</span>
+                <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.image.pbcor&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;*.tt0&#39;</span><span class="p">))</span>
+                <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.image.pbcor&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;*.tt0.rms&#39;</span><span class="p">))</span>
+                <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.psf&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;*.tt0&#39;</span><span class="p">))</span>
+                <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                    <span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.image.residual.pbcor&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;*.tt0&#39;</span><span class="p">))</span>
+                <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.pb&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;*.tt0&#39;</span><span class="p">))</span>
+                <span class="c1"># PIPE-631/1039: make alpha/.tt1 image cutouts in the VLASS-SE-CONT mode</span>
+                <span class="k">if</span> <span class="n">is_vlass_se_cont</span><span class="p">:</span>
+                    <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.tt1&#39;</span><span class="p">))</span>  <span class="c1"># non-pbcor</span>
+                    <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                        <span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.residual&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;*.tt1&#39;</span><span class="p">))</span>  <span class="c1"># non-pbcor</span>
+                    <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.image.pbcor&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;*.tt1&#39;</span><span class="p">))</span>
+                    <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.image.pbcor&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;*.tt1.rms&#39;</span><span class="p">))</span>
+                    <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.psf&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;*.tt1&#39;</span><span class="p">))</span>
+                    <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                        <span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.image.residual.pbcor&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;*.tt1&#39;</span><span class="p">))</span>
+                    <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.alpha&#39;</span><span class="p">)))</span>
+                    <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.alpha.error&#39;</span><span class="p">)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]))</span>  <span class="c1"># non-pbcor</span>
+                <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.residual&#39;</span><span class="p">)))</span>  <span class="c1"># non-pbcor</span>
+                <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.image.pbcor&#39;</span><span class="p">)))</span>
+                <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.image.pbcor.rms&#39;</span><span class="p">)))</span>
+                <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.psf&#39;</span><span class="p">)))</span>
+                <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.image.residual.pbcor&#39;</span><span class="p">)))</span>
+                <span class="n">imagenames</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">imageitem</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.pb&#39;</span><span class="p">)))</span>
+
+        <span class="n">subimagenames</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">subimage_size</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">imagename</span> <span class="ow">in</span> <span class="n">imagenames</span><span class="p">:</span>
+            <span class="n">subimagename</span> <span class="o">=</span> <span class="n">imagename</span> <span class="o">+</span> <span class="s1">&#39;.subim&#39;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">subimagename</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Make a cutout image under the image name: </span><span class="si">{</span><span class="n">subimagename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_subim</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span>
+                <span class="n">subimagenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subimagename</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;A cutout image named </span><span class="si">{</span><span class="n">subimagename</span><span class="si">}</span><span class="s2"> already exists, and we will reuse this image for weblog.&quot;</span><span class="p">)</span>
+                <span class="n">subimagenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subimagename</span><span class="p">)</span>
+            <span class="n">subimage_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_image_size</span><span class="p">(</span><span class="n">subimagename</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">is_vlass_se_cube</span><span class="p">:</span>
+            <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_stats</span><span class="p">(</span><span class="n">subimagenames</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stats</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">MakecutoutimagesResults</span><span class="p">(</span><span class="n">subimagelist</span><span class="o">=</span><span class="n">imlist</span><span class="p">,</span> <span class="n">subimagenames</span><span class="o">=</span><span class="n">subimagenames</span><span class="p">,</span> <span class="n">image_size</span><span class="o">=</span><span class="n">subimage_size</span><span class="p">,</span>
+                                       <span class="n">stats</span><span class="o">=</span><span class="n">stats</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Makecutoutimages.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makecutoutimages.html#pipeline.hif.tasks.makecutoutimages.makecutoutimages.Makecutoutimages.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_imhead</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename</span><span class="p">):</span>
+
+        <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">imhead</span><span class="p">(</span><span class="n">imagename</span><span class="o">=</span><span class="n">imagename</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_subim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename</span><span class="p">):</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Get image header</span>
+        <span class="n">imhead_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_imhead</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span>
+
+        <span class="c1"># Read in image size from header</span>
+        <span class="n">imsizex</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">imhead_dict</span><span class="p">[</span><span class="s1">&#39;refpix&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">imhead_dict</span><span class="p">[</span><span class="s1">&#39;incr&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">180.0</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># degrees</span>
+        <span class="n">imsizey</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">imhead_dict</span><span class="p">[</span><span class="s1">&#39;refpix&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">imhead_dict</span><span class="p">[</span><span class="s1">&#39;incr&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">180.0</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># degrees</span>
+
+        <span class="n">image_size_x</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># degrees:  size of cutout</span>
+        <span class="n">image_size_y</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># degrees:  size of cutout</span>
+
+        <span class="c1"># If less than or equal to 1 deg + 2 arcminute buffer, use the image size and no buffer</span>
+        <span class="n">buffer_deg</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="mf">60.0</span>   <span class="c1"># Units of degrees</span>
+        <span class="k">if</span> <span class="n">imsizex</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">buffer_deg</span><span class="p">):</span>
+            <span class="n">image_size_x</span> <span class="o">=</span> <span class="n">imsizex</span>
+            <span class="n">image_size_y</span> <span class="o">=</span> <span class="n">imsizey</span>
+            <span class="n">buffer_deg</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="n">imsize</span> <span class="o">=</span> <span class="p">[</span><span class="n">imhead_dict</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">imhead_dict</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>  <span class="c1"># pixels</span>
+
+        <span class="n">xcellsize</span> <span class="o">=</span> <span class="mf">3600.0</span> <span class="o">*</span> <span class="p">(</span><span class="mf">180.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">imhead_dict</span><span class="p">[</span><span class="s1">&#39;incr&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">ycellsize</span> <span class="o">=</span> <span class="mf">3600.0</span> <span class="o">*</span> <span class="p">(</span><span class="mf">180.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">imhead_dict</span><span class="p">[</span><span class="s1">&#39;incr&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">fld_subim_size_x</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">(</span>
+            <span class="mf">3600.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">image_size_x</span> <span class="o">+</span> <span class="n">buffer_deg</span><span class="p">)</span> <span class="o">/</span> <span class="n">xcellsize</span><span class="p">)</span>   <span class="c1"># Cutout size with buffer in pixels</span>
+        <span class="n">fld_subim_size_y</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">(</span>
+            <span class="mf">3600.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">image_size_y</span> <span class="o">+</span> <span class="n">buffer_deg</span><span class="p">)</span> <span class="o">/</span> <span class="n">ycellsize</span><span class="p">)</span>   <span class="c1"># Cutout size with buffer in pixels</span>
+
+        <span class="c1"># equivalent blc,trc for extracting requested field, in pixels:</span>
+        <span class="n">blcx</span> <span class="o">=</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">fld_subim_size_x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">blcy</span> <span class="o">=</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">fld_subim_size_y</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">trcx</span> <span class="o">=</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">fld_subim_size_x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">trcy</span> <span class="o">=</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">fld_subim_size_y</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">blcx</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">blcx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">blcy</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">blcy</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">trcx</span> <span class="o">&gt;</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">trcx</span> <span class="o">=</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">trcy</span> <span class="o">&gt;</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">trcy</span> <span class="o">=</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">offsetblc</span> <span class="ow">and</span> <span class="n">inputs</span><span class="o">.</span><span class="n">offsettrc</span><span class="p">:</span>
+            <span class="n">offsetblc</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">offsetblc</span>
+            <span class="n">offsettrc</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">offsettrc</span>
+            <span class="n">buffer_deg</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">offsetblc</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">offsetblc</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">offsetblc</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">offsettrc</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">offsettrc</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">offsettrc</span><span class="p">)</span>
+
+            <span class="n">fld_subim_size_x_blc</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">(</span><span class="mf">3600.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">offsetblc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mf">3600.0</span> <span class="o">+</span> <span class="n">buffer_deg</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">xcellsize</span><span class="p">)</span>
+            <span class="n">fld_subim_size_y_blc</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">(</span><span class="mf">3600.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">offsetblc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mf">3600.0</span> <span class="o">+</span> <span class="n">buffer_deg</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">ycellsize</span><span class="p">)</span>
+            <span class="n">fld_subim_size_x_trc</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">(</span><span class="mf">3600.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">offsettrc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mf">3600.0</span> <span class="o">+</span> <span class="n">buffer_deg</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">xcellsize</span><span class="p">)</span>
+            <span class="n">fld_subim_size_y_trc</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">(</span><span class="mf">3600.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">offsettrc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mf">3600.0</span> <span class="o">+</span> <span class="n">buffer_deg</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">ycellsize</span><span class="p">)</span>
+
+            <span class="n">blcx</span> <span class="o">=</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">fld_subim_size_x_blc</span>
+            <span class="n">blcy</span> <span class="o">=</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">fld_subim_size_y_blc</span>
+            <span class="n">trcx</span> <span class="o">=</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">fld_subim_size_x_trc</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">trcy</span> <span class="o">=</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">fld_subim_size_y_trc</span> <span class="o">+</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">blcx</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">blcx</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">blcy</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">blcy</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">trcx</span> <span class="o">&gt;</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">trcx</span> <span class="o">=</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">trcy</span> <span class="o">&gt;</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">trcy</span> <span class="o">=</span> <span class="n">imsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using user defined offsets in arcseconds of: blc:(</span><span class="si">{!s}</span><span class="s2">), trc:(</span><span class="si">{!s}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">offsetblc</span><span class="p">]),</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">offsettrc</span><span class="p">])))</span>
+
+        <span class="n">fld_subim</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">blcx</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">blcy</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">trcx</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">trcy</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using field subimage blc,trc of </span><span class="si">{!s}</span><span class="s1">,</span><span class="si">{!s}</span><span class="s1">, </span><span class="si">{!s}</span><span class="s1">,</span><span class="si">{!s}</span><span class="s1">, which includes a buffer &#39;</span>
+                 <span class="s1">&#39;of </span><span class="si">{!s}</span><span class="s1"> arcminutes.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">blcx</span><span class="p">,</span> <span class="n">blcy</span><span class="p">,</span> <span class="n">trcx</span><span class="p">,</span> <span class="n">trcy</span><span class="p">,</span> <span class="n">buffer_deg</span><span class="o">*</span><span class="mi">60</span><span class="p">))</span>
+
+        <span class="c1"># imsubimage(imagename=clnpbcor, outfile=clnpbcor + &#39;.subim&#39;, box=fld_subim)</span>
+
+        <span class="c1"># Quicklook parameters</span>
+        <span class="n">imsubimageparams</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;imagename&#39;</span><span class="p">:</span> <span class="n">imagename</span><span class="p">,</span>
+                            <span class="s1">&#39;outfile&#39;</span><span class="p">:</span> <span class="n">imagename</span> <span class="o">+</span> <span class="s1">&#39;.subim&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="n">fld_subim</span><span class="p">}</span>
+
+        <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">imsubimage</span><span class="p">(</span><span class="o">**</span><span class="n">imsubimageparams</span><span class="p">)</span>
+        <span class="n">px</span> <span class="o">=</span> <span class="p">(</span><span class="n">trcx</span> <span class="o">-</span> <span class="n">blcx</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">py</span> <span class="o">=</span> <span class="p">(</span><span class="n">trcy</span> <span class="o">-</span> <span class="n">blcy</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">subimage_size</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pixels_x&#39;</span><span class="p">:</span> <span class="n">px</span><span class="p">,</span>
+                         <span class="s1">&#39;pixels_y&#39;</span><span class="p">:</span> <span class="n">py</span><span class="p">,</span>
+                         <span class="s1">&#39;arcsec_x&#39;</span><span class="p">:</span> <span class="n">px</span> <span class="o">*</span> <span class="n">xcellsize</span><span class="p">,</span>
+                         <span class="s1">&#39;arcsec_y&#39;</span><span class="p">:</span> <span class="n">py</span> <span class="o">*</span> <span class="n">ycellsize</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">),</span> <span class="n">subimage_size</span>
+
+    <span class="k">def</span> <span class="nf">_get_image_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename</span><span class="p">):</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+            <span class="n">image_summary</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="nb">list</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">image_shape</span> <span class="o">=</span> <span class="n">image_summary</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">]</span>
+        <span class="n">image_incr</span> <span class="o">=</span> <span class="n">image_summary</span><span class="p">[</span><span class="s1">&#39;incr&#39;</span><span class="p">]</span>
+
+        <span class="n">xcellsize</span> <span class="o">=</span> <span class="mf">3600.0</span> <span class="o">*</span> <span class="p">(</span><span class="mf">180.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">image_incr</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">ycellsize</span> <span class="o">=</span> <span class="mf">3600.0</span> <span class="o">*</span> <span class="p">(</span><span class="mf">180.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">image_incr</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">px</span> <span class="o">=</span> <span class="n">image_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">py</span> <span class="o">=</span> <span class="n">image_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">image_size</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pixels_x&#39;</span><span class="p">:</span> <span class="n">px</span><span class="p">,</span>
+                      <span class="s1">&#39;pixels_y&#39;</span><span class="p">:</span> <span class="n">py</span><span class="p">,</span>
+                      <span class="s1">&#39;arcsec_x&#39;</span><span class="p">:</span> <span class="n">px</span> <span class="o">*</span> <span class="n">xcellsize</span><span class="p">,</span>
+                      <span class="s1">&#39;arcsec_y&#39;</span><span class="p">:</span> <span class="n">py</span> <span class="o">*</span> <span class="n">ycellsize</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">image_size</span>
+
+    <span class="k">def</span> <span class="nf">_do_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subimagenames</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract essential stats from images.</span>
+<span class="sd">        </span>
+<span class="sd">        The return stats is a nested dictionary container: stats[spw_key][im_type][stats_type]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">subimagename</span> <span class="ow">in</span> <span class="n">subimagenames</span><span class="p">:</span>
+
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">subimagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+
+                <span class="n">image_miscinfo</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">miscinfo</span><span class="p">()</span>
+                <span class="n">virtspw</span> <span class="o">=</span> <span class="n">image_miscinfo</span><span class="p">[</span><span class="s1">&#39;virtspw&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">virtspw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+                    <span class="n">stats</span><span class="p">[</span><span class="n">virtspw</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="s1">&#39;.psf.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">elif</span> <span class="s1">&#39;.image.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span> <span class="ow">and</span> <span class="s1">&#39;.pbcor&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                    <span class="c1"># PIPE-491/1163: report non-pbcor stats and don&#39;t display images; don&#39;t save stats from .tt1</span>
+                    <span class="k">if</span> <span class="s1">&#39;.tt1.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                        <span class="c1"># PIPE-1401: Because the non-pbcor image from tclean() could miss mask table, with artifically</span>
+                        <span class="c1"># low-amp pixels at the edge below pblimit (CAS-13818), we use a PB-based mask when run imstats().</span>
+                        <span class="n">pbname</span> <span class="o">=</span> <span class="n">subimagename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.&#39;</span><span class="p">,</span> <span class="s1">&#39;.pb.&#39;</span><span class="p">)</span>
+                        <span class="n">item_stats</span> <span class="o">=</span> <span class="n">imstat_items</span><span class="p">(</span>
+                            <span class="n">image</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;peak&#39;</span><span class="p">,</span> <span class="s1">&#39;madrms&#39;</span><span class="p">,</span> <span class="s1">&#39;max/madrms&#39;</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;mask(&quot;</span><span class="si">{</span><span class="n">pbname</span><span class="si">}</span><span class="s1">&quot;)&#39;</span><span class="p">)</span>
+                        <span class="n">stats</span><span class="p">[</span><span class="n">virtspw</span><span class="p">][</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">item_stats</span>
+                        <span class="c1"># additional non-stats image properties are extracted here.</span>
+                        <span class="n">beam</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">restoringbeam</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">polarization</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">stats</span><span class="p">[</span><span class="n">virtspw</span><span class="p">][</span><span class="s1">&#39;beam&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bmaj&#39;</span><span class="p">:</span> <span class="n">beam</span><span class="p">[</span><span class="s1">&#39;major&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">],</span>
+                                                  <span class="s1">&#39;bmin&#39;</span><span class="p">:</span> <span class="n">beam</span><span class="p">[</span><span class="s1">&#39;minor&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="s1">&#39;bpa&#39;</span><span class="p">:</span> <span class="n">beam</span><span class="p">[</span><span class="s1">&#39;positionangle&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]}</span>
+                        <span class="n">stats</span><span class="p">[</span><span class="n">virtspw</span><span class="p">][</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_stokes</span><span class="p">(</span><span class="n">subimagename</span><span class="p">)</span>
+                        <span class="n">cs</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">coordsys</span><span class="p">()</span>
+                        <span class="n">stats</span><span class="p">[</span><span class="n">virtspw</span><span class="p">][</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">referencevalue</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;n&#39;</span><span class="p">)[</span><span class="s1">&#39;numeric&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+
+                <span class="k">elif</span> <span class="s1">&#39;.residual.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span> <span class="ow">and</span> <span class="s1">&#39;.pbcor.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                    <span class="c1"># PIPE-491/1163: report non-pbcor stats and don&#39;t display images; don&#39;t save stats from .tt1</span>
+                    <span class="k">if</span> <span class="s1">&#39;.tt1.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                        <span class="n">pbname</span> <span class="o">=</span> <span class="n">subimagename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.residual.&#39;</span><span class="p">,</span> <span class="s1">&#39;.pb.&#39;</span><span class="p">)</span>
+                        <span class="n">item_stats</span> <span class="o">=</span> <span class="n">imstat_items</span><span class="p">(</span>
+                            <span class="n">image</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;peak&#39;</span><span class="p">,</span> <span class="s1">&#39;madrms&#39;</span><span class="p">,</span> <span class="s1">&#39;max/madrms&#39;</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;mask(&quot;</span><span class="si">{</span><span class="n">pbname</span><span class="si">}</span><span class="s1">&quot;)&#39;</span><span class="p">)</span>
+                        <span class="n">stats</span><span class="p">[</span><span class="n">virtspw</span><span class="p">][</span><span class="s1">&#39;residual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">item_stats</span>
+                <span class="k">elif</span> <span class="s1">&#39;.image.pbcor.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span> <span class="ow">and</span> <span class="s1">&#39;.rms.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">elif</span> <span class="s1">&#39;.rms.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s1">&#39;.tt1.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                        <span class="n">item_stats</span> <span class="o">=</span> <span class="n">imstat_items</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="s1">&#39;pct&lt;800e-6&#39;</span><span class="p">,</span> <span class="s1">&#39;pct_masked&#39;</span><span class="p">])</span>
+                        <span class="n">stats</span><span class="p">[</span><span class="n">virtspw</span><span class="p">][</span><span class="s1">&#39;rms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">item_stats</span>
+                <span class="k">elif</span> <span class="s1">&#39;.residual.pbcor.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">subimagename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.rms&#39;</span><span class="p">):</span>
+                    <span class="k">pass</span>
+                <span class="k">elif</span> <span class="s1">&#39;.pb.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s1">&#39;.tt1.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                        <span class="n">stats</span><span class="p">[</span><span class="n">virtspw</span><span class="p">][</span><span class="s1">&#39;pb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imstat_items</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;median&#39;</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">stats</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

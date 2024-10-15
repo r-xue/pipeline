@@ -1,0 +1,701 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.fixpointing.fixpointing &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.fixpointing.fixpointing</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.fixpointing.fixpointing</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
+
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="fixpointing_offset_vlass">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fixpointing.html#pipeline.hifv.tasks.fixpointing.fixpointing.fixpointing_offset_vlass">[docs]</a>
+<span class="k">def</span> <span class="nf">fixpointing_offset_vlass</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">intable</span><span class="o">=</span><span class="s1">&#39;POINTING&#39;</span><span class="p">,</span> <span class="n">antlist</span><span class="o">=</span><span class="p">[],</span> <span class="n">timeoffset</span><span class="o">=</span><span class="p">[</span><span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">],</span> <span class="n">dofilter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                             <span class="n">usetarget</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dointerval</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dolookahead</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dodirectiononly</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Version 0.0  STM 2019-02-05 from KG fixpointing</span>
+<span class="sd">    Version 1.0  STM 2019-02-06 extrapolate using single-diff derivative on TARGET</span>
+<span class="sd">    Version 1.01 STM 2019-02-12 usetarget</span>
+<span class="sd">    Version 1.1  STM 2019-02-21 include filtering on DIRECTION-TARGET, intable</span>
+<span class="sd">    Version 1.2  STM 2019-04-10 option to correct only DIRECTION (based on TARGET)</span>
+<span class="sd">    Version 1.2  STM 2019-05-03 inster st.close commands</span>
+<span class="sd">    this function will apply time offsets to the pointing in the table for the selected antennas</span>
+
+<span class="sd">    Example to correct the pointing on a subset of antennas, and to filter the encoder data:</span>
+<span class="sd">    fixpointing_offset_vlass(vis=&#39;VLASS1.1.sb34523741.eb34557765.58027.86045872685.ms&#39;,antlist=[2,3,4,5,6,8,9,10,11,13,14,16,17,18,20,21,22,23,24,25])</span>
+
+<span class="sd">    To also copy the TARGET column (after fixing) to DIRECTION:</span>
+<span class="sd">    fixpointing_offset_vlass(vis=&#39;VLASS1.1.sb34523741.eb34557765.58027.86045872685.ms&#39;,antlist=[2,3,4,5,6,8,9,10,11,13,14,16,17,18,20,21,22,23,24,25],usetarget=True)</span>
+
+<span class="sd">    To only copy the TARGET column (after fixing) to DIRECTION:</span>
+<span class="sd">    fixpointing_offset_vlass(vis=&#39;VLASS1.1.sb34523741.eb34557765.58027.86045872685.ms&#39;,antlist=[],dofilter=False,dointerval=False,usetarget=True)</span>
+
+<span class="sd">    Another example (different dataset)</span>
+<span class="sd">    fixpointing_offset_vlass(vis=&#39;VLASS1.1.sb34901451.eb34995355.58154.327259618054.ms&#39;,antlist=[2,3,4,5,7,8,9,10,11,13,14,16,17,18,20,21,22,23,24])</span>
+
+<span class="sd">    For data taken in VLASS1.2 onward without the timing offset to pointing, but for which you</span>
+<span class="sd">    want to construct a valid POINTING table (using the TARGET column):</span>
+<span class="sd">    fixpointing_offset_vlass(vis=&#39;TSKY0001.sb36243279.eb36252233.58521.307180902775_OTFM_TARGET.ms&#39;,dofilter=False,usetarget=True,dointerval=True)</span>
+
+<span class="sd">    Note that backup versions of the existing POINTING table will be created when run.</span>
+
+<span class="sd">    For VLASS1.1 the dates with sets of old ACUs are (from VLASS Memo 12):</span>
+
+<span class="sd">    9/7/17-10/23/17</span>
+<span class="sd">    ea03, ea04, ea05, ea06, ea07, ea09, ea10, ea11, ea12, ea13, ea15, ea16, ea18, ea19, ea20, ea22, ea23, ea24, ea25, ea26, ea27, ea28</span>
+
+<span class="sd">    10/23/17-2/7/18</span>
+<span class="sd">    ea03, ea04, ea05, ea06, ea07, ea09, ea10, ea11, ea12, ea13, ea15, ea16, ea18, ea19, ea20, ea22, ea23, ea24, ea25, ea26, ea27</span>
+
+<span class="sd">    2/7/18-2/20/18</span>
+<span class="sd">    ea03, ea04, ea05, ea06, ea09, ea10, ea11, ea12, ea13, ea15, ea16, ea18, ea19, ea20, ea22, ea23, ea24, ea25, ea26, ea27</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r2d</span> <span class="o">=</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="n">datestring</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">())</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/POINTING_ORIG&#39;</span><span class="p">):</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/POINTING&#39;</span><span class="p">,</span> <span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/POINTING_ORIG&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Copying POINTING to POINTING_ORIG&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">backupname</span> <span class="o">=</span> <span class="s1">&#39;POINTING_BACKUP_&#39;</span> <span class="o">+</span> <span class="n">datestring</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/POINTING&#39;</span><span class="p">,</span> <span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">backupname</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Copying POINTING to &#39;</span> <span class="o">+</span> <span class="n">backupname</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">intable</span> <span class="o">!=</span> <span class="s1">&#39;POINTING&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">intable</span><span class="p">):</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">intable</span><span class="p">,</span> <span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/POINTING&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Copying &#39;</span> <span class="o">+</span> <span class="n">intable</span> <span class="o">+</span> <span class="s1">&#39; to POINTING&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;ERROR: could not find intable = &#39;</span> <span class="o">+</span> <span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">intable</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;InTable not found&#39;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/POINTING&#39;</span><span class="p">,</span> <span class="n">nomodify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+        <span class="c1"># tb.open(vis + &#39;/POINTING&#39;, nomodify=False)</span>
+        <span class="n">ants</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA_ID&#39;</span><span class="p">)</span>
+        <span class="n">ants</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ants</span><span class="p">)</span>
+        <span class="n">dref</span> <span class="o">=</span> <span class="s1">&#39;J2000&#39;</span>
+        <span class="n">eref</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">,</span> <span class="s1">&#39;MEASINFO&#39;</span><span class="p">)[</span><span class="s1">&#39;Ref&#39;</span><span class="p">]</span>
+        <span class="c1">#</span>
+        <span class="c1"># Need to get the columns</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;DIRECTION&#39;</span>
+        <span class="n">colkeyw</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="s1">&#39;MEASINFO&#39;</span><span class="p">)</span>
+        <span class="n">pref</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="s1">&#39;MEASINFO&#39;</span><span class="p">)[</span><span class="s1">&#39;Ref&#39;</span><span class="p">]</span>
+        <span class="n">tcol</span> <span class="o">=</span> <span class="s1">&#39;TARGET&#39;</span>
+        <span class="n">tcolkeyw</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="n">tcol</span><span class="p">,</span> <span class="s1">&#39;MEASINFO&#39;</span><span class="p">)</span>
+        <span class="n">tref</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="n">tcol</span><span class="p">,</span> <span class="s1">&#39;MEASINFO&#39;</span><span class="p">)[</span><span class="s1">&#39;Ref&#39;</span><span class="p">]</span>
+        <span class="c1"># colkeyw[&#39;Ref&#39;]=dref</span>
+        <span class="c1"># tb.putcolkeyword(col, &#39;MEASINFO&#39;, colkeyw)</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">observatory</span><span class="p">(</span><span class="s1">&#39;VLA&#39;</span><span class="p">))</span>
+        <span class="n">alltimes</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+        <span class="n">firsttime</span> <span class="o">=</span> <span class="n">alltimes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">del</span> <span class="p">(</span><span class="n">alltimes</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="n">delta_time</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># expected DT in seconds</span>
+        <span class="n">integ_offset_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">timeoffset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">delta_time</span><span class="p">)</span>
+        <span class="n">integ_offset_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">timeoffset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">delta_time</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dodirectiononly</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Will correct only the DIRECTION column (based on TARGET motions)&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Will correct both TARGET and DIRECTION columns (based on TARGET motions)&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dolookahead</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Will lookahead (</span><span class="si">%i</span><span class="s1">,</span><span class="si">%i</span><span class="s1">) integrations in (AZ,EL)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">integ_offset_x</span><span class="p">,</span> <span class="n">integ_offset_y</span><span class="p">))</span>
+        <span class="c1">#</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">antlist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Correct for timing offsets in pointing for these antennas</span>
+            <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">antlist</span><span class="p">:</span>
+                <span class="n">st</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;ANTENNA_ID==&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ant</span><span class="p">))</span>
+                <span class="n">nrows</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Ant </span><span class="si">%i</span><span class="s1"> processing nrows = </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ant</span><span class="p">,</span> <span class="n">nrows</span><span class="p">))</span>
+                <span class="c1"># print(st.nrows())</span>
+                <span class="n">ptimes</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+                <span class="n">dt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">ptimes</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">ntimes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ptimes</span><span class="p">)</span>
+
+                <span class="n">targ_orig</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="n">tcol</span><span class="p">)</span>
+                <span class="n">dirv_orig</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+
+                <span class="n">sh</span> <span class="o">=</span> <span class="n">dirv_orig</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">targ</span> <span class="o">=</span> <span class="n">targ_orig</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">sh</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sh</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">sh</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
+                <span class="n">dirv</span> <span class="o">=</span> <span class="n">dirv_orig</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">sh</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sh</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">sh</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
+
+                <span class="n">x</span> <span class="o">=</span> <span class="n">targ</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">targ</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="n">dirx</span> <span class="o">=</span> <span class="n">dirv</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="n">diry</span> <span class="o">=</span> <span class="n">dirv</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">dolookahead</span><span class="p">:</span>
+                    <span class="n">dx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">dy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">dxdt</span> <span class="o">=</span> <span class="n">dx</span> <span class="o">/</span> <span class="n">dt</span>
+                    <span class="n">dydt</span> <span class="o">=</span> <span class="n">dy</span> <span class="o">/</span> <span class="n">dt</span>
+
+                <span class="n">xoff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ntimes</span><span class="p">)</span>
+                <span class="n">yoff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ntimes</span><span class="p">)</span>
+                <span class="n">xoff_good</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">yoff_good</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="c1"># extrapolate derivatives, check for gaps</span>
+                <span class="n">i_lo</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ntimes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># Get derivative and extrapolate (original scheme)</span>
+                    <span class="n">i_up</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">dolookahead</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">dx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+                            <span class="n">dx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+                            <span class="n">dxdt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">dt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="k">elif</span> <span class="n">dx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+                            <span class="n">dx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+                            <span class="n">dxdt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">dt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">dy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+                            <span class="n">dy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+                            <span class="n">dydt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">dt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="k">elif</span> <span class="n">dy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+                            <span class="n">dy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+                            <span class="n">dydt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">dt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">dt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+                            <span class="c1"># 1sec or less gap to next time, use derivative</span>
+                            <span class="n">xoff</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dxdt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">timeoffset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">yoff</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dydt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">timeoffset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="n">xoff_good</span> <span class="o">=</span> <span class="n">xoff</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                            <span class="n">yoff_good</span> <span class="o">=</span> <span class="n">yoff</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># more than 1sec gap to the next time, found end of a scan</span>
+                            <span class="c1"># use best previous offset</span>
+                            <span class="n">xoff</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">xoff_good</span>
+                            <span class="n">yoff</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">yoff_good</span>
+                            <span class="n">i_lo</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># lookahead a number of samples closer to offset (new scheme)</span>
+                        <span class="k">if</span> <span class="n">dt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">1.0</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">==</span> <span class="p">(</span><span class="n">ntimes</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
+                            <span class="c1"># more than 1sec gap to the next time, found end of a scan</span>
+                            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i_lo</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+                                <span class="n">j_offset_x</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">integ_offset_x</span><span class="p">)</span>
+                                <span class="n">del_t_x</span> <span class="o">=</span> <span class="n">ptimes</span><span class="p">[</span><span class="n">j_offset_x</span><span class="p">]</span> <span class="o">-</span> <span class="n">ptimes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                                <span class="n">del_x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">j_offset_x</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                                <span class="n">del_x_del_t</span> <span class="o">=</span> <span class="n">del_x</span> <span class="o">/</span> <span class="n">del_t_x</span>
+                                <span class="n">xoff</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">del_x_del_t</span> <span class="o">*</span> <span class="n">timeoffset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                                <span class="c1">#</span>
+                                <span class="n">j_offset_y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">integ_offset_y</span><span class="p">)</span>
+                                <span class="n">del_t_y</span> <span class="o">=</span> <span class="n">ptimes</span><span class="p">[</span><span class="n">j_offset_y</span><span class="p">]</span> <span class="o">-</span> <span class="n">ptimes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                                <span class="n">del_y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">j_offset_y</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                                <span class="n">del_y_del_t</span> <span class="o">=</span> <span class="n">del_y</span> <span class="o">/</span> <span class="n">del_t_y</span>
+                                <span class="n">yoff</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">del_y_del_t</span> <span class="o">*</span> <span class="n">timeoffset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                                <span class="c1">#</span>
+                                <span class="n">xoff_good</span> <span class="o">=</span> <span class="n">xoff</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                                <span class="n">yoff_good</span> <span class="o">=</span> <span class="n">yoff</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                            <span class="c1"># final point in scan</span>
+                            <span class="n">xoff</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">xoff_good</span>
+                            <span class="n">yoff</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">yoff_good</span>
+                            <span class="c1">#</span>
+                            <span class="n">i_lo</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="c1"># final entry</span>
+                <span class="n">xoff</span><span class="p">[</span><span class="n">ntimes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">xoff_good</span>
+                <span class="n">yoff</span><span class="p">[</span><span class="n">ntimes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">yoff_good</span>
+                <span class="c1">###</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dirv_orig</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
+                    <span class="n">targ_orig</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">xoff</span>
+                    <span class="n">targ_orig</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">yoff</span>
+                    <span class="n">dirv_orig</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">xoff</span>
+                    <span class="n">dirv_orig</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">yoff</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">targ_orig</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">xoff</span>
+                    <span class="n">targ_orig</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">yoff</span>
+                    <span class="n">dirv_orig</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">xoff</span>
+                    <span class="n">dirv_orig</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">yoff</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">dirv_orig</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">dodirectiononly</span><span class="p">:</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="n">tcol</span><span class="p">,</span> <span class="n">targ_orig</span><span class="p">)</span>
+                <span class="c1">#</span>
+                <span class="n">mad_xoff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">xoff</span><span class="p">))</span>
+                <span class="n">mad_yoff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">yoff</span><span class="p">))</span>
+                <span class="n">logstr</span> <span class="o">=</span> <span class="s1">&#39;AntID </span><span class="si">%i</span><span class="s1"> : MAD CORRECTIONS AZ=</span><span class="si">%.3f</span><span class="s1"> EL=</span><span class="si">%.3f</span><span class="s1"> arcmin&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">ant</span><span class="p">,</span> <span class="n">mad_xoff</span> <span class="o">*</span> <span class="n">r2d</span> <span class="o">*</span> <span class="mf">60.0</span><span class="p">,</span> <span class="n">mad_yoff</span> <span class="o">*</span> <span class="n">r2d</span> <span class="o">*</span> <span class="mf">60.0</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">logstr</span><span class="p">)</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="c1">#</span>
+        <span class="k">if</span> <span class="n">dofilter</span><span class="p">:</span>
+            <span class="n">n_sigma_thresh</span> <span class="o">=</span> <span class="mf">5.0</span>
+            <span class="n">n_sigma_thresh_ddiff</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_sigma_thresh</span>
+            <span class="n">n_sigma_thresh_diff</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">n_sigma_thresh</span>
+            <span class="n">max_rate_degpersec</span> <span class="o">=</span> <span class="mf">5.0</span>
+            <span class="n">max_rate</span> <span class="o">=</span> <span class="n">max_rate_degpersec</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+            <span class="c1"># for all ants filter glitches in DIRECTION-TARGET</span>
+            <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ants</span><span class="p">:</span>
+                <span class="n">st</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;ANTENNA_ID==&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ant</span><span class="p">))</span>
+                <span class="n">nrows</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Ant </span><span class="si">%i</span><span class="s1"> glitch filtering nrows = </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ant</span><span class="p">,</span> <span class="n">nrows</span><span class="p">))</span>
+                <span class="c1"># print(st.nrows())</span>
+                <span class="n">ptimes</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+                <span class="n">dt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">ptimes</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">ntimes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ptimes</span><span class="p">)</span>
+
+                <span class="n">targ_orig</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="n">tcol</span><span class="p">)</span>
+                <span class="n">dirv_orig</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+                <span class="n">sh</span> <span class="o">=</span> <span class="n">dirv_orig</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">targ</span> <span class="o">=</span> <span class="n">targ_orig</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">sh</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sh</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">sh</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
+                <span class="n">dirv</span> <span class="o">=</span> <span class="n">dirv_orig</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">sh</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sh</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">sh</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
+                <span class="n">offs</span> <span class="o">=</span> <span class="n">dirv</span> <span class="o">-</span> <span class="n">targ</span>
+
+                <span class="n">offx_raw</span> <span class="o">=</span> <span class="n">offs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="k">if</span> <span class="n">offx_raw</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+                    <span class="n">offx_raw</span> <span class="o">-=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+                <span class="k">elif</span> <span class="n">offx_raw</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+                    <span class="n">offx_raw</span> <span class="o">+=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+                <span class="n">offx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">offx_raw</span><span class="p">)</span>  <span class="c1"># there seems to be a wrap issue in AZ</span>
+                <span class="n">offy</span> <span class="o">=</span> <span class="n">offs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+
+                <span class="n">mad_offx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">offx</span><span class="p">))</span>
+                <span class="n">mad_offy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">offy</span><span class="p">))</span>
+                <span class="n">logstr</span> <span class="o">=</span> <span class="s1">&#39;AntID </span><span class="si">%i</span><span class="s1"> : MAD DIR-TARG AZ=</span><span class="si">%.3f</span><span class="s1"> EL=</span><span class="si">%.3f</span><span class="s1"> arcmin&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">ant</span><span class="p">,</span> <span class="n">mad_offx</span> <span class="o">*</span> <span class="n">r2d</span> <span class="o">*</span> <span class="mf">60.0</span><span class="p">,</span> <span class="n">mad_offy</span> <span class="o">*</span> <span class="n">r2d</span> <span class="o">*</span> <span class="mf">60.0</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">logstr</span><span class="p">)</span>
+                <span class="n">madrms_offx</span> <span class="o">=</span> <span class="mf">1.4826</span> <span class="o">*</span> <span class="n">mad_offx</span>
+                <span class="n">madrms_offy</span> <span class="o">=</span> <span class="mf">1.4826</span> <span class="o">*</span> <span class="n">mad_offy</span>
+                <span class="c1">#</span>
+                <span class="n">doffx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">offx</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">doffy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">offy</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">logstr</span> <span class="o">=</span> <span class="s1">&#39;AntID </span><span class="si">%i</span><span class="s1"> : will correct differences &gt; AZ=</span><span class="si">%.3f</span><span class="s1"> EL=</span><span class="si">%.3f</span><span class="s1"> arcmin&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">ant</span><span class="p">,</span> <span class="n">mad_offx</span> <span class="o">*</span> <span class="n">n_sigma_thresh</span> <span class="o">*</span> <span class="n">r2d</span> <span class="o">*</span> <span class="mf">60.0</span><span class="p">,</span> <span class="n">mad_offy</span> <span class="o">*</span> <span class="n">n_sigma_thresh</span> <span class="o">*</span> <span class="n">r2d</span> <span class="o">*</span> <span class="mf">60.0</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">logstr</span><span class="p">)</span>
+
+                <span class="n">nfilter</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">nxfilter</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">nyfilter</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="c1"># find scan breaks</span>
+                <span class="n">i_lo</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ntimes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="c1"># Filter</span>
+                    <span class="n">ixfilter</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">iyfilter</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">if</span> <span class="n">dt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+                        <span class="c1"># 1sec or less gap to next time, use derivative</span>
+                        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">i_lo</span><span class="p">:</span>
+                            <span class="c1"># check if value discrepant from average of neighbors</span>
+                            <span class="c1"># f_i - 0.5(f_i-1 + f_i+1) = 0.5*( off[i-1]-off[i])</span>
+                            <span class="n">ddiffx</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">doffx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">doffx</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                            <span class="k">if</span> <span class="n">ddiffx</span> <span class="o">&gt;=</span> <span class="n">n_sigma_thresh_ddiff</span> <span class="o">*</span> <span class="n">madrms_offx</span><span class="p">:</span>
+                                <span class="c1"># deemed a &quot;glitch&quot;, use average</span>
+                                <span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                                <span class="n">doffx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                                <span class="n">doffx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                                <span class="n">ixfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="n">ddiffy</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">doffy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">doffy</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                            <span class="k">if</span> <span class="n">ddiffy</span> <span class="o">&gt;=</span> <span class="n">n_sigma_thresh_ddiff</span> <span class="o">*</span> <span class="n">madrms_offy</span><span class="p">:</span>
+                                <span class="c1"># deemed a &quot;glitch&quot;, use average</span>
+                                <span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                                <span class="n">doffy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                                <span class="n">doffy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                                <span class="n">iyfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="n">max_rate_x</span> <span class="o">=</span> <span class="n">max_rate</span> <span class="o">*</span> <span class="n">dt</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># prob shouldnt modify by cos(el)</span>
+                            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">doffx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_rate_x</span><span class="p">,</span> <span class="n">n_sigma_thresh_diff</span> <span class="o">*</span> <span class="n">madrms_offx</span><span class="p">):</span>
+                                <span class="c1"># check for unphysical changes in single diff</span>
+                                <span class="c1"># choose the least discrepant</span>
+                                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                                    <span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                                    <span class="n">doffx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                                    <span class="n">ixfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]):</span>
+                                    <span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                                    <span class="n">doffx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                                    <span class="n">ixfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="n">max_rate_y</span> <span class="o">=</span> <span class="n">max_rate</span> <span class="o">*</span> <span class="n">dt</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">doffy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_rate_y</span><span class="p">,</span> <span class="n">n_sigma_thresh_diff</span> <span class="o">*</span> <span class="n">madrms_offy</span><span class="p">):</span>
+                                <span class="c1"># check for unphysical changes in single diff</span>
+                                <span class="c1"># choose the least discrepant</span>
+                                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                                    <span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                                    <span class="n">doffy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                                    <span class="n">iyfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]):</span>
+                                    <span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                                    <span class="n">doffy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                                    <span class="n">iyfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                                    <span class="c1">#</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># more than 1sec gap to the next time, found end of a scan</span>
+                        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">i_lo</span><span class="p">:</span>
+                            <span class="n">max_rate_x</span> <span class="o">=</span> <span class="n">max_rate</span> <span class="o">*</span> <span class="n">dt</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># prob shouldnt modify by cos(el)</span>
+                            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">doffx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_rate_x</span><span class="p">,</span> <span class="n">n_sigma_thresh_diff</span> <span class="o">*</span> <span class="n">madrms_offx</span><span class="p">):</span>
+                                <span class="c1"># check for unphysical changes in single diff</span>
+                                <span class="c1"># choose the least discrepant</span>
+                                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                                    <span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                                    <span class="n">doffx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                                    <span class="n">ixfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]):</span>
+                                    <span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                                    <span class="n">doffx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                                    <span class="n">ixfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="n">max_rate_y</span> <span class="o">=</span> <span class="n">max_rate</span> <span class="o">*</span> <span class="n">dt</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">doffy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_rate_y</span><span class="p">,</span> <span class="n">n_sigma_thresh_diff</span> <span class="o">*</span> <span class="n">madrms_offy</span><span class="p">):</span>
+                                <span class="c1"># check for unphysical changes in single diff</span>
+                                <span class="c1"># choose the least discrepant</span>
+                                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                                    <span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                                    <span class="n">doffy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                                    <span class="n">iyfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]):</span>
+                                    <span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                                    <span class="n">doffy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                                    <span class="n">iyfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">i_lo</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># update counters for this i</span>
+                    <span class="k">if</span> <span class="n">ixfilter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">nxfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">iyfilter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">nyfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">ixfilter</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">iyfilter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">nfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="c1"># Final entry</span>
+                <span class="n">ixfilter</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">iyfilter</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">ntimes</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">i_lo</span><span class="p">:</span>
+                    <span class="n">max_rate_x</span> <span class="o">=</span> <span class="n">max_rate</span> <span class="o">*</span> <span class="n">dt</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># prob shouldnt modify by cos(el)</span>
+                    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">doffx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_rate_x</span><span class="p">,</span> <span class="n">n_sigma_thresh_diff</span> <span class="o">*</span> <span class="n">madrms_offx</span><span class="p">):</span>
+                        <span class="c1"># check for unphysical changes in single diff</span>
+                        <span class="c1"># choose the least discrepant</span>
+                        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                            <span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                            <span class="n">doffx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                            <span class="n">ixfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]):</span>
+                            <span class="n">offx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">offx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                            <span class="n">doffx</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                            <span class="n">ixfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">max_rate_y</span> <span class="o">=</span> <span class="n">max_rate</span> <span class="o">*</span> <span class="n">dt</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">doffy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_rate_y</span><span class="p">,</span> <span class="n">n_sigma_thresh_diff</span> <span class="o">*</span> <span class="n">madrms_offy</span><span class="p">):</span>
+                        <span class="c1"># check for unphysical changes in single diff</span>
+                        <span class="c1"># choose the least discrepant</span>
+                        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                            <span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                            <span class="n">doffy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                            <span class="n">iyfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]):</span>
+                            <span class="n">offy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">offy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                            <span class="n">doffy</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                            <span class="n">iyfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">ixfilter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">nxfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">iyfilter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">nyfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">ixfilter</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">iyfilter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">nfilter</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="c1">#</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Ant </span><span class="si">%i</span><span class="s1"> glitch filtering modified N events: tot=</span><span class="si">%i</span><span class="s1"> x=</span><span class="si">%i</span><span class="s1"> y=</span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ant</span><span class="p">,</span> <span class="n">nfilter</span><span class="p">,</span> <span class="n">nxfilter</span><span class="p">,</span> <span class="n">nyfilter</span><span class="p">))</span>
+                <span class="c1">###</span>
+                <span class="c1"># Put filtered DIRECTION back in POINTING table</span>
+                <span class="n">dirvx</span> <span class="o">=</span> <span class="n">targ</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="n">offx</span>
+                <span class="n">dirvy</span> <span class="o">=</span> <span class="n">targ</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="n">offy</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dirv_orig</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
+                    <span class="n">dirv_orig</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dirvx</span>
+                    <span class="n">dirv_orig</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dirvy</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dirv_orig</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dirvx</span>
+                    <span class="n">dirv_orig</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dirvy</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">dirv_orig</span><span class="p">)</span>
+                <span class="c1">#</span>
+                <span class="c1"># Done with this ant</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="c1">#</span>
+                <span class="c1"># Done with all ants</span>
+
+        <span class="k">if</span> <span class="n">usetarget</span><span class="p">:</span>
+            <span class="c1"># for all ants replace DIRECTION with TARGET</span>
+            <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ants</span><span class="p">:</span>
+                <span class="n">st</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;ANTENNA_ID==&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ant</span><span class="p">))</span>
+                <span class="n">nrows</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Ant </span><span class="si">%i</span><span class="s1"> replacing DIRECTION with TARGET for nrows = </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ant</span><span class="p">,</span> <span class="n">nrows</span><span class="p">))</span>
+                <span class="n">targ_orig</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="n">tcol</span><span class="p">)</span>
+                <span class="n">dirv_orig</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">targ_orig</span><span class="p">)</span>
+                <span class="c1">#</span>
+                <span class="k">if</span> <span class="n">dointerval</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Ant </span><span class="si">%i</span><span class="s1"> setting interval to -1 for nrows = </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ant</span><span class="p">,</span> <span class="n">nrows</span><span class="p">))</span>
+                    <span class="n">inter</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;INTERVAL&#39;</span><span class="p">)</span>
+                    <span class="n">inter</span><span class="p">[:]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;INTERVAL&#39;</span><span class="p">,</span> <span class="n">inter</span><span class="p">)</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">dointerval</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ants</span><span class="p">:</span>
+                <span class="n">st</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;ANTENNA_ID==&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ant</span><span class="p">))</span>
+                <span class="n">nrows</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Ant </span><span class="si">%i</span><span class="s1"> setting interval to -1 for nrows = </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ant</span><span class="p">,</span> <span class="n">nrows</span><span class="p">))</span>
+                <span class="n">inter</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;INTERVAL&#39;</span><span class="p">)</span>
+                <span class="n">inter</span><span class="p">[:]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;INTERVAL&#39;</span><span class="p">,</span> <span class="n">inter</span><span class="p">)</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+        <span class="c1"># tb.done()</span>
+
+
+<div class="viewcode-block" id="FixpointingResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fixpointing.html#pipeline.hifv.tasks.fixpointing.fixpointing.FixpointingResults">[docs]</a>
+<span class="k">class</span> <span class="nc">FixpointingResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FixpointingResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_casa_task</span> <span class="o">=</span> <span class="s1">&#39;Fixpointing&#39;</span>
+
+<div class="viewcode-block" id="FixpointingResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fixpointing.html#pipeline.hifv.tasks.fixpointing.fixpointing.FixpointingResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">#return &#39;FixpointingResults:\n\t{0}&#39;.format(</span>
+        <span class="c1">#    &#39;\n\t&#39;.join([ms.name for ms in self.mses]))</span>
+        <span class="k">return</span> <span class="s1">&#39;FixpointingResults:&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="FixpointingInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fixpointing.html#pipeline.hifv.tasks.fixpointing.fixpointing.FixpointingInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">FixpointingInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span></div>
+
+
+<div class="viewcode-block" id="Fixpointing">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fixpointing.html#pipeline.hifv.tasks.fixpointing.fixpointing.Fixpointing">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_fixpointing&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Add your task description for inclusion in casa_commands.log&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Fixpointing</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FixpointingInputs</span>
+
+<div class="viewcode-block" id="Fixpointing.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fixpointing.html#pipeline.hifv.tasks.fixpointing.fixpointing.Fixpointing.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">obs_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">start_datetime</span>
+        <span class="n">obs_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">end_datetime</span>
+
+        <span class="c1"># For VLASS1.1 the dates with sets of old ACUs are (from VLASS Memo 12):</span>
+
+        <span class="c1"># 9/7/17 - 10/23/17</span>
+        <span class="c1"># ea03, ea04, ea05, ea06, ea07, ea09, ea10, ea11, ea12, ea13, ea15, ea16, ea18, ea19, ea20, ea22, ea23, ea24, ea25, ea26, ea27, ea28</span>
+
+        <span class="c1"># 10/23/17 - 2/7/18</span>
+        <span class="c1"># ea03, ea04, ea05, ea06, ea07, ea09, ea10, ea11, ea12, ea13, ea15, ea16, ea18, ea19, ea20, ea22, ea23, ea24, ea25, ea26, ea27</span>
+
+        <span class="c1"># 2/7/18 - 2/20/18</span>
+        <span class="c1"># ea03, ea04, ea05, ea06, ea09, ea10, ea11, ea12, ea13, ea15, ea16, ea18, ea19, ea20, ea22, ea23, ea24, ea25, ea26, ea27</span>
+
+        <span class="n">antnames</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">antlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">obs_start</span> <span class="o">&lt;=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">antnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ea03&#39;</span><span class="p">,</span> <span class="s1">&#39;ea04&#39;</span><span class="p">,</span> <span class="s1">&#39;ea05&#39;</span><span class="p">,</span> <span class="s1">&#39;ea06&#39;</span><span class="p">,</span> <span class="s1">&#39;ea07&#39;</span><span class="p">,</span> <span class="s1">&#39;ea09&#39;</span><span class="p">,</span> <span class="s1">&#39;ea10&#39;</span><span class="p">,</span> <span class="s1">&#39;ea11&#39;</span><span class="p">,</span> <span class="s1">&#39;ea12&#39;</span><span class="p">,</span> <span class="s1">&#39;ea13&#39;</span><span class="p">,</span> <span class="s1">&#39;ea15&#39;</span><span class="p">,</span> <span class="s1">&#39;ea16&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;ea18&#39;</span><span class="p">,</span> <span class="s1">&#39;ea19&#39;</span><span class="p">,</span> <span class="s1">&#39;ea20&#39;</span><span class="p">,</span> <span class="s1">&#39;ea22&#39;</span><span class="p">,</span> <span class="s1">&#39;ea23&#39;</span><span class="p">,</span> <span class="s1">&#39;ea24&#39;</span><span class="p">,</span> <span class="s1">&#39;ea25&#39;</span><span class="p">,</span> <span class="s1">&#39;ea26&#39;</span><span class="p">,</span> <span class="s1">&#39;ea27&#39;</span><span class="p">,</span> <span class="s1">&#39;ea28&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">obs_start</span> <span class="o">&lt;=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">antnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ea03&#39;</span><span class="p">,</span> <span class="s1">&#39;ea04&#39;</span><span class="p">,</span> <span class="s1">&#39;ea05&#39;</span><span class="p">,</span> <span class="s1">&#39;ea06&#39;</span><span class="p">,</span> <span class="s1">&#39;ea07&#39;</span><span class="p">,</span> <span class="s1">&#39;ea09&#39;</span><span class="p">,</span> <span class="s1">&#39;ea10&#39;</span><span class="p">,</span> <span class="s1">&#39;ea11&#39;</span><span class="p">,</span> <span class="s1">&#39;ea12&#39;</span><span class="p">,</span> <span class="s1">&#39;ea13&#39;</span><span class="p">,</span> <span class="s1">&#39;ea15&#39;</span><span class="p">,</span> <span class="s1">&#39;ea16&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;ea18&#39;</span><span class="p">,</span> <span class="s1">&#39;ea19&#39;</span><span class="p">,</span> <span class="s1">&#39;ea20&#39;</span><span class="p">,</span> <span class="s1">&#39;ea22&#39;</span><span class="p">,</span> <span class="s1">&#39;ea23&#39;</span><span class="p">,</span> <span class="s1">&#39;ea24&#39;</span><span class="p">,</span> <span class="s1">&#39;ea25&#39;</span><span class="p">,</span> <span class="s1">&#39;ea26&#39;</span><span class="p">,</span> <span class="s1">&#39;ea27&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">obs_start</span> <span class="o">&lt;=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">antnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ea03&#39;</span><span class="p">,</span> <span class="s1">&#39;ea04&#39;</span><span class="p">,</span> <span class="s1">&#39;ea05&#39;</span><span class="p">,</span> <span class="s1">&#39;ea06&#39;</span><span class="p">,</span> <span class="s1">&#39;ea09&#39;</span><span class="p">,</span> <span class="s1">&#39;ea10&#39;</span><span class="p">,</span> <span class="s1">&#39;ea11&#39;</span><span class="p">,</span> <span class="s1">&#39;ea12&#39;</span><span class="p">,</span> <span class="s1">&#39;ea13&#39;</span><span class="p">,</span> <span class="s1">&#39;ea15&#39;</span><span class="p">,</span> <span class="s1">&#39;ea16&#39;</span><span class="p">,</span> <span class="s1">&#39;ea18&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;ea19&#39;</span><span class="p">,</span> <span class="s1">&#39;ea20&#39;</span><span class="p">,</span> <span class="s1">&#39;ea22&#39;</span><span class="p">,</span> <span class="s1">&#39;ea23&#39;</span><span class="p">,</span> <span class="s1">&#39;ea24&#39;</span><span class="p">,</span> <span class="s1">&#39;ea25&#39;</span><span class="p">,</span> <span class="s1">&#39;ea26&#39;</span><span class="p">,</span> <span class="s1">&#39;ea27&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">antnames</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="n">antobjectslist</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">()</span>
+
+            <span class="c1"># index identifiers for VLA antennas</span>
+            <span class="n">antlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">antenna</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">antobjectslist</span> <span class="k">if</span> <span class="n">antenna</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">antnames</span><span class="p">]</span>
+        <span class="c1"># Example translation of antenna names to index numbers</span>
+        <span class="c1"># antnames = [&#39;ea03&#39;, &#39;ea04&#39;, &#39;ea05&#39;, &#39;ea06&#39;, &#39;ea09&#39;, &#39;ea10&#39;, &#39;ea11&#39;, &#39;ea12&#39;, &#39;ea13&#39;, &#39;ea15&#39;, &#39;ea16&#39;, &#39;ea18&#39;,</span>
+        <span class="c1">#                &#39;ea19&#39;, &#39;ea20&#39;, &#39;ea22&#39;, &#39;ea23&#39;, &#39;ea24&#39;, &#39;ea25&#39;, &#39;ea26&#39;, &#39;ea27&#39;]</span>
+        <span class="c1"># antlist = [2,3,4,5,6,8,9,10,11,13,14,16,17,18,20,21,22,23,24,25]</span>
+        <span class="n">fixpointing_offset_vlass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">antlist</span><span class="o">=</span><span class="n">antlist</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">FixpointingResults</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Fixpointing.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fixpointing.html#pipeline.hifv.tasks.fixpointing.fixpointing.Fixpointing.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+</div>
+
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

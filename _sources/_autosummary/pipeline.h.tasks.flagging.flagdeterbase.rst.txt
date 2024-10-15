@@ -1,0 +1,14 @@
+pipeline.h.tasks.flagging.flagdeterbase
+=======================================
+
+.. automodule:: pipeline.h.tasks.flagging.flagdeterbase
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FlagDeterBase
+      FlagDeterBaseInputs
+      FlagDeterBaseResults
+   

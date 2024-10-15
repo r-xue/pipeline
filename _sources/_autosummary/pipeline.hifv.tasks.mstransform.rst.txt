@@ -1,0 +1,21 @@
+pipeline.hifv.tasks.mstransform
+===============================
+
+.. automodule:: pipeline.hifv.tasks.mstransform
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      VlaMstransform
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   mstransform
+   qa
+   renderer

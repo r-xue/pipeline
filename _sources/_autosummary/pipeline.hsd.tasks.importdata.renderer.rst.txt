@@ -1,0 +1,15 @@
+pipeline.hsd.tasks.importdata.renderer
+======================================
+
+.. automodule:: pipeline.hsd.tasks.importdata.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Context
+      DeductionGroupTR
+      Results
+      T2_4MDetailsSingleDishImportDataRenderer
+   

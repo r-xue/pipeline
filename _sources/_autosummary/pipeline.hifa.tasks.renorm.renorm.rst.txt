@@ -1,0 +1,21 @@
+pipeline.hifa.tasks.renorm.renorm
+=================================
+
+.. automodule:: pipeline.hifa.tasks.renorm.renorm
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      alma_renorm
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Renorm
+      RenormInputs
+      RenormResults
+      SerialRenorm
+   

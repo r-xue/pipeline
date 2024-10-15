@@ -1,0 +1,21 @@
+pipeline.hif.tasks.fluxscale package
+====================================
+
+Submodules
+----------
+
+pipeline.hif.tasks.fluxscale.fluxscale module
+---------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.fluxscale.fluxscale
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hif.tasks.fluxscale
+   :members:
+   :undoc-members:
+   :show-inheritance:

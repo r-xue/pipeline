@@ -1,0 +1,33 @@
+pipeline.h.tasks
+================
+
+.. automodule:: pipeline.h.tasks
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Applycal
+      ExportData
+      ImportData
+      MsSplit
+      RestoreData
+      Tsyscal
+      Tsysflag
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   applycal
+   common
+   exportdata
+   flagging
+   importdata
+   mstransform
+   restoredata
+   tsyscal
+   tsysflag

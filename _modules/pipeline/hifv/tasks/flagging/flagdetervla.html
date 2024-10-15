@@ -1,0 +1,910 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.flagging.flagdetervla &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.flagging.flagdetervla</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.flagging.flagdetervla</h1><div class="highlight"><pre>
+<span></span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># flagdetervla.py</span>
+
+<span class="c1"># NB: THESE FlagDeteVLA*() CLASSES INHERIT FlagDeterBase*() CLASSES.  AT</span>
+<span class="c1"># PRESENT THE FlagDeterVLA*() CLASSES HAVE NO ADDITIONAL INPUT PARAMETERS, SO</span>
+<span class="c1"># THEY ACT IN EXACTLY THE SAME MANNER AS THE FlagDeterBase*() CLASSES.</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This file contains the classes to perform VLA deterministic flagging.</span>
+
+<span class="c1"># In a nutshell:</span>
+<span class="c1"># --------------</span>
+<span class="c1"># * This class performs all of the deterministic flagging types in the</span>
+<span class="c1">#   FlagDeterBase*() classes.</span>
+
+<span class="c1"># To test these classes by themselves without the rest of the pipeline, enter</span>
+<span class="c1"># these commands:</span>
+<span class="c1">#</span>
+<span class="c1"># import pipeline</span>
+<span class="c1">#</span>
+<span class="c1"># vis = [ &#39;&lt;MS name&gt;&#39; ]</span>
+<span class="c1"># context = pipeline.Pipeline( vis ).context</span>
+<span class="c1">#</span>
+<span class="c1"># inputs = pipeline.hifv.tasks.flagging.FlagDeterVLA.Inputs( context, vis=vis,</span>
+<span class="c1">#   output_dir=&#39;.&#39;, autocorr=True, shadow=True, scan=True, scannumber=&#39;4,5,8&#39;,</span>
+<span class="c1">#   intents=&#39;*AMPLI*&#39;, edgespw=True, fracspw=0.1, fracspwfps=0.1 )</span>
+<span class="c1">#</span>
+<span class="c1"># task = pipeline.hifv.tasks.flagging.FlagDeterVLA( inputs )</span>
+<span class="c1"># jobs = task.analyse()</span>
+<span class="c1">#</span>
+<span class="c1"># status = task.execute()</span>
+<span class="c1">#</span>
+<span class="c1"># In other words, create a context, create the inputs (which sets the public</span>
+<span class="c1"># variables to the correct values and creates the temporary flag command file),</span>
+<span class="c1"># convert the class arguments to arguments to the CASA task tflagdata), create</span>
+<span class="c1"># the FlatDeterVLA() instance, perform FlatDeterVLA.analyse(), and execute the</span>
+<span class="c1"># class.</span>
+
+<span class="c1"># Classes:</span>
+<span class="c1"># --------</span>
+<span class="c1"># FlagDeterVLA        - This class represents the pipeline interface to the</span>
+<span class="c1">#                        CASA task tflagdata.</span>
+<span class="c1"># FlagDeterVLAInputs  - This class manages the inputs for the FlagDeterVLA()</span>
+<span class="c1">#                        class.</span>
+<span class="c1"># FlagDeterVLAResults - This class manages the results from the FlagDeterVLA()</span>
+<span class="c1">#                        class.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 10 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version, identical behavior to FlagDeterBase.py.</span>
+<span class="c1"># 2012 May 16 - Lindsey Davis, NRAO</span>
+<span class="c1">#               Changed file name from FlagDeterALMA.py to flagdeteralma.py.</span>
+<span class="c1"># 2013 May - Brian Kent, NRAO</span>
+<span class="c1">#             New Deterministic flagging for the VLA</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># Imports</span>
+<span class="c1"># -------</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">string</span>
+
+<span class="kn">from</span> <span class="nn">casatasks.private</span> <span class="kn">import</span> <span class="n">flaghelper</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.flagging</span> <span class="kn">import</span> <span class="n">flagdeterbase</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># Initialize a logger</span>
+<span class="c1"># -------------------</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># class FlagDeterVLAInputs</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># FlagDeterVLAInputs</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This class manages the inputs for the FlagDeterVLA() class.</span>
+
+<span class="c1"># Inherited classes:</span>
+<span class="c1"># ------------------</span>
+<span class="c1"># FlagDeterBaseInputs - This is the base class that handles the inputs for</span>
+<span class="c1"># deterministic flagging.</span>
+
+<span class="c1"># Public member variables:</span>
+<span class="c1"># ------------------------</span>
+<span class="c1"># None.</span>
+
+<span class="c1"># Public member functions:</span>
+<span class="c1"># ------------------------</span>
+<span class="c1"># __init__     - This public member function constructs an instance of the</span>
+<span class="c1">#                FlagDeterVLAInputs() class.  It is overloaded.</span>
+<span class="c1"># clone        - This public member function creates a cloned instance of an</span>
+<span class="c1">#                existing instance.  It is overloaded.</span>
+<span class="c1"># to_casa_args - This public member function translates the input parameters of</span>
+<span class="c1">#                this class to task parameters and file-based flag commands</span>
+<span class="c1">#                required by CASA task tflagdata.  It is overloaded.</span>
+
+<span class="c1"># Static public member functions:</span>
+<span class="c1"># -------------------------------</span>
+<span class="c1"># create_from_context - This static public member function creates an instance</span>
+<span class="c1">#                       of this class from a context.  It is overloaded.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 10 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version created with public member functions __init__(),</span>
+<span class="c1">#               clone(), and to_casa_args(); and static public member function</span>
+<span class="c1">#               create_from_context().  All functions are overloaded.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="FlagDeterVLAInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagdetervla.FlagDeterVLAInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">FlagDeterVLAInputs</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseInputs</span><span class="p">):</span>
+
+    <span class="c1"># FlagDeterVLAInputs::__init__</span>
+
+    <span class="c1"># Description:</span>
+    <span class="c1"># ------------</span>
+    <span class="c1"># This public member function constructs an instance of the</span>
+    <span class="c1"># FlagDeterVLAInputs() class.</span>
+
+    <span class="c1"># The primary purpose of this class is to initialize the public member</span>
+    <span class="c1"># variables.  The defaults for all parameters (except context) are None.</span>
+
+    <span class="c1"># NB: This public member function is overloaded.</span>
+
+    <span class="c1"># Inherited classes:</span>
+    <span class="c1"># ------------------</span>
+    <span class="c1"># FlagDeterBaseInputs - This class manages the inputs for the</span>
+    <span class="c1">#                       FlagDeterBaseInputs() parent class.</span>
+
+    <span class="c1"># Inputs to initialize the FlagDeterBaseInputs() class:</span>
+    <span class="c1"># -----------------------------------------------------</span>
+    <span class="c1"># context      - This python dictionary contains the pipeline context (state).</span>
+    <span class="c1">#                It has no default.</span>
+    <span class="c1">#</span>
+    <span class="c1"># vis          - This python string contains the MS name.</span>
+    <span class="c1">#</span>
+    <span class="c1"># output_dir   - This python string contains the output directory name.</span>
+    <span class="c1">#</span>
+    <span class="c1"># flagbackup   - This python boolean determines whether the existing flags are</span>
+    <span class="c1">#                backed up before the new flagging begins.</span>
+    <span class="c1">#</span>
+    <span class="c1"># autocorr     - This python boolean determines whether autocorrelations are</span>
+    <span class="c1">#                flagged or not.</span>
+    <span class="c1">#</span>
+    <span class="c1"># shadow       - This python boolean determines whether shadowed antennas are</span>
+    <span class="c1">#                flagged or not.</span>
+    <span class="c1">#</span>
+    <span class="c1"># scan         - This python boolean determines whether scan flagging is</span>
+    <span class="c1">#                performed.</span>
+    <span class="c1"># scannumber   - This python string contains the comma-delimited scan numbers.</span>
+    <span class="c1">#                In the task interface, it is a subparameter of the scan</span>
+    <span class="c1">#                parameter.  Standard data selection syntax is valid.</span>
+    <span class="c1"># intents      - This python string contains the comma-delimited intents.  In</span>
+    <span class="c1">#                the task interface, it is a subparameter of the scan parameter.</span>
+    <span class="c1">#                Wildcards (* character) are allowed.</span>
+    <span class="c1">#</span>
+    <span class="c1"># edgespw      - This python boolean determines whether edge channels are</span>
+    <span class="c1">#                flagged.</span>
+    <span class="c1"># fracspw      - This python float contains the fraction (between 0.0 and 1.0)</span>
+    <span class="c1">#                of channels removed from the edge for the ALMA baseline correlator.</span>
+    <span class="c1">#                In the task interface, it is a subparameter of the edgespw parameter.</span>
+    <span class="c1">#</span>
+    <span class="c1"># fracspwfps    - This python float contains the fraction (between 0.0 and 1.0)</span>
+    <span class="c1">#                of channels removed from the edge for the ACS correlator.  In the</span>
+    <span class="c1">#                task interface, it it is a subparameter of the edgespw parameter.</span>
+    <span class="c1">#</span>
+    <span class="c1"># online       - This python boolean determines whether the online flags are</span>
+    <span class="c1">#                applied.</span>
+    <span class="c1"># fileonline   - This python string contains the name of the ASCII file that</span>
+    <span class="c1">#                has the flagging commands.  It is a subparameter of the</span>
+    <span class="c1">#                online parameter.</span>
+    <span class="c1">#</span>
+    <span class="c1"># template     - This python boolean determines whether flagging templates are</span>
+    <span class="c1">#                applied.</span>
+    <span class="c1"># filetemplate - This python string contains the name of the ASCII file that</span>
+    <span class="c1">#                has the flagging template (for RFI, birdies, telluric lines,</span>
+    <span class="c1">#                etc.).  It is a subparameter of the template parameter.</span>
+
+    <span class="c1"># Inputs:</span>
+    <span class="c1"># -------</span>
+    <span class="c1"># None.</span>
+
+    <span class="c1"># Outputs:</span>
+    <span class="c1"># --------</span>
+    <span class="c1"># None, returned via the function value.</span>
+
+    <span class="c1"># Modification history:</span>
+    <span class="c1"># ---------------------</span>
+    <span class="c1"># 2012 May 10 - Nick Elias, NRAO</span>
+    <span class="c1">#               Initial version.</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    FlagDeterVLAInputs defines the inputs for the FlagDeterVLA pipeline task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Search order of input vis</span>
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
+
+    <span class="n">baseband</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">clip</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">edgespw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fracspw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+    <span class="c1"># fracspwfps = vdp.VisDependentProperty(default=0.04837)</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">intents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># return just the unwanted intents that are present in the MS</span>
+        <span class="c1"># VLA Specific intents that need to be flagged</span>
+        <span class="n">intents_to_flag</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;POINTING&#39;</span><span class="p">,</span> <span class="s1">&#39;FOCUS&#39;</span><span class="p">,</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIDEBAND&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;UNKNOWN&#39;</span><span class="p">,</span> <span class="s1">&#39;SYSTEM_CONFIGURATION&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;UNSPECIFIED#UNSPECIFIED&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">intents_to_flag</span><span class="p">))</span>
+
+    <span class="n">quack</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">autocorr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shadow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">scannumber</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">quack</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">baseband</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">edgespw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fracspw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fracspwfps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">online</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fileonline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filetemplate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_tbuff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">tbuff</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FlagDeterVLAInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="n">flagbackup</span><span class="p">,</span> <span class="n">autocorr</span><span class="o">=</span><span class="n">autocorr</span><span class="p">,</span> <span class="n">shadow</span><span class="o">=</span><span class="n">shadow</span><span class="p">,</span>
+            <span class="n">scan</span><span class="o">=</span><span class="n">scan</span><span class="p">,</span> <span class="n">scannumber</span><span class="o">=</span><span class="n">scannumber</span><span class="p">,</span> <span class="n">intents</span><span class="o">=</span><span class="n">intents</span><span class="p">,</span> <span class="n">edgespw</span><span class="o">=</span><span class="n">edgespw</span><span class="p">,</span> <span class="n">fracspw</span><span class="o">=</span><span class="n">fracspw</span><span class="p">,</span> <span class="n">fracspwfps</span><span class="o">=</span><span class="n">fracspwfps</span><span class="p">,</span>
+            <span class="n">online</span><span class="o">=</span><span class="n">online</span><span class="p">,</span> <span class="n">fileonline</span><span class="o">=</span><span class="n">fileonline</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">,</span> <span class="n">filetemplate</span><span class="o">=</span><span class="n">filetemplate</span><span class="p">,</span> <span class="n">hm_tbuff</span><span class="o">=</span><span class="n">hm_tbuff</span><span class="p">,</span>
+            <span class="n">tbuff</span><span class="o">=</span><span class="n">tbuff</span><span class="p">)</span>
+
+        <span class="c1"># VLA-specific parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quack</span> <span class="o">=</span> <span class="n">quack</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clip</span> <span class="o">=</span> <span class="n">clip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baseband</span> <span class="o">=</span> <span class="n">baseband</span>
+
+    <span class="c1"># ------------------------------------------------------------------------------</span>
+
+    <span class="c1"># FlagDeterVLAInputs::to_casa_args</span>
+
+    <span class="c1"># Description:</span>
+    <span class="c1"># ------------</span>
+    <span class="c1"># This public member function translates the input parameters of this class to</span>
+    <span class="c1"># task parameters and file-based flag commands required by CASA task tflagdata.</span>
+
+    <span class="c1"># NB: This public member function is overloaded.</span>
+
+    <span class="c1"># Inputs:</span>
+    <span class="c1"># -------</span>
+    <span class="c1"># None.</span>
+
+    <span class="c1"># Outputs:</span>
+    <span class="c1"># --------</span>
+    <span class="c1"># The python dictionary containing the arguments (and their values) for CASA</span>
+    <span class="c1"># task tflagdata, returned via the function value.</span>
+    <span class="c1">#     The the end 5 percent of each spw or minimum of 3 channelsmporary file that</span>
+    <span class="c1"># contains the flagging commands for the tflagdata task, located in the output</span>
+    <span class="c1"># directory.</span>
+
+    <span class="c1"># Modification history:</span>
+    <span class="c1"># ---------------------</span>
+    <span class="c1"># 2012 May 10 - Nick Elias, NRAO</span>
+    <span class="c1">#               Initial version.</span>
+
+<div class="viewcode-block" id="FlagDeterVLAInputs.to_casa_args">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagdetervla.FlagDeterVLAInputs.to_casa_args">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># Initialize the arguments from the inherited</span>
+        <span class="c1"># FlagDeterBaseInputs() class</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FlagDeterVLAInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+
+        <span class="c1"># Return the tflagdata task arguments</span>
+        <span class="k">return</span> <span class="n">task_args</span></div>
+</div>
+
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># class FlagDeterVLAResults</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># FlagDeterVLAResults</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This class manages the results from the FlagDeterVLA() class.</span>
+
+<span class="c1"># Inherited classes:</span>
+<span class="c1"># ------------------</span>
+<span class="c1"># FlagDeterBaseResults - This class manages the results from the FlagDeterBase()</span>
+<span class="c1">#                        class.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 10 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version created with no new member functions.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="FlagDeterVLAResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagdetervla.FlagDeterVLAResults">[docs]</a>
+<span class="k">class</span> <span class="nc">FlagDeterVLAResults</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseResults</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># class FlagDeterVLA</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="c1"># FlagDeterVLA</span>
+
+<span class="c1"># Description:</span>
+<span class="c1"># ------------</span>
+<span class="c1"># This class represents the pipeline interface to the CASA task flagdata.</span>
+
+<span class="c1"># Inherited classes:</span>
+<span class="c1"># ------------------</span>
+<span class="c1"># FlagDeterBase - This class represents the pipeline interface to the CASA task</span>
+<span class="c1">#                 flagdata.</span>
+
+<span class="c1"># Public member functions:</span>
+<span class="c1"># ------------------------</span>
+<span class="c1"># All public member functions from the FlagDeterVLAInputs() class.</span>
+
+<span class="c1"># Modification history:</span>
+<span class="c1"># ---------------------</span>
+<span class="c1"># 2012 May 10 - Nick Elias, NRAO</span>
+<span class="c1">#               Initial version.</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="FlagDeterVLA">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagdetervla.FlagDeterVLA">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_flagdata&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">FlagDeterVLA</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBase</span><span class="p">):</span>
+
+    <span class="c1"># Make the member functions of the FlagDeterVLAInputs() class member</span>
+    <span class="c1"># functions of this class</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FlagDeterVLAInputs</span>
+
+<div class="viewcode-block" id="FlagDeterVLA.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagdetervla.FlagDeterVLA.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare and execute a flagdata flagging job appropriate to the</span>
+<span class="sd">        task inputs.</span>
+
+<span class="sd">        This method generates, overwriting if necessary, an ASCII file</span>
+<span class="sd">        containing flagdata flagging commands. A flagdata task is then</span>
+<span class="sd">        executed, using this ASCII file as inputs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># create a local alias for inputs, so we&#39;re not saying &#39;self.inputs&#39;</span>
+        <span class="c1"># everywhere</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># get the flagdata command string, ready for the flagdata input file</span>
+        <span class="n">flag_cmds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_flag_commands</span><span class="p">()</span>
+        <span class="n">flag_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flag_cmds</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">flag_cmds</span><span class="p">:</span>
+            <span class="c1"># Before summary command</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;before&#39;</span><span class="p">)</span>
+            <span class="n">before_summary_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="c1"># write the flag commands to the file</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">inpfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">flag_str</span><span class="p">)</span>
+
+        <span class="c1"># to save inspecting the file, also log the flag commands</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Flag commands for </span><span class="si">%s</span><span class="s1">:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">flag_str</span><span class="p">)</span>
+
+        <span class="c1"># Map the pipeline inputs to a dictionary of CASA task arguments</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+
+        <span class="c1"># create and execute a flagdata job using these task arguments</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+        <span class="n">summary_dict_cmds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="n">summary_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">flag_cmds</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">in</span> <span class="n">summary_dict_cmds</span><span class="p">:</span>
+                <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;report1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">summary_dict_cmds</span>
+                <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;report0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">before_summary_dict</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">summary_dict</span> <span class="o">=</span> <span class="n">summary_dict_cmds</span>
+                <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;before&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">before_summary_dict</span>
+
+        <span class="n">agent_summaries</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">summary_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+        <span class="n">ordered_agents</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;before&#39;</span><span class="p">,</span> <span class="s1">&#39;anos&#39;</span><span class="p">,</span> <span class="s1">&#39;online&#39;</span><span class="p">,</span> <span class="s1">&#39;shadow&#39;</span><span class="p">,</span> <span class="s1">&#39;intents&#39;</span><span class="p">,</span> <span class="s1">&#39;qa0&#39;</span><span class="p">,</span>  <span class="s1">&#39;qa2&#39;</span><span class="p">,</span> <span class="s1">&#39;template&#39;</span><span class="p">,</span> <span class="s1">&#39;autocorr&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;edgespw&#39;</span><span class="p">,</span> <span class="s1">&#39;clip&#39;</span><span class="p">,</span> <span class="s1">&#39;quack&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;baseband&#39;</span><span class="p">]</span>
+
+        <span class="n">summary_reps</span> <span class="o">=</span> <span class="p">[</span><span class="n">agent_summaries</span><span class="p">[</span><span class="n">agent</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">ordered_agents</span>
+                        <span class="k">if</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agent_summaries</span><span class="p">]</span>
+
+        <span class="c1"># return the results object, which will be used for the weblog</span>
+        <span class="k">return</span> <span class="n">FlagDeterVLAResults</span><span class="p">(</span><span class="n">summary_reps</span><span class="p">,</span> <span class="n">flag_cmds</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_flag_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Adding quack and clip</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># flag_cmds = super(FlagDeterVLA, self)._get_flag_commands()</span>
+
+        <span class="n">flag_cmds</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># flag anos?</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">online</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">fileonline</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Online ANOS flag file </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> was not found. Online ANOS&#39;</span>
+                            <span class="s1">&#39;flagging for </span><span class="si">%s</span><span class="s1"> disabled.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">fileonline</span><span class="p">,</span> 
+                                                           <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># ANTENNA_NOT_ON_SOURCE FLAG</span>
+                <span class="n">cmdlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_flagfile</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">fileonline</span><span class="p">)</span>
+                <span class="n">flag_cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">cmd</span> <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="n">cmdlist</span> <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;ANTENNA_NOT_ON_SOURCE&#39;</span> <span class="ow">in</span> <span class="n">cmd</span><span class="p">)])</span>
+                <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">summary</span><span class="se">\&#39;</span><span class="s1"> name=</span><span class="se">\&#39;</span><span class="s1">anos</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Flag online?</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">online</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">fileonline</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Online flag file </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> was not found. Online &#39;</span>
+                            <span class="s1">&#39;flagging for </span><span class="si">%s</span><span class="s1"> disabled.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">fileonline</span><span class="p">,</span>
+                                                           <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cmdlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_flagfile</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">fileonline</span><span class="p">)</span>
+                <span class="c1"># All other online flags</span>
+                <span class="n">flag_cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">cmd</span> <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="n">cmdlist</span> <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;ANTENNA_NOT_ON_SOURCE&#39;</span> <span class="ow">in</span> <span class="n">cmd</span><span class="p">)])</span>
+                <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">summary</span><span class="se">\&#39;</span><span class="s1"> name=</span><span class="se">\&#39;</span><span class="s1">online</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Flag shadowed antennas?</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shadow</span><span class="p">:</span>
+            <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">shadow</span><span class="se">\&#39;</span><span class="s1"> reason=</span><span class="se">\&#39;</span><span class="s1">shadow</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">summary</span><span class="se">\&#39;</span><span class="s1"> name=</span><span class="se">\&#39;</span><span class="s1">shadow</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># These must be separated due to the way agent flagging works</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">scan</span> <span class="ow">and</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intents</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s1">&#39;*&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">intent</span><span class="p">:</span>
+                    <span class="n">intent</span> <span class="o">=</span> <span class="s1">&#39;*</span><span class="si">%s</span><span class="s1">*&#39;</span> <span class="o">%</span> <span class="n">intent</span>
+                <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">manual</span><span class="se">\&#39;</span><span class="s1"> intent=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> reason=</span><span class="se">\&#39;</span><span class="s1">intents</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">intent</span><span class="p">)</span>
+            <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">summary</span><span class="se">\&#39;</span><span class="s1"> name=</span><span class="se">\&#39;</span><span class="s1">intents</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># flag template?</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">template</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">filetemplate</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Template flag file </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> was not found. Template &#39;</span>
+                            <span class="s1">&#39;flagging for </span><span class="si">%s</span><span class="s1"> disabled.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">filetemplate</span><span class="p">,</span>
+                                                           <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">template_cmds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_flagfile</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">filetemplate</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">template_cmds</span><span class="p">:</span>
+                    <span class="n">flag_cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">template_cmds</span><span class="p">)</span>
+                    <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">summary</span><span class="se">\&#39;</span><span class="s1"> name=</span><span class="se">\&#39;</span><span class="s1">template</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Flag autocorrelations?</span>
+        <span class="c1"># if inputs.autocorr:</span>
+        <span class="c1">#     flag_cmds.append(&#39;mode=manual antenna=*&amp;&amp;&amp;&#39;)</span>
+        <span class="c1">#     flag_cmds.append(self._get_autocorr_cmd())</span>
+
+        <span class="c1"># Flag autocorrelations?</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">autocorr</span><span class="p">:</span>
+            <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">manual</span><span class="se">\&#39;</span><span class="s1"> autocorr=True reason=</span><span class="se">\&#39;</span><span class="s1">autocorr</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">summary</span><span class="se">\&#39;</span><span class="s1"> name=</span><span class="se">\&#39;</span><span class="s1">autocorr</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Flag according to scan numbers and intents?</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">scan</span> <span class="ow">and</span> <span class="n">inputs</span><span class="o">.</span><span class="n">scannumber</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">manual</span><span class="se">\&#39;</span><span class="s1"> scan=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> reason=</span><span class="se">\&#39;</span><span class="s1">scans</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">scannumber</span><span class="p">)</span>
+            <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">summary</span><span class="se">\&#39;</span><span class="s1"> name=</span><span class="se">\&#39;</span><span class="s1">scans</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Flag end 5 percent of each spw or minimum of 3 channels</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">edgespw</span><span class="p">:</span>
+            <span class="n">to_flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_edgespw_cmds</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">to_flag</span><span class="p">:</span>
+                <span class="n">spw_arg</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">to_flag</span><span class="p">)</span>
+                <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spw_arg</span><span class="p">)</span>
+                <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">summary</span><span class="se">\&#39;</span><span class="s1"> name=</span><span class="se">\&#39;</span><span class="s1">edgespw</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># VLA specific commands</span>
+
+        <span class="c1"># Flag mode clip</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">clip</span><span class="p">:</span>
+            <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">clip</span><span class="se">\&#39;</span><span class="s1"> correlation=</span><span class="se">\&#39;</span><span class="s1">ABS_ALL</span><span class="se">\&#39;</span><span class="s1"> clipzeros=True reason=</span><span class="se">\&#39;</span><span class="s1">clip</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">summary</span><span class="se">\&#39;</span><span class="s1"> name=</span><span class="se">\&#39;</span><span class="s1">clip</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Flag quack</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">quack</span><span class="p">:</span> 
+            <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_quack_cmds</span><span class="p">())</span>
+            <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">summary</span><span class="se">\&#39;</span><span class="s1"> name=</span><span class="se">\&#39;</span><span class="s1">quack</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Flag 20MHz of each edge of basebands</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">baseband</span><span class="p">:</span>
+            <span class="n">to_flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_baseband_cmds</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">to_flag</span><span class="p">:</span>
+                <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_flag</span><span class="p">)</span>
+                <span class="n">flag_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">summary</span><span class="se">\&#39;</span><span class="s1"> name=</span><span class="se">\&#39;</span><span class="s1">baseband</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">flag_cmds</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">flag_cmds</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">flag_cmds</span> <span class="o">=</span> <span class="n">flag_cmds</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># summarise the state before flagging rather than assuming the initial</span>
+        <span class="c1"># state is unflagged</span>
+        <span class="c1"># if flag_cmds:</span>
+        <span class="c1">#    flag_cmds.insert(0, &quot;mode=&#39;summary&#39; name=&#39;before&#39;&quot;)</span>
+
+        <span class="k">return</span> <span class="n">flag_cmds</span>
+
+    <span class="k">def</span> <span class="nf">_get_autocorr_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># return &#39;mode=manual antenna=*&amp;&amp;&amp;&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">manual</span><span class="se">\&#39;</span><span class="s1"> autocorr=True&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_get_edgespw_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns flag command to flag edge channels of SPWs.</span>
+<span class="sd">        The fraction of channels flagged in each edge of SPWs is defined by fracspw.</span>
+<span class="sd">        At least one channel in each edge of SPW will be flagged when this method is called.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">channels</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_numchan</span><span class="p">()</span>
+        <span class="n">numSpws</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span>
+
+        <span class="n">SPWtoflag</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">for</span> <span class="n">ispw</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numSpws</span><span class="p">):</span>
+            <span class="n">spwedge_nchan</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span> <span class="o">*</span> <span class="n">channels</span><span class="p">[</span><span class="n">ispw</span><span class="p">])</span>
+            <span class="c1"># Minimum number of channels flagged must be one on each end</span>
+            <span class="k">if</span> <span class="n">spwedge_nchan</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">spwedge_nchan</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">startch1</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">startch2</span> <span class="o">=</span> <span class="n">spwedge_nchan</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">endch1</span> <span class="o">=</span> <span class="n">channels</span><span class="p">[</span><span class="n">ispw</span><span class="p">]</span> <span class="o">-</span> <span class="n">spwedge_nchan</span>
+            <span class="n">endch2</span> <span class="o">=</span> <span class="n">channels</span><span class="p">[</span><span class="n">ispw</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">ispw</span> <span class="o">&lt;</span> <span class="nb">max</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">numSpws</span><span class="p">)):</span>
+                <span class="n">SPWtoflag</span> <span class="o">=</span> <span class="n">SPWtoflag</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ispw</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;:&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">startch1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;~&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">startch2</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">endch1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;~&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">endch2</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;,&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">SPWtoflag</span> <span class="o">=</span> <span class="n">SPWtoflag</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ispw</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;:&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">startch1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;~&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">startch2</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">endch1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;~&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">endch2</span><span class="p">)</span>
+
+        <span class="n">edgespw_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">manual</span><span class="se">\&#39;</span><span class="s1"> spw=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> reason=</span><span class="se">\&#39;</span><span class="s1">edgespw</span><span class="se">\&#39;</span><span class="s1"> name=</span><span class="se">\&#39;</span><span class="s1">edgespw</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">SPWtoflag</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">edgespw_cmd</span>
+
+    <span class="k">def</span> <span class="nf">_get_quack_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a flagdata flagging command that will quack, ie</span>
+<span class="sd">        flagdata_list.append(&quot;mode=&#39;quack&#39; scan=&quot; + quack_scan_string +</span>
+<span class="sd">        &quot; quackinterval=&quot; + str(1.5*int_time) + &quot; quackmode=&#39;beg&#39; &quot; +</span>
+<span class="sd">        &quot;quackincrement=False&quot;)</span>
+
+<span class="sd">        :rtype: a string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">quack_scan_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_vla_quackingscans</span><span class="p">()</span>
+        <span class="n">int_time</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_max_integration_time</span><span class="p">()</span>
+
+        <span class="n">quack_mode_cmd</span> <span class="o">=</span> <span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">quack</span><span class="se">\&#39;</span><span class="s1"> scan=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> quackinterval=</span><span class="si">%s</span><span class="s1"> quackmode=</span><span class="se">\&#39;</span><span class="s1">beg</span><span class="se">\&#39;</span><span class="s1"> quackincrement=False reason=</span><span class="se">\&#39;</span><span class="s1">quack</span><span class="se">\&#39;</span><span class="s1"> name=</span><span class="se">\&#39;</span><span class="s1">quack</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">quack_scan_string</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="mf">1.5</span><span class="o">*</span><span class="n">int_time</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">quack_mode_cmd</span>
+
+    <span class="k">def</span> <span class="nf">_get_vla_quackingscans</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find VLA scans for quacking.  Quack! :)&quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">ms</span><span class="p">:</span>
+            <span class="n">scan_summary</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">getscansummary</span><span class="p">()</span>
+
+        <span class="n">integ_scan_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scan_summary</span><span class="p">:</span>
+            <span class="n">integ_scan_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">scan</span><span class="p">))</span>
+        <span class="n">sorted_scan_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">integ_scan_list</span><span class="p">)</span>
+
+        <span class="n">scan_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">old_scan</span> <span class="o">=</span> <span class="n">scan_summary</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">sorted_scan_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])][</span><span class="s1">&#39;0&#39;</span><span class="p">]</span>
+
+        <span class="n">old_field</span> <span class="o">=</span> <span class="n">old_scan</span><span class="p">[</span><span class="s1">&#39;FieldId&#39;</span><span class="p">]</span>
+        <span class="n">old_spws</span> <span class="o">=</span> <span class="n">old_scan</span><span class="p">[</span><span class="s1">&#39;SpwIds&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_scan_list</span><span class="p">)):</span>
+            <span class="n">new_scan</span> <span class="o">=</span> <span class="n">scan_summary</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">sorted_scan_list</span><span class="p">[</span><span class="n">ii</span><span class="p">])][</span><span class="s1">&#39;0&#39;</span><span class="p">]</span>
+            <span class="n">new_field</span> <span class="o">=</span> <span class="n">new_scan</span><span class="p">[</span><span class="s1">&#39;FieldId&#39;</span><span class="p">]</span>
+            <span class="n">new_spws</span> <span class="o">=</span> <span class="n">new_scan</span><span class="p">[</span><span class="s1">&#39;SpwIds&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">new_field</span> <span class="o">!=</span> <span class="n">old_field</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">new_spws</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="n">old_spws</span><span class="p">)):</span>
+                <span class="n">scan_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sorted_scan_list</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+                <span class="n">old_field</span> <span class="o">=</span> <span class="n">new_field</span>
+                <span class="n">old_spws</span> <span class="o">=</span> <span class="n">new_spws</span>
+        <span class="n">quack_scan_string</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ii</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">scan_list</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">quack_scan_string</span>
+
+    <span class="k">def</span> <span class="nf">_get_baseband_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a flag command which flags 20MHz of each edge of basebands.</span>
+<span class="sd">        At least one channel in each band edge is flagged when the function is called.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">bottomSPW</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+        <span class="n">topSPW</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># Determination of baseband taken from original EVLA scripted pipeline</span>
+        <span class="c1"># -----MS info script part</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/SPECTRAL_WINDOW&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">reference_frequencies</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;REF_FREQUENCY&#39;</span><span class="p">)</span>  <span class="c1"># spwobj.ref_frequency</span>
+            <span class="n">spw_bandwidths</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TOTAL_BANDWIDTH&#39;</span><span class="p">)</span>  <span class="c1"># spwobj.bandwidth</span>
+            <span class="n">originalBBClist</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;BBC_NO&#39;</span><span class="p">)</span>  <span class="c1"># spwobj.baseband</span>
+            <span class="n">channels</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;NUM_CHAN&#39;</span><span class="p">)</span>  <span class="c1"># spwobj.num_channels</span>
+
+        <span class="n">sorted_indices</span> <span class="o">=</span> <span class="n">reference_frequencies</span><span class="o">.</span><span class="n">argsort</span><span class="p">()</span>
+        <span class="n">sorted_frequencies</span> <span class="o">=</span> <span class="n">reference_frequencies</span><span class="p">[</span><span class="n">sorted_indices</span><span class="p">]</span>
+
+        <span class="n">spwList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">BBC_bandwidths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="n">ii</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_frequencies</span><span class="p">):</span>
+            <span class="n">upper_frequency</span> <span class="o">=</span> <span class="n">sorted_frequencies</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">+</span> <span class="n">spw_bandwidths</span><span class="p">[</span><span class="n">sorted_indices</span><span class="p">[</span><span class="n">ii</span><span class="p">]]</span>
+            <span class="n">BBC_bandwidth</span> <span class="o">=</span> <span class="n">spw_bandwidths</span><span class="p">[</span><span class="n">sorted_indices</span><span class="p">[</span><span class="n">ii</span><span class="p">]]</span>
+            <span class="n">thisSpwList</span> <span class="o">=</span> <span class="p">[</span><span class="n">sorted_indices</span><span class="p">[</span><span class="n">ii</span><span class="p">]]</span>
+            <span class="n">jj</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">while</span> <span class="n">jj</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_frequencies</span><span class="p">):</span>
+                <span class="n">lower_frequency</span> <span class="o">=</span> <span class="n">sorted_frequencies</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span>
+                <span class="k">if</span> <span class="p">((</span><span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">lower_frequency</span> <span class="o">-</span> <span class="n">upper_frequency</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">)</span> <span class="ow">and</span>
+                        <span class="p">(</span><span class="n">originalBBClist</span><span class="p">[</span><span class="n">sorted_indices</span><span class="p">[</span><span class="n">ii</span><span class="p">]]</span> <span class="o">==</span> <span class="n">originalBBClist</span><span class="p">[</span><span class="n">sorted_indices</span><span class="p">[</span><span class="n">jj</span><span class="p">]])):</span>
+                    <span class="n">thisSpwList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sorted_indices</span><span class="p">[</span><span class="n">jj</span><span class="p">])</span>
+                    <span class="n">upper_frequency</span> <span class="o">+=</span> <span class="n">spw_bandwidths</span><span class="p">[</span><span class="n">sorted_indices</span><span class="p">[</span><span class="n">jj</span><span class="p">]]</span>
+                    <span class="n">BBC_bandwidth</span> <span class="o">+=</span> <span class="n">spw_bandwidths</span><span class="p">[</span><span class="n">sorted_indices</span><span class="p">[</span><span class="n">jj</span><span class="p">]]</span>
+                    <span class="n">jj</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">jj</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_frequencies</span><span class="p">)</span>
+            <span class="n">spwList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">thisSpwList</span><span class="p">)</span>
+            <span class="n">BBC_bandwidths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BBC_bandwidth</span><span class="p">)</span>
+            <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>        
+
+        <span class="n">low_spws</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">high_spws</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">BBC_bandwidths</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">BBC_bandwidths</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">1.0e9</span><span class="p">:</span>
+                <span class="n">low_spws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spwList</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">high_spws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spwList</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="nb">len</span><span class="p">(</span><span class="n">spwList</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">quanta</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="n">bandedge_hz</span> <span class="o">=</span> <span class="n">quanta</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;20MHz&#39;</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">))</span>
+        <span class="n">topSPW_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bottomSPW_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Generating flag commands for 20MHz Band Edge flagging&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">low_spws</span><span class="p">)):</span>
+            <span class="c1"># lower bandedge</span>
+            <span class="n">bspw</span> <span class="o">=</span> <span class="n">low_spws</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+            <span class="n">ave_chansep</span> <span class="o">=</span> <span class="p">(</span><span class="n">spw_bandwidths</span><span class="p">[</span><span class="n">bspw</span><span class="p">]</span><span class="o">/</span><span class="n">channels</span><span class="p">[</span><span class="n">bspw</span><span class="p">])</span>
+            <span class="n">startch2</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">bandedge_hz</span><span class="o">/</span><span class="n">ave_chansep</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">bottomSPW_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">:0~</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">bspw</span><span class="p">,</span> <span class="n">startch2</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Lower band edge spw=</span><span class="si">%d</span><span class="s1">, average channel separation=</span><span class="si">%f</span><span class="s1"> Hz, edgeChannels = </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">bspw</span><span class="p">,</span> <span class="n">ave_chansep</span><span class="p">,</span> <span class="n">startch2</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="c1"># upper bandedge</span>
+            <span class="n">tspw</span> <span class="o">=</span> <span class="n">high_spws</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+            <span class="n">ave_chansep</span> <span class="o">=</span> <span class="p">(</span><span class="n">spw_bandwidths</span><span class="p">[</span><span class="n">tspw</span><span class="p">]</span><span class="o">/</span><span class="n">channels</span><span class="p">[</span><span class="n">tspw</span><span class="p">])</span>
+            <span class="n">endch1</span><span class="o">=</span><span class="n">channels</span><span class="p">[</span><span class="n">tspw</span><span class="p">]</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">bandedge_hz</span><span class="o">/</span><span class="n">ave_chansep</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">endch2</span><span class="o">=</span><span class="n">channels</span><span class="p">[</span><span class="n">tspw</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span>
+            <span class="n">topSPW_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">:</span><span class="si">%d</span><span class="s1">~</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tspw</span><span class="p">,</span> <span class="n">endch1</span><span class="p">,</span> <span class="n">endch2</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Upper band edge spw=</span><span class="si">%d</span><span class="s1">, average channel separation=</span><span class="si">%f</span><span class="s1"> Hz, edgeChannels = </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tspw</span><span class="p">,</span> <span class="n">ave_chansep</span><span class="p">,</span> <span class="n">endch2</span><span class="o">-</span><span class="n">endch1</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">bottomSPW</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bottomSPW_list</span><span class="p">)</span>
+        <span class="n">topSPW</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">topSPW_list</span><span class="p">)</span>
+
+        <span class="n">baseband_cmd</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;bottomSPW: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bottomSPW</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;topSPW: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">topSPW</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">bottomSPW</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">SPWtoflag</span> <span class="o">=</span> <span class="n">bottomSPW</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="n">topSPW</span>
+            <span class="n">baseband_cmd</span> <span class="o">=</span> <span class="s1">&#39;mode=</span><span class="se">\&#39;</span><span class="s1">manual</span><span class="se">\&#39;</span><span class="s1"> spw=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> reason=</span><span class="se">\&#39;</span><span class="s1">baseband</span><span class="se">\&#39;</span><span class="s1"> name=</span><span class="se">\&#39;</span><span class="s1">baseband</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">SPWtoflag</span>
+
+        <span class="k">return</span> <span class="n">baseband_cmd</span>
+
+<div class="viewcode-block" id="FlagDeterVLA.verify_spw">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagdetervla.FlagDeterVLA.verify_spw">[docs]</a>
+    <span class="k">def</span> <span class="nf">verify_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
+        <span class="c1"># override the default verifier, adding an extra test that bypasses</span>
+        <span class="c1"># flagging of TDM windows</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FlagDeterVLA</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">verify_spw</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+
+        <span class="c1"># Skip if TDM mode where TDM modes are defined to be modes with </span>
+        <span class="c1"># &lt;= 256 channels per correlation</span>
+        <span class="n">dd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)</span>
+        <span class="n">ncorr</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dd</span><span class="o">.</span><span class="n">corr_axis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ncorr</span><span class="o">*</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span> <span class="o">&gt;</span> <span class="mi">256</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Skipping edge flagging for FDM spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>            </div>
+
+
+    <span class="k">def</span> <span class="nf">_add_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read and return the contents of a file or list of files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If the input is a list of flagging command file names, call this</span>
+        <span class="c1"># function recursively.  Otherwise, read in the file and return its</span>
+        <span class="c1"># contents</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_add_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filename</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_read_flagfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> does not exist&#39;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># strip out comments and empty lines to leave the real commands.</span>
+        <span class="c1"># This is so we can compare the number of valid commands to the number</span>
+        <span class="c1"># of commands specified in the file and complain if they differ</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">cmd</span> <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="n">flaghelper</span><span class="o">.</span><span class="n">readFile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> 
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">cmd</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">c</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">whitespace</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cmd</span><span class="p">)]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

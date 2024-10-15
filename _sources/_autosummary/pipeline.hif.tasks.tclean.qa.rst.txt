@@ -1,0 +1,13 @@
+pipeline.hif.tasks.tclean.qa
+============================
+
+.. automodule:: pipeline.hif.tasks.tclean.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TcleanListQAHandler
+      TcleanQAHandler
+   

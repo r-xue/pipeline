@@ -1,0 +1,823 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.mpihelpers &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.mpihelpers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.mpihelpers</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
+<span class="kn">import</span> <span class="nn">pprint</span> 
+
+<span class="kn">from</span> <span class="nn">pipeline.domain.unitformat</span> <span class="kn">import</span> <span class="n">file_size</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">casampi.MPIEnvironment</span> <span class="kn">import</span> <span class="n">MPIEnvironment</span>
+    <span class="kn">from</span> <span class="nn">casampi.MPICommandClient</span> <span class="kn">import</span> <span class="n">MPICommandClient</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c1"># MPI not available on macOS</span>
+    <span class="k">class</span> <span class="nc">DummyMPIEnvironment</span><span class="p">:</span>
+        <span class="n">is_mpi_enabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">is_mpi_client</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">MPIEnvironment</span> <span class="o">=</span> <span class="n">DummyMPIEnvironment</span><span class="p">()</span>
+    <span class="c1"># stub MPICommandClient too to keep IDE happy</span>
+    <span class="n">MPICommandClient</span> <span class="o">=</span> <span class="nb">object</span>
+
+
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">exceptions</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">get_obj_size</span>
+<span class="kn">from</span> <span class="nn">.jobrequest</span> <span class="kn">import</span> <span class="n">JobRequest</span>
+
+<span class="c1"># global variable for toggling MPI usage</span>
+<span class="n">USE_MPI</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">ENABLE_TIER0_PLOTMS</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AsyncTask">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.AsyncTask">[docs]</a>
+<span class="k">class</span> <span class="nc">AsyncTask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new AsyncTask.</span>
+
+<span class="sd">        The referenced task will be immediately queued for asynchronous</span>
+<span class="sd">        execution on an MPI server upon creation of an object.</span>
+
+<span class="sd">        :param executable: the TierN executable class to run</span>
+<span class="sd">        :return: an AsyncTask object</span>
+
+<span class="sd">        Note that tier0_executable must be picklable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;pushing tier0executable </span><span class="si">{}</span><span class="s1"> from the client: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">executable</span><span class="p">,</span> <span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_obj_size</span><span class="p">(</span><span class="n">executable</span><span class="p">))))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__pid</span> <span class="o">=</span> <span class="n">mpiclient</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span>
+            <span class="s1">&#39;pipeline.infrastructure.mpihelpers.mpiexec(tier0_executable)&#39;</span><span class="p">,</span>
+            <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tier0_executable&#39;</span><span class="p">:</span> <span class="n">executable</span><span class="p">})</span>
+
+<div class="viewcode-block" id="AsyncTask.get_result">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.AsyncTask.get_result">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the result from the executed task.</span>
+
+<span class="sd">        This method blocks until execution of the asynchronous task is</span>
+<span class="sd">        complete.</span>
+
+<span class="sd">        :return: the Result returned by the executing task</span>
+<span class="sd">        :rtype: pipeline.infrastructure.api.Result</span>
+<span class="sd">        :except PipelineException: if the task did not complete successfully.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">mpiclient</span><span class="o">.</span><span class="n">get_command_response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__pid</span><span class="p">,</span>
+                                                  <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                  <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Received the response (</span><span class="si">%s</span><span class="s1">) from MPIserver-</span><span class="si">%s</span><span class="s1"> for command_request_id=</span><span class="si">%s</span><span class="s1"> executing </span><span class="si">%s</span><span class="s1">; content:&#39;</span><span class="p">,</span>
+                  <span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_obj_size</span><span class="p">(</span><span class="n">response</span><span class="p">)),</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;server&#39;</span><span class="p">],</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;parameters&#39;</span><span class="p">][</span><span class="s1">&#39;tier0_executable&#39;</span><span class="p">])</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">response</span><span class="p">))</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;successful&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_merge_casa_commands</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;ret&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">err_msg</span> <span class="o">=</span> <span class="s2">&quot;Failure executing job on MPI server </span><span class="si">{}</span><span class="s2">, &quot;</span> \
+                      <span class="s2">&quot;with traceback</span><span class="se">\n</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;server&#39;</span><span class="p">],</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;traceback&#39;</span><span class="p">])</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">PipelineException</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_merge_casa_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge the &quot;casa_commands&quot; log entries from a Tier0 AsyncTask into the client-side main logfile.</span>
+
+<span class="sd">        This method is expected to run on the MPI client when retrieving the AsyncTask result.</span>
+<span class="sd">        It will delete the individual tier0 casa command files created by MPI servers.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            response:   the response of a MPI command request, returned from mpiclient.get_command_response().</span>
+<span class="sd">                        Expected to be a dictionary containing the command execution details from the server-side.</span>
+
+<span class="sd">        Note on the &quot;response&quot; dictionary structure:</span>
+<span class="sd">            The following keys of &quot;response&quot; are used in this method:</span>
+
+<span class="sd">                response[&#39;parameters&#39;][&#39;tier0_executable&#39;]: a copy of the input tier0_executable object, with modifications from the MPI server</span>
+<span class="sd">                response[&#39;server&#39;]: the MPI server rank</span>
+<span class="sd">                response[&#39;id&#39;]: the command request id (same as self.__pid)</span>
+<span class="sd">                response[&#39;command_start_time&#39;]: command start time</span>
+<span class="sd">                response[&#39;command_stop_time&#39;]: command stop time</span>
+
+<span class="sd">            The rest keys include:</span>
+<span class="sd">                response[&#39;ret&#39;]: return from the server-side constructed PipelineTask/JobRequest executable</span>
+<span class="sd">                response[&#39;command&#39;]: the input command request string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;Received a successful response from MPIserver-</span><span class="si">{server}</span><span class="s1"> for command_request_id=</span><span class="si">{id}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;return request logs: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">][</span><span class="s1">&#39;tier0_executable&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">logs</span><span class="p">))</span>
+
+        <span class="n">response_logs</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">][</span><span class="s1">&#39;tier0_executable&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">logs</span>
+        <span class="n">client_cmdfile</span> <span class="o">=</span> <span class="n">response_logs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;casa_commands&#39;</span><span class="p">)</span>
+        <span class="n">tier0_cmdfile</span> <span class="o">=</span> <span class="n">response_logs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;casa_commands_tier0&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cmdfile</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cmdfile</span><span class="p">)</span> <span class="k">for</span> <span class="n">cmdfile</span> <span class="ow">in</span> <span class="p">[</span><span class="n">client_cmdfile</span><span class="p">,</span> <span class="n">tier0_cmdfile</span><span class="p">]):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Merge </span><span class="si">{</span><span class="n">tier0_cmdfile</span><span class="si">}</span><span class="s1"> into </span><span class="si">{</span><span class="n">client_cmdfile</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">client_cmdfile</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tier0_cmdfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tier0</span><span class="p">:</span>
+                    <span class="n">client</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;# MPIserver:           </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;server&#39;</span><span class="p">]))</span>
+                    <span class="n">client</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;# Duration:            </span><span class="si">{:.2f}</span><span class="s1">s</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">response</span><span class="p">[</span><span class="s1">&#39;command_stop_time&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;command_start_time&#39;</span><span class="p">]))</span>
+                    <span class="n">client</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;# CommandRequest ID:   </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]))</span>
+                    <span class="n">client</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">tier0</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tier0_cmdfile</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Cannot find Tier0 casa_commands.log for command_request_id=</span><span class="si">{id}</span><span class="s1">; no merge needed&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="SyncTask">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.SyncTask">[docs]</a>
+<span class="k">class</span> <span class="nc">SyncTask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new SyncTask object.</span>
+
+<span class="sd">        Creation of a SyncTask does not result in immediate execution of the</span>
+<span class="sd">        given task. Execution is delayed until the result is requested.</span>
+
+<span class="sd">        :param task: a pipeline task or JobRequest</span>
+<span class="sd">        :param executor: a pipeline Executor (optional)</span>
+<span class="sd">        :return: a SyncTask object</span>
+<span class="sd">        :rtype: SyncTask</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__task</span> <span class="o">=</span> <span class="n">task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span> <span class="o">=</span> <span class="n">executor</span>
+
+<div class="viewcode-block" id="SyncTask.get_result">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.SyncTask.get_result">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the result from the executed task.</span>
+
+<span class="sd">        This method starts execution of the wrapped task and blocks until</span>
+<span class="sd">        execution is complete.</span>
+
+<span class="sd">        :return: the Result returned by the executing task</span>
+<span class="sd">        :rtype: pipeline.infrastructure.api.Result</span>
+<span class="sd">        :except pipeline.infrastructure.exceptions.PipelineException: if the</span>
+<span class="sd">        task did not complete successfully.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__task</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__task</span><span class="p">):</span>
+                    <span class="c1"># for JobRequest or PipelineTask</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># for FunctionCall</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__task</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">traceback</span>
+            <span class="n">err_msg</span> <span class="o">=</span> <span class="s2">&quot;Failure executing job by an exception </span><span class="si">{}</span><span class="s2"> &quot;</span> \
+                      <span class="s2">&quot;with the following traceback</span><span class="se">\n</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">PipelineException</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Executable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.Executable">[docs]</a>
+<span class="k">class</span> <span class="nc">Executable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logs</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="Executable.get_executable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.Executable.get_executable">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_executable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and return an executable object, intended to run on the MPI server.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Tier0PipelineTask">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.Tier0PipelineTask">[docs]</a>
+<span class="k">class</span> <span class="nc">Tier0PipelineTask</span><span class="p">(</span><span class="n">Executable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_cls</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">context_path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new Tier0PipelineTask representing a pipeline task to be</span>
+<span class="sd">        executed on an MPI server.</span>
+
+<span class="sd">        :param task_cls: the class of the pipeline task to execute</span>
+<span class="sd">        :param task_args: any arguments to passed to the task Inputs</span>
+<span class="sd">        :param context_path: the filesystem path to the pickled Context</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__task_cls</span> <span class="o">=</span> <span class="n">task_cls</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span> <span class="o">=</span> <span class="n">context_path</span>
+
+        <span class="c1"># Assume that the path to the context pickle is safe to write the task</span>
+        <span class="c1"># argument pickle too</span>
+        <span class="n">context_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">context_path</span><span class="p">)</span>
+        <span class="c1"># Use the tempfile module to generate a unique temporary filename,</span>
+        <span class="c1"># which we use as the output path for our pickled context</span>
+        <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.task_args&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">context_dir</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__task_args_path</span> <span class="o">=</span> <span class="n">tmpfile</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">tmpfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c1"># write task args object to pickle</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__task_args_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pickle_file</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Saving task arguments to </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__task_args_path</span><span class="p">))</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">task_args</span><span class="p">,</span> <span class="n">pickle_file</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Tier0PipelineTask.get_executable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.Tier0PipelineTask.get_executable">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_executable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and return a Pipeline task executable, intended to run on the MPI server.</span>
+
+<span class="sd">        The construction is based on the content of Tier0PipelineTask instance pushed from the client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">context_file</span><span class="p">:</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">context_file</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;casa_commands&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
+                                                      <span class="n">context</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;casa_commands&#39;</span><span class="p">])</span>
+            <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.casa_commands.log&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">tmpfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;casa_commands_tier0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmpfile</span><span class="o">.</span><span class="n">name</span>
+
+            <span class="c1"># modify the context copy used on the MPI server</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;casa_commands&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;casa_commands_tier0&#39;</span><span class="p">]</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__task_args_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">task_args_file</span><span class="p">:</span>
+                <span class="n">task_args</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">task_args_file</span><span class="p">)</span>
+
+            <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__task_cls</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__task_cls</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__task_args_path</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__task_args_path</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__task_args_path</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Tier0PipelineTask(</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__task_cls</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">__task_args_path</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Tier0JobRequest">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.Tier0JobRequest">[docs]</a>
+<span class="k">class</span> <span class="nc">Tier0JobRequest</span><span class="p">(</span><span class="n">Executable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">creator_fn</span><span class="p">,</span> <span class="n">job_args</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new Tier0JobRequest representing a JobRequest to be executed</span>
+<span class="sd">        on an MPI server.</span>
+
+<span class="sd">        :param creator_fn: the class of the CASA task to execute</span>
+<span class="sd">        :param job_args: any arguments to passed to the task Inputs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__creator_fn</span> <span class="o">=</span> <span class="n">creator_fn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__job_args</span> <span class="o">=</span> <span class="n">job_args</span>
+        <span class="k">if</span> <span class="n">executor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Exclude the context reference inside the executor shallow copy before pushing from the client</span>
+            <span class="c1"># to reduce the risk of reaching the MPI buffer size limit (150MiB as of CASA ver6.4.1,</span>
+            <span class="c1"># see PIPE-13656/PIPE-1337).</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">exclude_context</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Tier0JobRequest.get_executable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.Tier0JobRequest.get_executable">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_executable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and return a JobRequest executable, intended to run on the MPI server.</span>
+
+<span class="sd">        The construction is based on the content of Tier0JobRequest instance pushed from the client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">job_request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__creator_fn</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">__job_args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">job_request</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># modify the executor copy used on the MPI server</span>
+            <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.casa_commands.log&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">tmpfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;casa_commands_tier0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmpfile</span><span class="o">.</span><span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;casa_commands&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="o">.</span><span class="n">cmdfile</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="o">.</span><span class="n">cmdfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;casa_commands_tier0&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job_request</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Tier0JobRequest(</span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__creator_fn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__job_args</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Tier0FunctionCall">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.Tier0FunctionCall">[docs]</a>
+<span class="k">class</span> <span class="nc">Tier0FunctionCall</span><span class="p">(</span><span class="n">Executable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_pickle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new Tier0FunctionCall for a function to be executed on an MPI</span>
+<span class="sd">        server. The functions and arguments must be picklable objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__fn</span> <span class="o">=</span> <span class="n">fn</span>
+        <span class="k">if</span> <span class="n">use_pickle</span><span class="p">:</span>
+            <span class="c1"># pass function arguments via local pickle I/O to workround the casampi bsend buffer </span>
+            <span class="c1"># size restriction (CAS-13656).</span>
+            <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.func_args&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">tmpfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__func_args_path</span> <span class="o">=</span> <span class="n">tmpfile</span><span class="o">.</span><span class="n">name</span>
+            <span class="c1"># write task args object to pickle</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__func_args_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pickle_file</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Saving task arguments to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__func_args_path</span><span class="p">)</span>
+                <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">((</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">),</span> <span class="n">pickle_file</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># pass function arguments directly via MPI messaging</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__func_args_path</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__args</span> <span class="o">=</span> <span class="n">args</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+        <span class="k">if</span> <span class="n">executor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Exclude the context reference inside the executor shallow copy before pushing from the client</span>
+            <span class="c1"># to reduce the risk of reaching the MPI buffer size limit (150MiB as of CASA ver6.4.1,</span>
+            <span class="c1"># see PIPE-13656/PIPE-1337).</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">exclude_context</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># the following code is used to get a nice repr format</span>
+        <span class="n">arg_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">signature</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="n">arg_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg_names</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">format_arg_value</span><span class="p">(</span><span class="n">arg_val</span><span class="p">):</span>
+            <span class="n">arg</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">arg_val</span>
+            <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">=</span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__positional</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">format_arg_value</span><span class="p">,</span> <span class="nb">zip</span><span class="p">(</span><span class="n">arg_names</span><span class="p">,</span> <span class="n">args</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__nameless</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">repr</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="n">arg_count</span><span class="p">:]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__keyword</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">format_arg_value</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+
+<div class="viewcode-block" id="Tier0FunctionCall.get_executable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.Tier0FunctionCall.get_executable">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_executable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__func_args_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__func_args_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">func_args_file</span><span class="p">:</span>
+                <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">func_args_file</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__args</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__kwargs</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__func_args_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__func_args_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__func_args_path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.casa_commands.log&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">tmpfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;casa_commands_tier0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmpfile</span><span class="o">.</span><span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;casa_commands&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="o">.</span><span class="n">cmdfile</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="o">.</span><span class="n">cmdfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;casa_commands_tier0&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__positional</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nameless</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__keyword</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;Tier0FunctionCall(</span><span class="si">{!s}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="mpiexec">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.mpiexec">[docs]</a>
+<span class="k">def</span> <span class="nf">mpiexec</span><span class="p">(</span><span class="n">tier0_executable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Execute a pipeline task.</span>
+
+<span class="sd">    This function is used to recreate and execute tasks/jobrequests on cluster nodes.</span>
+
+<span class="sd">    :param tier0_executable: the Tier0Executable task to execute</span>
+<span class="sd">    :return: the Result returned by executing the task</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;rank</span><span class="si">%s</span><span class="s1">@</span><span class="si">%s</span><span class="s1">: mpiexec(</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_processor_rank</span><span class="p">,</span>
+              <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">hostname</span><span class="p">,</span> <span class="n">tier0_executable</span><span class="p">)</span>
+
+    <span class="n">executable</span> <span class="o">=</span> <span class="n">tier0_executable</span><span class="o">.</span><span class="n">get_executable</span><span class="p">()</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Executing </span><span class="si">%s</span><span class="s1"> on rank</span><span class="si">%s</span><span class="s1">@</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">tier0_executable</span><span class="p">,</span>
+             <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_processor_rank</span><span class="p">,</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">hostname</span><span class="p">)</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">executable</span><span class="p">()</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Buffering the execution return (</span><span class="si">%s</span><span class="s1">) of </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_obj_size</span><span class="p">(</span><span class="n">ret</span><span class="p">)),</span> <span class="n">tier0_executable</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ret</span></div>
+
+
+
+<div class="viewcode-block" id="is_mpi_ready">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.is_mpi_ready">[docs]</a>
+<span class="k">def</span> <span class="nf">is_mpi_ready</span><span class="p">():</span>
+    <span class="c1"># to allow MPI jobs, the executing pipeline code must be running as the</span>
+    <span class="c1"># client node on an MPI cluster, with the MPICommandClient ready and the</span>
+    <span class="c1"># no user override specified.</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="n">USE_MPI</span><span class="p">,</span>  <span class="c1"># User has not disabled MPI globally</span>
+                <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">is_mpi_enabled</span><span class="p">,</span>  <span class="c1"># running on MPI cluster</span>
+                <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">is_mpi_client</span><span class="p">,</span>  <span class="c1"># running as MPI client</span>
+                <span class="n">mpiclient</span><span class="p">])</span>  <span class="c1"># MPICommandClient ready</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_splitall</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">allparts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">path</span><span class="p">:</span>  <span class="c1"># sentinel for absolute paths</span>
+            <span class="n">allparts</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">break</span>
+        <span class="k">elif</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">path</span><span class="p">:</span>  <span class="c1"># sentinel for relative paths</span>
+            <span class="n">allparts</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">allparts</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">allparts</span>
+
+
+<div class="viewcode-block" id="parse_mpi_input_parameter">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.parse_mpi_input_parameter">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_mpi_input_parameter</span><span class="p">(</span><span class="n">input_arg</span><span class="p">):</span>
+    <span class="n">lowercase</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">input_arg</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">lowercase</span> <span class="o">==</span> <span class="s1">&#39;automatic&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">is_mpi_ready</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">lowercase</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="n">lowercase</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Arg must be one of true, false or automatic. Got </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">input_arg</span><span class="p">)</span></div>
+
+
+
+<span class="n">mpiclient</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">mpi_server_list</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">if</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">is_mpi_enabled</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">is_mpi_client</span><span class="p">:</span>
+            <span class="n">__client</span> <span class="o">=</span> <span class="n">MPICommandClient</span><span class="p">()</span>
+            <span class="c1"># PIPE-1757: use the &#39;redirect&#39; mode to forward tier0 messages to console stdout.</span>
+            <span class="c1">#   * checkout different log_mode options in casampi.private.server_run.run()</span>
+            <span class="c1">#   * also see the log_mode example here:</span>
+            <span class="c1">#       https://casadocs.readthedocs.io/en/latest/notebooks/parallel-processing.html#Advanced:-Interface-Framework</span>
+            <span class="n">__client</span><span class="o">.</span><span class="n">set_log_mode</span><span class="p">(</span><span class="s1">&#39;redirect&#39;</span><span class="p">)</span>
+            <span class="n">__client</span><span class="o">.</span><span class="n">start_services</span><span class="p">()</span>
+
+            <span class="n">mpi_server_list</span> <span class="o">=</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_server_rank_list</span><span class="p">()</span>
+
+            <span class="c1"># get path to pipeline code and import it on the cluster nodes</span>
+            <span class="n">__client</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span><span class="s1">&#39;import sys&#39;</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">target_server</span><span class="o">=</span><span class="n">mpi_server_list</span><span class="p">)</span>
+            <span class="n">__codepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">_splitall</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+            <span class="n">__client</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span><span class="s1">&#39;sys.path.insert(0, </span><span class="si">%r</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">__codepath</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">target_server</span><span class="o">=</span><span class="n">mpi_server_list</span><span class="p">)</span>
+
+            <span class="n">__client</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span><span class="s1">&#39;import pipeline&#39;</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">target_server</span><span class="o">=</span><span class="n">mpi_server_list</span><span class="p">)</span>
+            <span class="c1"># __client.push_command_request(&#39;pipeline.infrastructure.logging.set_logging_level(level=&quot;trace&quot;)&#39;, block=True, target_server=mpi_server_list)</span>
+
+            <span class="n">mpiclient</span> <span class="o">=</span> <span class="n">__client</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;MPI environment detected. Pipeline operating in cluster&#39;</span>
+                     <span class="s1">&#39; mode.&#39;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Problem initialising MPI. Pipeline falling back to single&#39;</span>
+                    <span class="s1">&#39; host mode.&#39;</span><span class="p">)</span>
+        <span class="n">mpiclient</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment is not MPI enabled. Pipeline operating in single &#39;</span>
+             <span class="s1">&#39;host mode&#39;</span><span class="p">)</span>
+    <span class="n">mpiclient</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="TaskQueue">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.TaskQueue">[docs]</a>
+<span class="k">class</span> <span class="nc">TaskQueue</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A interface class that manages/executes tier0 PipelineTask, JobRquests, or FunctionaCalls in parallel.</span>
+
+<span class="sd">    TaskQueue provides an API similar to multiprocessing.Pool, but use the casampi FIFO queue underneath.</span>
+<span class="sd">    Note that the AsynTask-based queue (tier0) will only happen when the instance is run from the</span>
+<span class="sd">    client node of an MPI cluster. Otherwise, the queue will just be executed in synchronous mode, essentially</span>
+<span class="sd">    a loop over an iterator.</span>
+
+<span class="sd">    Example 1:</span>
+
+<span class="sd">        q = TaskQueue()</span>
+<span class="sd">        q.add_functioncall(test, 9, 8) # test is a function taking two arguments.</span>
+<span class="sd">        for i in range(4):</span>
+<span class="sd">            q.add_jobrequest(casa_tasks.plotms, {&#39;vis&#39;: &#39;eb3_targets.04287+1801.spw16_18_20_22_24_26_28_30.selfcal.ms&#39;,</span>
+<span class="sd">                            &#39;xaxis&#39;: &#39;uvdist&#39;, &#39;yaxis&#39;: &#39;amp&#39;, &#39;coloraxis&#39;: &#39;spw&#39;, &#39;plotfile&#39;: &#39;test&#39;+str(i)+&#39;.png&#39;,</span>
+<span class="sd">                            &#39;overwrite&#39;: True})</span>
+<span class="sd">        results = q.get_results()</span>
+
+<span class="sd">    Example 2:</span>
+
+<span class="sd">        with TaskQueue() as tq:</span>
+<span class="sd">            tq.map(fn, [(1,2),(2,3),(4,5),(6,7),(8,9)])</span>
+<span class="sd">        results = q.get_results()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__queue</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__running</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span> <span class="o">=</span> <span class="n">executor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__mpi_server_list</span> <span class="o">=</span> <span class="n">mpi_server_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__is_mpi_ready</span> <span class="o">=</span> <span class="n">is_mpi_ready</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__async</span> <span class="o">=</span> <span class="n">parallel</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_mpi_ready</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;TaskQueue initialized; MPI server list: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mpi_server_list</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__running</span><span class="p">:</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">exc_type</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error in TaskQueue: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;TaskQueue completed successfully&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TaskQueue.done">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.TaskQueue.done">[docs]</a>
+    <span class="k">def</span> <span class="nf">done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TaskQueue.is_async">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.TaskQueue.is_async">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_async</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the TaskQueue is running in parallel mode.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__async</span></div>
+
+
+<div class="viewcode-block" id="TaskQueue.get_results">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.TaskQueue.get_results">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__running</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__results</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__results</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__queue</span><span class="p">:</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">get_result</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__results</span> <span class="o">=</span> <span class="n">results</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__running</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__results</span></div>
+
+
+<div class="viewcode-block" id="TaskQueue.map">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.TaskQueue.map">[docs]</a>
+    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">iterable</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">):</span>
+            <span class="n">iterable</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">args</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_functioncall</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TaskQueue.add_jobrequest">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.TaskQueue.add_jobrequest">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_jobrequest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">job_args</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a jobequest into the queue.</span>
+
+<span class="sd">        fn should be a jobrequest generator function, which returns a JobRequest object.</span>
+<span class="sd">        e.g.</span>
+<span class="sd">            fn = casa_tasks.imdev</span>
+<span class="sd">            job_args = {&#39;imagename&#39;: &#39;myimage.fits&#39;}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">executor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">executor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__async</span><span class="p">:</span>
+            <span class="n">executable</span> <span class="o">=</span> <span class="n">Tier0JobRequest</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">job_args</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="n">executor</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">AsyncTask</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">SyncTask</span><span class="p">(</span><span class="n">fn</span><span class="p">(</span><span class="o">**</span><span class="n">job_args</span><span class="p">),</span> <span class="n">executor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TaskQueue.add_functioncall">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.TaskQueue.add_functioncall">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_functioncall</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">use_pickle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__async</span><span class="p">:</span>
+            <span class="n">executable</span> <span class="o">=</span> <span class="n">Tier0FunctionCall</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">use_pickle</span><span class="o">=</span><span class="n">use_pickle</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">AsyncTask</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">SyncTask</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TaskQueue.add_pipelinetask">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.mpihelpers.TaskQueue.add_pipelinetask">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_pipelinetask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_cls</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">executor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">executor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__async</span><span class="p">:</span>
+            <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.context&#39;</span><span class="p">,</span>
+                                                  <span class="nb">dir</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                                                  <span class="n">delete</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">tmpfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">context_path</span> <span class="o">=</span> <span class="n">tmpfile</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">context_path</span><span class="p">)</span>
+            <span class="n">executable</span> <span class="o">=</span> <span class="n">Tier0PipelineTask</span><span class="p">(</span><span class="n">task_cls</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">context_path</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">AsyncTask</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">task_cls</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">task_cls</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">SyncTask</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">executor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

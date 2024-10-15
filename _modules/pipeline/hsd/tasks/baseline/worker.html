@@ -1,0 +1,709 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.baseline.worker &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.baseline.worker</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.baseline.worker</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Worker task for baseline subtraction.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">relative_path</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">caltable_heuristic</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.heuristics</span> <span class="kn">import</span> <span class="n">BaselineFitParamConfig</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.common</span> <span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">sdutils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">plotter</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">utils</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+    <span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+    <span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.common.utils</span> <span class="kn">import</span> <span class="n">RGAccumulator</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="BaselineSubtractionWorkerInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionWorkerInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">BaselineSubtractionWorkerInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for baseline subtraction tasks.&quot;&quot;&quot;</span>
+
+    <span class="n">DATACOLUMN</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;DATA&#39;</span><span class="p">:</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;FLOAT_DATA&#39;</span><span class="p">:</span> <span class="s1">&#39;float_data&#39;</span><span class="p">}</span>
+
+    <span class="c1"># Search order of input vis</span>
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">ATMCORR</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
+
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">()</span>
+
+    <span class="n">vis</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">null_input</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]])</span>
+    <span class="n">plan</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">fit_func</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;cspline&#39;</span><span class="p">)</span>
+    <span class="n">fit_order</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">)</span>
+    <span class="n">switchpoly</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">edge</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">deviationmask</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">{})</span>
+    <span class="n">bloutput</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">org_directions_dict</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the prefix for several output files of sdbaseline.</span>
+
+<span class="sd">        Prefix is the basename of the MS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Prefix string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">))</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">blparam</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return blparam file name.</span>
+
+<span class="sd">        Name is constructed from input MS name.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The blparam file name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;_blparam.txt&#39;</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of field ids to process.</span>
+
+<span class="sd">        Returned list should conform with the list of MS and</span>
+<span class="sd">        each field id is translated into the one for corresponding</span>
+<span class="sd">        MS in the list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of field ids to process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="o">.</span><span class="n">get_field_id_list</span><span class="p">()</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of antenna ids to process.</span>
+
+<span class="sd">        Returned list should conform with the list of MS and</span>
+<span class="sd">        each antenna id is translated into the one for corresponding</span>
+<span class="sd">        MS in the list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of antenna ids to process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="o">.</span><span class="n">get_antenna_id_list</span><span class="p">()</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of spectral window (spw) ids to process.</span>
+
+<span class="sd">        Returned list should conform with the list of MS and</span>
+<span class="sd">        each spw id is translated into the one for corresponding</span>
+<span class="sd">        MS in the list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of spw ids to process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="o">.</span><span class="n">get_spw_id_list</span><span class="p">()</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">grid_table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of grid tables to process.</span>
+
+<span class="sd">        Returned list should conform with the list of MS and</span>
+<span class="sd">        each grid table is supposed to be processed together</span>
+<span class="sd">        with corresponding MS in the list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of grid tables to process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="o">.</span><span class="n">get_grid_table_list</span><span class="p">()</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">channelmap_range</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of line ranges to process.</span>
+
+<span class="sd">        Returned list should conform with the list of MS and</span>
+<span class="sd">        each channelmap range is supposed to be processed together</span>
+<span class="sd">        with corresponding MS in the list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of channelmap ranges to process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="o">.</span><span class="n">get_channelmap_range_list</span><span class="p">()</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">colname</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return name of existing data column in MS.</span>
+
+<span class="sd">        Scan through the column names in the MS, and return the most</span>
+<span class="sd">        &#39;significant&#39; one found from the following list.</span>
+
+<span class="sd">            - CORRECTED_DATA</span>
+<span class="sd">            - DATA</span>
+<span class="sd">            - FLOAT_DATA</span>
+
+<span class="sd">        For example, if MS has CORRECTED_DATA and DATA columns,</span>
+<span class="sd">        CORRECTED_DATA will be returned.</span>
+
+<span class="sd">        Returns a null string if none of them exist.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Data column name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">colname</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+                <span class="n">candidate_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;DATA&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;FLOAT_DATA&#39;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">candidate_names</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tb</span><span class="o">.</span><span class="n">colnames</span><span class="p">():</span>
+                        <span class="n">colname</span> <span class="o">=</span> <span class="n">name</span>
+                        <span class="k">break</span>
+        <span class="k">return</span> <span class="n">colname</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
+        <span class="n">vis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">plan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;RGAccumulator&#39;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;RGAccumulator&#39;</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fit_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fit_order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">switchpoly</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">edge</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">deviationmask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">blparam</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">bloutput</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">org_directions_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">parallel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct BaselineSubtractionWorkerInputs instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context</span>
+<span class="sd">            vis: Name of the MS or list of MSs. Defaults to None,</span>
+<span class="sd">                 which is to process all MSs registered to the context.</span>
+<span class="sd">            plan: Set of metadata for baseline subtraction, or List of</span>
+<span class="sd">                  the them. Defaults to None. The task may fail if None</span>
+<span class="sd">                  is given.</span>
+<span class="sd">            fit_func: Fitting function for baseline subtraction. You can choose</span>
+<span class="sd">                      either cubic spline (&#39;spline&#39; or &#39;cspline&#39;) or polynomial</span>
+<span class="sd">                      (&#39;poly&#39; or &#39;polynomial&#39;). Default is &#39;cspline&#39;.</span>
+<span class="sd">            fit_order: Fitting order for polynomial. For cubic spline, it is used to determine</span>
+<span class="sd">                       how much the spectrum is segmented into. None is equivalent to &#39;automatic&#39;.</span>
+<span class="sd">                       Default (&#39;automatic&#39;) is to determine the order automatically.</span>
+<span class="sd">            switchpoly: Whether to fall back the fits from cubic spline to 1st or</span>
+<span class="sd">                        2nd order polynomial when large masks exist at the edges</span>
+<span class="sd">                        of the spw. Condition for switching is as follows:</span>
+<span class="sd">                            if nmask &gt; nchan/2      =&gt; 1st order polynomial</span>
+<span class="sd">                            else if nmask &gt; nchan/4 =&gt; 2nd order polynomial</span>
+<span class="sd">                            else                    =&gt; use fitfunc and fitorder</span>
+<span class="sd">                        where nmask is a number of channels for mask at edge while</span>
+<span class="sd">                        nchan is a number of channels of entire spectral window.</span>
+<span class="sd">                        Defaults to True if None is given.</span>
+<span class="sd">            edge: Edge channels to exclude. Defaults to None, which means</span>
+<span class="sd">                  that all channels are processed.</span>
+<span class="sd">            deviationmask: List of deviation masks. Defaults to empty list</span>
+<span class="sd">                           if None is given.</span>
+<span class="sd">            blparam: Name of the blparam file name. Defaults to</span>
+<span class="sd">                     &#39;{name_of_ms}_blparam.txt&#39; if None is given.</span>
+<span class="sd">            bloutput: Name of the bloutput name. Defaults to the name</span>
+<span class="sd">                      following pipeline product naming convention</span>
+<span class="sd">                      (see to_casa_args method) if None is given.</span>
+<span class="sd">            org_directions_dict: Original source direction for ephemeris</span>
+<span class="sd">                                 correction. Defaults to None. This is</span>
+<span class="sd">                                 required only when target source is</span>
+<span class="sd">                                 ephemeris object.</span>
+<span class="sd">            parallel: Execute using CASA HPC functionality, if available.</span>
+<span class="sd">                      Default is None, which intends to turn on parallel</span>
+<span class="sd">                      processing if possible.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaselineSubtractionWorkerInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plan</span> <span class="o">=</span> <span class="n">plan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_order</span> <span class="o">=</span> <span class="n">fit_order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_func</span> <span class="o">=</span> <span class="n">fit_func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">switchpoly</span> <span class="o">=</span> <span class="n">switchpoly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span> <span class="o">=</span> <span class="n">edge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deviationmask</span> <span class="o">=</span> <span class="n">deviationmask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blparam</span> <span class="o">=</span> <span class="n">blparam</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bloutput</span> <span class="o">=</span> <span class="n">bloutput</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">org_directions_dict</span> <span class="o">=</span> <span class="n">org_directions_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
+
+<div class="viewcode-block" id="BaselineSubtractionWorkerInputs.to_casa_args">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionWorkerInputs.to_casa_args">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Inputs instance to the list of keyword arguments for sdbaseline.</span>
+
+<span class="sd">        Note that core parameters such as blfunc will be set dynamically through</span>
+<span class="sd">        the heuristics or inside task.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Keyword arguments for sdbaseline</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>  <span class="c1"># {&#39;vis&#39;: self.vis}</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">))</span>
+
+        <span class="c1"># blparam</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">blparam</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blparam</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">args</span><span class="p">[</span><span class="s1">&#39;blparam&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">relative_path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;_blparam.txt&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">args</span><span class="p">[</span><span class="s1">&#39;blparam&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blparam</span>
+
+        <span class="c1"># baseline caltable filename</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bloutput</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bloutput</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">namer</span> <span class="o">=</span> <span class="n">caltable_heuristic</span><span class="o">.</span><span class="n">SDBaselinetable</span><span class="p">()</span>
+            <span class="n">bloutput</span> <span class="o">=</span> <span class="n">relative_path</span><span class="p">(</span><span class="n">namer</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                                                            <span class="n">stage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stage</span><span class="p">,</span>
+                                                            <span class="o">**</span><span class="n">args</span><span class="p">))</span>
+            <span class="n">args</span><span class="p">[</span><span class="s1">&#39;bloutput&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bloutput</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">args</span><span class="p">[</span><span class="s1">&#39;bloutput&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bloutput</span>
+
+        <span class="c1"># outfile</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;outfile&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">or</span>
+                <span class="n">args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">relative_path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;_bl&#39;</span><span class="p">))</span>
+
+        <span class="n">args</span><span class="p">[</span><span class="s1">&#39;datacolumn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DATACOLUMN</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">colname</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">args</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BaselineSubtractionResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionResults">[docs]</a>
+<span class="k">class</span> <span class="nc">BaselineSubtractionResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class to hold the result of baseline subtraction.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">success</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">outcome</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct BaselineSubtractionResults instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task: Task class that produced the result.</span>
+<span class="sd">            success: Whether task execution is successful or not.</span>
+<span class="sd">            outcome: Outcome of the task execution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaselineSubtractionResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BaselineSubtractionResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge result instance into context.</span>
+
+<span class="sd">        No specific merge operation is done.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaselineSubtractionResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of outcome.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Name of the blparam file with its format</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># outcome should be a name of blparam text file</span>
+        <span class="k">return</span> <span class="s1">&#39;blparam: &quot;</span><span class="si">%s</span><span class="s1">&quot; bloutput: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;blparam&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;bloutput&#39;</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="SerialBaselineSubtractionWorker">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.SerialBaselineSubtractionWorker">[docs]</a>
+<span class="k">class</span> <span class="nc">SerialBaselineSubtractionWorker</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract worker class for baseline subtraction.&quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">BaselineSubtractionWorkerInputs</span>
+
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">BaselineSubtractionWorkerInputs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct BaselineSubtractionWorker instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inputs: BaselineSubtractionWorkerInputs instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+        <span class="c1"># initialize plotter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span> <span class="o">=</span> <span class="n">DataTable</span><span class="p">(</span><span class="n">sdutils</span><span class="o">.</span><span class="n">get_data_table_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+                                                               <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">))</span>
+
+<div class="viewcode-block" id="SerialBaselineSubtractionWorker.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.SerialBaselineSubtractionWorker.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaselineSubtractionResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform baseline subtraction.</span>
+
+<span class="sd">        Call sdbaseline task with optimized parameters. Parameter values such</span>
+<span class="sd">        as function type, fitting order, etc. are optimized by the heuristics</span>
+<span class="sd">        class defined in Heuristics attribute.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            BaselineSubtractionResults instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">origin_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
+        <span class="n">rowmap</span> <span class="o">=</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">make_row_map_between_ms</span><span class="p">(</span><span class="n">origin_ms</span><span class="p">,</span> <span class="n">vis</span><span class="p">)</span>
+        <span class="n">fit_order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">fit_order</span>
+        <span class="n">edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">edge</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+        <span class="n">blparam</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;blparam&#39;</span><span class="p">]</span>
+        <span class="n">bloutput</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;bloutput&#39;</span><span class="p">]</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]</span>
+        <span class="n">datacolumn</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;datacolumn&#39;</span><span class="p">]</span>
+
+        <span class="n">process_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">plan</span>
+        <span class="n">deviationmask_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">deviationmask</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;deviationmask_list=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">deviationmask_list</span><span class="p">))</span>
+
+        <span class="n">field_id_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span>
+        <span class="n">antenna_id_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">antenna</span>
+        <span class="n">spw_id_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;subgroup member for </span><span class="si">%s</span><span class="s1">:</span><span class="se">\n\t</span><span class="s1">field: </span><span class="si">%s</span><span class="se">\n\t</span><span class="s1">antenna: </span><span class="si">%s</span><span class="se">\n\t</span><span class="s1">spw: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                  <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                  <span class="n">field_id_list</span><span class="p">,</span>
+                  <span class="n">antenna_id_list</span><span class="p">,</span>
+                  <span class="n">spw_id_list</span><span class="p">)</span>
+
+        <span class="c1"># blparam heuristics</span>
+        <span class="n">blparam_heuristic</span> <span class="o">=</span> <span class="n">BaselineFitParamConfig</span><span class="p">(</span><span class="n">fitfunc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">fit_func</span><span class="p">,</span> <span class="n">switchpoly</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">switchpoly</span><span class="p">)</span>
+
+        <span class="c1"># initialization of blparam file</span>
+        <span class="c1"># blparam file needs to be removed before starting iteration through</span>
+        <span class="c1"># reduction group</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">blparam</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Cleaning up blparam file for </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">vis</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">blparam</span><span class="p">)</span>
+
+        <span class="c1"># datatable = DataTable(context.observing_run.ms_datatable_name)</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">process_list</span><span class="o">.</span><span class="n">iterate_id</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">deviationmask_list</span><span class="p">:</span>
+                <span class="n">deviationmask</span> <span class="o">=</span> <span class="n">deviationmask_list</span><span class="p">[(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">deviationmask</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">formatted_edge</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">parseEdge</span><span class="p">(</span><span class="n">edge</span><span class="p">))</span>
+            <span class="n">out_blparam</span> <span class="o">=</span> <span class="n">blparam_heuristic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">rowmap</span><span class="p">,</span>
+                                            <span class="n">antenna_id</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span>
+                                            <span class="n">fit_order</span><span class="p">,</span> <span class="n">formatted_edge</span><span class="p">,</span>
+                                            <span class="n">deviationmask</span><span class="p">,</span> <span class="n">blparam</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">out_blparam</span> <span class="o">==</span> <span class="n">blparam</span>
+
+        <span class="c1"># execute sdbaseline</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">sdbaseline</span><span class="p">(</span><span class="n">infile</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="n">datacolumn</span><span class="p">,</span> <span class="n">blmode</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="n">dosubtract</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                    <span class="n">blformat</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="n">bloutput</span><span class="o">=</span><span class="n">bloutput</span><span class="p">,</span>
+                                    <span class="n">blfunc</span><span class="o">=</span><span class="s1">&#39;variable&#39;</span><span class="p">,</span> <span class="n">blparam</span><span class="o">=</span><span class="n">blparam</span><span class="p">,</span>
+                                    <span class="n">outfile</span><span class="o">=</span><span class="n">outfile</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="n">outcome</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;infile&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span>
+                   <span class="s1">&#39;blparam&#39;</span><span class="p">:</span> <span class="n">blparam</span><span class="p">,</span>
+                   <span class="s1">&#39;bloutput&#39;</span><span class="p">:</span> <span class="n">bloutput</span><span class="p">,</span>
+                   <span class="s1">&#39;outfile&#39;</span><span class="p">:</span> <span class="n">outfile</span><span class="p">}</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">BaselineSubtractionResults</span><span class="p">(</span><span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">outcome</span><span class="o">=</span><span class="n">outcome</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="SerialBaselineSubtractionWorker.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.SerialBaselineSubtractionWorker.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">BaselineSubtractionResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaselineSubtractionResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate plots from baseline subtraction results.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            results: BaselineSubtractionResults instance</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: Source name is invalid or not found in the domain object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            BaselineSubtractionResults instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># plot png files of weblog and calculate QA score</span>
+        <span class="c1"># initialize plot manager</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]</span>
+        <span class="n">origin_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
+        <span class="n">origin_ms_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">origin_ms</span><span class="p">)</span>
+        <span class="n">quality_manager</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">BaselineSubtractionQualityManager</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="p">)</span>
+        <span class="n">plot_manager</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">BaselineSubtractionPlotManager</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="p">)</span>
+        <span class="n">org_directions_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">org_directions_dict</span>
+        <span class="n">accum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">plan</span>
+        <span class="n">deviationmask_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">deviationmask</span>
+        <span class="n">formatted_edge</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">parseEdge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">edge</span><span class="p">))</span>
+        <span class="n">out_rowmap</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">make_row_map</span><span class="p">(</span><span class="n">origin_ms</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
+        <span class="n">in_rowmap</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span> <span class="k">else</span> <span class="n">utils</span><span class="o">.</span><span class="n">make_row_map</span><span class="p">(</span><span class="n">origin_ms</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">plot_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">grid_table</span><span class="p">,</span> <span class="n">channelmap_range</span><span class="p">)</span> <span class="ow">in</span> <span class="n">accum</span><span class="o">.</span><span class="n">iterate_all</span><span class="p">():</span>
+            <span class="n">virtual_spwid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">real2virtual_spw_id</span><span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
+            <span class="n">data_desc</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw_id</span><span class="p">)</span>
+            <span class="n">num_pol</span> <span class="o">=</span> <span class="n">data_desc</span><span class="o">.</span><span class="n">num_polarizations</span>
+            <span class="n">polids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">num_pol</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;field </span><span class="si">%s</span><span class="s1"> antenna </span><span class="si">%s</span><span class="s1"> spw </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">deviationmask_list</span><span class="p">:</span>
+                <span class="n">deviationmask</span> <span class="o">=</span> <span class="n">deviationmask_list</span><span class="p">[(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">deviationmask</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">)</span>
+            <span class="n">source_name</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">if</span> <span class="n">source_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">org_directions_dict</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;source_name </span><span class="si">{}</span><span class="s2"> not found in org_directions_dict (sources found are </span><span class="si">{}</span><span class="s2">)&quot;</span>
+                                   <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">source_name</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">org_directions_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+            <span class="n">org_direction</span> <span class="o">=</span> <span class="n">org_directions_dict</span><span class="p">[</span><span class="n">source_name</span><span class="p">]</span>
+            <span class="n">data_manager</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">BaselineSubtractionDataManager</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span>
+                                                                  <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+                                                                  <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="p">)</span>
+            <span class="n">num_ra</span><span class="p">,</span> <span class="n">num_dec</span><span class="p">,</span> <span class="n">num_plane</span><span class="p">,</span> <span class="n">rowlist</span> <span class="o">=</span> <span class="n">data_manager</span><span class="o">.</span><span class="n">analyze_plot_table</span><span class="p">(</span><span class="n">origin_ms_id</span><span class="p">,</span>
+                                                                                  <span class="n">antenna_id</span><span class="p">,</span>
+                                                                                  <span class="n">virtual_spwid</span><span class="p">,</span>
+                                                                                  <span class="n">polids</span><span class="p">,</span>
+                                                                                  <span class="n">grid_table</span><span class="p">,</span>
+                                                                                  <span class="n">org_direction</span><span class="p">)</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span><span class="p">[</span><span class="n">spw_id</span><span class="p">]</span>
+            <span class="n">nchan</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span>
+            <span class="n">data_desc</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)</span>
+            <span class="n">npol</span> <span class="o">=</span> <span class="n">data_desc</span><span class="o">.</span><span class="n">num_polarizations</span>
+            <span class="n">data_manager</span><span class="o">.</span><span class="n">resize_storage</span><span class="p">(</span><span class="n">num_ra</span><span class="p">,</span> <span class="n">num_dec</span><span class="p">,</span> <span class="n">npol</span><span class="p">,</span> <span class="n">nchan</span><span class="p">)</span>
+            <span class="n">frequency</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">spw</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">chan_freqs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1.0e-9</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nchan</span><span class="p">)),</span>
+                                       <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>  <span class="c1"># unit in GHz</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data_manager</span><span class="o">.</span><span class="n">store_result_get_data</span><span class="p">(</span><span class="n">num_ra</span><span class="p">,</span> <span class="n">num_dec</span><span class="p">,</span> <span class="n">rowlist</span><span class="p">,</span> <span class="n">npol</span><span class="p">,</span> <span class="n">nchan</span><span class="p">,</span>
+                                                      <span class="n">out_rowmap</span><span class="o">=</span><span class="n">out_rowmap</span><span class="p">,</span> <span class="n">in_rowmap</span><span class="o">=</span><span class="n">in_rowmap</span><span class="p">)</span>
+            <span class="n">postfit_integrated_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">postfit_map_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">prefit_integrated_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">prefit_map_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">prefit_averaged_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="n">stats</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">quality_manager</span><span class="o">.</span><span class="n">calculate_baseline_quality_stat</span><span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span>
+                                                                         <span class="n">postfit_integrated_data</span><span class="p">,</span>
+                                                                         <span class="n">npol</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span>
+                                                                         <span class="n">deviationmask</span><span class="p">,</span>
+                                                                         <span class="n">channelmap_range</span><span class="p">,</span>
+                                                                         <span class="n">formatted_edge</span><span class="p">))</span>
+            <span class="n">plot_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">plot_manager</span><span class="o">.</span><span class="n">plot_spectra_with_fit</span><span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span>
+                                                                <span class="n">postfit_integrated_data</span><span class="p">,</span>
+                                                                <span class="n">postfit_map_data</span><span class="p">,</span>
+                                                                <span class="n">prefit_integrated_data</span><span class="p">,</span>
+                                                                <span class="n">prefit_map_data</span><span class="p">,</span>
+                                                                <span class="n">prefit_averaged_data</span><span class="p">,</span>
+                                                                <span class="n">num_ra</span><span class="p">,</span> <span class="n">num_dec</span><span class="p">,</span>
+                                                                <span class="n">rowlist</span><span class="p">,</span> <span class="n">npol</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span>
+                                                                <span class="n">grid_table</span><span class="p">,</span> <span class="n">deviationmask</span><span class="p">,</span>
+                                                                <span class="n">channelmap_range</span><span class="p">,</span> <span class="n">formatted_edge</span><span class="p">,</span>
+                                                                <span class="n">in_rowmap</span><span class="o">=</span><span class="n">in_rowmap</span><span class="p">))</span>
+        <span class="n">plot_manager</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+
+        <span class="n">results</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;plot_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot_list</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;baseline_quality_stat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BaselineSubtractionWorker">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionWorker">[docs]</a>
+<span class="k">class</span> <span class="nc">BaselineSubtractionWorker</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Template class for parallel baseline subtraction task.</span>
+
+<span class="sd">    This class is a template for parallel processing that executes</span>
+<span class="sd">    the task specified by Task property. Parallel processing is</span>
+<span class="sd">    enabled when parallel attribute of Inputs instance is True and</span>
+<span class="sd">    pipeline runs on mpicasa environment.</span>
+
+<span class="sd">    Note that this is abstract class. Task property must be implemented</span>
+<span class="sd">    in each subclass.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">BaselineSubtractionWorkerInputs</span>
+    <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialBaselineSubtractionWorker</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

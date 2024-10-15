@@ -1,0 +1,17 @@
+pipeline.hsd.heuristics.grouping2
+=================================
+
+.. automodule:: pipeline.hsd.heuristics.grouping2
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GroupByPosition2
+      GroupByTime2
+      MergeGapTables2
+      NewType
+      Real
+      ThresholdForGroupByTime
+   

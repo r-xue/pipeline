@@ -1,0 +1,13 @@
+pipeline.hif.tasks.lowgainflag.renderer
+=======================================
+
+.. automodule:: pipeline.hif.tasks.lowgainflag.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ScanVsAntenna1PlotRenderer
+      T2_4MDetailsLowgainFlagRenderer
+   

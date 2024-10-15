@@ -1,0 +1,467 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.heuristics.atm &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.heuristics.atm</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.heuristics.atm</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">measures</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">SpectralWindow</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">tsysspwmap</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">calibrationtableaccess</span> <span class="k">as</span> <span class="n">caltableaccess</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">commonresultobjects</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AtmHeuristics">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.atm.AtmHeuristics">[docs]</a>
+<span class="k">class</span> <span class="nc">AtmHeuristics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SpectralWindow</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">science_spws</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opacities</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculated</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Calculating opacities for </span><span class="si">{}</span><span class="s2">...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)))</span>
+
+        <span class="c1"># get channel information for each spw</span>
+        <span class="n">centre_freq</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">resolution</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">spw_to_band</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">ispw</span><span class="p">,</span> <span class="n">spw</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">science_spws</span><span class="p">):</span>
+            <span class="n">spw_to_band</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">ispw</span>
+
+            <span class="n">channels</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">channels</span>
+
+            <span class="c1"># translate from Stewart&#39;s domain measures to CASA quantities</span>
+            <span class="n">freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">)],</span> <span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+            <span class="n">channel_unit</span> <span class="o">=</span> <span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">low</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;symbol&#39;</span><span class="p">]</span>
+            <span class="n">freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">)],</span> <span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+            <span class="n">channel_width</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">)],</span> <span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">)],</span> <span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">freqs</span><span class="p">)):</span>
+                <span class="n">freq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">low</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span>
+                                <span class="n">channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">high</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+                <span class="n">channel_width</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">low</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span>
+                                         <span class="n">channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">high</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">low</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="n">channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">high</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+            <span class="n">centre_frequency</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">centre_frequency</span>
+            <span class="n">centre_freq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+            <span class="n">centre_freq_unit</span> <span class="o">=</span> <span class="n">centre_frequency</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;symbol&#39;</span><span class="p">]</span>
+            <span class="n">resolution</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">channel_width</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">resolution_unit</span> <span class="o">=</span> <span class="n">channel_unit</span>
+            <span class="n">bandwidth</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span>
+            <span class="n">width</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+            <span class="n">width_unit</span> <span class="o">=</span> <span class="n">bandwidth</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;symbol&#39;</span><span class="p">]</span>
+
+        <span class="c1"># canonical atmospheric params</span>
+        <span class="n">pressure</span> <span class="o">=</span> <span class="mf">563.0</span>
+        <span class="n">humidity</span> <span class="o">=</span> <span class="mf">20.0</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="mf">273.0</span>
+        <span class="n">pwv</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="c1"># tropical = 1</span>
+        <span class="c1"># mid_latitude_summer = 2</span>
+        <span class="n">mid_latitude_winter</span> <span class="o">=</span> <span class="mi">3</span>
+
+        <span class="n">fcentre</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">centre_freq</span><span class="p">,</span> <span class="n">centre_freq_unit</span><span class="p">)</span>
+        <span class="n">fresolution</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="n">resolution_unit</span><span class="p">)</span>
+        <span class="n">fwidth</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">width_unit</span><span class="p">)</span>
+
+        <span class="c1"># setup atm</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">atmosphere</span><span class="o">.</span><span class="n">initAtmProfile</span><span class="p">(</span>
+            <span class="n">humidity</span><span class="o">=</span><span class="n">humidity</span><span class="p">,</span>
+            <span class="n">temperature</span><span class="o">=</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">),</span>
+            <span class="n">altitude</span><span class="o">=</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mi">5059</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span>
+            <span class="n">pressure</span><span class="o">=</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="s1">&#39;mbar&#39;</span><span class="p">),</span>
+            <span class="n">atmType</span><span class="o">=</span><span class="n">mid_latitude_winter</span><span class="p">)</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">atmosphere</span><span class="o">.</span><span class="n">initSpectralWindow</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centre_freq</span><span class="p">),</span> <span class="n">fcentre</span><span class="p">,</span> <span class="n">fwidth</span><span class="p">,</span> <span class="n">fresolution</span><span class="p">)</span>
+        <span class="n">casa_tools</span><span class="o">.</span><span class="n">atmosphere</span><span class="o">.</span><span class="n">setUserWH2O</span><span class="p">(</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">pwv</span><span class="p">,</span> <span class="s1">&#39;mm&#39;</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_spws</span><span class="p">:</span>
+            <span class="n">band</span> <span class="o">=</span> <span class="n">spw_to_band</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+
+            <span class="n">numchan</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">atmosphere</span><span class="o">.</span><span class="n">getNumChan</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
+            <span class="n">refchan</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">atmosphere</span><span class="o">.</span><span class="n">getRefChan</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
+            <span class="n">reffreq</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">atmosphere</span><span class="o">.</span><span class="n">getRefFreq</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
+            <span class="n">reffreq</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">reffreq</span><span class="p">,</span> <span class="s1">&#39;GHz&#39;</span><span class="p">)</span>
+            <span class="n">chansep</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">atmosphere</span><span class="o">.</span><span class="n">getChanSep</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
+            <span class="n">chansep</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">chansep</span><span class="p">,</span> <span class="s1">&#39;GHz&#39;</span><span class="p">)</span>
+
+            <span class="c1"># axis object describing channel/freq axis</span>
+            <span class="n">freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">numchan</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">numchan</span><span class="p">):</span>
+                <span class="n">freqs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">reffreq</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">refchan</span><span class="p">)</span> <span class="o">*</span> \
+                  <span class="n">chansep</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> 
+            <span class="n">axis</span> <span class="o">=</span> <span class="n">commonresultobjects</span><span class="o">.</span><span class="n">ResultAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Frequency&#39;</span><span class="p">,</span>
+                                                  <span class="n">units</span><span class="o">=</span><span class="s1">&#39;GHz&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">freqs</span><span class="p">)</span>
+
+            <span class="c1"># calculate opacities</span>
+            <span class="n">dry</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">atmosphere</span><span class="o">.</span><span class="n">getDryOpacitySpec</span><span class="p">(</span><span class="n">band</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">wet</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">atmosphere</span><span class="o">.</span><span class="n">getWetOpacitySpec</span><span class="p">(</span><span class="n">band</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+
+            <span class="c1"># object containing result</span>
+            <span class="n">opacity</span> <span class="o">=</span> <span class="n">commonresultobjects</span><span class="o">.</span><span class="n">SpectrumResult</span><span class="p">(</span>
+                <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">wet</span><span class="o">+</span><span class="n">dry</span><span class="p">,</span>
+                <span class="n">datatype</span><span class="o">=</span><span class="s1">&#39;opacity&#39;</span><span class="p">,</span>
+                <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">opacities</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">opacity</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculated</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_calculate_median_tsys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Get the Tsys spw map from caltable.</span>
+        <span class="n">unmapped</span><span class="p">,</span> <span class="n">mapped</span> <span class="o">=</span> <span class="n">tsysspwmap</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+
+        <span class="c1"># Get list of science spw ids to consider.</span>
+        <span class="n">sci_spwids</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_spws</span><span class="p">]</span>
+
+        <span class="c1"># Initialize dictionary of Tsys measurements per science spw.</span>
+        <span class="n">tsys</span> <span class="o">=</span> <span class="p">{</span><span class="n">spwid</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">sci_spwids</span><span class="p">}</span>
+
+        <span class="c1"># Identify which science spws have been mapped to a Tsys.</span>
+        <span class="n">sci_spw_mapped</span> <span class="o">=</span> <span class="p">[</span><span class="n">spwid</span> <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">sci_spwids</span> <span class="k">if</span> <span class="n">spwid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unmapped</span><span class="p">]</span>
+
+        <span class="c1"># Only go through the Tsys caltable if there were any mapped science</span>
+        <span class="c1"># spws.</span>
+        <span class="k">if</span> <span class="n">sci_spw_mapped</span><span class="p">:</span>
+            <span class="c1"># Compute a translation dictionary from Tsys spw to corresponding</span>
+            <span class="c1"># science spw.</span>
+            <span class="n">tsys_to_sci_spwmap</span> <span class="o">=</span> <span class="p">{</span><span class="n">mapped</span><span class="p">[</span><span class="n">spwid</span><span class="p">]:</span> <span class="n">spwid</span> <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">sci_spw_mapped</span><span class="p">}</span>
+
+            <span class="c1"># Get field ids to consider, based on intents used for QA.</span>
+            <span class="n">fieldids</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)]</span>
+
+            <span class="c1"># Load the tsys caltable to assess.</span>
+            <span class="n">tsystable</span> <span class="o">=</span> <span class="n">caltableaccess</span><span class="o">.</span><span class="n">CalibrationTableDataFiller</span><span class="o">.</span><span class="n">getcal</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+
+            <span class="c1"># Go through each row of Tsys caltable:</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">tsystable</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
+                <span class="c1"># Get spw for current row.</span>
+                <span class="n">row_spwid</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Extract info from rows matching the spws and fields</span>
+                <span class="c1"># (intents) to consider.</span>
+                <span class="k">if</span> <span class="n">row_spwid</span> <span class="ow">in</span> <span class="n">tsys_to_sci_spwmap</span> <span class="ow">and</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;FIELD_ID&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">fieldids</span><span class="p">:</span>
+                    <span class="c1"># Get tsys spectrum and corresponding flags.</span>
+                    <span class="n">spec</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;FPARAM&#39;</span><span class="p">)</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">)</span>
+
+                    <span class="c1"># Add unflagged tsys measurements to overall list for this</span>
+                    <span class="c1"># spw.</span>
+                    <span class="n">tsys</span><span class="p">[</span><span class="n">tsys_to_sci_spwmap</span><span class="p">[</span><span class="n">row_spwid</span><span class="p">]]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">flag</span><span class="p">)]))</span>
+
+        <span class="c1"># Calculate median for each spw; for each spwid where no Tsys was</span>
+        <span class="c1"># available, this will be NaN.</span>
+        <span class="n">median_tsys</span> <span class="o">=</span> <span class="p">{</span><span class="n">spwid</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">tsys</span><span class="p">[</span><span class="n">spwid</span><span class="p">])</span> <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">sci_spwids</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">median_tsys</span>
+
+<div class="viewcode-block" id="AtmHeuristics.spwid_rank_by_frequency">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.atm.AtmHeuristics.spwid_rank_by_frequency">[docs]</a>
+    <span class="k">def</span> <span class="nf">spwid_rank_by_frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the spw id of the science spw with highest centre</span>
+<span class="sd">        frequency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># construction of spw_freqs assumes freqs for all spws have</span>
+        <span class="c1"># in same units</span>
+        <span class="n">spw_freqs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">science_spws</span><span class="p">]</span>
+        <span class="n">spw_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_spws</span><span class="p">]</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">spw_ids</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">spw_freqs</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">ispw</span><span class="p">,</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spw_ids</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;spw: </span><span class="si">%s</span><span class="s1"> median opacity: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">spw_freqs</span><span class="p">[</span><span class="n">ispw</span><span class="p">]))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;spw rank: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="AtmHeuristics.spwid_rank_by_opacity">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.atm.AtmHeuristics.spwid_rank_by_opacity">[docs]</a>
+    <span class="k">def</span> <span class="nf">spwid_rank_by_opacity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculated</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_calculate</span><span class="p">()</span>
+
+        <span class="n">median_opacity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">science_spws</span><span class="p">)])</span>
+        <span class="n">spw_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_spws</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">ispw</span><span class="p">,</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spw_ids</span><span class="p">):</span>
+            <span class="n">median_opacity</span><span class="p">[</span><span class="n">ispw</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opacities</span><span class="p">[</span><span class="n">spw_id</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">spw_ids</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">median_opacity</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">ispw</span><span class="p">,</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spw_ids</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;spw: </span><span class="si">%s</span><span class="s1"> median opacity: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">median_opacity</span><span class="p">[</span><span class="n">ispw</span><span class="p">]))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;spw rank: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="c1"># Metric to rank spws by a combination of spw bandwidth (higher is better)</span>
+    <span class="c1"># and median opacity (lower is better), see CAS-10407.</span>
+<div class="viewcode-block" id="AtmHeuristics.spwid_rank_by_opacity_and_bandwidth">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.atm.AtmHeuristics.spwid_rank_by_opacity_and_bandwidth">[docs]</a>
+    <span class="k">def</span> <span class="nf">spwid_rank_by_opacity_and_bandwidth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculated</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_calculate</span><span class="p">()</span>
+
+        <span class="n">metric</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">science_spws</span><span class="p">)])</span>
+        <span class="n">spw_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_spws</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">ispw</span><span class="p">,</span> <span class="n">spw</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">science_spws</span><span class="p">):</span>
+            <span class="n">metric</span><span class="p">[</span><span class="n">ispw</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)))</span> <span class="o">*</span> \
+                           <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opacities</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">spw_ids</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">metric</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">ispw</span><span class="p">,</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spw_ids</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;spw: </span><span class="si">%s</span><span class="s1"> =&gt; spw score metric: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">metric</span><span class="p">[</span><span class="n">ispw</span><span class="p">]))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;spw rank: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="c1"># Metric to rank spws by a combination of spw bandwidth (higher is better)</span>
+    <span class="c1"># and median Tsys (lower is better), see CAS-10407.</span>
+<div class="viewcode-block" id="AtmHeuristics.spwid_rank_by_tsys_and_bandwidth">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.atm.AtmHeuristics.spwid_rank_by_tsys_and_bandwidth">[docs]</a>
+    <span class="k">def</span> <span class="nf">spwid_rank_by_tsys_and_bandwidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+
+        <span class="c1"># Check if Tsys caltable is available for vis.</span>
+        <span class="n">tsystable</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">caltables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">(</span><span class="n">caltypes</span><span class="o">=</span><span class="s1">&#39;tsys&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">caltable</span> <span class="ow">in</span> <span class="n">caltables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">caltableaccess</span><span class="o">.</span><span class="n">CalibrationTableDataFiller</span><span class="o">.</span><span class="n">_readvis</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">:</span>
+                <span class="n">tsystable</span> <span class="o">=</span> <span class="n">caltable</span>
+                <span class="k">break</span>
+
+        <span class="c1"># If Tsys caltable is available, then calculate the median Tsys,</span>
+        <span class="c1"># otherwise return without ranked list.</span>
+        <span class="k">if</span> <span class="n">tsystable</span><span class="p">:</span>
+            <span class="n">median_tsys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_median_tsys</span><span class="p">(</span><span class="n">tsystable</span><span class="p">,</span> <span class="n">intent</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No unapplied Tsys table found in callibrary for </span><span class="si">{}</span><span class="s2">; &quot;</span>
+                     <span class="s2">&quot;cannot rank spws by Tsys and &quot;</span>
+                     <span class="s2">&quot;bandwidth.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># If no median Tsys could be calculated for any spw (e.g. due to</span>
+        <span class="c1"># flagging, or due to science spws not being mapped to corresponding</span>
+        <span class="c1"># Tsys spws), then return without ranked list.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">median_tsys</span><span class="o">.</span><span class="n">values</span><span class="p">()))):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No valid median Tsys values found for spws for </span><span class="si">{}</span><span class="s2"> &quot;</span>
+                        <span class="s2">&quot;(Too much flagging? Science spws not mapped to Tsys &quot;</span>
+                        <span class="s2">&quot;spws?); cannot rank spws by Tsys and bandwidth.&quot;</span>
+                        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Initialize the metric, get spwids.</span>
+        <span class="n">metric</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">science_spws</span><span class="p">)])</span>
+        <span class="n">spw_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_spws</span><span class="p">])</span>
+
+        <span class="c1"># For each spw, calculate metric: sqrt(bandwidth) / median(Tsys), if</span>
+        <span class="c1"># a valid median Tsys is available.</span>
+        <span class="k">for</span> <span class="n">ispw</span><span class="p">,</span> <span class="n">spw</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">science_spws</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">median_tsys</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]):</span>
+                <span class="n">metric</span><span class="p">[</span><span class="n">ispw</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">)))</span> <span class="o">/</span> \
+                               <span class="n">median_tsys</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+
+        <span class="c1"># Sort spws by highest to lowest metric; convert to list of strings.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">spw_ids</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">metric</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">ispw</span><span class="p">,</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spw_ids</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;spw: </span><span class="si">%s</span><span class="s1"> =&gt; spw score metric: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">metric</span><span class="p">[</span><span class="n">ispw</span><span class="p">]))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;spw rank: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

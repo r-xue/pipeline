@@ -1,0 +1,19 @@
+pipeline.hif.tasks.fluxscale
+============================
+
+.. automodule:: pipeline.hif.tasks.fluxscale
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Fluxscale
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fluxscale

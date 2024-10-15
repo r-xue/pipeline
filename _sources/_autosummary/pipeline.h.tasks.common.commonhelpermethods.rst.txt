@@ -1,0 +1,21 @@
+pipeline.h.tasks.common.commonhelpermethods
+===========================================
+
+.. automodule:: pipeline.h.tasks.common.commonhelpermethods
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_antenna_names
+      get_corr_axis
+      get_corr_products
+      get_pol_id
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MeasurementSet
+   

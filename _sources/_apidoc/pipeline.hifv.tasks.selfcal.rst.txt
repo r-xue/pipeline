@@ -1,0 +1,37 @@
+pipeline.hifv.tasks.selfcal package
+===================================
+
+Submodules
+----------
+
+pipeline.hifv.tasks.selfcal.display module
+------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.selfcal.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.selfcal.renderer module
+-------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.selfcal.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.selfcal.selfcal module
+------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.selfcal.selfcal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifv.tasks.selfcal
+   :members:
+   :undoc-members:
+   :show-inheritance:

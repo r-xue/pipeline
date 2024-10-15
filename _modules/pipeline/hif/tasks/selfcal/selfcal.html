@@ -1,0 +1,1010 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.tasks.selfcal.selfcal &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.tasks.selfcal.selfcal</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.tasks.selfcal.selfcal</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">tarfile</span>
+<span class="kn">from</span> <span class="nn">fnmatch</span> <span class="kn">import</span> <span class="n">fnmatch</span>
+
+<span class="kn">from</span> <span class="nn">astropy.utils.misc</span> <span class="kn">import</span> <span class="n">JsonCustomEncoder</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.filenamer</span> <span class="k">as</span> <span class="nn">filenamer</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.mpihelpers</span> <span class="k">as</span> <span class="nn">mpihelpers</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.heuristics.auto_selfcal</span> <span class="kn">import</span> <span class="n">auto_selfcal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.applycal</span> <span class="kn">import</span> <span class="n">SerialIFApplycal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.makeimlist</span> <span class="kn">import</span> <span class="n">MakeImList</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">callibrary</span><span class="p">,</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">utils</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.contfilehandler</span> <span class="kn">import</span> <span class="n">contfile_to_chansel</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.mpihelpers</span> <span class="kn">import</span> <span class="n">TaskQueue</span>
+<span class="kn">from</span> <span class="nn">pipeline</span> <span class="kn">import</span> <span class="n">environment</span>
+
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SelfcalResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.SelfcalResults">[docs]</a>
+<span class="k">class</span> <span class="nc">SelfcalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">applycal_result_contline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">applycal_result_line</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">selfcal_resources</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">is_restore</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_casa_task</span> <span class="o">=</span> <span class="s1">&#39;Selfcal&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">applycal_result_contline</span> <span class="o">=</span> <span class="n">applycal_result_contline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">applycal_result_line</span> <span class="o">=</span> <span class="n">applycal_result_line</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_restore</span> <span class="o">=</span> <span class="n">is_restore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selfcal_resources</span> <span class="o">=</span> <span class="n">selfcal_resources</span>
+
+<div class="viewcode-block" id="SelfcalResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.SelfcalResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See :method:`~pipeline.infrastructure.api.Results.merge_with_context`.&quot;&quot;&quot;</span>
+
+        <span class="c1"># save selfcal results into the Pipeline context</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="s1">&#39;selfcal_targets&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">context</span><span class="o">.</span><span class="n">selfcal_targets</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;context.selfcal_targets is being over-written.&#39;</span><span class="p">)</span>
+
+        <span class="n">scal_targets_ctx</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">scal_targets_ctx</span><span class="p">:</span>
+            <span class="n">target</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;heuristics&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">selfcal_targets</span> <span class="o">=</span> <span class="n">scal_targets_ctx</span>
+
+        <span class="c1"># if selfcal_resources is None, then the selfcal solver is not triggered and no need to register the</span>
+        <span class="c1"># selfcal resources for auxproducts exporting.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selfcal_resources</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">selfcal_resources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selfcal_resources</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">applycal_result_contline</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_register_datatype</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">applycal_result_contline</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">applycal_result_line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_register_datatype</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">applycal_result_line</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_register_datatype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">appycal_result</span><span class="p">):</span>
+
+        <span class="n">calto_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">appycal_result</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">applied</span><span class="p">:</span>
+                <span class="n">calto_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">)</span>
+
+        <span class="c1"># register the selfcal results to the observing run</span>
+        <span class="k">for</span> <span class="n">calto</span> <span class="ow">in</span> <span class="n">calto_list</span><span class="p">:</span>
+
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">calto</span><span class="o">.</span><span class="n">vis</span>
+            <span class="n">field_sel</span> <span class="o">=</span> <span class="n">calto</span><span class="o">.</span><span class="n">field</span>
+            <span class="n">spw_sel</span> <span class="o">=</span> <span class="n">calto</span><span class="o">.</span><span class="n">spw</span>
+
+            <span class="c1"># Create a mapping of regcal data types to their applied selfcal types</span>
+            <span class="n">data_type_mapping</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">:</span> <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">,</span>
+                <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_LINE_SCIENCE</span><span class="p">:</span> <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_LINE_SCIENCE</span><span class="p">,</span>
+                <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONT_SCIENCE</span><span class="p">:</span> <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONT_SCIENCE</span>
+            <span class="p">}</span>
+
+            <span class="c1"># Retrieve the data type</span>
+            <span class="n">data_dtype</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span><span class="o">.</span><span class="n">get_data_type</span><span class="p">(</span><span class="s1">&#39;DATA&#39;</span><span class="p">,</span> <span class="n">field_sel</span><span class="p">,</span> <span class="n">spw_sel</span><span class="p">)</span>
+
+            <span class="c1"># Find the corresponding selfcal type</span>
+            <span class="n">dtype_applied</span> <span class="o">=</span> <span class="n">data_type_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">data_dtype</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dtype_applied</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No selfcal data type found corresponding to the data type: </span><span class="si">{</span><span class="n">data_dtype</span><span class="si">}</span><span class="s2"> &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;associated with field=</span><span class="si">{</span><span class="n">field_sel</span><span class="si">}</span><span class="s2">, spw=</span><span class="si">{</span><span class="n">spw_sel</span><span class="si">}</span><span class="s2"> in vis=</span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s2">. Skipping registration.&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+                <span class="c1"># check for the existance of CORRECTED_DATA first</span>
+                <span class="k">if</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tb</span><span class="o">.</span><span class="n">colnames</span><span class="p">():</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No CORRECTED_DATA column in </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s1">, skip </span><span class="si">{</span><span class="n">dtype_applied</span><span class="si">}</span><span class="s1"> registration&#39;</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Register the CORRECTED_DATA column as </span><span class="si">{</span><span class="n">dtype_applied</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s1">: field=</span><span class="si">{</span><span class="n">field_sel</span><span class="si">!r}</span><span class="s1"> spw=</span><span class="si">{</span><span class="n">spw_sel</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+                <span class="n">ms</span><span class="o">.</span><span class="n">set_data_column</span><span class="p">(</span><span class="n">dtype_applied</span><span class="p">,</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">field_sel</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw_sel</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;SelfcalResults:&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="SelfcalInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.SelfcalInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">SelfcalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+
+    <span class="c1"># restrict input vis to be of type REGCAL_CONTLINE_SCIENCE</span>
+    <span class="c1"># potentially we could allow REGCAL_CONTLINE_ALL here (e.g. tmp ms splitted from &#39;corrected&#39; data column),</span>
+    <span class="c1"># but there is no space for applying final selfcal solutions to the data.</span>
+
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONT_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">]</span>
+
+    <span class="n">field</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="nd">@field</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>
+            <span class="c1"># PIPE-1881: allow field names that mistakenly get casted into non-string datatype by</span>
+            <span class="c1"># recipereducer (utils.string_to_val) and executeppr (XmlObjectifier.castType)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The field selection input </span><span class="si">%r</span><span class="s1"> is not a string and will be converted.&#39;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">val</span>
+
+    <span class="n">spw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">contfile</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;cont.dat&#39;</span><span class="p">)</span>
+    <span class="n">apply</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">)</span>
+    <span class="n">recal</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">n_solints</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">4.0</span><span class="p">)</span>
+    <span class="n">amplitude_selfcal</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">gaincal_minsnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">minsnr_to_proceed</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+    <span class="n">delta_beam_thresh</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+    <span class="n">apply_cal_mode_default</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;calflag&#39;</span><span class="p">)</span>
+    <span class="n">rel_thresh_scaling</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;log10&#39;</span><span class="p">)</span>
+    <span class="n">dividing_factor</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">check_all_spws</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">inf_EB_gaincal_combine</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">refantignore</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">restore_resources</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_solints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">amplitude_selfcal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gaincal_minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refantignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">minsnr_to_proceed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta_beam_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_cal_mode_default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">rel_thresh_scaling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dividing_factor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check_all_spws</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inf_EB_gaincal_combine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">apply</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">restore_resources</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contfile</span> <span class="o">=</span> <span class="n">contfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply</span> <span class="o">=</span> <span class="n">apply</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recal</span> <span class="o">=</span> <span class="n">recal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refantignore</span> <span class="o">=</span> <span class="n">refantignore</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_solints</span> <span class="o">=</span> <span class="n">n_solints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amplitude_selfcal</span> <span class="o">=</span> <span class="n">amplitude_selfcal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gaincal_minsnr</span> <span class="o">=</span> <span class="n">gaincal_minsnr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minsnr_to_proceed</span> <span class="o">=</span> <span class="n">minsnr_to_proceed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta_beam_thresh</span> <span class="o">=</span> <span class="n">delta_beam_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_cal_mode_default</span> <span class="o">=</span> <span class="n">apply_cal_mode_default</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rel_thresh_scaling</span> <span class="o">=</span> <span class="n">rel_thresh_scaling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dividing_factor</span> <span class="o">=</span> <span class="n">dividing_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_all_spws</span> <span class="o">=</span> <span class="n">check_all_spws</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inf_EB_gaincal_combine</span> <span class="o">=</span> <span class="n">inf_EB_gaincal_combine</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restore_resources</span> <span class="o">=</span> <span class="n">restore_resources</span></div>
+
+
+
+<div class="viewcode-block" id="Selfcal">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.Selfcal">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_selfcal&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Run self-calibration using the science target visibilities.&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Selfcal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SelfcalInputs</span>
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_scal_targets_to_json</span><span class="p">(</span><span class="n">scal_targets</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;selfcal.json&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Serilize scal_targets to a json file.&quot;&quot;&quot;</span>
+
+        <span class="n">current_version</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">current_datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+        <span class="n">scal_targets_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scal_targets</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">scal_targets_copy</span><span class="p">:</span>
+            <span class="n">target</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;heuristics&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">scal_targets_json</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">scal_targets_json</span><span class="p">[</span><span class="s1">&#39;scal_targets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scal_targets_copy</span>
+        <span class="n">scal_targets_json</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_version</span>
+        <span class="n">scal_targets_json</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_datetime</span>
+        <span class="n">scal_targets_json</span><span class="p">[</span><span class="s1">&#39;pipeline_version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">pipeline_revision</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">scal_targets_json</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">JsonCustomEncoder</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_scal_targets_from_json</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;selfcal.json&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deserilize scal_targets from a json file.&quot;&quot;&quot;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Reading the selfcal targets list from </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">scal_targets_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scal_targets_json</span><span class="p">[</span><span class="s1">&#39;scal_targets&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_apply_scal_check_caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc_targets</span><span class="p">,</span> <span class="n">mses</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if all calibration tables required for applying the selfcal solutions are ready to use.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            caltable_list:  a list of calibration tables requested based on the calapply information inside scal_targets</span>
+<span class="sd">            caltable_ready: a list of the requested cal tables that are ready to be applied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">mses</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">obs_run</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span>
+            <span class="n">mses_regcal_contline</span> <span class="o">=</span> <span class="n">obs_run</span><span class="o">.</span><span class="n">get_measurement_sets_of_type</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONT_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">],</span> <span class="n">msonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">mses_regcal_line</span> <span class="o">=</span> <span class="n">obs_run</span><span class="o">.</span><span class="n">get_measurement_sets_of_type</span><span class="p">([</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_LINE_SCIENCE</span><span class="p">],</span> <span class="n">msonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">mses</span> <span class="o">=</span> <span class="n">mses_regcal_contline</span><span class="o">+</span><span class="n">mses_regcal_line</span>
+
+        <span class="c1"># collect a name list of MSes which we could apply the selfcal solutions to.</span>
+        <span class="n">vislist_calto</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mses</span><span class="p">]</span>
+        <span class="n">caltable_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">caltable_ready</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">cleantarget</span> <span class="ow">in</span> <span class="n">sc_targets</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_exception&#39;</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="n">sc_lib</span> <span class="o">=</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">]</span>
+            <span class="n">sc_workdir</span> <span class="o">=</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_workdir&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">sc_lib</span><span class="p">[</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]:</span>
+                <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">sc_lib</span><span class="p">[</span><span class="s1">&#39;vislist&#39;</span><span class="p">]:</span>
+                <span class="n">vis_base</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">vis_base</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;_cont&#39;</span><span class="p">):</span>
+                    <span class="n">vis_base</span> <span class="o">=</span> <span class="n">vis_base</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">gaintable</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sc_lib</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="s1">&#39;gaintable_final&#39;</span><span class="p">]):</span>
+                    <span class="k">for</span> <span class="n">vis_calto</span> <span class="ow">in</span> <span class="n">vislist_calto</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">vis_calto</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">vis_base</span><span class="p">):</span>
+                            <span class="n">gaintable</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sc_workdir</span><span class="p">,</span> <span class="n">sc_lib</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="s1">&#39;gaintable_final&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">])</span>
+                            <span class="k">if</span> <span class="n">gaintable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">caltable_list</span><span class="p">:</span>
+                                <span class="n">caltable_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gaintable</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">gaintable</span><span class="p">):</span>
+                                <span class="k">if</span> <span class="n">gaintable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">caltable_ready</span><span class="p">:</span>
+                                    <span class="n">caltable_ready</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gaintable</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;selfcal/caltable(s) request : </span><span class="si">%r</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">caltable_list</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;selfcal/caltable(s) ready   : </span><span class="si">%r</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">caltable_ready</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">caltable_list</span><span class="p">,</span> <span class="n">caltable_ready</span>
+
+    <span class="k">def</span> <span class="nf">_check_restore_from_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if we can do selfcal restore from the restore resources.&quot;&quot;&quot;</span>
+
+        <span class="n">scal_targets</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">pat_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;*.auxproducts.tgz&#39;</span><span class="p">,</span> <span class="s1">&#39;*.selfcal.json&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;../products/*.auxproducts.tgz&#39;</span><span class="p">,</span> <span class="s1">&#39;*.selfcal.json&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;../rawdata/*.auxproducts.tgz&#39;</span><span class="p">,</span> <span class="s1">&#39;*.selfcal.json&#39;</span><span class="p">]</span>
+        <span class="n">match_list</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;sc_workdir*&#39;</span><span class="p">,</span> <span class="s1">&#39;*.selfcal.json&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">restore_resources</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pat_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">restore_resources</span><span class="p">,</span> <span class="s1">&#39;*selfcal.json&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">pat_list</span>
+
+        <span class="k">for</span> <span class="n">pat</span> <span class="ow">in</span> <span class="n">pat_list</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">check_file</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">pat</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">check_file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.auxproducts.tgz&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">is_tarfile</span><span class="p">(</span><span class="n">check_file</span><span class="p">):</span>
+                    <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">check_file</span><span class="p">,</span> <span class="s1">&#39;r:gz&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>
+                        <span class="n">members</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">tar</span><span class="o">.</span><span class="n">getmembers</span><span class="p">():</span>
+                            <span class="n">is_resource</span> <span class="o">=</span> <span class="nb">any</span><span class="p">([</span><span class="n">fnmatch</span><span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">pat</span><span class="p">)</span> <span class="k">for</span> <span class="n">pat</span> <span class="ow">in</span> <span class="n">match_list</span><span class="p">])</span>
+                            <span class="k">if</span> <span class="n">is_resource</span><span class="p">:</span>
+                                <span class="n">members</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;extracting: </span><span class="si">%s</span><span class="s1"> from </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">check_file</span><span class="p">)</span>
+                        <span class="n">tar</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">members</span><span class="o">=</span><span class="n">members</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">check_file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.selfcal.json&#39;</span><span class="p">):</span>
+                    <span class="n">scal_targets_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scal_targets_from_json</span><span class="p">(</span><span class="n">check_file</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">scal_targets_json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">caltable_list</span><span class="p">,</span> <span class="n">caltable_ready</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_scal_check_caltable</span><span class="p">(</span><span class="n">scal_targets_json</span><span class="p">)</span>
+                        <span class="c1"># we verify the existances of required caltables in-flight as the file search progresses.</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">caltable_ready</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">caltable_list</span><span class="p">):</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                <span class="s1">&#39;The required selfcal caltable(s) is missing if we use scal_targets from the json file </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                                <span class="n">check_file</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">scal_targets</span> <span class="o">=</span> <span class="n">scal_targets_json</span>
+            <span class="k">if</span> <span class="n">scal_targets</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">scal_targets</span>
+
+    <span class="k">def</span> <span class="nf">_check_restore_from_context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if we can do selfcal restore from scal_targets saved in the context.&quot;&quot;&quot;</span>
+
+        <span class="n">scal_targets</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="s1">&#39;selfcal_targets&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">selfcal_targets</span><span class="p">:</span>
+            <span class="n">scal_targets_last</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">selfcal_targets</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Found selfcal results in the context. Looking for the required caltables for applying the selfcal solutions.&#39;</span><span class="p">)</span>
+            <span class="n">caltable_list</span><span class="p">,</span> <span class="n">caltable_ready</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_scal_check_caltable</span><span class="p">(</span><span class="n">scal_targets</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">caltable_ready</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">caltable_list</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The required selfcal caltable(s) is missing if we use scal_targets from the context.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">scal_targets</span> <span class="o">=</span> <span class="n">scal_targets_last</span>
+
+        <span class="k">return</span> <span class="n">scal_targets</span>
+
+<div class="viewcode-block" id="Selfcal.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.Selfcal.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">[],</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="c1"># If no suitable datatype, by-pass the hif_selfcal stage.</span>
+            <span class="n">required_data_type_desc</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">SelfcalInputs</span><span class="o">.</span><span class="n">processing_data_type</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;No data matching any of the required datatypes: </span><span class="si">{</span><span class="n">required_data_type_desc</span><span class="si">}</span><span class="s1">; &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;please review the registered MS datatype information.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">SelfcalResults</span><span class="p">([],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">]</span>
+
+        <span class="n">scal_targets_last</span> <span class="o">=</span> <span class="n">scal_targets_json</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Check if we can use a scal_targets list from the Pipeline context</span>
+        <span class="n">scal_targets_last</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_restore_from_context</span><span class="p">()</span>
+
+        <span class="c1"># Check if we can use a scal_targets list from restore_resources</span>
+        <span class="n">scal_targets_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_restore_from_resources</span><span class="p">()</span>
+
+        <span class="n">obs_run</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span>
+
+        <span class="n">mses_columns_regcal_contline</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">obs_run</span><span class="o">.</span><span class="n">get_measurement_sets_of_type</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONT_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">],</span> <span class="n">msonly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">mses_columns_selfcal_contline</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">obs_run</span><span class="o">.</span><span class="n">get_measurement_sets_of_type</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONT_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">],</span> <span class="n">msonly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">mses_regcal_contline</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mses_columns_regcal_contline</span><span class="p">)</span>
+        <span class="n">mses_selfcal_contline</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mses_columns_selfcal_contline</span><span class="p">)</span>
+
+        <span class="n">mses_regcal_line</span> <span class="o">=</span> <span class="n">obs_run</span><span class="o">.</span><span class="n">get_measurement_sets_of_type</span><span class="p">([</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_LINE_SCIENCE</span><span class="p">],</span> <span class="n">msonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">mses_selfcal_line</span> <span class="o">=</span> <span class="n">obs_run</span><span class="o">.</span><span class="n">get_measurement_sets_of_type</span><span class="p">([</span><span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_LINE_SCIENCE</span><span class="p">],</span> <span class="n">msonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">scal_targets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">recal</span><span class="p">:</span>
+            <span class="c1"># only sideload the selfcal restore information from the context or json if recal=False</span>
+            <span class="k">if</span> <span class="n">scal_targets_last</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">scal_targets</span> <span class="o">=</span> <span class="n">scal_targets_last</span>
+            <span class="k">if</span> <span class="n">scal_targets_json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">scal_targets</span> <span class="o">=</span> <span class="n">scal_targets_json</span>
+
+        <span class="c1"># if applycal_result_contline is None, then contline applycal is not triggered.</span>
+        <span class="c1"># if applycal_result_line is None, then line applycal is not triggered.</span>
+        <span class="c1"># if selfcal_resources is None, then the selfcal solver is not triggered, even selfcal solution could be applied.</span>
+        <span class="n">applycal_result_contline</span> <span class="o">=</span> <span class="n">applycal_result_line</span> <span class="o">=</span> <span class="n">selfcal_resources</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">is_restore</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">scal_targets</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">recal</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;recal=True, override any existing selfcal solution in context or json, &#39;</span>
+                         <span class="s1">&#39;and alway execute the selfcal solver.&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Execute the selfcal solver.&#39;</span><span class="p">)</span>
+            <span class="n">scal_targets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solve_selfcal</span><span class="p">()</span>
+            <span class="n">is_restore</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">selfcal_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;.selfcal.json&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_scal_targets_to_json</span><span class="p">(</span><span class="n">scal_targets</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">selfcal_json</span><span class="p">)</span>
+            <span class="n">scal_caltable</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_scal_check_caltable</span><span class="p">(</span><span class="n">scal_targets</span><span class="p">,</span> <span class="n">mses_regcal_contline</span><span class="o">+</span><span class="n">mses_regcal_line</span><span class="p">)</span>
+            <span class="n">selfcal_resources</span> <span class="o">=</span> <span class="p">[</span><span class="n">selfcal_json</span><span class="p">]</span> <span class="o">+</span> <span class="n">scal_caltable</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;selfcal resources list: </span><span class="si">%r</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">selfcal_resources</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">scal_targets</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No valid selfcal field returned by the selfcal solver; skip the selfcal apply step.&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">SelfcalResults</span><span class="p">(</span>
+                    <span class="n">scal_targets</span><span class="p">,</span> <span class="n">applycal_result_contline</span><span class="p">,</span> <span class="n">applycal_result_line</span><span class="p">,</span> <span class="n">selfcal_resources</span><span class="p">,</span> <span class="n">is_restore</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">apply</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">mses_regcal_contline</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">mses_selfcal_contline</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE found.&#39;</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Attempt to apply any selfcal solutions to the REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es):&#39;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mses_regcal_contline</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">data_column</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">applycal_result_contline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_scal</span><span class="p">(</span><span class="n">scal_targets</span><span class="p">,</span> <span class="n">mses_regcal_contline</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Found DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE.&#39;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mses_selfcal_contline</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">data_column</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Skip applying selfcal solutions to the REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es).&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">mses_regcal_line</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">mses_selfcal_line</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No DataType:SELFCAL_LINE_SCIENCE found.&#39;</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Attempt to apply any selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).&#39;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mses_regcal_line</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">data_column</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">applycal_result_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_scal</span><span class="p">(</span><span class="n">scal_targets</span><span class="p">,</span>  <span class="n">mses_regcal_line</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Found DataType:SELFCAL_LINE_SCIENCE.&#39;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mses_selfcal_line</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">data_column</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Skip applying selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">SelfcalResults</span><span class="p">(</span>
+            <span class="n">scal_targets</span><span class="p">,</span> <span class="n">applycal_result_contline</span><span class="p">,</span> <span class="n">applycal_result_line</span><span class="p">,</span> <span class="n">selfcal_resources</span><span class="p">,</span> <span class="n">is_restore</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_solve_selfcal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># collect the target list</span>
+        <span class="n">scal_targets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scaltargets</span><span class="p">(</span><span class="n">scal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">scal_targets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_scaltargets</span><span class="p">(</span><span class="n">scal_targets</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">scal_targets</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">scal_targets</span>
+
+        <span class="c1"># split per-cleantarget MSes with optional spectral line flagging</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_scaltargets</span><span class="p">(</span><span class="n">scal_targets</span><span class="p">)</span>
+
+        <span class="c1"># start the selfcal sequence.</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">inf_EB_gaincal_combine</span><span class="p">:</span>
+            <span class="n">inf_EB_gaincal_combine</span> <span class="o">=</span> <span class="s1">&#39;scan,spw&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inf_EB_gaincal_combine</span> <span class="o">=</span> <span class="s1">&#39;scan&#39;</span>
+
+        <span class="n">parallel</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">parse_mpi_input_parameter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">parallel</span><span class="p">)</span>
+        <span class="n">taskqueue_parallel_request</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">scal_targets</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">parallel</span>
+        <span class="k">with</span> <span class="n">TaskQueue</span><span class="p">(</span><span class="n">parallel</span><span class="o">=</span><span class="n">taskqueue_parallel_request</span><span class="p">)</span> <span class="k">as</span> <span class="n">tq</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">scal_targets</span><span class="p">:</span>
+                <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_parallel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">parallel</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">tq</span><span class="o">.</span><span class="n">is_async</span><span class="p">())</span>
+                <span class="n">tq</span><span class="o">.</span><span class="n">add_functioncall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_run_selfcal_sequence</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span>
+                                    <span class="n">gaincal_minsnr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">gaincal_minsnr</span><span class="p">,</span>
+                                    <span class="n">minsnr_to_proceed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">minsnr_to_proceed</span><span class="p">,</span>
+                                    <span class="n">delta_beam_thresh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">delta_beam_thresh</span><span class="p">,</span>
+                                    <span class="n">apply_cal_mode_default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">apply_cal_mode_default</span><span class="p">,</span>
+                                    <span class="n">rel_thresh_scaling</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">rel_thresh_scaling</span><span class="p">,</span>
+                                    <span class="n">dividing_factor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">dividing_factor</span><span class="p">,</span>
+                                    <span class="n">refantignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">refantignore</span><span class="p">,</span>
+                                    <span class="n">check_all_spws</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">check_all_spws</span><span class="p">,</span>
+                                    <span class="n">n_solints</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">n_solints</span><span class="p">,</span>
+                                    <span class="n">do_amp_selfcal</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">amplitude_selfcal</span><span class="p">,</span>
+                                    <span class="n">inf_EB_gaincal_combine</span><span class="o">=</span><span class="n">inf_EB_gaincal_combine</span><span class="p">,</span>
+                                    <span class="n">executor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">,</span>
+                                    <span class="n">use_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">tq_results</span> <span class="o">=</span> <span class="n">tq</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">scal_targets</span><span class="p">):</span>
+            <span class="n">scal_library</span><span class="p">,</span> <span class="n">solints</span><span class="p">,</span> <span class="n">bands</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">tq_results</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">sc_exception</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">scal_library</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sc_exception</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">sc_exception</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_band&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_solints&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">solints</span><span class="p">[</span><span class="n">bands</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                    <span class="c1"># note scal_library is keyed by field name without quotes at this moment.</span>
+                    <span class="c1"># see. https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter</span>
+                    <span class="c1">#       utils.fieldname_for_casa() and</span>
+                    <span class="c1">#       utils.dequote()</span>
+                    <span class="n">field_name</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field_name&#39;</span><span class="p">]</span>  <span class="c1"># the dequoted field name</span>
+                    <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scal_library</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_band&#39;</span><span class="p">]]</span>
+                    <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_rms_scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">][</span><span class="s1">&#39;RMS_final&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">][</span><span class="s1">&#39;theoretical_sensitivity&#39;</span><span class="p">]</span>
+                    <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_success&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">][</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                    <span class="n">traceback_msg</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">traceback_msg</span><span class="p">)</span>
+                    <span class="n">sc_exception</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">sc_exception</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s1">&#39;An exception was triggered during the self-calibration sequence for target=</span><span class="si">%r</span><span class="s1"> spw=</span><span class="si">%r</span><span class="s1"> in the working directory: </span><span class="si">%s</span><span class="s1"> .&#39;</span><span class="p">,</span>
+                    <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span>
+                    <span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span>
+                    <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_workdir&#39;</span><span class="p">])</span>
+            <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_exception&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sc_exception</span>
+
+        <span class="k">return</span> <span class="n">scal_targets</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_run_selfcal_sequence</span><span class="p">(</span><span class="n">scal_target</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">workdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">)</span>
+        <span class="n">selfcal_library</span> <span class="o">=</span> <span class="n">solints</span> <span class="o">=</span> <span class="n">bands</span> <span class="o">=</span> <span class="n">trackback_msg</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;sc_workdir&#39;</span><span class="p">])</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Running auto_selfcal heuristics on target </span><span class="si">{0}</span><span class="s1"> spw </span><span class="si">{1}</span><span class="s1"> from </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span> <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;sc_workdir&#39;</span><span class="p">]))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">selfcal_heuristics</span> <span class="o">=</span> <span class="n">auto_selfcal</span><span class="o">.</span><span class="n">SelfcalHeuristics</span><span class="p">(</span><span class="n">scal_target</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="c1"># import pickle</span>
+            <span class="c1"># with open(&#39;selfcal_heuristics.pickle&#39;, &#39;wb&#39;) as handle:</span>
+            <span class="c1">#     pickle.dump(selfcal_library, handle, protocol=pickle.HIGHEST_PROTOCOL)</span>
+
+            <span class="n">selfcal_library</span><span class="p">,</span> <span class="n">solints</span><span class="p">,</span> <span class="n">bands</span> <span class="o">=</span> <span class="n">selfcal_heuristics</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">traceback_msg</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">traceback_msg</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">workdir</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;sc_parallel&#39;</span><span class="p">]:</span>
+                <span class="c1"># sc_parallel=True indicats that we are certainly running tclean(parallel=true) in a sequential TaskQueue.</span>
+                <span class="c1"># A side effect of doing this while changing cwd is that the working directory of MPIServers will be &quot;stuck&quot;</span>
+                <span class="c1"># to the one where tclean(paralllel=True) started.</span>
+                <span class="c1"># As a workaround, we send the chdir command to the MPIServers explicitly.</span>
+                <span class="n">mpihelpers</span><span class="o">.</span><span class="n">mpiclient</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;os.chdir(</span><span class="si">{</span><span class="n">workdir</span><span class="si">!r}</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">target_server</span><span class="o">=</span><span class="n">mpihelpers</span><span class="o">.</span><span class="n">mpi_server_list</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">selfcal_library</span><span class="p">,</span> <span class="n">solints</span><span class="p">,</span> <span class="n">bands</span><span class="p">,</span> <span class="n">trackback_msg</span>
+
+    <span class="k">def</span> <span class="nf">_apply_scal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc_targets</span><span class="p">,</span> <span class="n">mses</span><span class="p">):</span>
+
+        <span class="n">calapps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">vislist</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># collect a name list of MSes which we could apply the selfcal solutions to.</span>
+        <span class="n">vislist_calto</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mses</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">cleantarget</span> <span class="ow">in</span> <span class="n">sc_targets</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_exception&#39;</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="n">sc_lib</span> <span class="o">=</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">sc_lib</span><span class="p">[</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="n">sc_workdir</span> <span class="o">=</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_workdir&#39;</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">sc_lib</span><span class="p">[</span><span class="s1">&#39;vislist&#39;</span><span class="p">]:</span>
+                <span class="n">vis_base</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">vis_base</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;_cont&#39;</span><span class="p">):</span>
+                    <span class="n">vis_base</span> <span class="o">=</span> <span class="n">vis_base</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">gaintable</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sc_lib</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="s1">&#39;gaintable_final&#39;</span><span class="p">]):</span>
+                    <span class="k">for</span> <span class="n">vis_calto</span> <span class="ow">in</span> <span class="n">vislist_calto</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">vis_calto</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">vis_base</span><span class="p">):</span>
+
+                            <span class="c1"># workaround a potential issue from heuristics.auto_selfcal when gaintable has only one element, when it&#39;s not a list of list.</span>
+                            <span class="n">spwmap_final</span> <span class="o">=</span> <span class="n">sc_lib</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="s1">&#39;spwmap_final&#39;</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spwmap</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">for</span> <span class="n">spwmap</span> <span class="ow">in</span> <span class="n">spwmap_final</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">spwmap_final</span><span class="p">:</span>
+                                <span class="n">spwmap_final</span> <span class="o">=</span> <span class="p">[</span><span class="n">spwmap_final</span><span class="p">]</span>
+
+                            <span class="n">gaintable</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sc_workdir</span><span class="p">,</span> <span class="n">sc_lib</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="s1">&#39;gaintable_final&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">])</span>
+                            <span class="n">calfrom</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">(</span>
+                                <span class="n">gaintable</span><span class="o">=</span><span class="n">gaintable</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="n">sc_lib</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="s1">&#39;applycal_interpolate_final&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">],</span>
+                                <span class="n">calwt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmap_final</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+                                <span class="n">caltype</span><span class="o">=</span><span class="s1">&#39;gaincal&#39;</span><span class="p">)</span>
+                            <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span>
+                                <span class="n">vis</span><span class="o">=</span><span class="n">vis_calto</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span>
+                                <span class="n">spw</span><span class="o">=</span><span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;spw_real&#39;</span><span class="p">][</span><span class="n">vis</span><span class="p">])</span>
+                            <span class="n">calapps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">))</span>
+                            <span class="n">vislist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vis_calto</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">calapps</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
+
+        <span class="n">vislist</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">vislist</span><span class="p">))</span>
+        <span class="n">parallel</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">parse_mpi_input_parameter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">parallel</span><span class="p">)</span>
+        <span class="n">taskqueue_parallel_request</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vislist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">parallel</span>
+        <span class="k">with</span> <span class="n">TaskQueue</span><span class="p">(</span><span class="n">parallel</span><span class="o">=</span><span class="n">taskqueue_parallel_request</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">)</span> <span class="k">as</span> <span class="n">tq</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+                <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span> <span class="s1">&#39;applymode&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">apply_cal_mode_default</span><span class="p">,</span> <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">}</span>
+                <span class="n">tq</span><span class="o">.</span><span class="n">add_pipelinetask</span><span class="p">(</span><span class="n">SerialIFApplycal</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="n">tq_results</span> <span class="o">=</span> <span class="n">tq</span><span class="o">.</span><span class="n">get_results</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">tq_results</span>
+
+<div class="viewcode-block" id="Selfcal.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.Selfcal.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_check_scaltargets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scal_targets</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter out the sources that the selfcal heuristics should not process.</span>
+
+<span class="sd">        PIPE-1447/PIPE-1915: we do not execute selfcal heuristics for mosaic or ephemeris sources.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">final_scal_target</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scal_target</span> <span class="ow">in</span> <span class="n">scal_targets</span><span class="p">:</span>
+            <span class="n">disable_mosaic</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">disable_mosaic</span> <span class="ow">and</span> <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;is_mosaic&#39;</span><span class="p">]:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s1">&#39;The self-calibration heuristics do not fully support mosaic yet. Skipping target=</span><span class="si">%r</span><span class="s1"> spw=</span><span class="si">%r</span><span class="s1">.&#39;</span><span class="p">,</span>
+                    <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span>
+                    <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;is_eph_obj&#39;</span><span class="p">]:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s1">&#39;The self-calibration heuristics do not fully support ephemeris sources yet. Skipping target=</span><span class="si">%r</span><span class="s1"> spw=</span><span class="si">%r</span><span class="s1">.&#39;</span><span class="p">,</span>
+                    <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span>
+                    <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span>
+                <span class="k">continue</span>
+            <span class="n">final_scal_target</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scal_target</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">final_scal_target</span>
+
+    <span class="k">def</span> <span class="nf">_get_scaltargets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the cleantarget list from the context.</span>
+
+<span class="sd">        This essenially runs MakeImList and go through all nesscary steps to get the target list.</span>
+<span class="sd">        However, it will pick up the selfcal heuristics from imageparams_factory,ImageParamsHeuristicsFactory</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">telescope</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">project_summary</span><span class="o">.</span><span class="n">telescope</span>
+        <span class="k">if</span> <span class="n">telescope</span> <span class="o">==</span> <span class="s1">&#39;ALMA&#39;</span><span class="p">:</span>
+            <span class="n">repr_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">diameter</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">diameter</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">repr_ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">diameter</span> <span class="o">==</span> <span class="mf">7.0</span><span class="p">:</span>
+                <span class="n">telescope</span> <span class="o">=</span> <span class="s1">&#39;ACA&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">telescope</span> <span class="o">=</span> <span class="s1">&#39;ALMA&#39;</span>
+
+        <span class="n">makeimlist_inputs</span> <span class="o">=</span> <span class="n">MakeImList</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+                                              <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                              <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+                                              <span class="n">specmode</span><span class="o">=</span><span class="s1">&#39;cont&#39;</span><span class="p">,</span>
+                                              <span class="n">clearlist</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                              <span class="n">scal</span><span class="o">=</span><span class="n">scal</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">contfile</span><span class="p">,</span>
+                                              <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span>
+                                              <span class="n">spw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+                                              <span class="n">parallel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">parallel</span><span class="p">)</span>
+        <span class="n">makeimlist_task</span> <span class="o">=</span> <span class="n">MakeImList</span><span class="p">(</span><span class="n">makeimlist_inputs</span><span class="p">)</span>
+        <span class="n">makeimlist_results</span> <span class="o">=</span> <span class="n">makeimlist_task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+        <span class="n">scal_targets</span> <span class="o">=</span> <span class="n">makeimlist_results</span><span class="o">.</span><span class="n">targets</span>
+        <span class="k">for</span> <span class="n">scal_target</span> <span class="ow">in</span> <span class="n">scal_targets</span><span class="p">:</span>
+            <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;sc_telescope&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">telescope</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">repr_source</span><span class="p">,</span> <span class="n">repr_spw</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">repr_real</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;heuristics&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">representative_target</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">)</span> <span class="ow">in</span> <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">repr_source</span> <span class="o">==</span> <span class="n">utils</span><span class="o">.</span><span class="n">dequote</span><span class="p">(</span><span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]):</span>
+                <span class="n">is_representative</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">is_representative</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;is_repr_target&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_representative</span>
+            <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;is_mosaic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;heuristics&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">is_mosaic</span><span class="p">(</span><span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">])</span>
+            <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;is_eph_obj&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;heuristics&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">is_eph_obj</span><span class="p">(</span><span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">])</span>
+            <span class="c1"># Note that scal_library is currently keyed by field name without quotes.</span>
+            <span class="c1"># We use the &#39;field_name&#39; value to retrieve self-calibration results from scal_library generated by the self-cal solver.</span>
+            <span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;field_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dequote</span><span class="p">(</span><span class="n">scal_target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">])</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;scal_targets: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">scal_targets</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">scal_targets</span>
+
+    <span class="k">def</span> <span class="nf">_remove_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
+
+        <span class="n">vis_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">vis</span><span class="p">,</span> <span class="n">vis</span><span class="o">+</span><span class="s1">&#39;.flagversions&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">vis_dir</span> <span class="ow">in</span> <span class="n">vis_dirs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">vis_dir</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;removing </span><span class="si">{</span><span class="n">vis_dir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_executable</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">vis_dir</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_split_scaltargets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scal_targets</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split the input MSes into smaller MSes per cleantargets effeciently.&quot;&quot;&quot;</span>
+
+        <span class="c1"># mt_inputvis_list aggregates input vis argument values of expected mstransform calls</span>
+        <span class="c1"># therefore len(mt_inputvis_list) represents the number of ms to be split out</span>
+        <span class="n">mt_inputvis_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">vis</span><span class="p">,</span> <span class="s1">&#39;_CONTLINE_&#39;</span> <span class="ow">in</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">scal_targets</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]]</span>
+
+        <span class="n">parallel</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">parse_mpi_input_parameter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">parallel</span><span class="p">)</span>
+        <span class="n">taskqueue_parallel_request</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mt_inputvis_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">parallel</span>
+
+        <span class="n">inputvis_list</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">deduplicate</span><span class="p">([</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mt_inputvis_list</span><span class="p">])</span>
+        <span class="n">inputvis_contline</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">deduplicate</span><span class="p">([</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mt_inputvis_list</span> <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="n">outputvis_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flag_lines</span><span class="p">(</span><span class="n">inputvis_contline</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">utils</span><span class="o">.</span><span class="n">ignore_pointing</span><span class="p">(</span><span class="n">inputvis_list</span><span class="p">):</span>
+            <span class="k">with</span> <span class="n">TaskQueue</span><span class="p">(</span><span class="n">parallel</span><span class="o">=</span><span class="n">taskqueue_parallel_request</span><span class="p">)</span> <span class="k">as</span> <span class="n">tq</span><span class="p">:</span>
+
+                <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">scal_targets</span><span class="p">:</span>
+
+                    <span class="n">vislist</span> <span class="o">=</span> <span class="p">[]</span>
+
+                    <span class="n">band_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_band_name</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+                    <span class="n">sc_workdir</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sc_workdir_</span><span class="si">{</span><span class="n">target</span><span class="p">[</span><span class="s2">&quot;field&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">band_str</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">sc_workdir</span><span class="p">):</span>
+                        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">sc_workdir</span><span class="p">)</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">sc_workdir</span><span class="p">)</span>
+
+                    <span class="n">sc_workdir_contfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sc_workdir</span><span class="p">,</span> <span class="s1">&#39;cont.dat&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">contfile</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">sc_workdir_contfile</span><span class="p">):</span>
+                        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">contfile</span><span class="p">,</span> <span class="n">sc_workdir_contfile</span><span class="p">)</span>
+
+                    <span class="n">spw_real</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">field</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span>
+                    <span class="n">uvrange</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]:</span>
+
+                        <span class="c1"># we use virtualspw here for the naming convention (similar to the imaging naming convention).</span>
+                        <span class="n">real_spwsel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_real_spwsel</span><span class="p">([</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]],</span> <span class="p">[</span><span class="n">vis</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">spw_real</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">real_spwsel</span>
+                        <span class="n">outputvis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sc_workdir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_ms</span><span class="p">(</span><span class="n">outputvis</span><span class="p">)</span>
+
+                        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+                        <span class="n">spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">real_spwsel</span><span class="p">)</span>
+
+                        <span class="n">mean_freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">mean_frequency</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span>
+                            <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">))</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">])</span>
+                        <span class="n">bwarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">))</span>
+                                           <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">])</span>
+                        <span class="n">chanarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">])</span>
+                        <span class="n">chanwidth_desired_hz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_desired_width</span><span class="p">(</span><span class="n">mean_freq</span><span class="p">)</span>
+                        <span class="n">chanbin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spw_chanbin</span><span class="p">(</span><span class="n">bwarray</span><span class="p">,</span> <span class="n">chanarray</span><span class="p">,</span> <span class="n">chanwidth_desired_hz</span><span class="p">)</span>
+
+                        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span> <span class="s1">&#39;outputvis&#39;</span><span class="p">:</span> <span class="n">outputvis</span><span class="p">,</span> <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">real_spwsel</span><span class="p">,</span>
+                                     <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span> <span class="n">uvrange</span><span class="p">,</span> <span class="s1">&#39;chanaverage&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;chanbin&#39;</span><span class="p">:</span> <span class="n">chanbin</span><span class="p">,</span> <span class="s1">&#39;usewtspectrum&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;reindex&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;keepflags&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+                        <span class="n">outputvis_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">vis</span><span class="p">,</span> <span class="n">outputvis</span><span class="p">))</span>
+
+                        <span class="n">tq</span><span class="o">.</span><span class="n">add_jobrequest</span><span class="p">(</span><span class="n">casa_tasks</span><span class="o">.</span><span class="n">mstransform</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">)</span>
+                        <span class="n">vislist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">outputvis</span><span class="p">))</span>
+
+                    <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_workdir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sc_workdir</span>
+                    <span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw_real&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_real</span>
+                    <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_vislist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vislist</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_restore_flags</span><span class="p">(</span><span class="n">inputvis_contline</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">outputvis</span> <span class="ow">in</span> <span class="n">outputvis_list</span><span class="p">:</span>
+            <span class="c1"># Copy across requisite XML files.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_copy_xml_files</span><span class="p">(</span><span class="n">outputvis</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outputvis</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">scal_targets</span>
+
+    <span class="k">def</span> <span class="nf">_get_band_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the band name for the target.&quot;&quot;&quot;</span>
+        <span class="n">spw_virtual</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">spw_real</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual2real_spw_id</span><span class="p">(</span><span class="n">spw_virtual</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">project_summary</span><span class="o">.</span><span class="n">telescope</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;VLA&#39;</span><span class="p">,</span> <span class="s1">&#39;JVLA&#39;</span><span class="p">,</span> <span class="s1">&#39;EVLA&#39;</span><span class="p">):</span>
+            <span class="n">spw2band</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_vla_spw2band</span><span class="p">()</span>
+            <span class="n">band_name</span> <span class="o">=</span> <span class="n">spw2band</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">spw_real</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; band&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">band_name</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">spw_real</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">band</span>
+        <span class="k">return</span> <span class="n">band_name</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_copy_xml_files</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">outputvis</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">xml_filename</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SpectralWindow.xml&#39;</span><span class="p">,</span> <span class="s1">&#39;DataDescription.xml&#39;</span><span class="p">]:</span>
+            <span class="n">vis_source</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">xml_filename</span><span class="p">)</span>
+            <span class="n">outputvis_targets_contline</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outputvis</span><span class="p">,</span> <span class="n">xml_filename</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis_source</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outputvis</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Copying </span><span class="si">%s</span><span class="s1"> from original MS to science targets cont+line MS&#39;</span><span class="p">,</span> <span class="n">xml_filename</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Copying </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">xml_filename</span><span class="p">,</span> <span class="n">vis_source</span><span class="p">,</span> <span class="n">outputvis_targets_contline</span><span class="p">)</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">vis_source</span><span class="p">,</span> <span class="n">outputvis_targets_contline</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Selfcal.get_desired_width">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.Selfcal.get_desired_width">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_desired_width</span><span class="p">(</span><span class="n">meanfreq</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the desired channel width for the given mean frequency.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">meanfreq</span> <span class="o">&gt;=</span> <span class="mf">50.0e9</span><span class="p">:</span>
+            <span class="n">chanwidth</span> <span class="o">=</span> <span class="mf">15.625e6</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">meanfreq</span> <span class="o">&lt;</span> <span class="mf">50.0e9</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">meanfreq</span> <span class="o">&gt;=</span> <span class="mf">40.0e9</span><span class="p">):</span>
+            <span class="n">chanwidth</span> <span class="o">=</span> <span class="mf">16.0e6</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">meanfreq</span> <span class="o">&lt;</span> <span class="mf">40.0e9</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">meanfreq</span> <span class="o">&gt;=</span> <span class="mf">26.0e9</span><span class="p">):</span>
+            <span class="n">chanwidth</span> <span class="o">=</span> <span class="mf">8.0e6</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">meanfreq</span> <span class="o">&lt;</span> <span class="mf">26.0e9</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">meanfreq</span> <span class="o">&gt;=</span> <span class="mf">18.0e9</span><span class="p">):</span>
+            <span class="n">chanwidth</span> <span class="o">=</span> <span class="mf">16.0e6</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">meanfreq</span> <span class="o">&lt;</span> <span class="mf">18.0e9</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">meanfreq</span> <span class="o">&gt;=</span> <span class="mf">8.0e9</span><span class="p">):</span>
+            <span class="n">chanwidth</span> <span class="o">=</span> <span class="mf">8.0e6</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">meanfreq</span> <span class="o">&lt;</span> <span class="mf">8.0e9</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">meanfreq</span> <span class="o">&gt;=</span> <span class="mf">4.0e9</span><span class="p">):</span>
+            <span class="n">chanwidth</span> <span class="o">=</span> <span class="mf">4.0e6</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">meanfreq</span> <span class="o">&lt;</span> <span class="mf">4.0e9</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">meanfreq</span> <span class="o">&gt;=</span> <span class="mf">2.0e9</span><span class="p">):</span>
+            <span class="n">chanwidth</span> <span class="o">=</span> <span class="mf">4.0e6</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">meanfreq</span> <span class="o">&lt;</span> <span class="mf">4.0e9</span><span class="p">):</span>
+            <span class="n">chanwidth</span> <span class="o">=</span> <span class="mf">2.0e6</span>
+        <span class="k">return</span> <span class="n">chanwidth</span></div>
+
+
+<div class="viewcode-block" id="Selfcal.get_spw_chanbin">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.Selfcal.get_spw_chanbin">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_spw_chanbin</span><span class="p">(</span><span class="n">bwarray</span><span class="p">,</span> <span class="n">chanarray</span><span class="p">,</span> <span class="n">chanwidth</span><span class="o">=</span><span class="mf">15.625e6</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the number of channels to average over for each spw.</span>
+
+<span class="sd">        note: mstransform only accept chanbin as integer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">avgarray</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">bwarray</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">bw</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bwarray</span><span class="p">):</span>
+            <span class="n">nchan</span> <span class="o">=</span> <span class="n">bw</span><span class="o">/</span><span class="n">chanwidth</span>
+            <span class="n">nchan</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">nchan</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">avgarray</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">chanarray</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">/</span><span class="n">nchan</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">avgarray</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+                <span class="n">avgarray</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">avgarray</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_restore_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Restore the before lineflagging flag state, after splitting per_cleantarget tmp MS.&quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="c1"># restore to the starting flags</span>
+            <span class="c1"># self._executable.initweights(vis=vis, wtmode=&#39;delwtsp&#39;)  # remove channelized weights</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis</span><span class="o">+</span><span class="s2">&quot;.flagversions/flags.before_hif_selfcal&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_executable</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;restore&#39;</span><span class="p">,</span> <span class="n">versionname</span><span class="o">=</span><span class="s1">&#39;before_hif_selfcal&#39;</span><span class="p">,</span>
+                                             <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;Flag states before hif_selfcal&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_flag_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Flag the lines when cont.dat is present, before splitting per_cleantarget tmp MS.&quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="c1"># self._executable.initweights(vis=vis, wtmode=&#39;weight&#39;, dowtsp=True)  # initialize channelized weights</span>
+            <span class="c1"># save starting flags or restore to the starting flags</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis</span><span class="o">+</span><span class="s2">&quot;.flagversions/flags.before_hif_selfcal&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_executable</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;restore&#39;</span><span class="p">,</span> <span class="n">versionname</span><span class="o">=</span><span class="s1">&#39;before_hif_selfcal&#39;</span><span class="p">,</span>
+                                             <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;Flag states before hif_selfcal&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_executable</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;save&#39;</span><span class="p">,</span> <span class="n">versionname</span><span class="o">=</span><span class="s1">&#39;before_hif_selfcal&#39;</span><span class="p">)</span>
+
+            <span class="c1"># note that contfile_to_chansel will do the virtual2real spw translation automatically.</span>
+            <span class="n">lines_sel_dict</span> <span class="o">=</span> <span class="n">contfile_to_chansel</span><span class="p">(</span>
+                <span class="n">vis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">contfile</span><span class="p">,</span> <span class="n">excludechans</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">lines_sel</span> <span class="ow">in</span> <span class="n">lines_sel_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Flagging lines in field </span><span class="si">{}</span><span class="s2"> with the spw selection </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">lines_sel</span><span class="p">))</span>
+                <span class="c1"># lines_sel_dict is keyed with original field names, which might not be safe for CASA/field </span>
+                <span class="c1"># selections.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_executable</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">fieldname_for_casa</span><span class="p">(</span><span class="n">field</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;manual&#39;</span><span class="p">,</span>
+                                          <span class="n">spw</span><span class="o">=</span><span class="n">lines_sel</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;apply&#39;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+pipeline.hsd.heuristics.sddatatype
+==================================
+
+.. automodule:: pipeline.hsd.heuristics.sddatatype
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      is_ms
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataTypeHeuristics
+   

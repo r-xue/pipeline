@@ -1,0 +1,14 @@
+pipeline.hifa.tasks.exportdata.almaexportdata
+=============================================
+
+.. automodule:: pipeline.hifa.tasks.exportdata.almaexportdata
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ALMAExportData
+      ALMAExportDataInputs
+      AuxFileProducts
+   

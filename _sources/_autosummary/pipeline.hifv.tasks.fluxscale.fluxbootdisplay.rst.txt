@@ -1,0 +1,15 @@
+pipeline.hifv.tasks.fluxscale.fluxbootdisplay
+=============================================
+
+.. automodule:: pipeline.hifv.tasks.fluxscale.fluxbootdisplay
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      fluxbootSummaryChart
+      fluxgaincalSummaryChart
+      modelfitSummaryChart
+      residualsSummaryChart
+   

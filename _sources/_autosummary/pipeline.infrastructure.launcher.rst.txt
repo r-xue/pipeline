@@ -1,0 +1,15 @@
+pipeline.infrastructure.launcher
+================================
+
+.. automodule:: pipeline.infrastructure.launcher
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Context
+      ContextCreatedEvent
+      ContextResumedEvent
+      Pipeline
+   

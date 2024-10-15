@@ -1,0 +1,20 @@
+pipeline.hif.tasks.selfcal.renderer
+===================================
+
+.. automodule:: pipeline.hif.tasks.selfcal.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      fm_target
+      text_with_tooltip
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SelfCalQARenderer
+      T2_4MDetailsSelfcalRenderer
+   

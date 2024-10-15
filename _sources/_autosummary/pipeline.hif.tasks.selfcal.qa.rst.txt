@@ -1,0 +1,13 @@
+pipeline.hif.tasks.selfcal.qa
+=============================
+
+.. automodule:: pipeline.hif.tasks.selfcal.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SelfcalListQAHandler
+      SelfcalQAHandler
+   

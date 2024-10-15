@@ -1,0 +1,18 @@
+pipeline.hifa.tasks.gaincal.renderer
+====================================
+
+.. automodule:: pipeline.hifa.tasks.gaincal.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GaincalAmpVsTimeDiagnosticPlotRenderer
+      GaincalAmpVsTimePlotRenderer
+      GaincalApplication
+      GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer
+      GaincalPhaseVsTimeDiagnosticPlotRenderer
+      GaincalPhaseVsTimePlotRenderer
+      T2_4MDetailsGaincalRenderer
+   

@@ -1,0 +1,14 @@
+pipeline.hifv.tasks.analyzestokescubes.analyzestokescubes
+=========================================================
+
+.. automodule:: pipeline.hifv.tasks.analyzestokescubes.analyzestokescubes
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Analyzestokescubes
+      AnalyzestokescubesInputs
+      AnalyzestokescubesResults
+   

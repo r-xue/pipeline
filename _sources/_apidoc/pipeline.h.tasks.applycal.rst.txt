@@ -1,0 +1,37 @@
+pipeline.h.tasks.applycal package
+=================================
+
+Submodules
+----------
+
+pipeline.h.tasks.applycal.applycal module
+-----------------------------------------
+
+.. automodule:: pipeline.h.tasks.applycal.applycal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.tasks.applycal.qa module
+-----------------------------------
+
+.. automodule:: pipeline.h.tasks.applycal.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.tasks.applycal.renderer module
+-----------------------------------------
+
+.. automodule:: pipeline.h.tasks.applycal.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.h.tasks.applycal
+   :members:
+   :undoc-members:
+   :show-inheritance:

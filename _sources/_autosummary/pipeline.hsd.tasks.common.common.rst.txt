@@ -1,0 +1,18 @@
+pipeline.hsd.tasks.common.common
+================================
+
+.. automodule:: pipeline.hsd.tasks.common.common
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      absolute_path
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SingleDishResults
+   

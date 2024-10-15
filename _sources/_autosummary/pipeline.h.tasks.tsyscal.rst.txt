@@ -1,0 +1,22 @@
+pipeline.h.tasks.tsyscal
+========================
+
+.. automodule:: pipeline.h.tasks.tsyscal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Tsyscal
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   qa
+   renderer
+   resultobjects
+   tsyscal

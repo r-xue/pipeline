@@ -1,0 +1,14 @@
+pipeline.hsdn.tasks.restoredata.renderer
+========================================
+
+.. automodule:: pipeline.hsdn.tasks.restoredata.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      JyperKTR
+      JyperKTRV
+      T2_4MDetailsNRORestoreDataRenderer
+   

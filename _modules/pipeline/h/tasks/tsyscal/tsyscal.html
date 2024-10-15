@@ -1,0 +1,558 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.tasks.tsyscal.tsyscal &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.h.tasks.tsyscal.tsyscal</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.h.tasks.tsyscal.tsyscal</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span><span class="p">,</span> <span class="n">attrgetter</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">caltable_heuristic</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.heuristics.tsysspwmap</span> <span class="kn">import</span> <span class="n">tsysspwmap</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">resultobjects</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Tsyscal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;TsyscalInputs&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TsyscalInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.TsyscalInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">TsyscalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TsyscalInputs defines the inputs for the Tsyscal pipeline task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">chantol</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the caltable argument for these inputs.</span>
+
+<span class="sd">        If set to a table-naming heuristic, this should give a sensible name</span>
+<span class="sd">        considering the current CASA task arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">namer</span> <span class="o">=</span> <span class="n">caltable_heuristic</span><span class="o">.</span><span class="n">TsysCaltable</span><span class="p">()</span>
+        <span class="n">casa_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_task_args</span><span class="p">(</span><span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;caltable&#39;</span><span class="p">,))</span>
+        <span class="k">return</span> <span class="n">namer</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stage</span><span class="p">,</span> <span class="o">**</span><span class="n">casa_args</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chantol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TsyscalInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># pipeline inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="c1"># vis must be set first, as other properties may depend on it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+
+        <span class="c1"># data selection arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable</span>
+
+        <span class="c1"># solution parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chantol</span> <span class="o">=</span> <span class="n">chantol</span>
+
+    <span class="c1"># Convert to CASA gencal task arguments.</span>
+<div class="viewcode-block" id="TsyscalInputs.to_casa_args">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.TsyscalInputs.to_casa_args">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Tsyscal">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.Tsyscal">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;h_tsyscal&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;The Tsys calibration and spectral window map is computed.&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Tsyscal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">TsyscalInputs</span>
+
+<div class="viewcode-block" id="Tsyscal.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.Tsyscal.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># make a note of the current inputs state before we start fiddling</span>
+        <span class="c1"># with it. This origin will be attached to the final CalApplication.</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalAppOrigin</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="n">Tsyscal</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">())</span>
+
+        <span class="c1"># construct the Tsys cal file</span>
+        <span class="n">gencal_args</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+        <span class="n">gencal_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">gencal</span><span class="p">(</span><span class="n">caltype</span><span class="o">=</span><span class="s1">&#39;tsys&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">gencal_args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">gencal_job</span><span class="p">)</span>
+
+        <span class="n">tsys_table</span> <span class="o">=</span> <span class="n">gencal_args</span><span class="p">[</span><span class="s1">&#39;caltable&#39;</span><span class="p">]</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">todo</span><span class="p">(</span><span class="s1">&#39;tsysspwmap heuristic re-reads measurement set!&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">todo</span><span class="p">(</span><span class="s1">&#39;tsysspwmap heuristic won</span><span class="se">\&#39;</span><span class="s1">t handle missing file&#39;</span><span class="p">)</span>
+        <span class="n">nospwmap</span><span class="p">,</span> <span class="n">spwmap</span> <span class="o">=</span> <span class="n">tsysspwmap</span><span class="p">(</span><span class="n">ms</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">tsystable</span><span class="o">=</span><span class="n">tsys_table</span><span class="p">,</span> <span class="n">tsysChanTol</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">chantol</span><span class="p">)</span>
+
+        <span class="n">calfrom_defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">caltype</span><span class="o">=</span><span class="s1">&#39;tsys&#39;</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmap</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;linear,linear&#39;</span><span class="p">)</span>
+
+        <span class="n">is_single_dish</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">contains_single_dish</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+        <span class="n">calapps</span> <span class="o">=</span> <span class="n">get_calapplications</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">tsys_table</span><span class="p">,</span> <span class="n">calfrom_defaults</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">TsyscalResults</span><span class="p">(</span><span class="n">pool</span><span class="o">=</span><span class="n">calapps</span><span class="p">,</span> <span class="n">unmappedspws</span><span class="o">=</span><span class="n">nospwmap</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Tsyscal.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.Tsyscal.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="c1"># double-check that the caltable was actually generated</span>
+        <span class="n">on_disk</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">on_disk</span>
+
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">on_disk</span><span class="p">]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+
+
+<span class="c1"># Holds an observing intent and the preferred/fallback gainfield args to be used for that intent</span>
+<span class="n">GainfieldMapping</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;GainfieldMapping&#39;</span><span class="p">,</span> <span class="s1">&#39;intent preferred fallback&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_solution_map</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GainfieldMapping</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get gainfield solution map. Different solution maps are returned for</span>
+<span class="sd">    single dish and interferometric data.</span>
+
+<span class="sd">    :param ms: MS to analyse</span>
+<span class="sd">    :param is_single_dish: True if MS is single dish data</span>
+<span class="sd">    :return: list of GainfieldMappings</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># define function to get Tsys fields for intent</span>
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">intent</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;,&#39;</span> <span class="ow">in</span> <span class="n">intent</span><span class="p">:</span>
+            <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># the &#39;if o&#39; test filters out results for intents that do not have</span>
+            <span class="c1"># fields, e.g., PHASE for SD data</span>
+            <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">head</span><span class="p">),</span> <span class="n">f</span><span class="p">(</span><span class="n">tail</span><span class="p">))</span> <span class="k">if</span> <span class="n">o</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">get_tsys_fields_for_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">intent</span><span class="p">))</span>
+
+    <span class="c1"># return different gainfield maps for single dish and interferometric</span>
+    <span class="k">if</span> <span class="n">is_single_dish</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">),</span>
+            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">),</span>
+            <span class="c1"># non-empty magic string to differentiate between no field found and a null fallback</span>
+            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="s1">&#39;___EMPTY_STRING___&#39;</span><span class="p">)</span>
+        <span class="p">]</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Intent mapping extracted from CAS-12213 ticket.</span>
+        <span class="c1"># PIPE-2080: updated to add mapping for DIFFGAINREF, DIFFGAINSRC intent.</span>
+        <span class="c1">#</span>
+        <span class="c1"># ObjectToBeCalibrated 	TsysSolutionToUse 	IfNoSolutionPresentThenUse</span>
+        <span class="c1"># BANDPASS cal 	        all BANDPASS cals 	fallback to &#39;nearest&#39;</span>
+        <span class="c1"># FLUX cal 	            all FLUX cals 	    fallback to &#39;nearest&#39;</span>
+        <span class="c1"># DIFFGAIN[REF|SRC]     all DIFFGAIN cals 	fallback to BANDPASS</span>
+        <span class="c1"># PHASE cal 	        all PHASE cals 	    all TARGETs</span>
+        <span class="c1"># TARGET 	            all TARGETs 	    all PHASE cals</span>
+        <span class="c1"># CHECK_SOURCE        	all TARGETs     	all PHASE cals</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">),</span>
+            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">),</span>
+            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">)),</span>
+            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">)),</span>
+            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)),</span>
+            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">)),</span>
+            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">)),</span>
+        <span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">get_gainfield_map</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the mapping of observing intent to gainfield parameter for a</span>
+<span class="sd">    measurement set.</span>
+
+<span class="sd">    The mapping follows the observing intent to gainfield intent defined in</span>
+<span class="sd">    CAS-12213.</span>
+
+<span class="sd">    :param ms: MS to analyse</span>
+<span class="sd">    :param is_single_dish: boolean for if SD data or not</span>
+<span class="sd">    :return: dict of {observing intent: gainfield}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">soln_map</span> <span class="o">=</span> <span class="n">get_solution_map</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">)</span>
+    <span class="n">final_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="o">.</span><span class="n">intent</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">preferred</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">preferred</span> <span class="k">else</span> <span class="n">s</span><span class="o">.</span><span class="n">fallback</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">soln_map</span><span class="p">}</span>
+
+    <span class="c1"># Detect cases where there&#39;s no preferred or fallback gainfield mapping,</span>
+    <span class="c1"># e.g., if there are no Tsys scans on a target or phase calibrator.</span>
+    <span class="n">undefined_intents</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">final_map</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                         <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span>  <span class="c1"># gainfield mapping is empty..</span>
+                         <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>  <span class="c1"># ..for a valid intent in the MS</span>
+    <span class="k">if</span> <span class="n">undefined_intents</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Undefined Tsys gainfield mapping for </span><span class="si">{}</span><span class="s1"> intents: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">undefined_intents</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="c1"># convert magic string back to empty string</span>
+    <span class="n">converted</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;___EMPTY_STRING___&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">final_map</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+    <span class="k">return</span> <span class="n">converted</span>
+
+
+<span class="k">def</span> <span class="nf">get_tsys_fields_for_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the identity of the Tsys field(s) for an intent.</span>
+
+<span class="sd">    :param ms: MS to analyse</span>
+<span class="sd">    :param intent: intent to retrieve fields for.</span>
+<span class="sd">    :return: set of field identifiers corresponding to intent</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># In addition to the science intent scan, a field must also have a Tsys</span>
+    <span class="c1"># scan observed for a Tsys solution to be considered present. The</span>
+    <span class="c1"># exception is science mosaics, which are handled as a special case.</span>
+
+    <span class="c1"># We need to know which science intent scans have Tsys scans; the ones</span>
+    <span class="c1"># that don&#39;t will be checked for science mosaics separately. This lets</span>
+    <span class="c1"># us handle single field, single pointing science targets alongside mosaic</span>
+    <span class="c1"># targets mixed together in the same EB. Theoretically, at least...</span>
+    <span class="n">intent_fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)</span>
+
+    <span class="c1"># contains fields of this intent that also have a companion Tsys scan</span>
+    <span class="n">intent_fields_with_tsys</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">intent_fields</span> <span class="k">if</span> <span class="s1">&#39;ATMOSPHERE&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
+
+    <span class="c1"># contains fields without a companion Tsys scan. These might be science</span>
+    <span class="c1"># mosaics.</span>
+    <span class="n">intent_fields_without_tsys</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">intent_fields</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">intent_fields_with_tsys</span><span class="p">]</span>
+
+    <span class="n">tsys_fields_for_mosaics</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">:</span>
+        <span class="c1"># In science mosaics, the fields comprising the TARGET pointings do</span>
+        <span class="c1"># not have Tsys scans observed on those fields. Instead, there is a</span>
+        <span class="c1"># Tsys-only field roughly at the centre of the mosaic that is</span>
+        <span class="c1"># referenced by the same parent source as the TARGET pointing fields.</span>
+
+        <span class="c1"># Double check that the fields without Tsys scans are indeed science</span>
+        <span class="c1"># mosaics with a separate Tsys field. Note that a mosaic consisting of</span>
+        <span class="c1"># a source with a single TARGET pointing and a single Tsys scan would</span>
+        <span class="c1"># also be classified as a mosaic by this logic.</span>
+        <span class="n">mosaic_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">intent_fields_without_tsys</span> <span class="k">if</span> <span class="s1">&#39;ATMOSPHERE&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
+
+        <span class="c1"># Collect the Tsys fields referenced by the parent source of the</span>
+        <span class="c1"># science mosaic fields missing Tsys scans.</span>
+        <span class="n">tsys_fields_for_mosaics</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span>
+                                   <span class="k">for</span> <span class="n">pointing</span> <span class="ow">in</span> <span class="n">mosaic_fields</span>
+                                   <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">pointing</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">fields</span> <span class="k">if</span> <span class="s1">&#39;ATMOSPHERE&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">intent_fields_with_tsys</span><span class="p">}</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">field</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">tsys_fields_for_mosaics</span><span class="p">})</span>
+
+    <span class="c1"># when field names are not unique, as is usually the case for science</span>
+    <span class="c1"># mosaics, then we must reference the numeric field ID instead</span>
+    <span class="n">field_identifiers</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_field_identifiers</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">field_identifiers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">get_calapplications</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">tsys_table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">calfrom_defaults</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalAppOrigin</span><span class="p">,</span>
+                        <span class="n">spw_map</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a list of CalApplications that apply a Tsys caltable to a measurement</span>
+<span class="sd">    set using the gainfield mapping defined in CAS-12213.</span>
+
+<span class="sd">    Note: this function only provides the gainfield argument for the CalFrom</span>
+<span class="sd">    constructor. Any other required CalFrom constructor arguments should be</span>
+<span class="sd">    provided to this function via the calfrom_defaults parameter.</span>
+
+<span class="sd">    :param ms: MeasurementSet to apply calibrations to</span>
+<span class="sd">    :param tsys_table: name of Tsys table</span>
+<span class="sd">    :param calfrom_defaults: dict of CalFrom constructor arguments</span>
+<span class="sd">    :param origin: CalOrigin for the created CalApplications</span>
+<span class="sd">    :param spw_map: Tsys SpW map</span>
+<span class="sd">    :param is_single_dish: boolean declaring if current MS is for Single-Dish</span>
+<span class="sd">    :return: list of CalApplications</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get the map of intent:gainfield</span>
+    <span class="n">soln_map</span> <span class="o">=</span> <span class="n">get_gainfield_map</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">)</span>
+
+    <span class="c1"># Create the static dict of calfrom arguments. Only the &#39;gainfield&#39; argument changes from calapp to calapp; the</span>
+    <span class="c1"># other arguments remain unchanged.</span>
+    <span class="n">calfrom_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">calfrom_defaults</span><span class="p">)</span>
+    <span class="n">calfrom_args</span><span class="p">[</span><span class="s1">&#39;gaintable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tsys_table</span>
+
+    <span class="c1"># get the mapping of field ID to unambiguous identifier for more user friendly logs</span>
+    <span class="n">field_id_to_identifier</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_field_identifiers</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+
+    <span class="c1"># create a domain object mapping of science spw to Tsys spw</span>
+    <span class="n">domain_spw_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spw_map</span><span class="p">)}</span>
+
+    <span class="c1"># Now loop through the MS intents, creating a specific Tsys registration for each intent.</span>
+    <span class="n">calapps</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">intents</span><span class="p">:</span>
+        <span class="c1"># get the preferred Tsys gainfield for this intent, falling back to &#39;nearest&#39; if not specified</span>
+        <span class="n">gainfield</span> <span class="o">=</span> <span class="n">soln_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+
+        <span class="c1"># The CASA callibrary cannot handle registrations with multiple fldmap fields, e.g., fldmap=&#39;1,2&#39;.</span>
+        <span class="k">if</span> <span class="s1">&#39;,&#39;</span> <span class="ow">in</span> <span class="n">gainfield</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Calculating workaround for CASA callibrary fldmap incompatibility: &#39;</span>
+                     <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> intent -&gt; fldmap=</span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">gainfield</span><span class="p">))</span>
+            <span class="c1"># get the fields for this non-Tsys intent</span>
+            <span class="n">fields_with_intent</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)</span>
+            <span class="c1"># get the Tsys fields that were to be applied in the fldmap</span>
+            <span class="n">tsys_fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">gainfield</span><span class="p">)</span>
+
+            <span class="c1"># holds mapping of field,spw -&gt; Tsys field</span>
+            <span class="n">field_to_tsys_field</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+
+            <span class="c1"># For the fields for the current non-Tsys intent, we&#39;ll emulate the</span>
+            <span class="c1"># CASA gainfield=&#39;nearest&#39; option by selecting the spatially</span>
+            <span class="c1"># closest Tsys field with the same tuning.</span>
+            <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+            <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+            <span class="k">for</span> <span class="n">non_tsys_field</span> <span class="ow">in</span> <span class="n">fields_with_intent</span><span class="p">:</span>
+                <span class="n">non_tsys_direction</span> <span class="o">=</span> <span class="n">non_tsys_field</span><span class="o">.</span><span class="n">mdirection</span>
+
+                <span class="c1"># For multi-tuning EBs, the spws may need different gainfield arguments. For example, in</span>
+                <span class="c1"># uid://A002/Xcf3a9c/X3a3d, the phase cal has no Tsys scans and was observed with three different</span>
+                <span class="c1"># tunings. Each tuning is distinct and was used for a different target field. Each target field *does*</span>
+                <span class="c1"># have a Tsys scan. Due to the lack of Tsys scans on the phase cal, the target fields are selected as</span>
+                <span class="c1"># the fallback gainfields (e.g., # gainfield=&#39;A,B,C&#39;), which due to the CASA callibrary</span>
+                <span class="c1"># limitation we now need to boil down to the closest target that was observed using the same</span>
+                <span class="c1"># spectral setup.</span>
+
+                <span class="c1"># get the spws used to observe with intent XXX for this non-Tsys field</span>
+                <span class="n">non_tsys_scans</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">non_tsys_field</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="n">non_tsys_spws</span> <span class="o">=</span> <span class="p">{</span><span class="n">dd</span><span class="o">.</span><span class="n">spw</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">non_tsys_scans</span> <span class="k">for</span> <span class="n">dd</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">data_descriptions</span><span class="p">}</span>
+                <span class="c1"># filter out non-science windows, leaving just the spws for this non-Tsys field</span>
+                <span class="n">non_tsys_spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">non_tsys_spws</span> <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;TDM&#39;</span><span class="p">,</span> <span class="s1">&#39;FDM&#39;</span><span class="p">)]</span>
+
+                <span class="k">for</span> <span class="n">non_tsys_spw</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">non_tsys_spws</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)):</span>
+                    <span class="c1"># check to see if there&#39;s data for the field/intent/spw combination</span>
+                    <span class="n">scans</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">non_tsys_spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">non_tsys_field</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">scans</span><span class="p">:</span>
+                        <span class="c1"># If there&#39;s no data, there&#39;s no calibration required.</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># for each spw used for the intent=XXX scan, find the Tsys field that was observed using the Tsys</span>
+                    <span class="c1"># spw which is mapped to this science spw</span>
+                    <span class="n">tsys_spw_for_spw</span> <span class="o">=</span> <span class="n">domain_spw_map</span><span class="p">[</span><span class="n">non_tsys_spw</span><span class="p">]</span>
+                    <span class="n">tsys_fields_with_required_spw</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">tsys_fields</span> <span class="k">if</span> <span class="n">tsys_spw_for_spw</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">valid_spws</span><span class="p">]</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Candidate Tsys fields for spw </span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span>
+                              <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">non_tsys_spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">tsys_fields_with_required_spw</span><span class="p">)))</span>
+
+                    <span class="n">separations</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">tsys_field</span> <span class="ow">in</span> <span class="n">tsys_fields_with_required_spw</span><span class="p">:</span>
+                        <span class="n">tsys_direction</span> <span class="o">=</span> <span class="n">tsys_field</span><span class="o">.</span><span class="n">mdirection</span>
+                        <span class="n">separation</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span><span class="n">tsys_direction</span><span class="p">,</span> <span class="n">non_tsys_direction</span><span class="p">)</span>
+                        <span class="n">separation_degs</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">separation</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">separations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">tsys_field</span><span class="p">,</span> <span class="n">separation_degs</span><span class="p">))</span>
+
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">separations</span><span class="p">:</span>
+                        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Failed Tsys calibration for </span><span class="si">{}</span><span class="s1"> spw </span><span class="si">{}</span><span class="s1">: no Tsys scan with the same tuning identified&#39;</span>
+                               <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">non_tsys_field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">non_tsys_spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                        <span class="k">continue</span>
+
+                    <span class="n">closest</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">separations</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Tying </span><span class="si">{}</span><span class="s1"> field #</span><span class="si">{}</span><span class="s1"> spw #</span><span class="si">{}</span><span class="s1"> to closest Tsys field </span><span class="si">{}</span><span class="s1"> spw #</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">intent</span><span class="p">,</span> <span class="n">field_id_to_identifier</span><span class="p">[</span><span class="n">non_tsys_field</span><span class="o">.</span><span class="n">id</span><span class="p">],</span> <span class="n">non_tsys_spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                        <span class="n">field_id_to_identifier</span><span class="p">[</span><span class="n">closest</span><span class="o">.</span><span class="n">id</span><span class="p">],</span> <span class="n">tsys_spw_for_spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">field_to_tsys_field</span><span class="p">[</span><span class="n">non_tsys_field</span><span class="p">][</span><span class="n">non_tsys_spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">closest</span>
+
+            <span class="c1"># create a CalTo specifically for the intent fields with their selected Tsys field</span>
+            <span class="k">for</span> <span class="n">non_tsys_field</span><span class="p">,</span> <span class="n">spw_to_tsys_field</span> <span class="ow">in</span> <span class="n">field_to_tsys_field</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">field_arg</span> <span class="o">=</span> <span class="n">field_id_to_identifier</span><span class="p">[</span><span class="n">non_tsys_field</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">tsys_field</span> <span class="ow">in</span> <span class="n">spw_to_tsys_field</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">gainfield_arg</span> <span class="o">=</span> <span class="n">field_id_to_identifier</span><span class="p">[</span><span class="n">tsys_field</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+                    <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field_arg</span><span class="p">)</span>
+                    <span class="n">calfrom</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">(</span><span class="n">gainfield</span><span class="o">=</span><span class="n">gainfield_arg</span><span class="p">,</span> <span class="o">**</span><span class="n">calfrom_args</span><span class="p">)</span>
+                    <span class="n">calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
+                    <span class="n">calapps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Setting Tsys gainfield=</span><span class="si">{!r}</span><span class="s1"> for </span><span class="si">{}</span><span class="s1"> data in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gainfield</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+
+            <span class="c1"># With gainfield set appropriately, construct the CalApplication and add it to the results</span>
+            <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)</span>
+            <span class="n">calfrom</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">(</span><span class="n">gainfield</span><span class="o">=</span><span class="n">gainfield</span><span class="p">,</span> <span class="o">**</span><span class="n">calfrom_args</span><span class="p">)</span>
+            <span class="n">calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
+            <span class="n">calapps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">calapps</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,579 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.imaging.imaging_params &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.imaging.imaging_params</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.imaging.imaging_params</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Parameter classes of Imaging.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NewType</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">coordsys</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.common</span> <span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">sdutils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils.debugwrapper</span> <span class="kn">import</span> <span class="n">debugwrapper</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+    <span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.imaging.resultobjects</span> <span class="kn">import</span> <span class="n">SDImagingResults</span>
+    <span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">Context</span>
+    <span class="kn">from</span> <span class="nn">pipeline.domain.datatable</span> <span class="kn">import</span> <span class="n">DataTableImpl</span>
+    <span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+    <span class="kn">from</span> <span class="nn">pipeline.domain.singledish</span> <span class="kn">import</span> <span class="n">MSReductionGroupDesc</span>
+    <span class="n">RasterInfo</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s1">&#39;RasterInfo&#39;</span><span class="p">,</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;RasterInfo&#39;</span><span class="p">,</span> <span class="s1">&#39;center_ra center_dec width&#39;</span>
+                                                                <span class="s1">&#39;height scan_angle row_separation row_duration&#39;</span><span class="p">))</span>
+    <span class="n">ImageGroup</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;MeasurementSet&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span>
+                                      <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]]]]]]]</span>
+
+
+<div class="viewcode-block" id="ObservedList">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.ObservedList">[docs]</a>
+<span class="k">class</span> <span class="nc">ObservedList</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class inherit list to observe its behavior.</span>
+
+<span class="sd">    This class intends to observe/output list stuff for debugging more easier.</span>
+<span class="sd">    If you want to search a needle in a haystack, please uncomment out @debugwrapper().&quot;&quot;&quot;</span>
+
+    <span class="c1"># @debugwrapper(msg=&#39;list.setitem&#39;)</span>
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Overrode list.__setitem__().</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index : index</span>
+<span class="sd">            value : object to set at index</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="c1"># @debugwrapper(msg=&#39;list.insert&#39;)</span>
+<div class="viewcode-block" id="ObservedList.insert">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.ObservedList.insert">[docs]</a>
+    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Overrode list.insert().</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index : index</span>
+<span class="sd">            value : object to insert at index</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+    <span class="c1"># @debugwrapper(msg=&#39;list.append&#39;)</span>
+<div class="viewcode-block" id="ObservedList.append">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.ObservedList.append">[docs]</a>
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Overrode list.append().</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value : object to append</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+    <span class="c1"># @debugwrapper(msg=&#39;list.extend&#39;)</span>
+<div class="viewcode-block" id="ObservedList.extend">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.ObservedList.extend">[docs]</a>
+    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Overrode list.extend().</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value : object to merge</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Parameters">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.Parameters">[docs]</a>
+<span class="k">class</span> <span class="nc">Parameters</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract class of Parameter object.</span>
+
+<span class="sd">    Note: _immutable_parameters is the list which is set some parameter names of a class inherit Parameter.</span>
+<span class="sd">    All parameters in _immutable_parameters are set immutable by freeze().</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># List immutable-able parameter names in it at a child class</span>
+    <span class="n">_immutable_parameters</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">_immutable_prefix</span> <span class="o">=</span> <span class="s1">&#39;__immutable_&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an instance.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_immutable_prefix</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># initialize immutable-able parameters.</span>
+        <span class="c1"># the name of parameters must be started with an alphanumeric character.</span>
+        <span class="k">for</span> <span class="n">_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_immutable_parameters</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[a-zA-Z0-9].\w*$&#39;</span><span class="p">,</span> <span class="n">_name</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_immutable_prefix</span><span class="si">}{</span><span class="n">_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;invalid parameter name&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Parameters.is_immutable">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.Parameters.is_immutable">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_immutable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_name</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check itself or an attribute whether immutable or not.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            _name (str): Attribute name. If it is a default value, the method returns</span>
+<span class="sd">                         a boolean whether the instance itself is immutable or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if it is immutable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_immutable_prefix</span><span class="si">}{</span><span class="n">_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Parameters.freeze">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.Parameters.freeze">[docs]</a>
+    <span class="k">def</span> <span class="nf">freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the instance immutable.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_immutable_prefix</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+    <span class="nd">@debugwrapper</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;setattr&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">_value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override object.__setattr__().</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            _name (str): Attribute name</span>
+<span class="sd">            _value (Any): Attribute Object</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: raises if _name is immutable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_immutable</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_immutable</span><span class="p">(</span><span class="n">_name</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;attribute </span><span class="si">{</span><span class="n">_name</span><span class="si">}</span><span class="s1"> is immutable.&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_name</span><span class="p">,</span> <span class="n">_value</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CommonParameters">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.CommonParameters">[docs]</a>
+<span class="k">class</span> <span class="nc">CommonParameters</span><span class="p">(</span><span class="n">Parameters</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Common parameters class of prepare().&quot;&quot;&quot;</span>
+
+    <span class="n">_immutable_parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;reduction_group&#39;</span><span class="p">,</span> <span class="s1">&#39;restfreq_list&#39;</span><span class="p">,</span> <span class="s1">&#39;ms_names&#39;</span><span class="p">,</span> <span class="s1">&#39;session_names&#39;</span><span class="p">,</span> <span class="s1">&#39;args_spw&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;imagemode&#39;</span><span class="p">,</span> <span class="s1">&#39;is_nro&#39;</span><span class="p">,</span> <span class="s1">&#39;results&#39;</span><span class="p">,</span> <span class="s1">&#39;edge&#39;</span><span class="p">,</span> <span class="s1">&#39;dt_dict&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="CommonParameters.is_not_nro">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.CommonParameters.is_not_nro">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_not_nro</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">bool_</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if is_nro is False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if this data is not from NRO.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_nro</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="initialize_common_parameters">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.initialize_common_parameters">[docs]</a>
+<span class="k">def</span> <span class="nf">initialize_common_parameters</span><span class="p">(</span><span class="n">args_spw</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">dt_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;DataTableImpl&#39;</span><span class="p">],</span>
+                                 <span class="n">edge</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">imagemode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">in_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                 <span class="n">infiles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">is_nro</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">bool_</span><span class="p">,</span> <span class="n">ms_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;MeasurementSet&#39;</span><span class="p">],</span>
+                                 <span class="n">ms_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">session_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">reduction_group</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;MSReductionGroupDesc&#39;</span><span class="p">],</span>
+                                 <span class="n">restfreq_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">results</span><span class="p">:</span> <span class="s1">&#39;SDImagingResults&#39;</span>
+                                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CommonParameters</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize an instance of CommonParameters and return it.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        args_spw (Dict[str, str]): Spw selection per MS</span>
+<span class="sd">        dt_dict (Dict[str, DataTableImpl]): Dictionary of input MS and corresponding datatable</span>
+<span class="sd">        edge (List[int]): Edge channel of most recent SDBaselineResults or [0, 0]</span>
+<span class="sd">        imagemode (str): Image mode</span>
+<span class="sd">        in_field (str): Comma-separated list of target field names that are extracted from all input MSs</span>
+<span class="sd">        infiles (List[str]): List of input files</span>
+<span class="sd">        is_nro (numpy.bool_): Flag of NRO data</span>
+<span class="sd">        ms_list (List[MeasurementSet]): List of ms to process</span>
+<span class="sd">        ms_names (List[str]): List of name of ms in ms_list</span>
+<span class="sd">        session_names (List[str]): List of session name of ms in ms_list</span>
+<span class="sd">        reduction_group (Dict[int, MSReductionGroupDesc]): Reduction group object</span>
+<span class="sd">        restfreq_list (Union[str, List[str]]): List of rest frequency</span>
+<span class="sd">        results (SDImagingResults): Instance of SDImagingResults</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        An instance of CommonParameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_tmp</span> <span class="o">=</span> <span class="n">CommonParameters</span><span class="p">()</span>
+    <span class="n">_tmp</span><span class="o">.</span><span class="n">args_spw</span> <span class="o">=</span> <span class="n">args_spw</span>
+    <span class="n">_tmp</span><span class="o">.</span><span class="n">dt_dict</span> <span class="o">=</span> <span class="n">dt_dict</span>
+    <span class="n">_tmp</span><span class="o">.</span><span class="n">edge</span> <span class="o">=</span> <span class="n">edge</span>
+    <span class="n">_tmp</span><span class="o">.</span><span class="n">imagemode</span> <span class="o">=</span> <span class="n">imagemode</span>
+    <span class="n">_tmp</span><span class="o">.</span><span class="n">in_field</span> <span class="o">=</span> <span class="n">in_field</span>
+    <span class="n">_tmp</span><span class="o">.</span><span class="n">infiles</span> <span class="o">=</span> <span class="n">infiles</span>
+    <span class="n">_tmp</span><span class="o">.</span><span class="n">is_nro</span> <span class="o">=</span> <span class="n">is_nro</span>
+    <span class="n">_tmp</span><span class="o">.</span><span class="n">ms_list</span> <span class="o">=</span> <span class="n">ms_list</span>
+    <span class="n">_tmp</span><span class="o">.</span><span class="n">ms_names</span> <span class="o">=</span> <span class="n">ms_names</span>
+    <span class="n">_tmp</span><span class="o">.</span><span class="n">session_names</span> <span class="o">=</span> <span class="n">session_names</span>
+    <span class="n">_tmp</span><span class="o">.</span><span class="n">reduction_group</span> <span class="o">=</span> <span class="n">reduction_group</span>
+    <span class="n">_tmp</span><span class="o">.</span><span class="n">restfreq_list</span> <span class="o">=</span> <span class="n">restfreq_list</span>
+    <span class="n">_tmp</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">results</span>
+    <span class="n">_tmp</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">_tmp</span></div>
+
+
+
+<div class="viewcode-block" id="ReductionGroupParameters">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.ReductionGroupParameters">[docs]</a>
+<span class="k">class</span> <span class="nc">ReductionGroupParameters</span><span class="p">(</span><span class="n">Parameters</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parameters of Reduction Group Processing.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">group_desc</span><span class="p">:</span> <span class="s1">&#39;MSReductionGroupDesc&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an object with group value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group_id : Reduction group ID</span>
+<span class="sd">            group_desc : MeasurementSet Reduction Group Desciption object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_id</span> <span class="o">=</span> <span class="n">group_id</span>           <span class="c1"># int: Reduction group ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_desc</span> <span class="o">=</span> <span class="n">group_desc</span>       <span class="c1"># MSReductionGroupDesc(spw_name:str, frequency_range:List[float], nchan:int,</span>
+                                           <span class="c1">#                      field:str, member:List[MSReductionGroupMember]):</span>
+                                           <span class="c1">#                      MSReductionGroupDesc object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antenna_list</span> <span class="o">=</span> <span class="kc">None</span>           <span class="c1"># List[int]: List of antenna ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antids</span> <span class="o">=</span> <span class="kc">None</span>                 <span class="c1"># List[int]: List of antenna ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ant_name</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># str: Name of antenna</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asdm</span> <span class="o">=</span> <span class="kc">None</span>                   <span class="c1"># str: ASDM name of reference MS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cellx</span> <span class="o">=</span> <span class="kc">None</span>                  <span class="c1"># Dict[str, float]: Cell size x, {&#39;unit&#39;: &#39;arcsec&#39;, &#39;value&#39;: 6.4}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">celly</span> <span class="o">=</span> <span class="kc">None</span>                  <span class="c1"># Dict[str, float]: Cell size y, {&#39;unit&#39;: &#39;arcsec&#39;, &#39;value&#39;: 6.4}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chanmap_range_list</span> <span class="o">=</span> <span class="kc">None</span>     <span class="c1"># List[List[List[Union[float, bool]]]]: List of channel map range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channelmap_range_list</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># List[List[List[Union[float, bool]]]]: List of channel map range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">combined</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># CombinedImageParameters: CombinedImageParameters object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coord_set</span> <span class="o">=</span> <span class="kc">False</span>             <span class="c1"># bool: Flag of Coord setting</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">correlations</span> <span class="o">=</span> <span class="kc">None</span>           <span class="c1"># str: A joined list of correlations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fieldid_list</span> <span class="o">=</span> <span class="kc">None</span>           <span class="c1"># List[int]: List of field ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fieldids</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># List[int]: List of field ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_group</span> <span class="o">=</span> <span class="kc">None</span>            <span class="c1"># ImageGroup: Dictionary of image group of reduction group</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imagename</span> <span class="o">=</span> <span class="kc">None</span>              <span class="c1"># str: Image name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imagename_nro</span> <span class="o">=</span> <span class="kc">None</span>          <span class="c1"># Optional[str]: Image name for NRO</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imager_result</span> <span class="o">=</span> <span class="kc">None</span>          <span class="c1"># SDImagingResultItem: Result object of imager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imager_result_nro</span> <span class="o">=</span> <span class="kc">None</span>      <span class="c1"># SDImagingResultItem: Result object of imager for NRO</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">member_list</span> <span class="o">=</span> <span class="kc">None</span>            <span class="c1"># List[int]: List of reduction group ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="kc">None</span>                <span class="c1"># List[List[MeasurementSet, int, List[str]]]: Image group of reduction group</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msobjs</span> <span class="o">=</span> <span class="kc">None</span>                 <span class="c1"># List[MeasurementSet]: List of MeasurementSet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>                   <span class="c1"># str: Name of MeasurementSet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nx</span> <span class="o">=</span> <span class="kc">None</span>                     <span class="c1"># Union[int, numpy.int64]: X of image shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ny</span> <span class="o">=</span> <span class="kc">None</span>                     <span class="c1"># Union[int, numpy.int64]: Y of image shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">org_direction</span> <span class="o">=</span> <span class="kc">None</span>          <span class="c1"># Direction: a direction of origin for ephemeris object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phasecenter</span> <span class="o">=</span> <span class="kc">None</span>            <span class="c1"># str: Phase center of coord set</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">polslist</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># List[List[str]]: List of Polarization. NOT USED NOW virtually.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pols_list</span> <span class="o">=</span> <span class="kc">None</span>              <span class="c1"># List[List[str]]: List of Polarization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_ms</span> <span class="o">=</span> <span class="kc">None</span>                 <span class="c1"># MeasurementSet: Reference MS object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restfreq</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># str: Rest frequency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rmss</span> <span class="o">=</span> <span class="kc">None</span>                   <span class="c1"># List[float]: List of RMSs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_name</span> <span class="o">=</span> <span class="kc">None</span>            <span class="c1"># str: Name of source like &#39;M100&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">specmode</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># str: Spec mode like &#39;cube&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwid_list</span> <span class="o">=</span> <span class="kc">None</span>             <span class="c1"># List[int]: List of Spectral window IDs of _group_desc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwids</span> <span class="o">=</span> <span class="kc">None</span>                 <span class="c1"># List[int]: List of Spectral window IDs of _members</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stokes_list</span> <span class="o">=</span> <span class="kc">None</span>            <span class="c1"># List[str]: List of stokes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tocombine</span> <span class="o">=</span> <span class="kc">None</span>              <span class="c1"># ToCombineImageParameters: ToCombineImageParameters object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validsps</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># List[List[int]]: List of valid spectrum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v_spwids</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># List[int]: List of Virtual Spectral window IDs</span></div>
+
+
+
+<div class="viewcode-block" id="CombinedImageParameters">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.CombinedImageParameters">[docs]</a>
+<span class="k">class</span> <span class="nc">CombinedImageParameters</span><span class="p">(</span><span class="n">Parameters</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parameter class for combined image.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an object.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antids</span> <span class="o">=</span> <span class="n">ObservedList</span><span class="p">()</span>           <span class="c1"># ObservedList[int]: List of antenna ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fieldids</span> <span class="o">=</span> <span class="n">ObservedList</span><span class="p">()</span>         <span class="c1"># ObservedList[int]: List of field ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span> <span class="o">=</span> <span class="n">ObservedList</span><span class="p">()</span>          <span class="c1"># ObservedList[str]: List of input file names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pols</span> <span class="o">=</span> <span class="n">ObservedList</span><span class="p">()</span>             <span class="c1"># List[List[str]]: List of Polarization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rms_exclude</span> <span class="o">=</span> <span class="n">ObservedList</span><span class="p">()</span>      <span class="c1"># ObservedList[numpy.ndarray[float]]: RMS mask frequency range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spws</span> <span class="o">=</span> <span class="n">ObservedList</span><span class="p">()</span>             <span class="c1"># ObservedList[int]: List of Spectral window IDs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v_spws</span> <span class="o">=</span> <span class="n">ObservedList</span><span class="p">()</span>           <span class="c1"># ObservedList[int]: List of Virtual Spectral window IDs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v_spws_unique</span> <span class="o">=</span> <span class="n">ObservedList</span><span class="p">()</span>    <span class="c1"># ObservedList[int]: List of unique values of _v_spws</span>
+
+<div class="viewcode-block" id="CombinedImageParameters.extend">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.CombinedImageParameters.extend">[docs]</a>
+    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_cp</span><span class="p">:</span> <span class="n">CommonParameters</span><span class="p">,</span> <span class="n">_rgp</span><span class="p">:</span> <span class="n">ReductionGroupParameters</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extend list properties using CP and RGP.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            _cp : CommonParameters object</span>
+<span class="sd">            _rgp : ReductionGroupParameters object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_cp</span><span class="o">.</span><span class="n">infiles</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_rgp</span><span class="o">.</span><span class="n">antids</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fieldids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_rgp</span><span class="o">.</span><span class="n">fieldids</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_rgp</span><span class="o">.</span><span class="n">spwids</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v_spws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_rgp</span><span class="o">.</span><span class="n">v_spwids</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pols</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_rgp</span><span class="o">.</span><span class="n">polslist</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ToCombineImageParameters">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.ToCombineImageParameters">[docs]</a>
+<span class="k">class</span> <span class="nc">ToCombineImageParameters</span><span class="p">(</span><span class="n">Parameters</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parameter class to combine image.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an object.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="n">ObservedList</span><span class="p">()</span>               <span class="c1"># ObservedList[str]: List of image name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">images_nro</span> <span class="o">=</span> <span class="n">ObservedList</span><span class="p">()</span>           <span class="c1"># ObservedList[str]: List of image name for NRO</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">org_directions</span> <span class="o">=</span> <span class="n">ObservedList</span><span class="p">()</span>       <span class="c1"># ObservedList[Direction]: List of directions of origin for ephemeris object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">org_directions_nro</span> <span class="o">=</span> <span class="n">ObservedList</span><span class="p">()</span>   <span class="c1"># ObservedList[Direction]: List of Directions for NRO</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">specmodes</span> <span class="o">=</span> <span class="n">ObservedList</span><span class="p">()</span>            <span class="c1"># ObservedList[str]: List of spec mode</span></div>
+
+
+
+<div class="viewcode-block" id="PostProcessParameters">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.PostProcessParameters">[docs]</a>
+<span class="k">class</span> <span class="nc">PostProcessParameters</span><span class="p">(</span><span class="n">Parameters</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parameters for post processing of image generating.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an object.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beam</span> <span class="o">=</span> <span class="kc">None</span>                           <span class="c1"># Dict[str, Dict[str, float]]: Beam data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">brightnessunit</span> <span class="o">=</span> <span class="kc">None</span>                 <span class="c1"># str: Brightness unit like &#39;Jy/beam&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chan_width</span> <span class="o">=</span> <span class="kc">None</span>                     <span class="c1"># numpy.float64: Channel width of faxis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cs</span> <span class="o">=</span> <span class="kc">None</span>                             <span class="c1"># coordsys: Coordsys object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">faxis</span> <span class="o">=</span> <span class="kc">None</span>                          <span class="c1"># int: Spectral axis which is found</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imagename</span> <span class="o">=</span> <span class="kc">None</span>                      <span class="c1"># str: Image name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_rms</span> <span class="o">=</span> <span class="kc">None</span>                      <span class="c1"># float: Image statistics (rms)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_max</span> <span class="o">=</span> <span class="kc">None</span>                      <span class="c1"># float: Image statistics (maximum value)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_min</span> <span class="o">=</span> <span class="kc">None</span>                      <span class="c1"># float: Image statistics (minimum value)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">include_channel_range</span> <span class="o">=</span> <span class="kc">None</span>          <span class="c1"># List[int]: List of channel ranges to calculate image statistics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_representative_source_and_spw</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># bool: Flag of representative source spw and representative spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nx</span> <span class="o">=</span> <span class="kc">None</span>                             <span class="c1"># numpy.int64: X of image shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ny</span> <span class="o">=</span> <span class="kc">None</span>                             <span class="c1"># numpy.int64: Y of image shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">org_direction</span> <span class="o">=</span> <span class="kc">None</span>                  <span class="c1"># Direction: a direction of origin for ephemeris object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qcell</span> <span class="o">=</span> <span class="kc">None</span>                          <span class="c1"># Dict[str, Dict[str, float]]: Cell data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raster_infos</span> <span class="o">=</span> <span class="kc">None</span>                   <span class="c1"># List[RasterInfo]: List of RasterInfo(center/width/height/angle/row)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">region</span> <span class="o">=</span> <span class="kc">None</span>                         <span class="c1"># str: Region to calculate statistics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rmss</span> <span class="o">=</span> <span class="kc">None</span>                           <span class="c1"># List[float]: List of RMSs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stat_chans</span> <span class="o">=</span> <span class="kc">None</span>                     <span class="c1"># str: Converted string from include_channel_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stat_freqs</span> <span class="o">=</span> <span class="kc">None</span>                     <span class="c1"># str: Statistics frequencies</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theoretical_rms</span> <span class="o">=</span> <span class="kc">None</span>                <span class="c1"># Dict[str, float]: Theoretical RMSs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validsps</span> <span class="o">=</span> <span class="kc">None</span>                       <span class="c1"># List[int]: List of valid spectrum</span>
+
+<div class="viewcode-block" id="PostProcessParameters.done">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.PostProcessParameters.done">[docs]</a>
+    <span class="k">def</span> <span class="nf">done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cs</span><span class="p">,</span> <span class="n">coordsys</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cs</span><span class="o">.</span><span class="n">done</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TheoreticalImageRmsParameters">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging_params.TheoreticalImageRmsParameters">[docs]</a>
+<span class="k">class</span> <span class="nc">TheoreticalImageRmsParameters</span><span class="p">(</span><span class="n">Parameters</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Parameter class of calculate_theoretical_image_rms().&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_pp</span><span class="p">:</span> <span class="n">PostProcessParameters</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            _pp : imaging post process parameters of prepare()</span>
+<span class="sd">            context : pipeline Context</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>       <span class="c1"># LoggingQuanta: LoggingQuanta object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">failed_rms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">_pp</span><span class="o">.</span><span class="n">brightnessunit</span><span class="p">)</span>    <span class="c1"># Dict[str, float]: Failed RMS value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sq_rms</span> <span class="o">=</span> <span class="mf">0.0</span>                  <span class="c1"># float: Square of RMS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="mf">0.0</span>                       <span class="c1"># float: Number of data for statistics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_unit</span> <span class="o">=</span> <span class="s1">&#39;s&#39;</span>               <span class="c1"># str: Time unit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ang_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cqa</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">qcell</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>     <span class="c1"># str: Ang unit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cx_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">qcell</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>   <span class="c1"># float: cx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cy_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">qcell</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">ang_unit</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># float: cy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bandwidth</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">_pp</span><span class="o">.</span><span class="n">chan_width</span><span class="p">)</span>         <span class="c1"># float: Band width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>                             <span class="c1"># Context: Pipeline context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_nro</span> <span class="o">=</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">is_nro</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>              <span class="c1"># bool: NRO flag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infile</span> <span class="o">=</span> <span class="kc">None</span>                 <span class="c1"># str: Input file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antid</span> <span class="o">=</span> <span class="kc">None</span>                  <span class="c1"># int Antenna ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fieldid</span> <span class="o">=</span> <span class="kc">None</span>                <span class="c1"># int: Field ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwid</span> <span class="o">=</span> <span class="kc">None</span>                  <span class="c1"># int: Spectrum ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pol_names</span> <span class="o">=</span> <span class="kc">None</span>              <span class="c1"># List[str]: Polarization names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">polids</span> <span class="o">=</span> <span class="kc">None</span>                 <span class="c1"># List[int]: Polarization ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raster_info</span> <span class="o">=</span> <span class="kc">None</span>            <span class="c1"># RasterInfo: RasterInfo object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msobj</span> <span class="o">=</span> <span class="kc">None</span>                  <span class="c1"># MeasurementSet: MeasuremetSet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calmsobj</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># MeasurementSet: Calibrated MeasurementSet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_msg</span> <span class="o">=</span> <span class="kc">None</span>              <span class="c1"># str: Error message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>                     <span class="c1"># DataTableImpl: Datatable object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index_list</span> <span class="o">=</span> <span class="kc">None</span>             <span class="c1"># numpy.ndarray[int64]: Index list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">effBW</span> <span class="o">=</span> <span class="kc">None</span>                  <span class="c1"># float: Effective BW</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean_tsys_per_pol</span> <span class="o">=</span> <span class="kc">None</span>      <span class="c1"># numpy.ndarray[float]: Mean of Tsys per polarization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="kc">None</span>                  <span class="c1"># float: Width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="kc">None</span>                 <span class="c1"># float: Height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calst</span> <span class="o">=</span> <span class="kc">None</span>                  <span class="c1"># IntervalCalState: Interval calibration state object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_on_act</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># float: T_on actual</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_sub_on</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># float: Tsub on</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_sub_off</span> <span class="o">=</span> <span class="kc">None</span>              <span class="c1"># float: Tsub off</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

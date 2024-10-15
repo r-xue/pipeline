@@ -1,0 +1,433 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsdn.tasks.exportdata.exportdata &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsdn.tasks.exportdata.exportdata</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsdn.tasks.exportdata.exportdata</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Single-Dish Exportdata task dedicated to NRO data.</span>
+
+<span class="sd">Please see hsd/tasks/exportdata/exportdata.py for generic</span>
+<span class="sd">description on how Exportdata task works.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">xml.etree.ElementTree</span> <span class="kn">import</span> <span class="n">Element</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.h.tasks.exportdata.exportdata</span> <span class="k">as</span> <span class="nn">exportdata</span>
+<span class="kn">import</span> <span class="nn">pipeline.hsd.tasks.exportdata.exportdata</span> <span class="k">as</span> <span class="nn">sdexportdata</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.project</span> <span class="kn">import</span> <span class="n">ProjectStructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsdn.tasks.importdata.importdata</span> <span class="kn">import</span> <span class="n">NROImportDataResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsdn.tasks.restoredata.restoredata</span> <span class="kn">import</span> <span class="n">NRORestoreDataResults</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">manifest</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">nrotemplategenerator</span>
+
+<span class="c1"># the logger for this module</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="NROPipelineNameBuilder">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.exportdata.html#pipeline.hsdn.tasks.exportdata.exportdata.NROPipelineNameBuilder">[docs]</a>
+<span class="k">class</span> <span class="nc">NROPipelineNameBuilder</span><span class="p">(</span><span class="n">exportdata</span><span class="o">.</span><span class="n">PipelineProductNameBuilder</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Name(str) building utility methods class for NRO Pipeline.</span>
+
+<span class="sd">    Methods in this class overrides those in PipelineProductNameBuilder and</span>
+<span class="sd">    constructs names (paths) of products in the absence of valid OUS status ID</span>
+<span class="sd">    nor session name in Nobeyama datasets.&quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_build_from_oussid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ousstatus_entity_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a string for use as path.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            basename : base name of path</span>
+<span class="sd">            ousstatus_entity_id : OUS Status ID. not in use.</span>
+<span class="sd">            output_dir : output directory path</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            path string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_join_dir</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_build_from_ps_oussid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                              <span class="n">project_structure</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ProjectStructure</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">ousstatus_entity_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a string for use as path.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            basename : base name of path</span>
+<span class="sd">            project_structure : project structure element, not in use.</span>
+<span class="sd">            ousstatus_entity_id : OUS Status ID, not in use.</span>
+<span class="sd">            output_dir : output directory path</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            path string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_join_dir</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_build_from_oussid_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                   <span class="n">ousstatus_entity_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">session_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a string for use as path.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            basename : base name of path</span>
+<span class="sd">            ousstatus_entity_id : OUS Status ID, not in use.</span>
+<span class="sd">            session_name : session name, not in use.</span>
+<span class="sd">            output_dir : output directory path</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            path string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_join_dir</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="NROExportDataInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.exportdata.html#pipeline.hsdn.tasks.exportdata.exportdata.NROExportDataInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">NROExportDataInputs</span><span class="p">(</span><span class="n">sdexportdata</span><span class="o">.</span><span class="n">SDExportDataInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for NROExportData.</span>
+
+<span class="sd">    Inputs class must be separated per task class even if</span>
+<span class="sd">    it&#39;s effectively the same.&quot;&quot;&quot;</span>
+
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="NROExportData">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.exportdata.html#pipeline.hsdn.tasks.exportdata.exportdata.NROExportData">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsdn_exportdata&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;The output data products are computed.&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">NROExportData</span><span class="p">(</span><span class="n">sdexportdata</span><span class="o">.</span><span class="n">SDExportData</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class for exporting Nobeyama data to the products subdirectory.</span>
+
+<span class="sd">    It performs the following additional operations after SDExportData does:</span>
+
+<span class="sd">    - Export reduction template in a Python file</span>
+<span class="sd">    - Export nroscale CSV file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">NROExportDataInputs</span>
+
+    <span class="n">NameBuilder</span> <span class="o">=</span> <span class="n">NROPipelineNameBuilder</span>
+
+<div class="viewcode-block" id="NROExportData.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.exportdata.html#pipeline.hsdn.tasks.exportdata.exportdata.NROExportData.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">exportdata</span><span class="o">.</span><span class="n">ExportDataResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare and execute an export data job appropriate to the task inputs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            object of exportdata.ExportDataResults</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">NROExportData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+
+        <span class="c1"># manifest file</span>
+        <span class="n">manifest_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">products_dir</span><span class="p">,</span>
+                                     <span class="n">results</span><span class="o">.</span><span class="n">manifest</span><span class="p">)</span>
+
+        <span class="c1"># export NRO data reduction template</span>
+        <span class="n">template_script</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_export_reduction_template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">template_script</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_manifest</span><span class="p">(</span><span class="n">manifest_file</span><span class="p">,</span> <span class="n">script</span><span class="o">=</span><span class="n">template_script</span><span class="p">)</span>
+
+        <span class="c1"># export NRO scaling file template</span>
+        <span class="n">template_file</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_export_nroscalefile_template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">template_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_manifest</span><span class="p">(</span><span class="n">manifest_file</span><span class="p">,</span> <span class="n">scalefile</span><span class="o">=</span><span class="n">template_file</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_export_reduction_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export reduction template script.</span>
+
+<span class="sd">        Exports rebase_and_image.py. It is a Python script to perform baseline</span>
+<span class="sd">        subtraction and imaging by CASA tasks.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            products_dir : product directory path</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            script name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">script_name</span> <span class="o">=</span> <span class="s1">&#39;rebase_and_image.py&#39;</span>
+        <span class="n">config_name</span> <span class="o">=</span> <span class="s1">&#39;rebase_and_image_config.py&#39;</span>
+        <span class="n">script_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">script_name</span><span class="p">)</span>
+        <span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">config_name</span><span class="p">)</span>
+
+        <span class="n">status</span> <span class="o">=</span> <span class="n">nrotemplategenerator</span><span class="o">.</span><span class="n">generate_script</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+                                                      <span class="n">script_path</span><span class="p">,</span>
+                                                      <span class="n">config_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">script_name</span> <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_export_nroscalefile_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export nroscale CSV file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            products_dir : product directory path</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            file name of nroscalefile, default:&#39;nroscalefile.csv&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">datafile_name</span> <span class="o">=</span> <span class="s1">&#39;nroscalefile.csv&#39;</span>
+        <span class="n">datafile_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">datafile_name</span><span class="p">)</span>
+
+        <span class="n">status</span> <span class="o">=</span> <span class="n">nrotemplategenerator</span><span class="o">.</span><span class="n">generate_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+                                                   <span class="n">datafile_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">datafile_name</span> <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_update_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manifest_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">script</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">scalefile</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add Nobeyama specific products to manifest file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            manifest_file : manifest file path</span>
+<span class="sd">            script : the name of template reduction script</span>
+<span class="sd">            scalefile : the name of NRO scale file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pipemanifest</span> <span class="o">=</span> <span class="n">manifest</span><span class="o">.</span><span class="n">NROPipelineManifest</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">pipemanifest</span><span class="o">.</span><span class="n">import_xml</span><span class="p">(</span><span class="n">manifest_file</span><span class="p">)</span>
+        <span class="n">ouss</span> <span class="o">=</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_ous</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">script</span><span class="p">:</span>
+            <span class="n">pipemanifest</span><span class="o">.</span><span class="n">add_reduction_script</span><span class="p">(</span><span class="n">ouss</span><span class="p">,</span> <span class="n">script</span><span class="p">)</span>
+            <span class="n">pipemanifest</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">manifest_file</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">scalefile</span><span class="p">:</span>
+            <span class="n">pipemanifest</span><span class="o">.</span><span class="n">add_scalefile</span><span class="p">(</span><span class="n">ouss</span><span class="p">,</span> <span class="n">scalefile</span><span class="p">)</span>
+            <span class="n">pipemanifest</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">manifest_file</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_export_casa_restore_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">script_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                    <span class="n">products_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">oussid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                    <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                                    <span class="n">session_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate and export CASA restore script.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context : pipeline context</span>
+<span class="sd">            script_name : Name of the restore script</span>
+<span class="sd">            products_dir : Name of the product directory</span>
+<span class="sd">            oussid : OUS Status ID</span>
+<span class="sd">            vislist : a list of MeasurementSet names</span>
+<span class="sd">            session_list : a list of session id</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            path of output CASA script file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tmpvislist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">vislist</span><span class="p">))</span>
+        <span class="n">restore_task_name</span> <span class="o">=</span> <span class="s1">&#39;hsdn_restoredata&#39;</span>
+        <span class="n">hm_rasterscan</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hm_rasterscan_value</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">tmpvislist</span><span class="p">,</span>
+                                       <span class="n">reffile</span><span class="o">=</span><span class="s1">&#39;./nroscalefile.csv&#39;</span><span class="p">,</span>
+                                       <span class="n">hm_rasterscan</span><span class="o">=</span><span class="n">hm_rasterscan</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_export_casa_restore_script_template</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">script_name</span><span class="p">,</span>
+                                                         <span class="n">products_dir</span><span class="p">,</span> <span class="n">oussid</span><span class="p">,</span>
+                                                         <span class="n">restore_task_name</span><span class="p">,</span>
+                                                         <span class="n">args</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_hm_rasterscan_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve hm_rasterscan value from Results object.</span>
+
+<span class="sd">        This method checks if either NROImportDataResults or</span>
+<span class="sd">        NRORestoreDataResults object is registered to Pipeline context.</span>
+<span class="sd">        If exists, hm_rasterscan value is retrieved from the results</span>
+<span class="sd">        object. If no NROImportDataResults nor NRORestoreDataResults</span>
+<span class="sd">        object is registered, &#39;time&#39; will be returned.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The hm_rasterscan value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results_filter</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">NROImportDataResults</span><span class="p">,</span> <span class="n">NRORestoreDataResults</span><span class="p">)),</span>
+            <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">importdata_results</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">results_filter</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">importdata_results</span><span class="p">:</span>
+            <span class="n">hm_rasterscan</span> <span class="o">=</span> <span class="n">importdata_results</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hm_rasterscan&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hm_rasterscan</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span>
+
+        <span class="k">return</span> <span class="n">hm_rasterscan</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.diffgaincal.diffgaincal &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.diffgaincal.diffgaincal</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.diffgaincal.diffgaincal</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.gaincal</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.gaincal</span> <span class="kn">import</span> <span class="n">gtypegaincal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics.phasespwmap</span> <span class="kn">import</span> <span class="n">update_spwmap_for_band_to_band</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;DiffGaincal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DiffGaincalInputs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DiffGaincalResults&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="DiffGaincalResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.diffgaincal.html#pipeline.hifa.tasks.diffgaincal.diffgaincal.DiffGaincalResults">[docs]</a>
+<span class="k">class</span> <span class="nc">DiffGaincalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseoffsetresult</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">final</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">final</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="n">final</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phaseoffsetresult</span> <span class="o">=</span> <span class="n">phaseoffsetresult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">pool</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+
+<div class="viewcode-block" id="DiffGaincalResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.diffgaincal.html#pipeline.hifa.tasks.diffgaincal.diffgaincal.DiffGaincalResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="c1"># Register all CalApplications from each session.</span>
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Adding calibration to callibrary:</span><span class="se">\n</span><span class="si">{</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                      <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;DiffGaincalResults&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="DiffGaincalInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.diffgaincal.html#pipeline.hifa.tasks.diffgaincal.diffgaincal.DiffGaincalInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">DiffGaincalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># Standard Pipeline inputs.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span></div>
+
+
+
+<div class="viewcode-block" id="DiffGaincal">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.diffgaincal.html#pipeline.hifa.tasks.diffgaincal.diffgaincal.DiffGaincal">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_diffgaincal&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Compute the differential gain calibration.&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">DiffGaincal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">DiffGaincalInputs</span>
+
+<div class="viewcode-block" id="DiffGaincal.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.diffgaincal.html#pipeline.hifa.tasks.diffgaincal.diffgaincal.DiffGaincal.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DiffGaincalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute differential gain calibration heuristics and return Results</span>
+<span class="sd">        object that includes final caltables.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DiffGaincalResults instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize results.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">DiffGaincalResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Compute phase solutions for the diffgain reference intent.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Computing phase gain table for the diffgain reference intent.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_phasecal_for_diffgain_reference</span><span class="p">()</span>
+
+        <span class="c1"># Compute phase solutions for the diffgain on-source spectral windows.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Computing phase gain table for the diffgain on-source intent.&#39;</span><span class="p">)</span>
+        <span class="n">dg_ref_phase_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_phasecal_for_diffgain_onsource</span><span class="p">()</span>
+        <span class="c1"># Adopt resulting CalApplication(s) into final result.</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">dg_ref_phase_results</span><span class="o">.</span><span class="n">pool</span>
+
+        <span class="c1"># Compute residual phase offsets for the diffgain on-source intent, for</span>
+        <span class="c1"># diagnostic plots in the weblog.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Computing residual phase offsets for the diffgain on-source intent.&#39;</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">phaseoffsetresult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_phasecal_for_diffgain_residual_offsets</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="DiffGaincal.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.diffgaincal.html#pipeline.hifa.tasks.diffgaincal.diffgaincal.DiffGaincal.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">DiffGaincalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DiffGaincalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Analyze the DiffGaincalResults: check that all caltables from</span>
+<span class="sd">        CalApplications exist on disk.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: DiffGaincalResults instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DiffGaincalResults instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check that the caltables were all generated.</span>
+        <span class="n">on_disk</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">on_disk</span>
+
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">on_disk</span><span class="p">]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">append</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">combine</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">intent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Local method to call the G-type gaincal worker task, with pre-defined</span>
+<span class="sd">        values for parameters that are shared among all gaincal steps in this</span>
+<span class="sd">        task.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            append: boolean whether to append to existing caltable</span>
+<span class="sd">            caltable: name of caltable to use</span>
+<span class="sd">            combine: axis to combine solutions over</span>
+<span class="sd">            intent: intent selection to use</span>
+<span class="sd">            scan: scan selection to use</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            GaincalResults</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">,</span>
+            <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)),</span>
+            <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scan</span><span class="p">,</span>
+            <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="n">combine</span><span class="p">,</span>
+            <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;inf&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+            <span class="s1">&#39;refantmode&#39;</span><span class="p">:</span> <span class="s1">&#39;strict&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;append&#39;</span><span class="p">:</span> <span class="n">append</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincalInputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">task_inputs</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_do_phasecal_for_diffgain_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute phase gain solutions for the diffgain reference intent and</span>
+<span class="sd">        register the resulting caltable in the local task context to be applied</span>
+<span class="sd">        to the diffgain on-source intent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Run gaincal for the diffgain reference spws.</span>
+        <span class="n">phasecal_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">)</span>
+
+        <span class="c1"># If a caltable was created, then create a modified CalApplication to</span>
+        <span class="c1"># correctly register the caltable.</span>
+        <span class="k">if</span> <span class="n">phasecal_result</span><span class="o">.</span><span class="n">pool</span><span class="p">:</span>
+            <span class="c1"># Retrieve the diffgain spectral windows, and create SpW mapping to</span>
+            <span class="c1"># re-map diffgain on-source SpWs to diffgain reference SpWs.</span>
+            <span class="n">dg_refspws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">)</span>
+            <span class="n">dg_srcspws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">)</span>
+            <span class="n">dg_spwmap</span> <span class="o">=</span> <span class="n">update_spwmap_for_band_to_band</span><span class="p">([],</span> <span class="n">dg_refspws</span><span class="p">,</span> <span class="n">dg_srcspws</span><span class="p">)</span>
+
+            <span class="c1"># Define CalApplication overrides to specify how the diffgain</span>
+            <span class="c1"># reference phase solutions should be registered in the callibrary.</span>
+            <span class="c1"># Note: solutions derived for the diffgain reference intent are</span>
+            <span class="c1"># registered here to be applied to the diffgain on-source intent and</span>
+            <span class="c1"># SpWs with a corresponding SpW mapping.</span>
+            <span class="n">calapp_overrides</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;calwt&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;interp&#39;</span><span class="p">:</span> <span class="s1">&#39;linearPD,linear&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">dg_srcspws</span><span class="p">),</span>
+                <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span> <span class="n">dg_spwmap</span><span class="p">,</span>
+            <span class="p">}</span>
+
+            <span class="c1"># There should be only 1 caltable, so replace the CalApp for that</span>
+            <span class="c1"># one.</span>
+            <span class="n">modified_calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">phasecal_result</span><span class="o">.</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">calapp_overrides</span><span class="p">)</span>
+            <span class="n">phasecal_result</span><span class="o">.</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">modified_calapp</span>
+            <span class="n">phasecal_result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">modified_calapp</span>
+
+            <span class="c1"># Register these diffgain reference phase solutions into local</span>
+            <span class="c1"># context to ensure that these are used in pre-apply when computing</span>
+            <span class="c1"># phase solutions for the diffgain on-source intent.</span>
+            <span class="n">phasecal_result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_phasecal_for_diffgain_onsource</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute phase gain solutions for the diffgain on-source intent. Gain</span>
+<span class="sd">        solutions are created separately for groups of scans, using</span>
+<span class="sd">        combine=&#39;scan&#39;, and appended to a single caltable. Each scan group is</span>
+<span class="sd">        intended to comprise scans taken closely together in time (typically</span>
+<span class="sd">        alternated with the diffgain reference scans), and these groups are</span>
+<span class="sd">        typically done before and after the science target scans. In practice,</span>
+<span class="sd">        scan groups are identified as scans with IDs separated by less than 4.</span>
+
+<span class="sd">        The resulting caltable is immediately registered with the callibrary in</span>
+<span class="sd">        the local task context (to ensure pre-apply in the subsequent</span>
+<span class="sd">        computation of residual offset). For final acceptance of this caltable</span>
+<span class="sd">        in the top-level callibrary, the CalApplication is updated to ensure the</span>
+<span class="sd">        resulting caltable will be applied to the science target or check</span>
+<span class="sd">        source.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            GaincalResults for the diffgain on-source phase solutions caltable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Determine scan groups for diffgain on-source intent.</span>
+        <span class="n">scan_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scan_groups</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Exit early if no scan groups could be identified.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">scan_groups</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: no scan groups found for diffgain on-source intent.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Run gaincal for the first scan group.</span>
+        <span class="n">phasecal_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">combine</span><span class="o">=</span><span class="s1">&#39;scan&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scan_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># If there are multiple scan groups, run gaincal for all remaining</span>
+        <span class="c1"># scan groups, appending their solutions to the same caltable.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scan_groups</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">caltable</span> <span class="o">=</span> <span class="n">phasecal_result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;caltable&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">scan_group</span> <span class="ow">in</span> <span class="n">scan_groups</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">caltable</span><span class="o">=</span><span class="n">caltable</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;scan&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scan_group</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># If a caltable was created, then create a modified CalApplication to</span>
+        <span class="c1"># correctly register the caltable.</span>
+        <span class="k">if</span> <span class="n">phasecal_result</span><span class="o">.</span><span class="n">pool</span><span class="p">:</span>
+            <span class="c1"># Prior to registering this caltable into the local context, set</span>
+            <span class="c1"># overrides in the CalApplication:</span>
+            <span class="n">calapp_overrides</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;calwt&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">modified_calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">phasecal_result</span><span class="o">.</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">calapp_overrides</span><span class="p">)</span>
+            <span class="n">phasecal_result</span><span class="o">.</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">modified_calapp</span>
+            <span class="n">phasecal_result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">modified_calapp</span>
+
+            <span class="c1"># Register the diffgain on-source phase solutions into local context</span>
+            <span class="c1"># to ensure that these are used in pre-apply when computing the</span>
+            <span class="c1"># residual phase offsets (diagnostic) caltable.</span>
+            <span class="n">phasecal_result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+            <span class="c1"># Update the CalApplication again, this time to ensure this diffgain</span>
+            <span class="c1"># phase offsets caltable will be applied to the science target</span>
+            <span class="c1"># and/or check source.</span>
+            <span class="n">calapp_overrides</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;calwt&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;TARGET,CHECK&#39;</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">modified_calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">phasecal_result</span><span class="o">.</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">calapp_overrides</span><span class="p">)</span>
+            <span class="n">phasecal_result</span><span class="o">.</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">modified_calapp</span>
+            <span class="n">phasecal_result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">modified_calapp</span>
+
+        <span class="k">return</span> <span class="n">phasecal_result</span>
+
+    <span class="k">def</span> <span class="nf">_do_phasecal_for_diffgain_residual_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute residual phase offsets caltable for the diffgain on-source intent.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            GaincalResults for the diffgain on-source residual phase solutions</span>
+<span class="sd">            caltable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Run 2nd gaincal for the diffgain on-source intent, this time with the</span>
+        <span class="c1"># phase solutions for diffgain on-source intent in pre-apply, to assess</span>
+        <span class="c1"># the residual phase offsets.</span>
+        <span class="n">phasecal_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">phasecal_result</span>
+
+    <span class="k">def</span> <span class="nf">_get_scan_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return list of scan groups associated with given intent, where each</span>
+<span class="sd">        group are scans separated by less than 4 in ID.</span>
+
+<span class="sd">        E.g., if the scans for given intent are:</span>
+<span class="sd">          &#39;5,7,9,11,79,81,83&#39;</span>
+<span class="sd">        Then this will return:</span>
+<span class="sd">          [&#39;5,7,9,11&#39;, &#39;79,81,83&#39;]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of groups of scans.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get IDs of DIFFGAIN scans for given intent.</span>
+        <span class="n">dg_scanids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">intent</span><span class="p">))</span>
+
+        <span class="c1"># Group scans separated in ID by less than 4.</span>
+        <span class="n">scan_groups</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">group</span><span class="p">))</span>
+                       <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">dg_scanids</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">dg_scanids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">scan_groups</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

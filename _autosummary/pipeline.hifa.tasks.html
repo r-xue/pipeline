@@ -1,0 +1,359 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.hifa.tasks.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pipeline.hifa.tasks">
+<span id="pipeline-hifa-tasks"></span><h1>pipeline.hifa.tasks<a class="headerlink" href="#module-pipeline.hifa.tasks" title="Link to this heading"></a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.ALMAAntpos.html#pipeline.hifa.tasks.ALMAAntpos" title="pipeline.hifa.tasks.ALMAAntpos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALMAAntpos</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.ALMAExportData.html#pipeline.hifa.tasks.ALMAExportData" title="pipeline.hifa.tasks.ALMAExportData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALMAExportData</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.ALMAImportData.html#pipeline.hifa.tasks.ALMAImportData" title="pipeline.hifa.tasks.ALMAImportData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALMAImportData</span></code></a>(inputs)</p></td>
+<td><p>ALMAImportData class for parallelization.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.ALMAPhcorBandpass.html#pipeline.hifa.tasks.ALMAPhcorBandpass" title="pipeline.hifa.tasks.ALMAPhcorBandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALMAPhcorBandpass</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.ALMARestoreData.html#pipeline.hifa.tasks.ALMARestoreData" title="pipeline.hifa.tasks.ALMARestoreData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALMARestoreData</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.ALMATsysflag.html#pipeline.hifa.tasks.ALMATsysflag" title="pipeline.hifa.tasks.ALMATsysflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALMATsysflag</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="../_apidoc/pipeline.hifa.tasks.tsysflag.html#pipeline.hifa.tasks.tsysflag.tsysflag.Tsysflag" title="pipeline.hifa.tasks.tsysflag.tsysflag.Tsysflag"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tsysflag</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.Bandpassflag.html#pipeline.hifa.tasks.Bandpassflag" title="pipeline.hifa.tasks.Bandpassflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Bandpassflag</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.BpSolint.html#pipeline.hifa.tasks.BpSolint" title="pipeline.hifa.tasks.BpSolint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BpSolint</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.DiffGaincal.html#pipeline.hifa.tasks.DiffGaincal" title="pipeline.hifa.tasks.DiffGaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffGaincal</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.FlagDeterALMA.html#pipeline.hifa.tasks.FlagDeterALMA" title="pipeline.hifa.tasks.FlagDeterALMA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagDeterALMA</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.FlagTargetsALMA.html#pipeline.hifa.tasks.FlagTargetsALMA" title="pipeline.hifa.tasks.FlagTargetsALMA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagTargetsALMA</span></code></a>(inputs)</p></td>
+<td><p>FlagTargetsALMA is a class for target flagging.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.FluxcalFlag.html#pipeline.hifa.tasks.FluxcalFlag" title="pipeline.hifa.tasks.FluxcalFlag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxcalFlag</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.GaincalSnr.html#pipeline.hifa.tasks.GaincalSnr" title="pipeline.hifa.tasks.GaincalSnr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GaincalSnr</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.GcorFluxscale.html#pipeline.hifa.tasks.GcorFluxscale" title="pipeline.hifa.tasks.GcorFluxscale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GcorFluxscale</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.Gfluxscaleflag.html#pipeline.hifa.tasks.Gfluxscaleflag" title="pipeline.hifa.tasks.Gfluxscaleflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Gfluxscaleflag</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.ImagePreCheck.html#pipeline.hifa.tasks.ImagePreCheck" title="pipeline.hifa.tasks.ImagePreCheck"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImagePreCheck</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.LockRefAnt.html#pipeline.hifa.tasks.LockRefAnt" title="pipeline.hifa.tasks.LockRefAnt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LockRefAnt</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.Polcal.html#pipeline.hifa.tasks.Polcal" title="pipeline.hifa.tasks.Polcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Polcal</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.Polcalflag.html#pipeline.hifa.tasks.Polcalflag" title="pipeline.hifa.tasks.Polcalflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Polcalflag</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.Renorm.html#pipeline.hifa.tasks.Renorm" title="pipeline.hifa.tasks.Renorm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Renorm</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.SessionALMAPhcorBandpass.html#pipeline.hifa.tasks.SessionALMAPhcorBandpass" title="pipeline.hifa.tasks.SessionALMAPhcorBandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionALMAPhcorBandpass</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.SessionGcorFluxscale.html#pipeline.hifa.tasks.SessionGcorFluxscale" title="pipeline.hifa.tasks.SessionGcorFluxscale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionGcorFluxscale</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.SessionRefAnt.html#pipeline.hifa.tasks.SessionRefAnt" title="pipeline.hifa.tasks.SessionRefAnt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionRefAnt</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.SpwPhaseup.html#pipeline.hifa.tasks.SpwPhaseup" title="pipeline.hifa.tasks.SpwPhaseup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwPhaseup</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.Targetflag.html#pipeline.hifa.tasks.Targetflag" title="pipeline.hifa.tasks.Targetflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Targetflag</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.TimeGaincal.html#pipeline.hifa.tasks.TimeGaincal" title="pipeline.hifa.tasks.TimeGaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeGaincal</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.TsysFlagContamination.html#pipeline.hifa.tasks.TsysFlagContamination" title="pipeline.hifa.tasks.TsysFlagContamination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TsysFlagContamination</span></code></a>(inputs)</p></td>
+<td><p>Flag line contamination in the Tsys tables.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.UnlockRefAnt.html#pipeline.hifa.tasks.UnlockRefAnt" title="pipeline.hifa.tasks.UnlockRefAnt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnlockRefAnt</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.Wvrgcal.html#pipeline.hifa.tasks.Wvrgcal" title="pipeline.hifa.tasks.Wvrgcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Wvrgcal</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.hifa.tasks.Wvrgcalflag.html#pipeline.hifa.tasks.Wvrgcalflag" title="pipeline.hifa.tasks.Wvrgcalflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Wvrgcalflag</span></code></a>(inputs)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Modules</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.antpos.html#module-pipeline.hifa.tasks.antpos" title="pipeline.hifa.tasks.antpos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">antpos</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.applycal.html#module-pipeline.hifa.tasks.applycal" title="pipeline.hifa.tasks.applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">applycal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpass.html#module-pipeline.hifa.tasks.bandpass" title="pipeline.hifa.tasks.bandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bandpass</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.html#module-pipeline.hifa.tasks.bandpassflag" title="pipeline.hifa.tasks.bandpassflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bandpassflag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bpsolint.html#module-pipeline.hifa.tasks.bpsolint" title="pipeline.hifa.tasks.bpsolint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bpsolint</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.common.html#module-pipeline.hifa.tasks.common" title="pipeline.hifa.tasks.common"><code class="xref py py-obj docutils literal notranslate"><span class="pre">common</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.diffgaincal.html#module-pipeline.hifa.tasks.diffgaincal" title="pipeline.hifa.tasks.diffgaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diffgaincal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.exportdata.html#module-pipeline.hifa.tasks.exportdata" title="pipeline.hifa.tasks.exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exportdata</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.flagging.html#module-pipeline.hifa.tasks.flagging" title="pipeline.hifa.tasks.flagging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flagging</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxcalflag.html#module-pipeline.hifa.tasks.fluxcalflag" title="pipeline.hifa.tasks.fluxcalflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fluxcalflag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.html#module-pipeline.hifa.tasks.fluxscale" title="pipeline.hifa.tasks.fluxscale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fluxscale</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.gaincal.html#module-pipeline.hifa.tasks.gaincal" title="pipeline.hifa.tasks.gaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gaincal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.gaincalsnr.html#module-pipeline.hifa.tasks.gaincalsnr" title="pipeline.hifa.tasks.gaincalsnr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gaincalsnr</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.gfluxscaleflag.html#module-pipeline.hifa.tasks.gfluxscaleflag" title="pipeline.hifa.tasks.gfluxscaleflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gfluxscaleflag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.imageprecheck.html#module-pipeline.hifa.tasks.imageprecheck" title="pipeline.hifa.tasks.imageprecheck"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imageprecheck</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.importdata.html#module-pipeline.hifa.tasks.importdata" title="pipeline.hifa.tasks.importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">importdata</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.lock_refant.html#module-pipeline.hifa.tasks.lock_refant" title="pipeline.hifa.tasks.lock_refant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lock_refant</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.polcal.html#module-pipeline.hifa.tasks.polcal" title="pipeline.hifa.tasks.polcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">polcal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.polcalflag.html#module-pipeline.hifa.tasks.polcalflag" title="pipeline.hifa.tasks.polcalflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">polcalflag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.renorm.html#module-pipeline.hifa.tasks.renorm" title="pipeline.hifa.tasks.renorm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">renorm</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.restoredata.html#module-pipeline.hifa.tasks.restoredata" title="pipeline.hifa.tasks.restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">restoredata</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.sessionrefant.html#module-pipeline.hifa.tasks.sessionrefant" title="pipeline.hifa.tasks.sessionrefant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sessionrefant</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.html#module-pipeline.hifa.tasks.spwphaseup" title="pipeline.hifa.tasks.spwphaseup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spwphaseup</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.targetflag.html#module-pipeline.hifa.tasks.targetflag" title="pipeline.hifa.tasks.targetflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">targetflag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.tsysflag.html#module-pipeline.hifa.tasks.tsysflag" title="pipeline.hifa.tasks.tsysflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tsysflag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.tsysflag_contamination.html#module-pipeline.hifa.tasks.tsysflag_contamination" title="pipeline.hifa.tasks.tsysflag_contamination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tsysflag_contamination</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.unlock_refant.html#module-pipeline.hifa.tasks.unlock_refant" title="pipeline.hifa.tasks.unlock_refant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unlock_refant</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.wvrgcal.html#module-pipeline.hifa.tasks.wvrgcal" title="pipeline.hifa.tasks.wvrgcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wvrgcal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.wvrgcalflag.html#module-pipeline.hifa.tasks.wvrgcalflag" title="pipeline.hifa.tasks.wvrgcalflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wvrgcalflag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+pipeline.h.tasks.tsyscal.renderer
+=================================
+
+.. automodule:: pipeline.h.tasks.tsyscal.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      create_url_fn
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsTsyscalRenderer
+      TsysMapTR
+      TsysStat
+      TsyscalPlotRenderer
+   

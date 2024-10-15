@@ -1,0 +1,24 @@
+pipeline.hifa.tasks.wvrgcalflag
+===============================
+
+.. automodule:: pipeline.hifa.tasks.wvrgcalflag
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Wvrgcalflag
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   qa
+   renderer
+   resultobjects
+   wvrgcalflag
+   wvrgcalflagsetter

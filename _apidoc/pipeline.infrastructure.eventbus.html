@@ -1,0 +1,443 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.eventbus package &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.eventbus package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/pipeline.infrastructure.eventbus.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-infrastructure-eventbus-package">
+<h1>pipeline.infrastructure.eventbus package<a class="headerlink" href="#pipeline-infrastructure-eventbus-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pipeline.infrastructure.eventbus.eventbus">
+<span id="pipeline-infrastructure-eventbus-eventbus-module"></span><h2>pipeline.infrastructure.eventbus.eventbus module<a class="headerlink" href="#module-pipeline.infrastructure.eventbus.eventbus" title="Link to this heading"></a></h2>
+<p>The eventbus module defines the interface for publishing events and
+subscribing to events.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.eventbus.send_message">
+<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">E</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/eventbus.html#send_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.eventbus.send_message" title="Link to this definition"></a></dt>
+<dd><p>Publish an event.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.eventbus.subscribe">
+<span class="sig-name descname"><span class="pre">subscribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">E</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/eventbus.html#subscribe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.eventbus.subscribe" title="Link to this definition"></a></dt>
+<dd><p>Request callback when a lifecycle event on a topic is published.</p>
+<p>The subscribing function should accept a single Event argument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> – callback function</p></li>
+<li><p><strong>topic</strong> – event topic to match</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pipeline.infrastructure.eventbus.events">
+<span id="pipeline-infrastructure-eventbus-events-module"></span><h2>pipeline.infrastructure.eventbus.events module<a class="headerlink" href="#module-pipeline.infrastructure.eventbus.events" title="Link to this heading"></a></h2>
+<p>The events module contains classes representing various stages in the
+lifecycle of a pipeline reduction.</p>
+<p>Events are published on a topic. The implementing class defines at a minimum
+the event topic. The class may also define additional attributes identifying
+and/or describing the event. These extra metadata can be interpreted by the
+event listeners downstream.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.ContextCreatedEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ContextCreatedEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#ContextCreatedEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.ContextCreatedEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.ContextLifecycleEvent" title="pipeline.infrastructure.eventbus.events.ContextLifecycleEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContextLifecycleEvent</span></code></a></p>
+<p>Emitted when a pipeline Context is created.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.ContextCreatedEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.context.created'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.ContextCreatedEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.ContextLifecycleEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ContextLifecycleEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#ContextLifecycleEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.ContextLifecycleEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.Event" title="pipeline.infrastructure.eventbus.events.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+<p>Base class for events related to the lifecycle of the pipeline context.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.ContextLifecycleEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.context'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.ContextLifecycleEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.ContextResumedEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ContextResumedEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#ContextResumedEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.ContextResumedEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.ContextLifecycleEvent" title="pipeline.infrastructure.eventbus.events.ContextLifecycleEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContextLifecycleEvent</span></code></a></p>
+<p>Emitted when a pipeline Context is resumed.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.ContextResumedEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.context.resumed'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.ContextResumedEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.Event">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Event</span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#Event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.Event" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class inherited by all pipeline events.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.Event.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.Event.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.ResultAcceptErrorEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ResultAcceptErrorEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#ResultAcceptErrorEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.ResultAcceptErrorEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.TaskLifecycleEvent" title="pipeline.infrastructure.eventbus.events.TaskLifecycleEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TaskLifecycleEvent</span></code></a></p>
+<p>Emitted when Results acceptance fails due to error.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.ResultAcceptErrorEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.result.error'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.ResultAcceptErrorEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.ResultAcceptedEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ResultAcceptedEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#ResultAcceptedEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.ResultAcceptedEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.ResultLifecycleEvent" title="pipeline.infrastructure.eventbus.events.ResultLifecycleEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResultLifecycleEvent</span></code></a></p>
+<p>Emitted when a Result has been successfully incorporated into the Context.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.ResultAcceptedEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.result.accepted'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.ResultAcceptedEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.ResultAcceptingEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ResultAcceptingEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#ResultAcceptingEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.ResultAcceptingEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.ResultLifecycleEvent" title="pipeline.infrastructure.eventbus.events.ResultLifecycleEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResultLifecycleEvent</span></code></a></p>
+<p>Emitted when a Result is accepted into the Context.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.ResultAcceptingEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.result.accepting'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.ResultAcceptingEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.ResultLifecycleEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ResultLifecycleEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#ResultLifecycleEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.ResultLifecycleEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.Event" title="pipeline.infrastructure.eventbus.events.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+<p>Base class for events related to the acceptance of a pipeline Result.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.ResultLifecycleEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.result'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.ResultLifecycleEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.TaskAbnormalExitEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TaskAbnormalExitEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#TaskAbnormalExitEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.TaskAbnormalExitEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.TaskLifecycleEvent" title="pipeline.infrastructure.eventbus.events.TaskLifecycleEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TaskLifecycleEvent</span></code></a></p>
+<p>Emitted when a pipeline Task terminates due to an unexpected error.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.TaskAbnormalExitEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.task.aborted'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.TaskAbnormalExitEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.TaskCompleteEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TaskCompleteEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#TaskCompleteEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.TaskCompleteEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.TaskLifecycleEvent" title="pipeline.infrastructure.eventbus.events.TaskLifecycleEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TaskLifecycleEvent</span></code></a></p>
+<p>Emitted when a pipeline Task completes.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.TaskCompleteEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.task.complete'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.TaskCompleteEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.TaskLifecycleEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TaskLifecycleEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#TaskLifecycleEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.TaskLifecycleEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.Event" title="pipeline.infrastructure.eventbus.events.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+<p>Base class for events related to the pipeline task lifecycle.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.TaskLifecycleEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.task'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.TaskLifecycleEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.TaskStartedEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TaskStartedEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#TaskStartedEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.TaskStartedEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.TaskLifecycleEvent" title="pipeline.infrastructure.eventbus.events.TaskLifecycleEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TaskLifecycleEvent</span></code></a></p>
+<p>Emitted when a pipeline Task is started.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.TaskStartedEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.task.started'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.TaskStartedEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WebLogLifecycleEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#WebLogLifecycleEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.Event" title="pipeline.infrastructure.eventbus.events.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+<p>Base class for events related to weblog generation.</p>
+<p>This class represents the overall lifecycle encompassing generation of
+all weblog artifacts (all plots, all stages, etc.).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.weblog'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.WebLogRenderingCompleteEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WebLogRenderingCompleteEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#WebLogRenderingCompleteEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.WebLogRenderingCompleteEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent" title="pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebLogLifecycleEvent</span></code></a></p>
+<p>Emitted when weblog rendering ends.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.WebLogRenderingCompleteEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.weblog.rendering.complete'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.WebLogRenderingCompleteEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.WebLogRenderingStartedEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WebLogRenderingStartedEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#WebLogRenderingStartedEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.WebLogRenderingStartedEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent" title="pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebLogLifecycleEvent</span></code></a></p>
+<p>Emitted when weblog rendering begins.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.WebLogRenderingStartedEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.weblog.rendering.started'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.WebLogRenderingStartedEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.WebLogStageLifecycleEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WebLogStageLifecycleEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#WebLogStageLifecycleEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.WebLogStageLifecycleEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent" title="pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebLogLifecycleEvent</span></code></a></p>
+<p>Base class for events related to weblog rendering of a specific stage.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.WebLogStageLifecycleEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.weblog.stage'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.WebLogStageLifecycleEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.WebLogStageRenderingAbnormalExitEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WebLogStageRenderingAbnormalExitEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#WebLogStageRenderingAbnormalExitEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.WebLogStageRenderingAbnormalExitEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.WebLogStageLifecycleEvent" title="pipeline.infrastructure.eventbus.events.WebLogStageLifecycleEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebLogStageLifecycleEvent</span></code></a></p>
+<p>Emitted when stage rendering exits due to error.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.WebLogStageRenderingAbnormalExitEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.weblog.stage.rendering.aborted'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.WebLogStageRenderingAbnormalExitEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.WebLogStageRenderingCompleteEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WebLogStageRenderingCompleteEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#WebLogStageRenderingCompleteEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.WebLogStageRenderingCompleteEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.WebLogStageLifecycleEvent" title="pipeline.infrastructure.eventbus.events.WebLogStageLifecycleEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebLogStageLifecycleEvent</span></code></a></p>
+<p>Emitted when stage rendering ends.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.WebLogStageRenderingCompleteEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.weblog.stage.rendering.complete'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.WebLogStageRenderingCompleteEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.WebLogStageRenderingStartedEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WebLogStageRenderingStartedEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/eventbus/events.html#WebLogStageRenderingStartedEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.WebLogStageRenderingStartedEvent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.infrastructure.eventbus.events.WebLogStageLifecycleEvent" title="pipeline.infrastructure.eventbus.events.WebLogStageLifecycleEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebLogStageLifecycleEvent</span></code></a></p>
+<p>Emitted when stage rendering begins.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.eventbus.events.WebLogStageRenderingStartedEvent.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lifecycle.weblog.stage.rendering.started'</span></em><a class="headerlink" href="#pipeline.infrastructure.eventbus.events.WebLogStageRenderingStartedEvent.topic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.infrastructure.eventbus">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline.infrastructure.eventbus" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

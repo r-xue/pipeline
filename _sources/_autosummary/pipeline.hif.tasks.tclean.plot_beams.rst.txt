@@ -1,0 +1,12 @@
+pipeline.hif.tasks.tclean.plot\_beams
+=====================================
+
+.. automodule:: pipeline.hif.tasks.tclean.plot_beams
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      plot_beams
+   

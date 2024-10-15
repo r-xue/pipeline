@@ -1,0 +1,305 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dependencies of Pipeline &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pipeline.domain" href="basics.html" />
+    <link rel="prev" title="Run the Pipeline in a Conda environment" href="modular.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Dependencies of <cite>Pipeline</cite></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#runtime">Runtime</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#depdencies-for-casa6-functionaliies">Depdencies for CASA6 functionaliies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#additional-depdencies-required-by-pipeline">Additional Depdencies required by Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-dependencies">Optional Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#testing">Testing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#packaging">Packaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#development-tools">Development tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#documentation">Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unix-cmd">*unix-cmd</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Dependencies of <cite>Pipeline</cite></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/dependencies.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dependencies-of-pipeline">
+<h1>Dependencies of <cite>Pipeline</cite><a class="headerlink" href="#dependencies-of-pipeline" title="Link to this heading"></a></h1>
+<section id="runtime">
+<h2>Runtime<a class="headerlink" href="#runtime" title="Link to this heading"></a></h2>
+<section id="depdencies-for-casa6-functionaliies">
+<h3>Depdencies for CASA6 functionaliies<a class="headerlink" href="#depdencies-for-casa6-functionaliies" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE">Pipeline</a> is a Python-base package with CASA6 componnents as dependencies, therefore, it only operates limitated on the Python vesions and the platform supported by specific CASA versions (see the <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Compatibility">CASA6 compaibility matrix</a>) and others depdencies libraries specifically required by Pipeine  Please also check the OS/libraries compatibility and requirements for running CASA.</p>
+</div>
+<ul class="simple">
+<li><p>python3</p></li>
+<li><p>ipython</p></li>
+<li><p>pip</p></li>
+<li><p>numpy</p></li>
+<li><p>scipy</p></li>
+<li><p>matplotlib</p></li>
+<li><p>casatools</p></li>
+<li><p>casatasks</p></li>
+<li><p>casaplotms</p></li>
+<li><p>casampi</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><cite>casadata</cite> and <cite>almatasks</cite> is no longer required for <code class="docutils literal notranslate"><span class="pre">CASA6&gt;=6.6.1</span></code>. already bundled inside the CASA+Pipeline release/prerelease tarball. <cite>casaconfig</cite> is implictlye required by <cite>casatasks`</cite></p>
+</div>
+</section>
+<section id="additional-depdencies-required-by-pipeline">
+<h3>Additional Depdencies required by Pipeline<a class="headerlink" href="#additional-depdencies-required-by-pipeline" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul>
+<li><p>Python (see <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>)</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>cachetools</p></li>
+<li><p>mako</p></li>
+<li><p>pypubsub</p></li>
+<li><p>intervaltree</p></li>
+<li><p>logutils</p></li>
+<li><p>ps_mem</p></li>
+<li><p>astropy</p></li>
+<li><p>bdsf (for VLASS source detection &amp; mask creation)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>*unix-cmd</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>ImageMagick</p></li>
+<li><dl class="simple">
+<dt>the “convert” cmd:</dt><dd><ul>
+<li><p>Linux only for generating thumbnails; macOS uses “sips” which comes with OS.</p></li>
+<li><p>Also used by ImageMagickWriter from matplotlib.animation in hsd/tasks/common/rasterutil.py (only for developers)</p></li>
+<li><p>the “montage” cmd: required from hifa_renorm</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>poppler-utils</p></li>
+<li><p>the “pdfunite” cmd: required from hifa_renorm</p></li>
+<li><p>Git: for obtaining the Pipeline revision description string.</p></li>
+<li><p>Xvfb/xvfb-run: xvfb from OS is required for the casampi module, which is mandatory for running</p></li>
+<li><p>uncompress: used by tec_maps.py in CASA for VLA pipeline task hifv_priorcals</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+<section id="optional-dependencies">
+<h2>Optional Dependencies<a class="headerlink" href="#optional-dependencies" title="Link to this heading"></a></h2>
+<section id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>pytest</p></li>
+<li><p>…</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="packaging">
+<h3>Packaging<a class="headerlink" href="#packaging" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>wheel: for installing older Python packages</p></li>
+<li><p>csscompressor: minify CSS during installation</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="development-tools">
+<h3>Development tools<a class="headerlink" href="#development-tools" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>pydocs</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>sphinx</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="unix-cmd">
+<h3>*unix-cmd<a class="headerlink" href="#unix-cmd" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Git LFS: for managing the pipeline-testdata repo</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modular.html" class="btn btn-neutral float-left" title="Run the Pipeline in a Conda environment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="basics.html" class="btn btn-neutral float-right" title="pipeline.domain" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

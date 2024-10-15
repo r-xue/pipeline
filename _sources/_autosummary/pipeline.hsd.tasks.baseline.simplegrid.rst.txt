@@ -1,0 +1,22 @@
+pipeline.hsd.tasks.baseline.simplegrid
+======================================
+
+.. automodule:: pipeline.hsd.tasks.baseline.simplegrid
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      cos
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataTableIndexer
+      DataType
+      SDSimpleGridding
+      SDSimpleGriddingInputs
+      SDSimpleGriddingResults
+   

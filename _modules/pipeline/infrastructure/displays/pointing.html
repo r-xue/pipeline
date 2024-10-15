@@ -1,0 +1,1345 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.displays.pointing &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.displays.pointing</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.displays.pointing</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Pointing methods and classes.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">gc</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib.axes._axes</span> <span class="kn">import</span> <span class="n">Axes</span>
+<span class="kn">import</span> <span class="nn">matplotlib.figure</span> <span class="k">as</span> <span class="nn">figure</span>
+<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="p">(</span><span class="n">AutoLocator</span><span class="p">,</span> <span class="n">Formatter</span><span class="p">,</span> <span class="n">FuncFormatter</span><span class="p">,</span> <span class="n">Locator</span><span class="p">,</span>
+                               <span class="n">MultipleLocator</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">Antenna</span><span class="p">,</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.datatable</span> <span class="kn">import</span> <span class="n">DataTableImpl</span> <span class="k">as</span> <span class="n">DataTable</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.datatable</span> <span class="kn">import</span> <span class="n">OnlineFlagIndex</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.displays.plotstyle</span> <span class="kn">import</span> <span class="n">casa5style_plot</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.renderer.logger</span> <span class="kn">import</span> <span class="n">Plot</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">RArotation</span> <span class="o">=</span> <span class="mi">90</span>
+<span class="n">DECrotation</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">DPISummary</span> <span class="o">=</span> <span class="mi">90</span>
+
+<span class="n">dsyb</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$^\circ$&#39;</span>
+<span class="n">hsyb</span> <span class="o">=</span> <span class="s1">&#39;:&#39;</span>
+<span class="n">msyb</span> <span class="o">=</span> <span class="s1">&#39;:&#39;</span>
+
+
+<div class="viewcode-block" id="Deg2HMS">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.Deg2HMS">[docs]</a>
+<span class="k">def</span> <span class="nf">Deg2HMS</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">prec</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert an angle in degree to hour angle.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; Deg2HMS(20.123, prec=7)</span>
+<span class="sd">    [&#39;01&#39;, &#39;20&#39;, &#39;29.5&#39;]</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: An angle in degree.</span>
+<span class="sd">        prec: Significant digits.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        List of strings of hour, minute, and second values in a specified</span>
+<span class="sd">        precision.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">360</span>
+    <span class="n">cqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">),</span> <span class="n">prec</span><span class="o">=</span><span class="n">prec</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">angle</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="HHMM">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.HHMM">[docs]</a>
+<span class="k">def</span> <span class="nf">HHMM</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert an angle in degree to hour angle with HHMM format.</span>
+
+<span class="sd">    HHMM* function is used to set axis formatter of matplotlib plots.</span>
+<span class="sd">    The functions will be turned into matplotlib.ticker.FuncFormatter.</span>
+<span class="sd">    The function should take two inputs, a tick value x and position pos.</span>
+<span class="sd">    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; HHMM(20.123)</span>
+<span class="sd">    &#39;01:20&#39;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: An angle in degree.</span>
+<span class="sd">        pos: A position. Note, the parameter is ignored in this function.</span>
+<span class="sd">            Nevertheless it is necessary to have this parameter because of the</span>
+<span class="sd">            reason described in comment of the original code. HHMM* methods are</span>
+<span class="sd">            supposed to passed to matplotlib.ticker.FuncFormatter as the</span>
+<span class="sd">            parameter. The callable function passed to FuncFormatter must have</span>
+<span class="sd">            two input parameters, a tick value x and position pos. That is why</span>
+<span class="sd">            the parameter, &#39;pos&#39;, is defined in this method even though it is</span>
+<span class="sd">            not used in the function.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        formatted strings of hour, minute values.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="o">=</span> <span class="n">Deg2HMS</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s%s%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">hsyb</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">__format_hms</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">prec</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert an angle in degree to hour angle with hms format.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; __format_hms(10.123)</span>
+<span class="sd">    &#39;00:40:30&#39;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: An angle in degree.</span>
+<span class="sd">        prec: Significant digits.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        formatted strings of hour, minute, and second values in a specified</span>
+<span class="sd">        precision.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="o">=</span> <span class="n">Deg2HMS</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prec</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s%s%s%s%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">hsyb</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">msyb</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="HHMMSS">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.HHMMSS">[docs]</a>
+<span class="k">def</span> <span class="nf">HHMMSS</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert an angle in degree to hour angle with HHMMSS format.</span>
+
+<span class="sd">    HHMM* function is used to set axis formatter of matplotlib plots.</span>
+<span class="sd">    The functions will be turned into matplotlib.ticker.FuncFormatter.</span>
+<span class="sd">    The function should take two inputs, a tick value x and position pos.</span>
+<span class="sd">    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; HHMMSS(10.123)</span>
+<span class="sd">    &#39;00:40:30&#39;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: An angle in degree.</span>
+<span class="sd">        pos: A position. Note, the parameter is ignored in this function.</span>
+<span class="sd">            Nevertheless it is necessary to have this parameter because of the</span>
+<span class="sd">            reason described in comment of the original code. HHMM* methods are</span>
+<span class="sd">            supposed to passed to matplotlib.ticker.FuncFormatter as the</span>
+<span class="sd">            parameter. The callable function passed to FuncFormatter must have</span>
+<span class="sd">            two input parameters, a tick value x and position pos. That is why</span>
+<span class="sd">            the parameter, &#39;pos&#39;, is defined in this method even though it is</span>
+<span class="sd">            not used in the function.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        formatted strings of hour, minute, and second values in a specified</span>
+<span class="sd">        precision.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">__format_hms</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="HHMMSSs">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.HHMMSSs">[docs]</a>
+<span class="k">def</span> <span class="nf">HHMMSSs</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert an angle in degree to hour angle with HHMMSSs format.</span>
+
+<span class="sd">    HHMM* function is used to set axis formatter of matplotlib plots.</span>
+<span class="sd">    The functions will be turned into matplotlib.ticker.FuncFormatter.</span>
+<span class="sd">    The function should take two inputs, a tick value x and position pos.</span>
+<span class="sd">    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; HHMMSSs(10.123)</span>
+<span class="sd">    &#39;00:40:29.5&#39;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: An angle in degree.</span>
+<span class="sd">        pos: A position. Note, the parameter is ignored in this function.</span>
+<span class="sd">            Nevertheless it is necessary to have this parameter because of the</span>
+<span class="sd">            reason described in comment of the original code. HHMM* methods are</span>
+<span class="sd">            supposed to passed to matplotlib.ticker.FuncFormatter as the</span>
+<span class="sd">            parameter. The callable function passed to FuncFormatter must have</span>
+<span class="sd">            two input parameters, a tick value x and position pos. That is why</span>
+<span class="sd">            the parameter, &#39;pos&#39;, is defined in this method even though it is</span>
+<span class="sd">            not used in the function.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        formatted strings of hour, minute, and second values in a specified</span>
+<span class="sd">        precision.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">__format_hms</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="HHMMSSss">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.HHMMSSss">[docs]</a>
+<span class="k">def</span> <span class="nf">HHMMSSss</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert an angle in degree to hour angle with HHMMSSss format.</span>
+
+<span class="sd">    HHMM* function is used to set axis formatter of matplotlib plots.</span>
+<span class="sd">    The functions will be turned into matplotlib.ticker.FuncFormatter.</span>
+<span class="sd">    The function should take two inputs, a tick value x and position pos.</span>
+<span class="sd">    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; HHMMSSss(10.123)</span>
+<span class="sd">    &#39;00:40:29.52&#39;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: An angle in degree.</span>
+<span class="sd">        pos: A position. Note, the parameter is ignored in this function.</span>
+<span class="sd">            Nevertheless it is necessary to have this parameter because of the</span>
+<span class="sd">            reason described in comment of the original code. HHMM* methods are</span>
+<span class="sd">            supposed to passed to matplotlib.ticker.FuncFormatter as the</span>
+<span class="sd">            parameter. The callable function passed to FuncFormatter must have</span>
+<span class="sd">            two input parameters, a tick value x and position pos. That is why</span>
+<span class="sd">            the parameter, &#39;pos&#39;, is defined in this method even though it is</span>
+<span class="sd">            not used in the function.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        formatted strings of hour, minute, and second values in a specified</span>
+<span class="sd">        precision.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">__format_hms</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="HHMMSSsss">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.HHMMSSsss">[docs]</a>
+<span class="k">def</span> <span class="nf">HHMMSSsss</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert an angle in degree to hour angle with HHMMSSsss format.</span>
+
+<span class="sd">    HHMM* function is used to set axis formatter of matplotlib plots.</span>
+<span class="sd">    The functions will be turned into matplotlib.ticker.FuncFormatter.</span>
+<span class="sd">    The function should take two inputs, a tick value x and position pos.</span>
+<span class="sd">    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; HHMMSSsss(10.123)</span>
+<span class="sd">    &#39;00:40:29.520&#39;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: An angle in degree.</span>
+<span class="sd">        pos: A position. Note, the parameter is ignored in this function.</span>
+<span class="sd">            Nevertheless it is necessary to have this parameter because of the</span>
+<span class="sd">            reason described in comment of the original code. HHMM* methods are</span>
+<span class="sd">            supposed to passed to matplotlib.ticker.FuncFormatter as the</span>
+<span class="sd">            parameter. The callable function passed to FuncFormatter must have</span>
+<span class="sd">            two input parameters, a tick value x and position pos. That is why</span>
+<span class="sd">            the parameter, &#39;pos&#39;, is defined in this method even though it is</span>
+<span class="sd">            not used in the function.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        formatted strings of hour, minute, and second values in a specified</span>
+<span class="sd">        precision.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">__format_hms</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Deg2DMS">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.Deg2DMS">[docs]</a>
+<span class="k">def</span> <span class="nf">Deg2DMS</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">prec</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert an angle in degree to dms angle (ddmmss.s).</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; Deg2DMS(&#39;+01.02.23.4&#39;, prec=1)</span>
+<span class="sd">    [&#39;+01&#39;, &#39;02&#39;, &#39;23.4&#39;]</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: An angle in degree. Degree string is always associated with a sign.</span>
+<span class="sd">        prec: Significant digits.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        A list of strings of degree, arcminute, and arcsecond values in a</span>
+<span class="sd">        specified precision.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xxx</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">90</span><span class="p">)</span> <span class="o">%</span> <span class="mi">180</span> <span class="o">-</span> <span class="mi">90</span>
+    <span class="n">xx</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">xxx</span><span class="p">)</span>
+    <span class="n">sign</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span> <span class="k">if</span> <span class="n">xxx</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;+&#39;</span>
+    <span class="n">cqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+    <span class="n">dms_angle</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">),</span> <span class="n">prec</span><span class="o">=</span><span class="n">prec</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">seg</span> <span class="o">=</span> <span class="n">dms_angle</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">seg</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">seg</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="c1"># force degree in %02d format and add sign. qa.angle always retrun positive angle</span>
+    <span class="n">seg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span> <span class="s1">&#39;</span><span class="si">%s%02d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sign</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]))</span> <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">seg</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">seg</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="mi">2</span><span class="p">:]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">seg</span></div>
+
+
+
+<div class="viewcode-block" id="DDMM">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.DDMM">[docs]</a>
+<span class="k">def</span> <span class="nf">DDMM</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert an angle in degree to dms angle with DDMM format.</span>
+
+<span class="sd">    DDMM* function is used to set axis formatter of matplotlib plots.</span>
+<span class="sd">    The functions will be turned into matplotlib.ticker.FuncFormatter.</span>
+<span class="sd">    The function should take two inputs, a tick value x and position pos.</span>
+<span class="sd">    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; Deg2DMS(10.123)</span>
+<span class="sd">    &quot;+10$^\\circ$07&#39;&quot;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: An angle in degree.</span>
+<span class="sd">        pos: A position. Note, the parameter is ignored in this function.</span>
+<span class="sd">            Nevertheless it is necessary to have this parameter because of the</span>
+<span class="sd">            reason described in comment of the original code. DDMM* methods are</span>
+<span class="sd">            supposed to passed to matplotlib.ticker.FuncFormatter as the</span>
+<span class="sd">            parameter. The callable function passed to FuncFormatter must have</span>
+<span class="sd">            two input parameters, a tick value x and position pos. That is why</span>
+<span class="sd">            the parameter, &#39;pos&#39;, is defined in this method even though it is</span>
+<span class="sd">            not used in the function.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        A dms angle with DDMM format.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="o">=</span> <span class="n">Deg2DMS</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s%s%s</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">dsyb</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">__format_dms</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">prec</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert an angle in degree to dms angle in specified precision.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; __format_dms(10.123)</span>
+<span class="sd">    &#39;+10$^\\circ$07\&#39;23&quot;&#39;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: An angle in degree. Degree string is always associated with a sign.</span>
+<span class="sd">        prec: Significant digits.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        String of degree, arcminute, and arcsecond values in a</span>
+<span class="sd">        specified precision.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="o">=</span> <span class="n">Deg2DMS</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prec</span><span class="p">)</span>
+    <span class="c1"># format desimal part of arcsec value separately</span>
+    <span class="n">xx</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">xx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ss</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xx</span><span class="p">)</span> <span class="o">==</span><span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;.</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">xx</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s%s%s</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">dsyb</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">ss</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DDMMSS">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.DDMMSS">[docs]</a>
+<span class="k">def</span> <span class="nf">DDMMSS</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert an angle in degree to dms angle with DDMMSS.</span>
+
+<span class="sd">    DDMM* function is used to set axis formatter of matplotlib plots.</span>
+<span class="sd">    The functions will be turned into matplotlib.ticker.FuncFormatter.</span>
+<span class="sd">    The function should take two inputs, a tick value x and position pos.</span>
+<span class="sd">    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; DDMMSS(10.123)</span>
+<span class="sd">    &#39;+10$^\\circ$07\&#39;23&quot;&#39;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: An angle in degree. Degree string is always associated with a sign.</span>
+<span class="sd">        pos: A position. Note, the parameter is ignored in this function.</span>
+<span class="sd">            Nevertheless it is necessary to have this parameter because of the</span>
+<span class="sd">            reason described in comment of the original code. DDMM* methods are</span>
+<span class="sd">            supposed to passed to matplotlib.ticker.FuncFormatter as the</span>
+<span class="sd">            parameter. The callable function passed to FuncFormatter must have</span>
+<span class="sd">            two input parameters, a tick value x and position pos. That is why</span>
+<span class="sd">            the parameter, &#39;pos&#39;, is defined in this method even though it is</span>
+<span class="sd">            not used in the function.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        String of degree, arcminute, and arcsecond values with DDMMSS.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">__format_dms</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DDMMSSs">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.DDMMSSs">[docs]</a>
+<span class="k">def</span> <span class="nf">DDMMSSs</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert an angle in degree to dms angle with DDMMSSs.</span>
+
+<span class="sd">    DDMM* function is used to set axis formatter of matplotlib plots.</span>
+<span class="sd">    The functions will be turned into matplotlib.ticker.FuncFormatter.</span>
+<span class="sd">    The function should take two inputs, a tick value x and position pos.</span>
+<span class="sd">    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; DDMMSSs(10.123)</span>
+<span class="sd">    &#39;+10$^\\circ$07\&#39;22&quot;.8&#39;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: An angle in degree. Degree string is always associated with a sign.</span>
+<span class="sd">        pos: A position. Note, the parameter is ignored in this function.</span>
+<span class="sd">            Nevertheless it is necessary to have this parameter because of the</span>
+<span class="sd">            reason described in comment of the original code. DDMM* methods are</span>
+<span class="sd">            supposed to passed to matplotlib.ticker.FuncFormatter as the</span>
+<span class="sd">            parameter. The callable function passed to FuncFormatter must have</span>
+<span class="sd">            two input parameters, a tick value x and position pos. That is why</span>
+<span class="sd">            the parameter, &#39;pos&#39;, is defined in this method even though it is</span>
+<span class="sd">            not used in the function.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        String of degree, arcminute, and arcsecond values with DDMMSSs.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">__format_dms</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="DDMMSSss">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.DDMMSSss">[docs]</a>
+<span class="k">def</span> <span class="nf">DDMMSSss</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert an angle in degree to dms angle with DDMMSSss.</span>
+
+<span class="sd">    DDMM* function is used to set axis formatter of matplotlib plots.</span>
+<span class="sd">    The functions will be turned into matplotlib.ticker.FuncFormatter.</span>
+<span class="sd">    The function should take two inputs, a tick value x and position pos.</span>
+<span class="sd">    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; DDMMSSss(10.123)</span>
+<span class="sd">    &#39;+10$^\\circ$07\&#39;22&quot;.80&#39;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: An angle in degree. Degree string is always associated with a sign.</span>
+<span class="sd">        pos: A position. Note, the parameter is ignored in this function.</span>
+<span class="sd">            Nevertheless it is necessary to have this parameter because of the</span>
+<span class="sd">            reason described in comment of the original code. DDMM* methods are</span>
+<span class="sd">            supposed to passed to matplotlib.ticker.FuncFormatter as the</span>
+<span class="sd">            parameter. The callable function passed to FuncFormatter must have</span>
+<span class="sd">            two input parameters, a tick value x and position pos. That is why</span>
+<span class="sd">            the parameter, &#39;pos&#39;, is defined in this method even though it is</span>
+<span class="sd">            not used in the function.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        String of degree, arcminute, and arcsecond values with DDMMSSss.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">__format_dms</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="GLGBlabel">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.GLGBlabel">[docs]</a>
+<span class="k">def</span> <span class="nf">GLGBlabel</span><span class="p">(</span><span class="n">span</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">MultipleLocator</span><span class="p">,</span> <span class="n">MultipleLocator</span><span class="p">,</span> <span class="n">FuncFormatter</span><span class="p">,</span> <span class="n">FuncFormatter</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create x- and y-axis formatters of plots suitable for a map in galactic coordinate.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        span: The span of map axes in the unit of degrees. Both horizontal and</span>
+<span class="sd">            vertical axes are formatted using this value.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        (GLlocator, GBlocator, GLformatter, GBformatter) for Galactic coordinate</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># RAtick = [15.0, 5.0, 2.5, 1.25, 1/2.0, 1/4.0, 1/12.0, 1/24.0, 1/48.0, 1/120.0, 1/240.0, 1/480.0, 1/1200.0,</span>
+    <span class="c1">#           1/2400.0, 1/4800.0, 1/12000.0, 1/24000.0, 1/48000.0, -1.0]</span>
+    <span class="n">XYtick</span> <span class="o">=</span> <span class="p">[</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">3.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">6.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">12.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">30.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">60.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">180.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">360.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">720.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">1800.0</span><span class="p">,</span>
+              <span class="mi">1</span><span class="o">/</span><span class="mf">3600.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">7200.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">18000.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">36000.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">]</span>
+    <span class="c1">#for RAt in RAtick:</span>
+    <span class="c1">#    if span &gt; (RAt * 3.0) and RAt &gt; 0:</span>
+    <span class="c1">#        RAlocator = MultipleLocator(RAt)</span>
+    <span class="c1">#        break</span>
+    <span class="c1">#if RAt &lt; 0: RAlocator = MultipleLocator(1/96000.)</span>
+    <span class="c1">#if RAt &lt; 0: RAlocator = AutoLocator()</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">XYtick</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">span</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="mf">3.0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">GLlocator</span> <span class="o">=</span> <span class="n">MultipleLocator</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="n">GBlocator</span> <span class="o">=</span> <span class="n">MultipleLocator</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="k">break</span>
+    <span class="c1">#if DECt &lt; 0: DEClocator = MultipleLocator(1/72000.0)</span>
+    <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">GLlocator</span> <span class="o">=</span> <span class="n">AutoLocator</span><span class="p">()</span>
+        <span class="n">GBlocator</span> <span class="o">=</span> <span class="n">AutoLocator</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">span</span> <span class="o">&lt;</span> <span class="mf">0.0001</span><span class="p">:</span>
+        <span class="n">GLformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSSss</span><span class="p">)</span>
+        <span class="n">GBformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSSss</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">span</span> <span class="o">&lt;</span> <span class="mf">0.001</span><span class="p">:</span>
+        <span class="n">GLformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSSs</span><span class="p">)</span>
+        <span class="n">GBformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSSs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">span</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>
+        <span class="n">GLformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSS</span><span class="p">)</span>
+        <span class="n">GBformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSS</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">span</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="n">GLformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSS</span><span class="p">)</span>
+        <span class="c1">#GBformatter=FuncFormatter(DDMM)</span>
+        <span class="n">GBformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSS</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">GLformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMM</span><span class="p">)</span>
+        <span class="n">GBformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMM</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">GLlocator</span><span class="p">,</span> <span class="n">GBlocator</span><span class="p">,</span> <span class="n">GLformatter</span><span class="p">,</span> <span class="n">GBformatter</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="RADEClabel">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.RADEClabel">[docs]</a>
+<span class="k">def</span> <span class="nf">RADEClabel</span><span class="p">(</span><span class="n">span</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">ofs_coord</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">MultipleLocator</span><span class="p">,</span> <span class="n">MultipleLocator</span><span class="p">,</span> <span class="n">FuncFormatter</span><span class="p">,</span> <span class="n">FuncFormatter</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create x- and y-axis formatters of plots suitable for a map in general R.A. and Dec. coordinate.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        span: The span of map axes in the unit of degrees. Both horizontal and</span>
+<span class="sd">            vertical axes are formatted using this value.</span>
+<span class="sd">        ofs_coord: Format of right ascension (R.A.) labels. If True, labels will</span>
+<span class="sd">            be in degree (DMS). Otherwise, it will be in hour angle (HMS).</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        (RAlocator, DEClocator, RAformatter, DECformatter)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">RAtick</span> <span class="o">=</span> <span class="p">[</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">4.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">12.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">24.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">48.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">120.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">240.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">480.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">1200.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">2400.0</span><span class="p">,</span>
+              <span class="mi">1</span><span class="o">/</span><span class="mf">4800.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">12000.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">24000.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">48000.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">]</span>
+    <span class="n">DECtick</span> <span class="o">=</span> <span class="p">[</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">3.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">6.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">12.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">30.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">60.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">180.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">360.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">720.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">1800.0</span><span class="p">,</span>
+               <span class="mi">1</span><span class="o">/</span><span class="mf">3600.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">7200.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">18000.0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mf">36000.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">RAt</span> <span class="ow">in</span> <span class="n">RAtick</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">span</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">RAt</span> <span class="o">*</span> <span class="mf">3.0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">RAt</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">RAlocator</span> <span class="o">=</span> <span class="n">MultipleLocator</span><span class="p">(</span><span class="n">RAt</span><span class="p">)</span>
+            <span class="k">break</span>
+    <span class="c1">#if RAt &lt; 0: RAlocator = MultipleLocator(1/96000.)</span>
+    <span class="k">if</span> <span class="n">RAt</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">RAlocator</span> <span class="o">=</span> <span class="n">AutoLocator</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">DECt</span> <span class="ow">in</span> <span class="n">DECtick</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">span</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">DECt</span> <span class="o">*</span> <span class="mf">3.0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">DECt</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">DEClocator</span> <span class="o">=</span> <span class="n">MultipleLocator</span><span class="p">(</span><span class="n">DECt</span><span class="p">)</span>
+            <span class="k">break</span>
+    <span class="c1">#if DECt &lt; 0: DEClocator = MultipleLocator(1/72000.0)</span>
+    <span class="k">if</span> <span class="n">DECt</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">DEClocator</span> <span class="o">=</span> <span class="n">AutoLocator</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">span</span> <span class="o">&lt;</span> <span class="mf">0.0001</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ofs_coord</span><span class="p">:</span>
+            <span class="n">RAformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSSss</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">RAformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">HHMMSSsss</span><span class="p">)</span>
+        <span class="n">DECformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSSss</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">span</span> <span class="o">&lt;</span> <span class="mf">0.001</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ofs_coord</span><span class="p">:</span>
+            <span class="n">RAformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSSs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">RAformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">HHMMSSss</span><span class="p">)</span>
+        <span class="n">DECformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSSs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">span</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ofs_coord</span><span class="p">:</span>
+            <span class="n">RAformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSS</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">RAformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">HHMMSSs</span><span class="p">)</span>
+        <span class="n">DECformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSS</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">span</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ofs_coord</span><span class="p">:</span>
+            <span class="n">RAformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSS</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">RAformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">HHMMSS</span><span class="p">)</span>
+        <span class="c1">#DECformatter=FuncFormatter(DDMM)</span>
+        <span class="n">DECformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMMSS</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ofs_coord</span><span class="p">:</span>
+            <span class="n">RAformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMM</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">RAformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">HHMM</span><span class="p">)</span>
+        <span class="n">DECformatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">DDMM</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">RAlocator</span><span class="p">,</span> <span class="n">DEClocator</span><span class="p">,</span> <span class="n">RAformatter</span><span class="p">,</span> <span class="n">DECformatter</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="XYlabel">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.XYlabel">[docs]</a>
+<span class="k">def</span> <span class="nf">XYlabel</span><span class="p">(</span><span class="n">span</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">direction_reference</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ofs_coord</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">GLGBlabel</span><span class="p">,</span> <span class="n">RADEClabel</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create labels for the x- and y-axes in plot.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        span: The span of map axes in the unit of degrees. Both horizontal and</span>
+<span class="sd">            vertical axes are formatted using this value.</span>
+<span class="sd">        direction_reference: The direction reference (e.g., &#39;J2000&#39;)</span>
+<span class="sd">        ofs_coord: Format of right ascension (R.A.) labels. If True, labels will</span>
+<span class="sd">            be in degree (DMS). Otherwise, it will be in hour angle (HMS). The</span>
+<span class="sd">            parameter is ignored if direction_reference is &#39;GALACTIC&#39;. The right</span>
+<span class="sd">            ascension is always in DMS in that case.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        labels for the x- and y-axes in plot.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">direction_reference</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;GALACTIC&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">GLGBlabel</span><span class="p">(</span><span class="n">span</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RADEClabel</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="n">ofs_coord</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MapAxesManagerBase">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.MapAxesManagerBase">[docs]</a>
+<span class="k">class</span> <span class="nc">MapAxesManagerBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for MapAxesManager classes.</span>
+
+<span class="sd">    Holds information to construct direction coordinates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">direction_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return direction reference frame.</span>
+
+<span class="sd">        String representing direction reference frame, such as</span>
+<span class="sd">        J2000, ICRS, or GALACTIC, is returned. In practice, any</span>
+<span class="sd">        string set by the user can be returned. It means that</span>
+<span class="sd">        it is user&#39;s responsibility to check the validity of the</span>
+<span class="sd">        returned value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Direction reference string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_direction_reference</span>
+
+    <span class="nd">@direction_reference</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">direction_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set direction reference string.</span>
+
+<span class="sd">        Note that the method just accept given string</span>
+<span class="sd">        without any validity check.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: direction reference string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_direction_reference</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ofs_coord</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the plot is in offset coordinate.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if offset coordinate else False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ofs_coord</span>
+
+    <span class="nd">@ofs_coord</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">ofs_coord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Turn on/off offset coordinate mode.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: Turn on (True) or off (False)</span>
+<span class="sd">                          offset coordinate mode.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ofs_coord</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_direction_reference</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ofs_coord</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="MapAxesManagerBase.get_axes_labels">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.MapAxesManagerBase.get_axes_labels">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_axes_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get direction coordinate axes labels.</span>
+
+<span class="sd">        If direction reference is either J2000 or ICRS, returned</span>
+<span class="sd">        labels are &#39;RA (REF)&#39; and &#39;Dec (REF)&#39; where REF is</span>
+<span class="sd">        direction reference string (J2000 or ICRS). In offset</span>
+<span class="sd">        coordinate mode, labels are prefixed with &#39;Offset-&#39;.</span>
+<span class="sd">        If direction reference is GALACTIC, labels will be</span>
+<span class="sd">        &#39;GL&#39; and &#39;GB&#39;. Otherwise, labels are &#39;RA&#39; and &#39;Dec&#39;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            xlabel: xlabel in plot. Default is &#39;RA&#39;.</span>
+<span class="sd">            ylabel: ylabel in plot. Default is &#39;Dec&#39;.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># default label is RA/Dec</span>
+        <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;RA&#39;</span>
+        <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;Dec&#39;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_reference</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction_reference</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;J2000&#39;</span><span class="p">,</span> <span class="s1">&#39;ICRS&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ofs_coord</span><span class="p">:</span>
+                    <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;Offset-RA (</span><span class="si">{0}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_reference</span><span class="p">)</span>
+                    <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;Offset-Dec (</span><span class="si">{0}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_reference</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;RA (</span><span class="si">{0}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_reference</span><span class="p">)</span>
+                    <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;Dec (</span><span class="si">{0}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_reference</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction_reference</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;GALACTIC&#39;</span><span class="p">:</span>
+                <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;GL&#39;</span>
+                <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;GB&#39;</span>
+        <span class="k">return</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PointingAxesManager">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.PointingAxesManager">[docs]</a>
+<span class="k">class</span> <span class="nc">PointingAxesManager</span><span class="p">(</span><span class="n">MapAxesManagerBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates and manages Axes instance for pointing plot.</span>
+
+<span class="sd">    PointingAxesManager creates and manages matplotlib.axes.Axes</span>
+<span class="sd">    instance for pointing plot.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MATPLOTLIB_FIGURE_ID</span> <span class="o">=</span> <span class="mi">9005</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_initialized</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_direction_reference</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ofs_coord</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="PointingAxesManager.init_axes">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.PointingAxesManager.init_axes">[docs]</a>
+    <span class="k">def</span> <span class="nf">init_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                  <span class="n">fig</span><span class="p">,</span>
+                  <span class="n">xlocator</span><span class="p">:</span> <span class="n">Locator</span><span class="p">,</span> <span class="n">ylocator</span><span class="p">:</span> <span class="n">Locator</span><span class="p">,</span>
+                  <span class="n">xformatter</span><span class="p">:</span> <span class="n">Formatter</span><span class="p">,</span> <span class="n">yformatter</span><span class="p">:</span> <span class="n">Formatter</span><span class="p">,</span>
+                  <span class="n">xrotation</span><span class="p">:</span> <span class="n">Integral</span><span class="p">,</span> <span class="n">yrotation</span><span class="p">:</span> <span class="n">Integral</span><span class="p">,</span>
+                  <span class="n">aspect</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Integral</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+                  <span class="n">xlim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Integral</span><span class="p">,</span> <span class="n">Integral</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">ylim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Integral</span><span class="p">,</span> <span class="n">Integral</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">reset</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize matplotlib.axes.Axes instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fig: Figure object of matplotlib</span>
+<span class="sd">            xlocator: Locator instance for x-axis</span>
+<span class="sd">            ylocator: Locator instance for y-axis</span>
+<span class="sd">            xformatter: Formatter instance for x-axis</span>
+<span class="sd">            yformatter: Formatter instance for y-axis</span>
+<span class="sd">            xrotation: Rotation angle of x-axis label</span>
+<span class="sd">            yrotation: Rotation angle of y-axis label</span>
+<span class="sd">            aspect: Aspect ratio for the Axes. Acceptabe values</span>
+<span class="sd">                    are number (float or int) or &#39;auto&#39; or &#39;equal&#39;</span>
+<span class="sd">            xlim: Range of x-axis</span>
+<span class="sd">            ylim: Range of y-axis</span>
+<span class="sd">            reset: Reset Axes instance or not. It means that all</span>
+<span class="sd">                   the above parameters are applied only when</span>
+<span class="sd">                   reset is True or when the method is called</span>
+<span class="sd">                   for the first time.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">figure</span> <span class="o">=</span> <span class="n">fig</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__axes</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">xlim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xlim</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ylim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ylim</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_initialized</span> <span class="ow">or</span> <span class="n">reset</span><span class="p">:</span>
+            <span class="c1"># 2008/9/20 DEC Effect</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="n">aspect</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">xformatter</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">yformatter</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">xlocator</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ylocator</span><span class="p">)</span>
+            <span class="n">xlabels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">xlabels</span><span class="p">:</span>
+                <span class="n">label</span><span class="o">.</span><span class="n">set_rotation</span><span class="p">(</span><span class="n">xrotation</span><span class="p">)</span>
+                <span class="n">label</span><span class="o">.</span><span class="n">set_fontsize</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+            <span class="n">ylabels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ylabels</span><span class="p">:</span>
+                <span class="n">label</span><span class="o">.</span><span class="n">set_rotation</span><span class="p">(</span><span class="n">yrotation</span><span class="p">)</span>
+                <span class="n">label</span><span class="o">.</span><span class="n">set_fontsize</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">axes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Axes</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Direct access to Axes instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Axes: Axes instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__axes</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span>
+
+    <span class="k">def</span> <span class="nf">__axes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Axes</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create Axes instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Axes: Axes instance created by the method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>
+        <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_axes_labels</span><span class="p">()</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">axes</span></div>
+
+
+
+<div class="viewcode-block" id="draw_beam">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.draw_beam">[docs]</a>
+<span class="k">def</span> <span class="nf">draw_beam</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">aspect</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">x_base</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y_base</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+              <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draw circle indicating beam size.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        axes: Axes instance of the current axes.</span>
+<span class="sd">        r: Radius of the circle.</span>
+<span class="sd">        aspect: Aspect ratio of the circle.</span>
+<span class="sd">        x_base: X-axis coordinate of the center.</span>
+<span class="sd">        y_base: Y-axis coordinate of the center.</span>
+<span class="sd">        offset: Offset from the center specified by (x_base, y_base)</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Line2D: matplotlib.lines.Line2D instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="mf">0.13</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span> <span class="o">*</span> <span class="n">aspect</span> <span class="o">+</span> <span class="n">x_base</span><span class="p">,</span>
+                    <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="mf">0.13</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span> <span class="o">+</span> <span class="n">y_base</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">)])</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xy</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">xy</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;r-&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="draw_pointing">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.draw_pointing">[docs]</a>
+<span class="k">def</span> <span class="nf">draw_pointing</span><span class="p">(</span><span class="n">axes_manager</span><span class="p">:</span> <span class="n">PointingAxesManager</span><span class="p">,</span>
+                  <span class="n">RA</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                  <span class="n">DEC</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                  <span class="n">FLAG</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">plotfile</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">connect</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                  <span class="n">circle</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span><span class="o">=</span><span class="p">[],</span>
+                  <span class="n">ObsPattern</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">plotpolicy</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span>
+                  <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draw pointing plots using matplotlib, export the plots and delete the matplotlib objects.</span>
+
+<span class="sd">    Flags are taken into account according to the policy specified by plotpolicy. Options are,</span>
+
+<span class="sd">      - &#39;plot&#39;: plot all the data regardless of they are flagged or not</span>
+<span class="sd">      - &#39;ignore&#39;: do not plot flagged points</span>
+<span class="sd">      - &#39;greyed&#39;: plot flagged points with different color (grey)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        axes_manager: PointingAxesManager instance.</span>
+<span class="sd">        RA: List of horizontal (longitude) coordinate values.</span>
+<span class="sd">        DEC: List of vertical (latitude) coordinate values.</span>
+<span class="sd">        FLAG: List of flags. 1 is valid while 0 is invalid.</span>
+<span class="sd">        plotfile: A file path. If no path is provided, plot is not exported.</span>
+<span class="sd">        connect: Connect points by line or not.</span>
+<span class="sd">        circle: List of radius of the beam. Only first value is used.</span>
+<span class="sd">        ObsPattern: Observing pattern string. It is included in the plot title.</span>
+<span class="sd">                    If no string is provided, title is constructed without</span>
+<span class="sd">                    observing pattern.</span>
+<span class="sd">        plotpolicy: Policy to handle FLAG. The plotpolicy can be any one of</span>
+<span class="sd">                    &#39;plot&#39;, &#39;ignore&#39; or &#39;greyed&#39;.</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError if invalid plotpolicy is received</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">plotfile</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">span</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">RA</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">RA</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">DEC</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">DEC</span><span class="p">))</span>
+    <span class="n">xmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">RA</span><span class="p">)</span> <span class="o">-</span> <span class="n">span</span> <span class="o">/</span> <span class="mf">10.0</span>
+    <span class="n">xmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">RA</span><span class="p">)</span> <span class="o">+</span> <span class="n">span</span> <span class="o">/</span> <span class="mf">10.0</span>
+    <span class="n">ymax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">DEC</span><span class="p">)</span> <span class="o">+</span> <span class="n">span</span> <span class="o">/</span> <span class="mf">10.0</span>
+    <span class="n">ymin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">DEC</span><span class="p">)</span> <span class="o">-</span> <span class="n">span</span> <span class="o">/</span> <span class="mf">10.0</span>
+    <span class="p">(</span><span class="n">RAlocator</span><span class="p">,</span> <span class="n">DEClocator</span><span class="p">,</span> <span class="n">RAformatter</span><span class="p">,</span> <span class="n">DECformatter</span><span class="p">)</span> <span class="o">=</span> <span class="n">XYlabel</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="n">axes_manager</span><span class="o">.</span><span class="n">direction_reference</span><span class="p">,</span> <span class="n">ofs_coord</span><span class="o">=</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">ofs_coord</span><span class="p">)</span>
+
+    <span class="n">aspect</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">DEC</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="c1"># Plotting routine</span>
+    <span class="k">if</span> <span class="n">connect</span><span class="p">:</span>
+        <span class="n">Mark</span> <span class="o">=</span> <span class="s1">&#39;g-o&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">Mark</span> <span class="o">=</span> <span class="s1">&#39;bo&#39;</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+    <span class="n">axes_manager</span><span class="o">.</span><span class="n">init_axes</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span>
+                           <span class="n">RAlocator</span><span class="p">,</span> <span class="n">DEClocator</span><span class="p">,</span>
+                           <span class="n">RAformatter</span><span class="p">,</span> <span class="n">DECformatter</span><span class="p">,</span>
+                           <span class="n">RArotation</span><span class="p">,</span> <span class="n">DECrotation</span><span class="p">,</span>
+                           <span class="n">aspect</span><span class="p">,</span>
+                           <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">),</span>
+                           <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">))</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">axes_manager</span><span class="o">.</span><span class="n">figure</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">axes_manager</span><span class="o">.</span><span class="n">axes</span>
+
+    <span class="k">if</span> <span class="n">ObsPattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="s1">&#39;Telescope Pointing on the Sky&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="s1">&#39;Telescope Pointing on the Sky</span><span class="se">\n</span><span class="s1">Pointing Pattern = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">ObsPattern</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">plotpolicy</span> <span class="o">==</span> <span class="s1">&#39;plot&#39;</span><span class="p">:</span>
+        <span class="c1"># Original</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">RA</span><span class="p">,</span> <span class="n">DEC</span><span class="p">,</span> <span class="n">Mark</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">plotpolicy</span> <span class="o">==</span> <span class="s1">&#39;ignore&#39;</span><span class="p">:</span>
+        <span class="c1"># Ignore Flagged Data</span>
+        <span class="nb">filter</span> <span class="o">=</span> <span class="n">FLAG</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">RA</span><span class="p">[</span><span class="nb">filter</span><span class="p">],</span> <span class="n">DEC</span><span class="p">[</span><span class="nb">filter</span><span class="p">],</span> <span class="n">Mark</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">plotpolicy</span> <span class="o">==</span> <span class="s1">&#39;greyed&#39;</span><span class="p">:</span>
+        <span class="c1"># Change Color</span>
+        <span class="k">if</span> <span class="n">connect</span><span class="p">:</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">RA</span><span class="p">,</span> <span class="n">DEC</span><span class="p">,</span> <span class="s1">&#39;g-&#39;</span><span class="p">)</span>
+        <span class="nb">filter</span> <span class="o">=</span> <span class="n">FLAG</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">RA</span><span class="p">[</span><span class="nb">filter</span><span class="p">],</span> <span class="n">DEC</span><span class="p">[</span><span class="nb">filter</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+        <span class="nb">filter</span> <span class="o">=</span> <span class="n">FLAG</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="nb">filter</span> <span class="o">==</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">RA</span><span class="p">[</span><span class="nb">filter</span><span class="p">],</span> <span class="n">DEC</span><span class="p">[</span><span class="nb">filter</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid plotpolicy value: </span><span class="si">{</span><span class="n">plotpolicy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># plot starting position with beam and end position</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">circle</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">draw_beam</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">circle</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">aspect</span><span class="p">,</span> <span class="n">RA</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">DEC</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">offset</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">Mark</span> <span class="o">=</span> <span class="s1">&#39;ro&#39;</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">RA</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">DEC</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Mark</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">])</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">plotfile</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">DPISummary</span><span class="p">)</span>
+
+    <span class="n">a</span><span class="o">.</span><span class="n">cla</span><span class="p">()</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="SingleDishPointingChart">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.pointing.SingleDishPointingChart">[docs]</a>
+<span class="k">class</span> <span class="nc">SingleDishPointingChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate pointing plots.</span>
+
+<span class="sd">    Generate pointing plot for given data, antenna, and field.</span>
+<span class="sd">    Data and antenna must be given as domain objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">context</span><span class="p">:</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">launcher</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span>
+                 <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize SingleDishPointingChart class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: pipeline context object.</span>
+<span class="sd">            ms: MeasurementSet domain object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">ms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span> <span class="o">=</span> <span class="n">DataTable</span><span class="p">()</span>
+        <span class="n">datatable_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_datatable_name</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">importdata</span><span class="p">(</span><span class="n">datatable_name</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes_manager</span> <span class="o">=</span> <span class="n">PointingAxesManager</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span>
+
+    <span class="k">def</span> <span class="nf">__get_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">intent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get field domain object.</span>
+
+<span class="sd">        If field_id is not given, None is returned.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            field_id: Field ID</span>
+<span class="sd">            intent: Field intent</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Field: Field domain object or None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">field_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;found field domain for </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">field_id</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">field</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@casa5style_plot</span>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">revise_plot</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="n">Antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_field_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">reference_field_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_only</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ofs_coord</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Plot</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a plot object.</span>
+
+<span class="sd">        If plot file exists and revise_plot is False, Plot object</span>
+<span class="sd">        based on existing file is returned.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            revise_plot (bool): Overwrite existing plot or not. Defaults to False.</span>
+<span class="sd">            antenna (Antenna): Antenna domain object. Defaults to None.</span>
+<span class="sd">            target_field_id (Optional[int]): ID for target (ON_SOURCE) field. Defaults to None.</span>
+<span class="sd">            reference_field_id (Optional[int]): ID for reference (OFF_SOURCE) field. Defaults to None.</span>
+<span class="sd">            target_only (bool): Whether plot ON_SOURCE only (True) or both ON_SOURCE and OFF_SOURCE. Defaults to True.</span>
+<span class="sd">            ofs_coord (bool): Use offset coordinate or not. Defaults to False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Optional[Plot]: A Plot object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span> <span class="o">=</span> <span class="n">antenna</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_only</span> <span class="o">=</span> <span class="n">target_only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_field</span><span class="p">(</span><span class="n">target_field_id</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_only</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reference_field</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reference_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_field</span><span class="p">(</span><span class="n">reference_field_id</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;REFERENCE&#39;</span><span class="p">)</span>
+
+            <span class="c1"># do not produce target+reference plot if no reference field exists</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ofs_coord</span> <span class="o">=</span> <span class="n">ofs_coord</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figfile</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">revise_plot</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figfile</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span>
+
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">antenna_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="n">target_spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Search for the first available SPW, antenna combination</span>
+        <span class="c1"># observing_pattern is None for invalid combination.</span>
+        <span class="n">spw_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">target_field_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">target_spws</span><span class="p">:</span>
+                <span class="n">field_patterns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">observing_pattern</span><span class="p">[</span><span class="n">antenna_id</span><span class="p">][</span><span class="n">s</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">field_patterns</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_patterns</span><span class="p">):</span>
+                    <span class="c1"># at least one valid field exists.</span>
+                    <span class="n">spw_id</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">id</span>
+                    <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">target_spws</span><span class="p">:</span>
+                <span class="n">observing_pattern</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">observing_pattern</span><span class="p">[</span><span class="n">antenna_id</span><span class="p">][</span><span class="n">s</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target_field_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">observing_pattern</span><span class="p">:</span>
+                    <span class="n">spw_id</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">id</span>
+                    <span class="k">break</span>
+        <span class="k">if</span> <span class="n">spw_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No data with antenna=</span><span class="si">%d</span><span class="s1"> and spw=</span><span class="si">%s</span><span class="s1"> found in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">antenna_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">target_spws</span><span class="p">),</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Skipping pointing plot&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Generate pointing plot using antenna=</span><span class="si">%d</span><span class="s1"> and spw=</span><span class="si">%d</span><span class="s1"> of </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+        <span class="n">beam_size</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">beam_sizes</span><span class="p">[</span><span class="n">antenna_id</span><span class="p">][</span><span class="n">spw_id</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+        <span class="n">beam_size_in_deg</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">beam_size</span><span class="p">)</span>
+        <span class="n">obs_pattern</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">observing_pattern</span><span class="p">[</span><span class="n">antenna_id</span><span class="p">][</span><span class="n">spw_id</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">target_field_id</span><span class="p">:</span>
+            <span class="n">obs_pattern</span> <span class="o">=</span> <span class="n">obs_pattern</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target_field_id</span><span class="p">,</span> <span class="n">obs_pattern</span><span class="p">)</span>
+        <span class="n">antenna_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA&#39;</span><span class="p">)</span>
+        <span class="n">spw_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;IF&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_only</span><span class="p">:</span>
+            <span class="c1"># target only</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># plot pointings regardless of field</span>
+                <span class="n">srctypes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SRCTYPE&#39;</span><span class="p">)</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="n">j</span> <span class="o">==</span> <span class="n">antenna_id</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">==</span> <span class="n">spw_id</span> <span class="ow">and</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">0</span>
+                <span class="n">vfunc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+                <span class="n">dt_rows</span> <span class="o">=</span> <span class="n">vfunc</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">,</span> <span class="n">spw_ids</span><span class="p">,</span> <span class="n">srctypes</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">field_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FIELD_ID&#39;</span><span class="p">)</span>
+                <span class="n">srctypes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SRCTYPE&#39;</span><span class="p">)</span>
+                <span class="n">field_id</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target_field</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">field_id</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">==</span> <span class="n">antenna_id</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">==</span> <span class="n">spw_id</span> <span class="ow">and</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">0</span>
+                <span class="n">vfunc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+                <span class="n">dt_rows</span> <span class="o">=</span> <span class="n">vfunc</span><span class="p">(</span><span class="n">field_ids</span><span class="p">,</span> <span class="n">antenna_ids</span><span class="p">,</span> <span class="n">spw_ids</span><span class="p">,</span> <span class="n">srctypes</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># whole pointings including reference fields</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_field</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># plot pointings regardless of field</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">j</span> <span class="o">==</span> <span class="n">antenna_id</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">==</span> <span class="n">spw_id</span>
+                <span class="n">vfunc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+                <span class="n">dt_rows</span> <span class="o">=</span> <span class="n">vfunc</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">,</span> <span class="n">spw_ids</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">field_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FIELD_ID&#39;</span><span class="p">)</span>
+                <span class="n">field_id</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target_field</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_field</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">field_id</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">==</span> <span class="n">antenna_id</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">==</span> <span class="n">spw_id</span>
+                <span class="n">vfunc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+                <span class="n">dt_rows</span> <span class="o">=</span> <span class="n">vfunc</span><span class="p">(</span><span class="n">field_ids</span><span class="p">,</span> <span class="n">antenna_ids</span><span class="p">,</span> <span class="n">spw_ids</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ofs_coord</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">racol</span> <span class="o">=</span> <span class="s1">&#39;OFS_RA&#39;</span>
+            <span class="n">deccol</span> <span class="o">=</span> <span class="s1">&#39;OFS_DEC&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">racol</span> <span class="o">=</span> <span class="s1">&#39;RA&#39;</span>
+            <span class="n">deccol</span> <span class="o">=</span> <span class="s1">&#39;DEC&#39;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;column names: </span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">racol</span><span class="p">,</span> <span class="n">deccol</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">racol</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">colnames</span><span class="p">()</span> <span class="ow">or</span> <span class="n">deccol</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">colnames</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">RA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="n">racol</span><span class="p">)[</span><span class="n">dt_rows</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">RA</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># no row found</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No data found with antenna=</span><span class="si">%d</span><span class="s1">, spw=</span><span class="si">%d</span><span class="s1">, and field=</span><span class="si">%s</span><span class="s1"> in </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span>
+                     <span class="p">(</span><span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">field_id</span><span class="p">),</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Skipping pointing plots.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">DEC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="n">deccol</span><span class="p">)[</span><span class="n">dt_rows</span><span class="p">]</span>
+        <span class="n">FLAG</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">RA</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dt_rows</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">RA</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="n">pflags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;FLAG_PERMANENT&#39;</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+            <span class="c1"># use flag for pol 0</span>
+            <span class="n">FLAG</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pflags</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">OnlineFlagIndex</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">direction_reference</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">direction_ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">ofs_coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ofs_coord</span>
+
+        <span class="n">draw_pointing</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">,</span> <span class="n">RA</span><span class="p">,</span> <span class="n">DEC</span><span class="p">,</span> <span class="n">FLAG</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">figfile</span><span class="p">,</span> <span class="n">circle</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="o">*</span><span class="n">beam_size_in_deg</span><span class="p">],</span>
+                      <span class="n">ObsPattern</span><span class="o">=</span><span class="n">obs_pattern</span><span class="p">,</span> <span class="n">plotpolicy</span><span class="o">=</span><span class="s1">&#39;greyed&#39;</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span>
+
+        <span class="c1"># re-create thumbnail file</span>
+        <span class="k">if</span> <span class="n">revise_plot</span><span class="p">:</span>
+            <span class="c1"># remove thumbnail file</span>
+            <span class="n">thumb_file</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">thumbnail</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">thumb_file</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">thumb_file</span><span class="p">)</span>
+
+            <span class="c1"># access thumbnail attribute again to create thumbnail file</span>
+            <span class="n">thumb_file</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">thumbnail</span>
+
+        <span class="c1"># execute gc.collect() when the number of uncollected objects reaches 256 (decided ad hoc) or more.</span>
+        <span class="c1"># figure.Figure creates a huge number of objects, and if plot() is called a significant number of times to plot points,</span>
+        <span class="c1"># the python kernel cannot collect objects all at once by default GC setting.</span>
+        <span class="k">if</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_count</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">255</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="k">def</span> <span class="nf">_get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate file path to export a plot.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: file path to export a plot.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">session_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">session</span>
+        <span class="n">ms_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span>
+        <span class="n">antenna_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_field</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> \
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_field</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_only</span><span class="p">):</span>
+            <span class="n">identifier</span> <span class="o">=</span> <span class="n">antenna_part</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">clean_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_field</span><span class="o">.</span><span class="n">clean_name</span>
+            <span class="n">identifier</span> <span class="o">=</span> <span class="n">antenna_part</span> <span class="o">+</span> <span class="s1">&#39;.</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">clean_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_only</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ofs_coord</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">basename</span> <span class="o">=</span> <span class="s1">&#39;offset_target_pointing.</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">basename</span> <span class="o">=</span> <span class="s1">&#39;target_pointing.</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">basename</span> <span class="o">=</span> <span class="s1">&#39;whole_pointing.</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="n">figfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
+                               <span class="s1">&#39;session</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">session_part</span><span class="p">,</span>
+                               <span class="n">ms_part</span><span class="p">,</span>
+                               <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.png&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">basename</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">figfile</span>
+
+    <span class="k">def</span> <span class="nf">_get_plot_object</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Plot</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a Plot object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Plot: A Plot object.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">intent</span> <span class="o">=</span> <span class="s1">&#39;target&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_only</span> <span class="o">==</span> <span class="kc">True</span> <span class="k">else</span> <span class="s1">&#39;target,reference&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_field</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> \
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_field</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_only</span><span class="p">):</span>
+            <span class="n">field_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_only</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_field</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_field</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                <span class="n">field_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_field</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">field_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_field</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_field</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ofs_coord</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">xaxis</span> <span class="o">=</span> <span class="s1">&#39;Offset R.A.&#39;</span>
+            <span class="n">yaxis</span> <span class="o">=</span> <span class="s1">&#39;Offset Declination&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xaxis</span> <span class="o">=</span> <span class="s1">&#39;R.A.&#39;</span>
+            <span class="n">yaxis</span> <span class="o">=</span> <span class="s1">&#39;Declination&#39;</span>
+        <span class="k">return</span> <span class="n">Plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figfile</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="n">yaxis</span><span class="p">,</span>
+                    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                                <span class="s1">&#39;antenna&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field_name</span><span class="p">,</span>
+                                <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">})</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

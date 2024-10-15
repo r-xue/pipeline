@@ -1,0 +1,12 @@
+pipeline.hifv.tasks.opcal.resultobjects
+=======================================
+
+.. automodule:: pipeline.hifv.tasks.opcal.resultobjects
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      OpcalResults
+   

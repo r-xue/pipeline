@@ -1,0 +1,37 @@
+pipeline.hifa.tasks.bpsolint package
+====================================
+
+Submodules
+----------
+
+pipeline.hifa.tasks.bpsolint.bpsolint module
+--------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.bpsolint.bpsolint
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.bpsolint.qa module
+--------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.bpsolint.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.bpsolint.renderer module
+--------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.bpsolint.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifa.tasks.bpsolint
+   :members:
+   :undoc-members:
+   :show-inheritance:

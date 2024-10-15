@@ -1,0 +1,21 @@
+pipeline.hsdn.tasks.exportdata
+==============================
+
+.. automodule:: pipeline.hsdn.tasks.exportdata
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      NROExportData
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   exportdata
+   manifest
+   nrotemplategenerator

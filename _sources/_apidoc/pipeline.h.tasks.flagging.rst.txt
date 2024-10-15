@@ -1,0 +1,45 @@
+pipeline.h.tasks.flagging package
+=================================
+
+Submodules
+----------
+
+pipeline.h.tasks.flagging.flagdatasetter module
+-----------------------------------------------
+
+.. automodule:: pipeline.h.tasks.flagging.flagdatasetter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.tasks.flagging.flagdeterbase module
+----------------------------------------------
+
+.. automodule:: pipeline.h.tasks.flagging.flagdeterbase
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.tasks.flagging.qa module
+-----------------------------------
+
+.. automodule:: pipeline.h.tasks.flagging.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.tasks.flagging.renderer module
+-----------------------------------------
+
+.. automodule:: pipeline.h.tasks.flagging.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.h.tasks.flagging
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,23 @@
+pipeline.h.tasks.applycal
+=========================
+
+.. automodule:: pipeline.h.tasks.applycal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Applycal
+      ApplycalResults
+      SerialApplycal
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   applycal
+   qa
+   renderer

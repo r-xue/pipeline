@@ -1,0 +1,397 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.importdata.importdata &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.importdata.importdata</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.importdata.importdata</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.h.tasks.importdata.importdata</span> <span class="k">as</span> <span class="nn">importdata</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.mpihelpers</span> <span class="k">as</span> <span class="nn">mpihelpers</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics.vlascanheuristics</span> <span class="kn">import</span> <span class="n">VLAScanHeuristics</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics.specline_detect</span> <span class="kn">import</span> <span class="n">detect_spectral_lines</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="VLAImportDataInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.importdata.html#pipeline.hifv.tasks.importdata.importdata.VLAImportDataInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">VLAImportDataInputs</span><span class="p">(</span><span class="n">importdata</span><span class="o">.</span><span class="n">ImportDataInputs</span><span class="p">):</span>
+    <span class="c1"># Override defaults in ImportDataInputs</span>
+    <span class="n">asis</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;Receiver CalAtmosphere&#39;</span><span class="p">)</span>
+    <span class="n">ocorr_mode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;co&#39;</span><span class="p">)</span>
+    <span class="n">bdfflags</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">process_caldevice</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">createmms</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;false&#39;</span><span class="p">)</span>
+    <span class="n">specline_spws</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">process_caldevice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">overwrite</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nocopy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bdfflags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">save_flagonline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">createmms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">ocorr_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specline_spws</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="n">asis</span><span class="p">,</span>
+                         <span class="n">process_caldevice</span><span class="o">=</span><span class="n">process_caldevice</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
+                         <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">nocopy</span><span class="o">=</span><span class="n">nocopy</span><span class="p">,</span> <span class="n">bdfflags</span><span class="o">=</span><span class="n">bdfflags</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="n">lazy</span><span class="p">,</span>
+                         <span class="n">save_flagonline</span><span class="o">=</span><span class="n">save_flagonline</span><span class="p">,</span> <span class="n">createmms</span><span class="o">=</span><span class="n">createmms</span><span class="p">,</span>
+                         <span class="n">ocorr_mode</span><span class="o">=</span><span class="n">ocorr_mode</span><span class="p">,</span> <span class="n">datacolumns</span><span class="o">=</span><span class="n">datacolumns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">specline_spws</span> <span class="o">=</span> <span class="n">specline_spws</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span></div>
+
+
+
+<div class="viewcode-block" id="VLAImportDataResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.importdata.html#pipeline.hifv.tasks.importdata.importdata.VLAImportDataResults">[docs]</a>
+<span class="k">class</span> <span class="nc">VLAImportDataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">setjy_results</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">mses</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mses</span> <span class="o">=</span> <span class="n">mses</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span> <span class="o">=</span> <span class="n">setjy_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="VLAImportDataResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.importdata.html#pipeline.hifv.tasks.importdata.importdata.VLAImportDataResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span>
+
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mses</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Adding </span><span class="si">{0}</span><span class="s1"> to context&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">target</span><span class="o">.</span><span class="n">add_measurement_set</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">ms</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;EVLA&#39;</span><span class="p">,</span> <span class="s1">&#39;VLA&#39;</span><span class="p">,</span> <span class="s1">&#39;JVLA&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="s1">&#39;evla&#39;</span><span class="p">):</span>
+                    <span class="n">context</span><span class="o">.</span><span class="n">evla</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+
+                <span class="n">msinfos</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_msinfo_heuristics</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">context</span><span class="p">))</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mses</span><span class="p">)</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msinfos</span><span class="p">)</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">project_summary</span><span class="o">.</span><span class="n">telescope</span> <span class="o">=</span> <span class="s1">&#39;EVLA&#39;</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">project_summary</span><span class="o">.</span><span class="n">observatory</span> <span class="o">=</span> <span class="s1">&#39;Karl G. Jansky Very Large Array&#39;</span>
+                <span class="c1"># context.evla[&#39;msinfo&#39;] = { m.name : msinfo }</span>
+
+                <span class="c1"># Dictionaries for per band solution intervals</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">spw2band</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_spw2band</span><span class="p">()</span>
+
+                <span class="n">uniqueBands</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">spw2band</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+                <span class="k">for</span> <span class="n">bandname</span> <span class="ow">in</span> <span class="n">uniqueBands</span><span class="p">:</span>
+                    <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">gain_solint1</span><span class="p">[</span><span class="n">bandname</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span>
+                    <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">gain_solint2</span><span class="p">[</span><span class="n">bandname</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span>
+                    <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">shortsol1</span><span class="p">[</span><span class="n">bandname</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                    <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">shortsol2</span><span class="p">[</span><span class="n">bandname</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                    <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">longsolint</span><span class="p">[</span><span class="n">bandname</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                    <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">short_solint</span><span class="p">[</span><span class="n">bandname</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                    <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">new_gain_solint1</span><span class="p">[</span><span class="n">bandname</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1.0s&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_msinfo_heuristics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets heuristics for VLA via original msinfo script</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">msinfo</span> <span class="o">=</span> <span class="n">VLAScanHeuristics</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+        <span class="n">msinfo</span><span class="o">.</span><span class="n">makescandict</span><span class="p">()</span>
+        <span class="n">msinfo</span><span class="o">.</span><span class="n">calibratorIntents</span><span class="p">()</span>
+        <span class="n">msinfo</span><span class="o">.</span><span class="n">determine3C84</span><span class="p">()</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">scanNums</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SCAN_NUMBER&#39;</span><span class="p">)))</span>
+
+        <span class="c1"># Check for missing scans</span>
+        <span class="n">missingScans</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">missingScanStr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">scanNums</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">scanNums</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;WARNING: Scan &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; is not present&quot;</span><span class="p">)</span>
+                <span class="n">missingScans</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">missingScanStr</span> <span class="o">=</span> <span class="n">missingScanStr</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span>
+
+        <span class="k">if</span> <span class="n">missingScans</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;WARNING: There were &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">missingScans</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; missing scans in this MS&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No missing scans found.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">msinfo</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;VLAImportDataResults:</span><span class="se">\n\t</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mses</span><span class="p">]))</span></div>
+
+
+
+<div class="viewcode-block" id="SerialVLAImportData">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.importdata.html#pipeline.hifv.tasks.importdata.importdata.SerialVLAImportData">[docs]</a>
+<span class="k">class</span> <span class="nc">SerialVLAImportData</span><span class="p">(</span><span class="n">importdata</span><span class="o">.</span><span class="n">ImportData</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">VLAImportDataInputs</span>
+
+<div class="viewcode-block" id="SerialVLAImportData.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.importdata.html#pipeline.hifv.tasks.importdata.importdata.SerialVLAImportData.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="c1"># get results object by running super.prepare()</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+
+        <span class="c1"># create results object</span>
+        <span class="n">myresults</span> <span class="o">=</span> <span class="n">VLAImportDataResults</span><span class="p">(</span><span class="n">mses</span><span class="o">=</span><span class="n">results</span><span class="o">.</span><span class="n">mses</span><span class="p">,</span> <span class="n">setjy_results</span><span class="o">=</span><span class="n">results</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">)</span>
+
+        <span class="n">myresults</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">origin</span>
+
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">myresults</span><span class="o">.</span><span class="n">origin</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">myresults</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="n">ms</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;ASDM&#39;</span><span class="p">:</span>
+                <span class="n">myresults</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="n">ms</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;SDM&#39;</span>
+
+        <span class="n">PbandWarning</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">myresults</span><span class="o">.</span><span class="n">mses</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_vla_spw2band</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="s1">&#39;P&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">PbandWarning</span> <span class="o">=</span> <span class="s1">&#39;P-band data detected in the raw data. &#39;</span> \
+                                   <span class="s1">&#39;VLA P-band pipeline calibration has not yet been &#39;</span> \
+                                   <span class="s1">&#39;commissioned and may even fail. Please inspect all P-band pipeline &#39;</span> \
+                                   <span class="s1">&#39;products carefully.&#39;</span>
+
+        <span class="k">if</span> <span class="n">PbandWarning</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">PbandWarning</span><span class="p">)</span>
+
+        <span class="c1"># Spectral line detection tool</span>
+        <span class="k">for</span> <span class="n">mset</span> <span class="ow">in</span> <span class="n">myresults</span><span class="o">.</span><span class="n">mses</span><span class="p">:</span>
+            <span class="n">detect_spectral_lines</span><span class="p">(</span><span class="n">mset</span><span class="o">=</span><span class="n">mset</span><span class="p">,</span> <span class="n">specline_spws</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">specline_spws</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Whether spectral window is designated as spectral line or continuum.&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">mset</span><span class="o">.</span><span class="n">get_all_spectral_windows</span><span class="p">():</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;SPW ID </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">specline_window</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">myresults</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_importasdm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asdm</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asdm_to_vis_filename</span><span class="p">(</span><span class="n">asdm</span><span class="p">)</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                               <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">asdm</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.flagonline.txt&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">save_flagonline</span><span class="p">:</span>
+            <span class="c1"># Create the standard calibration flagging template file</span>
+            <span class="n">template_flagsfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">asdm</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.flagtemplate.txt&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_template_flagfile</span><span class="p">(</span><span class="n">template_flagsfile</span><span class="p">,</span> <span class="s1">&#39;User flagging commands file for the calibration pipeline&#39;</span><span class="p">)</span>
+            <span class="c1"># Create the imaging targets file</span>
+            <span class="n">template_flagsfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">asdm</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.flagtargetstemplate.txt&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_template_flagfile</span><span class="p">(</span><span class="n">template_flagsfile</span><span class="p">,</span> <span class="s1">&#39;User flagging commands file for the imaging pipeline&#39;</span><span class="p">)</span>
+
+        <span class="n">createmms</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">parse_mpi_input_parameter</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">createmms</span><span class="p">)</span>
+
+        <span class="n">with_pointing_correction</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="s1">&#39;with_pointing_correction&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">importasdm</span><span class="p">(</span><span class="n">asdm</span><span class="o">=</span><span class="n">asdm</span><span class="p">,</span>
+                                     <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span>
+                                     <span class="n">savecmds</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">save_flagonline</span><span class="p">,</span>
+                                     <span class="n">outfile</span><span class="o">=</span><span class="n">outfile</span><span class="p">,</span>
+                                     <span class="n">process_caldevice</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">process_caldevice</span><span class="p">,</span>
+                                     <span class="n">asis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">asis</span><span class="p">,</span>
+                                     <span class="n">overwrite</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">overwrite</span><span class="p">,</span>
+                                     <span class="n">bdfflags</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">bdfflags</span><span class="p">,</span>
+                                     <span class="n">lazy</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">lazy</span><span class="p">,</span>
+                                     <span class="n">with_pointing_correction</span><span class="o">=</span><span class="n">with_pointing_correction</span><span class="p">,</span>
+                                     <span class="n">ocorr_mode</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">ocorr_mode</span><span class="p">,</span>
+                                     <span class="n">process_pointing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">createmms</span><span class="o">=</span><span class="n">createmms</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">xml_filename</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Source.xml&#39;</span><span class="p">,</span> <span class="s1">&#39;SpectralWindow.xml&#39;</span><span class="p">,</span> <span class="s1">&#39;DataDescription.xml&#39;</span><span class="p">]:</span>
+            <span class="n">asdm_source</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">asdm</span><span class="p">,</span> <span class="n">xml_filename</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">asdm_source</span><span class="p">):</span>
+                <span class="n">vis_source</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">xml_filename</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Copying </span><span class="si">%s</span><span class="s1"> from ASDM to measurement set&#39;</span><span class="p">,</span> <span class="n">xml_filename</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Copying </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">xml_filename</span><span class="p">,</span> <span class="n">asdm_source</span><span class="p">,</span> <span class="n">vis_source</span><span class="p">)</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">asdm_source</span><span class="p">,</span> <span class="n">vis_source</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="VLAImportData">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.importdata.html#pipeline.hifv.tasks.importdata.importdata.VLAImportData">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_importdata&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;If required, ASDMs are converted to MeasurementSets.&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">VLAImportData</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;VLAImportData class for parallelization.&quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">VLAImportDataInputs</span>
+    <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialVLAImportData</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

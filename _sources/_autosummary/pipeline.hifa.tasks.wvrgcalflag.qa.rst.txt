@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.wvrgcalflag.qa
+==================================
+
+.. automodule:: pipeline.hifa.tasks.wvrgcalflag.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      WvrgcalflagListQAHandler
+      WvrgcalflagQAHandler
+   

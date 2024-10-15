@@ -1,0 +1,13 @@
+pipeline.qa.checksource
+=======================
+
+.. automodule:: pipeline.qa.checksource
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      checkimage
+      fitimage
+   

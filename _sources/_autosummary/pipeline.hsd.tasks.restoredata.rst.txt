@@ -1,0 +1,19 @@
+pipeline.hsd.tasks.restoredata
+==============================
+
+.. automodule:: pipeline.hsd.tasks.restoredata
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SDRestoreData
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   restoredata

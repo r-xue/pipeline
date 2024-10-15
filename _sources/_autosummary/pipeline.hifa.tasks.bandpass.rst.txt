@@ -1,0 +1,21 @@
+pipeline.hifa.tasks.bandpass
+============================
+
+.. automodule:: pipeline.hifa.tasks.bandpass
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ALMAPhcorBandpass
+      SessionALMAPhcorBandpass
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   almaphcorbandpass
+   renderer

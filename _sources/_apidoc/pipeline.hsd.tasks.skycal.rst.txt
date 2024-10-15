@@ -1,0 +1,45 @@
+pipeline.hsd.tasks.skycal package
+=================================
+
+Submodules
+----------
+
+pipeline.hsd.tasks.skycal.display module
+----------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.skycal.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.skycal.qa module
+-----------------------------------
+
+.. automodule:: pipeline.hsd.tasks.skycal.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.skycal.renderer module
+-----------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.skycal.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.skycal.skycal module
+---------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.skycal.skycal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hsd.tasks.skycal
+   :members:
+   :undoc-members:
+   :show-inheritance:

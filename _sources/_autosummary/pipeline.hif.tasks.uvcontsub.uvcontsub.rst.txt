@@ -1,0 +1,23 @@
+pipeline.hif.tasks.uvcontsub.uvcontsub
+======================================
+
+.. automodule:: pipeline.hif.tasks.uvcontsub.uvcontsub
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      namedtuple
+      nested_dict
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      SerialUVcontSub
+      UVcontSub
+      UVcontSubInputs
+      UVcontSubResults
+   

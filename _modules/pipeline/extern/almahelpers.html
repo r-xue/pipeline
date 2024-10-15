@@ -1,0 +1,975 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.extern.almahelpers &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.extern.almahelpers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.extern.almahelpers</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1">#</span>
+<span class="c1"># almahelpers.py</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1">#  v1.0 (scorder, gmoellen, jkern; 2012Apr26) == initial version</span>
+<span class="c1">#  v1.1 (gmoellen; 2013Mar07) Lots of improvements from Eric Villard</span>
+<span class="c1">#  v1.2 (gmoellen; 2013Apr09) Added fixsyscaltimes and calantsub methods</span>
+<span class="c1">#                             to handle Tsys irregularities</span>
+<span class="c1">#  v1.3 (dpetry; 2017Sept11) Added genImageName</span>
+<span class="c1">#  v1.4 (gmoellen; 2021Jul08) fixsyscaltimes now returns True if a fix </span>
+<span class="c1">#                             was applied, otherwise returns False</span>
+<span class="c1">#</span>
+<span class="c1"># This script defines several functions useful for ALMA data processing.</span>
+<span class="c1">#</span>
+<span class="c1"># tsysspwmap  - generate an &quot;applycal-ready&quot; spwmap for TDM to FDM</span>
+<span class="c1">#                 transfer of Tsys</span>
+<span class="c1"># fixsyscaltimes - repairs the TIME and INTERVAL columns of the MS</span>
+<span class="c1">#                    SYSCAL subtable so that gencal properly generates</span>
+<span class="c1">#                    the Tsys caltable</span>
+<span class="c1"># calantsub - provides for substitution of cal solutions by antenna</span>
+<span class="c1">#</span>
+<span class="c1"># genImageName - generate canonical image file names</span>
+<span class="c1">#</span>
+<span class="c1"># To access these functions, type (at the CASA prompt):</span>
+<span class="c1">#</span>
+<span class="c1"># from recipes.almahelpers import *</span>
+<span class="c1">#</span>
+<span class="c1"># For more information about each function type</span>
+<span class="c1">#</span>
+<span class="c1"># help tsysspwmap</span>
+<span class="c1"># help fixsyscaltimes</span>
+<span class="c1"># help calantsub</span>
+<span class="c1"># help genImageName</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">table</span> <span class="k">as</span> <span class="n">tbtool</span>
+<span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">quanta</span> <span class="k">as</span> <span class="n">qatool</span>
+<span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">msmetadata</span> <span class="k">as</span> <span class="n">msmdtool</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">casatasks</span> <span class="kn">import</span> <span class="n">casalog</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">csv</span> <span class="c1"># used by editIntentscsv</span>
+
+<div class="viewcode-block" id="SpwMap">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.SpwMap">[docs]</a>
+<span class="k">class</span> <span class="nc">SpwMap</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This object is basically set up to hold the information needed </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">calSpwId</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calSpwId</span> <span class="o">=</span> <span class="n">calSpwId</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validFreqRange</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapsToSpw</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bbNo</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+        
+<div class="viewcode-block" id="SpwInfo">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.SpwInfo">[docs]</a>
+<span class="k">class</span> <span class="nc">SpwInfo</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">msfile</span><span class="p">,</span><span class="n">spwId</span><span class="p">)</span> <span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tb</span> <span class="o">=</span> <span class="n">tbtool</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTableAndSpwId</span><span class="p">(</span><span class="n">msfile</span><span class="p">,</span><span class="n">spwId</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpwInfo.setTableAndSpwId">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.SpwInfo.setTableAndSpwId">[docs]</a>
+    <span class="k">def</span> <span class="nf">setTableAndSpwId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">msfile</span><span class="p">,</span><span class="n">spwId</span><span class="p">)</span> <span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTable</span><span class="p">(</span><span class="n">msfile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setSpwId</span><span class="p">(</span><span class="n">spwId</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SpwInfo.setTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.SpwInfo.setTable">[docs]</a>
+    <span class="k">def</span> <span class="nf">setTable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">msfile</span><span class="p">)</span> <span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tableName</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/SPECTRAL_WINDOW&quot;</span> <span class="o">%</span> <span class="n">msfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tableName</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">colnames</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+        
+<div class="viewcode-block" id="SpwInfo.setSpwId">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.SpwInfo.setSpwId">[docs]</a>
+    <span class="k">def</span> <span class="nf">setSpwId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">spwId</span><span class="p">)</span> <span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tableName</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">spwId</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+</div>
+
+    
+<div class="viewcode-block" id="areIdentical">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.areIdentical">[docs]</a>
+<span class="k">def</span> <span class="nf">areIdentical</span><span class="p">(</span><span class="n">spwInfo1</span><span class="p">,</span><span class="n">spwInfo2</span><span class="p">)</span> <span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spwInfo1</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spwInfo2</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span> <span class="p">:</span>
+        <span class="n">minState</span> <span class="o">=</span> <span class="n">spwInfo1</span> <span class="p">;</span> <span class="n">maxState</span> <span class="o">=</span> <span class="n">spwInfo2</span>
+    <span class="k">else</span> <span class="p">:</span>
+        <span class="n">minState</span> <span class="o">=</span> <span class="n">spwInfo2</span> <span class="p">;</span> <span class="n">maxState</span> <span class="o">=</span> <span class="n">spwInfo1</span>
+    <span class="n">valueCompare</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">minState</span><span class="o">.</span><span class="n">parameters</span> <span class="p">:</span>
+        <span class="n">compare</span> <span class="o">=</span> <span class="p">(</span><span class="n">minState</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">maxState</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">compare</span><span class="p">)]</span> <span class="p">:</span>
+            <span class="n">compare</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">compare</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">compare</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="p">:</span> <span class="n">valueCompare</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span> <span class="p">:</span> <span class="n">valueCompare</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="kc">False</span> <span class="ow">in</span> <span class="n">valueCompare</span> <span class="p">:</span> <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span> <span class="p">:</span> <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="trimSpwmap">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.trimSpwmap">[docs]</a>
+<span class="k">def</span> <span class="nf">trimSpwmap</span><span class="p">(</span><span class="n">spwMap</span><span class="p">)</span> <span class="p">:</span>
+    <span class="n">compare</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spwMap</span><span class="p">))</span>
+    <span class="n">evenPoint</span> <span class="o">=</span> <span class="n">compare</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">compare</span> <span class="p">:</span>
+        <span class="k">if</span> <span class="n">compare</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span> <span class="o">==</span> <span class="n">spwMap</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span> <span class="p">:</span>
+            <span class="n">evenPoint</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">spwMap</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span></div>
+
+        
+        
+<div class="viewcode-block" id="tsysspwmap">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.tsysspwmap">[docs]</a>
+<span class="k">def</span> <span class="nf">tsysspwmap</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span><span class="n">tsystable</span><span class="p">,</span><span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">relax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tsysChanTol</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate default spwmap for ALMA Tsys, including TDM-&gt;FDM associations</span>
+<span class="sd">    Input:</span>
+<span class="sd">     vis        the target MeasurementSet </span>
+<span class="sd">     tsystable  the input Tsys caltable (w/ TDM Tsys measurements)</span>
+<span class="sd">     trim       if True (the default), return minimum-length spwmap;</span>
+<span class="sd">                    otherwise the spwmap will be exhaustive and include</span>
+<span class="sd">                    the high-numbered (and usually irrelevant) wvr</span>
+<span class="sd">                    spws</span>
+<span class="sd">     relax      (not yet implemented)</span>
+<span class="sd">    Output:</span>
+<span class="sd">     spw list to use in applycal spwmap parameter for the Tsys caltable</span>
+
+<span class="sd">     This function takes the Tsys Caltable you wish to apply to a</span>
+<span class="sd">     MeasurementSet and generates a &quot;applycal-ready&quot; spwmap that</span>
+<span class="sd">     provides the appropriate information regarding the transfer</span>
+<span class="sd">     Tsys calibration from TDM spectral windows to FDM spectral</span>
+<span class="sd">     windows.  To execute the function:</span>
+
+<span class="sd">     tsysmap=tsysspwmap(vis=&#39;my.ms&#39;,tsystable=&#39;mytsys.cal&#39;)</span>
+
+<span class="sd">     tsysmap can then be supplied to the applycal spwmap parameter</span>
+<span class="sd">     to ensure proper Tsys calibration application.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">localTb</span> <span class="o">=</span> <span class="n">tbtool</span><span class="p">()</span>
+    <span class="n">spwMaps</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Get the spectral windows with entries in the solution table</span>
+    <span class="n">localTb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">tsystable</span><span class="p">)</span>
+    <span class="n">measuredTsysSpw</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">localTb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;SPECTRAL_WINDOW_ID&quot;</span><span class="p">))</span>
+    <span class="n">localTb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># Get the frequency ranges for the allowed </span>
+    <span class="n">localTb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/SPECTRAL_WINDOW&quot;</span> <span class="o">%</span> <span class="n">tsystable</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">measuredTsysSpw</span><span class="p">:</span>
+        <span class="n">spwMap</span> <span class="o">=</span> <span class="n">SpwMap</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">chanFreqs</span> <span class="o">=</span> <span class="n">localTb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;CHAN_FREQ&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">chanWidth</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">chanFreqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">chanFreqs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">spwMap</span><span class="o">.</span><span class="n">chanWidth</span> <span class="o">=</span> <span class="n">chanWidth</span>
+        <span class="n">spwMap</span><span class="o">.</span><span class="n">validFreqRange</span> <span class="o">=</span> <span class="p">[</span><span class="n">chanFreqs</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">chanWidth</span><span class="p">,</span>\
+                                 <span class="n">chanFreqs</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">chanWidth</span><span class="p">]</span>
+        <span class="n">spwMaps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spwMap</span><span class="p">)</span>
+    <span class="n">localTb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># Now loop through the main table&#39;s spectral window table</span>
+    <span class="c1"># to map the spectral windows as desired.</span>
+    <span class="n">localTb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/SPECTRAL_WINDOW&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+    <span class="n">it</span> <span class="o">=</span> <span class="n">localTb</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span>
+    <span class="n">localTb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">spwMaps</span> <span class="p">:</span>
+        <span class="n">localTb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/SPECTRAL_WINDOW&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+        <span class="n">j</span><span class="o">.</span><span class="n">bbNo</span> <span class="o">=</span> <span class="n">localTb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;BBC_NO&quot;</span><span class="p">,</span><span class="n">j</span><span class="o">.</span><span class="n">calSpwId</span><span class="p">)</span>
+        <span class="n">localTb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="p">:</span>
+            <span class="n">localTb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/SPECTRAL_WINDOW&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+            <span class="n">chanFreqs</span> <span class="o">=</span> <span class="n">localTb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;CHAN_FREQ&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chanFreqs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="p">:</span>
+                <span class="n">chanWidth</span> <span class="o">=</span> <span class="n">localTb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;CHAN_WIDTH&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">freqMin</span> <span class="o">=</span> <span class="n">chanFreqs</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">chanWidth</span>
+                <span class="n">freqMax</span> <span class="o">=</span> <span class="n">chanFreqs</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">chanWidth</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="n">chanWidth</span> <span class="o">=</span> <span class="n">localTb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;CHAN_WIDTH&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">freqMin</span> <span class="o">=</span> <span class="n">chanFreqs</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">chanWidth</span>
+                <span class="n">freqMax</span> <span class="o">=</span> <span class="n">chanFreqs</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">chanWidth</span>
+            <span class="n">msSpw</span>  <span class="o">=</span> <span class="n">SpwInfo</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">bbNo</span> <span class="o">==</span> <span class="n">msSpw</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="s1">&#39;BBC_NO&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">freqMin</span> <span class="o">&gt;=</span> <span class="n">j</span><span class="o">.</span><span class="n">validFreqRange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">tsysChanTol</span><span class="o">*</span><span class="n">j</span><span class="o">.</span><span class="n">chanWidth</span> <span class="ow">and</span> \
+                   <span class="n">freqMax</span> <span class="o">&lt;=</span> <span class="n">j</span><span class="o">.</span><span class="n">validFreqRange</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">tsysChanTol</span><span class="o">*</span><span class="n">j</span><span class="o">.</span><span class="n">chanWidth</span> <span class="p">:</span>
+                    <span class="n">j</span><span class="o">.</span><span class="n">mapsToSpw</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">localTb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">applyCalSpwMap</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">spwWithoutMatch</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">localTb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/SPECTRAL_WINDOW&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="p">:</span>
+        <span class="n">useSpw</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">spwMaps</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">j</span><span class="o">.</span><span class="n">mapsToSpw</span> <span class="p">:</span>
+                <span class="k">if</span> <span class="n">useSpw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+                    <span class="k">if</span> <span class="n">localTb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;BBC_NO&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">j</span><span class="o">.</span><span class="n">bbNo</span> <span class="p">:</span>
+                        <span class="n">useSpw</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">calSpwId</span>
+                <span class="k">else</span> <span class="p">:</span>
+                    <span class="n">useSpw</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">calSpwId</span>
+        <span class="k">if</span> <span class="n">useSpw</span> <span class="o">==</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="n">useSpw</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">spwWithoutMatch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">applyCalSpwMap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">useSpw</span><span class="p">))</span>        
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spwWithoutMatch</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;Found no match for following spw ids: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">spwWithoutMatch</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">trim</span> <span class="p">:</span>
+        <span class="k">return</span> <span class="n">trimSpwmap</span><span class="p">(</span><span class="n">applyCalSpwMap</span><span class="p">)</span>
+    <span class="k">else</span> <span class="p">:</span>
+        <span class="k">return</span> <span class="n">applyCalSpwMap</span></div>
+
+
+
+<div class="viewcode-block" id="fixsyscaltimes">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.fixsyscaltimes">[docs]</a>
+<span class="k">def</span> <span class="nf">fixsyscaltimes</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span><span class="n">newinterval</span><span class="o">=</span><span class="mf">2.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fix TIME,INTERVAL columns in MS SYSCAL subtable</span>
+<span class="sd">    Input:</span>
+<span class="sd">     vis          the MS containing the offending SYSCAL subtable</span>
+<span class="sd">     newinterval  the interval to use in revised entries</span>
+
+<span class="sd">     This function is intended to repair MS SYSCAL tables that suffer from</span>
+<span class="sd">     multiple TIME values (over antennas) per Tsys measurement.  The gencal</span>
+<span class="sd">     task (mode=&#39;tsys&#39; expects all antennas to share the same TIME value</span>
+<span class="sd">     for each Tsys measurement (and this is usually true).  The function</span>
+<span class="sd">     finds those measurements that have multiple TIMEs and replaces them</span>
+<span class="sd">     with a common TIME value which takes the value</span>
+<span class="sd">     mean(oldTIME-INTERVAL/2)+newinterval/2.</span>
+<span class="sd">     Usually (always?), oldTIME-INTERVAL/2 is constant over antennas</span>
+<span class="sd">     and represents the physical timestamp of the Tsys measurment.</span>
+<span class="sd">     If the function finds no pathological timestamps, it does not</span>
+<span class="sd">     revise the table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">mypl</span>
+    <span class="kn">import</span> <span class="nn">math</span> <span class="k">as</span> <span class="nn">mymath</span>
+    <span class="n">myqa</span><span class="o">=</span><span class="n">qatool</span><span class="p">()</span>
+    <span class="n">mytb</span><span class="o">=</span><span class="n">tbtool</span><span class="p">()</span>
+    <span class="n">mytb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">vis</span><span class="o">+</span><span class="s1">&#39;/SYSCAL&#39;</span><span class="p">,</span><span class="n">nomodify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">spws</span><span class="o">=</span><span class="n">mypl</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">mytb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;SPECTRAL_WINDOW_ID&quot;</span><span class="p">))</span>
+
+    <span class="c1"># Nominally, no fix applied</span>
+    <span class="n">fixapplied</span><span class="o">=</span><span class="kc">False</span>
+
+    <span class="k">for</span> <span class="n">ispw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">=</span><span class="n">mytb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID==&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ispw</span><span class="p">),</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;byspw&#39;</span><span class="p">)</span>
+        <span class="n">times</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+        <span class="n">interval</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;INTERVAL&#39;</span><span class="p">)</span>
+        <span class="n">timestamps</span><span class="o">=</span><span class="n">times</span><span class="o">-</span><span class="n">interval</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">t0</span><span class="o">=</span><span class="mf">86400.0</span><span class="o">*</span><span class="n">mymath</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">timestamps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mf">86400.0</span><span class="p">)</span>
+
+        <span class="n">utimes</span><span class="o">=</span><span class="n">mypl</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">times</span><span class="o">-</span><span class="n">t0</span><span class="p">)</span>
+        <span class="n">nT</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">utimes</span><span class="p">)</span>
+        <span class="n">utimestamps</span><span class="o">=</span><span class="n">mypl</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">mypl</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">timestamps</span><span class="p">)</span><span class="o">-</span><span class="n">t0</span><span class="p">)</span>
+        <span class="n">nTS</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">utimestamps</span><span class="p">)</span>
+        
+        <span class="n">msg</span><span class="o">=</span><span class="s1">&#39;In spw=&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ispw</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; found &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">nTS</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; Tsys measurements with &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">nT</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; TIMEs...&#39;</span>
+        <span class="k">if</span> <span class="n">nT</span><span class="o">==</span><span class="n">nTS</span><span class="p">:</span>
+            <span class="n">msg</span><span class="o">+=</span><span class="s1">&#39;OK.&#39;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If we reach here, then a fix is being applied, and we&#39;ll return True</span>
+            <span class="n">fixapplied</span><span class="o">=</span><span class="kc">True</span>
+
+            <span class="n">msg</span><span class="o">+=</span><span class="s1">&#39; which is too many, so fixing it:&#39;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">uts</span> <span class="ow">in</span> <span class="n">utimestamps</span><span class="p">:</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="p">((</span><span class="n">mypl</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">timestamps</span><span class="p">))</span><span class="o">-</span><span class="n">t0</span><span class="o">==</span><span class="n">uts</span><span class="p">)</span>
+                <span class="n">uTIMEs</span><span class="o">=</span><span class="n">mypl</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+                <span class="n">nTIMEs</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">uTIMEs</span><span class="p">)</span>
+                <span class="n">newtime</span> <span class="o">=</span> <span class="n">mypl</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">-</span><span class="n">interval</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">newinterval</span><span class="o">/</span><span class="mi">2</span>
+                <span class="n">msg</span><span class="o">=</span><span class="s1">&#39;  Found &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">nTIMEs</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; TIMEs at timestamp=&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">myqa</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">newtime</span><span class="o">-</span><span class="n">newinterval</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="n">form</span><span class="o">=</span><span class="s1">&#39;ymd&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">nTIMEs</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">msg</span><span class="o">+=</span><span class="s1">&#39;:&#39;</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   TIMEs=&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">([</span><span class="n">myqa</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="n">form</span><span class="o">=</span><span class="s1">&#39;ymd&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">uTIMEs</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39; --&gt; &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">myqa</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">newtime</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="n">form</span><span class="o">=</span><span class="s1">&#39;ymd&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39; w/ INTERVAL=&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">newinterval</span><span class="p">))</span>
+                    <span class="n">times</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">=</span><span class="n">newtime</span>
+                    <span class="n">interval</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">=</span><span class="n">newinterval</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">,</span><span class="n">times</span><span class="p">)</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;INTERVAL&#39;</span><span class="p">,</span><span class="n">interval</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">msg</span><span class="o">+=</span><span class="s1">&#39;...ok.&#39;</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">mytb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">fixapplied</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Some SYSCAL time corrections have been applied.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;All SYSCAL times seem correct; no changes required.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Return if a fix has been applied</span>
+    <span class="k">return</span> <span class="n">fixapplied</span></div>
+
+
+
+<div class="viewcode-block" id="calantsub">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.calantsub">[docs]</a>
+<span class="k">def</span> <span class="nf">calantsub</span><span class="p">(</span><span class="n">incaltable</span><span class="p">,</span><span class="n">outcaltable</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+              <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">scan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+              <span class="n">ant</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">subant</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Substitute cal solutions by antenna</span>
+<span class="sd">    Input:</span>
+<span class="sd">     incaltable  Input caltable</span>
+<span class="sd">     outcaltable Output caltable (if &#39;&#39;, overwrite result on incaltable)</span>
+<span class="sd">     spw         Spectral Window selection (no channel selection permitted)</span>
+<span class="sd">     scan        Scan selection</span>
+<span class="sd">     ant         Antenna (indices) which need replaced solutions</span>
+<span class="sd">     subant      Antenna (indices) with which to replace those in ant</span>
+
+<span class="sd">    This function provides a means to replace solutions by antenna,</span>
+<span class="sd">    e.g., to substitute one antenna&#39;s Tsys spectra with another.</span>
+
+<span class="sd">    The processing can be limited to specific spectral windows and/or</span>
+<span class="sd">    scans.  The spw and scan parameters should be specified in the</span>
+<span class="sd">    standard MS selection manner (comma-separated integers in a string),</span>
+<span class="sd">    except no channel selection is supported.</span>
+
+<span class="sd">    The ant parameter specifies one or more antenna indices </span>
+<span class="sd">    (comma-separated in a string) for which solutions are to be</span>
+<span class="sd">    replaced.  The subant parameter lists the antenna indices</span>
+<span class="sd">    from which the substitute solutions are to be obtained. E.g.,</span>
+<span class="sd">    ant=&#39;3,5,7&#39;,subant=&#39;6,8,10&#39; will cause the solutions from</span>
+<span class="sd">    antenna id 6 to be copied to antenna id 5, id 8 to id 5 and id 10</span>
+<span class="sd">    to id 7.  The number of antennas specified in ant and subant</span>
+<span class="sd">    must match.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">mypl</span>
+    
+    <span class="c1"># trap insufficient ant subant specifications</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ant</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">subant</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Must specify at least one ant and subant.&quot;</span><span class="p">)</span>
+
+    <span class="n">antlist</span><span class="o">=</span><span class="n">ant</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="n">sublist</span><span class="o">=</span><span class="n">subant</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+    <span class="c1"># trap dumb cases</span>
+    <span class="n">nant</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">antlist</span><span class="p">)</span>
+    <span class="n">nsub</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">sublist</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nant</span><span class="o">!=</span><span class="n">nsub</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Must specify equal number of ant and subant.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># local tb tool</span>
+    <span class="n">mytb</span><span class="o">=</span><span class="n">tbtool</span><span class="p">()</span>
+
+    <span class="c1"># parse selection</span>
+    <span class="n">selstr</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">selstr</span><span class="o">+=</span><span class="s1">&#39;SPECTRAL_WINDOW_ID IN [&#39;</span><span class="o">+</span><span class="n">spw</span><span class="o">+</span><span class="s1">&#39;]&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">selstr</span><span class="o">+=</span><span class="s1">&#39; &amp;&amp; &#39;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">selstr</span><span class="o">+=</span><span class="s1">&#39;SCAN_NUMBER IN [&#39;</span><span class="o">+</span><span class="n">scan</span><span class="o">+</span><span class="s1">&#39;]&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;selstr = &#39;&quot;</span><span class="o">+</span><span class="n">selstr</span><span class="o">+</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># verify selection (if any) selects non-zero rows</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selstr</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">mytb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">incaltable</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">=</span><span class="n">mytb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">selstr</span><span class="p">)</span>
+        <span class="n">nselrows</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">mytb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">nselrows</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Error: scan and/or spw selection selects no rows!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># manage the output table</span>
+    <span class="k">if</span> <span class="n">outcaltable</span><span class="o">==</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">outcaltable</span><span class="o">=</span><span class="n">incaltable</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No outcaltable specified; will overwrite incaltable.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">outcaltable</span><span class="o">!=</span><span class="n">incaltable</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;cp -r &#39;</span><span class="o">+</span><span class="n">incaltable</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="n">outcaltable</span><span class="p">)</span>
+
+    <span class="c1"># open the output table for adjustment</span>
+    <span class="n">mytb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">outcaltable</span><span class="p">,</span><span class="n">nomodify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">stsel</span><span class="o">=</span><span class="n">mytb</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selstr</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">stsel</span><span class="o">=</span><span class="n">mytb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">selstr</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;selected&#39;</span><span class="p">)</span>
+
+    <span class="c1"># cols to substitute:</span>
+    <span class="n">collist</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;TIME&#39;</span><span class="p">,</span><span class="s1">&#39;INTERVAL&#39;</span><span class="p">,</span><span class="s1">&#39;PARAMERR&#39;</span><span class="p">,</span><span class="s1">&#39;SNR&#39;</span><span class="p">,</span><span class="s1">&#39;FLAG&#39;</span><span class="p">]</span>
+    <span class="n">cols</span><span class="o">=</span><span class="n">mytb</span><span class="o">.</span><span class="n">colnames</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">cols</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">collist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">collist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;FPARAM&#39;</span><span class="p">)</span>
+
+    <span class="c1"># scan list</span>
+    <span class="n">scans</span><span class="o">=</span><span class="n">mypl</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">stsel</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SCAN_NUMBER&#39;</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Found scans = &#39;</span><span class="p">,</span><span class="n">scans</span><span class="p">)</span>
+
+    <span class="c1"># do one scan at a time</span>
+    <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">:</span>
+        <span class="n">st1</span><span class="o">=</span><span class="n">stsel</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s1">&#39;SCAN_NUMBER==&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="p">),</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;byscan&#39;</span><span class="p">)</span>
+        <span class="n">spws</span><span class="o">=</span><span class="n">mypl</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">st1</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID&#39;</span><span class="p">))</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Scan &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; has spws=&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">spws</span><span class="p">))</span>
+
+        <span class="c1"># do one spw at a time</span>
+        <span class="k">for</span> <span class="n">ispw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
+            <span class="n">st2</span><span class="o">=</span><span class="n">st1</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s1">&#39;SPECTRAL_WINDOW_ID==&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ispw</span><span class="p">),</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;byspw&#39;</span><span class="p">);</span>
+
+            <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nant</span><span class="p">):</span>
+                <span class="n">stsub</span><span class="o">=</span><span class="n">st2</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s1">&#39;ANTENNA1==&#39;</span><span class="o">+</span><span class="n">sublist</span><span class="p">[</span><span class="n">ia</span><span class="p">],</span>
+                                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;subant&#39;</span><span class="p">)</span>
+                <span class="n">stant</span><span class="o">=</span><span class="n">st2</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s1">&#39;ANTENNA1==&#39;</span><span class="o">+</span><span class="n">antlist</span><span class="p">[</span><span class="n">ia</span><span class="p">],</span>
+                                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ant&#39;</span><span class="p">)</span>
+
+
+                <span class="c1"># go to next ant if nothing to do</span>
+                <span class="k">if</span> <span class="n">stant</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; scan=&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; spw=&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ispw</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; ants: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">sublist</span><span class="p">[</span><span class="n">ia</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39;-&gt;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">antlist</span><span class="p">[</span><span class="n">ia</span><span class="p">]))</span>
+
+                <span class="c1"># trap (unlikely?) pathological case</span>
+                <span class="k">if</span> <span class="n">stsub</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span><span class="o">!=</span><span class="n">stant</span><span class="o">.</span><span class="n">nrows</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;In spw &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ispw</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; antenna ids &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">antlist</span><span class="p">[</span><span class="n">ia</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot; and &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">sublist</span><span class="p">[</span><span class="n">ia</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot; have a different number of solutions.&quot;</span><span class="p">)</span>
+
+                <span class="c1"># substitute values </span>
+                <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">collist</span><span class="p">:</span>
+                    <span class="n">stant</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="n">col</span><span class="p">,</span><span class="n">stsub</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="n">col</span><span class="p">))</span>
+
+                <span class="n">stsub</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="n">stant</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">st2</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">st1</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">stsel</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">mytb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="editIntentscsv">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.editIntentscsv">[docs]</a>
+<span class="k">def</span> <span class="nf">editIntentscsv</span><span class="p">(</span><span class="n">intentcsv</span><span class="p">,</span> <span class="n">dryrun</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a list of parameters from a csv text file and runs editIntents on them.</span>
+<span class="sd">    File format: </span>
+<span class="sd">    # any number of comment lines</span>
+<span class="sd">    vis,field,scan,&quot;WVR,BANDPASS&quot;</span>
+<span class="sd">    vis,field,,&#39;FLUX,WVR&#39;</span>
+<span class="sd">    ...</span>
+
+<span class="sd">    * field is a required argument, while scan is optional</span>
+<span class="sd">    * scan: can be a single integer, integer list, or comma-delimited string list</span>
+<span class="sd">         multiple scans or intents must be quoted, either single or double quote</span>
+<span class="sd">    -Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">intentcsv</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not find intentcsv file: &quot;</span><span class="p">,</span> <span class="n">intentcsv</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">intentcsv</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span> 
+    <span class="k">for</span> <span class="n">originalLine</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">originalLine</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">):</span> <span class="k">continue</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">originalLine</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Parsing reformatted line: &quot;</span><span class="p">,</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">([</span><span class="n">line</span><span class="p">]):</span>
+                <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">token</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Skipping invalid line: &quot;</span><span class="p">,</span> <span class="n">originalLine</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">token</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">token</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">scan</span> <span class="o">=</span> <span class="n">token</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">intents</span> <span class="o">=</span> <span class="n">token</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis</span><span class="p">)):</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;au.editIntents(&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">vis</span><span class="p">,</span><span class="n">field</span><span class="p">,</span><span class="n">scan</span><span class="p">,</span><span class="n">intents</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dryrun</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Would call </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cmd</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calling </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cmd</span><span class="p">))</span>
+                    <span class="n">editIntents</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span><span class="n">field</span><span class="p">,</span><span class="n">scan</span><span class="p">,</span><span class="n">intents</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not find requested measurement set: &quot;</span><span class="p">,</span> <span class="n">vis</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="editIntents">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.editIntents">[docs]</a>
+<span class="k">def</span> <span class="nf">editIntents</span><span class="p">(</span><span class="n">msName</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">newintents</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
+                <span class="n">append</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Change the observation intents for a specified field.  </span>
+<span class="sd">    Inputs:</span>
+<span class="sd">    * field: required argument (integer or string ID, or name)</span>
+<span class="sd">    * scan: optional, can be a single integer, integer list, or comma-delimited string list</span>
+<span class="sd">    * append: set to True to add the specified intent to the existing intents</span>
+<span class="sd">    * newintents: enter as a python list, or as single comma-delimited string</span>
+<span class="sd">    * valid intents: the first 12 are simply a shorthand way to specify the latter 12</span>
+<span class="sd">       &#39;AMPLITUDE&#39;, &#39;ATMOSPHERE&#39;, &#39;BANDPASS&#39;, &#39;CHECK_SOURCE&#39;, &#39;WVR&#39;,</span>
+<span class="sd">       &#39;DELAY&#39;, &#39;FLUX&#39;, &#39;FOCUS&#39;, &#39;PHASE&#39;, &#39;POINTING&#39;, &#39;SIDEBAND_RATIO&#39;, &#39;TARGET&#39;,</span>
+<span class="sd">       &#39;CALIBRATE_AMPLI&#39;, &#39;CALIBRATE_ATMOSPHERE&#39;, &#39;CALIBRATE_BANDPASS&#39;,</span>
+<span class="sd">       &#39;CALIBRATE_DELAY&#39;, &#39;CALIBRATE_FLUX&#39;, &#39;CALIBRATE_FOCUS&#39;,</span>
+<span class="sd">       &#39;CALIBRATE_PHASE&#39;, &#39;CALIBRATE_POINTING&#39;, &#39;CALIBRATE_SIDEBAND_RATIO&#39;,</span>
+<span class="sd">       &#39;OBSERVE_TARGET&#39;, &#39;CALIBRATE_WVR&#39;, &#39;OBSERVE_CHECK_SOURCE&#39;</span>
+<span class="sd">      The modifier #ON_SOURCE will be added to all specified intents.</span>
+<span class="sd">    - T. Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">validIntents</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span><span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span><span class="s1">&#39;CHECK_SOURCE&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;DELAY&#39;</span><span class="p">,</span><span class="s1">&#39;FLUX&#39;</span><span class="p">,</span><span class="s1">&#39;FOCUS&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span><span class="s1">&#39;POINTING&#39;</span><span class="p">,</span> 
+                    <span class="s1">&#39;SIDEBAND_RATIO&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span><span class="s1">&#39;WVR&#39;</span><span class="p">,</span> <span class="s1">&#39;CALIBRATE_AMPLI&#39;</span><span class="p">,</span> 
+                    <span class="s1">&#39;CALIBRATE_ATMOSPHERE&#39;</span><span class="p">,</span> <span class="s1">&#39;CALIBRATE_BANDPASS&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;CALIBRATE_DELAY&#39;</span><span class="p">,</span> <span class="s1">&#39;CALIBRATE_FLUX&#39;</span><span class="p">,</span> <span class="s1">&#39;CALIBRATE_FOCUS&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;CALIBRATE_PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;CALIBRATE_POINTING&#39;</span><span class="p">,</span> 
+                    <span class="s1">&#39;CALIBRATE_SIDEBAND_RATIO&#39;</span><span class="p">,</span><span class="s1">&#39;OBSERVE_TARGET&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;CALIBRATE_WVR&#39;</span><span class="p">,</span> <span class="s1">&#39;OBSERVE_CHECK_SOURCE&#39;</span>
+                    <span class="p">]</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">msName</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You must specify a measurement set.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">field</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You must specify a field ID or name.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">mytb</span> <span class="o">=</span> <span class="n">tbtool</span><span class="p">()</span>
+    <span class="n">mytb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msName</span> <span class="o">+</span> <span class="s1">&#39;/FIELD&#39;</span><span class="p">)</span>
+    <span class="n">fieldnames</span> <span class="o">=</span> <span class="n">mytb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;NAME&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Found fieldnames = &quot;</span><span class="p">,</span> <span class="n">fieldnames</span><span class="p">)</span>
+    <span class="n">mytb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">mytb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msName</span> <span class="o">+</span> <span class="s1">&#39;/STATE&#39;</span><span class="p">)</span>
+    <span class="n">intentcol</span> <span class="o">=</span> <span class="n">mytb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;OBS_MODE&#39;</span><span class="p">)</span>
+    <span class="n">intentcol</span> <span class="o">=</span> <span class="n">intentcol</span>
+    <span class="n">mytb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">mytb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msName</span><span class="p">,</span> <span class="n">nomodify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">naddedrows</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">newintents</span><span class="p">)</span><span class="o">==</span><span class="nb">list</span><span class="p">):</span>
+        <span class="n">desiredintents</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">newintents</span><span class="p">:</span>
+            <span class="n">desiredintents</span> <span class="o">+=</span> <span class="n">n</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">!=</span> <span class="n">newintents</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">desiredintents</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">desiredintents</span> <span class="o">=</span> <span class="n">newintents</span>
+    <span class="n">desiredintentsList</span> <span class="o">=</span> <span class="n">desiredintents</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        
+    <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">desiredintentsList</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">intent</span> <span class="ow">in</span> <span class="n">validIntents</span><span class="p">)</span><span class="o">==</span><span class="kc">False</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid intent = </span><span class="si">%s</span><span class="s2">.  Valid intents = </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">intent</span><span class="p">,</span><span class="n">validIntents</span><span class="p">))</span>
+            <span class="n">mytb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span>
+    <span class="n">foundField</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">scan</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nb">id</span><span class="p">,</span><span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fieldnames</span><span class="p">):</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">name</span> <span class="o">==</span> <span class="n">field</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="p">)):</span>
+        <span class="n">foundField</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;FIELD_ID </span><span class="si">%s</span><span class="s1"> has name </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">scan</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span> 
+            <span class="n">s</span> <span class="o">=</span> <span class="n">mytb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;FIELD_ID==</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Got </span><span class="si">%d</span><span class="s2"> rows in the ms matching field=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">nrows</span><span class="p">(),</span><span class="nb">id</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">scans</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">scans</span> <span class="o">=</span> <span class="p">[</span><span class="n">scan</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">scans</span> <span class="o">=</span> <span class="n">scan</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Querying: &#39;FIELD_ID==</span><span class="si">%s</span><span class="s2"> AND SCAN_NUMBER in </span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">scans</span><span class="p">)))</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">mytb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;FIELD_ID==</span><span class="si">%s</span><span class="s1"> AND SCAN_NUMBER in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">scans</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Got </span><span class="si">%d</span><span class="s2"> rows in the ms matching field=</span><span class="si">%s</span><span class="s2"> and scan in </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">nrows</span><span class="p">(),</span><span class="nb">id</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">scans</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">mytb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Found zero rows for this field (and/or scan). Stopping.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">state_ids</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;STATE_ID&#39;</span><span class="p">)</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">state_id</span> <span class="ow">in</span> <span class="n">state_ids</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">state_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+                <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ij</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)):</span>
+            <span class="n">states</span><span class="p">[</span><span class="n">ij</span><span class="p">]</span> <span class="o">=</span> <span class="n">intentcol</span><span class="p">[</span><span class="n">states</span><span class="p">[</span><span class="n">ij</span><span class="p">]]</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;current intents are:&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">append</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span> <span class="n">states</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">desiredintent</span> <span class="ow">in</span> <span class="n">desiredintentsList</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">desiredintent</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">desiredintent</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;CHECK_SOURCE&#39;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;OBSERVE_CHECK_SOURCE#ON_SOURCE&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">desiredintent</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;CALIBRATE_BANDPASS#ON_SOURCE&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">desiredintent</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;CALIBRATE_PHASE#ON_SOURCE&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">desiredintent</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;AMPLI&#39;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;CALIBRATE_AMPLI#ON_SOURCE&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">desiredintent</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;FLUX&#39;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;CALIBRATE_FLUX#ON_SOURCE&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">desiredintent</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;CALIBRATE_ATMOSPHERE#ON_SOURCE&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">desiredintent</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;WVR&#39;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;CALIBRATE_WVR#ON_SOURCE&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">desiredintent</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;SIDEBAND_RATIO&#39;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;CALIBRATE_SIDEBAND_RATIO#ON_SOURCE&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">desiredintent</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;DELAY&#39;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;CALIBRATE_DELAY#ON_SOURCE&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">desiredintent</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;FOCUS&#39;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;CALIBRATE_FOCUS#ON_SOURCE&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">desiredintent</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;POINTING&#39;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;CALIBRATE_POINTING#ON_SOURCE&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unrecognized intent = </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">desiredintent</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;setting </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="n">states</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span> <span class="n">states</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">state</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">intentcol</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;adding intent to state table&#39;</span><span class="p">)</span>
+                <span class="n">intentcol</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">intentcol</span><span class="p">)</span>
+                <span class="n">intentcol</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+                <span class="n">intentcol</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">intentcol</span><span class="p">)</span>
+                <span class="n">state_id</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">intentcol</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">naddedrows</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;state_id is&#39;</span><span class="p">,</span> <span class="n">state_id</span><span class="p">)</span>
+                <span class="n">state_ids</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">state_id</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;intent already in state table&#39;</span><span class="p">)</span>
+                <span class="n">state_id</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">intentcol</span><span class="p">))[</span><span class="n">intentcol</span><span class="o">==</span><span class="n">state</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;state_id is&#39;</span><span class="p">,</span> <span class="n">state_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span><span class="o">==</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                    <span class="c1"># ms can have identical combinations of INTENT, so just</span>
+                    <span class="c1"># pick the row for the first appearance - T. Hunter</span>
+                    <span class="n">state_ids</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">state_id</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">state_ids</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">state_id</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;STATE_ID&#39;</span><span class="p">,</span> <span class="n">state_ids</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">foundField</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Field not found&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">mytb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;writing new STATE table&#39;</span><span class="p">)</span>
+    <span class="n">mytb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msName</span> <span class="o">+</span> <span class="s1">&#39;/STATE&#39;</span><span class="p">,</span> <span class="n">nomodify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">naddedrows</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">mytb</span><span class="o">.</span><span class="n">addrows</span><span class="p">(</span><span class="n">naddedrows</span><span class="p">)</span>
+    <span class="n">mytb</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;OBS_MODE&#39;</span><span class="p">,</span> <span class="n">intentcol</span><span class="p">)</span>
+    <span class="n">mytb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="genImageName">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.genImageName">[docs]</a>
+<span class="k">def</span> <span class="nf">genImageName</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">imtype</span><span class="o">=</span><span class="s1">&#39;mfs&#39;</span><span class="p">,</span> <span class="n">targettype</span><span class="o">=</span><span class="s1">&#39;sci&#39;</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">mous</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">modtext</span><span class="o">=</span><span class="s1">&#39;manual&#39;</span><span class="p">):</span>
+    <span class="c1"># DPetry, Sept 2017</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate image name to be used in clean command</span>
+<span class="sd">    following the ALMA archive conventions (see SCIREQ-110, draft recommendations v4.8).</span>
+<span class="sd">      vis         = MS to be imaged (to extract object name, SPW frequencies</span>
+<span class="sd">      spw         = ID of SPW to be imaged</span>
+<span class="sd">                    If several SPWs are imaged at once, enter list of SPWs.</span>
+<span class="sd">      field       = ID of field to be imaged (to extract object name).</span>
+<span class="sd">                    in case of mosaic, give any ID of field belonging to the mosaic</span>
+<span class="sd">      imtype      = image type, &#39;mfs&#39; (default) - aggregate bandwidth</span>
+<span class="sd">                    &#39;cont&#39; - mfs with lines excluded</span>
+<span class="sd">                    &#39;cube&#39; - spectrally resolved cube</span>
+<span class="sd">      targettype  = &#39;sci&#39; (default) for science target</span>
+<span class="sd">                    &#39;bp&#39; for bandpass calibrator</span>
+<span class="sd">                    &#39;ph&#39; for phase calibrator</span>
+<span class="sd">                    &#39;chk&#39; for checksource</span>
+<span class="sd">                    &#39;amp&#39; for flux calibrator</span>
+<span class="sd">      stokes      = &#39;I&#39; (default) for Stokes I image</span>
+<span class="sd">                    any combination of &#39;I&#39;, &#39;Q&#39;, &#39;U&#39;, &#39;V&#39;, &#39;P&#39;, &#39;A&#39;</span>
+<span class="sd">      mous        = &#39;&#39; (default) normally this is filled by the archive.</span>
+<span class="sd">                    But if you know the MOUS UID, enter it in the format with &quot;_&quot;</span>
+<span class="sd">                    e.g.  uid___A001_X888_X66</span>
+<span class="sd">      modtext     = &#39;manual&#39; (default) - this string can be used to add text,</span>
+<span class="sd">                    i.e. a modification, to the standard file name.</span>
+<span class="sd">                    It is appended at the end of the name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">themous</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">theobject</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">thetargettype</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">targettypes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sci&#39;</span><span class="p">,</span> <span class="s1">&#39;bp&#39;</span><span class="p">,</span> <span class="s1">&#39;ph&#39;</span><span class="p">,</span> <span class="s1">&#39;chk&#39;</span><span class="p">,</span> <span class="s1">&#39;amp&#39;</span><span class="p">]</span>
+    <span class="n">thespwid</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">theimtype</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">imtypes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mfs&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">,</span> <span class="s1">&#39;cube&#39;</span><span class="p">]</span>
+    <span class="n">thestokes</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">stokess</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;IQU&#39;</span><span class="p">,</span> <span class="s1">&#39;IQUV&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">]</span>
+    <span class="n">themodtext</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="n">rval</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="n">mymsmd</span> <span class="o">=</span> <span class="n">msmdtool</span><span class="p">()</span>
+
+    <span class="c1"># MOUS</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">mous</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="n">themous</span> <span class="o">=</span> <span class="n">mous</span><span class="o">+</span><span class="s1">&#39;.&#39;</span>
+
+    <span class="c1"># object</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">mymsmd</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">mymsmd</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;ERROR: problem opening vis&quot;</span><span class="p">)</span>
+
+    <span class="n">myfieldnames</span> <span class="o">=</span> <span class="n">mymsmd</span><span class="o">.</span><span class="n">fieldnames</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">field</span><span class="p">)</span><span class="o">==</span><span class="nb">str</span> <span class="ow">and</span> <span class="p">(</span><span class="n">field</span> <span class="ow">in</span> <span class="n">myfieldnames</span><span class="p">):</span>
+        <span class="n">theobject</span> <span class="o">=</span> <span class="n">field</span>
+    <span class="k">elif</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mymsmd</span><span class="o">.</span><span class="n">nfields</span><span class="p">()):</span>
+        <span class="n">theobject</span> <span class="o">=</span> <span class="n">myfieldnames</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: invalid field: &quot;</span><span class="o">+</span><span class="n">field</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Valid entries are &quot;</span><span class="p">,</span> <span class="n">myfieldnames</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; or &quot;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">mymsmd</span><span class="o">.</span><span class="n">nfields</span><span class="p">()))</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;ERROR: invalid field: &quot;</span><span class="o">+</span><span class="n">field</span><span class="p">)</span>
+    <span class="n">myspws</span> <span class="o">=</span> <span class="n">mymsmd</span><span class="o">.</span><span class="n">spwsforfield</span><span class="p">(</span><span class="n">theobject</span><span class="p">)</span>
+    <span class="n">mymsmd</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># target type</span>
+    <span class="k">if</span> <span class="n">targettype</span> <span class="ow">in</span> <span class="n">targettypes</span><span class="p">:</span>
+        <span class="n">thetargettype</span> <span class="o">=</span> <span class="n">targettype</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: invalid targettype &quot;</span><span class="p">,</span> <span class="n">targettype</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Valid entries are &quot;</span><span class="p">,</span> <span class="n">targettypes</span><span class="p">)</span>
+        <span class="k">raise</span>  <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;ERROR: invalid targettype &quot;</span><span class="p">,</span> <span class="n">targettype</span><span class="p">)</span>
+
+    <span class="c1"># spw</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">([]):</span>
+        <span class="n">spw</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">myspw</span> <span class="ow">in</span> <span class="n">spw</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">myspw</span> <span class="ow">in</span> <span class="n">myspws</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">thespwid</span><span class="o">==</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">thespwid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">myspw</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">thespwid</span> <span class="o">=</span> <span class="n">thespwid</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">myspw</span><span class="p">)</span>                
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">myspw</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: invalid spw: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">myspw</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;. Valid entries are &quot;</span><span class="p">,</span> <span class="n">myspws</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;ERROR: invalid spw: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">myspw</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; Data type must be int.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: invalid spw: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">myspw</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;. Valid entries are &quot;</span><span class="p">,</span> <span class="n">myspws</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;ERROR: invalid spw: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">myspw</span><span class="p">))</span>
+
+    <span class="c1"># imtype</span>
+    <span class="k">if</span> <span class="n">imtype</span> <span class="ow">in</span> <span class="n">imtypes</span><span class="p">:</span>
+        <span class="n">theimtype</span> <span class="o">=</span> <span class="n">imtype</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: invalid imtype &quot;</span><span class="p">,</span> <span class="n">imtype</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Valid entries are &quot;</span><span class="p">,</span> <span class="n">imtypes</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span> <span class="s2">&quot;ERROR: invalid imtype &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">imtype</span><span class="p">))</span>
+
+    <span class="c1"># stokes</span>
+    <span class="k">if</span> <span class="n">stokes</span> <span class="ow">in</span> <span class="n">stokess</span><span class="p">:</span>
+        <span class="n">thestokes</span> <span class="o">=</span> <span class="n">stokes</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: invalid stokes &quot;</span><span class="p">,</span> <span class="n">stokes</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Valid entries are &quot;</span><span class="p">,</span> <span class="n">stokess</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;ERROR: invalid stokes &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">stokes</span><span class="p">))</span>
+
+    <span class="c1"># modifying text</span>
+
+    <span class="k">if</span> <span class="n">modtext</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">themodtext</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">modtext</span>
+        <span class="k">if</span> <span class="s1">&#39; &#39;</span> <span class="ow">in</span> <span class="n">themodtext</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;ERROR: modtext must not contain spaces&quot;</span><span class="p">)</span>
+
+    <span class="n">rval</span> <span class="o">=</span> <span class="n">themous</span><span class="o">+</span><span class="n">theobject</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">thetargettype</span><span class="o">+</span><span class="s1">&#39;.spw&#39;</span><span class="o">+</span><span class="n">thespwid</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">theimtype</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">thestokes</span><span class="o">+</span><span class="n">themodtext</span>
+
+    <span class="k">if</span> <span class="s1">&#39; &#39;</span> <span class="ow">in</span> <span class="n">rval</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;ERROR: generated name contains spaces: </span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">+</span><span class="n">rval</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;/&#39;</span> <span class="ow">in</span> <span class="n">rval</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;ERROR: generated name contains slash: </span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">+</span><span class="n">rval</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;*&#39;</span> <span class="ow">in</span> <span class="n">rval</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;ERROR: generated name contains star: </span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">+</span><span class="n">rval</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;?&#39;</span> <span class="ow">in</span> <span class="n">rval</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;ERROR: generated name contains question mark: </span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">+</span><span class="n">rval</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span> 
+
+    <span class="k">return</span> <span class="n">rval</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+pipeline.hifv.tasks
+===================
+
+.. automodule:: pipeline.hifv.tasks
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Analyzestokescubes
+      Applycals
+      Checkflag
+      Circfeedpolcal
+      Exportvlassdata
+      Finalcals
+      Fixpointing
+      FlagDeterVLA
+      Flagcal
+      Fluxboot
+      GainCurves
+      Hanning
+      Opcal
+      Pbcor
+      PlotSummary
+      Priorcals
+      Restorepims
+      Rqcal
+      Selfcal
+      Solint
+      Statwt
+      Swpowcal
+      Syspower
+      Targetflag
+      TecMaps
+      VLAExportData
+      VLAImportData
+      VLARestoreData
+      VLASetjy
+      VlaMstransform
+      Vlassmasking
+      semiFinalBPdcals
+      testBPdcals
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   analyzestokescubes
+   circfeedpolcal
+   exportdata
+   exportvlassdata
+   finalcals
+   fixpointing
+   flagging
+   fluxscale
+   gaincurves
+   hanning
+   importdata
+   mstransform
+   opcal
+   pbcor
+   plotsummary
+   priorcals
+   restoredata
+   restorepims
+   rqcal
+   selfcal
+   setmodel
+   statwt
+   swpowcal
+   syspower
+   tecmaps
+   vlassmasking

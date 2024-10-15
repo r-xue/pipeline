@@ -1,0 +1,19 @@
+pipeline.hifa.tasks.tsysflag
+============================
+
+.. automodule:: pipeline.hifa.tasks.tsysflag
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Tsysflag
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   tsysflag

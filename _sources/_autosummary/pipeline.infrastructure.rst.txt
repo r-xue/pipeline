@@ -1,0 +1,70 @@
+pipeline.infrastructure
+=======================
+
+.. automodule:: pipeline.infrastructure
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      generate_detail_plots
+      get_logger
+      set_plot_level
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CalApplication
+      CalFrom
+      CalLibrary
+      CalState
+      CalTo
+      Context
+      JobRequest
+      Pipeline
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   adapters
+   api
+   argmapper
+   basetask
+   callibrary
+   casa_tasks
+   casa_tools
+   contfilehandler
+   contfilehandler_test
+   displays
+   docutils
+   eventbus
+   exceptions
+   executeppr
+   executeppr_test
+   executevlappr
+   filenamer
+   imageheader
+   imagelibrary
+   jobrequest
+   launcher
+   logging
+   mpihelpers
+   new_pipeline_task
+   pipeline_statistics
+   pipelineqa
+   project
+   refantflag
+   renderer
+   sessionutils
+   tablereader
+   taskregistry
+   timetracker
+   utils
+   utils_test
+   vdp
+   version

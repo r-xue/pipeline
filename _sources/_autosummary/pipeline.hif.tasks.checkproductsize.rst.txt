@@ -1,0 +1,22 @@
+pipeline.hif.tasks.checkproductsize
+===================================
+
+.. automodule:: pipeline.hif.tasks.checkproductsize
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CheckProductSize
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   checkproductsize
+   qa
+   renderer
+   resultobjects

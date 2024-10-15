@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">from</span> <span class="nn">.imageparams_vlass_single_epoch_continuum</span> <span class="kn">import</span> <span class="n">ImageParamsHeuristicsVlassSeContMosaic</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube">[docs]</a>
+<span class="k">class</span> <span class="nc">ImageParamsHeuristicsVlassSeCube</span><span class="p">(</span><span class="n">ImageParamsHeuristicsVlassSeContMosaic</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">proj_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linesfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imaging_params</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="p">,</span> <span class="n">proj_params</span><span class="p">,</span> <span class="n">contfile</span><span class="p">,</span> <span class="n">linesfile</span><span class="p">,</span> <span class="n">imaging_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">=</span> <span class="s1">&#39;VLASS-SE-CUBE&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">=</span> <span class="mi">3</span>
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube.reffreq">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.reffreq">[docs]</a>
+    <span class="k">def</span> <span class="nf">reffreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deconvolver</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwsel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean reffreq parameter heuristics.</span>
+
+<span class="sd">        tclean(reffreq=None) will automatically calculate the referenece frequency using the mean frequency of the selected spws.</span>
+<span class="sd">        For VLASS-SE-CONT, this is hardcoded to &#39;3.0GHz&#39;.</span>
+<span class="sd">        For VLASS-SE-CUBE, PIPE-1401 requests this to be explicitly set as the central freq derived from individual SPW groups.</span>
+<span class="sd">        None is returned here as a fallback and hif_editimlist() will set actual values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube.meanfreq_spwgroup">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.meanfreq_spwgroup">[docs]</a>
+    <span class="k">def</span> <span class="nf">meanfreq_spwgroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_selection</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the mean frequency of a spw group (specified by a selection string, e.g. &#39;2,3,4&#39;).&quot;&quot;&quot;</span>
+
+        <span class="n">vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vislist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">spwid_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spw_selection</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+
+        <span class="n">spwfreq_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwid_list</span><span class="p">:</span>
+            <span class="n">real_spwid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual2real_spw_id</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">real_spwid</span><span class="p">)</span>
+            <span class="n">spwfreq_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">mean_frequency</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)))</span>
+        <span class="n">meanfreq_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">spwfreq_list</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">meanfreq_value</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;GHz&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube.flagpct_spwgroup">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.flagpct_spwgroup">[docs]</a>
+    <span class="k">def</span> <span class="nf">flagpct_spwgroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw_selection</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the flag percentage of a spw group (specified by a selection string, e.g. &#39;2,3,4&#39;).</span>
+
+<span class="sd">        Note: this is a quick check using existing results from hifv_flagtargetsdata().</span>
+<span class="sd">        More comprehensive (and expensive) check could be done using ImageParamsHeuristics.has_data() (also see PIPE-557)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">flagpct</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Catch exception as the success of result parsing is not guaranteed.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">results_list</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">results_list</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results_list</span><span class="p">:</span>
+                    <span class="n">result_meta</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result_meta</span><span class="p">,</span> <span class="s1">&#39;pipeline_casa_task&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">result_meta</span><span class="o">.</span><span class="n">pipeline_casa_task</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                            <span class="s1">&#39;hifv_flagtargetsdata&#39;</span><span class="p">):</span>
+                        <span class="n">flagtargets_summary</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">summaries</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result_meta</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">n_flagged</span> <span class="o">=</span> <span class="n">n_total</span> <span class="o">=</span> <span class="mf">0.</span>
+            <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spw_selection</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]:</span>
+                <span class="n">n_flagged</span> <span class="o">+=</span> <span class="n">flagtargets_summary</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">spwid</span><span class="p">)][</span><span class="s1">&#39;flagged&#39;</span><span class="p">]</span>
+                <span class="n">n_total</span> <span class="o">+=</span> <span class="n">flagtargets_summary</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">spwid</span><span class="p">)][</span><span class="s1">&#39;total&#39;</span><span class="p">]</span>
+            <span class="n">flagpct</span> <span class="o">=</span> <span class="n">n_flagged</span><span class="o">/</span><span class="n">n_total</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">flagpct</span></div>
+
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube.mask">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.mask">[docs]</a>
+    <span class="k">def</span> <span class="nf">mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hm_masking</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rootname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iteration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">results_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">clean_no_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tier-1 mask name to be used for computing Tier-1 and Tier-2 combined mask.</span>
+
+<span class="sd">            Obtain the mask name from the latest MakeImagesResult object in context.results.</span>
+<span class="sd">            If not found, then set empty string (as base heuristics).&quot;&quot;&quot;</span>
+        <span class="n">mask_list</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">results_list</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">results_list</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results_list</span><span class="p">:</span>
+                <span class="n">result_meta</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result_meta</span><span class="p">,</span> <span class="s1">&#39;pipeline_casa_task&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">result_meta</span><span class="o">.</span><span class="n">pipeline_casa_task</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                        <span class="s1">&#39;hifv_restorepims&#39;</span><span class="p">):</span>
+                    <span class="n">mask_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">mask_list</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result_meta</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Add &#39;pb&#39; string as a placeholder for cleaning without mask (pbmask only, see PIPE-977). This should</span>
+        <span class="c1"># always stand at the last place in the mask list.</span>
+        <span class="c1"># On request for first imaging stage (selfcal image) and automatically for the final imaging stage.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">clean_no_mask</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">clean_no_mask</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Cleaning without user mask is performed in pre-self calibration imaging stage &#39;</span>
+                         <span class="s1">&#39;(clean_no_mask_selfcal_image=True)&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">mask_list</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="n">mask_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;pb&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">mask_list</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>  <span class="c1"># mask is non-empty string</span>
+                <span class="n">mask_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">mask_list</span><span class="p">,</span> <span class="s1">&#39;pb&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mask_list</span> <span class="o">=</span> <span class="s1">&#39;pb&#39;</span>
+
+        <span class="c1"># In case hif_makeimages result was not found or results_list was not provided</span>
+        <span class="k">return</span> <span class="n">mask_list</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube.nterms">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.nterms">[docs]</a>
+    <span class="k">def</span> <span class="nf">nterms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean nterms parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube.stokes">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.stokes">[docs]</a>
+    <span class="k">def</span> <span class="nf">stokes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">joint_intents</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean stokes parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;IQUV&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube.psfcutoff">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.psfcutoff">[docs]</a>
+    <span class="k">def</span> <span class="nf">psfcutoff</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean psfcutoff parameter heuristics.</span>
+
+<span class="sd">        PIPE-1466: use psfcutoff=0.5 to properly fit the PSF for all spws in the VLASS Coarse Cube pipeline,</span>
+<span class="sd">        rather than the default value of 0.35 from CASA/tclean ver6.4.1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">0.5</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

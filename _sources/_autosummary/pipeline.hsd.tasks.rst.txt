@@ -1,0 +1,42 @@
+pipeline.hsd.tasks
+==================
+
+.. automodule:: pipeline.hsd.tasks
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FlagDeterALMASingleDish
+      SDApplycal
+      SDBLFlag
+      SDBaseline
+      SDExportData
+      SDImaging
+      SDImportData
+      SDK2JyCal
+      SDRestoreData
+      SDSkyCal
+      SDTsysflag
+      SerialSDATMCorrection
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   applycal
+   atmcor
+   baseline
+   baselineflag
+   common
+   exportdata
+   flagging
+   imaging
+   importdata
+   k2jycal
+   restoredata
+   skycal
+   tsysflag

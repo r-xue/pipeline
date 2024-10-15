@@ -1,0 +1,18 @@
+pipeline.hifa.tasks.common package
+==================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pipeline.hifa.tasks.common.displays
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifa.tasks.common
+   :members:
+   :undoc-members:
+   :show-inheritance:

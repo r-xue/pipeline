@@ -1,0 +1,15 @@
+pipeline.h.tasks.flagging.flagdatasetter
+========================================
+
+.. automodule:: pipeline.h.tasks.flagging.flagdatasetter
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FlagCmd
+      FlagdataSetter
+      FlagdataSetterInputs
+      FlagdataSetterResults
+   

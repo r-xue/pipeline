@@ -1,0 +1,363 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pipeline Flagging Tasks &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pipeline Releases" href="../releases.html" />
+    <link rel="prev" title="Field parameter" href="field_parameter.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pipeline Flagging Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#summary-current-pipeline-tasks">Summary current pipeline tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#general-overview-of-a-flagging-task-within-framework">General overview of a flagging task within framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-individual-flagging-tasks-work">How individual flagging tasks work</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#task-hif-rawflagchans">Task: hif_rawflagchans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#task-hif-lowgainflag">Task: hif_lowgainflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#task-hifa-tsysflag-hsd-tsysflag">Task: hifa_tsysflag, hsd_tsysflag</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Pipeline Flagging Tasks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/heuristics/FlaggingTasks.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-flagging-tasks">
+<h1>Pipeline Flagging Tasks<a class="headerlink" href="#pipeline-flagging-tasks" title="Link to this heading"></a></h1>
+<p>The Pipeline contains a number of tasks that flag bad data, based on e.g. online flags or user-provided flags. A
+sub-set of the pipeline flagging tasks will flag data based on evaluation of their own flagging heuristics, and a
+majority of this sub-set use a common Pipeline Flagging framework. The following note provides a description of the
+common flagging framework, and an in-depth explanation of individual flagging tasks.</p>
+<section id="summary-current-pipeline-tasks">
+<h2>Summary current pipeline tasks<a class="headerlink" href="#summary-current-pipeline-tasks" title="Link to this heading"></a></h2>
+<p>Status as of May 2021:</p>
+<p>The following pipeline tasks make use of the flagging framework and are part of (at least) one of the standard pipeline recipes:</p>
+<ul class="simple">
+<li><p>hif_rawflagchans: flags raw data in MS.</p></li>
+<li><p>[hifa/hsd]_tsysflag: flags Tsys caltable created by [hifa/hsd]_tsyscal.</p></li>
+<li><p>hif_lowgainflag: flags antennas in MS, based on evaluating heuristics on gain amplitude caltable created within task.</p></li>
+<li><p>hifa_wvrgcalflag: evaluates if applying WVR correction provides tangible improvement, flagging WVR caltable in process where needed, using WVR caltable created within task (using hifa_wvrgcal).</p></li>
+</ul>
+<p>The following pipeline tasks perform flagging but do not make use of the common flagging framework:</p>
+<ul class="simple">
+<li><p>hif_correctedampflag: Flag corrected - model amplitudes based on calibrators.</p></li>
+<li><p>hifa_bandpassflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the bandpass calibrator.</p></li>
+<li><p>hifa_gfluxscaleflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the phase and flux calibrators.</p></li>
+<li><p>hifa_polcalflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the polarisation calibrators.</p></li>
+<li><p>hifa_targetflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the target source.</p></li>
+<li><p>hifa_flagdata: performs basic deterministic flagging on MS (e.g. shadowed antennas, online flags, autocorrelations, etc).</p></li>
+<li><p>hifa_flagtargets: performs deterministic flagging on science target MS (input template file).</p></li>
+<li><p>hifa_fluxcalflag: locates and flags line regions in solar-system flux calibrators.</p></li>
+</ul>
+</section>
+<section id="general-overview-of-a-flagging-task-within-framework">
+<h2>General overview of a flagging task within framework<a class="headerlink" href="#general-overview-of-a-flagging-task-within-framework" title="Link to this heading"></a></h2>
+<p>The main flagging pipeline tasks are done in two steps:</p>
+<ol>
+<li><p>Generate a “flagging view”</p>
+<p>Some quantity of interest is taken from the MS or a caltable, depending on the flagging task, and this quantity is represented in a 1D or 2D matrix called the “flagging view”. Flagging views are typically generated separately for each spw, often also separately for each polarisation. Typical examples of flagging views include:</p>
+<ul class="simple">
+<li><p>measured data as function of Antenna1 and time (2D, e.g. Tsysflag)</p></li>
+<li><p>measured data as function of channel and baseline (2D, e.g. Rawflagchans)</p></li>
+<li><p>median normalized Tsys as function of channel (1D, see Tsysflag)</p></li>
+</ul>
+</li>
+<li><p>Flag the “view”
+The flagging view is evaluated against a series of 1 or more flagging rules. Each flagging rule applies a heuristic to the flagging view to identify what elements in the view need to be flagged, and creates a corresponding Flag Command.</p>
+<p>In a single flagging pipeline task, a list of Flag Commands are compiled from the evaluation of all flagging views, and these flagging commands are immediately applied to the appropriate MS or caltable before the end of the flagging task.</p>
+</li>
+</ol>
+</section>
+<section id="how-individual-flagging-tasks-work">
+<h2>How individual flagging tasks work<a class="headerlink" href="#how-individual-flagging-tasks-work" title="Link to this heading"></a></h2>
+<section id="task-hif-rawflagchans">
+<h3>Task: hif_rawflagchans<a class="headerlink" href="#task-hif-rawflagchans" title="Link to this heading"></a></h3>
+<p>This task uses raw data for the intent = ‘BANDPASS’ to identify outliers. Flagging commands for outlier data points are applied to all intents in the MS.</p>
+<p><strong>View generation</strong></p>
+<p>Rawflagchans creates a separate view for each spw and each polarisation. Each view is created by calculating the following:</p>
+<ul class="simple">
+<li><p>calculate average of measured data as function of baseline vs. channel</p></li>
+<li><p>for each baseline, subtract the median value within this baseline value from this baseline</p></li>
+<li><p>for each channel, subtract the median value within this channel from this channel</p></li>
+</ul>
+<p><strong>View flagging</strong></p>
+<p>The views are evaluated against the following two flagging rules:</p>
+<ol>
+<li><p>“bad quadrant” matrix flagging rule</p>
+<p>This starts with the “baseline” vs. “channel” flagging view. In this view, some data points may already be flagged, e.g. due to an earlier pipeline stage.</p>
+<p>First, outliers are identified as those data points in the flagging view whose value deviates from the median value of all non-flagged data points by a threshold-factor * the median absolute deviation of the values of all non-flagged data points, where the threshold is ‘fbq_hilo_limit’ (default: 8.0).</p>
+<p>In formula:</p>
+<p><code class="docutils literal notranslate"><span class="pre">flagging</span> <span class="pre">mask</span> <span class="pre">=</span> <span class="pre">(data</span> <span class="pre">-</span> <span class="pre">median(all</span> <span class="pre">non-flagged</span> <span class="pre">data))</span> <span class="pre">&gt;</span> <span class="pre">(MAD(all</span> <span class="pre">non-flagged</span> <span class="pre">data)</span> <span class="pre">*</span> <span class="pre">fbq_hilo_limit)</span></code></p>
+<p>Next, the flagging view is considered as split up in 4 channel quadrants, and each antenna is evaluated separately as follows:</p>
+<ul class="simple">
+<li><p>select baselines belonging to antenna and select channels belonging to quadrant</p></li>
+<li><p>determine number of newly found outlier datapoints within selection</p></li>
+<li><p>determine number of originally unflagged datapoints within selection</p></li>
+<li><p>determine fraction of “# of newly found outliers” over “# of originally unflagged datapoints”</p></li>
+<li><p>if the latter fraction exceeds the fraction threshold ‘fbq_antenna_frac_limit’ (default: 0.2), then a flagging command is generated that will flag all channels within the evaluated quadrant for the evaluated antenna.</p></li>
+<li><p>otherwise, no action is taken (i.e. the newly found outlier datapoints are not individually flagged by this rule)</p></li>
+</ul>
+<p>Next, the flagging view is still considered as split up in 4 channel quadrants, and each baseline is evaluated separately, as follows:</p>
+<ul class="simple">
+<li><p>select baseline and select channels belong to quadrant</p></li>
+<li><p>determine number of newly found outlier datapoints within selection</p></li>
+<li><p>determine number of originally unflagged datapoints within selection</p></li>
+<li><p>determine fraction of “# of newly found outliers” over “# of originally unflagged datapoints”</p></li>
+<li><p>if the latter fraction exceeds the fraction threshold ‘fbq_baseline_frac_limit’ (default: 1.0), then a flagging command is generated that will flag all channels within the evaluated quadrant for the evaluated baseline.</p></li>
+<li><p>otherwise, no action is taken (i.e. the newly found outlier datapoints are not individually flagged by this rule)</p></li>
+</ul>
+</li>
+<li><p>“outlier” matrix flagging rule</p>
+<p>Data points in the flagging view are identified as outliers if their value deviates from the median value of all non-flagged data points by a threshold-factor * the median absolute deviation of the values of all non-flagged data points, where the threshold is ‘fhl_limit’ (default: 20.0).</p>
+<p>In formula:</p>
+<p><code class="docutils literal notranslate"><span class="pre">flagging</span> <span class="pre">mask</span> <span class="pre">=</span> <span class="pre">(data</span> <span class="pre">-</span> <span class="pre">median(all</span> <span class="pre">non-flagged</span> <span class="pre">data))</span> <span class="pre">&gt;</span> <span class="pre">(MAD(all</span> <span class="pre">non-flagged</span> <span class="pre">data)</span> <span class="pre">*</span> <span class="pre">fhl_limit)</span></code></p>
+<p>Flagging commands are generated for each of the identified outlier data points.</p>
+<p>If the number of data points in the flagging view are smaller than the minimum sample ‘fhl_minsample’ (default: 5), then no flagging is attempted.</p>
+</li>
+</ol>
+</section>
+<section id="task-hif-lowgainflag">
+<h3>Task: hif_lowgainflag<a class="headerlink" href="#task-hif-lowgainflag" title="Link to this heading"></a></h3>
+<p>This task first creates a phased-up bandpass caltable, then a gain phase caltable, and finally a gain amplitude caltable. This final gain amplitude caltable is used to identify antennas with outlier gains, for each spw. Flagging commands for outlier antennas (per spw) are applied to the entire MS.</p>
+<p><strong>View generation</strong></p>
+<p>A separate view is created for spw. Each view is a matrix with axes “scan” vs. “antenna”. Each point in the matrix is the absolute gain amplitude for that antenna/scan.</p>
+<p><strong>View flagging</strong></p>
+<p>The views are evaluated against the “nmedian” matrix flagging rule, where data points are identified as outliers if:</p>
+<ol class="simple">
+<li><p>their value is smaller than a threshold-factor * median of all non-flagged data points, where the threshold is ‘fnm_lo_limit’, or,</p></li>
+<li><p>their value is larger than a threshold-factor * median of all non-flagged data points, where the threshold is ‘fnm_hi_limit’.</p></li>
+</ol>
+<p>Flagging commands are generated for each of the identified outlier data points.</p>
+</section>
+<section id="task-hifa-tsysflag-hsd-tsysflag">
+<h3>Task: hifa_tsysflag, hsd_tsysflag<a class="headerlink" href="#task-hifa-tsysflag-hsd-tsysflag" title="Link to this heading"></a></h3>
+<p>This task flags the Tsys cal table created by the [hifa/hsd]_tsyscal pipeline task.</p>
+<p>Tsysflag provides six separate flagging metrics, where each metric creates its own flagging view and has its own corresponding flagging rule(s).</p>
+<p>In the current standard pipeline, all six metrics are active, and evaluated in the order set by “metric_order” (default: ‘nmedian, derivative, edgechans, fieldshape, birdies, toomany’).</p>
+<ul>
+<li><p>Metric 1: “nmedian”</p>
+<p><strong>View generation</strong></p>
+<p>A separate view is generated for each polarisation and each spw. Each view is a matrix with axes “time” vs. “antenna”. Each point in the matrix is the median value of the Tsys spectrum for that antenna/time.</p>
+<p><strong>View flagging</strong></p>
+<p>The views are evaluated against the “nmedian” matrix flagging rule, where data points are identified as outliers if their value is larger than a threshold-factor * median of all non-flagged data points, where the threshold is ‘fnm_limit’ (default: 2.0).</p>
+<p>Flagging commands are generated for each of the identified outlier data points.</p>
+</li>
+<li><p>Metric 2: “derivative”</p>
+<p><strong>View generation</strong></p>
+<p>A separate view is generated for each polarisation and each spw. Each view is a matrix with axes “time” vs. “antenna”. Each point in the matrix is calculated as follows:</p>
+<ul class="simple">
+<li><p>calculate “valid_data” as the channel-to-channel difference in Tsys for that antenna/timestamp (for unflagged channels)</p></li>
+<li><p>calculate <code class="docutils literal notranslate"><span class="pre">median(</span> <span class="pre">abs(</span> <span class="pre">valid_data</span> <span class="pre">-</span> <span class="pre">median(valid_data)</span> <span class="pre">)</span> <span class="pre">)</span> <span class="pre">*</span> <span class="pre">100.0</span></code></p></li>
+</ul>
+<p><strong>View flagging</strong></p>
+<p>The views are evaluated against the “max abs” matrix flagging rule, where data points are identified as outliers if their absolute value exceeds the threshold “fd_max_limit” (default: 5 for hsd_tsysflag, 13 for hifa_tsysflag).</p>
+<p>Flagging commands are generated for each of the identified outlier data points.</p>
+</li>
+<li><p>Metric 3: “edgechans”</p>
+<p><strong>View generation</strong></p>
+<p>A separate view is generated for each spw and each of these intents: ATMOSPHERE, BANDPASS, and AMPLITUDE. Each view contains a “median” Tsys spectrum where for each channel the value is calculated as the median value of all selected (spw,intent) Tsys spectra in that channel (this combines data from all antennas together).</p>
+<p><strong>View flagging</strong></p>
+<p>The views are evaluated against the “edges” vector flagging rule, which flags all channels from the outmost edges (first and last channel) until the first channel for which the channel-to-channel difference first falls below a threshold * the median channel-to-channel difference, where the threshold is “fe_edge_limit” (default: 3.0).</p>
+<p>A single flagging command is generated for all channels newly identified as “edge channels”.</p>
+</li>
+<li><p>Metric 4: “fieldshape”</p>
+<p><strong>View generation</strong></p>
+<p>A separate view is generated for each spw and each polarisation. Each view is a matrix with axes “time” vs. “antenna”. Each point in the matrix is a measure of the difference of the Tsys spectrum for that time/ant from the median of all Tsys spectra for that ant/spw in the “reference” fields that belong to the reference intent specified by “ff_refintent” (default: “BANDPASS”).</p>
+<p>The exact fieldshape value is calculated as:</p>
+<p><code class="docutils literal notranslate"><span class="pre">metric</span> <span class="pre">=</span> <span class="pre">100</span> <span class="pre">*</span> <span class="pre">mean(abs(normalised</span> <span class="pre">tsys</span> <span class="pre">-</span> <span class="pre">reference</span> <span class="pre">normalised</span> <span class="pre">tsys))</span></code></p>
+<p>where a ‘normalised’ array is defined as: “array / median(array)”</p>
+<p><strong>View flagging</strong></p>
+<p>The views are evaluated against the “max abs” matrix flagging rule, where data points are identified as outliers if their absolute value exceeds the threshold “ff_max_limit” (default: 13).</p>
+</li>
+<li><p>Metric 5: “birdies”</p>
+<p><strong>View generation</strong></p>
+<p>A separate view is generated for each spw and each antenna. Each view contains a “difference” Tsys spectrum calculated as:
+“channel-by-channel median of Tsys spectra for antenna within spw” - “channel-by-channel median of Tsys spectra for all antennas within spw”.</p>
+<p><strong>View flagging</strong></p>
+<p>The views are evaluated against the “sharps” vector flagging rule, which flags each view in two passes:</p>
+<ol class="simple">
+<li><p>flag all channels whose absolute difference in value to the following channel exceeds a threshold “fb_sharps_limit” (default: 0.15)</p></li>
+<li><p>around each newly flagged channel, flag neighbouring channels until their channel-to-channel difference falls below 2 times the median channel-to-channel difference (this is intended to flag the wings of sharp features)</p></li>
+</ol>
+<p>A single flagging command is generated for all channels newly identified as “birdies”.</p>
+</li>
+<li><p>Metric 6: “toomany”</p>
+<p><strong>View generation</strong></p>
+<p>A separate view is generated for each polarisation and each spw. Each view is a matrix with axes “time” vs. “antenna”. Each point in the matrix is the median value of the Tsys spectrum for that antenna/time. (This is the same as for “nmedian” metric).</p>
+<p><strong>View flagging</strong></p>
+<p>The views are evaluated against two separate flagging rules:</p>
+<ol>
+<li><p>“tmf” (too many flags)</p>
+<p>This evaluates each timestamp one-by-one, flagging an entire timestamp when the fraction of flagged antennas within this timestamp exceeds the threshold “tmf1_limit” (default: 0.666).</p>
+<p>Flagging commands are generated per timestamp.</p>
+</li>
+<li><p>“tmef” (too many entirely flagged)</p>
+<p>This evaluates all timestamps at once, flagging all antennas for all timestamps within current view (spw, pol) when the fraction of antennas that are entirely flagged in all timestamps exceeds the threshold “tmef1_limit” (default: 0.666).</p>
+<p>Flagging commands are generated for each data point in the view that is newly flagged.</p>
+</li>
+</ol>
+</li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="field_parameter.html" class="btn btn-neutral float-left" title="Field parameter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../releases.html" class="btn btn-neutral float-right" title="Pipeline Releases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

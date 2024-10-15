@@ -1,0 +1,372 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.gaincalsnr.gaincalsnr &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.gaincalsnr.gaincalsnr</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.gaincalsnr.gaincalsnr</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics</span> <span class="kn">import</span> <span class="n">snr</span> <span class="k">as</span> <span class="n">snr_heuristics</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="GaincalSnrInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincalsnr.html#pipeline.hifa.tasks.gaincalsnr.gaincalsnr.GaincalSnrInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">GaincalSnrInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Return field names in the current ms that have been</span>
+        <span class="c1"># observed with the desired intent</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+        <span class="n">fieldids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">sorted</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">]))</span> 
+        <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">fieldid</span> <span class="ow">in</span> <span class="n">fieldids</span><span class="p">:</span> 
+            <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">fieldid</span><span class="p">)</span>
+            <span class="n">fieldnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">field_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">fieldnames</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">field_names</span><span class="p">)</span>
+
+    <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;PHASE&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># Get the science spw ids</span>
+        <span class="n">sci_spws</span> <span class="o">=</span> <span class="p">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)}</span>
+
+        <span class="c1"># Get the phase spw ids</span>
+        <span class="n">phase_spws</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">):</span>
+            <span class="n">phase_spws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">spws</span><span class="p">)</span>
+        <span class="n">phase_spws</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">phase_spws</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">sci_spws</span><span class="p">)</span>
+
+        <span class="c1"># Get science target spw ids</span>
+        <span class="n">target_spws</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">):</span>
+            <span class="n">target_spws</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">spws</span><span class="p">])</span>
+        <span class="n">target_spws</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">target_spws</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">sci_spws</span><span class="p">)</span>
+
+        <span class="c1"># Compute the intersection of the bandpass and science target spw</span>
+        <span class="c1"># ids</span>
+        <span class="c1">#    Sanity check not reuired for more advanced observingr modes</span>
+        <span class="n">spws</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">phase_spws</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">target_spws</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">spws</span><span class="p">:</span>
+            <span class="n">spws</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">phase_spws</span><span class="p">)</span>
+
+        <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">spws</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spws</span><span class="p">)</span>
+
+    <span class="n">phasesnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">25.0</span><span class="p">)</span>
+    <span class="n">bwedgefrac</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.03125</span><span class="p">)</span>
+    <span class="n">hm_nantennas</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;unflagged&#39;</span><span class="p">)</span>
+    <span class="n">maxfracflagged</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.90</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phasesnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bwedgefrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">hm_nantennas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxfracflagged</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">GaincalSnrInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phasesnr</span> <span class="o">=</span> <span class="n">phasesnr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bwedgefrac</span> <span class="o">=</span> <span class="n">bwedgefrac</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_nantennas</span> <span class="o">=</span> <span class="n">hm_nantennas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxfracflagged</span> <span class="o">=</span> <span class="n">maxfracflagged</span></div>
+
+
+
+<div class="viewcode-block" id="GaincalSnr">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincalsnr.html#pipeline.hifa.tasks.gaincalsnr.gaincalsnr.GaincalSnr">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_gaincalsnr&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">GaincalSnr</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">GaincalSnrInputs</span>
+
+<div class="viewcode-block" id="GaincalSnr.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincalsnr.html#pipeline.hifa.tasks.gaincalsnr.gaincalsnr.GaincalSnr.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+
+        <span class="c1"># Simplify the inputs</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Turn the CASA field name and spw id lists into Python lists</span>
+        <span class="n">fieldlist</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="n">spwlist</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+
+        <span class="c1"># Log the data selection choices</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Estimating gaincal solution SNR for MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    Setting gaincal intent to </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    Selecting gaincal fields </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">fieldlist</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    Selecting gaincal spws </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">spwlist</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    Setting requested gaincal snr to </span><span class="si">%0.1f</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">phasesnr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fieldlist</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">spwlist</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    No gaincal data&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">GaincalSnrResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Compute the bandpass solint parameters and return a solution</span>
+        <span class="c1"># dictionary</span>
+        <span class="n">snr_dict</span> <span class="o">=</span> <span class="n">snr_heuristics</span><span class="o">.</span><span class="n">estimate_gaincalsnr</span><span class="p">(</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_nantennas</span><span class="p">,</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">maxfracflagged</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">bwedgefrac</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">snr_dict</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No SNR dictionary&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">GaincalSnrResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Construct the results object</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_results</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">,</span> <span class="n">snr_dict</span><span class="p">)</span>
+
+        <span class="c1"># Return the results</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="GaincalSnr.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincalsnr.html#pipeline.hifa.tasks.gaincalsnr.gaincalsnr.GaincalSnr.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="c1"># Get final results from the spw dictionary</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_results</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">snr_dict</span><span class="p">):</span>
+
+        <span class="c1"># Initialize result structure.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">GaincalSnrResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="n">spwidlist</span><span class="p">)</span>
+
+        <span class="c1"># Initialize the lists</span>
+        <span class="n">scantimes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">inttimes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sensitivities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">snrs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Loop over the spws. Values for spws with</span>
+        <span class="c1"># not dictionary entries are set to None</span>
+        <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwidlist</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">spwid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">snr_dict</span><span class="p">:</span>
+                <span class="n">scantimes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">inttimes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">snrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">scantimes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;scantime_minutes&#39;</span><span class="p">])</span>
+                <span class="n">inttimes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;inttime_minutes&#39;</span><span class="p">])</span>
+                <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;sensitivity_per_scan_mJy&#39;</span><span class="p">])</span>
+                <span class="n">snrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">snr_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;snr_per_scan&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Populate the result.</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">scantimes</span> <span class="o">=</span> <span class="n">scantimes</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">inttimes</span> <span class="o">=</span> <span class="n">inttimes</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">sensitivities</span> <span class="o">=</span> <span class="n">sensitivities</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">snrs</span> <span class="o">=</span> <span class="n">snrs</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<span class="c1"># The results class</span>
+<div class="viewcode-block" id="GaincalSnrResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincalsnr.html#pipeline.hifa.tasks.gaincalsnr.gaincalsnr.GaincalSnrResults">[docs]</a>
+<span class="k">class</span> <span class="nc">GaincalSnrResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="p">[],</span> <span class="n">scantimes</span><span class="o">=</span><span class="p">[],</span> <span class="n">inttimes</span><span class="o">=</span><span class="p">[],</span>
+                 <span class="n">sensitivities</span><span class="o">=</span><span class="p">[],</span> <span class="n">snrs</span><span class="o">=</span><span class="p">[]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialise the results object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GaincalSnrResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+
+        <span class="c1"># Spw list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwids</span> <span class="o">=</span> <span class="n">spwids</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">scantimes</span> <span class="o">=</span> <span class="n">scantimes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inttimes</span> <span class="o">=</span> <span class="n">inttimes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sensitivities</span> <span class="o">=</span> <span class="n">sensitivities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snrs</span> <span class="o">=</span> <span class="n">snrs</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">spwids</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;GaincalSnrResults:</span><span class="se">\n\t</span><span class="s1">No gaincal SNRs computed&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;GaincalSnrResults:</span><span class="se">\n</span><span class="s1">vis </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="s1">&#39;Gaincal SNRs</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spwids</span><span class="p">)):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> \
+                    <span class="s2">&quot;    spwid </span><span class="si">%2d</span><span class="s2"> sensitivity: </span><span class="si">%10.3f</span><span class="s2"> SNR: </span><span class="si">%8.3f</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> \
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensitivities</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">snrs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">line</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

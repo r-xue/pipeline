@@ -1,0 +1,21 @@
+pipeline.hsd.tasks.baselineflag.SDFlagPlotter
+=============================================
+
+.. automodule:: pipeline.hsd.tasks.baselineflag.SDFlagPlotter
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      casa5style_plot
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataTable
+      MeasurementSet
+      MplAxes
+      SDFlagPlotter
+   

@@ -1,0 +1,556 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.wvrgcal.wvrg_qa &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.wvrgcal.wvrg_qa</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.wvrgcal.wvrg_qa</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">commonresultobjects</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">list_to_str</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="calculate_qa_numbers">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcal.html#pipeline.hifa.tasks.wvrgcal.wvrg_qa.calculate_qa_numbers">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_qa_numbers</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">result_wvrinfos</span><span class="p">,</span> <span class="n">PHnoisy</span><span class="p">,</span> <span class="n">BPnoisy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate a single number from the qa views stored in result.</span>
+
+<span class="sd">    result -- The Qa2Result object containing the Qa2 views.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">qa_per_view</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">descriptions</span><span class="p">():</span>
+        <span class="n">qa_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">last</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+
+        <span class="n">qa_data</span> <span class="o">=</span> <span class="n">qa_result</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">qa_flag</span> <span class="o">=</span> <span class="n">qa_result</span><span class="o">.</span><span class="n">flag</span>
+
+        <span class="c1"># qa score is no-wvr rms / with-wvr rms</span>
+        <span class="n">qa_per_view</span><span class="p">[</span><span class="n">description</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">qa_data</span><span class="p">[</span><span class="n">qa_flag</span> <span class="o">==</span> <span class="kc">False</span><span class="p">])</span>
+
+        <span class="c1"># PIPE-1509</span>
+        <span class="c1"># as we are looping the descriptions (i.e. BANDPASS and PHASE intents)</span>
+        <span class="c1"># we can already assign the overall score for the</span>
+        <span class="c1"># new clause, if PHnoisy==True</span>
+        <span class="k">if</span> <span class="n">PHnoisy</span> <span class="ow">and</span> <span class="s1">&#39;BANDPASS&#39;</span> <span class="ow">in</span> <span class="n">description</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">overall_score</span> <span class="o">=</span> <span class="n">qa_per_view</span><span class="p">[</span><span class="n">description</span><span class="p">]</span>
+
+    <span class="n">result</span><span class="o">.</span><span class="n">view_score</span> <span class="o">=</span> <span class="n">qa_per_view</span>
+
+    <span class="c1"># if the PHnoisy was not triggered </span>
+    <span class="c1"># we do the median as was done pre-PIPE-1509</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">PHnoisy</span> <span class="ow">or</span> <span class="n">result</span><span class="o">.</span><span class="n">overall_score</span> <span class="o">==</span> <span class="p">{}:</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">overall_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">qa_per_view</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+    <span class="c1"># Optional for PIPE-1509</span>
+    <span class="c1"># check if disc and rms values from the WVR code are </span>
+    <span class="c1"># particularly high overall </span>
+
+    <span class="c1"># hard coded limits - could be inputs - but not exposed</span>
+    <span class="c1"># PLWG to tweak later</span>
+    <span class="n">disc_max</span> <span class="o">=</span> <span class="mf">500.</span>
+    <span class="n">rms_max</span> <span class="o">=</span> <span class="mf">500.</span>
+
+    <span class="n">disc_list</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">rms_list</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">WVRinfo</span> <span class="ow">in</span> <span class="n">result_wvrinfos</span><span class="p">:</span>
+        <span class="n">disc_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">WVRinfo</span><span class="o">.</span><span class="n">disc</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">rms_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">WVRinfo</span><span class="o">.</span><span class="n">rms</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="c1"># now just a remcloud trigger boolean - for tracking</span>
+    <span class="c1"># read and warn in scorecalcualtor </span>
+    <span class="n">suggest_remcloud</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">overall_score</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">disc_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">disc_max</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">rms_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">rms_max</span><span class="p">:</span>
+            <span class="n">suggest_remcloud</span> <span class="o">=</span> <span class="kc">True</span> 
+
+    <span class="k">return</span> <span class="n">suggest_remcloud</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_view">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcal.html#pipeline.hifa.tasks.wvrgcal.wvrg_qa.calculate_view">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_view</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">nowvrtable</span><span class="p">,</span> <span class="n">withwvrtable</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">qa_intent</span><span class="p">):</span>
+
+    <span class="c1"># get phase rms results for no-wvr case and with-wvr case</span>
+    <span class="n">nowvr_results</span> <span class="o">=</span> <span class="n">calculate_phase_rms</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">nowvrtable</span><span class="p">,</span> <span class="n">qa_intent</span><span class="p">)</span>
+    <span class="n">wvr_results</span> <span class="o">=</span> <span class="n">calculate_phase_rms</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">withwvrtable</span><span class="p">,</span> <span class="n">qa_intent</span><span class="p">)</span>
+
+    <span class="c1"># Limits hard coded to 90. - could be flexible stage inputs?</span>
+    <span class="c1"># but probably not - i.e. people shouldn&#39;t mess with this heuristic </span>
+    <span class="c1"># - later PLWG might adjust separatly to tweak scores</span>
+    <span class="n">PHlim</span> <span class="o">=</span> <span class="mf">90.</span>
+    <span class="n">BPlim</span> <span class="o">=</span> <span class="mf">90.</span>
+
+    <span class="c1"># Initial flag settings</span>
+    <span class="n">PHnoisy</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">BPnoisy</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">BPgood</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">PHgood</span> <span class="o">=</span> <span class="kc">False</span>
+    
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">wvr_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">filename</span>
+
+        <span class="c1"># the ratio withwvr/nowvr is the view we want</span>
+        <span class="n">nowvr_data</span> <span class="o">=</span> <span class="n">nowvr_results</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">nowvr_flag</span> <span class="o">=</span> <span class="n">nowvr_results</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">flag</span>
+        <span class="n">wvr_data</span> <span class="o">=</span> <span class="n">wvr_results</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">wvr_flag</span> <span class="o">=</span> <span class="n">wvr_results</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">flag</span>
+
+        <span class="n">oldseterr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span> 
+        <span class="n">data</span> <span class="o">=</span> <span class="n">wvr_data</span> <span class="o">/</span> <span class="n">nowvr_data</span>
+        <span class="n">data_flag</span> <span class="o">=</span> <span class="p">(</span><span class="n">nowvr_flag</span> <span class="o">|</span> <span class="n">wvr_flag</span> <span class="o">|</span> <span class="p">(</span><span class="n">nowvr_data</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">data_flag</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">data</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">data_flag</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="o">**</span><span class="n">oldseterr</span><span class="p">)</span> 
+
+        <span class="c1"># PIPE-1509</span>
+        <span class="c1">## as above code checked for flag when phase RMS was zero/nan etc</span>
+        <span class="c1">## use that to now make the phase RMS assessment </span>
+        <span class="c1">## for only unflagged data and pass the &#39;noisy&#39; parameters to result</span>
+        
+        <span class="c1"># use the 80th percentile - why:</span>
+        <span class="c1"># 1) if the phase has pure noise all ants and scans will be &gt; 100deg</span>
+        <span class="c1">#    - this is designed to catch low SNR, not variable atmosphere</span>
+        <span class="c1">#    -- this is used to decide if we use a combined PH and BP score or BP only</span>
+        <span class="c1"># 2) for the bandpass, this will select the &#39;worse&#39; antennas which</span>
+        <span class="c1">#    will typically relate to longer baselines and we</span>
+        <span class="c1">#    and the bandpass should have v.high SNR in phase soln.</span>
+        <span class="c1">#    these are the &#39;longer&#39; ones and hence 80th Percentile is good.</span>
+        <span class="c1">#    This metric really tracks the varying atmopshere</span>
+        <span class="c1">#    - this is used only in final score to say phase RMS is high</span>
+        <span class="c1">#      due to real variability not low SNR</span>
+        <span class="c1"># Due to one particualr problem dataset MOUS</span>
+        <span class="c1"># the max BP RMS is 93, 80th percentile is 84.9</span>
+        <span class="c1"># thus set limit to trigger if max &gt; 90 and 80th % over 85</span>
+        <span class="c1"># few other LB data tested have phase RMS &lt; 50 but</span>
+        <span class="c1"># wider data required - after tarball??</span>
+
+        <span class="n">perhi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">wvr_data</span><span class="p">[</span><span class="n">data_flag</span><span class="o">==</span><span class="kc">False</span><span class="p">],</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="n">perhi_nowvr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">nowvr_data</span><span class="p">[</span><span class="n">data_flag</span><span class="o">==</span><span class="kc">False</span><span class="p">],</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="n">bpmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">wvr_data</span><span class="p">[</span><span class="n">data_flag</span><span class="o">==</span><span class="kc">False</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;PHASE&#39;</span> <span class="ow">and</span> <span class="n">perhi</span> <span class="o">&gt;</span> <span class="n">PHlim</span><span class="p">:</span>
+             <span class="n">PHnoisy</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">v</span><span class="o">.</span><span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;BANDPASS&#39;</span> <span class="ow">and</span> <span class="n">perhi</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">BPlim</span><span class="o">-</span><span class="mf">5.</span><span class="p">)</span> <span class="ow">and</span> <span class="n">bpmax</span> <span class="o">&gt;</span> <span class="n">BPlim</span><span class="p">:</span>
+             <span class="n">BPnoisy</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># PIPE-1837</span>
+        <span class="c1"># simply add a bool again for &#39;good&#39; phase rms</span>
+        <span class="c1"># define this as &lt;1 radian over all the data averaged</span>
+        <span class="c1"># here just return the values for both, do logic for score elsewhere</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;phase rms is : &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">perhi</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;PHASE&#39;</span> <span class="ow">and</span> <span class="n">perhi_nowvr</span> <span class="o">&lt;</span> <span class="mf">57.1</span><span class="p">:</span>
+            <span class="n">PHgood</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">v</span><span class="o">.</span><span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;BANDPASS&#39;</span> <span class="ow">and</span> <span class="n">perhi_nowvr</span> <span class="o">&lt;</span> <span class="mf">57.1</span><span class="p">:</span>
+            <span class="n">BPgood</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1">############################</span>
+
+        <span class="n">axes</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">axes</span>
+        <span class="n">improvement_result</span> <span class="o">=</span> <span class="n">commonresultobjects</span><span class="o">.</span><span class="n">ImageResult</span><span class="p">(</span>
+          <span class="n">v</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+          <span class="n">datatype</span><span class="o">=</span><span class="s1">&#39;with-wvr phase rms / no-wvr phase rms&#39;</span><span class="p">,</span>
+          <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="n">data_flag</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">improvement_result</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">improvement_result</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">PHnoisy</span><span class="p">,</span> <span class="n">BPnoisy</span><span class="p">,</span> <span class="n">PHgood</span><span class="p">,</span> <span class="n">BPgood</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_phase_rms">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcal.html#pipeline.hifa.tasks.wvrgcal.wvrg_qa.calculate_phase_rms">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_phase_rms</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">gaintable</span><span class="p">,</span> <span class="n">qa_intent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    tsystable -- CalibrationTableData object giving access to the wvrg</span>
+<span class="sd">                 caltable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># raise an exception when np encounters any error</span>
+    <span class="n">olderr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">phase_rms_results</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">gaintable</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getkeyword</span><span class="p">(</span><span class="s1">&#39;MSName&#39;</span><span class="p">)</span>
+
+            <span class="c1"># access field names via domain object</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span>
+
+            <span class="c1"># for each intent in the QA intent list, create a phase RMS result</span>
+            <span class="n">intent_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">qa_intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intent_list</span><span class="p">:</span>                
+                <span class="c1"># identify scans corresponding to this intent</span>
+                <span class="n">intent_scans</span> <span class="o">=</span> <span class="p">[</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">scans</span> <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">intent_scans</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">sb</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;SCAN_NUMBER in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">list_to_str</span><span class="p">(</span><span class="n">intent_scans</span><span class="p">))</span>
+                <span class="n">spectral_window_id</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID&#39;</span><span class="p">)</span>
+                <span class="n">spwids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spectral_window_id</span><span class="p">))</span>
+                <span class="n">antenna1</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA1&#39;</span><span class="p">)</span>
+                <span class="n">antennas</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">antenna1</span><span class="p">)</span>
+                <span class="n">timecol</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Are there any times.</span>
+                <span class="n">times</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">timecol</span><span class="p">))</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">sb</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+                    <span class="k">continue</span>
+                <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+
+                <span class="c1"># look for continuously sampled chunks of data. Sometimes</span>
+                <span class="c1"># there are small gaps of 10-15 sec within lengths of data</span>
+                <span class="c1"># that we want to regard as continuous, so make the minimum</span>
+                <span class="c1"># &#39;gap&#39; larger than this.</span>
+                <span class="n">time_chunks</span> <span class="o">=</span> <span class="n">findchunks</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">gap_time</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
+
+                <span class="n">cparam</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">)</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">)</span>
+                <span class="n">rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">sb</span><span class="o">.</span><span class="n">nrows</span><span class="p">())</span>
+
+                <span class="c1"># to eliminate the effect of the refant on the results </span>
+                <span class="c1"># (i.e. phase rms of refant is always 0) we first</span>
+                <span class="c1"># construct 8 versions of the gain table with the entries</span>
+                <span class="c1"># corresponding to 8 different values for the refant.</span>
+                <span class="n">cparam_refant</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">flag_refant</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">refants</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">antennas</span><span class="p">)[:</span><span class="mi">8</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">refant</span> <span class="ow">in</span> <span class="n">refants</span><span class="p">:</span>
+                    <span class="n">cparam_refant</span><span class="p">[</span><span class="n">refant</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cparam</span><span class="p">)</span>
+                    <span class="n">flag_refant</span><span class="p">[</span><span class="n">refant</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwids</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
+                            <span class="c1"># gains for all antennas at time t</span>
+                            <span class="n">selected_rows</span> <span class="o">=</span> <span class="n">rows</span><span class="p">[</span>
+                                <span class="p">(</span><span class="n">spectral_window_id</span> <span class="o">==</span> <span class="n">spwid</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">timecol</span> <span class="o">==</span> <span class="n">t</span><span class="p">)]</span>
+                            <span class="n">gain</span> <span class="o">=</span> <span class="n">cparam_refant</span><span class="p">[</span><span class="n">refant</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">selected_rows</span><span class="p">]</span>
+                            <span class="c1"># gain_flag = flag_refant[refant][0, 0, selected_rows]</span>
+
+                            <span class="c1"># gain for refant at time t</span>
+                            <span class="n">refant_row</span> <span class="o">=</span> <span class="n">rows</span><span class="p">[(</span><span class="n">spectral_window_id</span> <span class="o">==</span> <span class="n">spwid</span><span class="p">)</span>
+                                              <span class="o">&amp;</span> <span class="p">(</span><span class="n">timecol</span> <span class="o">==</span> <span class="n">t</span><span class="p">)</span>
+                                              <span class="o">&amp;</span> <span class="p">(</span><span class="n">antenna1</span> <span class="o">==</span> <span class="n">refant</span><span class="p">)]</span>
+                            <span class="k">if</span> <span class="n">refant_row</span><span class="p">:</span>
+                                <span class="n">refant_gain</span> <span class="o">=</span> \
+                                    <span class="n">cparam_refant</span><span class="p">[</span><span class="n">refant</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">refant_row</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                                <span class="n">refant_gain_flag</span> <span class="o">=</span> \
+                                    <span class="n">flag_refant</span><span class="p">[</span><span class="n">refant</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">refant_row</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">refant_gain_flag</span> <span class="o">=</span> <span class="kc">True</span>
+
+                            <span class="c1"># now modify entries to make refant the reference</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">refant_gain_flag</span><span class="p">:</span>
+                                <span class="c1"># use a.b = ab cos(theta) axb = ab sin(theta) to </span>
+                                <span class="c1"># calculate theta</span>
+                                <span class="n">dot_product</span> <span class="o">=</span> \
+                                    <span class="n">gain</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="n">refant_gain</span><span class="o">.</span><span class="n">real</span> \
+                                    <span class="o">+</span> <span class="n">gain</span><span class="o">.</span><span class="n">imag</span> <span class="o">*</span> <span class="n">refant_gain</span><span class="o">.</span><span class="n">imag</span>
+                                <span class="n">cross_product</span> <span class="o">=</span> \
+                                    <span class="n">gain</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="n">refant_gain</span><span class="o">.</span><span class="n">imag</span> \
+                                    <span class="o">-</span> <span class="n">gain</span><span class="o">.</span><span class="n">imag</span> <span class="o">*</span> <span class="n">refant_gain</span><span class="o">.</span><span class="n">real</span>
+
+                                <span class="n">complex_rel_phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">dot_product</span><span class="p">)],</span> <span class="nb">complex</span><span class="p">)</span>
+                                <span class="n">complex_rel_phase</span><span class="o">.</span><span class="n">imag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span>
+                                    <span class="n">cross_product</span><span class="p">,</span> <span class="n">dot_product</span><span class="p">)</span>
+
+                                <span class="n">cparam_refant</span><span class="p">[</span><span class="n">refant</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">selected_rows</span><span class="p">]</span> <span class="o">=</span> \
+                                    <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">gain</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">complex_rel_phase</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">flag_refant</span><span class="p">[</span><span class="n">refant</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">selected_rows</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="c1"># now calculate the phase rms views</span>
+                <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwids</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">max</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_chunks</span><span class="p">)])</span>
+                    <span class="n">data_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="nb">max</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_chunks</span><span class="p">)],</span> <span class="nb">bool</span><span class="p">)</span>
+                    <span class="n">chunk_base_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">time_chunks</span><span class="p">)])</span>
+
+                    <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">:</span>
+                        <span class="n">selected_rows</span> <span class="o">=</span> <span class="n">rows</span><span class="p">[(</span><span class="n">spectral_window_id</span> <span class="o">==</span> <span class="n">spwid</span><span class="p">)</span>
+                                             <span class="o">&amp;</span> <span class="p">(</span><span class="n">antenna1</span> <span class="o">==</span> <span class="n">antenna</span><span class="p">)]</span>
+
+                        <span class="n">gain_times</span> <span class="o">=</span> <span class="n">timecol</span><span class="p">[</span><span class="n">selected_rows</span><span class="p">]</span>
+
+                        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time_chunks</span><span class="p">):</span>
+                            <span class="n">chunk_start</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">-</span> <span class="mf">0.1</span>
+                            <span class="n">chunk_end</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">chunk</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="mf">0.1</span>
+                            <span class="n">chunk_select</span> <span class="o">=</span> \
+                                <span class="p">(</span><span class="n">gain_times</span> <span class="o">&gt;=</span> <span class="n">chunk_start</span><span class="p">)</span>\
+                                <span class="o">&amp;</span> <span class="p">(</span><span class="n">gain_times</span> <span class="o">&lt;=</span> <span class="n">chunk_end</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk_select</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                                <span class="k">continue</span>
+
+                            <span class="n">gain_times_chunk</span> <span class="o">=</span> <span class="n">gain_times</span><span class="p">[</span><span class="n">chunk_select</span><span class="p">]</span>
+                            <span class="n">chunk_base_times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">gain_times_chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                            <span class="n">rms_refant</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">8</span><span class="p">])</span>
+                            <span class="n">rms_refant_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">8</span><span class="p">],</span> <span class="nb">bool</span><span class="p">)</span>
+
+                            <span class="k">for</span> <span class="n">refant</span> <span class="ow">in</span> <span class="n">refants</span><span class="p">:</span>
+                                <span class="n">gain</span> <span class="o">=</span> <span class="n">cparam_refant</span><span class="p">[</span><span class="n">refant</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">selected_rows</span><span class="p">]</span>
+                                <span class="n">gain_chunk</span> <span class="o">=</span> <span class="n">gain</span><span class="p">[</span><span class="n">chunk_select</span><span class="p">]</span>
+                                <span class="n">gain_flag</span> <span class="o">=</span> <span class="n">flag_refant</span><span class="p">[</span><span class="n">refant</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">selected_rows</span><span class="p">]</span>
+                                <span class="n">gain_flag_chunk</span> <span class="o">=</span> <span class="n">gain_flag</span><span class="p">[</span><span class="n">chunk_select</span><span class="p">]</span>
+
+                                <span class="k">try</span><span class="p">:</span>
+                                    <span class="n">valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">gain_flag_chunk</span><span class="p">)</span>
+                                    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">valid</span><span class="p">):</span>
+                                        <span class="k">continue</span>
+
+                                    <span class="c1"># complex median: median(reals) + </span>
+                                    <span class="c1"># i*median(imags)</span>
+                                    <span class="n">cmedian</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span>
+                                        <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">gain_chunk</span><span class="o">.</span><span class="n">real</span><span class="p">[</span><span class="n">valid</span><span class="p">]),</span>
+                                        <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">gain_chunk</span><span class="o">.</span><span class="n">imag</span><span class="p">[</span><span class="n">valid</span><span class="p">]))</span>
+
+                                    <span class="c1"># use a.b = ab cos(theta) and </span>
+                                    <span class="c1"># axb = ab sin(theta) to calculate theta</span>
+                                    <span class="n">dot_product</span> <span class="o">=</span> \
+                                        <span class="n">gain_chunk</span><span class="o">.</span><span class="n">real</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span> <span class="o">*</span> <span class="n">cmedian</span><span class="o">.</span><span class="n">real</span>\
+                                        <span class="o">+</span> <span class="n">gain_chunk</span><span class="o">.</span><span class="n">imag</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span> <span class="o">*</span> <span class="n">cmedian</span><span class="o">.</span><span class="n">imag</span>
+                                    <span class="n">cross_product</span> <span class="o">=</span> \
+                                        <span class="n">gain_chunk</span><span class="o">.</span><span class="n">real</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span> <span class="o">*</span> <span class="n">cmedian</span><span class="o">.</span><span class="n">imag</span>\
+                                        <span class="o">-</span> <span class="n">gain_chunk</span><span class="o">.</span><span class="n">imag</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span> <span class="o">*</span> <span class="n">cmedian</span><span class="o">.</span><span class="n">real</span>
+
+                                    <span class="n">phases</span> <span class="o">=</span> \
+                                        <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">cross_product</span><span class="p">,</span> <span class="n">dot_product</span><span class="p">)</span>\
+                                        <span class="o">*</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+
+                                    <span class="c1"># calculate phase rms</span>
+                                    <span class="n">phases</span> <span class="o">*=</span> <span class="n">phases</span>
+                                    <span class="n">phase_rms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">phases</span><span class="p">))</span>
+                                    <span class="n">phase_rms</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">phase_rms</span><span class="p">)</span>
+                                    <span class="n">rms_refant</span><span class="p">[</span><span class="n">refant</span><span class="p">]</span> <span class="o">=</span> <span class="n">phase_rms</span>
+                                    <span class="n">rms_refant_flag</span><span class="p">[</span><span class="n">refant</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                                <span class="k">except</span><span class="p">:</span>
+                                    <span class="k">pass</span>
+
+                            <span class="c1"># set view</span>
+                            <span class="n">valid_data</span> <span class="o">=</span> <span class="n">rms_refant</span><span class="p">[</span>
+                              <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">rms_refant_flag</span><span class="p">)]</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="n">data</span><span class="p">[</span><span class="n">antenna</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">valid_data</span><span class="p">)</span>
+                                <span class="n">data_flag</span><span class="p">[</span><span class="n">antenna</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+                    <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">commonresultobjects</span><span class="o">.</span><span class="n">ResultAxis</span><span class="p">(</span>
+                            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Antenna&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">,</span>
+                            <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)),</span>
+                        <span class="n">commonresultobjects</span><span class="o">.</span><span class="n">ResultAxis</span><span class="p">(</span>
+                            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">chunk_base_times</span><span class="p">)]</span>
+
+                    <span class="n">phase_rms_result</span> <span class="o">=</span> <span class="n">commonresultobjects</span><span class="o">.</span><span class="n">ImageResult</span><span class="p">(</span>
+                        <span class="n">filename</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="s1">&#39;r.m.s. phase&#39;</span><span class="p">,</span>
+                        <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="n">data_flag</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spwid</span><span class="p">,</span>
+                        <span class="n">units</span><span class="o">=</span><span class="s1">&#39;degrees&#39;</span><span class="p">)</span>
+                    <span class="n">phase_rms_results</span><span class="p">[</span><span class="n">phase_rms_result</span><span class="o">.</span><span class="n">description</span><span class="p">]</span> <span class="o">=</span> \
+                        <span class="n">phase_rms_result</span>
+
+                <span class="c1"># free sub table and its resources</span>
+                <span class="n">sb</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+            <span class="k">return</span> <span class="n">phase_rms_results</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="o">**</span><span class="n">olderr</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="findchunks">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcal.html#pipeline.hifa.tasks.wvrgcal.wvrg_qa.findchunks">[docs]</a>
+<span class="k">def</span> <span class="nf">findchunks</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">gap_time</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a list of arrays, each containing the indices of a chunk</span>
+<span class="sd">    of data i.e. a sequence of equally spaced measurements separated</span>
+<span class="sd">    from other chunks by larger time gaps.</span>
+
+<span class="sd">    Keyword arguments:</span>
+<span class="sd">    times    -- Numeric array of times at which the measurements</span>
+<span class="sd">                were taken.</span>
+<span class="sd">    gap_time -- Minimum gap that signifies a &#39;gap&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">difference</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">times</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">median_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">difference</span><span class="p">)</span>
+    <span class="n">gap_diff</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1.5</span> <span class="o">*</span> <span class="n">median_diff</span><span class="p">,</span> <span class="n">gap_time</span><span class="p">)</span>
+
+    <span class="n">chunks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">chunk</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">difference</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">difference</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">gap_diff</span><span class="p">:</span>
+            <span class="n">chunk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
+            <span class="n">chunk</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">chunks</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

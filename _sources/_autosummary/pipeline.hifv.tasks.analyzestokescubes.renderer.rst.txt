@@ -1,0 +1,12 @@
+pipeline.hifv.tasks.analyzestokescubes.renderer
+===============================================
+
+.. automodule:: pipeline.hifv.tasks.analyzestokescubes.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsAnalyzestokesCubeRenderer
+   

@@ -1,0 +1,873 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.tasks.restoredata.restoredata &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.h.tasks.restoredata.restoredata</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.h.tasks.restoredata.restoredata</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The restore data module provides a class for reimporting, reflagging, and</span>
+<span class="sd">recalibrating a subset of the ASDMs belonging to a member OUS, using pipeline</span>
+<span class="sd">flagging and calibration data products.</span>
+
+<span class="sd">The basic restore data module assumes that the ASDMs, flagging, and calibration</span>
+<span class="sd">data products are on disk in the rawdata directory in the format produced by</span>
+<span class="sd">the ExportData class.</span>
+
+<span class="sd">This class assumes that the required data products have been</span>
+<span class="sd">    o downloaded from the archive along with the ASDMs (not yet possible)</span>
+<span class="sd">    o are sitting on disk in a form which is compatible with what is</span>
+<span class="sd">      produced by ExportData</span>
+
+<span class="sd">To test these classes, register some data with the pipeline using ImportData,</span>
+<span class="sd">then execute:</span>
+
+<span class="sd">import pipeline</span>
+<span class="sd">vis = [ &#39;&lt;ASDM name&gt;&#39; ]</span>
+
+<span class="sd"># Create a pipeline context and register some data</span>
+<span class="sd">context = pipeline.Pipeline().context</span>
+<span class="sd">inputs = pipeline.tasks.RestoreData.Inputs(context, vis=vis)</span>
+<span class="sd">task = pipeline.tasks.RestoreData(inputs)</span>
+<span class="sd">results = task.execute()</span>
+<span class="sd">results.accept(context)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">tarfile</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">applycal</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">importdata</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">manifest</span>
+
+<span class="kn">from</span> <span class="nn">pipeline.extern.almarenorm_pl2023</span> <span class="kn">import</span> <span class="n">alma_renorm</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="RestoreDataInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.qa.RestoreDataInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">RestoreDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    RestoreDataInputs manages the inputs for the RestoreData task.</span>
+
+<span class="sd">    .. py:attribute:: context</span>
+
+<span class="sd">        the (:class:`~pipeline.infrastructure.launcher.Context`) holding all</span>
+<span class="sd">        pipeline state</span>
+
+<span class="sd">    .. py:attribute:: products_dir</span>
+
+<span class="sd">        the directory containing the archived pipeline flagging and calibration</span>
+<span class="sd">        data products. Data products will be unpacked from this directory</span>
+<span class="sd">        into rawdata_dir. Support for this parameter is not yet implemented.</span>
+
+<span class="sd">    .. py:attribute:: rawdata_dir</span>
+
+<span class="sd">        the directory containing the raw data ASDM(s) and the pipeline</span>
+<span class="sd">        flagging and calibration data products.</span>
+
+<span class="sd">    .. py:attribute:: output_dir</span>
+
+<span class="sd">        the working directory where the restored data will be written</span>
+
+<span class="sd">    .. py:attribute:: session</span>
+
+<span class="sd">        a string or list of strings containing the sessions(s) one for</span>
+<span class="sd">        each vis.</span>
+
+<span class="sd">    .. py:attribute:: vis</span>
+
+<span class="sd">        a string or list of strings containing the ASDM(s) to be restored.</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+
+    <span class="n">asis</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">bdfflags</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">copytoraw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">lazy</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">ocorr_mode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;ca&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">products_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">products_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;../products&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">products_dir</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">rawdata_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;../rawdata&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">copytoraw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">products_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rawdata_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bdfflags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ocorr_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialise the Inputs, initialising any property values to those given</span>
+<span class="sd">        here.</span>
+
+<span class="sd">        :param context: the pipeline Context state object</span>
+<span class="sd">        :type context: :class:`~pipeline.infrastructure.launcher.Context`</span>
+<span class="sd">        :param copytoraw: copy the required data products from products_dir to</span>
+<span class="sd">         rawdata_dir</span>
+<span class="sd">        :param products_dir: the directory of archived pipeline products</span>
+<span class="sd">        :type products_dir: string</span>
+<span class="sd">        :param rawdata_dir: the raw data directory for ASDM(s) and products</span>
+<span class="sd">        :type products_dir: string</span>
+<span class="sd">        :param output_dir: the working directory for the restored data</span>
+<span class="sd">        :type output_dir: string</span>
+<span class="sd">        :param session: the  parent session of each vis</span>
+<span class="sd">        :type session: a string or list of strings</span>
+<span class="sd">        :param vis: the ASDMs(s) for which data is to be restored</span>
+<span class="sd">        :type vis: a string or list of strings</span>
+<span class="sd">        :param bdfflags: set the BDF flags</span>
+<span class="sd">        :type bdfflags: boolean True or False</span>
+<span class="sd">        :param lazy: use the lazy filler to restore data</span>
+<span class="sd">        :type lazy: boolean True or False</span>
+<span class="sd">        :param asis: Creates verbatim copies of the ASDM tables in the output MS.</span>
+<span class="sd">        :type asis: space delimated list of tables</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RestoreDataInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">products_dir</span> <span class="o">=</span> <span class="n">products_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rawdata_dir</span> <span class="o">=</span> <span class="n">rawdata_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">copytoraw</span> <span class="o">=</span> <span class="n">copytoraw</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bdfflags</span> <span class="o">=</span> <span class="n">bdfflags</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lazy</span> <span class="o">=</span> <span class="n">lazy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asis</span> <span class="o">=</span> <span class="n">asis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ocorr_mode</span> <span class="o">=</span> <span class="n">ocorr_mode</span></div>
+
+
+
+<div class="viewcode-block" id="RestoreDataResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.qa.RestoreDataResults">[docs]</a>
+<span class="k">class</span> <span class="nc">RestoreDataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">importdata_results</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">applycal_results</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flagging_summaries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">casa_version_orig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pipeline_version_orig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orig_mpi_servers</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">renorm_applied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialise the results objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RestoreDataResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">importdata_results</span> <span class="o">=</span> <span class="n">importdata_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">applycal_results</span> <span class="o">=</span> <span class="n">applycal_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flagging_summaries</span> <span class="o">=</span> <span class="n">flagging_summaries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">casa_version_orig</span> <span class="o">=</span> <span class="n">casa_version_orig</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_version_orig</span> <span class="o">=</span> <span class="n">pipeline_version_orig</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orig_mpi_servers</span> <span class="o">=</span> <span class="n">orig_mpi_servers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">renorm_applied</span> <span class="o">=</span> <span class="n">renorm_applied</span>
+
+<div class="viewcode-block" id="RestoreDataResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.qa.RestoreDataResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">importdata_results</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importdata_results</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">applycal_results</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">applycal_results</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">applycal_results</span><span class="p">:</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">applycal_results</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;RestoreDataResults:</span><span class="se">\n\t</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mses</span><span class="p">]))</span></div>
+
+
+
+<div class="viewcode-block" id="RestoreData">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.qa.RestoreData">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;h_restoredata&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">RestoreData</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    RestoreData is the base class for restoring flagged and calibrated</span>
+<span class="sd">    data produced during a previous pipeline run and archived on disk.</span>
+
+<span class="sd">    - Imports the selected ASDMs from rawdata</span>
+<span class="sd">    - Imports the flagversions for the selected ASDMs from ../rawdata</span>
+<span class="sd">    - Imports the calibration data for the selected ASDMs from ../rawdata</span>
+<span class="sd">    - Restores the final set of pipeline flags</span>
+<span class="sd">    - Restores the final calibration state</span>
+<span class="sd">    - Applies the calibrations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># link the accompanying inputs to this task</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">RestoreDataInputs</span>
+
+    <span class="c1"># Override the default behavior for multi-vis tasks</span>
+    <span class="c1"># Does this interfere with multi-vis behavior of</span>
+    <span class="c1"># called tasks.</span>
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="RestoreData.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.qa.RestoreData.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Create a local alias for inputs, so we&#39;re not saying</span>
+        <span class="c1"># &#39;self.inputs&#39; everywhere</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Force inputs.vis and inputs.session to be a list.</span>
+        <span class="n">sessionlist</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">session</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sessionlist</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">sessionlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">sessionlist</span><span class="p">,</span> <span class="p">]</span>
+
+        <span class="n">tmpvislist</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tmpvislist</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">tmpvislist</span> <span class="o">=</span> <span class="p">[</span><span class="n">tmpvislist</span><span class="p">,</span> <span class="p">]</span>
+
+        <span class="n">vislist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">tmpvislist</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">vislist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span> <span class="n">vis</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">vislist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Download ASDMs from the archive or products_dir to rawdata_dir.</span>
+        <span class="c1">#   TBD: Currently assumed done somehow</span>
+
+        <span class="c1"># Copy the required calibration products from &quot;someplace&quot; on disk</span>
+        <span class="c1">#   (default ../products) to ../rawdata. The pipeline manifest file</span>
+        <span class="c1">#   if present is used to determine which files to copy. Otherwise</span>
+        <span class="c1">#   a file naming scheme is used. The latter is deprecated as it</span>
+        <span class="c1">#   requires the exportdata / restoredata tasks to be synchronized</span>
+        <span class="c1">#   but it is maintained for testing purposes.</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">copytoraw</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_copy_manifest_toraw</span><span class="p">(</span><span class="s1">&#39;*pipeline_manifest.xml&#39;</span><span class="p">)</span>
+            <span class="n">pipemanifest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_get_manifest</span><span class="p">(</span><span class="s1">&#39;*pipeline_manifest.xml&#39;</span><span class="p">,</span> <span class="s1">&#39;*cal*pipeline_manifest.xml&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_copytoraw</span><span class="p">(</span><span class="n">pipemanifest</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pipemanifest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_get_manifest</span><span class="p">(</span><span class="s1">&#39;*pipeline_manifest.xml&#39;</span><span class="p">,</span> <span class="s1">&#39;*cal*pipeline_manifest.xml&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Convert ASDMS assumed to be on disk in rawdata_dir. After this step</span>
+        <span class="c1"># has been completed the MS and MS.flagversions directories will exist</span>
+        <span class="c1"># and MS,flagversions will contain a copy of the original MS flags,</span>
+        <span class="c1"># Flags.Original.</span>
+        <span class="c1">#    TBD: Add error handling</span>
+        <span class="n">import_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_importasdm</span><span class="p">(</span><span class="n">sessionlist</span><span class="o">=</span><span class="n">sessionlist</span><span class="p">,</span> <span class="n">vislist</span><span class="o">=</span><span class="n">vislist</span><span class="p">)</span>
+
+        <span class="c1"># Restore final MS.flagversions and flags</span>
+        <span class="n">flag_version_name</span> <span class="o">=</span> <span class="s1">&#39;Pipeline_Final&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_restore_flags</span><span class="p">(</span><span class="n">pipemanifest</span><span class="p">,</span> <span class="n">flag_version_name</span><span class="o">=</span><span class="n">flag_version_name</span><span class="p">)</span>
+
+        <span class="c1"># Get the session list and the visibility files associated with</span>
+        <span class="c1"># each session.</span>
+        <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sessions</span><span class="p">()</span>
+
+        <span class="c1"># Restore calibration tables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_restore_caltables</span><span class="p">(</span><span class="n">pipemanifest</span><span class="p">,</span> <span class="n">session_names</span><span class="o">=</span><span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span><span class="o">=</span><span class="n">session_vislists</span><span class="p">)</span>
+
+        <span class="c1"># Import calibration apply lists</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_restore_calstate</span><span class="p">(</span><span class="n">pipemanifest</span><span class="p">)</span>
+
+        <span class="c1"># Apply the calibrations.</span>
+        <span class="n">apply_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_applycal</span><span class="p">()</span>
+
+        <span class="c1"># Get a summary of the flagging state.</span>
+        <span class="n">flagging_summaries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_flagging_summaries</span><span class="p">(</span><span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span><span class="p">)</span>
+
+        <span class="c1"># Extract CASA version and pipeline version for previous run from</span>
+        <span class="c1"># pipeline manifest.</span>
+        <span class="n">casa_version</span><span class="p">,</span> <span class="n">pipeline_version</span><span class="p">,</span> <span class="n">num_mpi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_casa_pipeline_version</span><span class="p">(</span><span class="n">pipemanifest</span><span class="p">)</span>
+
+        <span class="c1"># If necessary, renormalize ALMA IF data; returns bool declaring</span>
+        <span class="c1"># whether the renormalization was run.</span>
+        <span class="n">renorm_applied</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_renormalize</span><span class="p">(</span><span class="n">pipemanifest</span><span class="p">,</span> <span class="n">session_names</span><span class="o">=</span><span class="n">session_names</span><span class="p">,</span>
+                                              <span class="n">session_vislists</span><span class="o">=</span><span class="n">session_vislists</span><span class="p">)</span>
+
+        <span class="c1"># Return the results object, which will be used for the weblog</span>
+        <span class="k">return</span> <span class="n">RestoreDataResults</span><span class="p">(</span><span class="n">import_results</span><span class="p">,</span> <span class="n">apply_results</span><span class="p">,</span> <span class="n">flagging_summaries</span><span class="p">,</span> <span class="n">casa_version</span><span class="p">,</span> <span class="n">pipeline_version</span><span class="p">,</span>
+                                  <span class="n">num_mpi</span><span class="p">,</span> <span class="n">renorm_applied</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RestoreData.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.qa.RestoreData.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_renormalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">,</span> <span class="n">session_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session_vislists</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># read the manifest and look for a renorm element(s).  there should be one per EB</span>
+        <span class="c1"># if it&#39;s there, do the renorm steps using the stored params, but do not</span>
+        <span class="c1"># create the plots</span>
+
+        <span class="n">applied</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Loop over sessions</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">session</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">session_names</span><span class="p">):</span>
+
+            <span class="c1"># Get the visibility list for that session.</span>
+            <span class="n">vislist</span> <span class="o">=</span> <span class="n">session_vislists</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+                <span class="c1"># for each non-target asdm/vis in the manifest structure</span>
+                <span class="n">params</span> <span class="o">=</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_renorm</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
+                    <span class="c1"># Convert input parameters with ast (string to bool, dict, etc).</span>
+                    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">string_to_val</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">if</span> <span class="n">val</span> <span class="k">else</span> <span class="n">val</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+                    <span class="c1"># PIPE-1687: restrict input arguments to those needed by</span>
+                    <span class="c1"># renorm interface function.</span>
+                    <span class="c1"># PIPE-2049: if some parameters are absent from the manifest,</span>
+                    <span class="c1"># use default values adopted from extern.heuristics.ACreNorm.renormalize,</span>
+                    <span class="c1"># except for atm_auto_exclude, which is defaulted to False.</span>
+                    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span>
+                        <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spw&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">],</span>
+                        <span class="s1">&#39;apply&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;apply&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                        <span class="s1">&#39;threshold&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;threshold&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                        <span class="s1">&#39;excludechan&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;excludechan&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                        <span class="s1">&#39;correct_atm&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;correctATM&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                        <span class="s1">&#39;atm_auto_exclude&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;atm_auto_exclude&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                        <span class="s1">&#39;bwthreshspw&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bwthreshspw&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                    <span class="p">}</span>
+
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Renormalizing </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s1"> with hifa_renorm </span><span class="si">{</span><span class="n">kwargs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">renorm_applied</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">alma_renorm</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="s1">&#39;apply&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;apply&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">renorm_applied</span><span class="p">:</span>
+                            <span class="n">applied</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed application of renormalization for </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failure in running renormalization heuristic: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Not calling hifa_renorm for </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s1"> - no renorm call in manifest.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">applied</span>
+
+    <span class="k">def</span> <span class="nf">_do_copy_manifest_toraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the pipeline manifest</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Download the pipeline manifest file from the archive or</span>
+        <span class="c1">#     products_dir to rawdata_dir</span>
+        <span class="n">manifest_files</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">template</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">manifestfile</span> <span class="ow">in</span> <span class="n">manifest_files</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Copying </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">manifestfile</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">))</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">manifestfile</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span>
+                                                   <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">manifestfile</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">_do_get_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template1</span><span class="p">,</span> <span class="n">template2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the pipeline manifest object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Get the list of files in the rawdata directory</span>
+        <span class="c1">#   First find all the manifest files of any kind</span>
+        <span class="c1">#   If there is more than one file in that list then try the more restrictive template</span>
+        <span class="n">manifestfiles</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span> <span class="n">template1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">manifestfiles</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">manifestfiles2</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span> <span class="n">template2</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">manifestfiles2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">manifestfiles2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">manifestfiles</span><span class="p">):</span>
+                <span class="n">manifestfiles</span> <span class="o">=</span> <span class="n">manifestfiles2</span>
+
+        <span class="c1"># Parse manifest file if it exists.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">manifestfiles</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Parse manifest file</span>
+            <span class="c1">#    There should be only one of these so pick one</span>
+            <span class="n">pipemanifest</span> <span class="o">=</span> <span class="n">manifest</span><span class="o">.</span><span class="n">PipelineManifest</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">pipemanifest</span><span class="o">.</span><span class="n">import_xml</span><span class="p">(</span><span class="n">manifestfiles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pipemanifest</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">pipemanifest</span>
+
+    <span class="k">def</span> <span class="nf">_do_copytoraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">ouss</span> <span class="o">=</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_ous</span><span class="p">()</span>
+
+        <span class="c1"># Download flag versions</span>
+        <span class="c1">#   Download from the archive or products_dir to rawdata_dir.</span>
+        <span class="k">if</span> <span class="n">pipemanifest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inflagfiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">flagfile</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">flagfile</span> <span class="ow">in</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_final_flagversions</span><span class="p">(</span><span class="n">ouss</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inflagfiles</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">,</span> <span class="s1">&#39;*.flagversions.tgz&#39;</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">flagfile</span> <span class="ow">in</span> <span class="n">inflagfiles</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Copying </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">flagfile</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">))</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">flagfile</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">flagfile</span><span class="p">)))</span>
+
+        <span class="c1"># Download calibration tables</span>
+        <span class="c1">#   Download calibration files from the archive or products_dir to</span>
+        <span class="k">if</span> <span class="n">pipemanifest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">incaltables</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">caltable</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">caltable</span> <span class="ow">in</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_caltables</span><span class="p">(</span><span class="n">ouss</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">incaltables</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">,</span> <span class="s1">&#39;*.caltables.tgz&#39;</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">caltable</span> <span class="ow">in</span> <span class="n">incaltables</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Copying </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">caltable</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">))</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">caltable</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">caltable</span><span class="p">)))</span>
+
+        <span class="c1"># Download calibration apply lists</span>
+        <span class="c1">#   Download from the archive or products_dir to rawdata_dir.</span>
+        <span class="c1">#   TBD: Currently assumed done somehow</span>
+        <span class="k">if</span> <span class="n">pipemanifest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inapplycals</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">applycals</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">applycals</span> <span class="ow">in</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_applycals</span><span class="p">(</span><span class="n">ouss</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inapplycals</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">,</span> <span class="s1">&#39;*.calapply.txt&#39;</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">calapply_list</span> <span class="ow">in</span> <span class="n">inapplycals</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Copying </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">calapply_list</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">))</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">calapply_list</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">calapply_list</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">_do_importasdm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sessionlist</span><span class="p">,</span> <span class="n">vislist</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="c1"># The asis is temporary until we get the EVLA / ALMA factoring</span>
+        <span class="c1"># figured out.</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="n">importdata</span><span class="o">.</span><span class="n">ImportData</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vislist</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">sessionlist</span><span class="p">,</span>
+                                        <span class="n">save_flagonline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">lazy</span><span class="p">,</span> <span class="n">bdfflags</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">bdfflags</span><span class="p">,</span>
+                                        <span class="n">asis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">asis</span><span class="p">,</span> <span class="n">ocorr_mode</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">ocorr_mode</span><span class="p">,</span> <span class="n">createmms</span><span class="o">=</span><span class="s1">&#39;false&#39;</span><span class="p">)</span>
+        <span class="n">importdata_task</span> <span class="o">=</span> <span class="n">importdata</span><span class="o">.</span><span class="n">ImportData</span><span class="p">(</span><span class="n">container</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">importdata_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_restore_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">,</span> <span class="n">flag_version_name</span><span class="o">=</span><span class="s1">&#39;Pipeline_Final&#39;</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">flagversionlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">pipemanifest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ouss</span> <span class="o">=</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_ous</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ouss</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Loop over MS list in working directory</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">:</span>
+
+            <span class="c1"># Remove imported MS.flagversions from working directory</span>
+            <span class="n">flagversion</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span> <span class="o">+</span> <span class="s1">&#39;.flagversions&#39;</span>
+            <span class="n">flagversionpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">flagversion</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">flagversionpath</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Removing default flagversion for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">flagversionpath</span><span class="p">)</span>
+
+            <span class="c1"># Untar MS.flagversions file in rawdata_dir to output_dir</span>
+            <span class="k">if</span> <span class="n">ouss</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tarfilename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span>
+                                           <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_final_flagversions</span><span class="p">(</span><span class="n">ouss</span><span class="p">)[</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tarfilename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span>
+                                           <span class="n">ms</span><span class="o">.</span><span class="n">basename</span> <span class="o">+</span> <span class="s1">&#39;.flagversions.tgz&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Extracting </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">flagversion</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    From </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">tarfilename</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    Into </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">tarfilename</span><span class="p">,</span> <span class="s1">&#39;r:gz&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>
+                <span class="n">tar</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+
+            <span class="c1"># Restore final flags version using flagmanager</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Restoring final flags for </span><span class="si">%s</span><span class="s1"> from flag version </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">flag_version_name</span><span class="p">))</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                          <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;restore&#39;</span><span class="p">,</span>
+                                          <span class="n">versionname</span><span class="o">=</span><span class="n">flag_version_name</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Application of final flags failed for </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+                <span class="k">raise</span>
+
+            <span class="n">flagversionlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flagversionpath</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">flagversionlist</span>
+
+    <span class="k">def</span> <span class="nf">_do_restore_calstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="k">if</span> <span class="n">pipemanifest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ouss</span> <span class="o">=</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_ous</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ouss</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Loop over MS list in working directory</span>
+        <span class="n">append</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ouss</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">applyfile_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span>
+                                              <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_applycals</span><span class="p">(</span><span class="n">ouss</span><span class="p">)[</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">applyfile_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span> <span class="o">+</span> <span class="s1">&#39;.calapply.txt&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Restoring calibration state for </span><span class="si">%s</span><span class="s1"> from </span><span class="si">%s</span><span class="s1">&#39;</span>
+                     <span class="s1">&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">applyfile_name</span><span class="p">))</span>
+
+            <span class="c1"># Write converted calstate to a temporary file and use this</span>
+            <span class="c1"># for the import. the temporary file will automatically be</span>
+            <span class="c1"># deleted once out of scope</span>
+            <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpfile</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Writing converted calstate to </span><span class="si">%s</span><span class="s1">&#39;</span>
+                          <span class="s1">&#39;&#39;</span> <span class="o">%</span> <span class="n">tmpfile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">converted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_calstate_paths</span><span class="p">(</span><span class="n">applyfile_name</span><span class="p">)</span>
+                <span class="n">tmpfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">converted</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">encoding</span><span class="p">))</span>
+                <span class="n">tmpfile</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+                <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">import_state</span><span class="p">(</span><span class="n">tmpfile</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                                       <span class="n">append</span><span class="o">=</span><span class="n">append</span><span class="p">)</span>
+            <span class="n">append</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_convert_calstate_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">applyfile</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert paths in the exported calstate to point to the new output</span>
+<span class="sd">        directory.</span>
+
+<span class="sd">        Returns the converted commands as a list of strings</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># regex to match unix paths</span>
+        <span class="n">unix_path</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;((?:(\.{1,2})?\/[\w\.\-]+)+)&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span> <span class="o">|</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+
+        <span class="c1"># define a function that replaces directory names with our new output</span>
+        <span class="c1"># directory</span>
+        <span class="k">def</span> <span class="nf">repfn</span><span class="p">(</span><span class="n">matchobj</span><span class="p">):</span>
+            <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">matchobj</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">basename</span><span class="p">)</span>
+
+        <span class="c1"># search-and-replace directory names in the exported calstate file</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">applyfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">unix_path</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">repfn</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_do_restore_caltables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">,</span> <span class="n">session_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session_vislists</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="k">if</span> <span class="n">pipemanifest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ouss</span> <span class="o">=</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_ous</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ouss</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Determine the OUS uid</span>
+        <span class="n">ps</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">project_structure</span>
+        <span class="k">if</span> <span class="n">ps</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">ps</span><span class="o">.</span><span class="n">ousstatus_entity_id</span> <span class="o">==</span> <span class="s1">&#39;unknown&#39;</span><span class="p">:</span>
+            <span class="n">ousid</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ousid</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ousstatus_entity_id</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="s1">&#39;:/&#39;</span><span class="p">,</span> <span class="s1">&#39;__&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span>
+
+        <span class="c1"># Loop over sessions</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">session</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">session_names</span><span class="p">):</span>
+
+            <span class="c1"># Get the visibility list for that session.</span>
+            <span class="n">vislist</span> <span class="o">=</span> <span class="n">session_vislists</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+            <span class="c1"># Open the tarfile and get the names</span>
+            <span class="k">if</span> <span class="n">ouss</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">tarfilename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span>
+                                               <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_caltables</span><span class="p">(</span><span class="n">ouss</span><span class="p">)[</span><span class="n">session</span><span class="p">])</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">tarfilename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span>
+                                               <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_caltables</span><span class="p">(</span><span class="n">ouss</span><span class="p">)[</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">ousid</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">tarfilename</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span>
+                                                              <span class="s1">&#39;*&#39;</span> <span class="o">+</span> <span class="n">session</span> <span class="o">+</span> <span class="s1">&#39;.caltables.tgz&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tarfilename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span>
+                                           <span class="n">ousid</span> <span class="o">+</span> <span class="n">session</span> <span class="o">+</span> <span class="s1">&#39;.caltables.tgz&#39;</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">tarfilename</span><span class="p">,</span> <span class="s1">&#39;r:gz&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>
+                <span class="n">tarmembers</span> <span class="o">=</span> <span class="n">tar</span><span class="o">.</span><span class="n">getmembers</span><span class="p">()</span>
+
+                <span class="c1"># Retrieve any caltable associated with either session name or</span>
+                <span class="c1"># the measurement sets associated with this session.</span>
+                <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span> <span class="o">+</span> <span class="p">[</span><span class="n">session</span><span class="p">]:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Restoring caltables for </span><span class="si">%s</span><span class="s1"> from </span><span class="si">%s</span><span class="s1">&#39;</span>
+                             <span class="s1">&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">),</span> <span class="n">tarfilename</span><span class="p">))</span>
+                    <span class="n">extractlist</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">tarmembers</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">)):</span>
+                            <span class="n">extractlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+                            <span class="c1"># it is uncertain whether or not slash (/) exists at the end</span>
+                            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.tbl/&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.tbl&#39;</span><span class="p">):</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    Extracting caltable </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">extractlist</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">tarmembers</span><span class="p">):</span>
+                        <span class="n">tar</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">tar</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">members</span><span class="o">=</span><span class="n">extractlist</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="n">applycal</span><span class="o">.</span><span class="n">SerialApplycal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+        <span class="n">applycal_task</span> <span class="o">=</span> <span class="n">applycal</span><span class="o">.</span><span class="n">SerialApplycal</span><span class="p">(</span><span class="n">container</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">applycal_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_sessions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sessions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a list of sessions where each element of the list contains</span>
+<span class="sd">        the  vis files associated with that session. If sessions is</span>
+<span class="sd">        undefined the context is searched for session information</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sessions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sessions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">vis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">all_mses</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span>
+
+        <span class="c1"># Get the MS list from the context by default.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">wkvis</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">all_mses</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">wkvis</span> <span class="o">=</span> <span class="n">vis</span>
+
+        <span class="c1"># If the input session list is empty determine the sessions from</span>
+        <span class="c1"># the context.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sessions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">wksessions</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">session</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">all_mses</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">wksessions</span> <span class="o">=</span> <span class="n">sessions</span>
+
+        <span class="c1"># Determine the number of unique sessions.</span>
+        <span class="n">session_seqno</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">session_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">wksessions</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">wksessions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">session_dict</span><span class="p">:</span>
+                <span class="n">session_dict</span><span class="p">[</span><span class="n">wksessions</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">session_seqno</span>
+                <span class="n">session_seqno</span> <span class="o">=</span> <span class="n">session_seqno</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># Initialize the output session names and visibility file lists</span>
+        <span class="n">session_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">session_vis_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">session_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k_v</span><span class="p">:</span> <span class="p">(</span><span class="n">k_v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">k_v</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="n">session_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">session_vis_list</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+
+        <span class="c1"># Assign the visibility files to the correct session</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">wkvis</span><span class="p">)):</span>
+            <span class="c1"># Match the session names if possible</span>
+            <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">wksessions</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">session_names</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">wksessions</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">session_names</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                        <span class="n">session_vis_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wkvis</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="c1"># Assign to the last session</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">session_vis_list</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">session_names</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wkvis</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+        <span class="c1"># Log the sessions</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">session_vis_list</span><span class="p">)):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Visibility list for session </span><span class="si">%s</span><span class="s1"> is </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">session_names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">session_vis_list</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vis_list</span>
+
+    <span class="k">def</span> <span class="nf">_get_flagging_summaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span><span class="p">):</span>
+
+        <span class="c1"># Initialize summaries dictionary.</span>
+        <span class="n">summaries</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Extract summaries for each session.</span>
+        <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">session_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">session_names</span><span class="p">):</span>
+            <span class="n">summaries</span><span class="p">[</span><span class="n">session_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="c1"># Extract summary for each vis.</span>
+            <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">session_vislists</span><span class="p">[</span><span class="n">ind</span><span class="p">]:</span>
+                <span class="n">vis_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating flagging summary for session: </span><span class="si">{}</span><span class="s2">, vis: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">vis_name</span><span class="p">))</span>
+
+                <span class="c1"># Get CASA intent corresponding to &#39;TARGET&#39;.</span>
+                <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span>
+                <span class="n">casa_intent</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">to_CASA_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Create and execute flagdata summary job, store result in dictionary.</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis_name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="n">fieldcnt</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">casa_intent</span><span class="p">)</span>
+                <span class="n">summarydict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+                <span class="n">summaries</span><span class="p">[</span><span class="n">session_name</span><span class="p">][</span><span class="n">vis_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">summarydict</span>
+
+        <span class="k">return</span> <span class="n">summaries</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_extract_casa_pipeline_version</span><span class="p">(</span><span class="n">pipemanifest</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">pipemanifest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ouss</span> <span class="o">=</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_ous</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ouss</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">ouss</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">casa_version</span> <span class="o">=</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_casa_version</span><span class="p">(</span><span class="n">ouss</span><span class="p">)</span>
+            <span class="n">pipeline_version</span> <span class="o">=</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_pipeline_version</span><span class="p">(</span><span class="n">ouss</span><span class="p">)</span>
+            <span class="n">total_mpi_servers</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_mpi_servers&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_execution_nodes</span><span class="p">(</span><span class="n">ouss</span><span class="p">)])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">casa_version</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">pipeline_version</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">total_mpi_servers</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">casa_version</span><span class="p">,</span> <span class="n">pipeline_version</span><span class="p">,</span> <span class="n">total_mpi_servers</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

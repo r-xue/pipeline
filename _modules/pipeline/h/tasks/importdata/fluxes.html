@@ -1,0 +1,704 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.tasks.importdata.fluxes &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.h.tasks.importdata.fluxes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.h.tasks.importdata.fluxes</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">decimal</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">ElementTree</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain</span> <span class="k">as</span> <span class="nn">domain</span>
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.tablereader</span> <span class="kn">import</span> <span class="n">SpectralWindowTable</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">dequote</span><span class="p">,</span> <span class="n">open_with_lock</span>
+
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">commonfluxresults</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">ORIGIN_XML</span> <span class="o">=</span> <span class="s1">&#39;Source.xml&#39;</span>
+<span class="n">ORIGIN_ANALYSIS_UTILS</span> <span class="o">=</span> <span class="s1">&#39;analysisUtils&#39;</span>
+
+
+<div class="viewcode-block" id="get_setjy_results">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.get_setjy_results">[docs]</a>
+<span class="k">def</span> <span class="nf">get_setjy_results</span><span class="p">(</span><span class="n">mses</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the flux results from the ASDM Source.xml file and</span>
+<span class="sd">    populate the context.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mses</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">commonfluxresults</span><span class="o">.</span><span class="n">FluxCalibrationResults</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">science_spw_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">()]</span>
+
+        <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">measurements</span> <span class="ow">in</span> <span class="n">read_fluxes_nodb</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">measurements</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">spw_id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">science_spw_ids</span><span class="p">]</span>
+
+            <span class="c1"># import flux values for all fields and intents so that we can</span>
+            <span class="c1"># compare them to the fluxscale-derived values later in the run</span>
+            <span class="c1">#            for field in [f for f in source.fields if &#39;AMPLITUDE&#39; in f.intents]:</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">measurements</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span></div>
+
+
+
+<div class="viewcode-block" id="read_fluxes_nodb">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.read_fluxes_nodb">[docs]</a>
+<span class="k">def</span> <span class="nf">read_fluxes_nodb</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read fluxes from the Source XML table translating from the ASDM</span>
+<span class="sd">    to MS spw ids as we go.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="n">source_table</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;Source.xml&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">source_table</span><span class="p">):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No Source XML found at </span><span class="si">{}</span><span class="s1">. No flux import performed. &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">source_table</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="n">source_element</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">source_table</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">source_element</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Could not parse Source XML at </span><span class="si">{}</span><span class="s1">. No flux import performed.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">source_table</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="c1"># Empty spws that follow non-empty spws can be pruned from MMS data. This</span>
+    <span class="c1"># set is used to check whether the Source.xml entries refer to spws</span>
+    <span class="c1"># actually present in the measurement set.</span>
+    <span class="n">all_ms_spw_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span><span class="p">}</span>
+
+    <span class="c1"># SCIREQ-852: MS spw IDs != ASDM spw ids</span>
+    <span class="n">asdm_to_ms_spw_map</span> <span class="o">=</span> <span class="n">SpectralWindowTable</span><span class="o">.</span><span class="n">get_asdm_to_ms_spw_mapping</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">source_element</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;row&#39;</span><span class="p">):</span>
+
+        <span class="c1"># Get the elements</span>
+        <span class="n">flux_text</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s1">&#39;flux&#39;</span><span class="p">)</span>
+        <span class="n">frequency_text</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span class="p">)</span>
+        <span class="n">source_element</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s1">&#39;sourceId&#39;</span><span class="p">)</span>
+        <span class="n">spw_element</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s1">&#39;spectralWindowId&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">spw_element</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">source_element</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># spws can overlap, so rather than looking up spw by frequency,</span>
+        <span class="c1"># extract the spw id from the element text. I assume the format uses</span>
+        <span class="c1"># underscores, eg. &#39;SpectralWindow_13&#39;</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">asdm_spw_id</span> <span class="o">=</span> <span class="n">spw_element</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+
+        <span class="c1"># SCIREQ-852: MS spw IDs != ASDM spw ids</span>
+        <span class="n">spw_id</span> <span class="o">=</span> <span class="n">asdm_to_ms_spw_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">asdm_spw_id</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">spw_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_ms_spw_ids</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Could not map ASDM spectral window </span><span class="si">{}</span><span class="s1"> to MS for </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">asdm_spw_id</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="k">continue</span>
+
+        <span class="n">source_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">source_element</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">source_id</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">sources</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Source.xml refers to source #</span><span class="si">{}</span><span class="s1">, which was not found in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">source_id</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="k">continue</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">sources</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">source_id</span><span class="p">)]</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Source index error with: </span><span class="si">{!s}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">source_id</span><span class="p">))</span>
+
+        <span class="c1"># all elements must contain data to proceed</span>
+        <span class="k">if</span> <span class="n">flux_text</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">frequency_text</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># See what elements can be used</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">spw_id</span> <span class="ow">and</span> <span class="n">frequency_text</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">spw</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">spw_id</span><span class="p">)</span>
+                <span class="n">frequency</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Get the measurement</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">get_measurement</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">frequency_text</span><span class="p">,</span> <span class="n">flux_text</span><span class="p">)</span>
+
+        <span class="n">result</span><span class="p">[</span><span class="n">source</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="get_measurement">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.get_measurement">[docs]</a>
+<span class="k">def</span> <span class="nf">get_measurement</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">frequency_text</span><span class="p">,</span> <span class="n">flux_text</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Construct the measurement</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># more than one measurement can be registered against the spectral</span>
+    <span class="c1"># window. These functions give a lists of frequencies and IQUV</span>
+    <span class="c1"># 4-tuples</span>
+    <span class="n">row_frequencies</span> <span class="o">=</span> <span class="n">to_hertz</span><span class="p">(</span><span class="n">frequency_text</span><span class="p">)</span>
+    <span class="n">row_iquvs</span> <span class="o">=</span> <span class="n">to_jansky</span><span class="p">(</span><span class="n">flux_text</span><span class="p">)</span>
+
+    <span class="n">spw</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+
+    <span class="c1"># Task: select flux measurement closest to spectral window centre</span>
+    <span class="c1"># frequency, taking the mean when measurements are equally distant</span>
+
+    <span class="c1"># first, sort the measurements by distance to spw centre</span>
+    <span class="c1"># frequency, annotating each tuple with the delta frequency</span>
+    <span class="n">by_delta</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([(</span><span class="nb">abs</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">centre_frequency</span> <span class="o">-</span> <span class="n">f</span><span class="p">),</span> <span class="n">f</span><span class="p">,</span> <span class="n">iquv</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">iquv</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">row_frequencies</span><span class="p">,</span> <span class="n">row_iquvs</span><span class="p">)])</span>
+
+    <span class="c1"># identify all measurements equally as close as this provisionally</span>
+    <span class="c1"># &#39;closest&#39; measurement</span>
+    <span class="n">min_delta</span><span class="p">,</span> <span class="n">closest_frequency</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">by_delta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">joint_closest</span> <span class="o">=</span> <span class="p">[</span><span class="n">iquv</span> <span class="k">for</span> <span class="n">delta_f</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">iquv</span> <span class="ow">in</span> <span class="n">by_delta</span> <span class="k">if</span> <span class="n">delta_f</span> <span class="o">==</span> <span class="n">min_delta</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">joint_closest</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Averaging </span><span class="si">{}</span><span class="s1"> equally close measurements: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">joint_closest</span><span class="p">),</span> <span class="n">joint_closest</span><span class="p">))</span>
+
+    <span class="c1"># calculate the mean of these equally distant  measurements.</span>
+    <span class="c1"># joint_closest has at least one item, so we don&#39;t need to prime</span>
+    <span class="c1"># the reduce function with an empty accumulator</span>
+    <span class="n">mean_iquv</span> <span class="o">=</span> <span class="p">[</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="n">stokes</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">joint_closest</span><span class="p">)</span> <span class="k">for</span> <span class="n">stokes</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">joint_closest</span><span class="p">)]</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Closest flux measurement for </span><span class="si">{}</span><span class="s1"> spw </span><span class="si">{}</span><span class="s1"> found </span><span class="si">{}</span><span class="s1"> distant from centre of spw)&#39;</span>
+             <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">min_delta</span><span class="p">))</span>
+
+    <span class="c1"># Even if a mean was calculated, any alternative selection should</span>
+    <span class="c1"># be equally distant and therefore outside the sow range too</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">spw</span><span class="o">.</span><span class="n">min_frequency</span> <span class="o">&lt;</span> <span class="n">closest_frequency</span> <span class="o">&lt;</span> <span class="n">spw</span><span class="o">.</span><span class="n">max_frequency</span><span class="p">:</span>
+        <span class="c1"># This might become a warning once the PRTSPR-20823 fix is active</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Closest flux measurement for </span><span class="si">{}</span><span class="s1"> spw </span><span class="si">{}</span><span class="s1"> falls outside spw, </span><span class="si">{}</span><span class="s1"> distant from spectral window centre&#39;</span>
+                 <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">min_delta</span><span class="p">))</span>
+
+    <span class="n">m</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">FluxMeasurement</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="o">*</span><span class="n">mean_iquv</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">ORIGIN_XML</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">m</span></div>
+
+
+
+<div class="viewcode-block" id="to_jansky">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.to_jansky">[docs]</a>
+<span class="k">def</span> <span class="nf">to_jansky</span><span class="p">(</span><span class="n">flux_text</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a string extracted from an ASDM XML element to FluxDensity domain</span>
+<span class="sd">    objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">flux_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">FluxDensity</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">measures</span><span class="o">.</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">get_atoms</span><span class="p">(</span><span class="n">flux_text</span><span class="p">,</span> <span class="n">flux_fn</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="to_hertz">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.to_hertz">[docs]</a>
+<span class="k">def</span> <span class="nf">to_hertz</span><span class="p">(</span><span class="n">freq_text</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a string extracted from an ASDM XML element to Frequency domain</span>
+<span class="sd">    objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">freq_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">get_atoms</span><span class="p">(</span><span class="n">freq_text</span><span class="p">,</span> <span class="n">freq_fn</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_atoms">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.get_atoms">[docs]</a>
+<span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">conv_fn</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the individual measurements from an ASDM element.</span>
+
+<span class="sd">    This function converts a CASA record from a linear space-separated string</span>
+<span class="sd">    into a multidimensional list, using the dimension headers given at the</span>
+<span class="sd">    start of the CASA record to determine the number and size of each</span>
+<span class="sd">    dimension.</span>
+
+<span class="sd">    text - text from an ASDM element, with space-separated values</span>
+<span class="sd">    fn - optional function converting a string to a user-defined type</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="c1"># syntax is &lt;num dimensions&gt; &lt;size dimension 1&gt; &lt;size dimension 2&gt; etc.</span>
+    <span class="n">num_dimensions</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">dimension_sizes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">num_dimensions</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
+
+    <span class="c1"># find how may values are needed to form one complete &#39;entity&#39;</span>
+    <span class="n">step_size</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span> <span class="n">dimension_sizes</span><span class="p">)</span>
+    <span class="c1"># idx holds the index of the first value for each entity</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dimension_sizes</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+        <span class="c1"># get our complete entity as a linear list of strings, ready to be</span>
+        <span class="c1"># parcelled up into dimensions</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="n">idx</span> <span class="o">+</span> <span class="n">step_size</span><span class="p">]</span>
+        <span class="c1"># convert the values using the given function, eg. from string to Jy</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">conv_fn</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span>
+        <span class="c1"># group the values into dimensions using the sizes in the header</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">dimension_sizes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">grouper</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="n">step_size</span>
+
+    <span class="k">return</span> <span class="n">results</span></div>
+
+
+
+<div class="viewcode-block" id="grouper">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.grouper">[docs]</a>
+<span class="k">def</span> <span class="nf">grouper</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">fillvalue</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    grouper(3, &#39;ABCDEFG&#39;, &#39;x&#39;) --&gt; ABC DEF Gxx</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)]</span> <span class="o">*</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">zip_longest</span><span class="p">(</span><span class="n">fillvalue</span><span class="o">=</span><span class="n">fillvalue</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CYCLE7_export_flux_from_result">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.CYCLE7_export_flux_from_result">[docs]</a>
+<span class="k">def</span> <span class="nf">CYCLE7_export_flux_from_result</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;flux.csv&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Export flux densities from a set of results to a CSV file.</span>
+
+<span class="sd">    This function was reverted because it came too late to the C6 deadline</span>
+<span class="sd">    for analysisUtils to match the new format. It should be committed during</span>
+<span class="sd">    C7 development.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">results</span><span class="p">,</span> <span class="p">]</span>
+    <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ms&#39;</span><span class="p">,</span> <span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;spix&#39;</span><span class="p">,</span> <span class="s1">&#39;origin&#39;</span><span class="p">,</span> <span class="s1">&#39;query_date&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;comment&#39;</span><span class="p">]</span>
+    <span class="n">existing</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># if the file exists, read it in</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">abspath</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">open_with_lock</span><span class="p">(</span><span class="n">abspath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># slurp in all but the header rows</span>
+            <span class="n">existing</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">l</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">columns</span><span class="p">))])</span>
+
+    <span class="c1"># so we can write it back out again, with our measurements appended</span>
+    <span class="k">with</span> <span class="n">open_with_lock</span><span class="p">(</span><span class="n">abspath</span><span class="p">,</span> <span class="s1">&#39;wt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">existing</span><span class="p">)</span>
+
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">setjy_result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">ms_name</span> <span class="o">=</span> <span class="n">setjy_result</span><span class="o">.</span><span class="n">vis</span>
+            <span class="n">ms_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms_name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">measurements</span> <span class="ow">in</span> <span class="n">setjy_result</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">measurements</span><span class="p">:</span>
+
+                    <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ms_basename</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">spw_id</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">existing</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Not overwriting flux data for </span><span class="si">%s</span><span class="s1"> field </span><span class="si">%s</span><span class="s1"> &#39;</span>
+                                     <span class="s1">&#39;spw </span><span class="si">%s</span><span class="s1"> in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ms_basename</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span>
+                                                       <span class="n">m</span><span class="o">.</span><span class="n">spw_id</span><span class="p">,</span>
+                                                       <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">abspath</span><span class="p">)))</span>
+                            <span class="k">break</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">casa_flux_density</span>
+
+                        <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">ms_basename</span><span class="p">)</span>
+                        <span class="n">field</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">dequote</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="s1">&#39;intent=&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                            <span class="nb">sorted</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="p">))</span>
+
+                        <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">((</span><span class="n">ms_basename</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">spix</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span>
+                                         <span class="n">m</span><span class="o">.</span><span class="n">queried_at</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">age</span><span class="p">,</span> <span class="n">comment</span><span class="p">))</span>
+                        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Exported </span><span class="si">%s</span><span class="s1"> flux measurements to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="n">abspath</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="export_flux_from_result">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.export_flux_from_result">[docs]</a>
+<span class="k">def</span> <span class="nf">export_flux_from_result</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;flux.csv&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Export flux densities from a set of results to a CSV file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">results</span><span class="p">,</span> <span class="p">]</span>
+    <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ms&#39;</span><span class="p">,</span> <span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;spix&#39;</span><span class="p">,</span> <span class="s1">&#39;uvmin&#39;</span><span class="p">,</span> <span class="s1">&#39;uvmax&#39;</span><span class="p">,</span> <span class="s1">&#39;comment&#39;</span><span class="p">]</span>
+    <span class="n">old_standard_cols</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span> <span class="o">+</span> <span class="n">columns</span><span class="p">[</span><span class="mi">10</span><span class="p">:]</span>
+    <span class="n">use_old_std_cols</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">existing</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># if the file exists, read it in</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">abspath</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">open_with_lock</span><span class="p">(</span><span class="n">abspath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+
+            <span class="n">first</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">first</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">columns</span><span class="p">)):</span>
+                <span class="c1"># Try old format, without uvmin/uvmax (before r42290)</span>
+                <span class="k">if</span> <span class="n">first</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">old_standard_cols</span><span class="p">)):</span>
+                    <span class="n">columns</span> <span class="o">=</span> <span class="n">old_standard_cols</span>
+                    <span class="n">use_old_std_cols</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot recognize header line in flux file: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">first</span><span class="p">))</span>
+
+            <span class="c1"># slurp in all but the header rows</span>
+            <span class="n">existing</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">l</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">columns</span><span class="p">))])</span>
+
+    <span class="c1"># so we can write it back out again, with our measurements appended</span>
+    <span class="n">comment_template</span> <span class="o">=</span> <span class="s1">&#39;# field=</span><span class="si">{field}</span><span class="s1"> intents=</span><span class="si">{intents}</span><span class="s1"> origin=</span><span class="si">{origin}</span><span class="s1"> age=</span><span class="si">{age}</span><span class="s1"> queried_at=</span><span class="si">{queried_at}</span><span class="s1">&#39;</span>
+    <span class="k">with</span> <span class="n">open_with_lock</span><span class="p">(</span><span class="n">abspath</span><span class="p">,</span> <span class="s1">&#39;wt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">existing</span><span class="p">)</span>
+
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">setjy_result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">ms_name</span> <span class="o">=</span> <span class="n">setjy_result</span><span class="o">.</span><span class="n">vis</span>
+            <span class="n">ms_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms_name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">measurements</span> <span class="ow">in</span> <span class="n">setjy_result</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">measurements</span><span class="p">:</span>
+
+                    <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ms_basename</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">spw_id</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">existing</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Not overwriting flux data for </span><span class="si">{}</span><span class="s1"> field </span><span class="si">{}</span><span class="s1"> spw </span><span class="si">{}</span><span class="s1">&#39;</span>
+                                     <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms_basename</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">spw_id</span><span class="p">))</span>
+                            <span class="k">break</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">casa_flux_density</span>
+
+                        <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">ms_basename</span><span class="p">)</span>
+                        <span class="n">field</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+                        <span class="n">origin</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">origin</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">origin</span> <span class="k">else</span> <span class="s1">&#39;N/A&#39;</span>
+                        <span class="n">age</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">age</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">age</span> <span class="k">else</span> <span class="s1">&#39;N/A&#39;</span>
+                        <span class="n">queried_at</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">queried_at</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">queried_at</span> <span class="k">else</span> <span class="s1">&#39;N/A&#39;</span>
+
+                        <span class="n">comment</span> <span class="o">=</span> <span class="n">comment_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">clean_name</span><span class="p">,</span>
+                                                          <span class="n">intents</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="p">)),</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span>
+                                                          <span class="n">age</span><span class="o">=</span><span class="n">age</span><span class="p">,</span> <span class="n">queried_at</span><span class="o">=</span><span class="n">queried_at</span><span class="p">)</span>
+
+                        <span class="c1"># writer.writerow([ms_basename, field_id, m.spw_id, I, Q, U, V, float(m.spix), float(m.uvmin), float(m.uvmax), comment])</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">use_old_std_cols</span><span class="p">:</span>
+                            <span class="n">out_row</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms_basename</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">spix</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">uvmin</span><span class="p">),</span>
+                                       <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">uvmax</span><span class="p">),</span> <span class="n">comment</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">out_row</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms_basename</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">spix</span><span class="p">),</span> <span class="n">comment</span><span class="p">]</span>
+                        <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">out_row</span><span class="p">)</span>
+
+                        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Exported </span><span class="si">%s</span><span class="s1"> flux measurements to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="n">abspath</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="import_flux">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.import_flux">[docs]</a>
+<span class="k">def</span> <span class="nf">import_flux</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read flux densities from a CSV file and import them into the context.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># regular expressions to match values from comment template</span>
+    <span class="n">origin_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?:origin=)(?P&lt;origin&gt;\S+)&#39;</span><span class="p">)</span>
+    <span class="n">age_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?:age=)(?P&lt;age&gt;\S+)&#39;</span><span class="p">)</span>
+    <span class="n">Band3age_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?:Band3age=)(?P&lt;Band3age&gt;\S+)&#39;</span><span class="p">)</span>
+    <span class="n">query_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?:queried_at=)(?P&lt;timestamp&gt;\d</span><span class="si">{4}</span><span class="s1">-\d</span><span class="si">{2}</span><span class="s1">-\d</span><span class="si">{2}</span><span class="s1"> \d</span><span class="si">{2}</span><span class="s1">:\d</span><span class="si">{2}</span><span class="s1">:\d</span><span class="si">{2}</span><span class="s1"> \w</span><span class="si">{3}</span><span class="s1">)&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;flux.csv&#39;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">open_with_lock</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">restkey</span><span class="o">=</span><span class="s1">&#39;others&#39;</span><span class="p">,</span> <span class="n">restval</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+            <span class="n">ms_name</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;ms&#39;</span><span class="p">]</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ms</span> <span class="o">=</span> <span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">ms_name</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="c1"># No MS registered by that name. This could be caused by a</span>
+                <span class="c1"># flux.csv from a previous run</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> refers to unregistered ASDM </span><span class="se">\&#39;</span><span class="si">{}</span><span class="se">\&#39;</span><span class="s1">. If this is a multi-ASDM run this to be expected.&#39;</span>
+                         <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ms_name</span><span class="p">))</span>
+                <span class="k">continue</span>
+
+            <span class="n">field_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">])</span>
+            <span class="n">spw_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span>
+            <span class="n">I</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">]</span>
+            <span class="n">Q</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">]</span>
+            <span class="n">U</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;U&#39;</span><span class="p">]</span>
+            <span class="n">V</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;V&#39;</span><span class="p">]</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">spix</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;spix&#39;</span><span class="p">])</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">decimal</span><span class="o">.</span><span class="n">InvalidOperation</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+                <span class="n">spix</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;0.0&#39;</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">uvmin</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;uvmin&#39;</span><span class="p">])</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">decimal</span><span class="o">.</span><span class="n">InvalidOperation</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+                <span class="n">uvmin</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;0.0&#39;</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">uvmax</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;uvmax&#39;</span><span class="p">])</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">decimal</span><span class="o">.</span><span class="n">InvalidOperation</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+                <span class="n">uvmax</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;0.0&#39;</span><span class="p">)</span>
+
+            <span class="n">comment</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">]</span>
+
+            <span class="n">match</span> <span class="o">=</span> <span class="n">origin_re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;origin&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">match</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">origin</span> <span class="o">==</span> <span class="s1">&#39;N/A&#39;</span><span class="p">:</span>
+                <span class="n">origin</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="s1">&#39;Jy, freq=&#39;</span> <span class="ow">in</span> <span class="n">comment</span><span class="p">:</span>
+                <span class="n">origin</span> <span class="o">=</span> <span class="n">ORIGIN_ANALYSIS_UTILS</span>
+
+            <span class="n">match</span> <span class="o">=</span> <span class="n">age_re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
+            <span class="n">age</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;age&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">match</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">age</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">age</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">age</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="c1"># Replace age with Band3age if age not available</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">Band3age_re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
+            <span class="n">Band3age</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Band3age&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">match</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">age</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">Band3age</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">age</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Band3age</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using Band3age value of </span><span class="si">{!s}</span><span class="s2"> for field </span><span class="si">{!s}</span><span class="s2">, spw </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Band3age</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">))</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="n">age</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="n">match</span> <span class="o">=</span> <span class="n">query_re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
+            <span class="n">query_date</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;timestamp&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">match</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">query_date</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">query_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">query_date</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S %Z&#39;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="n">query_date</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="p">)</span>
+                <span class="n">measurement</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">FluxMeasurement</span><span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">spix</span><span class="p">,</span> <span class="n">uvmin</span><span class="p">,</span> <span class="n">uvmax</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="n">age</span><span class="p">,</span> <span class="n">queried_at</span><span class="o">=</span><span class="n">query_date</span><span class="p">)</span>
+
+                <span class="c1"># A single field identifier could map to multiple field objects,</span>
+                <span class="c1"># but the flux should be the same for all, so we iterate..</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                    <span class="c1"># .. removing any existing measurements in these spws from</span>
+                    <span class="c1"># these fields..</span>
+                    <span class="n">to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">flux_densities</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">spw_id</span> <span class="o">==</span> <span class="n">spw_id</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">flux_density</span> <span class="ow">in</span> <span class="n">to_remove</span><span class="p">:</span>
+                        <span class="n">field</span><span class="o">.</span><span class="n">flux_densities</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">flux_density</span><span class="p">)</span>
+
+                    <span class="c1"># .. and then updating with our new values</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Adding </span><span class="si">{}</span><span class="s1"> to spw </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">measurement</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">))</span>
+                    <span class="n">field</span><span class="o">.</span><span class="n">flux_densities</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">measurement</span><span class="p">)</span>
+                    <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Problem importing </span><span class="se">\&#39;</span><span class="si">{}</span><span class="se">\&#39;</span><span class="s1"> as a flux statement&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="p">))</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Imported </span><span class="si">{}</span><span class="s1"> flux measurements from </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+
+        <span class="c1"># Convert into a set of results for the web log</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">:</span>
+            <span class="n">science_spw_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">commonfluxresults</span><span class="o">.</span><span class="n">FluxCalibrationResults</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">flux_densities</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">flux</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">flux_densities</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">flux</span><span class="o">.</span><span class="n">spw_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">science_spw_ids</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="c1"># Important! The field ID is used rather than the field</span>
+                    <span class="c1"># name as some data describe independent fields using the</span>
+                    <span class="c1"># by the same name, e.g., J1733-1304 is both a science</span>
+                    <span class="c1"># target and phase calibrator in</span>
+                    <span class="c1"># uid://A002/Xc2ae09/X27f.ms.</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># More info:</span>
+                    <span class="c1"># https://open-jira.nrao.edu/browse/CAS-10792?focusedCommentId=123387&amp;page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-123387</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">measurements</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flux</span><span class="p">)</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

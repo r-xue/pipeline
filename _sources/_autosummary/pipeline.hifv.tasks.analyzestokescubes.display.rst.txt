@@ -1,0 +1,20 @@
+pipeline.hifv.tasks.analyzestokescubes.display
+==============================================
+
+.. automodule:: pipeline.hifv.tasks.analyzestokescubes.display
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      matplotlibrc_formal
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ScalarFormatter
+      VlassCubeFluxSummary
+      VlassCubeStokesSummary
+   

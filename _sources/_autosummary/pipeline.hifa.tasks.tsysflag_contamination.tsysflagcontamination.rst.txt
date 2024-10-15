@@ -1,0 +1,25 @@
+pipeline.hifa.tasks.tsysflag\_contamination.tsysflagcontamination
+=================================================================
+
+.. automodule:: pipeline.hifa.tasks.tsysflag_contamination.tsysflagcontamination
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ExternFunctionArguments
+      QAScore
+      StandardTaskTemplate
+      TargetDataSelection
+      TsysData
+      TsysFlagContamination
+      TsysFlagContaminationInputs
+      TsysflagResults
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      PipelineException
+   

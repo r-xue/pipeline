@@ -1,0 +1,12 @@
+pipeline.hifv.tasks.pbcor.renderer
+==================================
+
+.. automodule:: pipeline.hifv.tasks.pbcor.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsMakepbcorimagesRenderer
+   

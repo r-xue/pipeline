@@ -1,0 +1,747 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.applycal.mswrapper &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.applycal.mswrapper</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.applycal.mswrapper</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="create_V_array">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.create_V_array">[docs]</a>
+<span class="k">def</span> <span class="nf">create_V_array</span><span class="p">(</span><span class="n">n_pol</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n_chan</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an empty array to hold the time averaged visibilities.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        n_pol: int</span>
+<span class="sd">            Number of polarizations.</span>
+<span class="sd">        n_chan: int</span>
+<span class="sd">            Number of channels.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ma</span>
+<span class="sd">            Empty numpy masked array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create variables and storage space for V_k</span>
+    <span class="n">result_dtype</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;antenna&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;corrected_data&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;complex128&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">n_pol</span><span class="p">,</span> <span class="n">n_chan</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;complex128&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">n_pol</span><span class="p">,</span> <span class="n">n_chan</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;chan_freq&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">n_chan</span><span class="p">,)),</span>
+        <span class="p">(</span><span class="s1">&#39;resolution&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">n_chan</span><span class="p">,))</span>
+    <span class="p">]</span>
+    <span class="c1"># new numpy array to hold visibilities V</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">result_dtype</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MSWrapper">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper">[docs]</a>
+<span class="k">class</span> <span class="nc">MSWrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    MSWrapper is a wrapper around a NumPy array populated with measurement set</span>
+<span class="sd">    data for a specified scan and spectral window. The MSWrapper can be</span>
+<span class="sd">    filtered on various criteria, e.g, spw, scan, antenna, etc., to narrow the</span>
+<span class="sd">    data to a particular data selection.</span>
+
+<span class="sd">    The static method MSWrapper.create_from_ms should be used to instantiate</span>
+<span class="sd">    MSWrapper objects.</span>
+
+<span class="sd">    The static methods MSWrapper.create_averages_from_ms and</span>
+<span class="sd">    MSWrapper.create_averages_from_combination can also be used to create a new</span>
+<span class="sd">    instance of a MSWrapper object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MSWrapper.create_from_ms">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_from_ms">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_from_ms</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new MSWrapper for the specified scan and spw.</span>
+
+<span class="sd">        Reading in raw measurement set data can be a very memory-intensive</span>
+<span class="sd">        process, so data selection is deliberately limited to one scan and one</span>
+<span class="sd">        spw at a time.</span>
+
+<span class="sd">        :param filename: measurement set filename</span>
+<span class="sd">        :param scan: integer scan ID</span>
+<span class="sd">        :param spw: integer spw ID</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;MSWrapper.create_from_ms(</span><span class="si">%r</span><span class="s1">, </span><span class="si">%r</span><span class="s1">, </span><span class="si">%r</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">spw</span><span class="p">)</span>
+
+        <span class="n">data_selection</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;scan&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="p">),</span> <span class="s2">&quot;spw&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)}</span>
+        <span class="n">colnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;antenna1&#39;</span><span class="p">,</span> <span class="s1">&#39;antenna2&#39;</span><span class="p">,</span> <span class="s1">&#39;flag&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;corrected_amplitude&#39;</span><span class="p">,</span> <span class="s1">&#39;corrected_data&#39;</span><span class="p">,</span> <span class="s1">&#39;corrected_phase&#39;</span><span class="p">]</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">openms</span><span class="p">:</span>
+            <span class="n">openms</span><span class="o">.</span><span class="n">msselect</span><span class="p">(</span><span class="n">data_selection</span><span class="p">)</span>
+            <span class="n">raw_data</span> <span class="o">=</span> <span class="n">openms</span><span class="o">.</span><span class="n">getdata</span><span class="p">(</span><span class="n">colnames</span><span class="p">)</span>
+            <span class="n">axis_info</span> <span class="o">=</span> <span class="n">openms</span><span class="o">.</span><span class="n">getdata</span><span class="p">([</span><span class="s1">&#39;axis_info&#39;</span><span class="p">])</span>
+            <span class="n">num_rows</span> <span class="o">=</span> <span class="n">openms</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">selected</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">corr_axis</span> <span class="o">=</span> <span class="n">axis_info</span><span class="p">[</span><span class="s1">&#39;axis_info&#39;</span><span class="p">][</span><span class="s1">&#39;corr_axis&#39;</span><span class="p">]</span>
+        <span class="n">freq_axis</span> <span class="o">=</span> <span class="n">axis_info</span><span class="p">[</span><span class="s1">&#39;axis_info&#39;</span><span class="p">][</span><span class="s1">&#39;freq_axis&#39;</span><span class="p">]</span>
+
+        <span class="n">scalar_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">colnames</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_data</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">var_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">colnames</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">scalar_cols</span><span class="p">]</span>
+
+        <span class="c1"># data has axis order pol-&gt;channel-&gt;time. Swap order to a more natural time-&gt;pol-&gt;channel</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">var_cols</span><span class="p">:</span>
+            <span class="n">raw_data</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_data</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="n">c</span><span class="p">:</span> <span class="n">get_dtype</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">colnames</span><span class="p">}</span>
+
+        <span class="n">col_dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">dtypes</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">dtypes</span> <span class="k">if</span> <span class="n">dtypes</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">num_rows</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">col_dtypes</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">scalar_cols</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_data</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+
+        <span class="c1"># convert to NumPy MaskedArray if FLAG column is present</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span>
+        <span class="n">var_cols_to_mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">var_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="o">!=</span> <span class="s1">&#39;flag&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">var_cols_to_mask</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">raw_data</span><span class="p">[</span><span class="n">c</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">raw_data</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">MSWrapper</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">corr_axis</span><span class="p">,</span> <span class="n">freq_axis</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MSWrapper.filter">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.filter">[docs]</a>
+    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a new MSWrapper containing rows matching the column selection</span>
+<span class="sd">        criteria.</span>
+
+<span class="sd">        Data for rows meeting all the column criteria will be funnelled into</span>
+<span class="sd">        the new MSWrapper return object. A boolean AND is effectively</span>
+<span class="sd">        performed: e.g., antenna1=3 AND antenna2=5 will only return rows for</span>
+<span class="sd">        one baseline.</span>
+
+<span class="sd">        Data can be filtered on any column listed in the wrapper.data.dtype.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mask_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># create a mask that lets all data through for columns that are not</span>
+        <span class="c1"># specified as arguments, or just the specified values through for</span>
+        <span class="c1"># columns that are specified as arguments</span>
+        <span class="k">def</span> <span class="nf">passthrough</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">column_name</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">column_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                    <span class="n">mask_args</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">column_name</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mask_args</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span>
+
+        <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">antenna1</span><span class="p">,</span> <span class="s1">&#39;antenna1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">antenna2</span><span class="p">,</span> <span class="s1">&#39;antenna2&#39;</span><span class="p">)]:</span>
+            <span class="n">passthrough</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">column_name</span><span class="p">)</span>
+
+        <span class="c1"># combine masks to create final data selection mask</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mask_args</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mask</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_mask</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># find data for the selection mask</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+        <span class="c1"># create new object for the filtered data</span>
+        <span class="k">return</span> <span class="n">MSWrapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">corr_axis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">freq_axis</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MSWrapper.xor_filter">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.xor_filter">[docs]</a>
+    <span class="k">def</span> <span class="nf">xor_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a new MSWrapper containing rows matching the column selection</span>
+<span class="sd">        criteria.</span>
+
+<span class="sd">        Data for rows meeting any column criteria will be funnelled into</span>
+<span class="sd">        the new MSWrapper return object. A boolean AND is effectively</span>
+<span class="sd">        performed: e.g., antenna1=3 AND antenna2=5 will only return rows for</span>
+<span class="sd">        one baseline.</span>
+
+<span class="sd">        Data can be filtered on any column listed in the wrapper.data.dtype.</span>
+
+<span class="sd">        DANGER! DANGER! DANGER!</span>
+
+<span class="sd">        NOTE! This class has only been tested for baseline selection! Using</span>
+<span class="sd">        this method for other use cases could be dangerous. Use at your own</span>
+<span class="sd">        risk!</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># TODO this method could probably be refactored to use numpy xor, but</span>
+        <span class="c1"># I don&#39;t have time right now...</span>
+
+        <span class="n">mask_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># create a mask that lets all data through for columns that are not</span>
+        <span class="c1"># specified as arguments, or just the specified values through for</span>
+        <span class="c1"># columns that are specified as arguments</span>
+        <span class="k">def</span> <span class="nf">passthrough</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">column_name</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">column_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                    <span class="n">mask_args</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">column_name</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mask_args</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span>
+
+        <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">antenna1</span><span class="p">,</span> <span class="s1">&#39;antenna1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">antenna2</span><span class="p">,</span> <span class="s1">&#39;antenna2&#39;</span><span class="p">)]:</span>
+            <span class="n">passthrough</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">column_name</span><span class="p">)</span>
+
+        <span class="c1"># combine masks to create final data selection mask</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mask_args</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mask</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_mask</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># remove autocorrelations</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mask</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;antenna1&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;antenna2&#39;</span><span class="p">])</span>
+
+        <span class="c1"># find data for the selection mask</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+        <span class="c1"># create new object for the filtered data</span>
+        <span class="k">return</span> <span class="n">MSWrapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">corr_axis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">freq_axis</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MSWrapper.create_averages_from_ms">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_averages_from_ms">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_averages_from_ms</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">memlim</span><span class="p">,</span> <span class="n">perantave</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new MSWrapper for the specified scan and spw.</span>
+
+<span class="sd">        Reading in raw measurement set data can be a very memory-intensive</span>
+<span class="sd">        process, so data selection is deliberately limited to one scan and one</span>
+<span class="sd">        spw at a time.</span>
+
+<span class="sd">        :param filename: measurement set filename</span>
+<span class="sd">        :param scan: integer scan ID</span>
+<span class="sd">        :param spw: integer spw ID</span>
+<span class="sd">        :param memlim: Limit for memory for data buffer use, given in Gigabytes</span>
+<span class="sd">        :param perantave: Compute per antenna average (default True)</span>
+<span class="sd">        :type perantave: bool</span>
+<span class="sd">        :return: MSWrapper instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Method added as part of PIPE-687</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;MSWrapper.create_averages_from_ms(</span><span class="si">%r</span><span class="s1">, </span><span class="si">%r</span><span class="s1">, </span><span class="si">%r</span><span class="s1">, </span><span class="si">%r</span><span class="s1">, </span><span class="si">%r</span><span class="s1">)&#39;</span><span class="p">,</span>
+                  <span class="n">filename</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">memlim</span><span class="p">,</span> <span class="n">perantave</span><span class="p">)</span>
+
+        <span class="c1"># Epsilon used to avoid division by zero in sigma calculations</span>
+        <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.e-6</span>
+
+        <span class="c1"># put memory limit in bytes</span>
+        <span class="n">memlim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">memlim</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1024.0</span> <span class="o">**</span> <span class="mi">3</span><span class="p">))</span>
+
+        <span class="c1"># Initialize necessary column name lists</span>
+        <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;antenna1&#39;</span><span class="p">,</span> <span class="s1">&#39;antenna2&#39;</span><span class="p">,</span> <span class="s1">&#39;flag&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;corrected_data&#39;</span><span class="p">]</span>
+        <span class="c1"># Data type for these columns</span>
+        <span class="n">col_dtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;bool&#39;</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;complex128&#39;</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="c1"># Data size per element for each column, in bytes</span>
+        <span class="n">col_dsizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">itemsize</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">col_dtypes</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+        <span class="c1"># Is polarization a dimension of the column? 1=True, 0=False</span>
+        <span class="n">poldim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+        <span class="c1"># Is frequency a dimension of the column? 1=True, 0=False</span>
+        <span class="n">freqdim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+        <span class="c1"># Total size of the whole piece of data should be:</span>
+        <span class="c1"># Size = nrows*Sum( dsizes*(npols*poldim+1)*(nchan*freqdim+1) )(over number of colnames)</span>
+
+        <span class="c1"># commented out from copied PL code</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">openms</span><span class="p">:</span>
+
+            <span class="c1"># select data for this scan</span>
+            <span class="n">data_selection</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;scan&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="p">),</span> <span class="s2">&quot;spw&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)}</span>
+            <span class="n">openms</span><span class="o">.</span><span class="n">msselect</span><span class="p">(</span><span class="n">data_selection</span><span class="p">)</span>
+            <span class="n">md</span> <span class="o">=</span> <span class="n">openms</span><span class="o">.</span><span class="n">metadata</span><span class="p">()</span>
+            <span class="n">antennaids</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">antennaids</span><span class="p">()</span>
+            <span class="n">nant</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">antennaids</span><span class="p">)</span>
+            <span class="n">nbl</span> <span class="o">=</span> <span class="n">nant</span> <span class="o">*</span> <span class="p">(</span><span class="n">nant</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">nant</span>
+            <span class="n">nrows</span> <span class="o">=</span> <span class="n">openms</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">selected</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">ntstamps</span> <span class="o">=</span> <span class="n">nrows</span> <span class="o">/</span> <span class="n">nbl</span>
+            <span class="n">axis_info</span> <span class="o">=</span> <span class="n">openms</span><span class="o">.</span><span class="n">getdata</span><span class="p">([</span><span class="s1">&#39;axis_info&#39;</span><span class="p">])</span>
+            <span class="c1"># Create frequency axes to be introduced in output V</span>
+            <span class="n">corr_axis</span> <span class="o">=</span> <span class="n">axis_info</span><span class="p">[</span><span class="s1">&#39;axis_info&#39;</span><span class="p">][</span><span class="s1">&#39;corr_axis&#39;</span><span class="p">]</span>
+            <span class="n">freq_axis</span> <span class="o">=</span> <span class="n">axis_info</span><span class="p">[</span><span class="s1">&#39;axis_info&#39;</span><span class="p">][</span><span class="s1">&#39;freq_axis&#39;</span><span class="p">]</span>
+            <span class="c1"># get 1D array of channel frequencies and include its definition in the dtype</span>
+            <span class="n">chan_freq</span> <span class="o">=</span> <span class="n">freq_axis</span><span class="p">[</span><span class="s1">&#39;chan_freq&#39;</span><span class="p">]</span>
+            <span class="n">chan_freq</span> <span class="o">=</span> <span class="n">chan_freq</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># get 1D array of channel widths and include the column in the dtype</span>
+            <span class="n">resolution</span> <span class="o">=</span> <span class="n">freq_axis</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span>
+            <span class="n">resolution</span> <span class="o">=</span> <span class="n">resolution</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">npol</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">corr_axis</span><span class="p">)</span>
+            <span class="n">nchan</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">freq_axis</span><span class="p">[</span><span class="s1">&#39;chan_freq&#39;</span><span class="p">])</span>
+            <span class="c1"># Data size per row and for the whole scan</span>
+            <span class="n">rowdatasize</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">col_dsizes</span> <span class="o">*</span> <span class="p">(</span><span class="n">npol</span> <span class="o">*</span> <span class="n">poldim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">nchan</span> <span class="o">*</span> <span class="n">freqdim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">scandatasize</span> <span class="o">=</span> <span class="n">nrows</span> <span class="o">*</span> <span class="n">rowdatasize</span>
+            <span class="c1"># Calculate the number of iteration that need to be done to go over</span>
+            <span class="c1"># the entire piece of data for this scan,spw</span>
+            <span class="n">niter</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">scandatasize</span> <span class="o">/</span> <span class="n">memlim</span><span class="p">))</span>
+            <span class="n">nrowsbuffer</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">memlim</span> <span class="o">/</span> <span class="n">rowdatasize</span><span class="p">))</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Scan </span><span class="si">{0:d}</span><span class="s1"> has </span><span class="si">{1:d}</span><span class="s1"> rows (</span><span class="si">{2:.3f}</span><span class="s1"> Gb), memory limit is set to </span><span class="si">{3:.3f}</span><span class="s1"> Gb&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">scan</span><span class="p">,</span> <span class="n">nrows</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">scandatasize</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1024.0</span> <span class="o">**</span> <span class="mi">3</span><span class="p">),</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">memlim</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1024.0</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;reading data in </span><span class="si">{0:d}</span><span class="s1"> chunks of </span><span class="si">{1:d}</span><span class="s1"> rows&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">niter</span><span class="p">,</span> <span class="n">nrowsbuffer</span><span class="p">))</span>
+
+            <span class="c1"># new numpy array to hold visibilities V</span>
+            <span class="n">V</span> <span class="o">=</span> <span class="n">create_V_array</span><span class="p">(</span><span class="n">npol</span><span class="p">,</span> <span class="n">nchan</span><span class="p">)</span>
+            <span class="c1"># Partial sums storage variables</span>
+            <span class="n">realdatasum</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">npol</span><span class="p">,</span> <span class="n">nchan</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">antennaids</span><span class="p">}</span>
+            <span class="n">imagdatasum</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">npol</span><span class="p">,</span> <span class="n">nchan</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">antennaids</span><span class="p">}</span>
+            <span class="n">realdatasqsum</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">npol</span><span class="p">,</span> <span class="n">nchan</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">antennaids</span><span class="p">}</span>
+            <span class="n">imagdatasqsum</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">npol</span><span class="p">,</span> <span class="n">nchan</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">antennaids</span><span class="p">}</span>
+            <span class="c1"># ndata is a counter for the amount of data being averaged</span>
+            <span class="n">ndata</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">npol</span><span class="p">,</span> <span class="n">nchan</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">antennaids</span><span class="p">}</span>
+
+            <span class="c1"># Sigma is a function of sqrt(num_antennas - 1). Calculate and cache this value now.</span>
+            <span class="n">norm_sigma_tmaverage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ntstamps</span> <span class="o">*</span> <span class="p">(</span><span class="n">nant</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">))</span>
+
+            <span class="c1"># return ([nrows, npols, nchan], [memlim, rowdatasize, scandatasize], [niter, nrowsbuffer])</span>
+            <span class="c1"># Load data in chunks of &#39;nrowsbuffer&#39; number of rows</span>
+            <span class="n">openms</span><span class="o">.</span><span class="n">iterinit</span><span class="p">(</span><span class="n">maxrows</span><span class="o">=</span><span class="n">nrowsbuffer</span><span class="p">)</span>
+            <span class="n">do_next</span> <span class="o">=</span> <span class="n">openms</span><span class="o">.</span><span class="n">iterorigin</span><span class="p">()</span>
+
+            <span class="k">while</span> <span class="n">do_next</span><span class="p">:</span>
+                <span class="n">raw_data</span> <span class="o">=</span> <span class="n">openms</span><span class="o">.</span><span class="n">getdata</span><span class="p">(</span><span class="n">col_names</span><span class="p">)</span>
+                <span class="c1"># Create maked array of corrected and masked data</span>
+                <span class="c1"># data has axis order pol-&gt;channel-&gt;time. Swap order to a more natural time-&gt;pol-&gt;channel</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">(</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;corrected_data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;complex128&#39;</span><span class="p">),</span>
+                    <span class="n">mask</span><span class="o">=</span><span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="c1"># Iterate over antennas, selecting rows of data for averaging</span>
+                <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">antennaids</span><span class="p">:</span>
+                    <span class="n">sel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_xor</span><span class="p">(</span><span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;antenna1&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;antenna2&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">antenna</span><span class="p">)</span>
+                    <span class="n">seldatareal</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
+                    <span class="n">seldataimag</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span>
+                    <span class="c1"># If the per antenna adjustment is selected, invert the sign of the imaginary part when the</span>
+                    <span class="c1"># antenna is in position 2</span>
+                    <span class="k">if</span> <span class="n">perantave</span><span class="p">:</span>
+                        <span class="n">ant2sel</span> <span class="o">=</span> <span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;antenna2&#39;</span><span class="p">][</span><span class="n">sel</span><span class="p">]</span>
+                        <span class="n">sel2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ant2sel</span> <span class="o">==</span> <span class="n">antenna</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">sel2</span><span class="p">:</span>
+                            <span class="n">seldataimag</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.0</span>
+                    <span class="c1"># Accumulate the sum of data averaged over time and baselines (MS rows)</span>
+                    <span class="n">realseldata</span> <span class="o">=</span> <span class="n">seldatareal</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">imagseldata</span> <span class="o">=</span> <span class="n">seldataimag</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="c1"># Perform the the stacking to existing sums with np.ma.sum() to avoid</span>
+                    <span class="c1"># propagating masking over the cumulative sum</span>
+                    <span class="n">realdatasum</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">([</span><span class="n">realdatasum</span><span class="p">[</span><span class="n">antenna</span><span class="p">],</span> <span class="n">realseldata</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">imagdatasum</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">([</span><span class="n">imagdatasum</span><span class="p">[</span><span class="n">antenna</span><span class="p">],</span> <span class="n">imagseldata</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="c1"># and count the number of unmasked datapoints accumulated</span>
+                    <span class="n">ndata</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">([</span><span class="n">ndata</span><span class="p">[</span><span class="n">antenna</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="c1"># Calculate sum of squares over time and baselines, separated by real and imaginary</span>
+                    <span class="n">realdatasq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">seldatareal</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">imagdatasq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">seldataimag</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="c1"># Perform the the stacking to existing sums of squares</span>
+                    <span class="n">realdatasqsum</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">([</span><span class="n">realdatasqsum</span><span class="p">[</span><span class="n">antenna</span><span class="p">],</span> <span class="n">realdatasq</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">imagdatasqsum</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">([</span><span class="n">imagdatasqsum</span><span class="p">[</span><span class="n">antenna</span><span class="p">],</span> <span class="n">imagdatasq</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="c1"># Jump to next chunk of data</span>
+                <span class="n">do_next</span> <span class="o">=</span> <span class="n">openms</span><span class="o">.</span><span class="n">iternext</span><span class="p">()</span>
+
+            <span class="c1"># For pixels with no unmasked data accumulated, make sure those</span>
+            <span class="c1"># pixels are filled with some epsilon dummy value</span>
+            <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">antennaids</span><span class="p">:</span>
+                <span class="n">zerosel</span> <span class="o">=</span> <span class="n">ndata</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;</span> <span class="mf">1.0</span>
+                <span class="n">ndata</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">zerosel</span><span class="p">]</span> <span class="o">=</span> <span class="n">epsilon</span>
+                <span class="n">ndata</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span> <span class="o">+=</span> <span class="n">zerosel</span>
+
+            <span class="c1"># Iterate over antennas, now calculating the mean and sigma of the data</span>
+            <span class="c1"># creating the variable V to be returned as output</span>
+            <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">antennaids</span><span class="p">:</span>
+                <span class="c1"># Compute time averaged visibilities (Vk arrays)</span>
+                <span class="n">V_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">1</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">V</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+                <span class="c1"># add antenna and channel frequencies to the row for this antenna</span>
+                <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">antenna</span>
+                <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;chan_freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chan_freq</span>
+                <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolution</span>
+
+                <span class="c1"># Average data over time by taking sum/N</span>
+                <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;corrected_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">realdatasum</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">imagdatasum</span><span class="p">[</span><span class="n">antenna</span><span class="p">])</span> <span class="o">/</span> <span class="n">ndata</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span>
+
+                <span class="c1"># Equation 2: sigma_{k}(nu_{i}) = std(V_{jk}(nu_{i}))_{j} / sqrt(n_{ant})</span>
+                <span class="c1"># calculate this from the sum of data and data squared:</span>
+                <span class="c1"># sigma = sqrt( ( sum_squared_values + (1/N)*sum_values^2 ) / (N-1) )</span>
+                <span class="c1"># where this N is the sum of accumulated values</span>
+                <span class="n">sigma_k_real</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">realdatasqsum</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">realdatasum</span><span class="p">[</span><span class="n">antenna</span><span class="p">])</span> <span class="o">/</span> <span class="n">ndata</span><span class="p">[</span><span class="n">antenna</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">ndata</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">sigma_k_imag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">imagdatasqsum</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">imagdatasum</span><span class="p">[</span><span class="n">antenna</span><span class="p">])</span> <span class="o">/</span> <span class="n">ndata</span><span class="p">[</span><span class="n">antenna</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">ndata</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="c1"># apply final formula from sigma values</span>
+                <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">sigma_k_real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">sigma_k_imag</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm_sigma_tmaverage</span>
+
+                <span class="c1"># Add antenna averaged data to output array V</span>
+                <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">V</span><span class="p">,</span> <span class="n">V_k</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">MSWrapper</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">corr_axis</span><span class="p">,</span> <span class="n">freq_axis</span><span class="p">,</span> <span class="n">V</span><span class="o">=</span><span class="n">V</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MSWrapper.create_averages_from_combination">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_averages_from_combination">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_averages_from_combination</span><span class="p">(</span><span class="n">mswlist</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate and return the average MSWrapper of the list of MSWrapper objects given as input.</span>
+<span class="sd">        The &#39;sigma&#39; column get filled with the standard error of the mean, by adding inverse squared variances</span>
+<span class="sd">        of each of the objects in the list.</span>
+
+<span class="sd">        :mswlist: Python List of MSWrapper objects to combine. All of them must be from the same</span>
+<span class="sd">                  dataset and SPW, otherwise a dummy object is returned.</span>
+<span class="sd">        :return: MSWrapper object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Method added as part of PIPE-687</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;MSWrapper.create_averages_from_combination(</span><span class="si">%r</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">mswlist</span><span class="p">)</span>
+
+        <span class="c1"># Get data from first MSWrapper element of the list, scan will be the list of scans</span>
+        <span class="c1"># discard raw data if present</span>
+        <span class="n">nscans</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mswlist</span><span class="p">)</span>
+        <span class="n">scan</span> <span class="o">=</span> <span class="p">[</span><span class="n">mswlist</span><span class="p">[</span><span class="n">idxscan</span><span class="p">]</span><span class="o">.</span><span class="n">scan</span> <span class="k">for</span> <span class="n">idxscan</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nscans</span><span class="p">)]</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">mswlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span>
+        <span class="n">spw</span> <span class="o">=</span> <span class="n">mswlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">spw</span>
+        <span class="n">corr_axis</span> <span class="o">=</span> <span class="n">mswlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">corr_axis</span>
+        <span class="n">freq_axis</span> <span class="o">=</span> <span class="n">mswlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">freq_axis</span>
+        <span class="p">(</span><span class="n">nant</span><span class="p">,</span> <span class="n">npol</span><span class="p">,</span> <span class="n">nchan</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mswlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">V</span><span class="p">[</span><span class="s1">&#39;corrected_data&#39;</span><span class="p">])</span>
+        <span class="c1"># Check all elements of the list are compatible, if not, return dummy MSWrapper object</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">mswlist</span><span class="p">[</span><span class="n">idxscan</span><span class="p">]</span><span class="o">.</span><span class="n">spw</span> <span class="o">==</span> <span class="n">mswlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">spw</span> <span class="k">for</span> <span class="n">idxscan</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nscans</span><span class="p">)])</span> <span class="ow">and</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">mswlist</span><span class="p">[</span><span class="n">idxscan</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span> <span class="o">==</span> <span class="n">mswlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span> <span class="k">for</span> <span class="n">idxscan</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nscans</span><span class="p">)])</span> <span class="ow">and</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">mswlist</span><span class="p">[</span><span class="n">idxscan</span><span class="p">]</span><span class="o">.</span><span class="n">corr_axis</span> <span class="o">==</span> <span class="n">mswlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">corr_axis</span> <span class="k">for</span> <span class="n">idxscan</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nscans</span><span class="p">)])</span> <span class="ow">and</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">mswlist</span><span class="p">[</span><span class="n">idxscan</span><span class="p">]</span><span class="o">.</span><span class="n">freq_axis</span><span class="p">[</span><span class="s1">&#39;chan_freq&#39;</span><span class="p">],</span> <span class="n">mswlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">freq_axis</span><span class="p">[</span><span class="s1">&#39;chan_freq&#39;</span><span class="p">]])</span> <span class="k">for</span> <span class="n">idxscan</span> <span class="ow">in</span>
+                     <span class="nb">range</span><span class="p">(</span><span class="n">nscans</span><span class="p">)])</span> <span class="ow">and</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">mswlist</span><span class="p">[</span><span class="n">idxscan</span><span class="p">]</span><span class="o">.</span><span class="n">freq_axis</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">],</span> <span class="n">mswlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">freq_axis</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]])</span> <span class="k">for</span> <span class="n">idxscan</span>
+                     <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nscans</span><span class="p">)])):</span>
+            <span class="c1"># TODO: Should we raise an error here?</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;List of MSWrapper objects is not compatible. This task can only combine from same MS and SPW!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">MSWrapper</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">V</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># new numpy array to hold visibilities V</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">create_V_array</span><span class="p">(</span><span class="n">npol</span><span class="p">,</span> <span class="n">nchan</span><span class="p">)</span>
+
+        <span class="c1"># Average data</span>
+        <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nant</span><span class="p">):</span>
+            <span class="c1"># Compute time averaged visibilities (Vk arrays)</span>
+            <span class="n">V_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">1</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">V</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="c1"># add antenna and channel frequencies to the row for this antenna from first scan</span>
+            <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ant</span>
+            <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;chan_freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mswlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">V</span><span class="p">[</span><span class="s1">&#39;chan_freq&#39;</span><span class="p">][</span><span class="n">ant</span><span class="p">]</span>
+            <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mswlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">V</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">][</span><span class="n">ant</span><span class="p">]</span>
+
+            <span class="c1"># Calculate mean and sigma for this antenna</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">mswlist</span><span class="p">[</span><span class="n">idxscan</span><span class="p">]</span><span class="o">.</span><span class="n">V</span><span class="p">[</span><span class="s1">&#39;corrected_data&#39;</span><span class="p">][</span><span class="n">ant</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="k">for</span> <span class="n">idxscan</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nscans</span><span class="p">)]</span>
+            <span class="n">datamean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">invsigmasqreal</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">mswlist</span><span class="p">[</span><span class="n">idxscan</span><span class="p">]</span><span class="o">.</span><span class="n">V</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">][</span><span class="n">ant</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">real</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">idxscan</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nscans</span><span class="p">)]</span>
+            <span class="n">invsigmasqimag</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">mswlist</span><span class="p">[</span><span class="n">idxscan</span><span class="p">]</span><span class="o">.</span><span class="n">V</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">][</span><span class="n">ant</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">imag</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">idxscan</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nscans</span><span class="p">)]</span>
+            <span class="n">sigmameanreal</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">invsigmasqreal</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+            <span class="n">sigmameanimag</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">invsigmasqimag</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+            <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;corrected_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datamean</span>
+            <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigmameanreal</span> <span class="o">+</span> <span class="mf">1.</span><span class="n">j</span> <span class="o">*</span> <span class="n">sigmameanimag</span>
+
+            <span class="c1"># Add antenna averaged data to output array V</span>
+            <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">V</span><span class="p">,</span> <span class="n">V_k</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">MSWrapper</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">corr_axis</span><span class="p">,</span> <span class="n">freq_axis</span><span class="p">,</span> <span class="n">V</span><span class="o">=</span><span class="n">V</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">corr_axis</span><span class="p">,</span> <span class="n">freq_axis</span><span class="p">,</span> <span class="n">V</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scan</span> <span class="o">=</span> <span class="n">scan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corr_axis</span> <span class="o">=</span> <span class="n">corr_axis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">freq_axis</span> <span class="o">=</span> <span class="n">freq_axis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">V</span> <span class="o">=</span> <span class="n">V</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allowed</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">iter</span><span class="p">(</span><span class="n">allowed</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">allowed</span> <span class="o">=</span> <span class="p">[</span><span class="n">allowed</span><span class="p">]</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">a</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> column </span><span class="si">{}</span><span class="s1"> value not found: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">a</span><span class="p">))</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mask</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">==</span> <span class="n">a</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mask</span></div>
+
+
+
+<div class="viewcode-block" id="get_dtype">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.get_dtype">[docs]</a>
+<span class="k">def</span> <span class="nf">get_dtype</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">column_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the numpy data type for a CASA caltable column.</span>
+
+<span class="sd">    :param data: CASA table tool with caltable open.</span>
+<span class="sd">    :param column_name: name of column to process</span>
+<span class="sd">    :return: 3-tuple of column name, NumPy dtype, column shape</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">column_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span>
+    <span class="n">column_dtype</span> <span class="o">=</span> <span class="n">column_data</span><span class="o">.</span><span class="n">dtype</span>
+    <span class="n">column_shape</span> <span class="o">=</span> <span class="n">column_data</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">column_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">column_name</span><span class="p">,</span> <span class="n">column_dtype</span>
+
+    <span class="k">return</span> <span class="n">column_name</span><span class="p">,</span> <span class="n">column_dtype</span><span class="p">,</span> <span class="n">column_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span></div>
+
+
+
+<div class="viewcode-block" id="calc_vk">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.calc_vk">[docs]</a>
+<span class="k">def</span> <span class="nf">calc_vk</span><span class="p">(</span><span class="n">wrapper</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a NumPy array containing time-averaged visibilities for each</span>
+<span class="sd">    baseline in the input MSWrapper.</span>
+
+<span class="sd">    :param wrapper: MSWrapper to process</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># PIPE-687: This function was moved from ampphase_vs_freq_qa.py. It is here to test the consistency</span>
+    <span class="c1">#  of the old and new code. This may be removed in the future once the accuracy of the output has</span>
+    <span class="c1">#  been validated.</span>
+
+    <span class="c1"># find indices of all antennas</span>
+    <span class="n">antenna1</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">wrapper</span><span class="p">[</span><span class="s1">&#39;antenna1&#39;</span><span class="p">])</span>
+    <span class="n">antenna2</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">wrapper</span><span class="p">[</span><span class="s1">&#39;antenna2&#39;</span><span class="p">])</span>
+    <span class="n">all_antennas</span> <span class="o">=</span> <span class="n">antenna1</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">antenna2</span><span class="p">)</span>
+
+    <span class="c1"># Sigma is a function of sqrt(num_antennas - 1). Calculate and cache this value now.</span>
+    <span class="n">root_num_antennas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_antennas</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># columns in this list are omitted from V_k</span>
+    <span class="n">excluded_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;antenna1&#39;</span><span class="p">,</span> <span class="s1">&#39;antenna2&#39;</span><span class="p">,</span> <span class="s1">&#39;corrected_phase&#39;</span><span class="p">,</span> <span class="s1">&#39;flag&#39;</span><span class="p">]</span>
+
+    <span class="c1"># create a new dtype that adds &#39;antenna&#39; and &#39;sigma&#39; columns, filtering out columns we want to omit</span>
+    <span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">excluded_columns</span><span class="p">]</span>
+    <span class="n">result_dtype</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_dtype</span><span class="p">(</span><span class="n">wrapper</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">column_names</span><span class="p">]</span>
+    <span class="n">result_dtype</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;antenna&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
+    <span class="n">result_dtype</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">[</span><span class="s1">&#39;corrected_data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">[</span><span class="s1">&#39;corrected_data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+
+    <span class="c1"># get 1D array of channel frequencies and include its definition in the dtype</span>
+    <span class="n">chan_freq</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">freq_axis</span><span class="p">[</span><span class="s1">&#39;chan_freq&#39;</span><span class="p">]</span>
+    <span class="n">chan_freq</span> <span class="o">=</span> <span class="n">chan_freq</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">result_dtype</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;chan_freq&#39;</span><span class="p">,</span> <span class="n">chan_freq</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">chan_freq</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+    <span class="c1"># get 1D array of channel widths and include the column in the dtype</span>
+    <span class="n">resolution</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">freq_axis</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span>
+    <span class="n">resolution</span> <span class="o">=</span> <span class="n">resolution</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">result_dtype</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;resolution&#39;</span><span class="p">,</span> <span class="n">resolution</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">resolution</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+    <span class="c1"># new numpy array to hold visibilities V</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">result_dtype</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">all_antennas</span><span class="p">:</span>
+        <span class="c1"># create new row to hold all data for this antenna</span>
+        <span class="n">V_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">1</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">V</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="c1"># add antenna and channel frequencies to the row for this antenna</span>
+        <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span>
+        <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;chan_freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chan_freq</span>
+        <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolution</span>
+
+        <span class="c1"># Equation 2: sigma_{k}(nu_{i}) = std(V_{jk}(nu_{i}))_{j} / sqrt(n_{ant})</span>
+        <span class="c1"># select all visibilities created using this antenna.</span>
+        <span class="n">V_jk</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">xor_filter</span><span class="p">(</span><span class="n">antenna1</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">antenna2</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">sigma_k_real</span> <span class="o">=</span> <span class="n">V_jk</span><span class="p">[</span><span class="s1">&#39;corrected_data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">root_num_antennas</span>
+        <span class="n">sigma_k_imag</span> <span class="o">=</span> <span class="n">V_jk</span><span class="p">[</span><span class="s1">&#39;corrected_data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">root_num_antennas</span>
+        <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma_k_real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">sigma_k_imag</span>
+
+        <span class="c1"># add the remaining columns</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">column_names</span><span class="p">:</span>
+            <span class="n">V_k</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">V_jk</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">V</span><span class="p">,</span> <span class="n">V_k</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">V</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

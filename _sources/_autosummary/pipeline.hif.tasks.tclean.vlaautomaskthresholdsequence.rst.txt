@@ -1,0 +1,13 @@
+pipeline.hif.tasks.tclean.vlaautomaskthresholdsequence
+======================================================
+
+.. automodule:: pipeline.hif.tasks.tclean.vlaautomaskthresholdsequence
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BaseCleanSequence
+      VlaAutoMaskThresholdSequence
+   

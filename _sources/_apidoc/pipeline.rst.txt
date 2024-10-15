@@ -1,0 +1,54 @@
+pipeline package
+================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pipeline.domain
+   pipeline.extern
+   pipeline.h
+   pipeline.hif
+   pipeline.hifa
+   pipeline.hifv
+   pipeline.hsd
+   pipeline.hsdn
+   pipeline.infrastructure
+   pipeline.qa
+
+Submodules
+----------
+
+pipeline.cli module
+-------------------
+
+.. automodule:: pipeline.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.environment module
+---------------------------
+
+.. automodule:: pipeline.environment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.recipereducer module
+-----------------------------
+
+.. automodule:: pipeline.recipereducer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline
+   :members:
+   :undoc-members:
+   :show-inheritance:

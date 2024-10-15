@@ -1,0 +1,37 @@
+pipeline.hsdn.cli package
+=========================
+
+Submodules
+----------
+
+pipeline.hsdn.cli.hsdn\_exportdata module
+-----------------------------------------
+
+.. automodule:: pipeline.hsdn.cli.hsdn_exportdata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsdn.cli.hsdn\_importdata module
+-----------------------------------------
+
+.. automodule:: pipeline.hsdn.cli.hsdn_importdata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsdn.cli.hsdn\_restoredata module
+------------------------------------------
+
+.. automodule:: pipeline.hsdn.cli.hsdn_restoredata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hsdn.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:

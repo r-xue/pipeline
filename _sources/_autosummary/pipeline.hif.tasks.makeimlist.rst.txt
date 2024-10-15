@@ -1,0 +1,22 @@
+pipeline.hif.tasks.makeimlist
+=============================
+
+.. automodule:: pipeline.hif.tasks.makeimlist
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MakeImList
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   cleantarget
+   makeimlist
+   qa
+   resultobjects

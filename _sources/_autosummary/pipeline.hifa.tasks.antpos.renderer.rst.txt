@@ -1,0 +1,20 @@
+pipeline.hifa.tasks.antpos.renderer
+===================================
+
+.. automodule:: pipeline.hifa.tasks.antpos.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      make_antpos_table
+      make_xyzoffsets_list
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AntposTR
+      T2_4MDetailsALMAAntposRenderer
+   

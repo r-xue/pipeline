@@ -1,0 +1,23 @@
+pipeline.h
+==========
+
+.. automodule:: pipeline.h
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FailedTask
+      FailedTaskResults
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   cli
+   heuristics
+   tasks
+   templates

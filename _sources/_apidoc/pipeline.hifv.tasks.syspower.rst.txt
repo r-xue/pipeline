@@ -1,0 +1,37 @@
+pipeline.hifv.tasks.syspower package
+====================================
+
+Submodules
+----------
+
+pipeline.hifv.tasks.syspower.display module
+-------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.syspower.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.syspower.renderer module
+--------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.syspower.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.syspower.syspower module
+--------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.syspower.syspower
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifv.tasks.syspower
+   :members:
+   :undoc-members:
+   :show-inheritance:

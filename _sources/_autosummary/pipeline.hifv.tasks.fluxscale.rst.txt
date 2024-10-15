@@ -1,0 +1,26 @@
+pipeline.hifv.tasks.fluxscale
+=============================
+
+.. automodule:: pipeline.hifv.tasks.fluxscale
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Fluxboot
+      FluxbootResults
+      Solint
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fluxboot
+   fluxbootdisplay
+   qa
+   renderer
+   solint
+   testgainsdisplay

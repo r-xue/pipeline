@@ -1,0 +1,707 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.tsysflag_contamination.tsysflagcontamination &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.tsysflag_contamination.tsysflagcontamination</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.tsysflag_contamination.tsysflagcontamination</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.extern.tsys_contamination</span> <span class="k">as</span> <span class="nn">extern</span>
+<span class="kn">import</span> <span class="nn">pipeline.h.tasks.tsysflag.tsysflag</span> <span class="k">as</span> <span class="nn">tsysflag</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.extern.TsysDataClassFile</span> <span class="kn">import</span> <span class="n">TsysData</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">calibrationtableaccess</span> <span class="k">as</span> <span class="n">caltableaccess</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.tsysflag.resultobjects</span> <span class="kn">import</span> <span class="n">TsysflagResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="kn">import</span> <span class="n">StandardTaskTemplate</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.exceptions</span> <span class="kn">import</span> <span class="n">PipelineException</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.pipelineqa</span> <span class="kn">import</span> <span class="n">QAScore</span><span class="p">,</span> <span class="n">TargetDataSelection</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TsysFlagContamination&quot;</span><span class="p">,</span> <span class="s2">&quot;TsysFlagContaminationInputs&quot;</span><span class="p">]</span>
+
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># QA score for multi-source, multi-tuning EBs, full polarization EBs, etc.</span>
+<span class="c1"># that cannot be processed by the heuristic. The intent is that these EBs</span>
+<span class="c1"># be directed to the QA slow lane for inspection and potential manual</span>
+<span class="c1"># flagging of line contamination</span>
+<span class="n">UNPROCESSABLE_DATA_QA_SCORE</span> <span class="o">=</span> <span class="mf">0.6</span>
+
+<span class="c1"># short summary message when heuristic sees data is it not validated for</span>
+<span class="n">UNPROCESSABLE_DATA_QA_SHORTMSG</span> <span class="o">=</span> <span class="s1">&#39;Heuristics not applied&#39;</span>
+
+
+<div class="viewcode-block" id="TsysFlagContaminationInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.tsysflag_contamination.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysFlagContaminationInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">TsysFlagContaminationInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TsysFlagContaminationInputs defines the inputs for the TsysFlagContamination</span>
+<span class="sd">    pipeline task.</span>
+
+<span class="sd">    The continue_on_failure parameter sets the task behaviour when an</span>
+<span class="sd">    exception is raised by the heuristic. When continue_on_failure = True, the</span>
+<span class="sd">    failure is logged and a QA score of -0.1 recorded, but when set to False,</span>
+<span class="sd">    the failure is handled by the pipeline&#39;s standard task failure mechanisms,</span>
+<span class="sd">    where no QA score is recorded and the pipeline run terminates.</span>
+
+<span class="sd">    Heuristic parameters specific to this task are:</span>
+
+<span class="sd">    - remove_n_extreme: defaults to 2</span>
+<span class="sd">    - relative_detection_factor: defaults to 0.005</span>
+<span class="sd">    - diagnostic_plots: include diagnostic plots in the weblog. Defaults to</span>
+<span class="sd">      True.</span>
+<span class="sd">    - continue_on_failure: continue after heuristic failure (True) or terminate</span>
+<span class="sd">      pipeline run. (False).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">caltables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">(</span><span class="n">caltypes</span><span class="o">=</span><span class="s2">&quot;tsys&quot;</span><span class="p">)</span>
+
+        <span class="c1"># return just the tsys table that matches the vis being handled</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">caltables</span><span class="p">:</span>
+            <span class="c1"># Get the tsys table name</span>
+            <span class="n">tsystable_vis</span> <span class="o">=</span> <span class="n">caltableaccess</span><span class="o">.</span><span class="n">CalibrationTableDataFiller</span><span class="o">.</span><span class="n">_readvis</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tsystable_vis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">name</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">filetemplate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">vis_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">vis_root</span> <span class="o">+</span> <span class="s2">&quot;.flag_tsys_contamination.txt&quot;</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">logpath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">vis_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">vis_root</span> <span class="o">+</span> <span class="s2">&quot;.ms_tsys_contamination.txt&quot;</span>
+
+    <span class="n">remove_n_extreme</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">relative_detection_factor</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>
+    <span class="n">diagnostic_plots</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">continue_on_failure</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">,</span>
+        <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">filetemplate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">logpath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">remove_n_extreme</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">relative_detection_factor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">diagnostic_plots</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">continue_on_failure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TsysFlagContaminationInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># pipeline inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="c1"># vis must be set first, as other properties may depend on it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+
+        <span class="c1"># data selection arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">filetemplate</span> <span class="o">=</span> <span class="n">filetemplate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logpath</span> <span class="o">=</span> <span class="n">logpath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diagnostic_plots</span> <span class="o">=</span> <span class="n">diagnostic_plots</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">continue_on_failure</span> <span class="o">=</span> <span class="n">continue_on_failure</span>
+
+        <span class="c1"># heuristic parameter arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_n_extreme</span> <span class="o">=</span> <span class="n">remove_n_extreme</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relative_detection_factor</span> <span class="o">=</span> <span class="n">relative_detection_factor</span></div>
+
+
+
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">ExternFunctionArguments</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adapter class to adapt TsysflagContaminationInputs task inputs class to</span>
+<span class="sd">    the function arguments required by the external heuristic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">diagnostic_plots</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">tsystable</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">remove_n_extreme</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">relative_detection_factor</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">logpath</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">filetemplate</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">pl_run_dir</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">plots_path</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">single_polarization</span><span class="p">:</span> <span class="nb">bool</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">TsysFlagContaminationInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ExternFunctionArguments&quot;</span><span class="p">:</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+        <span class="n">weblog_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;stage</span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">weblog_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">num_polarizations</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">num_polarizations</span>
+            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s2">&quot;TARGET&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="n">single_polarization</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">num_polarizations</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ExternFunctionArguments</span><span class="p">(</span>
+            <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="n">diagnostic_plots</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">diagnostic_plots</span><span class="p">,</span>
+            <span class="n">tsystable</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span><span class="p">,</span>
+            <span class="n">remove_n_extreme</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">remove_n_extreme</span><span class="p">,</span>
+            <span class="n">relative_detection_factor</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">relative_detection_factor</span><span class="p">,</span>
+            <span class="n">logpath</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">logpath</span><span class="p">,</span>
+            <span class="n">filetemplate</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">filetemplate</span><span class="p">,</span>
+            <span class="n">pl_run_dir</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="n">plots_path</span><span class="o">=</span><span class="n">weblog_dir</span><span class="p">,</span>
+            <span class="n">single_polarization</span><span class="o">=</span><span class="n">single_polarization</span><span class="p">,</span>
+        <span class="p">)</span>
+
+
+<div class="viewcode-block" id="TsysFlagContamination">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.tsysflag_contamination.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysFlagContamination">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s2">&quot;hifa_tsysflagcontamination&quot;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
+    <span class="s2">&quot;Line contamination in the Tsys tables is detected and flagged.&quot;</span>
+<span class="p">)</span>
+<span class="k">class</span> <span class="nc">TsysFlagContamination</span><span class="p">(</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Flag line contamination in the Tsys tables.</span>
+
+<span class="sd">    This purpose of this class is to call the external flagging heuristic to</span>
+<span class="sd">    generate flagging commands based on line contamination in Tsys tables, and</span>
+<span class="sd">    then pass those flagging commands to the standard h_tsysflag child task in</span>
+<span class="sd">    manual flagging mode.</span>
+
+<span class="sd">    The bulk of what you see here comes directly from the extern code,</span>
+<span class="sd">    sandwiched between a few lines of code to extract input parameters and</span>
+<span class="sd">    pass them to the heuristic, followed at the end of the method by</span>
+<span class="sd">    wrapping and adapting the results - a list of flagging commands - into</span>
+<span class="sd">    a manual flagging request for the existing h_tsysflag task. The results</span>
+<span class="sd">    of this child task are then captured and adapted so that the QA and</span>
+<span class="sd">    weblog rendering code can operate on the results of this line</span>
+<span class="sd">    contamination task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">TsysFlagContaminationInputs</span>
+
+<div class="viewcode-block" id="TsysFlagContamination.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.tsysflag_contamination.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysFlagContamination.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">TsysflagResults</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span>
+
+        <span class="c1"># TODO from PIPE-2009: adding new attributes to the result after</span>
+        <span class="c1"># instance construction isn&#39;t great but we don&#39;t have time to</span>
+        <span class="c1"># rationalise and refactor the base class right now</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">qascores_from_task</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># step 1: do not run the heuristic on data we know it cannot handle</span>
+        <span class="n">preflight_qascores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assert_heuristic_preconditions</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">qascores_from_task</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">preflight_qascores</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">preflight_qascores</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">task_incomplete_reason</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Preconditions for line contamination heuristic not met. See QA scores for details.&quot;</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">metric_order</span> <span class="o">=</span> <span class="s2">&quot;manual&quot;</span>  <span class="c1"># required for renderer</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># step 2: run extern heuristic</span>
+        <span class="n">extern_fn_args</span> <span class="o">=</span> <span class="n">ExternFunctionArguments</span><span class="o">.</span><span class="n">from_inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">plot_wrappers</span><span class="p">,</span> <span class="n">qascores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_extern_heuristic</span><span class="p">(</span><span class="n">extern_fn_args</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">reason</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Heuristic failed while processing </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">continue_on_failure</span><span class="p">:</span>
+                <span class="c1"># soft failure: QA score of -0.1 but do not halt the pipeline</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">QAScore</span><span class="p">(</span>
+                    <span class="n">score</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span>
+                    <span class="n">shortmsg</span><span class="o">=</span><span class="s2">&quot;Heuristic failed&quot;</span><span class="p">,</span>
+                    <span class="n">longmsg</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
+                    <span class="n">applies_to</span><span class="o">=</span><span class="n">TargetDataSelection</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">}),</span>
+                <span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">qascores_from_task</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">task_incomplete_reason</span> <span class="o">=</span> <span class="n">reason</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">metric_order</span> <span class="o">=</span> <span class="s2">&quot;manual&quot;</span>  <span class="c1"># required for renderer</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">reason</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">result</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># hard failure: raise exception, let the framework deal with it</span>
+                <span class="k">raise</span> <span class="n">PipelineException</span><span class="p">(</span><span class="n">reason</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="n">plots</span> <span class="o">=</span> <span class="n">plot_wrappers</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">extern_qascores</span> <span class="o">=</span> <span class="n">qascores</span>
+
+        <span class="c1"># Step 3: do not flag data for DSB data</span>
+        <span class="c1"># Set manual flagging template to that written by the heuristic unless it&#39;s a DSB EB.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_contains_dsb</span><span class="p">():</span>
+            <span class="n">filetemplate</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="n">s</span> <span class="o">=</span> <span class="n">QAScore</span><span class="p">(</span>
+                <span class="n">score</span><span class="o">=</span><span class="n">UNPROCESSABLE_DATA_QA_SCORE</span><span class="p">,</span>
+                <span class="n">shortmsg</span><span class="o">=</span><span class="n">UNPROCESSABLE_DATA_QA_SHORTMSG</span><span class="p">,</span>
+                <span class="n">longmsg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Heuristic not applied: DSB data in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
+                <span class="n">applies_to</span><span class="o">=</span><span class="n">TargetDataSelection</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">}),</span>
+            <span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">qascores_from_task</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">filetemplate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">filetemplate</span>
+
+        <span class="c1"># Always run the child task - even for DSB - as the results are required by the Tsyscalflag renderer</span>
+        <span class="n">child_inputs</span> <span class="o">=</span> <span class="n">tsysflag</span><span class="o">.</span><span class="n">Tsysflag</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+            <span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="n">caltable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span><span class="p">,</span>
+            <span class="n">filetemplate</span><span class="o">=</span><span class="n">filetemplate</span><span class="p">,</span>
+            <span class="n">flag_birdies</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">flag_derivative</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">flag_edgechans</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">flag_fieldshape</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">flag_nmedian</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">flag_toomany</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">fnm_byfield</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">normalize_tsys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">child_task</span> <span class="o">=</span> <span class="n">tsysflag</span><span class="o">.</span><span class="n">Tsysflag</span><span class="p">(</span><span class="n">child_inputs</span><span class="p">)</span>
+        <span class="n">child_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">child_task</span><span class="p">)</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">child_result</span><span class="o">.</span><span class="n">pool</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">child_result</span><span class="o">.</span><span class="n">final</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">child_result</span><span class="o">.</span><span class="n">components</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">summaries</span> <span class="o">=</span> <span class="n">child_result</span><span class="o">.</span><span class="n">summaries</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">child_result</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">metric_order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">child_result</span><span class="o">.</span><span class="n">metric_order</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="TsysFlagContamination.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.tsysflag_contamination.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysFlagContamination.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_call_extern_heuristic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn_args</span><span class="p">:</span> <span class="n">ExternFunctionArguments</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">fn_args</span><span class="o">.</span><span class="n">vis</span>
+        <span class="n">diagnostic_plots</span> <span class="o">=</span> <span class="n">fn_args</span><span class="o">.</span><span class="n">diagnostic_plots</span>
+        <span class="n">tsystable</span> <span class="o">=</span> <span class="n">fn_args</span><span class="o">.</span><span class="n">tsystable</span>
+        <span class="n">remove_n_extreme</span> <span class="o">=</span> <span class="n">fn_args</span><span class="o">.</span><span class="n">remove_n_extreme</span>
+        <span class="n">relative_detection_factor</span> <span class="o">=</span> <span class="n">fn_args</span><span class="o">.</span><span class="n">relative_detection_factor</span>
+        <span class="n">logpath</span> <span class="o">=</span> <span class="n">fn_args</span><span class="o">.</span><span class="n">logpath</span>
+        <span class="n">filetemplate</span> <span class="o">=</span> <span class="n">fn_args</span><span class="o">.</span><span class="n">filetemplate</span>
+        <span class="n">pl_run_dir</span> <span class="o">=</span> <span class="n">fn_args</span><span class="o">.</span><span class="n">pl_run_dir</span>
+        <span class="n">plots_path</span> <span class="o">=</span> <span class="n">fn_args</span><span class="o">.</span><span class="n">plots_path</span>
+        <span class="n">single_polarization</span> <span class="o">=</span> <span class="n">fn_args</span><span class="o">.</span><span class="n">single_polarization</span>
+
+        <span class="n">tsys</span> <span class="o">=</span> <span class="n">TsysData</span><span class="p">(</span>
+            <span class="n">tsystable</span><span class="o">=</span><span class="n">tsystable</span><span class="p">,</span>
+            <span class="n">load_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">single_polarization</span><span class="o">=</span><span class="n">single_polarization</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">line_contamination_intervals</span><span class="p">,</span> <span class="n">warnings_list</span><span class="p">,</span> <span class="n">plot_wrappers</span><span class="p">,</span> <span class="n">qascores</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">extern</span><span class="o">.</span><span class="n">get_tsys_contaminated_intervals</span><span class="p">(</span>
+                <span class="n">tsys</span><span class="p">,</span>
+                <span class="n">plot</span><span class="o">=</span><span class="n">diagnostic_plots</span><span class="p">,</span>
+                <span class="n">remove_n_extreme</span><span class="o">=</span><span class="n">remove_n_extreme</span><span class="p">,</span>
+                <span class="n">relative_detection_factor</span><span class="o">=</span><span class="n">relative_detection_factor</span><span class="p">,</span>
+                <span class="n">savefigfile</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">plots_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s2">.tsyscontamination&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">line_contamination_intervals</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">vv</span><span class="p">)</span> <span class="k">for</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">()]))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">line_contamination_intervals</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+        <span class="p">[</span><span class="n">intents</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">fields</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">tsys</span><span class="o">.</span><span class="n">tsysdata</span><span class="p">[</span><span class="n">tsys</span><span class="o">.</span><span class="n">tsysfields</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">f</span><span class="p">)]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;intent&quot;</span><span class="p">,</span> <span class="s2">&quot;scan&quot;</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
+
+        <span class="n">field_intent_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">({(</span><span class="n">f</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">intents</span><span class="p">)})</span>
+        <span class="n">scan_field_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">({(</span><span class="n">s</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">scans</span><span class="p">,</span> <span class="n">fields</span><span class="p">)})</span>
+        <span class="n">field_scanlist_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">scan_field_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">field_scanlist_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="c1"># end replace</span>
+
+        <span class="n">all_freqs_mhz</span> <span class="o">=</span> <span class="n">tsys</span><span class="o">.</span><span class="n">specdata</span><span class="p">[</span><span class="n">tsys</span><span class="o">.</span><span class="n">specfields</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;freq_mhz&quot;</span><span class="p">)]</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">logpath</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filetemplate</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ft</span><span class="p">:</span>
+                <span class="n">pl_run_dir</span> <span class="o">=</span> <span class="n">pl_run_dir</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"># script version </span><span class="si">{</span><span class="n">extern</span><span class="o">.</span><span class="n">VERSION</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">pl_run_dir</span><span class="si">}</span><span class="se">\n</span><span class="s2"># </span><span class="si">{</span><span class="n">tsystable</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+                <span class="n">field_contamination</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">line_contamination_intervals</span><span class="p">:</span>
+                    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?P&lt;spw&gt;[0-9]+)_(?P&lt;field&gt;[0-9]+)&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                    <span class="n">spw</span><span class="p">,</span> <span class="n">field</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="n">field_contamination</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">(</span><span class="n">field</span><span class="p">),</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+                    <span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_contamination</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;## No tsys contamination identified.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+                <span class="c1"># v3.3 large baseline residual</span>
+                <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">warnings_list</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">w</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;# </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">field_contamination</span><span class="p">:</span>
+                    <span class="n">field</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+                    <span class="n">spw_ranges</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">spw_ranges_freq</span> <span class="o">=</span> <span class="p">[]</span>
+
+                    <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">field_contamination</span><span class="p">[</span><span class="n">field</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">field_intent_dict</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;bandpass&quot;</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="n">spw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+                        <span class="n">freqs_ghz</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">all_freqs_mhz</span><span class="p">[</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span>
+                                    <span class="n">tsys</span><span class="o">.</span><span class="n">specdata</span><span class="p">[</span><span class="n">tsys</span><span class="o">.</span><span class="n">specfields</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;spw&quot;</span><span class="p">)]</span> <span class="o">==</span> <span class="n">spw</span>
+                                <span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="p">]</span>
+                            <span class="o">/</span> <span class="mi">1000</span>
+                        <span class="p">)</span>
+                        <span class="n">rs</span> <span class="o">=</span> <span class="n">extern</span><span class="o">.</span><span class="n">intervals_to_casa_string</span><span class="p">(</span>
+                            <span class="n">line_contamination_intervals</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;tsys_contamination&quot;</span><span class="p">]</span>
+                        <span class="p">)</span>
+                        <span class="n">rsf</span> <span class="o">=</span> <span class="n">extern</span><span class="o">.</span><span class="n">intervals_to_casa_string</span><span class="p">(</span>
+                            <span class="n">line_contamination_intervals</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;tsys_contamination&quot;</span><span class="p">],</span>
+                            <span class="n">scaled_array</span><span class="o">=</span><span class="n">freqs_ghz</span><span class="p">,</span>
+                            <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span>
+                            <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;.3f&quot;</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="n">rs</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                            <span class="n">spw_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">rs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="n">spw_ranges_freq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">rsf</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spw_ranges</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">continue</span>  <span class="c1"># v2.2</span>
+                    <span class="n">spw_ranges</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spw_ranges</span><span class="p">)</span>
+                    <span class="n">spw_ranges_freq</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spw_ranges_freq</span><span class="p">)</span>
+                    <span class="n">contamination_scans</span> <span class="o">=</span> <span class="n">field_scanlist_dict</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+                    <span class="n">contamination_scans</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+                    <span class="n">flagline</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;mode=&#39;manual&#39; scan=&#39;</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sc</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">contamination_scans</span><span class="p">])</span><span class="si">}</span><span class="s2">&#39; spw=&#39;</span><span class="si">{</span><span class="n">spw_ranges</span><span class="si">}</span><span class="s2">&#39; reason=&#39;Tsys:tsysflag_tsys_channel&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="n">ft</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">flagline</span><span class="p">)</span>
+
+                    <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;## </span><span class="si">{</span><span class="n">tsystable</span><span class="si">}</span><span class="s2">: field=</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">, intent=</span><span class="si">{</span><span class="n">field_intent_dict</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;# Frequency ranges: &#39;</span><span class="si">{</span><span class="n">spw_ranges_freq</span><span class="si">}</span><span class="s2">&#39; </span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">flagline</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">plot_wrappers</span><span class="p">,</span> <span class="n">qascores</span>
+
+    <span class="k">def</span> <span class="nf">_assert_heuristic_preconditions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Preflight checks to identify data that the heuristic cannot handle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">qa_scores</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">qa_scores</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assert_not_multisource_multituning</span><span class="p">())</span>
+        <span class="n">qa_scores</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assert_not_full_polarization</span><span class="p">())</span>
+        <span class="n">qa_scores</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assert_bandpass_is_present</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">qa_scores</span>
+
+    <span class="k">def</span> <span class="nf">_assert_not_multisource_multituning</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list containing an appropriate QAScore if multitunings are</span>
+<span class="sd">        present, otherwise an empty list is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">qa_scores</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Algorithm to detect multi-source multi-tuning EBs is:</span>
+        <span class="c1">#</span>
+        <span class="c1"># 1. Identify all Field-Id with CALIBRATE_ATMOSPHERE intents.</span>
+        <span class="c1"># 2. Among those Field-Ids identified above, identify all which are</span>
+        <span class="c1">#    associated with OBSERVE_TARGET intent (in other scans)</span>
+        <span class="c1"># 3. If there is more than 1 distinct Field IDs with the above two</span>
+        <span class="c1">#    requirements, then the EB is &quot;multi-source&quot;</span>
+        <span class="c1"># 4. If in addition the EB has more than one science spectral spec</span>
+        <span class="c1">#    (disregarding pointing spectral specs etc.), then the EB is</span>
+        <span class="c1">#    &quot;multi-tuning multi-source&quot; type.</span>
+        <span class="n">dual_intent_fields</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">target_field</span>
+            <span class="c1"># So, mapping the implementation to the algorithm above, we:</span>
+            <span class="c1"># 1. identify all fields with ATMOSPHERE intent</span>
+            <span class="k">for</span> <span class="n">tsys_field</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s2">&quot;ATMOSPHERE&quot;</span><span class="p">)</span>
+            <span class="c1"># 2. get scans for that field that are also associated with TARGET</span>
+            <span class="c1">#    intent...</span>
+            <span class="k">for</span> <span class="n">target_scan_on_tsys_field</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span>
+                <span class="n">scan_intent</span><span class="o">=</span><span class="s2">&quot;TARGET&quot;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">tsys_field</span><span class="o">.</span><span class="n">id</span>
+            <span class="p">)</span>
+            <span class="c1">#   ... and iterate over the fields for that scan...</span>
+            <span class="k">for</span> <span class="n">target_field</span> <span class="ow">in</span> <span class="n">target_scan_on_tsys_field</span><span class="o">.</span><span class="n">fields</span>
+            <span class="c1">#   ... but only if this TARGET scan does not also have ATMOSPHERE</span>
+            <span class="c1">#   intent, i.e., this has to be TARGET intent in *other* scans</span>
+            <span class="c1">#   associated with the Tsys field, not the *same* scan</span>
+            <span class="k">if</span> <span class="s2">&quot;ATMOSPHERE&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">target_scan_on_tsys_field</span><span class="o">.</span><span class="n">intents</span>
+        <span class="p">}</span>
+        <span class="c1"># 3. it&#39;s a multi-source EB if more than 1 field meets this requirement</span>
+        <span class="n">is_multi_source_eb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dual_intent_fields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+
+        <span class="c1"># 4. If in addition the EB has more than one science spectral spec</span>
+        <span class="c1">#    (disregarding pointing spectral specs etc.), then the EB is</span>
+        <span class="c1">#    &quot;multi-tuning multi-source&quot; type.</span>
+        <span class="n">science_specs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">spw</span><span class="o">.</span><span class="n">spectralspec</span>
+            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="n">is_multi_tuning_eb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">science_specs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">is_multi_tuning_eb</span> <span class="ow">and</span> <span class="n">is_multi_source_eb</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">QAScore</span><span class="p">(</span>
+                <span class="n">score</span><span class="o">=</span><span class="n">UNPROCESSABLE_DATA_QA_SCORE</span><span class="p">,</span>
+                <span class="n">shortmsg</span><span class="o">=</span><span class="n">UNPROCESSABLE_DATA_QA_SHORTMSG</span><span class="p">,</span>
+                <span class="n">longmsg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Heuristic not applied: multi-source multi-tuning data present in </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
+                <span class="n">applies_to</span><span class="o">=</span><span class="n">TargetDataSelection</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">}),</span>
+            <span class="p">)</span>
+            <span class="n">qa_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">qa_scores</span>
+
+    <span class="k">def</span> <span class="nf">_assert_not_full_polarization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list containing an appropriate QAScore if full polarization</span>
+<span class="sd">        data are present, otherwise an empty list is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">qa_scores</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">science_spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">num_corr_axes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">corr_axis</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spws</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">n</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">num_corr_axes</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">QAScore</span><span class="p">(</span>
+                <span class="n">score</span><span class="o">=</span><span class="n">UNPROCESSABLE_DATA_QA_SCORE</span><span class="p">,</span>
+                <span class="n">shortmsg</span><span class="o">=</span><span class="n">UNPROCESSABLE_DATA_QA_SHORTMSG</span><span class="p">,</span>
+                <span class="n">longmsg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Heuristic not applied: full-polarization data present in </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
+                <span class="n">applies_to</span><span class="o">=</span><span class="n">TargetDataSelection</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">}),</span>
+            <span class="p">)</span>
+            <span class="n">qa_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">qa_scores</span>
+
+    <span class="k">def</span> <span class="nf">_assert_bandpass_is_present</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list containing an appropriate QAScore if BANDPASS data are</span>
+<span class="sd">        missing, otherwise an empty list is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">qa_scores</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
+
+        <span class="c1"># exclude TP (fails by design; needs bandpass intent scan)</span>
+        <span class="k">if</span> <span class="s2">&quot;BANDPASS&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">intents</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">QAScore</span><span class="p">(</span>
+                <span class="n">score</span><span class="o">=</span><span class="n">UNPROCESSABLE_DATA_QA_SCORE</span><span class="p">,</span>
+                <span class="n">shortmsg</span><span class="o">=</span><span class="n">UNPROCESSABLE_DATA_QA_SHORTMSG</span><span class="p">,</span>
+                <span class="n">longmsg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Heuristic not applied: no bandpass data in </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
+                <span class="n">applies_to</span><span class="o">=</span><span class="n">TargetDataSelection</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">}),</span>
+            <span class="p">)</span>
+            <span class="n">qa_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">qa_scores</span>
+
+    <span class="k">def</span> <span class="nf">_contains_dsb</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns True if any science spectral window uses a DSB receiver.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">receivers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">spw</span><span class="o">.</span><span class="n">receiver</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="s2">&quot;DSB&quot;</span> <span class="ow">in</span> <span class="n">receivers</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

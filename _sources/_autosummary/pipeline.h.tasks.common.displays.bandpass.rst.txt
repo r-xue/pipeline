@@ -1,0 +1,19 @@
+pipeline.h.tasks.common.displays.bandpass
+=========================================
+
+.. automodule:: pipeline.h.tasks.common.displays.bandpass
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BandpassAmpVsFreqDetailChart
+      BandpassAmpVsFreqSummaryChart
+      BandpassAmpVsTimeDetailChart
+      BandpassAmpVsUVDetailChart
+      BandpassDetailChart
+      BandpassPhaseVsFreqDetailChart
+      BandpassPhaseVsFreqSummaryChart
+      BandpassSummaryChart
+   

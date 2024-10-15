@@ -1,0 +1,12 @@
+pipeline.domain.datadescription
+===============================
+
+.. automodule:: pipeline.domain.datadescription
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataDescription
+   

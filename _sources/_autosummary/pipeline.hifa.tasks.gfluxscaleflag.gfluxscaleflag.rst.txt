@@ -1,0 +1,25 @@
+pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag
+=================================================
+
+.. automodule:: pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      create_plots
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AmpVsXChart
+      CalTo
+      Context
+      FlagdataSetter
+      Gfluxscaleflag
+      GfluxscaleflagInputs
+      GfluxscaleflagResults
+      MeasurementSet
+   

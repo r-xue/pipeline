@@ -1,0 +1,14 @@
+pipeline.hifa.tasks.polcal.renderer
+===================================
+
+.. automodule:: pipeline.hifa.tasks.polcal.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PolcalLeakagePlotRenderer
+      ResidPolTR
+      T2_4MDetailsPolcalRenderer
+   

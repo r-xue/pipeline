@@ -1,0 +1,19 @@
+pipeline.domain.unitformat
+==========================
+
+.. automodule:: pipeline.domain.unitformat
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_frequency_format
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      UnitFormat
+      UnitOfMagnitude
+   

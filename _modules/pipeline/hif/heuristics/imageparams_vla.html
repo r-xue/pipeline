@@ -1,0 +1,811 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.heuristics.imageparams_vla &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.heuristics.imageparams_vla</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.heuristics.imageparams_vla</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.filenamer</span> <span class="k">as</span> <span class="nn">filenamer</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.tablereader</span> <span class="kn">import</span> <span class="n">find_EVLA_band</span>
+
+<span class="kn">from</span> <span class="nn">.imageparams_base</span> <span class="kn">import</span> <span class="n">ImageParamsHeuristics</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA">[docs]</a>
+<span class="k">class</span> <span class="nc">ImageParamsHeuristicsVLA</span><span class="p">(</span><span class="n">ImageParamsHeuristics</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">proj_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">linesfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imaging_params</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="n">ImageParamsHeuristics</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="p">,</span> <span class="n">proj_params</span><span class="p">,</span> <span class="n">contfile</span><span class="p">,</span>
+                                       <span class="n">linesfile</span><span class="p">,</span> <span class="n">imaging_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">=</span> <span class="s1">&#39;VLA&#39;</span>
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.robust">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.robust">[docs]</a>
+    <span class="k">def</span> <span class="nf">robust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean robust parameter heuristics.</span>
+<span class="sd">        See PIPE-680 and CASR-543&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">specmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;cube&#39;</span><span class="p">,</span> <span class="s1">&#39;repBW&#39;</span><span class="p">):</span>
+            <span class="c1"># PIPE-1346: use robust=2.0 for VLA cube imaging.</span>
+            <span class="k">return</span> <span class="mf">2.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.5</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.uvtaper">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.uvtaper">[docs]</a>
+    <span class="k">def</span> <span class="nf">uvtaper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam_natural</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protect_long</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beam_user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tapering_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">repr_freq</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean uvtaper parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.uvrange">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.uvrange">[docs]</a>
+    <span class="k">def</span> <span class="nf">uvrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean uvrange parameter heuristics.</span>
+
+<span class="sd">        Restrict uvrange in case of very extended emission.</span>
+
+<span class="sd">        If the amplitude of the shortest 5 per cent of the covered baselines</span>
+<span class="sd">        is more than 2 times that of the 50-55 per cent baselines, then exclude</span>
+<span class="sd">        the shortest 5 per cent of the baselines.</span>
+
+<span class="sd">        See PIPE-681 and CASR-543.</span>
+
+<span class="sd">        :param field:</span>
+<span class="sd">        :param spwspec:</span>
+<span class="sd">        :return: (None or string in the form of &#39;&gt; {x}klambda&#39;, where</span>
+<span class="sd">            {x}=0.05*max(baseline), baseline ratio)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">specmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;cube&#39;</span><span class="p">,</span> <span class="s1">&#39;repBW&#39;</span><span class="p">):</span>
+            <span class="c1"># PIPE-1346: do not restrict uvrange for VLA cube imaging.</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="k">def</span> <span class="nf">get_mean_amplitude</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;amplitude&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="n">stat_arg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span> <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span> <span class="n">uvrange</span><span class="p">,</span> <span class="s1">&#39;axis&#39;</span><span class="p">:</span> <span class="n">axis</span><span class="p">,</span>
+                        <span class="s1">&#39;useflags&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                        <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="s1">&#39;LL,RR&#39;</span><span class="p">}</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">visstat</span><span class="p">(</span><span class="o">**</span><span class="n">stat_arg</span><span class="p">)</span>
+            <span class="n">stats</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>  <span class="c1"># returns stat in meter</span>
+
+            <span class="c1"># Get means of spectral windows with data in the selected uvrange</span>
+            <span class="n">spws_means</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">])]</span>
+
+            <span class="c1"># Determine mean and 95% percentile</span>
+            <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">spws_means</span><span class="p">)</span>
+            <span class="n">percentile_95</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">spws_means</span><span class="p">,</span> <span class="mi">95</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">percentile_95</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">field</span><span class="p">:</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">spwspec</span><span class="p">:</span>
+            <span class="n">spwids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spwspec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)),</span> <span class="n">key</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span> <span class="c1"># list</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">spwids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spwids</span> <span class="c1"># set</span>
+        <span class="c1">#</span>
+        <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="c1">#</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Computing uvrange heuristics for field=&quot;</span><span class="si">{:s}</span><span class="s1">&quot;, spwsids=</span><span class="si">{:s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwids</span><span class="p">])))</span>
+
+        <span class="c1"># Can it be that more than one visibility (ms file) is used?</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vislist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Determine the largest covered baseline in klambda. Assume that</span>
+        <span class="c1"># the maximum baseline is associated with the highest frequency spw.</span>
+        <span class="n">light_speed</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">constants</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">),</span> <span class="s1">&#39;m/s&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">max_mean_freq_Hz</span> <span class="o">=</span> <span class="mf">0.0</span>   <span class="c1"># spw mean frequency in the highest frequency spw</span>
+        <span class="n">real_spwids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwids</span><span class="p">:</span>
+            <span class="n">real_spwid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual2real_spw_id</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">real_spwid</span><span class="p">)</span>
+            <span class="n">real_spwids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">real_spwid</span><span class="p">)</span>
+            <span class="n">mean_freq_Hz</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">mean_frequency</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">mean_freq_Hz</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_mean_freq_Hz</span><span class="p">:</span>
+                <span class="n">max_mean_freq_Hz</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">mean_freq_Hz</span><span class="p">)</span>
+                <span class="n">max_freq_spw</span> <span class="o">=</span> <span class="n">real_spwid</span>
+        <span class="c1"># List of real spws</span>
+        <span class="n">real_spwids_str</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">real_spwids</span><span class="p">])</span>
+
+        <span class="c1"># Check for maximum frequency</span>
+        <span class="k">if</span> <span class="n">max_mean_freq_Hz</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Highest frequency spw and largest baseline cannot be determined for spwids=</span><span class="si">{:s}</span><span class="s2">. &quot;</span>
+                        <span class="s2">&quot;Using default uvrange.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwids</span><span class="p">])))</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="c1"># Get max baseline</span>
+        <span class="n">mean_wave_m</span> <span class="o">=</span> <span class="n">light_speed</span> <span class="o">/</span> <span class="n">max_mean_freq_Hz</span>  <span class="c1"># in meter</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">visstat</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">max_freq_spw</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;uvrange&#39;</span><span class="p">,</span> <span class="n">useflags</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">uv_stat</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span> <span class="c1"># returns stat in meter</span>
+        <span class="n">max_bl</span> <span class="o">=</span> <span class="n">uv_stat</span><span class="p">[</span><span class="s1">&#39;DATA_DESC_ID=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">max_freq_spw</span><span class="p">][</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">mean_wave_m</span>
+
+        <span class="c1"># Define bin for lowest 5% of baselines (in wavelength units)</span>
+        <span class="n">uvll</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">uvul</span> <span class="o">=</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">max_bl</span>
+
+        <span class="n">uvrange_SBL</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:0.1f}</span><span class="s1">~</span><span class="si">{:0.1f}</span><span class="s1">klambda&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uvll</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">,</span> <span class="n">uvul</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mean_SBL</span><span class="p">,</span> <span class="n">p95_SBL</span> <span class="o">=</span> <span class="n">get_mean_amplitude</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="n">uvrange_SBL</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">real_spwids_str</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Data selection error   Field: </span><span class="si">{!s}</span><span class="s2">, spw: </span><span class="si">{!s}</span><span class="s2">.   uvrange set to &gt;0.0klambda &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="p">),</span> <span class="n">real_spwids_str</span><span class="p">))</span>
+            <span class="k">return</span> <span class="s1">&#39;&gt;0.0klambda&#39;</span><span class="p">,</span> <span class="mf">1.0</span>
+
+        <span class="c1"># Range for  50-55% bin</span>
+        <span class="n">uvll</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">max_bl</span>
+        <span class="n">uvul</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">max_bl</span> <span class="o">+</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">max_bl</span>
+        <span class="n">uvrange_MBL</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:0.1f}</span><span class="s1">~</span><span class="si">{:0.1f}</span><span class="s1">klambda&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uvll</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">,</span> <span class="n">uvul</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mean_MBL</span><span class="p">,</span> <span class="n">p95_MBL</span> <span class="o">=</span> <span class="n">get_mean_amplitude</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="n">uvrange_MBL</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">real_spwids_str</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Data selection error   Field: </span><span class="si">{!s}</span><span class="s2">, spw: </span><span class="si">{!s}</span><span class="s2">.   uvrange set to &gt;0.0klambda &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="p">),</span> <span class="n">real_spwids_str</span><span class="p">))</span>
+            <span class="k">return</span> <span class="s1">&#39;&gt;0.0klambda&#39;</span><span class="p">,</span> <span class="mf">1.0</span>
+
+        <span class="c1"># Compare amplitudes and decide on return value</span>
+        <span class="n">ratio</span> <span class="o">=</span> <span class="n">p95_SBL</span> <span class="o">/</span> <span class="n">mean_MBL</span>
+
+        <span class="c1"># Report results</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Mean amplitude in uvrange bins: </span><span class="si">{:s}</span><span class="s1"> is </span><span class="si">{:0.2E}</span><span class="s1">Jy, &#39;</span>
+                 <span class="s1">&#39;</span><span class="si">{:s}</span><span class="s1"> is </span><span class="si">{:0.2E}</span><span class="s1">Jy&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uvrange_SBL</span><span class="p">,</span> <span class="n">mean_SBL</span><span class="p">,</span> <span class="n">uvrange_MBL</span><span class="p">,</span> <span class="n">mean_MBL</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;95 percentile in uvrange bins: </span><span class="si">{:s}</span><span class="s1"> is </span><span class="si">{:0.2E}</span><span class="s1">Jy, &#39;</span>
+                 <span class="s1">&#39;</span><span class="si">{:s}</span><span class="s1"> is </span><span class="si">{:0.2E}</span><span class="s1">Jy&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uvrange_SBL</span><span class="p">,</span> <span class="n">p95_SBL</span><span class="p">,</span> <span class="n">uvrange_MBL</span><span class="p">,</span> <span class="n">p95_MBL</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Ratio between 95 percentile small baseline bin &#39;</span>
+                 <span class="s1">&#39;and mean of middle baseline bin is </span><span class="si">{:0.2E}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ratio</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">ratio</span> <span class="o">&gt;</span> <span class="mf">2.0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Selecting uvrange&gt;</span><span class="si">{:0.1f}</span><span class="s1">klambda to avoid very extended emission.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="n">max_bl</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">))</span>
+            <span class="k">return</span> <span class="s2">&quot;&gt;</span><span class="si">{:0.1f}</span><span class="s2">klambda&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="n">max_bl</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">),</span> <span class="n">ratio</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use complete uvrange</span>
+            <span class="k">return</span> <span class="s1">&#39;&gt;0.0klambda&#39;</span><span class="p">,</span> <span class="n">ratio</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.pblimits">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.pblimits">[docs]</a>
+    <span class="k">def</span> <span class="nf">pblimits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pb</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">specmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;PB gain level at which to cut off normalizations (tclean parameter).</span>
+<span class="sd">        See PIPE-674 and CASR-543</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pblimits used in pipeline tclean._do_iterative_imaging() method (eventually in cleanbox.py) for</span>
+        <span class="c1"># computing statistics on residual image products.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">pb</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]):</span>
+            <span class="n">pblimit_image</span><span class="p">,</span> <span class="n">pblimit_cleanmask</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pblimits</span><span class="p">(</span><span class="n">pb</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="n">specmode</span><span class="p">)</span>
+        <span class="c1"># used for setting CASA tclean task pblimit parameter in pipeline tclean.prepare() method</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span><span class="p">:</span>
+                <span class="n">pblimit_image</span> <span class="o">=</span> <span class="mf">0.2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pblimit_image</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.1</span>
+            <span class="n">pblimit_cleanmask</span> <span class="o">=</span> <span class="mf">0.3</span>
+
+        <span class="k">return</span> <span class="n">pblimit_image</span><span class="p">,</span> <span class="n">pblimit_cleanmask</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.get_autobox_params">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.get_autobox_params">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_autobox_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">specmode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">robust</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;VLA auto-boxing parameters.</span>
+
+<span class="sd">        See PIPE-677 for TARGET-specific heuristic</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sidelobethreshold</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">noisethreshold</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">lownoisethreshold</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">negativethreshold</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">minbeamfrac</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">growiterations</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">dogrowprune</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">minpercentchange</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">fastnoise</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">intent</span><span class="p">:</span>
+            <span class="c1"># iter1, shallow clean, with pruning off, other automasking settings are the default</span>
+            <span class="k">if</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+                <span class="n">sidelobethreshold</span> <span class="o">=</span> <span class="mf">2.0</span>
+                <span class="n">minbeamfrac</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="c1"># iter2, same settings, but pruning is turned back on</span>
+            <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">minbeamfrac</span> <span class="o">=</span> <span class="mf">0.3</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">sidelobethreshold</span><span class="p">,</span> <span class="n">noisethreshold</span><span class="p">,</span> <span class="n">lownoisethreshold</span><span class="p">,</span> <span class="n">negativethreshold</span><span class="p">,</span> <span class="n">minbeamfrac</span><span class="p">,</span> <span class="n">growiterations</span><span class="p">,</span>
+                <span class="n">dogrowprune</span><span class="p">,</span> <span class="n">minpercentchange</span><span class="p">,</span> <span class="n">fastnoise</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.nterms">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.nterms">[docs]</a>
+    <span class="k">def</span> <span class="nf">nterms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean nterms parameter heuristics.</span>
+
+<span class="sd">        Determine nterms depending on the fractional bandwidth.</span>
+<span class="sd">        Returns 1 if the fractional bandwidth is &lt; 10 per cent, 2 otherwise.</span>
+
+<span class="sd">        See PIPE-679 and CASR-543</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">spwspec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="c1"># Fractional bandwidth</span>
+        <span class="n">fr_bandwidth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fractional_bandwidth</span><span class="p">(</span><span class="n">spwspec</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fr_bandwidth</span> <span class="o">&gt;=</span> <span class="mf">0.1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.deconvolver">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.deconvolver">[docs]</a>
+    <span class="k">def</span> <span class="nf">deconvolver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stokes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean deconvolver parameter heuristics.</span>
+<span class="sd">        </span>
+<span class="sd">        See PIPE-679 and CASR-543</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;hogbom&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;mtmfs&#39;</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_vla_band</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get VLA band from spwspec, assuming spwspec from the same band.&quot;&quot;&quot;</span>
+        <span class="n">vla_band</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spwspec</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spwspec</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">freq_limits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_min_max_freq</span><span class="p">(</span><span class="n">spwspec</span><span class="p">)</span>
+            <span class="n">mean_freq_hz</span> <span class="o">=</span> <span class="p">(</span><span class="n">freq_limits</span><span class="p">[</span><span class="s1">&#39;abs_max_freq&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">freq_limits</span><span class="p">[</span><span class="s1">&#39;abs_min_freq&#39;</span><span class="p">])</span><span class="o">/</span><span class="mf">2.0</span>
+            <span class="n">vla_band</span> <span class="o">=</span> <span class="n">find_EVLA_band</span><span class="p">(</span><span class="n">mean_freq_hz</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">vla_band</span>
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.gridder">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.gridder">[docs]</a>
+    <span class="k">def</span> <span class="nf">gridder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the appropriate tclean gridder parameter for VLA.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            intent (str): The intent of the observation.</span>
+<span class="sd">            field (str): The field of the observation.</span>
+<span class="sd">            spwspec (str, optional): The spectral window specification. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The selected gridder parameter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Default gridder selection.</span>
+        <span class="n">gridder_select</span> <span class="o">=</span> <span class="s1">&#39;standard&#39;</span>
+
+        <span class="c1"># The heuristic which decides whether this is a mosaic or not.</span>
+        <span class="n">field_str_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+        <span class="n">is_mosaic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_mosaic</span><span class="p">(</span><span class="n">field_str_list</span><span class="p">)</span>
+
+        <span class="c1"># Adjust gridder selection based on mosaic status and antenna diameters.</span>
+        <span class="c1"># Not really necessary for VLA, but as a placeholder for PIPE-684.</span>
+        <span class="k">if</span> <span class="n">is_mosaic</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">antenna_diameters</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">gridder_select</span> <span class="o">=</span> <span class="s1">&#39;mosaic&#39;</span>
+
+        <span class="c1"># PIPE-1641: switch to gridder=&#39;wproject&#39; for L and S band sci-target imaging</span>
+        <span class="c1"># PIPE-2225: disable the L/S-band wproject heuristics for efficient imaging</span>
+        <span class="n">use_wproject</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">use_wproject</span><span class="p">:</span>
+            <span class="n">vla_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_vla_band</span><span class="p">(</span><span class="n">spwspec</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">vla_band</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">intent</span><span class="p">:</span>
+                <span class="n">gridder_select</span> <span class="o">=</span> <span class="s1">&#39;wproject&#39;</span>
+
+        <span class="k">return</span> <span class="n">gridder_select</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.wprojplanes">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.wprojplanes">[docs]</a>
+    <span class="k">def</span> <span class="nf">wprojplanes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gridder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean wprojplanes parameter heuristics for VLA.&quot;&quot;&quot;</span>
+
+        <span class="n">wplanes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">vla_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_vla_band</span><span class="p">(</span><span class="n">spwspec</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-1641: heuristics for wprojplanes when gridder=&#39;wproject&#39;</span>
+        <span class="c1"># note that the scaling logic inside this block is only valid for L-/S-band data.</span>
+        <span class="k">if</span> <span class="n">gridder</span> <span class="o">==</span> <span class="s1">&#39;wproject&#39;</span> <span class="ow">and</span> <span class="n">vla_band</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">]:</span>
+
+            <span class="c1"># calculate 75th percentile uv distance</span>
+            <span class="n">uvrange_pct75_meter</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_percentile_baseline_length</span><span class="p">(</span><span class="mf">75.</span><span class="p">)</span>
+            <span class="c1"># normalized to S-band A-config</span>
+            <span class="n">wplanes</span> <span class="o">=</span> <span class="mi">384</span>
+            <span class="c1"># scaled by 75th percentile uv distance divided by A-config value</span>
+            <span class="n">wplanes</span> <span class="o">=</span> <span class="n">wplanes</span> <span class="o">*</span> <span class="n">uvrange_pct75_meter</span><span class="o">/</span><span class="mf">20000.0</span>
+
+            <span class="k">if</span> <span class="n">vla_band</span> <span class="o">==</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span>
+                <span class="c1"># compensate for 1.5 GHz being 2x longer than 3 GHz</span>
+                <span class="n">wplanes</span> <span class="o">=</span> <span class="n">wplanes</span><span class="o">*</span><span class="mf">2.0</span>
+            <span class="n">wplanes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">wplanes</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">wplanes</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.niter_correction">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.niter_correction">[docs]</a>
+    <span class="k">def</span> <span class="nf">niter_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">niter</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">imsize</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">residual_robust_rms</span><span class="p">,</span> <span class="n">mask_frac_rad</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adjustment of number of cleaning iterations due to mask size.</span>
+
+<span class="sd">        Uses residual_robust_rms instead threshold to compute the new niter value.</span>
+
+<span class="sd">        See PIPE-682 and CASR-543 and base class method for parameter description.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">mask_frac_rad</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="c1"># The motivation here is that while EVLA images can be large, only a small fraction of pixels</span>
+            <span class="c1"># will typically have emission (for continuum images).</span>
+            <span class="n">mask_frac_rad</span> <span class="o">=</span> <span class="mf">0.05</span>
+
+        <span class="c1"># VLA specific threshold</span>
+        <span class="c1"># set to nsigma=4.0, rather than a hm_masking-specific nsigma value</span>
+        <span class="n">nsigma</span> <span class="o">=</span> <span class="mf">4.0</span>
+        <span class="n">threshold_vla</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">nsigma</span> <span class="o">*</span> <span class="n">residual_robust_rms</span><span class="p">,</span> <span class="s1">&#39;Jy&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Set allowed niter range</span>
+        <span class="n">max_niter</span> <span class="o">=</span> <span class="mi">1000000</span>
+        <span class="n">min_niter</span> <span class="o">=</span> <span class="mi">10000</span>
+
+        <span class="c1"># Compute new niter</span>
+        <span class="n">new_niter</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">niter_correction</span><span class="p">(</span><span class="n">niter</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">imsize</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span> <span class="n">threshold_vla</span><span class="p">,</span> <span class="n">residual_robust_rms</span><span class="p">,</span>
+                                             <span class="n">mask_frac_rad</span><span class="o">=</span><span class="n">mask_frac_rad</span><span class="p">)</span>
+        <span class="c1"># Apply limits</span>
+        <span class="k">if</span> <span class="n">new_niter</span> <span class="o">&lt;</span> <span class="n">min_niter</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;niter heuristic: Modified niter </span><span class="si">%d</span><span class="s1"> is smaller than lower limit (</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">new_niter</span><span class="p">,</span> <span class="n">min_niter</span><span class="p">))</span>
+            <span class="n">new_niter</span> <span class="o">=</span> <span class="n">min_niter</span>
+        <span class="k">elif</span> <span class="n">new_niter</span> <span class="o">&gt;</span> <span class="n">max_niter</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;niter heuristic: Modified niter </span><span class="si">%d</span><span class="s1"> is larger than upper limit (</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">new_niter</span><span class="p">,</span> <span class="n">max_niter</span><span class="p">))</span>
+            <span class="n">new_niter</span> <span class="o">=</span> <span class="n">max_niter</span>
+        <span class="k">return</span> <span class="n">new_niter</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.niter_by_iteration">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.niter_by_iteration">[docs]</a>
+    <span class="k">def</span> <span class="nf">niter_by_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">,</span> <span class="n">niter</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean niter heuristic at each iteration.</span>
+
+<span class="sd">        PIPE-677: niter=50 for iteration=1 of the VLA auto-masking tclean call.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">hm_masking</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="n">new_niter</span> <span class="o">=</span> <span class="mi">50</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;niter heuristic for iteration=</span><span class="si">{}</span><span class="s1"> / hm_masking=</span><span class="si">{}</span><span class="s1">: Modified niter to </span><span class="si">{}</span><span class="s1"> from </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iteration</span><span class="p">,</span>
+                     <span class="n">hm_masking</span><span class="p">,</span> <span class="n">new_niter</span><span class="p">,</span> <span class="n">niter</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">new_niter</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">niter</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.specmode">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.specmode">[docs]</a>
+    <span class="k">def</span> <span class="nf">specmode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean specmode parameter heuristics.</span>
+<span class="sd">        See PIPE-683 and CASR-543&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;cont&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.nsigma">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.nsigma">[docs]</a>
+    <span class="k">def</span> <span class="nf">nsigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">hm_nsigma</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean nsigma parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">hm_nsigma</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">hm_nsigma</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># PIPE-678: VLA &#39;none&#39; set to 5.0</span>
+            <span class="c1"># PIPE-677: VLA automasking set to 4.0, reduce from 5.0</span>
+            <span class="k">if</span> <span class="n">hm_masking</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">4.0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">5.0</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.tclean_stopcode_ignore">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.tclean_stopcode_ignore">[docs]</a>
+    <span class="k">def</span> <span class="nf">tclean_stopcode_ignore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean stop code(s) to be ignored for warning messages.</span>
+
+<span class="sd">        PIPE-677: We will ignore tclean_stopcode=1 (i.e., niter is reached) for iter1 of the VLA automasking sequence.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">hm_masking</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.keep_iterating">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.keep_iterating">[docs]</a>
+    <span class="k">def</span> <span class="nf">keep_iterating</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">,</span> <span class="n">tclean_stopcode</span><span class="p">,</span> <span class="n">dirty_dynamic_range</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span> <span class="n">residual_robust_rms</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">specmode</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if another tclean iteration is necessary.</span>
+
+<span class="sd">        automasking mode (PIPE-677):</span>
+<span class="sd">            VLA auto-masking heuristics for TARGET performs two-stage iterations with slightly different auto-multithresh parameters</span>
+<span class="sd">            iteration=0: keep_iteration=True</span>
+<span class="sd">            iteration=1:</span>
+<span class="sd">                stopcode=0 (no minor or major cycles?): keep_iteration=False</span>
+<span class="sd">                stopcode=1 (iteration limit): keep_iteration=True</span>
+<span class="sd">                stopcode=5,6 (doesn&#39;t converge): keep_iteration=False</span>
+<span class="sd">                stopcode=7 (no mask generated from automask): keep_iteration=False</span>
+<span class="sd">                stopcode=others: keep_iteration=True</span>
+<span class="sd">            iteration&gt;=2: keep_iteration=False</span>
+
+<span class="sd">        other modes:</span>
+<span class="sd">            iteration=0: keep_iteration=True</span>
+<span class="sd">            iteration=1: keep_iteration=False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">hm_masking</span>
+        <span class="k">elif</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">hm_masking</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span> <span class="ow">and</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">intent</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tclean_stopcode</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">hm_masking</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">hm_masking</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">hm_masking</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.threshold">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.threshold">[docs]</a>
+    <span class="k">def</span> <span class="nf">threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">hm_masking</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean threshold parameter heuristics.</span>
+<span class="sd">        See PIPE-678 and CASR-543&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">hm_masking</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;none&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="s1">&#39;0.0mJy&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">threshold</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.imsize">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.imsize">[docs]</a>
+    <span class="k">def</span> <span class="nf">imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">primary_beam</span><span class="p">,</span> <span class="n">sfpblimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_pixels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+               <span class="n">centreonly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">vislist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">joint_intents</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+               <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions</span>
+<span class="sd">        is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.</span>
+
+<span class="sd">        Frequency dependent image size may be computed for VLA imaging.</span>
+
+<span class="sd">        For single fields, 18 GHz and above FOV extends to the first minimum of the primary beam Airy pattern.</span>
+<span class="sd">        Below 18 GHz, FOV extends to the second minimum (incorporating the first sidelobes).</span>
+
+<span class="sd">        See PIPE-675 and CASR-543</span>
+
+<span class="sd">        :param fields: list of comma separated strings of field IDs per MS.</span>
+<span class="sd">        :param cell: pixel (cell) size in arcsec.</span>
+<span class="sd">        :param primary_beam: primary beam width in arcsec.</span>
+<span class="sd">        :param sfpblimit: single field primary beam response. If provided then imsize is chosen such that the image</span>
+<span class="sd">            edge is at normalised primary beam level equals to sfpblimit.</span>
+<span class="sd">        :param max_pixels: maximum allowed pixel count, integer. The same limit is applied along both image axes.</span>
+<span class="sd">        :param centreonly: if True, then ignore the spread of field centers.</span>
+<span class="sd">        :param vislist: list of visibility path string to be used for imaging. If not set then use all visibilities</span>
+<span class="sd">            in the context.</span>
+<span class="sd">        :param spwspec: ID list of spectral windows used to create image product. List or string containing comma</span>
+<span class="sd">            separated spw IDs list.</span>
+<span class="sd">        :param intent: field/source intent</span>
+<span class="sd">        :param joint_intents: stage intents</span>
+<span class="sd">        :return: two element list of pixel count along x and y image axes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">specmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;cube&#39;</span><span class="p">,</span> <span class="s1">&#39;repBW&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">imsize</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">primary_beam</span><span class="p">,</span> <span class="n">sfpblimit</span><span class="o">=</span><span class="n">sfpblimit</span><span class="p">,</span> <span class="n">max_pixels</span><span class="o">=</span><span class="n">max_pixels</span><span class="p">,</span>
+                                  <span class="n">centreonly</span><span class="o">=</span><span class="n">centreonly</span><span class="p">,</span> <span class="n">vislist</span><span class="o">=</span><span class="n">vislist</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="n">specmode</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">spwspec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">spwspec</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">:</span>
+                    <span class="n">spwspec</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwspec</span><span class="p">)</span>
+                <span class="n">freq_limits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_min_max_freq</span><span class="p">(</span><span class="n">spwspec</span><span class="p">)</span>
+                <span class="c1"># 18 GHz and above (K, Ka, Q VLA bands)</span>
+                <span class="k">if</span> <span class="n">freq_limits</span><span class="p">[</span><span class="s1">&#39;abs_min_freq&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">1.79e10</span><span class="p">:</span>
+                    <span class="c1"># equivalent to first minimum of the Airy diffraction pattern; m = 1.22.</span>
+                    <span class="n">sfpblimit</span> <span class="o">=</span> <span class="mf">0.294</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># equivalent to second minimum of the Airy diffraction pattern; m = 2.233 in theta = m*lambda/D</span>
+                    <span class="n">sfpblimit</span> <span class="o">=</span> <span class="mf">0.016</span>
+
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">imsize</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">primary_beam</span><span class="p">,</span> <span class="n">sfpblimit</span><span class="o">=</span><span class="n">sfpblimit</span><span class="p">,</span> <span class="n">max_pixels</span><span class="o">=</span><span class="n">max_pixels</span><span class="p">,</span>
+                                  <span class="n">centreonly</span><span class="o">=</span><span class="n">centreonly</span><span class="p">,</span> <span class="n">vislist</span><span class="o">=</span><span class="n">vislist</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="n">specmode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.imagename">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.imagename">[docs]</a>
+    <span class="k">def</span> <span class="nf">imagename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">nameroot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imagename_prefix</span>
+            <span class="k">if</span> <span class="n">nameroot</span> <span class="o">==</span> <span class="s1">&#39;unknown&#39;</span><span class="p">:</span>
+                <span class="n">nameroot</span> <span class="o">=</span> <span class="s1">&#39;oussid&#39;</span>
+            <span class="c1"># need to sanitize the nameroot here because when it&#39;s added</span>
+            <span class="c1"># to filenamer as an asdm, os.path.basename is run on it with</span>
+            <span class="c1"># undesirable results.</span>
+            <span class="n">nameroot</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="n">nameroot</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">nameroot</span> <span class="o">=</span> <span class="s1">&#39;oussid&#39;</span>
+        <span class="n">namer</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span>
+        <span class="n">namer</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">asdm</span><span class="p">(</span><span class="n">nameroot</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">output_dir</span><span class="p">:</span>
+            <span class="n">namer</span><span class="o">.</span><span class="n">output_dir</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+
+        <span class="n">namer</span><span class="o">.</span><span class="n">stage</span><span class="p">(</span><span class="s1">&#39;STAGENUMBER&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">intent</span><span class="p">:</span>
+            <span class="n">namer</span><span class="o">.</span><span class="n">intent</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">field</span><span class="p">:</span>
+            <span class="n">namer</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">specmode</span> <span class="o">!=</span> <span class="s1">&#39;cont&#39;</span> <span class="ow">and</span> <span class="n">spwspec</span><span class="p">:</span>
+            <span class="c1"># find all the spwids present in the list</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[ ,]+(\d+)&quot;</span><span class="p">)</span>
+            <span class="n">spwids</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spwspec</span><span class="p">)</span>
+            <span class="n">spwids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spwids</span><span class="p">))</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">spwids</span><span class="p">))))</span>
+            <span class="n">namer</span><span class="o">.</span><span class="n">spectral_window</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span> <span class="ow">and</span> <span class="n">band</span><span class="p">:</span>
+            <span class="n">namer</span><span class="o">.</span><span class="n">band</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">specmode</span><span class="p">:</span>
+            <span class="n">namer</span><span class="o">.</span><span class="n">specmode</span><span class="p">(</span><span class="n">specmode</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">datatype</span><span class="p">:</span>
+            <span class="n">namer</span><span class="o">.</span><span class="n">datatype</span><span class="p">(</span><span class="n">datatype</span><span class="p">)</span>
+
+        <span class="c1"># filenamer returns a sanitized filename (i.e. one with</span>
+        <span class="c1"># illegal characters replace by &#39;_&#39;), no need to check</span>
+        <span class="c1"># the name components individually.</span>
+        <span class="n">imagename</span> <span class="o">=</span> <span class="n">namer</span><span class="o">.</span><span class="n">get_filename</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">imagename</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.get_sensitivity">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.get_sensitivity">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms_do</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">chansel</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">imsize</span><span class="p">,</span> <span class="n">weighting</span><span class="p">,</span> <span class="n">robust</span><span class="p">,</span> <span class="n">uvtaper</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Correct the VLA theoretical sensitivity for the Hanning smoothed SPW.</span>
+
+<span class="sd">        PIPE-2131: Hanning smoothing introduces noise correlation between adjacent visibility channels,</span>
+<span class="sd">        which is not accounted for in the statwt() outcome. Here, we introduce a scaling factor of 1.633 </span>
+<span class="sd">        to correct this effect in sensitivity calculation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ms_do (object): Measurement set data object.</span>
+<span class="sd">            field (str): Field selection.</span>
+<span class="sd">            intent (str): Observation intent.</span>
+<span class="sd">            spw (int): Spectral window.</span>
+<span class="sd">            chansel (str): Channel selection.</span>
+<span class="sd">            specmode (str): Spectral mode.</span>
+<span class="sd">            cell (float): Cell size.</span>
+<span class="sd">            imsize (int): Image size.</span>
+<span class="sd">            weighting (str): Weighting scheme.</span>
+<span class="sd">            robust (float): Robust parameter for weighting.</span>
+<span class="sd">            uvtaper (str): UV taper.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: Corrected sensitivity values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_sensitivity</span><span class="p">(</span><span class="n">ms_do</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">chansel</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">imsize</span><span class="p">,</span> <span class="n">weighting</span><span class="p">,</span> <span class="n">robust</span><span class="p">,</span> <span class="n">uvtaper</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+
+        <span class="n">real_spwid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual2real_spw_id</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">ms_do</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">ms_do</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;/SPECTRAL_WINDOW&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;OFFLINE_HANNING_SMOOTH&#39;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">colnames</span><span class="p">():</span>
+                <span class="n">is_smoothed</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;OFFLINE_HANNING_SMOOTH&#39;</span><span class="p">)[</span><span class="n">real_spwid</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">is_smoothed</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="s1">&#39;EB </span><span class="si">%s</span><span class="s1"> spw </span><span class="si">%s</span><span class="s1"> has been Hanning-smoothed; multiplying apparent sensitivity return by a factor of 1.633.&#39;</span><span class="p">,</span>
+                        <span class="n">ms_do</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">real_spwid</span><span class="p">)</span>
+                    <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">1.633</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;EB </span><span class="si">%s</span><span class="s1"> spw </span><span class="si">%s</span><span class="s1"> has not been Hanning-smoothed; assuming the visibility noise is channel-independent.&#39;</span><span class="p">,</span>
+                             <span class="n">ms_do</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">real_spwid</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s1">&#39;No offline Hanning smooth history is detected in EB </span><span class="si">%s</span><span class="s1"> spw </span><span class="si">%s</span><span class="s1">; no correction for the VLA theoretical sensitivity.&#39;</span><span class="p">,</span>
+                    <span class="n">ms_do</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">real_spwid</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVLA.restfreq">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.restfreq">[docs]</a>
+    <span class="k">def</span> <span class="nf">restfreq</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">specmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nchan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the rest frequency for CASA/tclean.</span>
+
+<span class="sd">        VLA often lacks valid rest frequencies in the SOURCE subtable. Therefore, the SPW center frequency</span>
+<span class="sd">        is used as the rest frequency when certain conditions are met.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            specmode (Optional[str]): The spectral mode, typically &#39;cube&#39; or &#39;repBW&#39;.</span>
+<span class="sd">            nchan (Optional[int]): Number of channels.</span>
+<span class="sd">            start (Optional[Union[str, float]]): Start frequency, expected to be a string with units (e.g., &#39;Hz&#39;).</span>
+<span class="sd">            width (Optional[Union[str, float]]): Width frequency, expected to be a string with units (e.g., &#39;Hz&#39;).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Optional[str]: The calculated rest frequency in GHz if conditions are met; otherwise, None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rest_freq</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">specmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;cube&#39;</span><span class="p">,</span> <span class="s1">&#39;repBW&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;Hz&#39;</span> <span class="ow">in</span> <span class="n">param</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">width</span><span class="p">))</span> <span class="ow">and</span> <span class="n">nchan</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+                    <span class="n">start_hz</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+                    <span class="n">width_hz</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+                    <span class="n">center_freq_hz</span> <span class="o">=</span> <span class="n">start_hz</span> <span class="o">+</span> <span class="p">(</span><span class="n">nchan</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">width_hz</span>
+                    <span class="n">rest_freq</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">center_freq_hz</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1e9</span><span class="si">:</span><span class="s1">.10f</span><span class="si">}</span><span class="s1">GHz&#39;</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Use the cube center frequency as the rest frequency for VLA cube imaging: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rest_freq</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Failed to derive the heuristics-based rest frequency for VLA cube imaging.&#39;</span><span class="p">)</span>
+                    <span class="n">traceback_msg</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">traceback_msg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Cannot derive the heuristics-based rest frequency for VLA cube imaging.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">rest_freq</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

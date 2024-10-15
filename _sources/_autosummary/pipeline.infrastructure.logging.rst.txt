@@ -1,0 +1,32 @@
+pipeline.infrastructure.logging
+===============================
+
+.. automodule:: pipeline.infrastructure.logging
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      add_handler
+      contextmanager
+      get_logger
+      log_filtermsg
+      log_level
+      pipeline_origin
+      remove_handler
+      set_logging_level
+      suspend_handler
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CASALogHandler
+      CapturingHandler
+      Code
+      Frame
+      SuspendCapturingLogger
+      Traceback
+      UTCFormatter
+   

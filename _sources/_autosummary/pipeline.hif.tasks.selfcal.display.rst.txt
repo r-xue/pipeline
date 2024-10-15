@@ -1,0 +1,20 @@
+pipeline.hif.tasks.selfcal.display
+==================================
+
+.. automodule:: pipeline.hif.tasks.selfcal.display
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      matplotlibrc_formal
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CasaTasks
+      SelfcalSummary
+      TaskQueue
+   

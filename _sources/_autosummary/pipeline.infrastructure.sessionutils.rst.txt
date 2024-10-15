@@ -1,0 +1,30 @@
+pipeline.infrastructure.sessionutils
+====================================
+
+.. automodule:: pipeline.infrastructure.sessionutils
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      as_list
+      get_spwmap
+      get_vislist_for_session
+      group_into_sessions
+      group_vislist_into_sessions
+      parallel_inputs_impl
+      remap_spw_int
+      remap_spw_str
+      remove_unexpected_args
+      signature
+      validate_args
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ParallelTemplate
+      VDPTaskFactory
+      VisResultTuple
+   

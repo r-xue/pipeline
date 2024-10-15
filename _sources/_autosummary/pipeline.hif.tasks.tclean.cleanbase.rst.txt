@@ -1,0 +1,21 @@
+pipeline.hif.tasks.tclean.cleanbase
+===================================
+
+.. automodule:: pipeline.hif.tasks.tclean.cleanbase
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      rename_image
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CleanBase
+      CleanBaseError
+      CleanBaseInputs
+      TcleanResult
+   

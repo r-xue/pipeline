@@ -1,0 +1,23 @@
+pipeline.infrastructure.project
+===============================
+
+.. automodule:: pipeline.infrastructure.project
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_state
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LoggingModificationListener
+      ModificationListener
+      ModificationPublisher
+      PerformanceParameters
+      ProjectStructure
+      ProjectSummary
+   

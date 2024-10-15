@@ -1,0 +1,15 @@
+pipeline.hif.tasks.makermsimages.makermsimages
+==============================================
+
+.. automodule:: pipeline.hif.tasks.makermsimages.makermsimages
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      Makermsimages
+      MakermsimagesInputs
+      MakermsimagesResults
+   

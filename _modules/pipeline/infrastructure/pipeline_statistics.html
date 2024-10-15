@@ -1,0 +1,660 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.pipeline_statistics &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.pipeline_statistics</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.pipeline_statistics</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">pipeline</span> <span class="kn">import</span> <span class="n">environment</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">measures</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.datatype</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">logging</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PipelineStatisticsLevel">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipeline_statistics.PipelineStatisticsLevel">[docs]</a>
+<span class="k">class</span> <span class="nc">PipelineStatisticsLevel</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An enum to specify which &quot;level&quot; of information an individual pipeline statistic applies to:</span>
+<span class="sd">    SPW, EB, SOURCE, or MOUS.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MOUS</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
+    <span class="n">EB</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
+    <span class="n">SPW</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
+    <span class="n">SOURCE</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="PipelineStatistics">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipeline_statistics.PipelineStatistics">[docs]</a>
+<span class="k">class</span> <span class="nc">PipelineStatistics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A single unit of pipeline statistics information.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        name: The name of this pipeline statistic</span>
+<span class="sd">        value: The value for this pipeline statistic</span>
+<span class="sd">        longdesc: A long description of the value</span>
+<span class="sd">        origin: The stage that this value was calculated or populated in (Optional)</span>
+<span class="sd">        units: The units associated with the value (Optional)</span>
+<span class="sd">        level: A PipelineStatisticsLevel that specifies whether this value applies to a MOUS, EB, or SPW</span>
+<span class="sd">        spw: The SPW this value applies to (if applicable) (Optional)</span>
+<span class="sd">        eb: The EB or MS this value applies to (if applicable) (Optional)</span>
+<span class="sd">        mous: The MOUS this value applies to</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+                 <span class="n">longdesc</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="n">level</span><span class="p">:</span> <span class="n">PipelineStatisticsLevel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mous</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eb</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                 <span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">longdesc</span> <span class="o">=</span> <span class="n">longdesc</span>
+        <span class="c1"># The origin is the name of the pipeline stage associateted with this statistics value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+        <span class="c1"># The level indicates whether a given quantity applies to the whole MOUS, EB, or SPW</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">level</span>
+        <span class="c1"># The spw, mous, and/or eb are set, if applicable.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mous</span> <span class="o">=</span> <span class="n">mous</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eb</span> <span class="o">=</span> <span class="n">eb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span>
+
+        <span class="c1"># Convert initial value from the pipeline to a value that can be serialized by JSON</span>
+        <span class="c1"># In the future, it may make sense to move this conversion to when the data is written out.</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">set</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;PipelineStatistics(</span><span class="si">{!s}</span><span class="s1">, </span><span class="si">{!r}</span><span class="s1">, </span><span class="si">{!r}</span><span class="s1">, </span><span class="si">{!s}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PipelineStatistics.to_dict">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipeline_statistics.PipelineStatistics.to_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert an individual pipeline statistics item to a dictionary</span>
+<span class="sd">        representation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stats_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+            <span class="n">stats_dict</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+            <span class="n">stats_dict</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">longdesc</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span> 
+            <span class="n">stats_dict</span><span class="p">[</span><span class="s1">&#39;longdescription&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">longdesc</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+            <span class="n">stats_dict</span><span class="p">[</span><span class="s1">&#39;origin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span>
+
+        <span class="k">return</span> <span class="n">stats_dict</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="to_nested_dict">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipeline_statistics.to_nested_dict">[docs]</a>
+<span class="k">def</span> <span class="nf">to_nested_dict</span><span class="p">(</span><span class="n">stats_collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a nested output dict with EBs, SPWs, TARGETs, MOUSs</span>
+<span class="sd">    Each level is represented in the structure of the output.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">final_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">eb_section_key</span> <span class="o">=</span> <span class="s2">&quot;EB&quot;</span>
+    <span class="n">spw_section_key</span> <span class="o">=</span> <span class="s2">&quot;SPW&quot;</span>
+    <span class="n">source_section_key</span> <span class="o">=</span> <span class="s2">&quot;TARGET&quot;</span>
+
+    <span class="c1"># Step through the collect statistics values and construct</span>
+    <span class="c1"># a dictionary representation. The output format is as follows:</span>
+    <span class="c1"># { mous_name: {</span>
+    <span class="c1">#    mous_property: { ...</span>
+    <span class="c1">#    }</span>
+    <span class="c1">#    &quot;EB&quot;: {</span>
+    <span class="c1">#       eb_name: {</span>
+    <span class="c1">#           eb_property: {...</span>
+    <span class="c1">#           }</span>
+    <span class="c1">#       }</span>
+    <span class="c1">#    }</span>
+    <span class="c1">#    &quot;SPW&quot;: {</span>
+    <span class="c1">#       spw_id: {</span>
+    <span class="c1">#           spw_property: {...</span>
+    <span class="c1">#           }</span>
+    <span class="c1">#       }</span>
+    <span class="c1">#    }</span>
+    <span class="c1">#    &quot;TARGET&quot;: {</span>
+    <span class="c1">#       source_name: {</span>
+    <span class="c1">#           source_property: {...</span>
+    <span class="c1">#           }</span>
+    <span class="c1">#       }</span>
+    <span class="c1">#    }</span>
+    <span class="c1">#  }</span>
+    <span class="c1">#  header: {version: 0.1, creation_date: YYMMDD-HH:MM:SS Z}</span>
+    <span class="c1"># }</span>
+    <span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="n">stats_collection</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">stat</span><span class="o">.</span><span class="n">mous</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">final_dict</span><span class="p">:</span>
+            <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">stat</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="n">PipelineStatisticsLevel</span><span class="o">.</span><span class="n">MOUS</span><span class="p">:</span>
+            <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">][</span><span class="n">stat</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">stat</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="n">PipelineStatisticsLevel</span><span class="o">.</span><span class="n">EB</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">eb_section_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">]:</span>
+                <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">][</span><span class="n">eb_section_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">stat</span><span class="o">.</span><span class="n">eb</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">][</span><span class="n">eb_section_key</span><span class="p">]:</span>
+                <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">][</span><span class="n">eb_section_key</span><span class="p">][</span><span class="n">stat</span><span class="o">.</span><span class="n">eb</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">][</span><span class="n">eb_section_key</span><span class="p">][</span><span class="n">stat</span><span class="o">.</span><span class="n">eb</span><span class="p">][</span><span class="n">stat</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">stat</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="n">PipelineStatisticsLevel</span><span class="o">.</span><span class="n">SPW</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">spw_section_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">]:</span>
+                <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">][</span><span class="n">spw_section_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">stat</span><span class="o">.</span><span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">][</span><span class="n">spw_section_key</span><span class="p">]:</span>
+                <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">][</span><span class="n">spw_section_key</span><span class="p">][</span><span class="n">stat</span><span class="o">.</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">][</span><span class="n">spw_section_key</span><span class="p">][</span><span class="n">stat</span><span class="o">.</span><span class="n">spw</span><span class="p">][</span><span class="n">stat</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">stat</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="n">PipelineStatisticsLevel</span><span class="o">.</span><span class="n">SOURCE</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">source_section_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">]:</span>
+                <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">][</span><span class="n">source_section_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">stat</span><span class="o">.</span><span class="n">source</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">][</span><span class="n">source_section_key</span><span class="p">]:</span>
+                <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">][</span><span class="n">source_section_key</span><span class="p">][</span><span class="n">stat</span><span class="o">.</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">final_dict</span><span class="p">[</span><span class="n">stat</span><span class="o">.</span><span class="n">mous</span><span class="p">][</span><span class="n">source_section_key</span><span class="p">][</span><span class="n">stat</span><span class="o">.</span><span class="n">source</span><span class="p">][</span><span class="n">stat</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;In pipleine statics file creation, invalid level: </span><span class="si">{}</span><span class="s2"> specified.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stat</span><span class="o">.</span><span class="n">level</span><span class="p">))</span>
+
+    <span class="c1"># Generate and append a header with information about statistics file version and date created</span>
+    <span class="n">version_dict</span> <span class="o">=</span> <span class="n">_generate_header</span><span class="p">()</span>
+    <span class="n">final_dict</span><span class="p">[</span><span class="s1">&#39;header&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version_dict</span>
+
+    <span class="k">return</span> <span class="n">final_dict</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_generate_header</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a header with information about the pipeline stats file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">version_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">version_dict</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+    <span class="n">dt_string</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y/%m/</span><span class="si">%d</span><span class="s2"> %H:%M:%S %Z&quot;</span><span class="p">)</span>
+    <span class="n">version_dict</span><span class="p">[</span><span class="s2">&quot;stats_file_creation_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt_string</span>
+    <span class="k">return</span> <span class="n">version_dict</span>
+
+
+<span class="k">def</span> <span class="nf">_get_mous_values</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">mous</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ms_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PipelineStatistics</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the statistics values for a given MOUS</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="n">PipelineStatisticsLevel</span><span class="o">.</span><span class="n">MOUS</span>
+    <span class="n">stats_collection</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;project_id&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">project_ids</span><span class="o">.</span><span class="n">pop</span><span class="p">(),</span>
+        <span class="n">longdesc</span><span class="o">=</span><span class="s1">&#39;Proposal id number&#39;</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+        <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+
+    <span class="n">p2</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;pipeline_version&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">environment</span><span class="o">.</span><span class="n">pipeline_revision</span><span class="p">,</span>
+        <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;pipeline version string&quot;</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+        <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+
+    <span class="n">p3</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;pipeline_recipe&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">project_structure</span><span class="o">.</span><span class="n">recipe_name</span><span class="p">,</span>
+        <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;recipe name&quot;</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+        <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p3</span><span class="p">)</span>
+
+    <span class="n">p4</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;casa_version&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">environment</span><span class="o">.</span><span class="n">casa_version_string</span><span class="p">,</span>
+        <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;casa version string&quot;</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+        <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p4</span><span class="p">)</span>
+
+    <span class="n">p5</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;mous_uid&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">get_oussid</span><span class="p">(),</span>
+        <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;Member Obs Unit Set ID&quot;</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+        <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p5</span><span class="p">)</span>
+
+    <span class="n">p6</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;n_EB&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">execblock_ids</span><span class="p">),</span>
+        <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;number of execution blocks&quot;</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+        <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p6</span><span class="p">)</span>
+
+    <span class="n">all_bands</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">spw</span><span class="o">.</span><span class="n">band</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_all_spectral_windows</span><span class="p">()})</span>
+    <span class="n">p7</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;bands&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">all_bands</span><span class="p">,</span>
+        <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;Band(s) used in observations.&quot;</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+        <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p7</span><span class="p">)</span>
+
+    <span class="n">first_ms</span> <span class="o">=</span> <span class="n">ms_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">science_source_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">source</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">first_ms</span><span class="o">.</span><span class="n">sources</span> <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">intents</span><span class="p">})</span>
+    <span class="n">p8</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;n_target&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">science_source_names</span><span class="p">),</span>
+        <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;total number of science targets in the MOUS&quot;</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+        <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p8</span><span class="p">)</span>
+
+    <span class="n">p9</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;target_list&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">science_source_names</span><span class="p">,</span>
+        <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;list of science target names&quot;</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+        <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">PipelineStatisticsLevel</span><span class="o">.</span><span class="n">MOUS</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p9</span><span class="p">)</span>
+
+    <span class="n">p10</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;rep_target&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">first_ms</span><span class="o">.</span><span class="n">representative_target</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;representative target name&quot;</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+        <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">PipelineStatisticsLevel</span><span class="o">.</span><span class="n">MOUS</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p10</span><span class="p">)</span>
+
+    <span class="n">p11</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;n_spw&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">first_ms</span><span class="o">.</span><span class="n">get_all_spectral_windows</span><span class="p">()),</span>
+        <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;number of spectral windows&quot;</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+        <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">PipelineStatisticsLevel</span><span class="o">.</span><span class="n">MOUS</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p11</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">stats_collection</span>
+
+
+<span class="k">def</span> <span class="nf">_get_eb_values</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">mous</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ms_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PipelineStatistics</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the statistics values for a given EB</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="n">PipelineStatisticsLevel</span><span class="o">.</span><span class="n">EB</span>
+    <span class="n">stats_collection</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">ms_list</span><span class="p">:</span>
+        <span class="n">eb</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;n_ant&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">),</span>
+            <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;Number of antennas per execution block&quot;</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+            <span class="n">eb</span><span class="o">=</span><span class="n">eb</span><span class="p">,</span>
+            <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+        <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;n_scan&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">()),</span>
+            <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;number of scans per EB&quot;</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+            <span class="n">eb</span><span class="o">=</span><span class="n">eb</span><span class="p">,</span>
+            <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+        <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+
+        <span class="n">l80</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">baselines_m</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="n">p3</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;L80&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">l80</span><span class="p">,</span>
+            <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;80th percentile baseline&quot;</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+            <span class="n">units</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
+            <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+            <span class="n">eb</span><span class="o">=</span><span class="n">eb</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+        <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p3</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">stats_collection</span>
+
+
+<span class="k">def</span> <span class="nf">_get_spw_values</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">mous</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ms_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PipelineStatistics</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the statistics values for a given SPW</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="n">PipelineStatisticsLevel</span><span class="o">.</span><span class="n">SPW</span>
+    <span class="n">stats_collection</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ms</span> <span class="o">=</span> <span class="n">ms_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">spw_list</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_all_spectral_windows</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spw_list</span><span class="p">:</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;spw_width&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">)),</span>
+            <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;width of the spectral window&quot;</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+            <span class="n">units</span><span class="o">=</span><span class="s2">&quot;MHz&quot;</span><span class="p">,</span>
+            <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+        <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;spw_freq&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)),</span>
+            <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;central frequency of the spectral window in TOPO&quot;</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+            <span class="n">units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span>
+            <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+        <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+
+        <span class="n">p3</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;n_chan&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span><span class="p">,</span>
+            <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;number of channels in the spectral window&quot;</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+            <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+            <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+        <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p3</span><span class="p">)</span>
+
+        <span class="n">p4</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;nbin_online&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">sdm_num_bin</span><span class="p">,</span>
+            <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;online nbin factor&quot;</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+            <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+        <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p4</span><span class="p">)</span>
+
+        <span class="n">chan_width_MHz</span> <span class="o">=</span> <span class="p">[</span><span class="n">chan</span> <span class="o">*</span> <span class="mf">1e-6</span> <span class="k">for</span> <span class="n">chan</span> <span class="ow">in</span> <span class="n">spw</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">chan_widths</span><span class="p">]</span>
+        <span class="n">p5</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;chan_width&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">chan_width_MHz</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;frequency width of the channels in the spectral window&quot;</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+            <span class="n">units</span><span class="o">=</span><span class="s2">&quot;MHz&quot;</span><span class="p">,</span>
+            <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+        <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p5</span><span class="p">)</span>
+
+        <span class="n">dd</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+        <span class="n">numpols</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">num_polarizations</span>
+
+        <span class="n">p6</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;n_pol&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">numpols</span><span class="p">,</span>
+            <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;number of polarizations in the spectral window&quot;</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+            <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+            <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+        <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p6</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">stats_collection</span>
+
+
+<span class="k">def</span> <span class="nf">_get_source_values</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">mous</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ms_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PipelineStatistics</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the statistics values for a given source</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="n">PipelineStatisticsLevel</span><span class="o">.</span><span class="n">SOURCE</span>
+    <span class="n">stats_collection</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">first_ms</span> <span class="o">=</span> <span class="n">ms_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">science_sources</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">source</span> <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">first_ms</span><span class="o">.</span><span class="n">sources</span>
+                              <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">intents</span><span class="p">},</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">source</span><span class="p">:</span> <span class="n">source</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">science_sources</span><span class="p">:</span>
+        <span class="n">pointings</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">first_ms</span><span class="o">.</span><span class="n">fields</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">source_id</span> <span class="o">==</span> <span class="n">source</span><span class="o">.</span><span class="n">id</span><span class="p">])</span>
+
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">PipelineStatistics</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;n_pointings&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">pointings</span><span class="p">,</span>
+            <span class="n">longdesc</span><span class="o">=</span><span class="s2">&quot;number of mosaic pointings for the science target&quot;</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;hifa_importdata&quot;</span><span class="p">,</span>
+            <span class="n">mous</span><span class="o">=</span><span class="n">mous</span><span class="p">,</span>
+            <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+        <span class="n">stats_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">stats_collection</span>
+
+
+<div class="viewcode-block" id="generate_product_pl_run_info">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipeline_statistics.generate_product_pl_run_info">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_product_pl_run_info</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PipelineStatistics</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gather statistics results for the pipleline run information and pipeline product information</span>
+<span class="sd">    These can be directly obtained from the context.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stats_collection</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">mous</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_oussid</span><span class="p">()</span>
+
+    <span class="c1"># List of datatypes to use (in order) for fetching EB-level information.</span>
+    <span class="c1"># The following function call will fetch all the MSes for only the first</span>
+    <span class="c1"># datatype it finds in the list. This is needed so that information is</span>
+    <span class="c1"># not repeated for the ms and _targets.ms when both are present.</span>
+    <span class="n">datatypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">,</span>
+        <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_LINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_LINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
+    <span class="n">ms_list</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_measurement_sets_of_type</span><span class="p">(</span><span class="n">datatypes</span><span class="p">)</span>
+
+    <span class="c1"># Add MOUS-level information</span>
+    <span class="n">mous_values</span> <span class="o">=</span> <span class="n">_get_mous_values</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">mous</span><span class="p">,</span> <span class="n">ms_list</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mous_values</span><span class="p">)</span>
+
+    <span class="c1"># Add per-EB information:</span>
+    <span class="n">eb_values</span> <span class="o">=</span> <span class="n">_get_eb_values</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">mous</span><span class="p">,</span> <span class="n">ms_list</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">eb_values</span><span class="p">)</span>
+
+    <span class="c1"># Add per-SPW stats information</span>
+    <span class="c1"># The spw ids from the first MS are used so the information will be included once per MOUS.</span>
+    <span class="n">spw_values</span> <span class="o">=</span> <span class="n">_get_spw_values</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">mous</span><span class="p">,</span> <span class="n">ms_list</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">spw_values</span><span class="p">)</span>
+
+    <span class="c1"># Add per-SOURCE stats information</span>
+    <span class="n">source_values</span> <span class="o">=</span> <span class="n">_get_source_values</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">mous</span><span class="p">,</span> <span class="n">ms_list</span><span class="p">)</span>
+    <span class="n">stats_collection</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">source_values</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">stats_collection</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

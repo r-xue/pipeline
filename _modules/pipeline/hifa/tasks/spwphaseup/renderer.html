@@ -1,0 +1,469 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.spwphaseup.renderer &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.spwphaseup.renderer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.spwphaseup.renderer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.basetemplates</span> <span class="k">as</span> <span class="nn">basetemplates</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.logger</span> <span class="k">as</span> <span class="nn">logger</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="kn">import</span> <span class="n">ResultsList</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.tasks.spwphaseup</span> <span class="kn">import</span> <span class="n">display</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">PhaseTR</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;PhaseTR&#39;</span><span class="p">,</span> <span class="s1">&#39;ms phase_field field_names&#39;</span><span class="p">)</span>
+<span class="n">SnrTR</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;SnrTR&#39;</span><span class="p">,</span> <span class="s1">&#39;ms threshold field intent spw snr&#39;</span><span class="p">)</span>
+<span class="n">SpwMapInfo</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;SpwMapInfo&#39;</span><span class="p">,</span> <span class="s1">&#39;ms intent field fieldid combine spwmap scanids scispws&#39;</span><span class="p">)</span>
+<span class="n">SpwPhaseupApplication</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;SpwPhaseupApplication&#39;</span><span class="p">,</span> <span class="s1">&#39;ms gaintable calmode solint intent spw&#39;</span><span class="p">)</span>
+<span class="n">PhaseRmsTR</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;PhaseRmsTR&#39;</span><span class="p">,</span> <span class="s1">&#39;ms type time median_phase_rms noisy_ant&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="T2_4MDetailsSpwPhaseupRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.T2_4MDetailsSpwPhaseupRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">T2_4MDetailsSpwPhaseupRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;spwphaseup.mako&#39;</span><span class="p">,</span>
+                 <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Spw phase offsets calibration&#39;</span><span class="p">,</span>
+                 <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
+
+<div class="viewcode-block" id="T2_4MDetailsSpwPhaseupRenderer.update_mako_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.T2_4MDetailsSpwPhaseupRenderer.update_mako_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="c1"># Get info on spectral window mappings.</span>
+        <span class="n">spwmaps</span> <span class="o">=</span> <span class="n">get_spwmaps</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+        <span class="c1"># Generate rows for phase SNR table.</span>
+        <span class="n">snr_table_rows</span> <span class="o">=</span> <span class="n">get_snr_table_rows</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+        <span class="c1"># Generate rows for phase calibrator mapping table.</span>
+        <span class="n">pcal_table_rows</span> <span class="o">=</span> <span class="n">get_pcal_table_rows</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+        <span class="c1"># Get info on phase caltable.</span>
+        <span class="n">applications</span> <span class="o">=</span> <span class="n">get_gaincal_applications</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+        <span class="c1"># Get info on the phase RMS spatial structure function plots and tables</span>
+        <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">phaserms_results</span><span class="p">:</span>
+            <span class="n">rmsplots</span> <span class="o">=</span> <span class="n">make_rms_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+            <span class="n">phaserms_table_rows</span> <span class="o">=</span> <span class="n">get_phaserms_table_rows</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rmsplots</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">phaserms_table_rows</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Update mako context.</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+            <span class="s1">&#39;applications&#39;</span><span class="p">:</span> <span class="n">applications</span><span class="p">,</span>
+            <span class="s1">&#39;pcal_table_rows&#39;</span><span class="p">:</span> <span class="n">pcal_table_rows</span><span class="p">,</span>
+            <span class="s1">&#39;snr_table_rows&#39;</span><span class="p">:</span> <span class="n">snr_table_rows</span><span class="p">,</span>
+            <span class="s1">&#39;phaserms_table_rows&#39;</span><span class="p">:</span> <span class="n">phaserms_table_rows</span><span class="p">,</span>
+            <span class="s1">&#39;spwmaps&#39;</span><span class="p">:</span> <span class="n">spwmaps</span><span class="p">,</span>
+            <span class="s1">&#39;rmsplots&#39;</span><span class="p">:</span> <span class="n">rmsplots</span>
+        <span class="p">})</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="get_gaincal_applications">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.get_gaincal_applications">[docs]</a>
+<span class="k">def</span> <span class="nf">get_gaincal_applications</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SpwPhaseupApplication</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return list of SpwPhaseupApplication entries that contain all the necessary</span>
+<span class="sd">    information to show in a Phase-up caltable application table in the task</span>
+<span class="sd">    weblog page.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context: the pipeline context.</span>
+<span class="sd">        results: list of task results.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of SpwPhaseupApplication instances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">applications</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">calmode_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="s1">&#39;Phase only&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="s1">&#39;Amplitude only&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ap&#39;</span><span class="p">:</span> <span class="s1">&#39;Phase and amplitude&#39;</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">phaseup_result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">solint</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_origin_input_arg</span><span class="p">(</span><span class="n">calapp</span><span class="p">,</span> <span class="s1">&#39;solint&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">solint</span> <span class="o">==</span> <span class="s1">&#39;inf&#39;</span><span class="p">:</span>
+                <span class="n">solint</span> <span class="o">=</span> <span class="s1">&#39;Infinite&#39;</span>
+
+            <span class="c1"># Convert solint=int to a real integration time.</span>
+            <span class="c1"># solint is spw dependent; science windows usually have the same</span>
+            <span class="c1"># integration time, though that&#39;s not guaranteed.</span>
+            <span class="k">if</span> <span class="n">solint</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">:</span>
+                <span class="n">in_secs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">%0.2f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">seconds</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">microseconds</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_intervals</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">calapp</span><span class="p">)]</span>
+                <span class="n">solint</span> <span class="o">=</span> <span class="s1">&#39;Per integration (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">in_secs</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">conjunction</span><span class="o">=</span><span class="s1">&#39;or&#39;</span><span class="p">)</span>
+
+            <span class="n">gaintable</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+
+            <span class="n">to_intent</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">to_intent</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">to_intent</span> <span class="o">=</span> <span class="s1">&#39;ALL&#39;</span>
+
+            <span class="n">calmode</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_origin_input_arg</span><span class="p">(</span><span class="n">calapp</span><span class="p">,</span> <span class="s1">&#39;calmode&#39;</span><span class="p">)</span>
+            <span class="n">calmode</span> <span class="o">=</span> <span class="n">calmode_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">calmode</span><span class="p">,</span> <span class="n">calmode</span><span class="p">)</span>
+
+            <span class="n">applications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SpwPhaseupApplication</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">gaintable</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">calmode</span><span class="p">,</span> <span class="n">to_intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">applications</span></div>
+
+
+
+<div class="viewcode-block" id="get_spwmaps">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.get_spwmaps">[docs]</a>
+<span class="k">def</span> <span class="nf">get_spwmaps</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SpwMapInfo</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return list of SpwMapInfo entries that contain all the necessary</span>
+<span class="sd">    information to be shown in a Spectral Window Mapping table in the task</span>
+<span class="sd">    weblog page.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context: the pipeline context.</span>
+<span class="sd">        results: list of task results.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of SpwMapInfo instances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">spwmaps</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Get science spws</span>
+        <span class="n">science_spw_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">spwmaps</span><span class="p">:</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">),</span> <span class="n">spwmapping</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">spwmaps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># Get ID of field and scans.</span>
+                <span class="n">fieldid</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="p">[</span><span class="n">field</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+                <span class="n">scanids</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">))</span>
+
+                <span class="c1"># Append info on spwmap to list.</span>
+                <span class="n">spwmaps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SpwMapInfo</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">,</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">combine</span><span class="p">,</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">spwmap</span><span class="p">,</span>
+                                          <span class="n">scanids</span><span class="p">,</span> <span class="n">science_spw_ids</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">spwmaps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SpwMapInfo</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">spwmaps</span></div>
+
+
+
+<div class="viewcode-block" id="get_pcal_table_rows">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.get_pcal_table_rows">[docs]</a>
+<span class="k">def</span> <span class="nf">get_pcal_table_rows</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return list of strings containing HTML TD columns, representing rows for</span>
+<span class="sd">    the phase calibrator mapping table.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context: the pipeline context.</span>
+<span class="sd">        results: list of task results.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of strings containing rows for phase calibrator mapping table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">phasecal_mapping</span><span class="p">:</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">pfield</span><span class="p">,</span> <span class="n">tcfields</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">phasecal_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># Compose phase field string.</span>
+                <span class="n">pfieldid</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="p">[</span><span class="n">pfield</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+                <span class="n">field_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pfield</span><span class="si">}</span><span class="s2"> (#</span><span class="si">{</span><span class="n">pfieldid</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+                <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PhaseTR</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">field_str</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">tcfields</span><span class="p">))))</span>
+
+    <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_snr_table_rows">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.get_snr_table_rows">[docs]</a>
+<span class="k">def</span> <span class="nf">get_snr_table_rows</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return list of strings containing HTML TD columns, representing rows for</span>
+<span class="sd">    the phase SNR table.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context: the pipeline context.</span>
+<span class="sd">        results: list of task results.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of strings containing rows for phase SNR table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">spwmaps</span><span class="p">:</span>
+            <span class="c1"># Get phase SNR threshold, and present this in the table if the phase</span>
+            <span class="c1"># SNR test was run during task.</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;phasesnr&#39;</span><span class="p">]</span>
+            <span class="n">spwmapmode</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;hm_spwmapmode&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">spwmapmode</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+                <span class="n">thr_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">thr_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;N/A &lt;p&gt;(hm_spwmapmode=&#39;</span><span class="si">{</span><span class="n">spwmapmode</span><span class="si">}</span><span class="s2">&#39;)&quot;</span>
+
+            <span class="k">for</span> <span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">),</span> <span class="n">spwmapping</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">spwmaps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># Compose field string.</span>
+                <span class="n">fieldid</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="p">[</span><span class="n">field</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+                <span class="n">field_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2"> (#</span><span class="si">{</span><span class="n">fieldid</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+                <span class="c1"># For each SpW in SNR info, create a row, and highlight when</span>
+                <span class="c1"># the SNR was missing or below the phase SNR threshold.</span>
+                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">snr_info</span><span class="p">:</span>
+                    <span class="n">spwid</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">snr</span> <span class="o">=</span> <span class="s1">&#39;&lt;strong class=&quot;alert-danger&quot;&gt;N/A&lt;/strong&gt;&#39;</span>
+                    <span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">:</span>
+                        <span class="n">snr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;strong class=&quot;alert-danger&quot;&gt;</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">&lt;/strong&gt;&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">snr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">&#39;</span>
+
+                    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SnrTR</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">thr_str</span><span class="p">,</span> <span class="n">field_str</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">snr</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SnrTR</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_phaserms_table_rows">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.get_phaserms_table_rows">[docs]</a>
+<span class="k">def</span> <span class="nf">get_phaserms_table_rows</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return list of strings containing HTML TD columns, representing rows for</span>
+<span class="sd">    the decoherence assessment phase rms results table. (SEE PIPE-692)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context: the pipeline context.</span>
+<span class="sd">        results: list of task results.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of strings containing rows for phase rms table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">result</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">phaserms_results</span><span class="p">:</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">phaserms_antout</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">phaserms_antout</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span>
+            <span class="n">total_time</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">phaserms_totaltime</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">cycle_time</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">phaserms_cycletime</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">phasermsp80</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">phaserms_results</span><span class="p">[</span><span class="s1">&#39;phasermsP80&#39;</span><span class="p">]</span>
+            <span class="n">phasermscyclep80</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">phaserms_results</span><span class="p">[</span><span class="s1">&#39;phasermscycleP80&#39;</span><span class="p">]</span>
+            <span class="n">phaserms_totaltime</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">phasermsp80</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">phaserms_cycletime</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">phasermscyclep80</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span>
+            
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PhaseRmsTR</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="s1">&#39;Total Time&#39;</span><span class="p">,</span> <span class="n">total_time</span><span class="p">,</span>
+                        <span class="n">phaserms_totaltime</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">phaserms_antout</span><span class="p">))</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PhaseRmsTR</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="s1">&#39;Cycle Time&#39;</span><span class="p">,</span> <span class="n">cycle_time</span><span class="p">,</span>
+                        <span class="n">phaserms_cycletime</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">phaserms_antout</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="make_rms_plots">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.make_rms_plots">[docs]</a>
+<span class="k">def</span> <span class="nf">make_rms_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create and return a list of the Spatial Structure Functions (SSF) plots. </span>
+<span class="sd">    (See PIPE-692)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        results: the spwphaseup results. </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        summary_plots: dictionary with MS</span>
+<span class="sd">                    as the keys and lists of plot objects as the values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rmsplots</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">phaserms_results</span><span class="p">:</span>
+            <span class="n">rmsplotter</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">SpatialStructureFunctionChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+            <span class="n">rmsplots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">rmsplotter</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">rmsplots</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,652 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.heuristics.rfi &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.heuristics.rfi</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.heuristics.rfi</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.api</span> <span class="k">as</span> <span class="nn">api</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span>
+
+<span class="kn">from</span> <span class="nn">.vlascanheuristics</span> <span class="kn">import</span> <span class="n">VLAScanHeuristics</span>
+
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="RflagDevHeuristic">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.RflagDevHeuristic">[docs]</a>
+<span class="k">class</span> <span class="nc">RflagDevHeuristic</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Heuristics for Rflag thresholds.</span>
+<span class="sd">    see PIPE-685/987</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">ignore_sefd</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vla_sefd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vla_sefd</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">ms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw_rms_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_spw_rms_scale</span><span class="p">(</span><span class="n">ignore_sefd</span><span class="o">=</span><span class="n">ignore_sefd</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RflagDevHeuristic.calculate">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.RflagDevHeuristic.calculate">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rflag_report</span><span class="p">):</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">baseband_spws_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_vla_baseband_spws</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_select_list</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;rflag&#39;</span> <span class="ow">in</span> <span class="n">rflag_report</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;rflag&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_correct_rflag_ftdev</span><span class="p">(</span><span class="n">rflag_report</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Invalid input rflag report&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="RflagDevHeuristic.get_vla_sefd">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.RflagDevHeuristic.get_vla_sefd">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_vla_sefd</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the VLA SEFD profile.</span>
+
+<span class="sd">        PIPE-987: See the ticket attachement for the description of SEFD data files</span>
+<span class="sd">        Note: The band names here are capitalized, but the labels from SPW names are all caps.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sedf_path</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;pipeline&#39;</span><span class="p">,</span> <span class="s1">&#39;hifv/heuristics/sefd&#39;</span><span class="p">)</span>
+
+        <span class="n">bands</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Ku&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;Ka&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">]</span>
+        <span class="n">sefd</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">:</span>
+            <span class="n">sefd</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">sedf_path</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">band</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;#&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">sefd</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_plot_vla_sefd</span><span class="p">(</span><span class="n">sefd</span><span class="p">,</span> <span class="n">baseband_spws</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">figfile</span><span class="o">=</span><span class="s1">&#39;vla_sefd.png&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the VLA SEFD summary plot.&quot;&quot;&quot;</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">sefd_per_band</span> <span class="ow">in</span> <span class="n">sefd</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sefd_per_band</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">sefd_per_band</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">band</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Freq. [MHz]&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;SEFD [Jy]&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center left&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+        <span class="n">yrange</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+
+        <span class="n">freq_min</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">freq_max</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">baseband_spws</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">basebands_per_band</span> <span class="ow">in</span> <span class="n">baseband_spws</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">baseband</span><span class="p">,</span> <span class="n">spws_per_baseband</span> <span class="ow">in</span> <span class="n">basebands_per_band</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">spw_dict</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spws_per_baseband</span><span class="p">):</span>
+                        <span class="k">for</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">spw_freq_range</span> <span class="ow">in</span> <span class="n">spw_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="n">dlog10</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">yrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">yrange</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                            <span class="n">yhline</span> <span class="o">=</span> <span class="n">yrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">dlog10</span><span class="o">*</span><span class="p">(</span><span class="mf">0.75</span><span class="o">+</span><span class="mf">0.01</span><span class="o">*</span><span class="n">idx</span><span class="p">))</span>
+                            <span class="n">ax</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">yhline</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">spw_freq_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span>
+                                      <span class="nb">float</span><span class="p">(</span><span class="n">spw_freq_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+                            <span class="n">freq_min</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">spw_freq_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">/</span><span class="mf">1e6</span><span class="p">)</span>
+                            <span class="n">freq_max</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">spw_freq_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">/</span><span class="mf">1e6</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">freq_min</span><span class="p">)</span><span class="o">/</span><span class="mf">1.01</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">freq_max</span><span class="p">)</span><span class="o">*</span><span class="mf">1.01</span><span class="p">])</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_correct_rflag_ftdev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rflag_report</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Derive the corrected freqdev/timedev for applying rflag.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rflag_report:  the &quot;rflag&quot; report dictionary in the returne from flagdata(action=&#39;calculation&#39;,mode=&#39;rflag&#39;):</span>
+<span class="sd">                           e.g., flagdata_result[&#39;report0&#39;].</span>
+
+<span class="sd">        - The return report structure of flagdata(action=&#39;calculation&#39;,mode=&#39;rflag&#39;,..) from the freq/time-domain analysis </span>
+<span class="sd">          (see additional details in flagdata documenttaion) is exepcted to be:</span>
+<span class="sd">            report[&#39;freqdev&#39;|&#39;timedev&#39;]:    (sum_i(nspw_of_field_i), 3) </span>
+<span class="sd">            report[&#39;*dev&#39;][:, 0]:           FldId</span>
+<span class="sd">            report[&#39;*dev&#39;][:, 1]:           SpwId</span>
+<span class="sd">            report[&#39;freqdev&#39;][:, 2]:        Estimated freqdev/timedev</span>
+<span class="sd">                                            note: this is not the &quot;clipping&quot; threshold (which is defined as dev*devscale).</span>
+<span class="sd"> </span>
+<span class="sd">        - The median-based rflag threshold reset scheme (within each baseband/field) is summarized in CAS-11598 and PIPE-685/987</span>
+<span class="sd">        - As of CASA ver 6.2.1, a completely flagged spw+field data selection will show up in flagdata reports, with freqdev/timedev=0.0</span>
+<span class="sd">        - The time/freq-domain analysis of rflag derives thresholds based on statistical properties of visibility around </span>
+<span class="sd">          a presumably flat base. However, poorly-performed antennas or high-amplitude short baselines (e.g. extended source) might </span>
+<span class="sd">          generate enough outliers in the time-frequency space and become slightly over-flagged along with true RFI.</span>
+<span class="sd">          see https://casaguides.nrao.edu/index.php?title=VLA_CASA_Flagging-CASA5.7.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">new_report</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">rflag_report</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">ftdev</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;freqdev&#39;</span><span class="p">,</span> <span class="s1">&#39;timedev&#39;</span><span class="p">]:</span>
+
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">new_report</span><span class="p">[</span><span class="n">ftdev</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">spws</span> <span class="o">=</span> <span class="n">new_report</span><span class="p">[</span><span class="n">ftdev</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">devs</span> <span class="o">=</span> <span class="n">new_report</span><span class="p">[</span><span class="n">ftdev</span><span class="p">][:,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">devs_med</span> <span class="o">=</span> <span class="n">new_report</span><span class="p">[</span><span class="n">ftdev</span><span class="p">][:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">bbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">spws</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">_</span><span class="p">,</span> <span class="n">baseband_spws_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_vla_baseband_spws</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_select_list</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">bb_idx</span><span class="p">,</span> <span class="n">bb_spws</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">baseband_spws_list</span><span class="p">):</span>
+                <span class="n">bb_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">spws</span><span class="p">,</span> <span class="n">bb_spws</span><span class="p">)</span>
+                <span class="n">bbs</span><span class="p">[</span><span class="n">bb_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">bb_idx</span>
+
+            <span class="n">spws_unique</span><span class="p">,</span> <span class="n">spws_unique_inverse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">spws</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">spws_unique_rms_scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">spw_rms_scale</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">)][</span><span class="s1">&#39;rms_scale&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws_unique</span><span class="p">])</span>
+            <span class="n">rms_scale</span> <span class="o">=</span> <span class="n">spws_unique_rms_scale</span><span class="p">[</span><span class="n">spws_unique_inverse</span><span class="p">]</span>
+            <span class="n">spws_unique_sefd_jy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">spw_rms_scale</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">)][</span><span class="s1">&#39;sefd_jy&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws_unique</span><span class="p">])</span>
+            <span class="n">sefd_jy</span> <span class="o">=</span> <span class="n">spws_unique_sefd_jy</span><span class="p">[</span><span class="n">spws_unique_inverse</span><span class="p">]</span>
+            <span class="n">spws_unique_chanwidth_mhz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">spw_rms_scale</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">)][</span><span class="s1">&#39;chanwidth_mhz&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws_unique</span><span class="p">])</span>
+            <span class="n">chanwidth_mhz</span> <span class="o">=</span> <span class="n">spws_unique_chanwidth_mhz</span><span class="p">[</span><span class="n">spws_unique_inverse</span><span class="p">]</span>
+
+            <span class="n">fields_bbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">fields</span><span class="p">,</span> <span class="n">bbs</span><span class="p">))</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">fields_bbs_inverse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">fields_bbs</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">fields_bbs_inverse</span><span class="p">):</span>
+                <span class="n">select_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">fields_bbs_inverse</span> <span class="o">==</span> <span class="n">idx</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">devs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">select_mask</span><span class="p">):</span>
+                    <span class="n">devs_med</span><span class="p">[</span><span class="n">select_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">rms_scale</span><span class="p">[</span><span class="n">select_mask</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">devs</span><span class="p">[</span><span class="n">select_mask</span><span class="p">]</span><span class="o">/</span><span class="n">rms_scale</span><span class="p">[</span><span class="n">select_mask</span><span class="p">])</span>
+            <span class="n">devs_modified</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">devs</span><span class="p">,</span> <span class="n">devs_med</span><span class="p">)</span>
+            <span class="n">new_report</span><span class="p">[</span><span class="n">ftdev</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">fields</span><span class="p">,</span> <span class="n">spws</span><span class="p">,</span> <span class="n">devs_modified</span><span class="p">))</span>
+            <span class="n">new_report</span><span class="p">[</span><span class="n">ftdev</span><span class="o">+</span><span class="s1">&#39;_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">fields</span><span class="p">,</span>
+                                         <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spws</span><span class="p">,</span>
+                                         <span class="s1">&#39;bb&#39;</span><span class="p">:</span> <span class="n">bbs</span><span class="p">,</span>
+                                         <span class="s1">&#39;devs&#39;</span><span class="p">:</span> <span class="n">devs</span><span class="p">,</span>
+                                         <span class="s1">&#39;sefd_jy&#39;</span><span class="p">:</span> <span class="n">sefd_jy</span><span class="p">,</span>
+                                         <span class="s1">&#39;ch_mhz&#39;</span><span class="p">:</span> <span class="n">chanwidth_mhz</span><span class="p">,</span>
+                                         <span class="s1">&#39;rms_scale&#39;</span><span class="p">:</span> <span class="n">rms_scale</span><span class="p">,</span>
+                                         <span class="s1">&#39;devs_med&#39;</span><span class="p">:</span> <span class="n">devs_med</span><span class="p">,</span>
+                                         <span class="s1">&#39;devs_use&#39;</span><span class="p">:</span> <span class="n">devs_modified</span><span class="p">}</span>
+            <span class="n">ftdev_report</span> <span class="o">=</span> <span class="n">new_report</span><span class="p">[</span><span class="n">ftdev</span><span class="o">+</span><span class="s1">&#39;_info&#39;</span><span class="p">]</span>
+
+            <span class="n">str_message</span> <span class="o">=</span> <span class="s1">&#39; </span><span class="si">{:&lt;6s}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;field&#39;</span><span class="p">)</span>
+            <span class="n">str_message</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{:&lt;20s}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;spw_id/name&#39;</span><span class="p">)</span>
+            <span class="n">str_message</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{:&lt;3s}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;bb&#39;</span><span class="p">)</span>
+            <span class="n">colnum_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;devs&#39;</span><span class="p">,</span> <span class="s1">&#39;sefd_jy&#39;</span><span class="p">,</span> <span class="s1">&#39;ch_mhz&#39;</span><span class="p">,</span> <span class="s1">&#39;rms_scale&#39;</span><span class="p">,</span> <span class="s1">&#39;devs_med&#39;</span><span class="p">,</span> <span class="s1">&#39;devs_use&#39;</span><span class="p">]</span>
+            <span class="n">str_message</span> <span class="o">+=</span> <span class="p">(</span><span class="s1">&#39; </span><span class="si">{:&lt;10s}</span><span class="s1"> &#39;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">colnum_names</span><span class="p">))</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">colnum_names</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;rflag &#39;</span><span class="o">+</span><span class="n">ftdev</span><span class="o">+</span><span class="s1">&#39; heuristic&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">str_message</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ftdev_report</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]):</span>
+                <span class="n">str_message</span> <span class="o">=</span> <span class="s1">&#39; </span><span class="si">{:&lt;6.0f}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ftdev_report</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">])</span>
+                <span class="n">spw_id</span> <span class="o">=</span> <span class="n">ftdev_report</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
+                <span class="n">spw_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spw_id</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+                <span class="n">str_message</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{:&lt;3.0f}</span><span class="s1"> </span><span class="si">{:&lt;16s}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">spw_name</span><span class="p">)</span>
+                <span class="n">colnum_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">ftdev_report</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">colnum_names</span><span class="p">]</span>
+                <span class="n">str_message</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{:&lt;3.0f}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ftdev_report</span><span class="p">[</span><span class="s1">&#39;bb&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">])</span>
+                <span class="n">str_message</span> <span class="o">+=</span> <span class="p">(</span><span class="s1">&#39; </span><span class="si">{:&lt;10.4g}</span><span class="s1"> &#39;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">colnum_names</span><span class="p">))</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">colnum_values</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">str_message</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">new_report</span>
+
+    <span class="k">def</span> <span class="nf">_get_spw_rms_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_sefd</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;[summary]</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            science_windows_only (bool, optional): Defaults to True.</span>
+<span class="sd">            ignore_sefd (bool, optional): Default to False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            spw_rms_scale: the expected relative rms scales of each spw (see below)</span>
+
+<span class="sd">        By default, the rms scaling factor per spw (spw_rms_scale) is defined as: SEFD_jy/chanwidth_mhz^0.5.</span>
+<span class="sd">        If ignore_sefd=True, spw_rms_scale would be simply defined as 1/chanwidth_mhz^0.5. This is equivalent</span>
+<span class="sd">        to the VLASS-specific assumption of a uniform SEFD (see PIPE-685/987).</span>
+
+<span class="sd">        Note: spw_rms_scale is only useful in a relative sense when comparing theoretical rms of different spws </span>
+<span class="sd">        from the same integration/baseline. The actual visibility noise variation over time/frequency/baseline </span>
+<span class="sd">        could be better modeled with additional antenna-based gain/bandpass information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">spw_rms_scale</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="n">baseband_spws</span><span class="p">,</span> <span class="n">baseband_spws_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_vla_baseband_spws</span><span class="p">(</span>
+            <span class="n">science_windows_only</span><span class="o">=</span><span class="n">science_windows_only</span><span class="p">,</span> <span class="n">return_select_list</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">baseband_spws</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">baseband</span> <span class="ow">in</span> <span class="n">baseband_spws</span><span class="p">[</span><span class="n">band</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">spwitem</span> <span class="ow">in</span> <span class="n">baseband_spws</span><span class="p">[</span><span class="n">band</span><span class="p">][</span><span class="n">baseband</span><span class="p">]:</span>
+                    <span class="k">for</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">spw_info</span> <span class="ow">in</span> <span class="n">spwitem</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                        <span class="n">chanwidth_mhz</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spw_info</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="n">ignore_sefd</span><span class="p">:</span>
+                            <span class="n">spw_rms_scale</span><span class="p">[</span><span class="n">spw_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;rms_scale&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="o">/</span><span class="n">chanwidth_mhz</span><span class="o">**</span><span class="mf">0.5</span><span class="p">,</span>
+                                                     <span class="s1">&#39;sefd_jy&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span>
+                                                     <span class="s1">&#39;chanwidth_mhz&#39;</span><span class="p">:</span> <span class="n">chanwidth_mhz</span><span class="p">}</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;spw </span><span class="si">{:&gt;3}</span><span class="s1">   ChanWidth = </span><span class="si">{:6.2f}</span><span class="s1"> MHz   rms_scale = </span><span class="si">{:8.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">spw_id</span><span class="p">,</span> <span class="n">chanwidth_mhz</span><span class="p">,</span> <span class="n">spw_rms_scale</span><span class="p">[</span><span class="n">spw_id</span><span class="p">][</span><span class="s1">&#39;rms_scale&#39;</span><span class="p">]))</span>
+                            <span class="k">continue</span>
+
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">sedf_per_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vla_sefd</span><span class="p">[</span><span class="n">band</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()]</span>
+                            <span class="n">min_freq_mhz</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spw_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">))</span>
+                            <span class="n">max_freq_mhz</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spw_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">))</span>
+                            <span class="n">mean_freq_mhz</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spw_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">))</span>
+                            <span class="n">chanwidth_mhz</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spw_info</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">))</span>
+                            <span class="n">spw_sefd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">mean_freq_mhz</span><span class="p">,</span> <span class="n">sedf_per_band</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+                                                 <span class="n">sedf_per_band</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">max_freq_mhz</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">sedf_per_band</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="n">min_freq_mhz</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">sedf_per_band</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]):</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                    <span class="s2">&quot;spw </span><span class="si">{!s}</span><span class="s2"> from </span><span class="si">{!s}</span><span class="s2">#</span><span class="si">{!s}</span><span class="s2">  is out of the SEFD profile coverage: </span><span class="se">\</span>
+<span class="s2">                                    use the nearest SEFD data point instead.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="n">baseband</span><span class="p">))</span>
+
+                        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Exception: Fail to query SEFD for </span><span class="si">{!s}</span><span class="s2">. </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)))</span>
+                            <span class="n">spw_sefd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+                        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">spw_sefd</span><span class="p">):</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;The SEFD information of spw </span><span class="si">{!s}</span><span class="s2"> is not available.</span><span class="se">\</span>
+<span class="s2">                                    The rms scale caclulation will use a fiducial SEFD of 500Jy, </span><span class="se">\</span>
+<span class="s2">                                    equivalent to the assumption of uniform SEFD within each baseband. &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw_id</span><span class="p">))</span>
+                            <span class="n">spw_sefd</span> <span class="o">=</span> <span class="mf">500.</span>
+                        <span class="n">spw_rms_scale</span><span class="p">[</span><span class="n">spw_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;rms_scale&#39;</span><span class="p">:</span> <span class="n">spw_sefd</span><span class="o">/</span><span class="n">chanwidth_mhz</span><span class="o">**</span><span class="mf">0.5</span><span class="p">,</span>
+                                                 <span class="s1">&#39;sefd_jy&#39;</span><span class="p">:</span> <span class="n">spw_sefd</span><span class="p">,</span>
+                                                 <span class="s1">&#39;chanwidth_mhz&#39;</span><span class="p">:</span> <span class="n">chanwidth_mhz</span><span class="p">}</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;spw </span><span class="si">{:&gt;3}</span><span class="s1">   SEFD = </span><span class="si">{:8.2f}</span><span class="s1"> Jy   ChanWidth = </span><span class="si">{:6.2f}</span><span class="s1"> MHz   rms_scale = </span><span class="si">{:8.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">spw_id</span><span class="p">,</span> <span class="n">spw_sefd</span><span class="p">,</span> <span class="n">chanwidth_mhz</span><span class="p">,</span>  <span class="n">spw_rms_scale</span><span class="p">[</span><span class="n">spw_id</span><span class="p">][</span><span class="s1">&#39;rms_scale&#39;</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">spw_rms_scale</span></div>
+
+
+
+<div class="viewcode-block" id="mssel_valid">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.mssel_valid">[docs]</a>
+<span class="k">def</span> <span class="nf">mssel_valid</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">correlation</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">uvdist</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the data selection is valid (i.e. not a null selection).</span>
+
+<span class="sd">    This method is used as a secondary &quot;null&quot; selection check for flagdata() calls.</span>
+<span class="sd">    Ideally, the primary &quot;corr_type_string&quot; check should be sufficient.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">msfile</span><span class="p">:</span>
+        <span class="n">staql</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span> <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scan</span><span class="p">,</span>
+                 <span class="s1">&#39;scanintent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">,</span> <span class="s1">&#39;polarization&#39;</span><span class="p">:</span> <span class="n">correlation</span><span class="p">,</span> <span class="s1">&#39;uvdist&#39;</span><span class="p">:</span> <span class="n">uvdist</span><span class="p">}</span>
+        <span class="n">select_valid</span> <span class="o">=</span> <span class="n">msfile</span><span class="o">.</span><span class="n">msselect</span><span class="p">(</span><span class="n">staql</span><span class="p">,</span> <span class="n">onlyparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">select_valid</span></div>
+
+
+
+<div class="viewcode-block" id="get_amp_range">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.get_amp_range">[docs]</a>
+<span class="k">def</span> <span class="nf">get_amp_range</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
+                  <span class="n">correlation</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                  <span class="n">useflags</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                  <span class="n">timeaverage</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timebin</span><span class="o">=</span><span class="s1">&#39;1e8s&#39;</span><span class="p">,</span> <span class="n">timespan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">vis_averaged</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get amplitude min/max from a MS after applying data selection and time-averging.</span>
+
+<span class="sd">    note: currently not used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">amp_range</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">timeaverage</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">vis_averaged</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">vis_tmp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.ms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">vis_tmp</span> <span class="o">=</span> <span class="n">vis_averaged</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">mstransform</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">outputvis</span><span class="o">=</span><span class="n">vis_tmp</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scan</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span>
+                                         <span class="n">datacolumn</span><span class="o">=</span><span class="n">datacolumn</span><span class="p">,</span> <span class="n">correlation</span><span class="o">=</span><span class="n">correlation</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="n">uvrange</span><span class="p">,</span>
+                                         <span class="n">timeaverage</span><span class="o">=</span><span class="n">timeaverage</span><span class="p">,</span> <span class="n">timebin</span><span class="o">=</span><span class="n">timebin</span><span class="p">,</span> <span class="n">timespan</span><span class="o">=</span><span class="n">timespan</span><span class="p">,</span>
+                                         <span class="n">keepflags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reindex</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+            <span class="n">amp_range</span> <span class="o">=</span> <span class="n">_get_amp_range2</span><span class="p">(</span><span class="n">vis_tmp</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">useflags</span><span class="o">=</span><span class="n">useflags</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">vis_averaged</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">vis_tmp</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">amp_range</span> <span class="o">=</span> <span class="n">_get_amp_range2</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scan</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="n">datacolumn</span><span class="p">,</span>
+                                        <span class="n">correlation</span><span class="o">=</span><span class="n">correlation</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="n">uvrange</span><span class="p">,</span>
+                                        <span class="n">useflags</span><span class="o">=</span><span class="n">useflags</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Exception: Unable to obtain the range of data amps. </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="n">amp_range</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_get_amp_range2</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
+                    <span class="n">correlation</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                    <span class="n">useflags</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get amplitude min/max from a MS, with ms.statistic().</span>
+
+<span class="sd">    This approach offers additional data selection capaibility (e.g. correlation, uvrange), but lack of pre-averging capability</span>
+<span class="sd">    - doquantiles=False to improve performance (CASR-550/CAS-13031)</span>
+<span class="sd">    - ms.statistics(timeaverge=True) doesn&#39;t seem to work properly at this moment (likely doing scalar-averging)</span>
+<span class="sd">    note: currently not used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">amp_range</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">msfile</span><span class="p">:</span>
+            <span class="n">stats</span> <span class="o">=</span> <span class="n">msfile</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">datacolumn</span><span class="p">,</span> <span class="n">complex_value</span><span class="o">=</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="n">useweights</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useflags</span><span class="o">=</span><span class="n">useflags</span><span class="p">,</span>
+                                      <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scan</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span>
+                                      <span class="n">correlation</span><span class="o">=</span><span class="n">correlation</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="n">uvrange</span><span class="p">,</span>
+                                      <span class="n">reportingaxes</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">doquantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                      <span class="n">timeaverage</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timebin</span><span class="o">=</span><span class="s1">&#39;0s&#39;</span><span class="p">,</span> <span class="n">timespan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">amp_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">][</span><span class="s1">&#39;min&#39;</span><span class="p">],</span> <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">][</span><span class="s1">&#39;max&#39;</span><span class="p">]]</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Exception: Unable to obtain the range of data amps. </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="n">amp_range</span>
+
+
+<span class="k">def</span> <span class="nf">_get_amp_range1</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
+                    <span class="n">useflags</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get amplitude min/max from a MS, with ms.range().</span>
+
+<span class="sd">    This is the quickest method, but doesn&#39;t offer correlation-based selection or pre-averging capability.</span>
+<span class="sd">    In addition, ms.range can&#39;t handle data selection including mutiple descriptions with varying data shape.</span>
+<span class="sd">    see: https://casa.nrao.edu/docs/casaref/ms.range.html</span>
+<span class="sd">    note: currently not used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">amp_range</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">msfile</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">field</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">spw</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">scan</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                <span class="n">staql</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span> <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scan</span><span class="p">,</span> <span class="s1">&#39;scanintent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">}</span>
+                <span class="n">r_msselect</span> <span class="o">=</span> <span class="n">msfile</span><span class="o">.</span><span class="n">msselect</span><span class="p">(</span><span class="n">staql</span><span class="p">,</span> <span class="n">onlyparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="c1"># ms.range always works on whole rows in MS, and ms.selectpolarization() won&#39;t affect its result.</span>
+                <span class="c1"># r_msselect = msfile.selectpolarization([&#39;RR&#39;,&#39;LL&#39;]) # doesn&#39;t work as expected.</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">r_msselect</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Null selection from the field/spw/scan combination.&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">amp_range</span>
+            <span class="k">if</span> <span class="n">datacolumn</span> <span class="o">==</span> <span class="s1">&#39;corrected&#39;</span><span class="p">:</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="s1">&#39;corrected_amplitude&#39;</span>
+            <span class="k">if</span> <span class="n">datacolumn</span> <span class="o">==</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="s1">&#39;amplitude&#39;</span>
+            <span class="k">if</span> <span class="n">datacolumn</span> <span class="o">==</span> <span class="s1">&#39;model&#39;</span><span class="p">:</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="s1">&#39;model_amplitude&#39;</span>
+            <span class="c1"># ms.range (notably val_min) results were seen to be affected by blocksize</span>
+            <span class="c1"># we increase the blocksize from 10MB (default) to 100MB</span>
+            <span class="n">amp_range</span> <span class="o">=</span> <span class="n">msfile</span><span class="o">.</span><span class="n">range</span><span class="p">([</span><span class="n">item</span><span class="p">],</span> <span class="n">useflags</span><span class="o">=</span><span class="n">useflags</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">100</span><span class="p">)[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Exception: Unable to obtain the range of data amps. </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="n">amp_range</span>
+
+
+<div class="viewcode-block" id="plotms_get_xyrange">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.plotms_get_xyrange">[docs]</a>
+<span class="k">def</span> <span class="nf">plotms_get_xyrange</span><span class="p">(</span><span class="n">plotms_log</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse the CASAplotms log to obatin the range of plotted data points.</span>
+
+<span class="sd">    note: currently not used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">xyrange</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">log_line</span> <span class="ow">in</span> <span class="n">plotms_log</span><span class="p">:</span>
+            <span class="n">log_msg</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\t+&quot;</span><span class="p">,</span> <span class="n">log_line</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s1">&#39; to &#39;</span> <span class="ow">in</span> <span class="n">log_msg</span> <span class="ow">and</span> <span class="s1">&#39;(flagged)&#39;</span> <span class="ow">in</span> <span class="n">log_msg</span> <span class="ow">and</span> <span class="s1">&#39;(unflagged)&#39;</span> <span class="ow">in</span> <span class="n">log_msg</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">log_msg</span><span class="o">.</span><span class="n">rstrip</span><span class="p">())</span>
+                <span class="c1"># expected number formats: 1, 1.2, 1e3, 1.2e3, 1.2e+3, 1.2e-3, -1.2e-3, ...</span>
+                <span class="n">dd</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[-+]?\d+(?:\.\d+)?(?:e[-+]?\d+)?&quot;</span><span class="p">,</span> <span class="n">log_msg</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dd</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                    <span class="n">axis_label</span> <span class="o">=</span> <span class="n">log_msg</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">xyrange</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dd</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">xyrange</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dd</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">idx</span> <span class="o">+=</span> <span class="mi">2</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Exception: Unable to obtain the plotted data range from CASAplotms log. </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">xyrange</span></div>
+
+
+
+<div class="viewcode-block" id="plotms_get_autorange">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.plotms_get_autorange">[docs]</a>
+<span class="k">def</span> <span class="nf">plotms_get_autorange</span><span class="p">(</span><span class="n">xyrange</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate the autoscale plotrange from CASAplotms based on data range.</span>
+
+<span class="sd">    The algorithm is translated from casa6/casa5/code/display/QtPlotter:QtDrawSettings::adjustAxis</span>
+<span class="sd">    note: currently not used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">autorange</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+
+        <span class="n">MinTicks</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="n">xyrange</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="n">xyrange</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">vmin</span> <span class="o">&gt;=</span> <span class="n">vmax</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># get base</span>
+        <span class="n">grossStep</span> <span class="o">=</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">MinTicks</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">grossStep</span><span class="p">))</span>
+
+        <span class="c1"># try increasing base by x5 or x2 and check against the required minimal majortick number</span>
+        <span class="n">numTicks</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">vmax</span><span class="o">/</span><span class="n">step</span><span class="o">/</span><span class="mf">5.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">vmin</span><span class="o">/</span><span class="n">step</span><span class="o">/</span><span class="mf">5.0</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">numTicks</span> <span class="o">&gt;=</span> <span class="n">MinTicks</span><span class="p">:</span>
+            <span class="n">step</span> <span class="o">*=</span> <span class="mf">5.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">numTicks</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">vmax</span><span class="o">/</span><span class="n">step</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">vmin</span><span class="o">/</span><span class="n">step</span><span class="o">/</span><span class="mf">2.0</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">numTicks</span> <span class="o">&gt;=</span> <span class="n">MinTicks</span><span class="p">:</span>
+                <span class="n">step</span> <span class="o">*=</span> <span class="mf">2.0</span>
+
+        <span class="c1"># final accepted setting</span>
+        <span class="n">numTicks</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">vmax</span> <span class="o">/</span> <span class="n">step</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">vmin</span> <span class="o">/</span> <span class="n">step</span><span class="p">))</span>
+        <span class="n">autorange</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">vmin</span> <span class="o">/</span> <span class="n">step</span><span class="p">)</span> <span class="o">*</span> <span class="n">step</span>
+        <span class="n">autorange</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">vmax</span> <span class="o">/</span> <span class="n">step</span><span class="p">)</span> <span class="o">*</span> <span class="n">step</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;estimated autoscale plotrange from CASAplotms: </span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">autorange</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">autorange</span></div>
+
+
+
+<div class="viewcode-block" id="test_checkflag_dataselect">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.test_checkflag_dataselect">[docs]</a>
+<span class="k">def</span> <span class="nf">test_checkflag_dataselect</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test rfi flagging field/scan selection.</span>
+
+<span class="sd">    exemple:</span>
+<span class="sd">        from pipeline.hifv.heuristics.rfi import test_checkflag_dataselect</span>
+<span class="sd">        test_checkflag_dataselect(&#39;13A-398.sb17165245.eb19476558.56374.213876608796.ms&#39;)</span>
+<span class="sd">        test_checkflag_dataselect(&#39;16A-197.sb32730185.eb32962865.57682.3425903125.ms&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vis_scan</span> <span class="o">=</span> <span class="n">VLAScanHeuristics</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+    <span class="n">vis_scan</span><span class="o">.</span><span class="n">calibratorIntents</span><span class="p">()</span>
+
+    <span class="n">mode_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bpd&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals&#39;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">modeselect</span> <span class="ow">in</span> <span class="n">mode_list</span><span class="p">:</span>
+
+        <span class="c1"># select bpd calibrators</span>
+        <span class="k">if</span> <span class="n">modeselect</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;bpd-vla&#39;</span><span class="p">,</span> <span class="s1">&#39;bpd-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;bpd&#39;</span><span class="p">):</span>
+            <span class="n">fieldselect</span> <span class="o">=</span> <span class="n">vis_scan</span><span class="o">.</span><span class="n">checkflagfields</span>
+            <span class="n">scanselect</span> <span class="o">=</span> <span class="n">vis_scan</span><span class="o">.</span><span class="n">testgainscans</span>
+
+        <span class="c1"># select all calibrators but not bpd cals</span>
+        <span class="k">if</span> <span class="n">modeselect</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;allcals-vla&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals&#39;</span><span class="p">):</span>
+            <span class="n">fieldselect</span> <span class="o">=</span> <span class="n">vis_scan</span><span class="o">.</span><span class="n">calibrator_field_select_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="n">scanselect</span> <span class="o">=</span> <span class="n">vis_scan</span><span class="o">.</span><span class="n">calibrator_scan_select_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="n">checkflagfields</span> <span class="o">=</span> <span class="n">vis_scan</span><span class="o">.</span><span class="n">checkflagfields</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="n">testgainscans</span> <span class="o">=</span> <span class="n">vis_scan</span><span class="o">.</span><span class="n">testgainscans</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="n">fieldselect</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">fieldid</span> <span class="k">for</span> <span class="n">fieldid</span> <span class="ow">in</span> <span class="n">fieldselect</span> <span class="k">if</span> <span class="n">fieldid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">checkflagfields</span><span class="p">])</span>
+            <span class="n">scanselect</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">scan</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scanselect</span> <span class="k">if</span> <span class="n">scan</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">testgainscans</span><span class="p">])</span>
+
+        <span class="c1"># select all calibrators</span>
+        <span class="k">if</span> <span class="n">modeselect</span> <span class="o">==</span> <span class="s1">&#39;semi&#39;</span><span class="p">:</span>
+            <span class="n">fieldselect</span> <span class="o">=</span> <span class="n">vis_scan</span><span class="o">.</span><span class="n">calibrator_field_select_string</span>
+            <span class="n">scanselect</span> <span class="o">=</span> <span class="n">vis_scan</span><span class="o">.</span><span class="n">calibrator_scan_select_string</span>
+
+        <span class="k">if</span> <span class="n">modeselect</span> <span class="o">==</span> <span class="s1">&#39;vlass-imaging&#39;</span><span class="p">:</span>
+            <span class="c1"># use the &#39;data&#39; column by default as &#39;vlass-imaging&#39; is working on target-only MS.</span>
+            <span class="n">columnselect</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;checkflagmode = </span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modeselect</span><span class="o">+</span><span class="s1">&#39;*&#39;</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  FieldSelect:  </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">fieldselect</span><span class="p">)))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  ScanSelect:   </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">scanselect</span><span class="p">)))</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

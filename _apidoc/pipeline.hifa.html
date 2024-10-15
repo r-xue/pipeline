@@ -1,0 +1,654 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa package &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.hifa package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/pipeline.hifa.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hifa-package">
+<h1>pipeline.hifa package<a class="headerlink" href="#pipeline-hifa-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_antpos">pipeline.hifa.cli.hifa_antpos module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_antpos.hifa_antpos"><code class="docutils literal notranslate"><span class="pre">hifa_antpos()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_bandpass">pipeline.hifa.cli.hifa_bandpass module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_bandpass.hifa_bandpass"><code class="docutils literal notranslate"><span class="pre">hifa_bandpass()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_bandpassflag">pipeline.hifa.cli.hifa_bandpassflag module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_bandpassflag.hifa_bandpassflag"><code class="docutils literal notranslate"><span class="pre">hifa_bandpassflag()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_bpsolint">pipeline.hifa.cli.hifa_bpsolint module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_bpsolint.hifa_bpsolint"><code class="docutils literal notranslate"><span class="pre">hifa_bpsolint()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_diffgaincal">pipeline.hifa.cli.hifa_diffgaincal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_diffgaincal.hifa_diffgaincal"><code class="docutils literal notranslate"><span class="pre">hifa_diffgaincal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_exportdata">pipeline.hifa.cli.hifa_exportdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_exportdata.hifa_exportdata"><code class="docutils literal notranslate"><span class="pre">hifa_exportdata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_flagdata">pipeline.hifa.cli.hifa_flagdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_flagdata.hifa_flagdata"><code class="docutils literal notranslate"><span class="pre">hifa_flagdata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_flagtargets">pipeline.hifa.cli.hifa_flagtargets module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_flagtargets.hifa_flagtargets"><code class="docutils literal notranslate"><span class="pre">hifa_flagtargets()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_fluxcalflag">pipeline.hifa.cli.hifa_fluxcalflag module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_fluxcalflag.hifa_fluxcalflag"><code class="docutils literal notranslate"><span class="pre">hifa_fluxcalflag()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_gaincalsnr">pipeline.hifa.cli.hifa_gaincalsnr module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_gaincalsnr.hifa_gaincalsnr"><code class="docutils literal notranslate"><span class="pre">hifa_gaincalsnr()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_gfluxscale">pipeline.hifa.cli.hifa_gfluxscale module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_gfluxscale.hifa_gfluxscale"><code class="docutils literal notranslate"><span class="pre">hifa_gfluxscale()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_gfluxscaleflag">pipeline.hifa.cli.hifa_gfluxscaleflag module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_gfluxscaleflag.hifa_gfluxscaleflag"><code class="docutils literal notranslate"><span class="pre">hifa_gfluxscaleflag()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_imageprecheck">pipeline.hifa.cli.hifa_imageprecheck module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_imageprecheck.hifa_imageprecheck"><code class="docutils literal notranslate"><span class="pre">hifa_imageprecheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_importdata">pipeline.hifa.cli.hifa_importdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_importdata.hifa_importdata"><code class="docutils literal notranslate"><span class="pre">hifa_importdata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_lock_refant">pipeline.hifa.cli.hifa_lock_refant module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_lock_refant.hifa_lock_refant"><code class="docutils literal notranslate"><span class="pre">hifa_lock_refant()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_polcal">pipeline.hifa.cli.hifa_polcal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_polcal.hifa_polcal"><code class="docutils literal notranslate"><span class="pre">hifa_polcal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_polcalflag">pipeline.hifa.cli.hifa_polcalflag module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_polcalflag.hifa_polcalflag"><code class="docutils literal notranslate"><span class="pre">hifa_polcalflag()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_renorm">pipeline.hifa.cli.hifa_renorm module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_renorm.hifa_renorm"><code class="docutils literal notranslate"><span class="pre">hifa_renorm()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_restoredata">pipeline.hifa.cli.hifa_restoredata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_restoredata.hifa_restoredata"><code class="docutils literal notranslate"><span class="pre">hifa_restoredata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_session_refant">pipeline.hifa.cli.hifa_session_refant module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_session_refant.hifa_session_refant"><code class="docutils literal notranslate"><span class="pre">hifa_session_refant()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_spwphaseup">pipeline.hifa.cli.hifa_spwphaseup module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_spwphaseup.hifa_spwphaseup"><code class="docutils literal notranslate"><span class="pre">hifa_spwphaseup()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_targetflag">pipeline.hifa.cli.hifa_targetflag module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_targetflag.hifa_targetflag"><code class="docutils literal notranslate"><span class="pre">hifa_targetflag()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_timegaincal">pipeline.hifa.cli.hifa_timegaincal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_timegaincal.hifa_timegaincal"><code class="docutils literal notranslate"><span class="pre">hifa_timegaincal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_tsysflag">pipeline.hifa.cli.hifa_tsysflag module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_tsysflag.hifa_tsysflag"><code class="docutils literal notranslate"><span class="pre">hifa_tsysflag()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_tsysflagcontamination">pipeline.hifa.cli.hifa_tsysflagcontamination module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_tsysflagcontamination.hifa_tsysflagcontamination"><code class="docutils literal notranslate"><span class="pre">hifa_tsysflagcontamination()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_unlock_refant">pipeline.hifa.cli.hifa_unlock_refant module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_unlock_refant.hifa_unlock_refant"><code class="docutils literal notranslate"><span class="pre">hifa_unlock_refant()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_wvrgcal">pipeline.hifa.cli.hifa_wvrgcal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_wvrgcal.hifa_wvrgcal"><code class="docutils literal notranslate"><span class="pre">hifa_wvrgcal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli.hifa_wvrgcalflag">pipeline.hifa.cli.hifa_wvrgcalflag module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_wvrgcalflag.hifa_wvrgcalflag"><code class="docutils literal notranslate"><span class="pre">hifa_wvrgcalflag()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.cli.html#module-pipeline.hifa.cli">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_antpos"><code class="docutils literal notranslate"><span class="pre">hifa_antpos()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_bandpass"><code class="docutils literal notranslate"><span class="pre">hifa_bandpass()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_bandpassflag"><code class="docutils literal notranslate"><span class="pre">hifa_bandpassflag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_bpsolint"><code class="docutils literal notranslate"><span class="pre">hifa_bpsolint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_diffgaincal"><code class="docutils literal notranslate"><span class="pre">hifa_diffgaincal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_exportdata"><code class="docutils literal notranslate"><span class="pre">hifa_exportdata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_flagdata"><code class="docutils literal notranslate"><span class="pre">hifa_flagdata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_flagtargets"><code class="docutils literal notranslate"><span class="pre">hifa_flagtargets()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_fluxcalflag"><code class="docutils literal notranslate"><span class="pre">hifa_fluxcalflag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_gaincalsnr"><code class="docutils literal notranslate"><span class="pre">hifa_gaincalsnr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_gfluxscale"><code class="docutils literal notranslate"><span class="pre">hifa_gfluxscale()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_gfluxscaleflag"><code class="docutils literal notranslate"><span class="pre">hifa_gfluxscaleflag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_imageprecheck"><code class="docutils literal notranslate"><span class="pre">hifa_imageprecheck()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_importdata"><code class="docutils literal notranslate"><span class="pre">hifa_importdata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_lock_refant"><code class="docutils literal notranslate"><span class="pre">hifa_lock_refant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_polcal"><code class="docutils literal notranslate"><span class="pre">hifa_polcal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_polcalflag"><code class="docutils literal notranslate"><span class="pre">hifa_polcalflag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_renorm"><code class="docutils literal notranslate"><span class="pre">hifa_renorm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_restoredata"><code class="docutils literal notranslate"><span class="pre">hifa_restoredata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_session_refant"><code class="docutils literal notranslate"><span class="pre">hifa_session_refant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_spwphaseup"><code class="docutils literal notranslate"><span class="pre">hifa_spwphaseup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_targetflag"><code class="docutils literal notranslate"><span class="pre">hifa_targetflag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_timegaincal"><code class="docutils literal notranslate"><span class="pre">hifa_timegaincal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_tsysflag"><code class="docutils literal notranslate"><span class="pre">hifa_tsysflag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_tsysflagcontamination"><code class="docutils literal notranslate"><span class="pre">hifa_tsysflagcontamination()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_unlock_refant"><code class="docutils literal notranslate"><span class="pre">hifa_unlock_refant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_wvrgcal"><code class="docutils literal notranslate"><span class="pre">hifa_wvrgcal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_wvrgcalflag"><code class="docutils literal notranslate"><span class="pre">hifa_wvrgcalflag()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.heuristics.html">pipeline.hifa.heuristics package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.heuristics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.heuristics.html#module-pipeline.hifa.heuristics.atm">pipeline.hifa.heuristics.atm module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.atm.AtmHeuristics"><code class="docutils literal notranslate"><span class="pre">AtmHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.atm.AtmHeuristics.spwid_rank_by_frequency"><code class="docutils literal notranslate"><span class="pre">AtmHeuristics.spwid_rank_by_frequency()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.atm.AtmHeuristics.spwid_rank_by_opacity"><code class="docutils literal notranslate"><span class="pre">AtmHeuristics.spwid_rank_by_opacity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.atm.AtmHeuristics.spwid_rank_by_opacity_and_bandwidth"><code class="docutils literal notranslate"><span class="pre">AtmHeuristics.spwid_rank_by_opacity_and_bandwidth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.atm.AtmHeuristics.spwid_rank_by_tsys_and_bandwidth"><code class="docutils literal notranslate"><span class="pre">AtmHeuristics.spwid_rank_by_tsys_and_bandwidth()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.heuristics.html#module-pipeline.hifa.heuristics.exptimes">pipeline.hifa.heuristics.exptimes module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.exptimes.get_scan_exptimes"><code class="docutils literal notranslate"><span class="pre">get_scan_exptimes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.heuristics.html#module-pipeline.hifa.heuristics.fluxscale">pipeline.hifa.heuristics.fluxscale module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.fluxscale.antenna"><code class="docutils literal notranslate"><span class="pre">antenna()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.heuristics.html#module-pipeline.hifa.heuristics.imageprecheck">pipeline.hifa.heuristics.imageprecheck module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.imageprecheck.ImagePreCheckHeuristics"><code class="docutils literal notranslate"><span class="pre">ImagePreCheckHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.imageprecheck.ImagePreCheckHeuristics.compare_beams"><code class="docutils literal notranslate"><span class="pre">ImagePreCheckHeuristics.compare_beams()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.heuristics.html#module-pipeline.hifa.heuristics.phasemetrics">pipeline.hifa.heuristics.phasemetrics module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics"><code class="docutils literal notranslate"><span class="pre">PhaseStabilityHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.analysis"><code class="docutils literal notranslate"><span class="pre">PhaseStabilityHeuristics.analysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.ave_phase"><code class="docutils literal notranslate"><span class="pre">PhaseStabilityHeuristics.ave_phase()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.mad"><code class="docutils literal notranslate"><span class="pre">PhaseStabilityHeuristics.mad()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.phase_unwrap"><code class="docutils literal notranslate"><span class="pre">PhaseStabilityHeuristics.phase_unwrap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.std_overlapping_avg"><code class="docutils literal notranslate"><span class="pre">PhaseStabilityHeuristics.std_overlapping_avg()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.heuristics.html#module-pipeline.hifa.heuristics.phasespwmap">pipeline.hifa.heuristics.phasespwmap module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasespwmap.combine_spwmap"><code class="docutils literal notranslate"><span class="pre">combine_spwmap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasespwmap.simple_n2wspwmap"><code class="docutils literal notranslate"><span class="pre">simple_n2wspwmap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasespwmap.snr_n2wspwmap"><code class="docutils literal notranslate"><span class="pre">snr_n2wspwmap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasespwmap.update_spwmap_for_band_to_band"><code class="docutils literal notranslate"><span class="pre">update_spwmap_for_band_to_band()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.heuristics.html#module-pipeline.hifa.heuristics.snr">pipeline.hifa.heuristics.snr module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.LOG"><code class="docutils literal notranslate"><span class="pre">LOG</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.compute_bpsolint"><code class="docutils literal notranslate"><span class="pre">compute_bpsolint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.compute_gaincalsnr"><code class="docutils literal notranslate"><span class="pre">compute_gaincalsnr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.estimate_bpsolint"><code class="docutils literal notranslate"><span class="pre">estimate_bpsolint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.estimate_gaincalsnr"><code class="docutils literal notranslate"><span class="pre">estimate_gaincalsnr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.get_fluxinfo"><code class="docutils literal notranslate"><span class="pre">get_fluxinfo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.get_mediantemp"><code class="docutils literal notranslate"><span class="pre">get_mediantemp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.get_obsinfo"><code class="docutils literal notranslate"><span class="pre">get_obsinfo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.get_tsysinfo"><code class="docutils literal notranslate"><span class="pre">get_tsysinfo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.join_dicts"><code class="docutils literal notranslate"><span class="pre">join_dicts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.make_tsyslists"><code class="docutils literal notranslate"><span class="pre">make_tsyslists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.nextHighestDivisibleInt"><code class="docutils literal notranslate"><span class="pre">nextHighestDivisibleInt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.heuristics.html#module-pipeline.hifa.heuristics.wvrgcal">pipeline.hifa.heuristics.wvrgcal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics"><code class="docutils literal notranslate"><span class="pre">WvrgcalHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.nsol"><code class="docutils literal notranslate"><span class="pre">WvrgcalHeuristics.nsol()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.segsource"><code class="docutils literal notranslate"><span class="pre">WvrgcalHeuristics.segsource()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.smooth"><code class="docutils literal notranslate"><span class="pre">WvrgcalHeuristics.smooth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.smoothall"><code class="docutils literal notranslate"><span class="pre">WvrgcalHeuristics.smoothall()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.sourceflag"><code class="docutils literal notranslate"><span class="pre">WvrgcalHeuristics.sourceflag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.tie"><code class="docutils literal notranslate"><span class="pre">WvrgcalHeuristics.tie()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.toffset"><code class="docutils literal notranslate"><span class="pre">WvrgcalHeuristics.toffset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.wvr_available"><code class="docutils literal notranslate"><span class="pre">WvrgcalHeuristics.wvr_available()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.heuristics.html#module-pipeline.hifa.heuristics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.tasks.html">pipeline.hifa.tasks package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.tasks.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.antpos.html">pipeline.hifa.tasks.antpos package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.antpos.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.antpos.html#module-pipeline.hifa.tasks.antpos.almaantpos">pipeline.hifa.tasks.antpos.almaantpos module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.antpos.html#module-pipeline.hifa.tasks.antpos.qa">pipeline.hifa.tasks.antpos.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.antpos.html#module-pipeline.hifa.tasks.antpos.renderer">pipeline.hifa.tasks.antpos.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.antpos.html#module-pipeline.hifa.tasks.antpos">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.applycal.html">pipeline.hifa.tasks.applycal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.applycal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.applycal.html#module-pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa">pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.applycal.html#pipeline-hifa-tasks-applycal-ampphase-vs-freq-qa-test-module">pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.applycal.html#module-pipeline.hifa.tasks.applycal.mswrapper">pipeline.hifa.tasks.applycal.mswrapper module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.applycal.html#pipeline-hifa-tasks-applycal-mswrapper-test-module">pipeline.hifa.tasks.applycal.mswrapper_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.applycal.html#module-pipeline.hifa.tasks.applycal.qa">pipeline.hifa.tasks.applycal.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.applycal.html#module-pipeline.hifa.tasks.applycal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.bandpass.html">pipeline.hifa.tasks.bandpass package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bandpass.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bandpass.html#module-pipeline.hifa.tasks.bandpass.almaphcorbandpass">pipeline.hifa.tasks.bandpass.almaphcorbandpass module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bandpass.html#module-pipeline.hifa.tasks.bandpass.renderer">pipeline.hifa.tasks.bandpass.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bandpass.html#module-pipeline.hifa.tasks.bandpass">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.html">pipeline.hifa.tasks.bandpassflag package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.html#module-pipeline.hifa.tasks.bandpassflag.bandpassflag">pipeline.hifa.tasks.bandpassflag.bandpassflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.html#module-pipeline.hifa.tasks.bandpassflag.qa">pipeline.hifa.tasks.bandpassflag.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.html#module-pipeline.hifa.tasks.bandpassflag.renderer">pipeline.hifa.tasks.bandpassflag.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.html#module-pipeline.hifa.tasks.bandpassflag.resultobjects">pipeline.hifa.tasks.bandpassflag.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.html#module-pipeline.hifa.tasks.bandpassflag">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.bpsolint.html">pipeline.hifa.tasks.bpsolint package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bpsolint.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bpsolint.html#module-pipeline.hifa.tasks.bpsolint.bpsolint">pipeline.hifa.tasks.bpsolint.bpsolint module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bpsolint.html#module-pipeline.hifa.tasks.bpsolint.qa">pipeline.hifa.tasks.bpsolint.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bpsolint.html#module-pipeline.hifa.tasks.bpsolint.renderer">pipeline.hifa.tasks.bpsolint.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.bpsolint.html#module-pipeline.hifa.tasks.bpsolint">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.common.html">pipeline.hifa.tasks.common package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.common.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.common.html#module-pipeline.hifa.tasks.common">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.diffgaincal.html">pipeline.hifa.tasks.diffgaincal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.diffgaincal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.diffgaincal.html#module-pipeline.hifa.tasks.diffgaincal.diffgaincal">pipeline.hifa.tasks.diffgaincal.diffgaincal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.diffgaincal.html#module-pipeline.hifa.tasks.diffgaincal.qa">pipeline.hifa.tasks.diffgaincal.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.diffgaincal.html#module-pipeline.hifa.tasks.diffgaincal.renderer">pipeline.hifa.tasks.diffgaincal.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.diffgaincal.html#module-pipeline.hifa.tasks.diffgaincal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.exportdata.html">pipeline.hifa.tasks.exportdata package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.exportdata.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.exportdata.html#module-pipeline.hifa.tasks.exportdata.almaexportdata">pipeline.hifa.tasks.exportdata.almaexportdata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.exportdata.html#module-pipeline.hifa.tasks.exportdata.almaifaqua">pipeline.hifa.tasks.exportdata.almaifaqua module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.exportdata.html#module-pipeline.hifa.tasks.exportdata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.flagging.html">pipeline.hifa.tasks.flagging package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.flagging.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.flagging.html#module-pipeline.hifa.tasks.flagging.flagdeteralma">pipeline.hifa.tasks.flagging.flagdeteralma module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.flagging.html#pipeline-hifa-tasks-flagging-flagdeteralma-test-module">pipeline.hifa.tasks.flagging.flagdeteralma_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.flagging.html#module-pipeline.hifa.tasks.flagging.flagtargetsalma">pipeline.hifa.tasks.flagging.flagtargetsalma module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.flagging.html#module-pipeline.hifa.tasks.flagging.qa">pipeline.hifa.tasks.flagging.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.flagging.html#module-pipeline.hifa.tasks.flagging.renderer">pipeline.hifa.tasks.flagging.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.flagging.html#module-pipeline.hifa.tasks.flagging">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.fluxcalflag.html">pipeline.hifa.tasks.fluxcalflag package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.fluxcalflag.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.fluxcalflag.html#module-pipeline.hifa.tasks.fluxcalflag.fluxcalflag">pipeline.hifa.tasks.fluxcalflag.fluxcalflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.fluxcalflag.html#module-pipeline.hifa.tasks.fluxcalflag.qa">pipeline.hifa.tasks.fluxcalflag.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.fluxcalflag.html#module-pipeline.hifa.tasks.fluxcalflag.solsyslinesdict">pipeline.hifa.tasks.fluxcalflag.solsyslinesdict module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.fluxcalflag.html#module-pipeline.hifa.tasks.fluxcalflag">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.html">pipeline.hifa.tasks.fluxscale package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.html#module-pipeline.hifa.tasks.fluxscale.display">pipeline.hifa.tasks.fluxscale.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.html#module-pipeline.hifa.tasks.fluxscale.fluxes">pipeline.hifa.tasks.fluxscale.fluxes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.html#module-pipeline.hifa.tasks.fluxscale.gcorfluxscale">pipeline.hifa.tasks.fluxscale.gcorfluxscale module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.html#module-pipeline.hifa.tasks.fluxscale.qa">pipeline.hifa.tasks.fluxscale.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.html#module-pipeline.hifa.tasks.fluxscale.renderer">pipeline.hifa.tasks.fluxscale.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.html#module-pipeline.hifa.tasks.fluxscale">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.gaincal.html">pipeline.hifa.tasks.gaincal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gaincal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gaincal.html#module-pipeline.hifa.tasks.gaincal.display">pipeline.hifa.tasks.gaincal.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gaincal.html#module-pipeline.hifa.tasks.gaincal.qa">pipeline.hifa.tasks.gaincal.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gaincal.html#module-pipeline.hifa.tasks.gaincal.renderer">pipeline.hifa.tasks.gaincal.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gaincal.html#module-pipeline.hifa.tasks.gaincal.timegaincal">pipeline.hifa.tasks.gaincal.timegaincal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gaincal.html#module-pipeline.hifa.tasks.gaincal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.gaincalsnr.html">pipeline.hifa.tasks.gaincalsnr package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gaincalsnr.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gaincalsnr.html#module-pipeline.hifa.tasks.gaincalsnr.gaincalsnr">pipeline.hifa.tasks.gaincalsnr.gaincalsnr module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gaincalsnr.html#module-pipeline.hifa.tasks.gaincalsnr.qa">pipeline.hifa.tasks.gaincalsnr.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gaincalsnr.html#module-pipeline.hifa.tasks.gaincalsnr.renderer">pipeline.hifa.tasks.gaincalsnr.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gaincalsnr.html#module-pipeline.hifa.tasks.gaincalsnr">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.gfluxscaleflag.html">pipeline.hifa.tasks.gfluxscaleflag package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gfluxscaleflag.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gfluxscaleflag.html#module-pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag">pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gfluxscaleflag.html#module-pipeline.hifa.tasks.gfluxscaleflag.qa">pipeline.hifa.tasks.gfluxscaleflag.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gfluxscaleflag.html#module-pipeline.hifa.tasks.gfluxscaleflag.renderer">pipeline.hifa.tasks.gfluxscaleflag.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gfluxscaleflag.html#module-pipeline.hifa.tasks.gfluxscaleflag.resultobjects">pipeline.hifa.tasks.gfluxscaleflag.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.gfluxscaleflag.html#module-pipeline.hifa.tasks.gfluxscaleflag">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.imageprecheck.html">pipeline.hifa.tasks.imageprecheck package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.imageprecheck.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.imageprecheck.html#module-pipeline.hifa.tasks.imageprecheck.imageprecheck">pipeline.hifa.tasks.imageprecheck.imageprecheck module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.imageprecheck.html#module-pipeline.hifa.tasks.imageprecheck.qa">pipeline.hifa.tasks.imageprecheck.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.imageprecheck.html#module-pipeline.hifa.tasks.imageprecheck.renderer">pipeline.hifa.tasks.imageprecheck.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.imageprecheck.html#module-pipeline.hifa.tasks.imageprecheck">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.importdata.html">pipeline.hifa.tasks.importdata package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.importdata.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.importdata.html#module-pipeline.hifa.tasks.importdata.almaimportdata">pipeline.hifa.tasks.importdata.almaimportdata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.importdata.html#module-pipeline.hifa.tasks.importdata.dbfluxes">pipeline.hifa.tasks.importdata.dbfluxes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.importdata.html#module-pipeline.hifa.tasks.importdata.qa">pipeline.hifa.tasks.importdata.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.importdata.html#module-pipeline.hifa.tasks.importdata.renderer">pipeline.hifa.tasks.importdata.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.importdata.html#module-pipeline.hifa.tasks.importdata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.lock_refant.html">pipeline.hifa.tasks.lock_refant package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.lock_refant.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.lock_refant.html#module-pipeline.hifa.tasks.lock_refant.lock_refant">pipeline.hifa.tasks.lock_refant.lock_refant module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.lock_refant.html#module-pipeline.hifa.tasks.lock_refant.renderer">pipeline.hifa.tasks.lock_refant.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.lock_refant.html#module-pipeline.hifa.tasks.lock_refant">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.polcal.html">pipeline.hifa.tasks.polcal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.polcal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.polcal.html#module-pipeline.hifa.tasks.polcal.polcal">pipeline.hifa.tasks.polcal.polcal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.polcal.html#module-pipeline.hifa.tasks.polcal.qa">pipeline.hifa.tasks.polcal.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.polcal.html#module-pipeline.hifa.tasks.polcal.renderer">pipeline.hifa.tasks.polcal.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.polcal.html#module-pipeline.hifa.tasks.polcal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.polcalflag.html">pipeline.hifa.tasks.polcalflag package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.polcalflag.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.polcalflag.html#module-pipeline.hifa.tasks.polcalflag.polcalflag">pipeline.hifa.tasks.polcalflag.polcalflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.polcalflag.html#module-pipeline.hifa.tasks.polcalflag.qa">pipeline.hifa.tasks.polcalflag.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.polcalflag.html#module-pipeline.hifa.tasks.polcalflag.renderer">pipeline.hifa.tasks.polcalflag.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.polcalflag.html#module-pipeline.hifa.tasks.polcalflag">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.renorm.html">pipeline.hifa.tasks.renorm package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.renorm.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.renorm.html#module-pipeline.hifa.tasks.renorm.qa">pipeline.hifa.tasks.renorm.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.renorm.html#module-pipeline.hifa.tasks.renorm.renderer">pipeline.hifa.tasks.renorm.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.renorm.html#module-pipeline.hifa.tasks.renorm.renorm">pipeline.hifa.tasks.renorm.renorm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.renorm.html#module-pipeline.hifa.tasks.renorm">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.restoredata.html">pipeline.hifa.tasks.restoredata package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.restoredata.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.restoredata.html#module-pipeline.hifa.tasks.restoredata.almarestoredata">pipeline.hifa.tasks.restoredata.almarestoredata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.restoredata.html#module-pipeline.hifa.tasks.restoredata.renderer">pipeline.hifa.tasks.restoredata.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.restoredata.html#module-pipeline.hifa.tasks.restoredata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.sessionrefant.html">pipeline.hifa.tasks.sessionrefant package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.sessionrefant.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.sessionrefant.html#module-pipeline.hifa.tasks.sessionrefant.qa">pipeline.hifa.tasks.sessionrefant.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.sessionrefant.html#module-pipeline.hifa.tasks.sessionrefant.renderer">pipeline.hifa.tasks.sessionrefant.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.sessionrefant.html#module-pipeline.hifa.tasks.sessionrefant.resultobjects">pipeline.hifa.tasks.sessionrefant.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.sessionrefant.html#module-pipeline.hifa.tasks.sessionrefant.sessionrefant">pipeline.hifa.tasks.sessionrefant.sessionrefant module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.sessionrefant.html#module-pipeline.hifa.tasks.sessionrefant">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.html">pipeline.hifa.tasks.spwphaseup package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.html#module-pipeline.hifa.tasks.spwphaseup.display">pipeline.hifa.tasks.spwphaseup.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.html#module-pipeline.hifa.tasks.spwphaseup.qa">pipeline.hifa.tasks.spwphaseup.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.html#module-pipeline.hifa.tasks.spwphaseup.renderer">pipeline.hifa.tasks.spwphaseup.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.html#module-pipeline.hifa.tasks.spwphaseup.spwphaseup">pipeline.hifa.tasks.spwphaseup.spwphaseup module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.html#module-pipeline.hifa.tasks.spwphaseup">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.targetflag.html">pipeline.hifa.tasks.targetflag package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.targetflag.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.targetflag.html#module-pipeline.hifa.tasks.targetflag.qa">pipeline.hifa.tasks.targetflag.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.targetflag.html#module-pipeline.hifa.tasks.targetflag.renderer">pipeline.hifa.tasks.targetflag.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.targetflag.html#module-pipeline.hifa.tasks.targetflag.targetflag">pipeline.hifa.tasks.targetflag.targetflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.targetflag.html#module-pipeline.hifa.tasks.targetflag">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.tsysflag.html">pipeline.hifa.tasks.tsysflag package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.tsysflag.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.tsysflag.html#module-pipeline.hifa.tasks.tsysflag.tsysflag">pipeline.hifa.tasks.tsysflag.tsysflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.tsysflag.html#module-pipeline.hifa.tasks.tsysflag">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.tsysflag_contamination.html">pipeline.hifa.tasks.tsysflag_contamination package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.tsysflag_contamination.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.tsysflag_contamination.html#module-pipeline.hifa.tasks.tsysflag_contamination.qa">pipeline.hifa.tasks.tsysflag_contamination.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.tsysflag_contamination.html#module-pipeline.hifa.tasks.tsysflag_contamination.renderer">pipeline.hifa.tasks.tsysflag_contamination.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.tsysflag_contamination.html#module-pipeline.hifa.tasks.tsysflag_contamination.tsysflagcontamination">pipeline.hifa.tasks.tsysflag_contamination.tsysflagcontamination module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.tsysflag_contamination.html#module-pipeline.hifa.tasks.tsysflag_contamination">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.unlock_refant.html">pipeline.hifa.tasks.unlock_refant package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.unlock_refant.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.unlock_refant.html#module-pipeline.hifa.tasks.unlock_refant.unlock_refant">pipeline.hifa.tasks.unlock_refant.unlock_refant module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.unlock_refant.html#module-pipeline.hifa.tasks.unlock_refant">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcal.html">pipeline.hifa.tasks.wvrgcal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcal.html#module-pipeline.hifa.tasks.wvrgcal.resultobjects">pipeline.hifa.tasks.wvrgcal.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcal.html#module-pipeline.hifa.tasks.wvrgcal.wvrg_qa">pipeline.hifa.tasks.wvrgcal.wvrg_qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcal.html#module-pipeline.hifa.tasks.wvrgcal.wvrgcal">pipeline.hifa.tasks.wvrgcal.wvrgcal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcal.html#module-pipeline.hifa.tasks.wvrgcal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcalflag.html">pipeline.hifa.tasks.wvrgcalflag package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcalflag.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcalflag.html#module-pipeline.hifa.tasks.wvrgcalflag.display">pipeline.hifa.tasks.wvrgcalflag.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcalflag.html#module-pipeline.hifa.tasks.wvrgcalflag.qa">pipeline.hifa.tasks.wvrgcalflag.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcalflag.html#module-pipeline.hifa.tasks.wvrgcalflag.renderer">pipeline.hifa.tasks.wvrgcalflag.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcalflag.html#module-pipeline.hifa.tasks.wvrgcalflag.resultobjects">pipeline.hifa.tasks.wvrgcalflag.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcalflag.html#module-pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag">pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcalflag.html#module-pipeline.hifa.tasks.wvrgcalflag.wvrgcalflagsetter">pipeline.hifa.tasks.wvrgcalflag.wvrgcalflagsetter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.tasks.wvrgcalflag.html#module-pipeline.hifa.tasks.wvrgcalflag">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.tasks.html#module-pipeline.hifa.tasks">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.templates.html">pipeline.hifa.templates package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifa.templates.html#module-pipeline.hifa.templates">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-pipeline.hifa">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline.hifa" title="Link to this heading"></a></h2>
+<p>ALMA interferometric</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

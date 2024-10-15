@@ -1,0 +1,37 @@
+pipeline.hif.tasks.makecutoutimages package
+===========================================
+
+Submodules
+----------
+
+pipeline.hif.tasks.makecutoutimages.display module
+--------------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.makecutoutimages.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.makecutoutimages.makecutoutimages module
+-----------------------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.makecutoutimages.makecutoutimages
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.makecutoutimages.renderer module
+---------------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.makecutoutimages.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hif.tasks.makecutoutimages
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,12 @@
+pipeline.hifv.tasks.vlassmasking.renderer
+=========================================
+
+.. automodule:: pipeline.hifv.tasks.vlassmasking.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsVlassmaskingRenderer
+   

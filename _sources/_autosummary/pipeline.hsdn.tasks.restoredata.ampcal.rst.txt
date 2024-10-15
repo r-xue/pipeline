@@ -1,0 +1,21 @@
+pipeline.hsdn.tasks.restoredata.ampcal
+======================================
+
+.. automodule:: pipeline.hsdn.tasks.restoredata.ampcal
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      export_jyperk
+      rearrange_factors_list
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SDAmpCal
+      SDAmpCalInputs
+      SDAmpCalResults
+   

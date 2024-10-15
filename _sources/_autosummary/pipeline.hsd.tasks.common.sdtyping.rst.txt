@@ -1,0 +1,12 @@
+pipeline.hsd.tasks.common.sdtyping
+==================================
+
+.. automodule:: pipeline.hsd.tasks.common.sdtyping
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      NewType
+   

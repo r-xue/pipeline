@@ -1,0 +1,12 @@
+pipeline.h.heuristics.linefinder
+================================
+
+.. automodule:: pipeline.h.heuristics.linefinder
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      HeuristicsLineFinder
+   

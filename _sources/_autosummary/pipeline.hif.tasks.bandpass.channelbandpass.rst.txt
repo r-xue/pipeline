@@ -1,0 +1,13 @@
+pipeline.hif.tasks.bandpass.channelbandpass
+===========================================
+
+.. automodule:: pipeline.hif.tasks.bandpass.channelbandpass
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ChannelBandpass
+      ChannelBandpassInputs
+   

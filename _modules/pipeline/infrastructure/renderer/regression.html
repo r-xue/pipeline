@@ -1,0 +1,1389 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.renderer.regression &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.renderer.regression</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.renderer.regression</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Classes of Regression Framework.</span>
+
+<span class="sd">The regression module contains base classes and plugin registry for the</span>
+<span class="sd">pipeline&#39;s regression test value extractor framework.</span>
+
+<span class="sd">This module contains two classes:</span>
+
+<span class="sd">    * RegressionExtractor: the base class for extractor plug-ins</span>
+<span class="sd">    * RegressionExtractorRegistry: the registry and manager for plug-ins</span>
+
+<span class="sd">Tasks provide and register their own extractors that each extends</span>
+<span class="sd">RegressionExtractor. These extractor plug-ins analyse the results of a task,</span>
+<span class="sd">extracting pertinent values and writing them to a dict. The keys of the</span>
+<span class="sd">output dict identify the value; the values of the dict are the extracted</span>
+<span class="sd">values themselves.</span>
+
+<span class="sd">The pipeline QA framework is activated whenever a Results instance is accepted</span>
+<span class="sd">into the pipeline context. The pipeline QA framework operates by calling</span>
+<span class="sd">is_handler_for(result) on each registered QAPlugin, passing it the the accepted</span>
+<span class="sd">Results instance for inspection. QAPlugins that claim to handle the Result are</span>
+<span class="sd">given the Result for processing. In this step, the QA framework calls</span>
+<span class="sd">QAPlugin.handle(context, result), the method overridden by the task-specific</span>
+<span class="sd">QAPlugin.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">pipeline.domain.measures</span> <span class="kn">import</span> <span class="n">FluxDensityUnits</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.applycal.applycal</span> <span class="kn">import</span> <span class="n">ApplycalResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.commonfluxresults</span> <span class="kn">import</span> <span class="n">FluxCalibrationResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.applycal.ifapplycal</span> <span class="kn">import</span> <span class="n">IFApplycal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.tasks.fluxscale.gcorfluxscale</span> <span class="kn">import</span> <span class="n">GcorFluxscale</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.tasks.gfluxscaleflag.resultobjects</span> <span class="kn">import</span> <span class="n">GfluxscaleflagResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.applycal.applycal</span> <span class="kn">import</span> <span class="n">SDApplycal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.baselineflag.baselineflag</span> <span class="kn">import</span> <span class="n">SDBLFlagResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.baselineflag.baselineflag</span> <span class="kn">import</span> <span class="n">SDBLFlag</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.imaging.imaging</span> <span class="kn">import</span> <span class="n">SDImaging</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.imaging.resultobjects</span> <span class="kn">import</span> <span class="n">SDImagingResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="kn">import</span> <span class="n">Results</span><span class="p">,</span> <span class="n">ResultsList</span><span class="p">,</span> <span class="n">StandardTaskTemplate</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.taskregistry</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.restoredata.restoredata</span> <span class="kn">import</span> <span class="n">SDRestoreDataResults</span><span class="p">,</span> <span class="n">SDRestoreData</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsdn.tasks.restoredata.restoredata</span> <span class="kn">import</span> <span class="n">NRORestoreDataResults</span><span class="p">,</span> <span class="n">NRORestoreData</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.fluxscale.fluxboot</span> <span class="kn">import</span> <span class="n">Fluxboot</span><span class="p">,</span> <span class="n">FluxbootResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.fluxscale.solint</span> <span class="kn">import</span> <span class="n">Solint</span><span class="p">,</span> <span class="n">SolintResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.priorcals</span> <span class="kn">import</span> <span class="n">Priorcals</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.priorcals.resultobjects</span> <span class="kn">import</span> <span class="n">PriorcalsResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.setmodel.vlasetjy</span> <span class="kn">import</span> <span class="n">VLASetjy</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.commonfluxresults</span> <span class="kn">import</span> <span class="n">FluxCalibrationResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.statwt.statwt</span> <span class="kn">import</span> <span class="n">Statwt</span><span class="p">,</span> <span class="n">StatwtResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.importdata.importdata</span> <span class="kn">import</span> <span class="n">VLAImportData</span><span class="p">,</span> <span class="n">VLAImportDataResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.flagging.flagdetervla</span> <span class="kn">import</span> <span class="n">FlagDeterVLA</span><span class="p">,</span> <span class="n">FlagDeterVLAResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.testBPdcals.testBPdcals</span> <span class="kn">import</span> <span class="n">testBPdcals</span><span class="p">,</span> <span class="n">testBPdcalsResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.semiFinalBPdcals.semiFinalBPdcals</span> <span class="kn">import</span> <span class="n">semiFinalBPdcals</span><span class="p">,</span> <span class="n">semiFinalBPdcalsResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.finalcals.finalcals</span> <span class="kn">import</span> <span class="n">Finalcals</span><span class="p">,</span> <span class="n">FinalcalsResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.finalcals.applycals</span> <span class="kn">import</span> <span class="n">Applycals</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.flagging.checkflag</span> <span class="kn">import</span> <span class="n">Checkflag</span><span class="p">,</span> <span class="n">CheckflagResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.flagging.targetflag</span> <span class="kn">import</span> <span class="n">Targetflag</span><span class="p">,</span> <span class="n">TargetflagResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="RegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.RegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">RegressionExtractor</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The mandatory base class for all regression test result extractors.&quot;&quot;&quot;</span>
+
+    <span class="c1"># the Results class this handler is expected to handle</span>
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># if result_cls is a list, the type of classes it is expected to contain</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># the task class that generated the results, or None if it should handle</span>
+    <span class="c1"># all results of this type regardless of which task generated it</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="RegressionExtractor.is_handler_for">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.RegressionExtractor.is_handler_for">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_handler_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">Results</span><span class="p">,</span> <span class="n">ResultsList</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if this RegressionExtractor can process the Result.</span>
+
+<span class="sd">        :param result: the task Result to inspect</span>
+<span class="sd">        :return: True if the Result can be processed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if the result is not a list or the expected results class,</span>
+        <span class="c1"># return False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_cls</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># this is the expected class and we weren&#39;t expecting any</span>
+        <span class="c1"># children, so we should be able to handle the result</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_cls</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span> <span class="ow">is</span> <span class="kc">None</span>
+                                       <span class="ow">or</span> <span class="n">result</span><span class="o">.</span><span class="n">task</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span>
+                                       <span class="ow">or</span> <span class="p">(</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">,</span> <span class="s1">&#39;Task&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">task</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="o">.</span><span class="n">Task</span><span class="p">)</span> <span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_cls</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">task</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="c1"># catch case when result does not have a task attribute</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="RegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.RegressionExtractor.handle">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">Results</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        [Abstract] Extract values for testing.</span>
+
+<span class="sd">        This method should return a dict of</span>
+
+<span class="sd">        {&#39;applycal.new_flags.science&#39;: 0.34,</span>
+<span class="sd">         &#39;applycal.new_flags.bandpass&#39;: 0.53}</span>
+
+<span class="sd">        :param result:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="bp">NotImplemented</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RegressionExtractorRegistry">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry">[docs]</a>
+<span class="k">class</span> <span class="nc">RegressionExtractorRegistry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The registry and manager of the regression result extractor framework.</span>
+
+<span class="sd">    The responsibility of the RegressionResultRegistry is to pass Results to</span>
+<span class="sd">    RegressionExtractors that can handle them.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constractor of this class.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__plugins_loaded</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__handlers</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="RegressionExtractorRegistry.add_handler">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry.add_handler">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">RegressionExtractor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Push RegressionExtractor into handlers list __handler.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            handler: RegressionExtractor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">generating_task</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">generating_task</span> <span class="k">else</span> <span class="s1">&#39;all&#39;</span>
+        <span class="n">child_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">child_cls</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
+            <span class="n">child_name</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">child_cls</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">child_cls</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">child_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">handler</span><span class="o">.</span><span class="n">child_cls</span><span class="p">])</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="s1">&#39;s of </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">child_name</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1"> results generated by </span><span class="si">{}</span><span class="s1"> tasks&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">result_cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">container</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Registering </span><span class="si">{}</span><span class="s1"> as new regression result handler for </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__handlers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="RegressionExtractorRegistry.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">Results</span><span class="p">,</span> <span class="n">ResultsList</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values from corresponding Extractor object of Result object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: Results or ResultsList[Results]</span>
+<span class="sd">        Return:</span>
+<span class="sd">            Dict of extracted values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__plugins_loaded</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">plugin_class</span> <span class="ow">in</span> <span class="n">get_all_subclasses</span><span class="p">(</span> <span class="n">RegressionExtractor</span> <span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="n">plugin_class</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__plugins_loaded</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># this is the list which will contain extracted values tuples</span>
+        <span class="n">extracted</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Process leaf results first</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                <span class="n">extracted</span> <span class="o">=</span> <span class="n">union</span><span class="p">(</span><span class="n">extracted</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+
+        <span class="c1"># process the group-level results.</span>
+        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__handlers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">is_handler_for</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> extracting regression results for </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                                                                           <span class="n">result</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+                <span class="n">extracted</span> <span class="o">=</span> <span class="n">union</span><span class="p">(</span><span class="n">extracted</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">extracted</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="union">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.union">[docs]</a>
+<span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="n">d1</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">d2</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the union of two dicts.</span>
+<span class="sd">    </span>
+<span class="sd">    It raises an exception if duplicate keys are detected in the input dicts.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        d1, d2: dict for unioning</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        OrderedDict unioned two dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">intersection</span> <span class="o">=</span> <span class="n">key_intersection</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">intersection</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Regression keys are duplicated: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">intersection</span><span class="p">))</span>
+    <span class="c1"># dict keys and values should be strings, so ok to shallow copy</span>
+    <span class="c1"># OrderedDict is used to store results in processing order.</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="n">d1</span><span class="p">)</span>
+    <span class="n">u</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">u</span></div>
+
+
+
+<div class="viewcode-block" id="key_intersection">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.key_intersection">[docs]</a>
+<span class="k">def</span> <span class="nf">key_intersection</span><span class="p">(</span><span class="n">d1</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">d2</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compare keys of two dicts, returning duplicate keys.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        d1, d2: dict for comparison</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        duplicated keys dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d1_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">d1</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">d2_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">d2</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">d1_keys</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">d2_keys</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># default RegressionExtractorRegistry initialization</span>
+<span class="n">registry</span> <span class="o">=</span> <span class="n">RegressionExtractorRegistry</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="FluxcalflagRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FluxcalflagRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">FluxcalflagRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for hifa_gfluxscaleflag.</span>
+
+<span class="sd">    The extracted values are:</span>
+<span class="sd">       - the number of flagged rows before this task</span>
+<span class="sd">       - the number of flagged rows after this task</span>
+<span class="sd">       - QA score</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">GfluxscaleflagResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="FluxcalflagRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FluxcalflagRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">GfluxscaleflagResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: GfluxscaleflagResults object</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="n">summaries_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">cafresult</span><span class="o">.</span><span class="n">summaries</span><span class="p">}</span>
+
+        <span class="n">num_flags_before</span> <span class="o">=</span> <span class="n">summaries_by_name</span><span class="p">[</span><span class="s1">&#39;before&#39;</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;after&#39;</span> <span class="ow">in</span> <span class="n">summaries_by_name</span><span class="p">:</span>
+            <span class="n">num_flags_after</span> <span class="o">=</span> <span class="n">summaries_by_name</span><span class="p">[</span><span class="s1">&#39;after&#39;</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">num_flags_after</span> <span class="o">=</span> <span class="n">num_flags_before</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.num_rows_flagged.before&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_flags_before</span><span class="p">)</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.num_rows_flagged.after&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_flags_after</span><span class="p">)</span>
+
+        <span class="n">qa_entries</span> <span class="o">=</span> <span class="n">extract_qa_score_regression</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">qa_entries</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GcorFluxscaleRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.GcorFluxscaleRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">GcorFluxscaleRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for hifa_gcorfluxscale.</span>
+
+<span class="sd">    The extracted values are:</span>
+<span class="sd">       - Stokes I for each field and spw, in Jy</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">FluxCalibrationResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">GcorFluxscale</span>
+
+<div class="viewcode-block" id="GcorFluxscaleRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.GcorFluxscaleRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">FluxCalibrationResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: FluxCalibrationResults object</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">measurements</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">measurements</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.field_</span><span class="si">{}</span><span class="s1">.spw_</span><span class="si">{}</span><span class="s1">.I&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">spw_id</span><span class="p">)</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">))</span>
+
+        <span class="n">qa_entries</span> <span class="o">=</span> <span class="n">extract_qa_score_regression</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">qa_entries</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ApplycalRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.ApplycalRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">ApplycalRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for applycal tasks.</span>
+
+<span class="sd">    The extracted values are:</span>
+<span class="sd">       - the number of flagged and scanned rows before this task</span>
+<span class="sd">       - the number of flagged and scanned rows after this task</span>
+<span class="sd">       - QA score</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">ApplycalResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">IFApplycal</span>
+
+<div class="viewcode-block" id="ApplycalRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.ApplycalRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">ApplycalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: ApplycalResults object</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">summaries_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">summaries</span><span class="p">}</span>
+            <span class="n">num_flags_before</span> <span class="o">=</span> <span class="n">summaries_by_name</span><span class="p">[</span><span class="s1">&#39;before&#39;</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">]</span>
+            <span class="n">num_flags_after</span> <span class="o">=</span> <span class="n">summaries_by_name</span><span class="p">[</span><span class="s1">&#39;applycal&#39;</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">]</span>
+            
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.num_rows_flagged.before&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_flags_before</span><span class="p">)</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.num_rows_flagged.after&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_flags_after</span><span class="p">)</span>
+
+            <span class="n">flag_summary_before</span> <span class="o">=</span> <span class="n">summaries_by_name</span><span class="p">[</span><span class="s1">&#39;before&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">scan_id</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">flag_summary_before</span><span class="p">[</span><span class="s1">&#39;scan&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.scan_</span><span class="si">{}</span><span class="s1">.num_rows_flagged.before&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">scan_id</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+            <span class="n">flag_summary_after</span> <span class="o">=</span> <span class="n">summaries_by_name</span><span class="p">[</span><span class="s1">&#39;applycal&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">scan_id</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">flag_summary_after</span><span class="p">[</span><span class="s1">&#39;scan&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.scan_</span><span class="si">{}</span><span class="s1">.num_rows_flagged.after&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">scan_id</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+            <span class="n">qa_entries</span> <span class="o">=</span> <span class="n">extract_qa_score_regression</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">qa_entries</span><span class="p">)</span>
+
+        <span class="k">except</span><span class="p">:</span> 
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.results&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Some information missing from ApplycalResults. Omitting from resgression comparison.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SDApplycalRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SDApplycalRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">SDApplycalRegressionExtractor</span><span class="p">(</span><span class="n">ApplycalRegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for sd_applycal.</span>
+
+<span class="sd">    It extends ApplycalRegressionExtractor in order to use the same extraction logic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">ApplycalResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">SDApplycal</span></div>
+
+
+
+<div class="viewcode-block" id="VLAApplycalRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.VLAApplycalRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">VLAApplycalRegressionExtractor</span><span class="p">(</span><span class="n">ApplycalRegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for hifv_applycals</span>
+
+<span class="sd">    It extends ApplycalRegressionExtractor in order to use the same extraction logic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">ApplycalResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Applycals</span></div>
+
+
+
+<div class="viewcode-block" id="CheckflagRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.CheckflagRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">CheckflagRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for hifv_checkflag</span>
+
+<span class="sd">    Extract flagging summaries from CheckflagResults</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">CheckflagResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Checkflag</span>
+
+<div class="viewcode-block" id="CheckflagRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.CheckflagRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">CheckflagResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: CheckflagResults object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+        <span class="n">summaries_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">summaries</span><span class="p">}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">num_flags_before</span> <span class="o">=</span> <span class="n">summaries_by_name</span><span class="p">[</span><span class="s1">&#39;before&#39;</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">]</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.num_rows_flagged.before&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_flags_before</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span> 
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.num_rows_flagged.before&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span> 
+            <span class="n">num_flags_after</span> <span class="o">=</span> <span class="n">summaries_by_name</span><span class="p">[</span><span class="s1">&#39;after&#39;</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">]</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.num_rows_flagged.after&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_flags_after</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span> 
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.num_rows_flagged.after&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+        <span class="k">if</span> <span class="s1">&#39;before&#39;</span> <span class="ow">in</span> <span class="n">summaries_by_name</span><span class="p">:</span>
+            <span class="n">flag_summary_before</span> <span class="o">=</span> <span class="n">summaries_by_name</span><span class="p">[</span><span class="s1">&#39;before&#39;</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">scan_id</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">flag_summary_before</span><span class="p">[</span><span class="s1">&#39;scan&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.scan_</span><span class="si">{}</span><span class="s1">.num_rows_flagged.before&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">scan_id</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+        
+        <span class="k">if</span> <span class="s1">&#39;after&#39;</span> <span class="ow">in</span> <span class="n">summaries_by_name</span><span class="p">:</span>
+            <span class="n">flag_summary_after</span> <span class="o">=</span> <span class="n">summaries_by_name</span><span class="p">[</span><span class="s1">&#39;after&#39;</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">scan_id</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">flag_summary_after</span><span class="p">[</span><span class="s1">&#39;scan&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.scan_</span><span class="si">{}</span><span class="s1">.num_rows_flagged.after&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">scan_id</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TargetflagRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.TargetflagRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">TargetflagRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for hifv_targetflag</span>
+
+<span class="sd">    Extract flagging summaries from TargetflagResults</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">TargetflagResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Targetflag</span>
+
+<div class="viewcode-block" id="TargetflagRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.TargetflagRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">TargetflagResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: TargetflagResults object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">summaries_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">summarydict</span><span class="p">}</span>
+
+        <span class="n">num_flags_summary</span> <span class="o">=</span> <span class="n">summaries_by_name</span><span class="p">[</span><span class="s1">&#39;Summary&#39;</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">]</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.num_rows_flagged.summary&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_flags_summary</span><span class="p">)</span>
+
+        <span class="n">flag_summary</span> <span class="o">=</span> <span class="n">summaries_by_name</span><span class="p">[</span><span class="s1">&#39;Summary&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">scan_id</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">flag_summary</span><span class="p">[</span><span class="s1">&#39;scan&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.scan_</span><span class="si">{}</span><span class="s1">.num_rows_flagged.summary&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">scan_id</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FluxbootRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FluxbootRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">FluxbootRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for hifv_fluxboot.</span>
+
+<span class="sd">    The extracted values are:</span>
+<span class="sd">       - the flux_densities value (single spw)</span>
+<span class="sd">       - spectral index list values (spix, curvature, delta, gamma coefficients)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">FluxbootResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Fluxboot</span>
+
+<div class="viewcode-block" id="FluxbootRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FluxbootRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">FluxbootResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: FluxbootResults object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">flux_densities</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">flux_densities</span>
+        <span class="n">spindex</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">spindex_results</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">spw</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">spws</span><span class="p">)):</span> 
+            <span class="c1"># There may be spws without a solution, which aren&#39;t included here, so don&#39;t index by spw</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.flux_densities.spw_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">spw</span><span class="p">)]</span> <span class="o">=</span> <span class="n">flux_densities</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.spindex&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spindex</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;spix&#39;</span><span class="p">])</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.curvature&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spindex</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;curvature&#39;</span><span class="p">])</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.delta&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spindex</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;delta&#39;</span><span class="p">])</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.gamma&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spindex</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;gamma&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SolintRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SolintRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">SolintRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for hifv_solint.</span>
+
+<span class="sd">    The extracted values are:</span>
+<span class="sd">       - long solution interval per band</span>
+<span class="sd">       - short solution interval per band</span>
+<span class="sd">       - shortsol2 variable interval per band</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">SolintResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Solint</span>
+
+<div class="viewcode-block" id="SolintRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SolintRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SolintResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: SolintResults object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">longsolint</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.longsolint.</span><span class="si">{}</span><span class="s1">-band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">band</span><span class="p">)]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.short_solint.</span><span class="si">{}</span><span class="s1">-band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">band</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">short_solint</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.shortsol2.</span><span class="si">{}</span><span class="s1">-band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">band</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">shortsol2</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PriorcalsRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.PriorcalsRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">PriorcalsRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for hifv_priorcals</span>
+
+<span class="sd">    The extracted values are:</span>
+<span class="sd">       - Opacities per spw</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">PriorcalsResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Priorcals</span>
+
+<div class="viewcode-block" id="PriorcalsRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.PriorcalsRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">PriorcalsResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: PriorcalResults object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">opacity</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">oc_result</span><span class="o">.</span><span class="n">opacities</span><span class="p">):</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">oc_result</span><span class="o">.</span><span class="n">spw</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.opacity.spw_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">spw</span><span class="p">)]</span> <span class="o">=</span> <span class="n">opacity</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="VLASetjyRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.VLASetjyRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">VLASetjyRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for hifv_vlasetjy</span>
+
+<span class="sd">    The extracted values are:</span>
+<span class="sd">       - Stokes I flux value per field</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">FluxCalibrationResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">VLASetjy</span>
+
+<div class="viewcode-block" id="VLASetjyRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.VLASetjyRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">FluxCalibrationResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: FluxCalibrationResults object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">fluxlist</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">flux_I</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fluxlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.flux.I&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="n">flux_I</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="VLAStatwtRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.VLAStatwtRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">VLAStatwtRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for hifv_statwt</span>
+
+<span class="sd">    The extracted values are:</span>
+<span class="sd">       - mean and variance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">StatwtResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Statwt</span>
+
+<div class="viewcode-block" id="VLAStatwtRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.VLAStatwtRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">StatwtResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: StatwtResults object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.mean&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">jobs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.variance&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">jobs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;variance&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="VLAImportDataRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.VLAImportDataRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">VLAImportDataRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Regression test result extractor for hifv_importdata</span>
+
+<span class="sd">        The extracted values are:</span>
+<span class="sd">           - number of antennas :)</span>
+<span class="sd">           - max integration time</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">VLAImportDataResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">VLAImportData</span>
+
+<div class="viewcode-block" id="VLAImportDataRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.VLAImportDataRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">VLAImportDataResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: VLAImportDataResults object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.numantennas&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">mses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">antennas</span><span class="p">)</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.vla_max_integration_time&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">mses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_vla_max_integration_time</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FlagDeterVLARegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FlagDeterVLARegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">FlagDeterVLARegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Regression test result extractor for hifv_flagdata</span>
+
+<span class="sd">        The extracted values are:</span>
+<span class="sd">           - number of flags per category</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">FlagDeterVLAResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">FlagDeterVLA</span>
+
+<div class="viewcode-block" id="FlagDeterVLARegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FlagDeterVLARegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">FlagDeterVLAResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: FlagDeterVLAResults object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="n">flag_categories</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">summaries</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">summary</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">summaries</span><span class="p">):</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.flagged.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">flag_categories</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">summary</span><span class="p">[</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="testBPdcalsRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.testBPdcalsRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">testBPdcalsRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Regression test result extractor for hifv_testBPdcals</span>
+
+<span class="sd">        The extracted values are:</span>
+<span class="sd">           - number of flagged solutions per band for bandpass and delay</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">testBPdcalsResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">testBPdcals</span>
+
+<div class="viewcode-block" id="testBPdcalsRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.testBPdcalsRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">testBPdcalsResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: testBPdcalsResults object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">flagdict</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">flaggedSolnApplycalbandpass</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.bandpass.flagged.</span><span class="si">{}</span><span class="s1">-band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">band</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">flagdict</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">flagdict</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">flaggedSolnApplycaldelay</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.delay.flagged.</span><span class="si">{}</span><span class="s1">-band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">band</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">flagdict</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="semiFinalBPdcalsRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.semiFinalBPdcalsRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">semiFinalBPdcalsRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Regression test result extractor for hifv_semiFinalBPdcals</span>
+
+<span class="sd">        The extracted values are:</span>
+<span class="sd">           - number of flagged solutions per band for bandpass and delay</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">semiFinalBPdcalsResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">semiFinalBPdcals</span>
+
+<div class="viewcode-block" id="semiFinalBPdcalsRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.semiFinalBPdcalsRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">semiFinalBPdcalsResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: semiFinalBPdcalsResults object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">flagdict</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">flaggedSolnApplycalbandpass</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.bandpass.flagged.</span><span class="si">{}</span><span class="s1">-band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">band</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">flagdict</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">flagdict</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">flaggedSolnApplycaldelay</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.delay.flagged.</span><span class="si">{}</span><span class="s1">-band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">band</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">flagdict</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FinalcalsRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FinalcalsRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">FinalcalsRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Regression test result extractor for hifv_finalcals</span>
+
+<span class="sd">        The extracted values are:</span>
+<span class="sd">           - number of flagged solutions for bandpass and delay</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">FinalcalsResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Finalcals</span>
+
+<div class="viewcode-block" id="FinalcalsRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FinalcalsRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">FinalcalsResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: FinalcalsResults object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.bandpass.flagged&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">flaggedSolnApplycalbandpass</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.delay.flagged&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">flaggedSolnApplycaldelay</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SDBLFlagRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SDBLFlagRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">SDBLFlagRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for sd_blfrag.</span>
+
+<span class="sd">    The extracted values are:</span>
+<span class="sd">       - the number of flagged and scanned rows before this task</span>
+<span class="sd">       - the number of flagged and scanned rows after this task</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">SDBLFlagResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">SDBLFlag</span>
+
+<div class="viewcode-block" id="SDBLFlagRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SDBLFlagRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">SDBLFlagResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: SDBLFlagResults object</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">summary</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;flagdata_summary&#39;</span><span class="p">]:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">prop</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">summary</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="o">==</span> <span class="n">k</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">v</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">prop</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">prop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.num_rows_flagged.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">scan_id</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">prop</span><span class="p">[</span><span class="s1">&#39;scan&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.scan_</span><span class="si">{}</span><span class="s1">.num_rows_flagged.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">scan_id</span><span class="p">,</span> <span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+        <span class="n">qa_entries</span> <span class="o">=</span> <span class="n">extract_qa_score_regression</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">qa_entries</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SDImagingRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SDImagingRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">SDImagingRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for sd_imaging.</span>
+
+<span class="sd">    The extracted values are:</span>
+<span class="sd">        - QA score</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">SDImagingResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">SDImaging</span>
+
+<div class="viewcode-block" id="SDImagingRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SDImagingRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">SDImagingResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: SDImagingResults object</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">qa_entries</span> <span class="o">=</span> <span class="n">extract_qa_score_regression</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">qa_entries</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SDRestoredataRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SDRestoredataRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">SDRestoredataRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for sd_restoredata.</span>
+
+<span class="sd">    The extracted values are:</span>
+<span class="sd">        - the number of flagged and scanned rows after this task</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">SDRestoreDataResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">SDRestoreData</span>
+
+<div class="viewcode-block" id="SDRestoredataRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SDRestoredataRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">SDRestoreDataResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: SDRestoreDataResults object</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">session</span><span class="p">,</span> <span class="n">mses</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">flagging_summaries</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">ms_name</span><span class="p">,</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mses</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">target_name</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.target_</span><span class="si">{}</span><span class="s1">.num_rows_flagged&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">target_name</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+                        <span class="k">for</span> <span class="n">scan_id</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;scan&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.target_</span><span class="si">{}</span><span class="s1">.scan_</span><span class="si">{}</span><span class="s1">.num_rows_flagged&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">target_name</span><span class="p">,</span> <span class="n">scan_id</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+        <span class="n">qa_entries</span> <span class="o">=</span> <span class="n">extract_qa_score_regression</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">qa_entries</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="NRORestoredataRegressionExtractor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.NRORestoredataRegressionExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">NRORestoredataRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression test result extractor for hsdn_restoredata.</span>
+
+<span class="sd">    The extracted values are:</span>
+<span class="sd">        - the number of flagged and scanned rows after this task</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">NRORestoreDataResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="n">NRORestoreData</span>
+
+<div class="viewcode-block" id="NRORestoredataRegressionExtractor.handle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.NRORestoredataRegressionExtractor.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">NRORestoreDataResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: NRORestoreDataInputs object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">session</span><span class="p">,</span> <span class="n">mses</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">flagging_summaries</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">ms_name</span><span class="p">,</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mses</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">target_name</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.target_</span><span class="si">{}</span><span class="s1">.num_rows_flagged&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">target_name</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+                        <span class="k">for</span> <span class="n">scan_id</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;scan&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.target_</span><span class="si">{}</span><span class="s1">.scan_</span><span class="si">{}</span><span class="s1">.num_rows_flagged&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">target_name</span><span class="p">,</span> <span class="n">scan_id</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                                <span class="n">v</span><span class="p">[</span><span class="s1">&#39;flagged&#39;</span><span class="p">])</span>
+
+        <span class="n">qa_entries</span> <span class="o">=</span> <span class="n">extract_qa_score_regression</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">qa_entries</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="get_prefix">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.get_prefix">[docs]</a>
+<span class="k">def</span> <span class="nf">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">:</span><span class="n">Results</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span><span class="n">StandardTaskTemplate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a string used to prefix string of rows of result text.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        result: Result object</span>
+<span class="sd">        task: Task object</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        prefix string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># A value of result.inputs[&#39;vis&#39;] of some classes (ex: SDImagingResults) is a list object</span>
+    <span class="n">res_vis</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
+    <span class="n">vis</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">res_vis</span><span class="p">))</span>
+    <span class="n">casa_task</span> <span class="o">=</span> <span class="n">task_registry</span><span class="o">.</span><span class="n">get_casa_task</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;s</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span> <span class="n">casa_task</span><span class="p">,</span> <span class="n">vis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">prefix</span></div>
+
+
+
+<div class="viewcode-block" id="extract_qa_score_regression">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.extract_qa_score_regression">[docs]</a>
+<span class="k">def</span> <span class="nf">extract_qa_score_regression</span><span class="p">(</span><span class="n">prefix</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">Results</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create QA strings are properties of result, and insert them to OrderedDict.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        prefix: Prefix string</span>
+<span class="sd">        result: Result object</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        OrderedDict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">qa_score</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">:</span>
+        <span class="n">metric_name</span> <span class="o">=</span> <span class="n">qa_score</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">metric_name</span>
+        <span class="c1"># Remove all non-word characters (everything except numbers and letters)</span>
+        <span class="n">metric_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^\w\s]&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">metric_name</span><span class="p">)</span>
+        <span class="c1"># Replace all runs of whitespace with a single dash</span>
+        <span class="n">metric_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">metric_name</span><span class="p">)</span>
+
+        <span class="n">metric_score</span> <span class="o">=</span> <span class="n">qa_score</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">metric_score</span>
+        <span class="n">score_value</span> <span class="o">=</span> <span class="n">qa_score</span><span class="o">.</span><span class="n">score</span>
+
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.qa.metric.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">metric_name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">metric_score</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.qa.score.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">metric_name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">score_value</span>
+    <span class="k">return</span> <span class="n">d</span></div>
+
+
+
+<div class="viewcode-block" id="extract_regression_results">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.extract_regression_results">[docs]</a>
+<span class="k">def</span> <span class="nf">extract_regression_results</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract regression result and return logs.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context: Context object</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        String list for logging</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">unified</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">results_proxy</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">results_proxy</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">unified</span> <span class="o">=</span> <span class="n">union</span><span class="p">(</span><span class="n">unified</span><span class="p">,</span> <span class="n">registry</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
+
+    <span class="c1"># return unified</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span><span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">unified</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span></div>
+
+
+
+<div class="viewcode-block" id="get_all_subclasses">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.get_all_subclasses">[docs]</a>
+<span class="k">def</span> <span class="nf">get_all_subclasses</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">RegressionExtractor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RegressionExtractor</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all subclasses from RegressionExtractor classes tree recursively.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cls: root class of subclasses</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        list of RegressionExtractor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">subclasses</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">subclass</span> <span class="ow">in</span> <span class="n">subclasses</span><span class="p">:</span>
+        <span class="n">subclasses</span> <span class="o">+=</span> <span class="n">get_all_subclasses</span><span class="p">(</span><span class="n">subclass</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">subclasses</span></div>
+
+
+
+<span class="c1"># TODO enable runtime comparisons?</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

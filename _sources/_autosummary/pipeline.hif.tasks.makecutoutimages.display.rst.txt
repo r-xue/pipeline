@@ -1,0 +1,23 @@
+pipeline.hif.tasks.makecutoutimages.display
+===========================================
+
+.. automodule:: pipeline.hif.tasks.makecutoutimages.display
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_stats_summary
+      matplotlibrc_formal
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CutoutimagesSummary
+      ImageHistDisplay
+      ImageStats
+      VlassCubeCutoutRmsSummary
+      VlassCubeCutoutimagesSummary
+   

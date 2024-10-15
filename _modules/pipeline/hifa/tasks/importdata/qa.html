@@ -1,0 +1,519 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.importdata.qa &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.importdata.qa</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.importdata.qa</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Set</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.pipelineqa</span> <span class="k">as</span> <span class="nn">pqa</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.qa.scorecalculator</span> <span class="k">as</span> <span class="nn">qacalc</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.field</span> <span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.exportdata</span> <span class="kn">import</span> <span class="n">aqua</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">.almaimportdata</span> <span class="kn">import</span> <span class="n">ALMAImportDataResults</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">aqua_exporter</span> <span class="o">=</span> <span class="n">aqua</span><span class="o">.</span><span class="n">xml_generator_for_metric</span><span class="p">(</span><span class="s1">&#39;ScoreParallacticAngle&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">aqua</span><span class="o">.</span><span class="n">register_aqua_metric</span><span class="p">(</span><span class="n">aqua_exporter</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ALMAImportDataListQAHandler">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.qa.ALMAImportDataListQAHandler">[docs]</a>
+<span class="k">class</span> <span class="nc">ALMAImportDataListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="n">ALMAImportDataResults</span>
+
+<div class="viewcode-block" id="ALMAImportDataListQAHandler.handle">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.qa.ALMAImportDataListQAHandler.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="c1"># Check per-session parallactic angle coverage of polarisation calibration</span>
+        <span class="n">parallactic_threshold</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;minparang&#39;</span><span class="p">]</span>
+        <span class="c1"># gather mses into a flat list</span>
+        <span class="n">mses</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">mses</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">)))</span>
+
+        <span class="c1"># PIPE-597 spec states to test POLARIZATION intent</span>
+        <span class="n">intents_to_test</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;POLARIZATION&#39;</span><span class="p">}</span>
+        <span class="n">parang_scores</span><span class="p">,</span> <span class="n">parang_ranges</span> <span class="o">=</span> <span class="n">_check_parallactic_angle_range</span><span class="p">(</span><span class="n">mses</span><span class="p">,</span> <span class="n">intents_to_test</span><span class="p">,</span> <span class="n">parallactic_threshold</span><span class="p">)</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parang_scores</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">parang_ranges</span> <span class="o">=</span> <span class="n">parang_ranges</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ALMAImportDataQAHandler">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.qa.ALMAImportDataQAHandler">[docs]</a>
+<span class="k">class</span> <span class="nc">ALMAImportDataQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="n">ALMAImportDataResults</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="ALMAImportDataQAHandler.handle">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.qa.ALMAImportDataQAHandler.handle">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="c1"># Check for the presence of polarization intents</span>
+        <span class="n">recipe_name</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">project_structure</span><span class="o">.</span><span class="n">recipe_name</span>
+        <span class="n">polcal_scores</span> <span class="o">=</span> <span class="n">_check_polintents</span><span class="p">(</span><span class="n">recipe_name</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">mses</span><span class="p">)</span>
+
+        <span class="c1"># Check for the presence of receiver bands with calibration issues</span>
+        <span class="n">score2</span> <span class="o">=</span> <span class="n">_check_bands</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">mses</span><span class="p">)</span>
+
+        <span class="c1"># Check for validity of observing modes.</span>
+        <span class="n">scores3</span> <span class="o">=</span> <span class="n">_check_observing_modes</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">mses</span><span class="p">)</span>
+
+        <span class="c1"># Check for science spw names matching the virtual spw ID lookup table</span>
+        <span class="n">score4</span> <span class="o">=</span> <span class="n">_check_science_spw_names</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">mses</span><span class="p">,</span>
+                                          <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual_science_spw_names</span><span class="p">)</span>
+
+        <span class="c1"># Flux service usage</span>
+        <span class="n">score5</span> <span class="o">=</span> <span class="n">_check_fluxservice</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="c1"># Check for flux.csv</span>
+        <span class="n">score6</span> <span class="o">=</span> <span class="n">_check_fluxcsv</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="c1"># Check if amp/bp/phcal objects are the same (returns list of pqa)</span>
+        <span class="n">scores7</span> <span class="o">=</span> <span class="n">_check_calobjects</span><span class="p">(</span><span class="n">recipe_name</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">mses</span><span class="p">)</span>
+
+        <span class="c1"># Check for flux service messages/warnings</span>
+        <span class="n">score8</span> <span class="o">=</span> <span class="n">_check_fluxservicemessages</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="c1"># Check for flux service status codes</span>
+        <span class="n">score9</span> <span class="o">=</span> <span class="n">_check_fluxservicestatuscodes</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="c1"># Add all scores to QA score pool in result.</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">polcal_scores</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">score2</span><span class="p">,</span> <span class="n">score4</span><span class="p">,</span> <span class="n">score5</span><span class="p">,</span> <span class="n">score6</span><span class="p">,</span> <span class="n">score8</span><span class="p">,</span> <span class="n">score9</span><span class="p">])</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scores3</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scores7</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">def</span> <span class="nf">_check_polintents</span><span class="p">(</span><span class="n">recipe_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check each measurement set for polarization intents</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">qacalc</span><span class="o">.</span><span class="n">score_polintents</span><span class="p">(</span><span class="n">recipe_name</span><span class="p">,</span> <span class="n">mses</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_check_parallactic_angle_range</span><span class="p">(</span><span class="n">mses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">],</span>
+                                   <span class="n">intents</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                                   <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">],</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that the parallactic angle coverage of the polarisation calibrator</span>
+<span class="sd">    meets the required threshold.</span>
+
+<span class="sd">    See PIPE-597 and PIPE-598 for full spec.</span>
+
+<span class="sd">    :param mses: MeasurementSets to check</span>
+<span class="sd">    :param intents: intents to measure</span>
+<span class="sd">    :param threshold: minimum parallactic angle coverage</span>
+<span class="sd">    :return: list of QAScores and dictionary of metrics</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># holds list of all QA scores for this metric</span>
+    <span class="n">all_scores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># holds all parallactic angle ranges for all</span>
+    <span class="c1"># session names, intents and pol cal names</span>
+    <span class="n">all_metrics</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sessions&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;pol_intents_found&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+    <span class="n">intents_present</span> <span class="o">=</span> <span class="nb">any</span><span class="p">([</span><span class="n">intents</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mses</span><span class="p">])</span>
+
+    <span class="c1"># group MSes per sessions, adding to default &#39;Shared&#39; session if not</span>
+    <span class="c1"># defined</span>
+    <span class="n">session_to_mses</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mses</span><span class="p">:</span>
+        <span class="n">session_to_mses</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="s1">&#39;session&#39;</span><span class="p">,</span> <span class="s1">&#39;Shared&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+
+    <span class="c1"># Check parallactic angle for each polcal in each session</span>
+    <span class="k">for</span> <span class="n">session_name</span><span class="p">,</span> <span class="n">session_mses</span> <span class="ow">in</span> <span class="n">session_to_mses</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">all_metrics</span><span class="p">[</span><span class="s1">&#39;sessions&#39;</span><span class="p">][</span><span class="n">session_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;min_parang_range&#39;</span><span class="p">:</span> <span class="mf">360.0</span><span class="p">,</span>
+                                                 <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">ms_do</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ms_do</span> <span class="ow">in</span> <span class="n">session_mses</span><span class="p">]}</span>
+        <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intents</span><span class="p">:</span>
+            <span class="n">all_metrics</span><span class="p">[</span><span class="s1">&#39;sessions&#39;</span><span class="p">][</span><span class="n">session_name</span><span class="p">][</span><span class="n">intent</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">polcal_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">polcal</span><span class="o">.</span><span class="n">name</span>
+                            <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">session_mses</span>
+                            <span class="k">for</span> <span class="n">polcal</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)}</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">polcal_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">all_metrics</span><span class="p">[</span><span class="s1">&#39;pol_intents_found&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">polcal_name</span> <span class="ow">in</span> <span class="n">polcal_names</span><span class="p">:</span>
+                <span class="n">parallactic_range</span> <span class="o">=</span> <span class="n">ous_parallactic_range</span><span class="p">(</span><span class="n">session_mses</span><span class="p">,</span> <span class="n">polcal_name</span><span class="p">,</span> <span class="n">intent</span><span class="p">)</span>
+                <span class="n">all_metrics</span><span class="p">[</span><span class="s1">&#39;sessions&#39;</span><span class="p">][</span><span class="n">session_name</span><span class="p">][</span><span class="n">intent</span><span class="p">][</span><span class="n">polcal_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">parallactic_range</span>
+                <span class="n">all_metrics</span><span class="p">[</span><span class="s1">&#39;sessions&#39;</span><span class="p">][</span><span class="n">session_name</span><span class="p">][</span><span class="s1">&#39;min_parang_range&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                    <span class="n">all_metrics</span><span class="p">[</span><span class="s1">&#39;sessions&#39;</span><span class="p">][</span><span class="n">session_name</span><span class="p">][</span><span class="s1">&#39;min_parang_range&#39;</span><span class="p">],</span> <span class="n">parallactic_range</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Parallactic angle range for </span><span class="si">{</span><span class="n">polcal_name</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">) in session </span><span class="si">{</span><span class="n">session_name</span><span class="si">}</span><span class="s1">: &#39;</span>
+                         <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">parallactic_range</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">session_scores</span> <span class="o">=</span> <span class="n">qacalc</span><span class="o">.</span><span class="n">score_parallactic_range</span><span class="p">(</span>
+                    <span class="n">intents_present</span><span class="p">,</span> <span class="n">session_name</span><span class="p">,</span> <span class="n">polcal_name</span><span class="p">,</span> <span class="n">parallactic_range</span><span class="p">,</span> <span class="n">threshold</span>
+                <span class="p">)</span>
+                <span class="n">all_scores</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">session_scores</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">all_scores</span><span class="p">,</span> <span class="n">all_metrics</span>
+
+
+<span class="k">def</span> <span class="nf">_check_bands</span><span class="p">(</span><span class="n">mses</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check each measurement set for bands with calibration issues</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">qacalc</span><span class="o">.</span><span class="n">score_bands</span><span class="p">(</span><span class="n">mses</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_check_observing_modes</span><span class="p">(</span><span class="n">mses</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check each measurement set for issues with observing modes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">qacalc</span><span class="o">.</span><span class="n">score_observing_modes</span><span class="p">(</span><span class="n">mses</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_check_science_spw_names</span><span class="p">(</span><span class="n">mses</span><span class="p">,</span> <span class="n">virtual_science_spw_names</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check science spw names</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">qacalc</span><span class="o">.</span><span class="n">score_science_spw_names</span><span class="p">(</span><span class="n">mses</span><span class="p">,</span> <span class="n">virtual_science_spw_names</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_check_fluxservice</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check flux service usage</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">qacalc</span><span class="o">.</span><span class="n">score_fluxservice</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_check_fluxservicemessages</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check flux service messages</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">qacalc</span><span class="o">.</span><span class="n">score_fluxservicemessages</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_check_fluxservicestatuscodes</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check flux service statuscodes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">qacalc</span><span class="o">.</span><span class="n">score_fluxservicestatuscodes</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_check_fluxcsv</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check for flux.csv file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">qacalc</span><span class="o">.</span><span class="n">score_fluxcsv</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_check_calobjects</span><span class="p">(</span><span class="n">recipe_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if BP/Phcal/Ampcal are all the same object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">qacalc</span><span class="o">.</span><span class="n">score_samecalobjects</span><span class="p">(</span><span class="n">recipe_name</span><span class="p">,</span> <span class="n">mses</span><span class="p">)</span>
+
+
+<span class="c1"># - functions to measure parallactic angle coverage of polarisation calibrator ----------------------------------------</span>
+
+<span class="c1"># Type aliases for the parallactic angle computations.</span>
+<span class="n">ParallacticAngle</span> <span class="o">=</span> <span class="nb">float</span>
+<span class="n">SignedAngle</span> <span class="o">=</span> <span class="nb">float</span>
+<span class="n">PositiveDefiniteAngle</span> <span class="o">=</span> <span class="nb">float</span>
+
+
+<div class="viewcode-block" id="ous_parallactic_range">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.qa.ous_parallactic_range">[docs]</a>
+<span class="k">def</span> <span class="nf">ous_parallactic_range</span><span class="p">(</span><span class="n">mses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">],</span> <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the parallactic angle range across all measurement sets for field f</span>
+<span class="sd">    when observed with the specifiedintent.</span>
+
+<span class="sd">    :param mses: MeasurementSets to process</span>
+<span class="sd">    :param field_name: Field to inspect</span>
+<span class="sd">    :param intent: observing intent to consider</span>
+<span class="sd">    :return: angular range expressed as (min angle, max angle) tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mses</span><span class="p">:</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">field_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Cannot determine parallactic angle for </span><span class="si">%s</span><span class="s1"> field: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">angles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parallactic_range_for_field</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Could not determine parallactic angle&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">angles</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">signed_range</span> <span class="o">=</span> <span class="n">range_after_processing</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">to_signed</span><span class="p">)</span>
+    <span class="n">pd_range</span> <span class="o">=</span> <span class="n">range_after_processing</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">to_positive_definite</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">min</span><span class="p">((</span><span class="n">signed_range</span><span class="p">,</span> <span class="n">pd_range</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="parallactic_range_for_field">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.qa.parallactic_range_for_field">[docs]</a>
+<span class="k">def</span> <span class="nf">parallactic_range_for_field</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">Field</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the parallactic angle range for field f when observed with the specified</span>
+<span class="sd">    intent.</span>
+
+<span class="sd">    :param ms: MeasurementSet to process</span>
+<span class="sd">    :param f: Field to inspect</span>
+<span class="sd">    :param intent: observing intent to consider</span>
+<span class="sd">    :return: angular range expressed as (min angle, max angle) tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get the scans when the field was observed with the required intent</span>
+    <span class="n">scans</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">scan_intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">scans</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No scans detected for field </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s1"> with intent </span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># This uses the earliest start and latest end times of the scan domain</span>
+    <span class="c1"># objects. In theory, times within a scan can be field and spw dependent so</span>
+    <span class="c1"># they may not exactly match those of the field in question, but they</span>
+    <span class="c1"># should be accurate enough for our purposes</span>
+    <span class="n">min_utc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">start_time</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">get_epoch_as_datetime</span><span class="p">)</span>
+    <span class="n">max_utc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">end_time</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">get_epoch_as_datetime</span><span class="p">)</span>
+
+    <span class="n">min_pa</span> <span class="o">=</span> <span class="n">parallactic_angle_at_epoch</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">min_utc</span><span class="p">)</span>
+    <span class="n">max_pa</span> <span class="o">=</span> <span class="n">parallactic_angle_at_epoch</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">max_utc</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">min_pa</span> <span class="o">&gt;</span> <span class="n">max_pa</span><span class="p">:</span>
+        <span class="n">min_pa</span><span class="p">,</span> <span class="n">max_pa</span> <span class="o">=</span> <span class="n">max_pa</span><span class="p">,</span> <span class="n">min_pa</span>
+
+    <span class="k">return</span> <span class="n">min_pa</span><span class="p">,</span> <span class="n">max_pa</span></div>
+
+
+
+<div class="viewcode-block" id="parallactic_angle_at_epoch">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.qa.parallactic_angle_at_epoch">[docs]</a>
+<span class="k">def</span> <span class="nf">parallactic_angle_at_epoch</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">Field</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the instantaneous parallactic angle for field f at epoch e.</span>
+
+<span class="sd">    :param f: Field domain object</span>
+<span class="sd">    :param e: CASA epoch</span>
+<span class="sd">    :return: angular separation in degrees</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+    <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">observatory</span><span class="p">(</span><span class="s1">&#39;ALMA&#39;</span><span class="p">))</span>
+        <span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+        <span class="n">pole_direction</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="s1">&#39;J2000&#39;</span><span class="p">,</span> <span class="s1">&#39;0deg&#39;</span><span class="p">,</span> <span class="s1">&#39;+90deg&#39;</span><span class="p">)</span>
+        <span class="n">pole_azel</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">pole_direction</span><span class="p">,</span> <span class="s1">&#39;AZEL&#39;</span><span class="p">)</span>
+        <span class="n">field_azel</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">mdirection</span><span class="p">,</span> <span class="s1">&#39;AZEL&#39;</span><span class="p">)</span>
+
+        <span class="n">separation</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">posangle</span><span class="p">(</span><span class="n">field_azel</span><span class="p">,</span> <span class="n">pole_azel</span><span class="p">)</span>
+        <span class="n">sep_degs</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">separation</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">sep_degs</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">me</span><span class="o">.</span><span class="n">done</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="range_after_processing">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.qa.range_after_processing">[docs]</a>
+<span class="k">def</span> <span class="nf">range_after_processing</span><span class="p">(</span><span class="n">fs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">g</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the range of a list of floats (fs) once processed by function g.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">processed</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fs</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">processed</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">processed</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="to_signed">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.qa.to_signed">[docs]</a>
+<span class="k">def</span> <span class="nf">to_signed</span><span class="p">(</span><span class="n">angle</span><span class="p">:</span> <span class="n">ParallacticAngle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SignedAngle</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">angle</span> <span class="o">-</span> <span class="mi">360</span>
+    <span class="k">return</span> <span class="n">angle</span></div>
+
+
+
+<div class="viewcode-block" id="to_positive_definite">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.qa.to_positive_definite">[docs]</a>
+<span class="k">def</span> <span class="nf">to_positive_definite</span><span class="p">(</span><span class="n">angle</span><span class="p">:</span> <span class="n">ParallacticAngle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PositiveDefiniteAngle</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">angle</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">angle</span> <span class="o">+</span> <span class="mi">360</span>
+    <span class="k">return</span> <span class="n">angle</span></div>
+
+
+<span class="c1"># - end parallactic angle coverage functions --------------------------------------------------------------------------</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

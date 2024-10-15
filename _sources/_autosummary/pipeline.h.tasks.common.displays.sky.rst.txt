@@ -1,0 +1,22 @@
+pipeline.h.tasks.common.displays.sky
+====================================
+
+.. automodule:: pipeline.h.tasks.common.displays.sky
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_stokes
+      plotfilename
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AnnotationBbox
+      HPacker
+      SkyDisplay
+      TextArea
+   

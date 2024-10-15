@@ -1,0 +1,408 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pipeline</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Pipeline software package</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">atexit</span>
+<span class="kn">import</span> <span class="nn">decimal</span>
+<span class="kn">import</span> <span class="nn">http.server</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">webbrowser</span>
+
+<span class="kn">from</span> <span class="nn">astropy.utils.iers</span> <span class="kn">import</span> <span class="n">conf</span> <span class="k">as</span> <span class="n">iers_conf</span>
+
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">from</span> <span class="nn">casashell.private.stack_manip</span> <span class="kn">import</span> <span class="n">find_frame</span>
+<span class="kn">from</span> <span class="nn">casatasks</span> <span class="kn">import</span> <span class="n">casalog</span>
+
+<span class="c1"># from . import config</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">domain</span><span class="p">,</span> <span class="n">environment</span><span class="p">,</span> <span class="n">infrastructure</span>
+<span class="kn">from</span> <span class="nn">.domain</span> <span class="kn">import</span> <span class="n">measures</span>
+<span class="kn">from</span> <span class="nn">.infrastructure</span> <span class="kn">import</span> <span class="n">Context</span><span class="p">,</span> <span class="n">Pipeline</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">h</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">hif</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">hifa</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">hsd</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">hifv</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">hsdn</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="n">revision</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">pipeline_revision</span>
+
+<span class="c1"># Modify filter to get INFO1 message which the pipeline</span>
+<span class="c1"># treats as ATTENTION level.</span>
+<span class="n">casalog</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s1">&#39;INFO1&#39;</span><span class="p">)</span>
+
+<span class="c1"># PIPE-2195: Extend auto_max_age to reduce the frequency of IERS Bulletin-A table auto-updates. </span>
+<span class="c1"># This change increases the maximum age of predictive data before auto-downloading is triggered.</span>
+<span class="c1"># Note that the default auto_max_age value is 30 days as of Astropy ver 6.0.1:</span>
+<span class="c1"># https://docs.astropy.org/en/stable/utils/iers.html</span>
+<span class="n">iers_conf</span><span class="o">.</span><span class="n">auto_max_age</span> <span class="o">=</span> <span class="mi">180</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">__pipeline_documentation_weblink_alma__</span> <span class="o">=</span> <span class="s2">&quot;http://almascience.org/documents-and-tools/pipeline-documentation-archive&quot;</span>
+
+
+<span class="n">WEBLOG_LOCK</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+<span class="n">HTTP_SERVER</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="show_weblog">
+<a class="viewcode-back" href="../_apidoc/pipeline.html#pipeline.show_weblog">[docs]</a>
+<span class="k">def</span> <span class="nf">show_weblog</span><span class="p">(</span><span class="n">index_path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                <span class="n">handler_class</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="p">,</span>
+                <span class="n">server_class</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">HTTPServer</span><span class="p">,</span>
+                <span class="n">bind</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Locate the most recent web log and serve it via a HTTP server running on</span>
+<span class="sd">    127.0.0.1 using a random port 30000-32768.</span>
+
+<span class="sd">    The function arguments are not exposed in the CASA CLI interface, but are</span>
+<span class="sd">    made available in case that becomes necessary.</span>
+
+<span class="sd">    TODO:</span>
+<span class="sd">    Ideally we&#39;d serve just the html directory, but that breaks the weblog for</span>
+<span class="sd">    reasons I don&#39;t have time to investigate right now. See</span>
+<span class="sd">    https://gist.github.com/diegosorrilha/812787c01b65fde6dec870ab97212abd ,</span>
+<span class="sd">    which is easily convertible to Python 3. These classes can be passed in as</span>
+<span class="sd">    handler_class and server_class arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">HTTP_SERVER</span>
+
+    <span class="k">if</span> <span class="n">index_path</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="c1"># find all t1-1.html files</span>
+        <span class="n">index_files</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;t1-1.html&#39;</span><span class="p">)}</span>
+
+        <span class="c1"># No web log, bail.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No weblog detected&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># sort files by date, newest first</span>
+        <span class="n">by_date</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;t1-1.html&#39;</span><span class="p">),</span>
+                         <span class="n">key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">,</span>
+                         <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Found weblogs at:</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">by_date</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Multiple web logs detected. Selecting most recent version&#39;</span><span class="p">)</span>
+
+        <span class="n">index_path</span> <span class="o">=</span> <span class="n">by_date</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">index_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">index_path</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">WEBLOG_LOCK</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">HTTP_SERVER</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">httpd</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># find first available port in range 30000-32768</span>
+            <span class="n">port</span> <span class="o">=</span> <span class="mi">30000</span>
+            <span class="k">while</span> <span class="n">httpd</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">port</span> <span class="o">&lt;</span> <span class="mi">32768</span><span class="p">:</span>
+                <span class="n">server_address</span> <span class="o">=</span> <span class="p">(</span><span class="n">bind</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">httpd</span> <span class="o">=</span> <span class="n">server_class</span><span class="p">(</span><span class="n">server_address</span><span class="p">,</span> <span class="n">handler_class</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="c1"># Errno 48 = port already taken</span>
+                    <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="mi">48</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Port </span><span class="si">%s</span><span class="s1"> already in use. Selecting a different port...&#39;</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+                        <span class="n">port</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span>
+
+            <span class="k">if</span> <span class="n">httpd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not start web server. All ports in use&#39;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="n">sa</span> <span class="o">=</span> <span class="n">httpd</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span>
+            <span class="n">serve_message</span> <span class="o">=</span> <span class="s1">&#39;Serving web log on </span><span class="si">{host}</span><span class="s1"> port </span><span class="si">{port}</span><span class="s1"> (http://</span><span class="si">{host}</span><span class="s1">:</span><span class="si">{port}</span><span class="s1">/) ...&#39;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">serve_message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">sa</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">port</span><span class="o">=</span><span class="n">sa</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+            <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">httpd</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">)</span>
+            <span class="n">thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+            <span class="n">HTTP_SERVER</span> <span class="o">=</span> <span class="n">httpd</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sa</span> <span class="o">=</span> <span class="n">HTTP_SERVER</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using existing HTTP server at </span><span class="si">%s</span><span class="s1"> port </span><span class="si">%s</span><span class="s1"> ...&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sa</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">stop_weblog</span><span class="p">)</span>
+
+    <span class="n">sa</span> <span class="o">=</span> <span class="n">HTTP_SERVER</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sa</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sa</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">index_path</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Opening </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+
+    <span class="c1"># Get controller for Firefox if possible, otherwise use whatever the</span>
+    <span class="c1"># webbrowser module determines to be best</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">browser</span> <span class="o">=</span> <span class="n">webbrowser</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;firefox&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">webbrowser</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
+        <span class="n">browser</span> <span class="o">=</span> <span class="n">webbrowser</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">browser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="stop_weblog">
+<a class="viewcode-back" href="../_apidoc/pipeline.html#pipeline.stop_weblog">[docs]</a>
+<span class="k">def</span> <span class="nf">stop_weblog</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">HTTP_SERVER</span>
+    <span class="k">with</span> <span class="n">WEBLOG_LOCK</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">HTTP_SERVER</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sa</span> <span class="o">=</span> <span class="n">HTTP_SERVER</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span>
+
+            <span class="n">HTTP_SERVER</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+
+            <span class="n">serve_message</span> <span class="o">=</span> <span class="s2">&quot;HTTP server on </span><span class="si">{host}</span><span class="s2"> port </span><span class="si">{port}</span><span class="s2"> shut down&quot;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">serve_message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">sa</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">port</span><span class="o">=</span><span class="n">sa</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">HTTP_SERVER</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="initcli">
+<a class="viewcode-back" href="../_apidoc/pipeline.html#pipeline.initcli">[docs]</a>
+<span class="k">def</span> <span class="nf">initcli</span><span class="p">(</span><span class="n">user_globals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Initializing cli...&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user_globals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">my_globals</span> <span class="o">=</span> <span class="n">find_frame</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">my_globals</span> <span class="o">=</span> <span class="n">user_globals</span>
+
+    <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;hif&#39;</span><span class="p">,</span> <span class="s1">&#39;hifa&#39;</span><span class="p">,</span> <span class="s1">&#39;hifv&#39;</span><span class="p">,</span> <span class="s1">&#39;hsd&#39;</span><span class="p">,</span> <span class="s1">&#39;hsdn&#39;</span><span class="p">]:</span>
+        <span class="n">abs_cli_package</span> <span class="o">=</span> <span class="s1">&#39;pipeline.</span><span class="si">{package}</span><span class="s1">.cli&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="o">=</span><span class="n">package</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Check the existence of the generated __init__ modules</span>
+            <span class="n">path_to_cli_init</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="n">abs_cli_package</span><span class="p">,</span> <span class="s1">&#39;__init__.py&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Import error: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No tasks found for package: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Instantiate the pipeline tasks for the given package</span>
+            <span class="n">exec</span><span class="p">(</span><span class="s1">&#39;from </span><span class="si">{}</span><span class="s1"> import *&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">abs_cli_package</span><span class="p">),</span> <span class="n">my_globals</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Loaded Pipeline commands from package: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="log_host_environment">
+<a class="viewcode-back" href="../_apidoc/pipeline.html#pipeline.log_host_environment">[docs]</a>
+<span class="k">def</span> <span class="nf">log_host_environment</span><span class="p">():</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">ENVIRONMENT</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Pipeline version </span><span class="si">{!s}</span><span class="s1"> running on </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">revision</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">hostname</span><span class="p">))</span>
+
+    <span class="n">ram</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">FileSize</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">ram</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">FileSizeUnits</span><span class="o">.</span><span class="n">BYTES</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">swap</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">FileSize</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">swap</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">FileSizeUnits</span><span class="o">.</span><span class="n">BYTES</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">decimal</span><span class="o">.</span><span class="n">InvalidOperation</span><span class="p">:</span>
+        <span class="n">swap</span> <span class="o">=</span> <span class="s1">&#39;unknown&#39;</span>
+
+    <span class="k">if</span> <span class="n">env</span><span class="o">.</span><span class="n">cgroup_mem_limit</span> <span class="o">!=</span> <span class="s1">&#39;N/A&#39;</span><span class="p">:</span>
+        <span class="n">cgroup_mem_limit</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">FileSize</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">cgroup_mem_limit</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">FileSizeUnits</span><span class="o">.</span><span class="n">BYTES</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cgroup_mem_limit</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;Host environment:</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">CPU: </span><span class="si">{</span><span class="n">env</span><span class="o">.</span><span class="n">cpu_type</span><span class="si">}</span><span class="s1"> &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;(physical cores: </span><span class="si">{</span><span class="n">env</span><span class="o">.</span><span class="n">physical_cpu_cores</span><span class="si">}</span><span class="s1">, logical cores: </span><span class="si">{</span><span class="n">env</span><span class="o">.</span><span class="n">logical_cpu_cores</span><span class="si">}</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Memory: </span><span class="si">{</span><span class="n">ram</span><span class="si">}</span><span class="s1"> RAM, </span><span class="si">{</span><span class="n">swap</span><span class="si">}</span><span class="s1"> swap</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">OS: </span><span class="si">{</span><span class="n">env</span><span class="o">.</span><span class="n">host_distribution</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">cgroup limits: </span><span class="si">{</span><span class="n">env</span><span class="o">.</span><span class="n">cgroup_cpu_bandwidth</span><span class="si">}</span><span class="s1"> of </span><span class="si">{</span><span class="n">env</span><span class="o">.</span><span class="n">cgroup_num_cpus</span><span class="si">}</span><span class="s1"> CPU cores, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;memory limits=</span><span class="si">{</span><span class="n">cgroup_mem_limit</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">ulimit limits: CPU time=</span><span class="si">{</span><span class="n">env</span><span class="o">.</span><span class="n">ulimit_cpu</span><span class="si">}</span><span class="s1">, memory=</span><span class="si">{</span><span class="n">env</span><span class="o">.</span><span class="n">ulimit_mem</span><span class="si">}</span><span class="s1">, files=</span><span class="si">{</span><span class="n">env</span><span class="o">.</span><span class="n">ulimit_files</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;Environment as detected by CASA:</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">CPUs reported by CASA: </span><span class="si">{</span><span class="n">env</span><span class="o">.</span><span class="n">casa_cores</span><span class="si">}</span><span class="s1"> cores, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;max </span><span class="si">{</span><span class="n">env</span><span class="o">.</span><span class="n">casa_threads</span><span class="si">}</span><span class="s1"> OpenMP thread</span><span class="si">{</span><span class="s2">&quot;s&quot;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">env</span><span class="o">.</span><span class="n">casa_threads</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Available memory: </span><span class="si">{</span><span class="n">measures</span><span class="o">.</span><span class="n">FileSize</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">casa_memory</span><span class="p">,</span><span class="w"> </span><span class="n">measures</span><span class="o">.</span><span class="n">FileSizeUnits</span><span class="o">.</span><span class="n">BYTES</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Dependency details:&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">dep_name</span><span class="p">,</span> <span class="n">dep_detail</span> <span class="ow">in</span> <span class="n">environment</span><span class="o">.</span><span class="n">dependency_details</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">dep_detail</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;  </span><span class="si">{!s}</span><span class="s1"> : </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dep_name</span><span class="p">,</span> <span class="s1">&#39;not found&#39;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;  </span><span class="si">{!s}</span><span class="s1"> = </span><span class="si">{!s}</span><span class="s1"> : </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">dep_name</span><span class="p">,</span> <span class="n">dep_detail</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">],</span> <span class="n">dep_detail</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]))</span>
+    <span class="k">except</span> <span class="bp">NotImplemented</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+
+
+<span class="n">log_host_environment</span><span class="p">()</span>
+
+<span class="c1"># FINALLY import executeppr. Do so as late as possible in pipeline module</span>
+<span class="c1"># because executeppr make use of a part of pipeline module.</span>
+<span class="kn">from</span> <span class="nn">.infrastructure</span> <span class="kn">import</span> <span class="n">executeppr</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

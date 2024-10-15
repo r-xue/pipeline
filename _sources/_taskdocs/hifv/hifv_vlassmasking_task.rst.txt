@@ -1,0 +1,35 @@
+hifv_vlassmasking
+=================
+
+Task description
+-----------------
+Create clean masks for VLASS SE images
+
+Output:
+
+results -- The results object for the pipeline task is returned.
+
+Parameter List 
+--------------
+.. list-table::
+    :widths: 25 50
+    :header-rows: 1
+    :class: longtable
+
+    * - parameter name
+      - description
+    * - vis
+      - | The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+    * - vlass_ql_database
+      - | vlass_ql_database - usage in Socorro: /home/vlass/packages/VLASS1Q.fits
+    * - maskingmode
+      - | maskingmode options are vlass-se-tier-1 or vlass-se-tier-2
+    * - catalog_search_size
+      - | catalog_search_size in units of degrees
+
+
+Examples 
+--------
+1. Basic vlassmasking task
+
+>>> hifv_vlassmasking()

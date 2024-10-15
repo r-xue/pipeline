@@ -1,0 +1,37 @@
+pipeline.hifv.tasks.vlassmasking package
+========================================
+
+Submodules
+----------
+
+pipeline.hifv.tasks.vlassmasking.display module
+-----------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.vlassmasking.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.vlassmasking.renderer module
+------------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.vlassmasking.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.vlassmasking.vlassmasking module
+----------------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.vlassmasking.vlassmasking
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifv.tasks.vlassmasking
+   :members:
+   :undoc-members:
+   :show-inheritance:

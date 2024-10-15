@@ -1,0 +1,17 @@
+pipeline.hifv.tasks.syspower.display
+====================================
+
+.. automodule:: pipeline.hifv.tasks.syspower.display
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      atime
+      compressionSummary
+      medianSummary
+      syspowerBarChart
+      syspowerBoxChart
+      syspowerPerAntennaChart
+   

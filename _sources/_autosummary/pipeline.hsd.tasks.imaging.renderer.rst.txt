@@ -1,0 +1,14 @@
+pipeline.hsd.tasks.imaging.renderer
+===================================
+
+.. automodule:: pipeline.hsd.tasks.imaging.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ImageRMSTR
+      SingleDishMomentMapPlotRenderer
+      T2_4MDetailsSingleDishImagingRenderer
+   

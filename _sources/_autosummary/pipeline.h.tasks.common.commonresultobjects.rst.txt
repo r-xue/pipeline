@@ -1,0 +1,16 @@
+pipeline.h.tasks.common.commonresultobjects
+===========================================
+
+.. automodule:: pipeline.h.tasks.common.commonresultobjects
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ImageResult
+      QaResult
+      ResultAxis
+      ResultBase
+      SpectrumResult
+   

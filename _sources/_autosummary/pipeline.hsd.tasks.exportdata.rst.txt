@@ -1,0 +1,20 @@
+pipeline.hsd.tasks.exportdata
+=============================
+
+.. automodule:: pipeline.hsd.tasks.exportdata
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SDExportData
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   almasdaqua
+   exportdata

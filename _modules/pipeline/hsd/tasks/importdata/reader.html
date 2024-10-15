@@ -1,0 +1,1206 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.importdata.reader &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.importdata.reader</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.importdata.reader</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module is implemented classes for importdata to read MeasurementSet.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.heuristics.rasterscan</span> <span class="kn">import</span> <span class="n">RasterScanHeuristicsResult</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.datatable</span> <span class="kn">import</span> <span class="n">DataTableColumnMaskList</span> <span class="k">as</span> <span class="n">ColMaskList</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.datatable</span> <span class="kn">import</span> <span class="n">DataTableImpl</span> <span class="k">as</span> <span class="n">DataTable</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.datatable</span> <span class="kn">import</span> <span class="n">OnlineFlagIndex</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.common</span> <span class="kn">import</span> <span class="n">TableSelector</span><span class="p">,</span> <span class="n">mjd_to_datestring</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">direction_utils</span> <span class="k">as</span> <span class="n">dirutil</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">rasterutil</span>
+<span class="kn">from</span> <span class="nn">..common.utils</span> <span class="kn">import</span> <span class="n">mjd_to_datetime</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_value_in_deg">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.get_value_in_deg">[docs]</a>
+<span class="k">def</span> <span class="nf">get_value_in_deg</span><span class="p">(</span><span class="n">quantity</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a casa quantity into a value in the unit of degree.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        quantity: value for convert</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray: converted value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+    <span class="k">return</span> <span class="n">qa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="mjdsec2str">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.mjdsec2str">[docs]</a>
+<span class="k">def</span> <span class="nf">mjdsec2str</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert datetime to string.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        t: MJD second to convert</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: formatted datetime</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">date_time</span> <span class="o">=</span> <span class="n">mjd_to_datetime</span><span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="mi">86400</span><span class="p">)</span>
+    <span class="n">attributes</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;hour&#39;</span><span class="p">,</span> <span class="s1">&#39;minute&#39;</span><span class="p">,</span> <span class="s1">&#39;second&#39;</span><span class="p">,</span> <span class="s1">&#39;microsecond&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.</span><span class="si">{:0&gt;6d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">date_time</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="get_state_id">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.get_state_id">[docs]</a>
+<span class="k">def</span> <span class="nf">get_state_id</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get state ID from MeasurementSet.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ms: MeasurementSet</span>
+<span class="sd">        spw: spectral window</span>
+<span class="sd">        intent: Pipeline intent</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        array: state IDs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">states</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">states</span> <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span>
+    <span class="n">obs_modes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+        <span class="n">modes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">get_obs_mode_for_intent</span><span class="p">(</span><span class="n">intent</span><span class="p">))</span>
+        <span class="n">obs_modes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">modes</span><span class="p">)</span>
+    <span class="n">state_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">msreader</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">obs_mode</span> <span class="ow">in</span> <span class="n">obs_modes</span><span class="p">:</span>
+            <span class="n">msreader</span><span class="o">.</span><span class="n">msselect</span><span class="p">({</span><span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span> <span class="s1">&#39;scanintent&#39;</span><span class="p">:</span> <span class="n">obs_mode</span><span class="p">},</span> <span class="n">onlyparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">msreader</span><span class="o">.</span><span class="n">msselectedindices</span><span class="p">()</span>
+            <span class="n">state_ids</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">indices</span><span class="p">[</span><span class="s1">&#39;stateid&#39;</span><span class="p">])</span>
+            <span class="c1"># Need to reset explicitly after CASA 5.3. See CAS-11088 for detail.</span>
+            <span class="n">msreader</span><span class="o">.</span><span class="n">selectinit</span><span class="p">(</span><span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">state_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="merge_timerange">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.merge_timerange">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_timerange</span><span class="p">(</span><span class="n">timerange_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge time ranges.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        timerange_list: list of timerange</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        List: merged time ranges</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">timegap_list</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">l1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">l0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">l0</span><span class="p">,</span> <span class="n">l1</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">timerange_list</span><span class="p">,</span> <span class="n">timerange_list</span><span class="p">[</span><span class="mi">1</span><span class="p">:])])</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;timegap_list is </span><span class="si">{</span><span class="n">timegap_list</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># regard timegap &lt;= 0.1msec as continuous</span>
+    <span class="n">gap_index</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">timegap_list</span> <span class="o">&gt;</span> <span class="mf">1e-4</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">+</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">timegap_list</span><span class="p">)]</span>
+
+    <span class="n">timerange_merged</span> <span class="o">=</span> <span class="p">[[</span><span class="n">timerange_list</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">timerange_list</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">gap_index</span><span class="p">,</span> <span class="n">gap_index</span><span class="p">[</span><span class="mi">1</span><span class="p">:])]</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;timerange_merged is </span><span class="si">{</span><span class="n">timerange_merged</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">timerange_merged</span></div>
+
+
+
+<div class="viewcode-block" id="initialize_template">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.initialize_template">[docs]</a>
+<span class="k">def</span> <span class="nf">initialize_template</span><span class="p">(</span><span class="n">flagtemplate</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialise flag template.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        flagtemplate: path of flag template</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># remove existing template file</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">flagtemplate</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">flagtemplate</span><span class="p">)</span>
+
+    <span class="c1"># initialize template file with header</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">flagtemplate</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;# This template file is auto-generated by hsd_importdata to flag MS rows based on pointing data </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="merge_flagcmd">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.merge_flagcmd">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_flagcmd</span><span class="p">(</span><span class="n">commands</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Primitive merge of flag command.</span>
+
+<span class="sd">    Merge flag commands that have exactly same timerange but different antennas/spws.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        commands: List of (spw, antenna, timerange) string tuples.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        List: Merged list of (spw, antenna, timerange) string tuples.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;INPUT: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">commands</span><span class="p">)</span>
+    <span class="c1"># merge command using utils.dict_merge</span>
+    <span class="c1"># result will be</span>
+    <span class="c1">#   {timerangeX: {antennaX: {spwX: 0, spwY: 0,...},</span>
+    <span class="c1">#                {antennaY: {spwX: 0, spwY: 0, ...},</span>
+    <span class="c1">#    timerangeY: ...}</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">{</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="p">{</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="p">{</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="mi">0</span><span class="p">}}},</span> <span class="n">commands</span><span class="p">):</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dict_merge</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
+
+    <span class="c1"># construct return value</span>
+    <span class="n">merged</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">timerange</span><span class="p">,</span> <span class="n">atmp</span> <span class="ow">in</span> <span class="n">tmp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># mtmp dict</span>
+        <span class="c1"># {spwX: [antennaX, antennaY, ...],</span>
+        <span class="c1">#  spwY: [antennaX, antennaY, ...]}</span>
+        <span class="n">mtmp</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">stmp</span> <span class="ow">in</span> <span class="n">atmp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">stmp</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">mtmp</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="n">mtmp</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">antenna</span><span class="p">)</span>
+
+        <span class="c1"># mtmp2 dict</span>
+        <span class="c1"># {antstr1: [spwX, spwY, ...],</span>
+        <span class="c1">#  antstr2: [spwX, spwY, ...]}</span>
+        <span class="c1"># where antstrN is string of comma-separated</span>
+        <span class="c1"># list of antenna ids.</span>
+        <span class="n">mtmp2</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mtmp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">mtmp2</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">mtmp2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+        <span class="c1"># construct merged command</span>
+        <span class="c1"># [(spwstr1, antstr1, timerange),</span>
+        <span class="c1">#  (spwstr2, antstr2, timerange),</span>
+        <span class="c1">#  ...]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mtmp2</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">merged_spw</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">merged_antenna</span> <span class="o">=</span> <span class="n">k</span>
+            <span class="n">merged</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">merged_spw</span><span class="p">,</span> <span class="n">merged_antenna</span><span class="p">,</span> <span class="n">timerange</span><span class="p">))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;OUTPUT: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">merged</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">merged</span></div>
+
+
+
+<div class="viewcode-block" id="write_flagcmd">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.write_flagcmd">[docs]</a>
+<span class="k">def</span> <span class="nf">write_flagcmd</span><span class="p">(</span><span class="n">flagtemplate</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cmd_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write command list to flagtemplate file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        flagtemplate: filename of flagtemplate</span>
+<span class="sd">        cmd_list: list of (spw, antenna, timerange) string tuples.</span>
+<span class="sd">        reason: reason string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sanitized</span> <span class="o">=</span> <span class="n">reason</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mode=&#39;manual&#39; spw=&#39;$spw&#39; antenna=&#39;$antenna&amp;&amp;&amp;&#39; timerange=&#39;$timerange&#39; reason=&#39;SDPL:</span><span class="si">{</span><span class="n">sanitized</span><span class="si">}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">flagtemplate</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">timerange</span> <span class="ow">in</span> <span class="n">cmd_list</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">safe_substitute</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span> <span class="n">timerange</span><span class="o">=</span><span class="n">timerange</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="set_nominal_direction">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.set_nominal_direction">[docs]</a>
+<span class="k">def</span> <span class="nf">set_nominal_direction</span><span class="p">(</span><span class="n">ant</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">srctype</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ra</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                          <span class="n">shift_ra</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">shift_dec</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">offset_ra</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">offset_dec</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Replace NaNs in input arrays with nominal directions.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ant: antenna id</span>
+<span class="sd">        srctype: source type ids (0=target, 1=other types)</span>
+<span class="sd">        az: pointing direction:AZ</span>
+<span class="sd">        el: pointing direction:EL</span>
+<span class="sd">        ra: pointing direction:RA</span>
+<span class="sd">        dec: pointing direction:DEC</span>
+<span class="sd">        shift_ra: pointing direction:Shift RA</span>
+<span class="sd">        shift_dec: pointing direction:Shift DEC</span>
+<span class="sd">        offset_ra: pointing direction:Offset RA</span>
+<span class="sd">        offset_dec: pointing direction:Offset DEC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check if there are NaN&#39;s</span>
+    <span class="n">isvalid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">az</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">isvalid</span><span class="p">):</span>
+        <span class="c1"># no NaN&#39;s so exit this loop</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;no NaN&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">for</span> <span class="n">_a</span><span class="p">,</span> <span class="n">_s</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ant</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="n">srctype</span><span class="p">)):</span>
+        <span class="c1"># select data</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ant </span><span class="si">{</span><span class="n">_a</span><span class="si">}</span><span class="s1"> src </span><span class="si">{</span><span class="n">_s</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">sel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">ant</span> <span class="o">==</span> <span class="n">_a</span><span class="p">,</span> <span class="n">srctype</span> <span class="o">==</span> <span class="n">_s</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">sel</span><span class="p">)):</span>
+            <span class="c1"># no data for this selection</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;no data&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># separate NaN&#39;s</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">isvalid</span><span class="p">,</span> <span class="n">sel</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">mask</span><span class="p">[</span><span class="n">sel</span><span class="p">]):</span>
+            <span class="c1"># no NaN&#39;s for this selection</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;no NaN for this selection&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">nanmask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">isvalid</span><span class="p">),</span> <span class="n">sel</span><span class="p">)</span>
+        <span class="n">_az</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">az</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;nominal az </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_az</span><span class="p">))</span>
+        <span class="n">_el</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">el</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;nominal el </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_el</span><span class="p">))</span>
+        <span class="n">_ra</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">ra</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;nominal ra </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_ra</span><span class="p">))</span>
+        <span class="n">_dec</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">dec</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;nominal dec </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_dec</span><span class="p">))</span>
+        <span class="n">_shift_ra</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">shift_ra</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;nominal shift_ra </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_shift_ra</span><span class="p">))</span>
+        <span class="n">_shift_dec</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">shift_dec</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;nominal shift_dec </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_shift_dec</span><span class="p">))</span>
+        <span class="n">_offset_ra</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">offset_ra</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;nominal offset_ra </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_offset_ra</span><span class="p">))</span>
+        <span class="n">_offset_dec</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">offset_dec</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;nominal offset_dec </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_offset_dec</span><span class="p">))</span>
+        <span class="n">az</span><span class="p">[</span><span class="n">nanmask</span><span class="p">]</span> <span class="o">=</span> <span class="n">_az</span>
+        <span class="n">el</span><span class="p">[</span><span class="n">nanmask</span><span class="p">]</span> <span class="o">=</span> <span class="n">_el</span>
+        <span class="n">ra</span><span class="p">[</span><span class="n">nanmask</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ra</span>
+        <span class="n">dec</span><span class="p">[</span><span class="n">nanmask</span><span class="p">]</span> <span class="o">=</span> <span class="n">_dec</span>
+        <span class="n">shift_ra</span><span class="p">[</span><span class="n">nanmask</span><span class="p">]</span> <span class="o">=</span> <span class="n">_shift_ra</span>
+        <span class="n">shift_dec</span><span class="p">[</span><span class="n">nanmask</span><span class="p">]</span> <span class="o">=</span> <span class="n">_shift_dec</span>
+        <span class="n">offset_ra</span><span class="p">[</span><span class="n">nanmask</span><span class="p">]</span> <span class="o">=</span> <span class="n">_offset_ra</span>
+        <span class="n">offset_dec</span><span class="p">[</span><span class="n">nanmask</span><span class="p">]</span> <span class="o">=</span> <span class="n">_offset_dec</span></div>
+
+
+
+<div class="viewcode-block" id="MetaDataReader">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader">[docs]</a>
+<span class="k">class</span> <span class="nc">MetaDataReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MetaData reading class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize this class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: pipeline context</span>
+<span class="sd">            mses: list of measurementset domain objects</span>
+<span class="sd">            table_name: name of DataTable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">ms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table_name</span> <span class="o">=</span> <span class="n">table_name</span>
+        <span class="c1"># existing table should be the one generated by the previous run</span>
+        <span class="c1"># so it must be overwritten</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_name</span><span class="p">):</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span> <span class="o">=</span> <span class="n">DataTable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">table_name</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vAnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">appended_row</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># invalid_pointing_data is dictionary (collections.defaultdict)</span>
+        <span class="c1"># it stores an information of the data that caused</span>
+        <span class="c1"># msmd.pointingdirection to fail due to the lack of</span>
+        <span class="c1"># pointing data in POINTING table</span>
+        <span class="c1"># key: antenna id</span>
+        <span class="c1"># value: list of DataTable rows for invalid data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalid_pointing_data</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+        <span class="c1"># remove flag template for pointing</span>
+        <span class="n">ms_prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flagtemplate</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ms_prefix</span><span class="si">}</span><span class="s1">.flagpointing.txt&#39;</span><span class="p">)</span>
+        <span class="n">initialize_template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flagtemplate</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property:name.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: ms.name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span>
+
+<div class="viewcode-block" id="MetaDataReader.get_datatable">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.get_datatable">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_datatable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataTable</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return datatable.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataTable: self.datatable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span></div>
+
+
+<div class="viewcode-block" id="MetaDataReader.detect_target_spw">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.detect_target_spw">[docs]</a>
+    <span class="k">def</span> <span class="nf">detect_target_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of science spectral window IDs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List: spectral window IDs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="MetaDataReader.detect_target_data_desc">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.detect_target_data_desc">[docs]</a>
+    <span class="k">def</span> <span class="nf">detect_target_data_desc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of data description IDs associated with science spectral windows.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            array: data description ids</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">science_windows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_target_spw</span><span class="p">()</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span>
+
+        <span class="k">def</span> <span class="nf">_g</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">science_windows</span><span class="p">:</span>
+                <span class="n">dd</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spwid</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="n">dd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">yield</span> <span class="n">dd</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="n">dds</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">_g</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dds</span></div>
+
+
+<div class="viewcode-block" id="MetaDataReader.register_invalid_pointing_data">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.register_invalid_pointing_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">register_invalid_pointing_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register invalid pointing data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            antenna_id: antenna id</span>
+<span class="sd">            row: DataTable row</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalid_pointing_data</span><span class="p">[</span><span class="n">antenna_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MetaDataReader.generate_flagcmd">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.generate_flagcmd">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_flagcmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rasterscan_heuristics_result</span><span class="p">:</span> <span class="n">RasterScanHeuristicsResult</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate flag commands based on pointings of observation and save them in the flag template file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rasterscan_heuristics_result (RasterScanHeuristicsResult): Result object of RasterScanHeuristics</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># PIPE-646</span>
+        <span class="c1"># per-antenna row list for the data without pointing data</span>
+        <span class="c1"># key: antenna id</span>
+        <span class="c1"># value: list of rows to be flagged</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">flagdict1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_flagdict_for_invalid_pointing_data</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">flagdict1</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># PIPE-647</span>
+        <span class="c1"># per-spw, per-antenna row list for uniform image rms</span>
+        <span class="c1"># key: (spw id, antenna id) tuple</span>
+        <span class="c1"># value: list of rows to be flagged</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">flagdict2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_flagdict_for_uniform_rms</span><span class="p">(</span><span class="n">rasterscan_heuristics_result</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">flagdict2</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># do nothing if no rows to be flagged</span>
+        <span class="n">nflag1</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">flagdict1</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="n">nflag2</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">flagdict2</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="n">nflag1</span> <span class="o">+</span> <span class="n">nflag2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># for debugging</span>
+        <span class="k">if</span> <span class="n">LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">aid</span><span class="p">,</span> <span class="n">dt_rows</span> <span class="ow">in</span> <span class="n">flagdict1</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;toflag1_ant</span><span class="si">{</span><span class="n">aid</span><span class="si">}</span><span class="s1">.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;ROW&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)),</span> <span class="n">dt_rows</span><span class="p">)))</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="p">(</span><span class="n">sid</span><span class="p">,</span> <span class="n">aid</span><span class="p">),</span> <span class="n">dt_rows</span> <span class="ow">in</span> <span class="n">flagdict2</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;toflag2_spw_</span><span class="si">{</span><span class="n">sid</span><span class="si">}</span><span class="s1">_ant</span><span class="si">{</span><span class="n">aid</span><span class="si">}</span><span class="s1">.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;ROW&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)),</span> <span class="n">dt_rows</span><span class="p">)))</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># generate flag command</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_generate_flagcmd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flagtemplate</span><span class="p">,</span> <span class="n">flagdict1</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;missing pointing data&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_generate_flagcmd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flagtemplate</span><span class="p">,</span> <span class="n">flagdict2</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;uniform image rms&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MetaDataReader.generate_flagdict_for_invalid_pointing_data">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.generate_flagdict_for_invalid_pointing_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_flagdict_for_invalid_pointing_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return row IDs of DataTable with invalid pointing information and a list of message.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple: contains dictionary of invalid pointing data and a list of message</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">msglist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">invalid_pointing_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;There are rows without corresponding POINTING data. Affected rows are identified and will be flagged in hsd_flagdata stage. Affected antennas are: </span><span class="si">{}</span><span class="s1"> in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">invalid_pointing_data</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+            <span class="n">msglist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">invalid_pointing_data</span><span class="p">,</span> <span class="n">msglist</span></div>
+
+
+<div class="viewcode-block" id="MetaDataReader.generate_flagdict_for_uniform_rms">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.generate_flagdict_for_uniform_rms">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_flagdict_for_uniform_rms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rasterscan_heuristics_result</span><span class="p">:</span> <span class="n">RasterScanHeuristicsResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return row IDs of DataTable to flag.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rasterscan_heuristics_result (RasterScanHeuristicsResult): Result object of RasterScanHeuristics</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict: contains list of row IDs of datatable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># keys for dictionary are (spw_id, antenna_id) tuples</span>
+        <span class="n">flagdict</span> <span class="o">=</span> <span class="n">rasterutil</span><span class="o">.</span><span class="n">flag_raster_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">rasterscan_heuristics_result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">flagdict</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_generate_flagcmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flagtemplate</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flag_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate and store flag commands in the flag template file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            flagtemplate: filename of flagtemplate</span>
+<span class="sd">            flag_dict: dictionary of flags</span>
+<span class="sd">            reason: reason string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">datatable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span>
+        <span class="n">cmdlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">rowlist</span> <span class="ow">in</span> <span class="n">flag_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">spw_id</span><span class="p">,</span> <span class="n">antenna_id</span> <span class="o">=</span> <span class="n">key</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">spw_id</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+                <span class="n">antenna_id</span> <span class="o">=</span> <span class="n">key</span>
+            <span class="n">time_list</span><span class="p">,</span> <span class="n">sort_index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rowlist</span><span class="p">],</span>
+                <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># day -&gt; sec</span>
+            <span class="n">time_list</span> <span class="o">*=</span> <span class="mf">86400.0</span>
+
+            <span class="n">interval_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;EXPOSURE&#39;</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">rowlist</span><span class="p">)[</span><span class="n">sort_index</span><span class="p">]]</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;antenna </span><span class="si">{</span><span class="n">antenna_id</span><span class="si">}</span><span class="s1"> spw </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1">: time_list is </span><span class="si">{</span><span class="n">time_list</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">timerange_list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">t</span> <span class="o">-</span> <span class="n">i</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="n">i</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">time_list</span><span class="p">,</span> <span class="n">interval_list</span><span class="p">)]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;antenna </span><span class="si">{</span><span class="n">antenna_id</span><span class="si">}</span><span class="s1"> spw </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1">: timerange_list is </span><span class="si">{</span><span class="n">timerange_list</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">timerange_merged</span> <span class="o">=</span> <span class="n">merge_timerange</span><span class="p">(</span><span class="n">timerange_list</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">timerange_merged</span><span class="p">:</span>
+                <span class="c1"># timerange is [start, end] list of MJD [sec]</span>
+                <span class="n">timerange_str</span> <span class="o">=</span> <span class="s1">&#39;~&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">mjdsec2str</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+                <span class="n">cmdlist</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">spw_id</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">antenna_id</span><span class="p">),</span> <span class="n">timerange_str</span><span class="p">))</span>
+
+        <span class="n">cmd_merged</span> <span class="o">=</span> <span class="n">merge_flagcmd</span><span class="p">(</span><span class="n">cmdlist</span><span class="p">)</span>
+        <span class="n">write_flagcmd</span><span class="p">(</span><span class="n">flagtemplate</span><span class="p">,</span> <span class="n">cmd_merged</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MetaDataReader.execute">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.execute">[docs]</a>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read MeasurementSet and fill DataTable.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict: dictionary of ephemeris sources</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># name of the MS</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">spwids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_target_spw</span><span class="p">()</span>
+        <span class="n">nchan_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">spwid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span><span class="o">.</span><span class="n">num_channels</span><span class="p">)</span> <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwids</span><span class="p">])</span>
+        <span class="n">ddids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_target_data_desc</span><span class="p">()</span>
+
+        <span class="c1"># Rad2Deg = 180. / 3.141592653</span>
+
+        <span class="c1"># FILENAME keyword stores name of the MS</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;name=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putkeyword</span><span class="p">(</span><span class="s1">&#39;FILENAME&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># 2018/04/18 TN</span>
+        <span class="c1"># CAS-10874 single dish pipeline should use ICRS instead of J2000</span>
+        <span class="c1"># For consistency throuout the single dish pipeline, direction</span>
+        <span class="c1"># reference frame is stored in the DataTable</span>
+        <span class="n">outref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_outref</span><span class="p">()</span>
+        <span class="c1"># register direction reference to datatable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">direction_ref</span> <span class="o">=</span> <span class="n">outref</span>
+        <span class="n">azelref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_azelref</span><span class="p">()</span>
+        <span class="c1"># LOG.info(&#39;outref=&quot;{0}&quot; azelref=&quot;{1}&quot;&#39;.format(outref, azelref))</span>
+
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span>
+        <span class="k">assert</span> <span class="n">ms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">spwsel</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">spwids</span><span class="p">))</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;TARGET&#39;</span>
+        <span class="n">reference</span> <span class="o">=</span> <span class="s1">&#39;REFERENCE&#39;</span>
+        <span class="k">assert</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">intents</span>
+        <span class="c1"># assert reference in ms.intents</span>
+        <span class="n">target_states</span> <span class="o">=</span> <span class="n">get_state_id</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwsel</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="n">reference_states</span> <span class="o">=</span> <span class="n">get_state_id</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwsel</span><span class="p">,</span> <span class="n">reference</span><span class="p">)</span>
+<span class="c1">#         target_states = (s for s in ms.states if target in s.intents)</span>
+<span class="c1">#         reference_states = (s for s in ms.states if reference in s.intents)</span>
+<span class="c1">#         target_obs_modes = set()</span>
+<span class="c1">#         for s in target_states:</span>
+<span class="c1">#             modes = set(s.get_obs_mode_for_intent(target))</span>
+<span class="c1">#             target_obs_modes.update(modes)</span>
+<span class="c1">#             modes = set(s.get_obs_mode_for_intent(reference))</span>
+<span class="c1">#             obs_modes.update(modes)</span>
+<span class="c1">#         state_ids = set()</span>
+<span class="c1">#         with casa_tools.MSReader(name) as msreader:</span>
+<span class="c1">#             for obs_mode in obs_modes:</span>
+<span class="c1">#                 msreader.msselect({&#39;spw&#39;: spwsel, &#39;scanintent&#39;: obs_mode}, onlyparse=True)</span>
+<span class="c1">#                 indices = msreader.msselectedindices()</span>
+<span class="c1">#                 state_ids.update(indices[&#39;stateid&#39;])</span>
+<span class="c1">#         state_ids = numpy.fromiter(state_ids, dtype=numpy.int32)</span>
+        <span class="n">state_ids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">target_states</span><span class="p">,</span> <span class="n">reference_states</span><span class="p">])</span>
+        <span class="n">target_state_ids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">target_states</span><span class="p">])</span>
+
+        <span class="c1"># get antenna position list</span>
+        <span class="n">mpositions</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">position</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">]</span>
+
+        <span class="c1"># get names of ephemeris sources (excludes &#39;COMET&#39;)</span>
+        <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+        <span class="n">direction_codes</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">listcodes</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">direction</span><span class="p">())</span>
+        <span class="n">ephemeris_list</span> <span class="o">=</span> <span class="n">direction_codes</span><span class="p">[</span><span class="s1">&#39;extra&#39;</span><span class="p">]</span>
+        <span class="n">known_ephemeris_list</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ephemeris_list</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ephemeris_list</span> <span class="o">==</span> <span class="s1">&#39;COMET&#39;</span><span class="p">))</span>
+        <span class="c1"># set org_directions</span>
+        <span class="n">ephemsrc_list</span> <span class="o">=</span> <span class="p">[]</span>   <span class="c1"># list of ephemsrc names (unique appearance)</span>
+        <span class="n">ephemsrc_names</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># ephemsrc name for each field_id</span>
+        <span class="n">ephem_tables</span> <span class="o">=</span> <span class="p">{}</span>    <span class="c1"># epheris table name for each field_id if applicasble</span>
+        <span class="c1"># ephem_tables to be &quot;&quot; for known_ephemeris_list and non-ephemeris sources</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;FIELD&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">field_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">tb</span><span class="o">.</span><span class="n">nrows</span><span class="p">()))</span>
+            <span class="k">for</span> <span class="n">field_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">field_ids</span><span class="p">)):</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">source_name</span> <span class="o">=</span> <span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># removed upper() 2019.5.14</span>
+                <span class="k">if</span> <span class="s1">&#39;EPHEMERIS_ID&#39;</span> <span class="ow">in</span> <span class="n">tb</span><span class="o">.</span><span class="n">colnames</span><span class="p">():</span>
+                    <span class="n">ephemeris_ids</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;EPHEMERIS_ID&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ephemeris_ids</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="c1"># check if known_ephemeris_sources</span>
+                <span class="k">if</span> <span class="n">source_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="n">known_ephemeris_list</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_eph_obj</span><span class="p">:</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_known_eph_obj</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_known_eph_obj</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="c1"># ephemeris source with ephemeris table</span>
+                <span class="k">if</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_eph_obj</span><span class="p">:</span>
+                    <span class="n">ephemsrc_names</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">field_id</span><span class="p">:</span> <span class="n">source_name</span><span class="p">})</span>
+                    <span class="k">if</span> <span class="n">source_name</span><span class="o">.</span><span class="n">upper</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ephemsrc_list</span><span class="p">:</span>
+                        <span class="c1"># found a new ephemeris source</span>
+                        <span class="n">ephemsrc_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source_name</span><span class="p">)</span>
+
+                    <span class="c1"># pick ephemeris table name</span>
+                    <span class="n">ephem_table_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;/FIELD/EPHEM&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ephemeris_ids</span><span class="p">[</span><span class="n">field_id</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;_*.tab&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ephem_table_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;multiple ephemeris tables found for field_id=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field_id</span><span class="p">))</span>
+
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ephem_table_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">ephem_table_file</span> <span class="o">=</span> <span class="n">ephem_table_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="c1"># double check the source name in ephem_table_file</span>
+                        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">ephem_table_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb2</span><span class="p">:</span>
+                            <span class="n">keywords</span> <span class="o">=</span> <span class="n">tb2</span><span class="o">.</span><span class="n">getkeywords</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;NAME&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">source_name</span><span class="p">:</span>
+                                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                                    <span class="s2">&quot;source name in ephemeris table </span><span class="si">{0}</span><span class="s2"> was </span><span class="si">{1}</span><span class="s2">, inconsistent with </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ephem_table_file</span><span class="p">,</span>
+                                                                                                               <span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;NAME&#39;</span><span class="p">],</span>
+                                                                                                               <span class="n">source_name</span><span class="p">))</span>
+                        <span class="n">ephem_tables</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">field_id</span><span class="p">:</span> <span class="n">ephem_table_file</span><span class="p">})</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;FIELD_ID=</span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">) with ephemeris table </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">source_name</span><span class="p">,</span> <span class="n">ephem_table_file</span><span class="p">))</span>
+
+                <span class="c1"># known ephemeris source without ephemeirs table (not applicable for ALMA)</span>
+                <span class="k">elif</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_known_eph_obj</span><span class="p">:</span>
+                    <span class="n">ephemsrc_names</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">field_id</span><span class="p">:</span> <span class="n">source_name</span><span class="p">})</span>
+                    <span class="n">ephem_tables</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">field_id</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">})</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;FIELD_ID=</span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">) as KNOWN EPHEMERIS SOURCE&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">source_name</span><span class="p">))</span>
+
+                <span class="c1"># non-ephemeris source</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ephemsrc_names</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">field_id</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">})</span>
+                    <span class="n">ephem_tables</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">field_id</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">})</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;FIELD_ID=</span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">) as NORMAL SOURCE&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">source_name</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">TableSelector</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;ANTENNA1 == ANTENNA2 &amp;&amp; FEED1 == FEED2 &amp;&amp; DATA_DESC_ID IN </span><span class="si">%s</span><span class="s1"> &amp;&amp; STATE_ID IN </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">ddids</span><span class="p">),</span>
+                                                                                                                     <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">target_state_ids</span><span class="p">)))</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="c1"># find the first onsrc for each ephemeris source and pack org_directions</span>
+            <span class="n">org_directions</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">nrow</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">irow</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrow</span><span class="p">):</span>
+                <span class="n">field_id</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;FIELD_ID&#39;</span><span class="p">,</span> <span class="n">irow</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">field_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ephemsrc_names</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;ephemsrc_name for field_id=</span><span class="si">{0}</span><span class="s2"> does not exist&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field_id</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">ephemsrc_names</span><span class="p">[</span><span class="n">field_id</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="n">source_name</span> <span class="o">=</span> <span class="n">ephemsrc_names</span><span class="p">[</span><span class="n">field_id</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">source_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">org_directions</span><span class="p">:</span>
+                        <span class="n">mjd_in_sec</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">,</span> <span class="n">irow</span><span class="p">)</span>
+                        <span class="n">antenna_id</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;ANTENNA1&#39;</span><span class="p">,</span> <span class="n">irow</span><span class="p">)</span>
+                        <span class="n">time_meas</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">,</span> <span class="s1">&#39;MEASINFO&#39;</span><span class="p">)</span>
+                        <span class="n">time_frame</span> <span class="o">=</span> <span class="n">time_meas</span><span class="p">[</span><span class="s1">&#39;Ref&#39;</span><span class="p">]</span>
+                        <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+                        <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+                        <span class="n">mepoch</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="n">rf</span><span class="o">=</span><span class="n">time_frame</span><span class="p">,</span> <span class="n">v0</span><span class="o">=</span><span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">mjd_in_sec</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">))</span>
+                        <span class="n">antennas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">antenna_id</span><span class="p">)</span>
+                        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+                        <span class="n">antenna_domain</span> <span class="o">=</span> <span class="n">antennas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">mposition</span> <span class="o">=</span> <span class="n">antenna_domain</span><span class="o">.</span><span class="n">position</span>
+                        <span class="n">fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">)</span>
+                        <span class="n">is_known_eph_obj</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_known_eph_obj</span>
+                        <span class="n">org_direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_reference_direction</span><span class="p">(</span><span class="n">source_name</span><span class="p">,</span> <span class="n">ephem_tables</span><span class="p">[</span><span class="n">field_id</span><span class="p">],</span> <span class="n">is_known_eph_obj</span><span class="p">,</span> <span class="n">mepoch</span><span class="p">,</span> <span class="n">mposition</span><span class="p">,</span> <span class="n">outref</span><span class="p">)</span>
+                        <span class="n">org_directions</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">source_name</span><span class="p">:</span> <span class="n">org_direction</span><span class="p">})</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;FIELD&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">field_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">tb</span><span class="o">.</span><span class="n">nrows</span><span class="p">()))</span>
+            <span class="k">for</span> <span class="n">field_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">field_ids</span><span class="p">)):</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">org_direction</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">continue</span>
+
+                <span class="n">source_name</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">if</span> <span class="n">source_name</span> <span class="ow">in</span> <span class="n">org_directions</span><span class="p">:</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">org_direction</span> <span class="o">=</span> <span class="n">org_directions</span><span class="p">[</span><span class="n">source_name</span><span class="p">]</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;registering org_direction[</span><span class="si">{}</span><span class="s2">] (field_id=</span><span class="si">{}</span><span class="s2"> of </span><span class="si">{}</span><span class="s2">) as </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">source_name</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span>
+                             <span class="n">org_directions</span><span class="p">[</span><span class="n">source_name</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">org_direction</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">with</span> <span class="n">TableSelector</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;ANTENNA1 == ANTENNA2 &amp;&amp; FEED1 == FEED2 &amp;&amp; DATA_DESC_ID IN </span><span class="si">%s</span><span class="s1"> &amp;&amp; STATE_ID IN </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">ddids</span><span class="p">),</span>
+                                                                                                                     <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">state_ids</span><span class="p">)))</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">nrow</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">rownumbers</span><span class="p">()</span>
+            <span class="n">Texpt</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;INTERVAL&#39;</span><span class="p">)</span>
+            <span class="n">Tmjd</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+            <span class="n">time_meas</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">,</span> <span class="s1">&#39;MEASINFO&#39;</span><span class="p">)</span>
+            <span class="n">time_frame</span> <span class="o">=</span> <span class="n">time_meas</span><span class="p">[</span><span class="s1">&#39;Ref&#39;</span><span class="p">]</span>
+            <span class="n">Tscan</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SCAN_NUMBER&#39;</span><span class="p">)</span>
+            <span class="n">TDD</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;DATA_DESC_ID&#39;</span><span class="p">)</span>
+            <span class="n">ddspwmap</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">otypes</span><span class="o">=</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">])</span>
+            <span class="n">ddnpolmap</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">num_polarizations</span><span class="p">,</span> <span class="n">otypes</span><span class="o">=</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">])</span>
+            <span class="n">Tif</span> <span class="o">=</span> <span class="n">ddspwmap</span><span class="p">(</span><span class="n">TDD</span><span class="p">)</span>
+            <span class="n">Tpol</span> <span class="o">=</span> <span class="n">ddnpolmap</span><span class="p">(</span><span class="n">TDD</span><span class="p">)</span>
+            <span class="n">Tant</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA1&#39;</span><span class="p">)</span>
+            <span class="n">Tbeam</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FEED1&#39;</span><span class="p">)</span>
+            <span class="n">Tsrctype</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="mi">0</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">target_states</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;STATE_ID&#39;</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+            <span class="n">Tflagrow</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FLAG_ROW&#39;</span><span class="p">)</span>
+            <span class="n">Tflag</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">tb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrow</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+            <span class="n">Tflagrow</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">Tflagrow</span><span class="p">,</span> <span class="n">Tflag</span><span class="p">)</span>
+            <span class="n">field_ids</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FIELD_ID&#39;</span><span class="p">)</span>
+            <span class="n">getsourcename</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">otypes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;str&#39;</span><span class="p">])</span>
+            <span class="n">Tsrc</span> <span class="o">=</span> <span class="n">getsourcename</span><span class="p">(</span><span class="n">field_ids</span><span class="p">)</span>
+            <span class="n">NchanArray</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">nchan_map</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">Tif</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="n">ID</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;ID=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">ID</span><span class="p">)</span>
+        <span class="c1"># ROWs = []</span>
+        <span class="c1"># IDs = []</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">addrows</span><span class="p">(</span><span class="n">nrow</span><span class="p">)</span>
+        <span class="c1"># column based storing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;ROW&#39;</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;SCAN&#39;</span><span class="p">,</span> <span class="n">Tscan</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;IF&#39;</span><span class="p">,</span> <span class="n">Tif</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;NPOL&#39;</span><span class="p">,</span> <span class="n">Tpol</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;BEAM&#39;</span><span class="p">,</span> <span class="n">Tbeam</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">,</span> <span class="n">Tmjd</span> <span class="o">/</span> <span class="mf">86400.0</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;ELAPSED&#39;</span><span class="p">,</span> <span class="n">Tmjd</span> <span class="o">-</span> <span class="n">Tmjd</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;EXPOSURE&#39;</span><span class="p">,</span> <span class="n">Texpt</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;FIELD_ID&#39;</span><span class="p">,</span> <span class="n">field_ids</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="n">Tra</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nrow</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">Tdec</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nrow</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">Tshift_ra</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nrow</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">Tshift_dec</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nrow</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">Tofs_ra</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nrow</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">Tofs_dec</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nrow</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">Taz</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nrow</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">Tel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nrow</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">lexsort</span><span class="p">((</span><span class="n">Tant</span><span class="p">,</span> <span class="n">Tmjd</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Start reading direction (convert if necessary). It may take a while.&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSMDReader</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">msmd</span><span class="p">:</span>
+            <span class="n">nprogress</span> <span class="o">=</span> <span class="mi">5000</span>
+            <span class="n">iprogress</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">last_mjd</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">last_antenna</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">last_result</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">ref_direction</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">for</span> <span class="n">irow</span> <span class="ow">in</span> <span class="n">index</span><span class="p">:</span>
+                <span class="n">iprogress</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">iprogress</span> <span class="o">&gt;=</span> <span class="n">nprogress</span> <span class="ow">and</span> <span class="n">iprogress</span> <span class="o">%</span> <span class="n">nprogress</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iprogress</span><span class="p">,</span> <span class="n">nrow</span><span class="p">))</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="n">rows</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span>
+                <span class="n">mjd_in_sec</span> <span class="o">=</span> <span class="n">Tmjd</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span>
+                <span class="n">antenna_id</span> <span class="o">=</span> <span class="n">Tant</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">mjd_in_sec</span> <span class="o">==</span> <span class="n">last_mjd</span> <span class="ow">and</span> <span class="n">antenna_id</span> <span class="o">==</span> <span class="n">last_antenna</span><span class="p">:</span>
+                    <span class="n">Taz</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">last_result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">Tel</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">last_result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">Tra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">last_result</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">Tdec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">last_result</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+                    <span class="n">Tshift_ra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">last_result</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+                    <span class="n">Tshift_dec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">last_result</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+                    <span class="n">Tofs_ra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">last_result</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+                    <span class="n">Tofs_dec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">last_result</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+                    <span class="k">continue</span>
+
+                <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+                <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+                <span class="n">mepoch</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="n">rf</span><span class="o">=</span><span class="n">time_frame</span><span class="p">,</span> <span class="n">v0</span><span class="o">=</span><span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">mjd_in_sec</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">))</span>
+                <span class="c1"># now mposition is prepared in mpositions</span>
+                <span class="c1"># antennas = self.ms.get_antenna(antenna_id)</span>
+                <span class="c1"># assert len(antennas) == 1</span>
+                <span class="c1"># antenna_domain = antennas[0]</span>
+                <span class="c1"># mposition = antenna_domain.position</span>
+                <span class="n">mposition</span> <span class="o">=</span> <span class="n">mpositions</span><span class="p">[</span><span class="n">antenna_id</span><span class="p">]</span>
+                <span class="c1"># CASR-494</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">pointing_directions</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">pointingdirection</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">interpolate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s1">&#39;SSMIndex::getIndex - access to non-existing row&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: Missing pointing data for row </span><span class="si">{}</span><span class="s1"> (antenna </span><span class="si">{}</span><span class="s1"> time </span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">rows</span><span class="p">[</span><span class="n">irow</span><span class="p">],</span> <span class="n">Tant</span><span class="p">[</span><span class="n">irow</span><span class="p">],</span> <span class="n">Tmjd</span><span class="p">[</span><span class="n">irow</span><span class="p">]))</span>
+
+                        <span class="c1"># register DataTable row to self.invalid_pointing_data</span>
+                        <span class="n">dt_row</span> <span class="o">=</span> <span class="n">ID</span> <span class="o">+</span> <span class="n">irow</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">register_invalid_pointing_data</span><span class="p">(</span><span class="n">antenna_id</span><span class="p">,</span> <span class="n">dt_row</span><span class="p">)</span>
+
+                        <span class="n">NAN</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+                        <span class="n">Taz</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">NAN</span>
+                        <span class="n">Tel</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">NAN</span>
+                        <span class="n">Tra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">NAN</span>
+                        <span class="n">Tdec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">NAN</span>
+                        <span class="n">Tshift_ra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">NAN</span>
+                        <span class="n">Tshift_dec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">NAN</span>
+                        <span class="n">Tofs_ra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">NAN</span>
+                        <span class="n">Tofs_dec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">NAN</span>
+                        <span class="n">Tflagrow</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">continue</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="n">e</span>
+
+                <span class="n">pointing_direction</span> <span class="o">=</span> <span class="n">pointing_directions</span><span class="p">[</span><span class="s1">&#39;antenna1&#39;</span><span class="p">][</span><span class="s1">&#39;pointingdirection&#39;</span><span class="p">]</span>  <span class="c1"># antenna2 should be the same</span>
+                <span class="n">lon</span> <span class="o">=</span> <span class="n">pointing_direction</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">]</span>
+                <span class="n">lat</span> <span class="o">=</span> <span class="n">pointing_direction</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">]</span>
+                <span class="n">ref</span> <span class="o">=</span> <span class="n">pointing_direction</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]</span>
+
+                <span class="c1"># 2018/04/18 TN</span>
+                <span class="c1"># CAS-10874 single dish pipeline should use ICRS instead of J2000</span>
+                <span class="k">if</span> <span class="n">ref</span> <span class="ow">in</span> <span class="p">[</span><span class="n">azelref</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">irow</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Require direction conversion from </span><span class="si">{0}</span><span class="s1"> to </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">outref</span><span class="p">))</span>
+
+                    <span class="n">Taz</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+                    <span class="n">Tel</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
+
+                    <span class="c1"># conversion to J2000</span>
+                    <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span> <span class="o">=</span> <span class="n">dirutil</span><span class="o">.</span><span class="n">direction_convert</span><span class="p">(</span><span class="n">pointing_direction</span><span class="p">,</span> <span class="n">mepoch</span><span class="p">,</span> <span class="n">mposition</span><span class="p">,</span> <span class="n">outframe</span><span class="o">=</span><span class="n">outref</span><span class="p">)</span>
+                    <span class="n">Tra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+                    <span class="n">Tdec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">ref</span> <span class="ow">in</span> <span class="p">[</span><span class="n">outref</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">irow</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Require direction conversion from </span><span class="si">{0}</span><span class="s1"> to </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">azelref</span><span class="p">))</span>
+
+                    <span class="n">Tra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+                    <span class="n">Tdec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
+
+                    <span class="c1"># conversion to AZELGEO</span>
+                    <span class="n">az</span><span class="p">,</span> <span class="n">el</span> <span class="o">=</span> <span class="n">dirutil</span><span class="o">.</span><span class="n">direction_convert</span><span class="p">(</span><span class="n">pointing_direction</span><span class="p">,</span> <span class="n">mepoch</span><span class="p">,</span> <span class="n">mposition</span><span class="p">,</span> <span class="n">outframe</span><span class="o">=</span><span class="n">azelref</span><span class="p">)</span>
+                    <span class="n">Taz</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                    <span class="n">Tel</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">irow</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Require direction conversion from </span><span class="si">{0}</span><span class="s1"> to </span><span class="si">{1}</span><span class="s1"> as well as to </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">outref</span><span class="p">,</span>
+                                                                                                         <span class="n">azelref</span><span class="p">))</span>
+
+                    <span class="c1"># conversion to J2000</span>
+                    <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span> <span class="o">=</span> <span class="n">dirutil</span><span class="o">.</span><span class="n">direction_convert</span><span class="p">(</span><span class="n">pointing_direction</span><span class="p">,</span> <span class="n">mepoch</span><span class="p">,</span> <span class="n">mposition</span><span class="p">,</span> <span class="n">outframe</span><span class="o">=</span><span class="n">outref</span><span class="p">)</span>
+                    <span class="n">Tra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+                    <span class="n">Tdec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+
+                    <span class="c1"># conversion to AZELGEO</span>
+                    <span class="n">az</span><span class="p">,</span> <span class="n">el</span> <span class="o">=</span> <span class="n">dirutil</span><span class="o">.</span><span class="n">direction_convert</span><span class="p">(</span><span class="n">pointing_direction</span><span class="p">,</span> <span class="n">mepoch</span><span class="p">,</span> <span class="n">mposition</span><span class="p">,</span> <span class="n">outframe</span><span class="o">=</span><span class="n">azelref</span><span class="p">)</span>
+                    <span class="n">Taz</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                    <span class="n">Tel</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+
+                <span class="c1"># Calculate shift_ra/dec and pack them into Tshift_ra/dec</span>
+                <span class="n">field_id</span> <span class="o">=</span> <span class="n">field_ids</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">field_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ephemsrc_names</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;ephemsrc_name for field_id=</span><span class="si">{0}</span><span class="s2"> does not exist&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field_id</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">ephemsrc_names</span><span class="p">[</span><span class="n">field_id</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="n">Tshift_ra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">Tra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span>
+                    <span class="n">Tshift_dec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">Tdec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span>
+                    <span class="n">Tofs_ra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">Tra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span>
+                    <span class="n">Tofs_dec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">Tdec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">source_name</span> <span class="o">=</span> <span class="n">ephemsrc_names</span><span class="p">[</span><span class="n">field_id</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">source_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">org_directions</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Ephemeris source </span><span class="si">{0}</span><span class="s2"> does not exist in org_directions&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">source_name</span><span class="p">))</span>
+                    <span class="n">org_direction</span> <span class="o">=</span> <span class="n">org_directions</span><span class="p">[</span><span class="n">source_name</span><span class="p">]</span>
+                    <span class="n">fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">)</span>
+                    <span class="n">is_known_eph_obj</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_known_eph_obj</span>
+                    <span class="n">ref_direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_reference_direction</span><span class="p">(</span><span class="n">source_name</span><span class="p">,</span> <span class="n">ephem_tables</span><span class="p">[</span><span class="n">field_id</span><span class="p">],</span> <span class="n">is_known_eph_obj</span><span class="p">,</span> <span class="n">mepoch</span><span class="p">,</span> <span class="n">mposition</span><span class="p">,</span> <span class="n">outref</span><span class="p">)</span>
+                    <span class="n">direction2</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">pointing_direction</span><span class="p">,</span> <span class="n">outref</span><span class="p">)</span>
+
+                    <span class="n">shift_direction</span> <span class="o">=</span> <span class="n">dirutil</span><span class="o">.</span><span class="n">direction_shift</span><span class="p">(</span><span class="n">direction2</span><span class="p">,</span> <span class="n">ref_direction</span><span class="p">,</span> <span class="n">org_direction</span><span class="p">)</span>
+                    <span class="n">shift_ra</span><span class="p">,</span> <span class="n">shift_dec</span> <span class="o">=</span> <span class="n">dirutil</span><span class="o">.</span><span class="n">direction_convert</span><span class="p">(</span><span class="n">shift_direction</span><span class="p">,</span> <span class="n">mepoch</span><span class="p">,</span> <span class="n">mposition</span><span class="p">,</span> <span class="n">outframe</span><span class="o">=</span><span class="n">outref</span><span class="p">)</span>
+                    <span class="n">Tshift_ra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">shift_ra</span><span class="p">)</span>
+                    <span class="n">Tshift_dec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">shift_dec</span><span class="p">)</span>
+
+                    <span class="n">ofs_direction</span> <span class="o">=</span> <span class="n">dirutil</span><span class="o">.</span><span class="n">direction_offset</span><span class="p">(</span><span class="n">direction2</span><span class="p">,</span> <span class="n">ref_direction</span><span class="p">)</span>
+                    <span class="n">ofs_ra</span><span class="p">,</span> <span class="n">ofs_dec</span> <span class="o">=</span> <span class="n">dirutil</span><span class="o">.</span><span class="n">direction_convert</span><span class="p">(</span><span class="n">ofs_direction</span><span class="p">,</span> <span class="n">mepoch</span><span class="p">,</span> <span class="n">mposition</span><span class="p">,</span> <span class="n">outframe</span><span class="o">=</span><span class="n">outref</span><span class="p">)</span>
+                    <span class="n">Tofs_ra</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">ofs_ra</span><span class="p">)</span>
+                    <span class="n">Tofs_dec</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_value_in_deg</span><span class="p">(</span><span class="n">ofs_dec</span><span class="p">)</span>
+
+                <span class="n">last_mjd</span> <span class="o">=</span> <span class="n">mjd_in_sec</span>
+                <span class="n">last_antenna</span> <span class="o">=</span> <span class="n">antenna_id</span>
+                <span class="n">last_result</span> <span class="o">=</span> <span class="p">(</span><span class="n">Taz</span><span class="p">[</span><span class="n">irow</span><span class="p">],</span> <span class="n">Tel</span><span class="p">[</span><span class="n">irow</span><span class="p">],</span> <span class="n">Tra</span><span class="p">[</span><span class="n">irow</span><span class="p">],</span> <span class="n">Tdec</span><span class="p">[</span><span class="n">irow</span><span class="p">],</span> <span class="n">Tshift_ra</span><span class="p">[</span><span class="n">irow</span><span class="p">],</span> <span class="n">Tshift_dec</span><span class="p">[</span><span class="n">irow</span><span class="p">],</span> <span class="n">Tofs_ra</span><span class="p">[</span><span class="n">irow</span><span class="p">],</span> <span class="n">Tofs_dec</span><span class="p">[</span><span class="n">irow</span><span class="p">])</span>
+
+        <span class="c1"># PIPE-646 replace NaN&#39;s with nominal value</span>
+        <span class="n">set_nominal_direction</span><span class="p">(</span><span class="n">Tant</span><span class="p">,</span> <span class="n">Tsrctype</span><span class="p">,</span> <span class="n">Taz</span><span class="p">,</span> <span class="n">Tel</span><span class="p">,</span> <span class="n">Tra</span><span class="p">,</span> <span class="n">Tdec</span><span class="p">,</span> <span class="n">Tshift_ra</span><span class="p">,</span> <span class="n">Tshift_dec</span><span class="p">,</span> <span class="n">Tofs_ra</span><span class="p">,</span> <span class="n">Tofs_dec</span><span class="p">)</span>
+
+        <span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">Taz</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">Tel</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">Tra</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">Tdec</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">Tshift_ra</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">Tshift_dec</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">Tofs_ra</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">Tofs_dec</span><span class="p">))</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Done reading direction (convert if necessary).&#39;</span><span class="p">)</span>
+
+        <span class="c1"># save org_directions if exists</span>
+        <span class="k">if</span> <span class="s1">&#39;org_direction&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putkeyword</span><span class="p">(</span><span class="s1">&#39;ORG_DIRECTION&#39;</span><span class="p">,</span> <span class="n">org_direction</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;RA&#39;</span><span class="p">,</span> <span class="n">Tra</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;DEC&#39;</span><span class="p">,</span> <span class="n">Tdec</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;SHIFT_RA&#39;</span><span class="p">,</span> <span class="n">Tshift_ra</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;SHIFT_DEC&#39;</span><span class="p">,</span> <span class="n">Tshift_dec</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;OFS_RA&#39;</span><span class="p">,</span> <span class="n">Tofs_ra</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;OFS_DEC&#39;</span><span class="p">,</span> <span class="n">Tofs_dec</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;AZ&#39;</span><span class="p">,</span> <span class="n">Taz</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;EL&#39;</span><span class="p">,</span> <span class="n">Tel</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;NCHAN&#39;</span><span class="p">,</span> <span class="n">NchanArray</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">Tsrc</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="n">intArr</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nrow</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;NMASK&#39;</span><span class="p">,</span> <span class="n">intArr</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="n">intArr</span><span class="p">[:]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;NOCHANGE&#39;</span><span class="p">,</span> <span class="n">intArr</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;POSGRP&#39;</span><span class="p">,</span> <span class="n">intArr</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA&#39;</span><span class="p">,</span> <span class="n">Tant</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;SRCTYPE&#39;</span><span class="p">,</span> <span class="n">Tsrctype</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ID</span><span class="p">)</span>
+
+        <span class="c1"># row base storing</span>
+        <span class="n">masklist</span> <span class="o">=</span> <span class="n">ColMaskList</span><span class="o">.</span><span class="n">NoMask</span>
+
+        <span class="c1"># Tsys will be overwritten in applycal stage</span>
+        <span class="n">tsys_template</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="n">flag_summary_template</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">stats_template</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">flags_template</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">pflags_template</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrow</span><span class="p">):</span>
+            <span class="c1"># FLAGROW is mapped into OnlineFlag (PermanentFlag[3])</span>
+            <span class="c1"># NOTE: data is valid if Tflagrow is 0</span>
+            <span class="c1">#       data is valid if pflags[3] is 1</span>
+            <span class="n">pflags_template</span><span class="p">[:,</span> <span class="n">OnlineFlagIndex</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">Tflagrow</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">sDate</span> <span class="o">=</span> <span class="n">mjd_to_datestring</span><span class="p">(</span><span class="n">Tmjd</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">/</span> <span class="mf">86400.0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="s1">&#39;DATE&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">sDate</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="s1">&#39;MASKLIST&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">masklist</span><span class="p">)</span>
+
+            <span class="c1"># polarization dependent arrays</span>
+            <span class="n">npol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;NPOL&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="s1">&#39;STATISTICS&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">stats_template</span><span class="p">[:</span><span class="n">npol</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">flags_template</span><span class="p">[:</span><span class="n">npol</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="s1">&#39;FLAG_PERMANENT&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">pflags_template</span><span class="p">[:</span><span class="n">npol</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="s1">&#39;FLAG_SUMMARY&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">flag_summary_template</span><span class="p">[:</span><span class="n">npol</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="s1">&#39;TSYS&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">tsys_template</span><span class="p">[:</span><span class="n">npol</span><span class="p">])</span>
+            <span class="n">ID</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">num_antenna</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vAnt</span> <span class="o">+=</span> <span class="n">num_antenna</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">appended_row</span> <span class="o">=</span> <span class="n">nrow</span>
+
+        <span class="k">return</span> <span class="n">org_directions</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_outref</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get direction reference for target.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: direction reference</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">outref</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">dirrefs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">representative_target</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># if ms has representative target, take reference from that</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;Use direction reference for representative target &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">representative_target</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">representative_source_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">representative_target</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">dirrefs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">mdirection</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">fields</span>
+                             <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">representative_source_name</span><span class="p">])</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dirrefs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># if representative target is not given, or is not observed,</span>
+            <span class="c1"># take reference from one of the targets</span>
+            <span class="n">dirrefs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">mdirection</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">fields</span> <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">intents</span><span class="p">])</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dirrefs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># no target field exists, something wrong</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;No TARGET field exists.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dirrefs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">outref</span> <span class="o">=</span> <span class="n">dirrefs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># direction reference is not unique, search desired ref</span>
+            <span class="k">if</span> <span class="s1">&#39;ICRS&#39;</span> <span class="ow">in</span> <span class="n">dirrefs</span><span class="p">:</span>
+                <span class="n">outref</span> <span class="o">=</span> <span class="s1">&#39;ICRS&#39;</span>
+            <span class="k">elif</span> <span class="s1">&#39;J2000&#39;</span> <span class="ow">in</span> <span class="n">dirrefs</span><span class="p">:</span>
+                <span class="n">outref</span> <span class="o">=</span> <span class="s1">&#39;J2000&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># use first one</span>
+                <span class="n">outref</span> <span class="o">=</span> <span class="n">dirrefs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">outref</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Failed to get direction reference for TARGET.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">outref</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_azelref</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return reference type of AZEL coordinate.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: fix string &#39;AZELGEO&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;AZELGEO&#39;</span>
+
+<div class="viewcode-block" id="MetaDataReader.get_reference_direction">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.get_reference_direction">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_reference_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ephem_table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_known_eph_obj</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">mepoch</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]],</span>
+                                <span class="n">mposition</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">outframe</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get reference direction of a ephemeris object by specified a position and epoch timestamp.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            source_name: source name (ex:&#39;Venus&#39;)</span>
+<span class="sd">            ephem_table: ephemeris table name</span>
+<span class="sd">            is_known_eph_obj: known ephemeris flag</span>
+<span class="sd">            mepoc: dict of timestamp</span>
+<span class="sd">            mposition: dict of position</span>
+<span class="sd">            outframe: direction reference (ex:&#39;ICRS&#39;)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict: reference direction of ephemeris object</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: raise when is_known_eph_obj is False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+
+        <span class="k">if</span> <span class="n">ephem_table</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">me</span><span class="o">.</span><span class="n">framecomet</span><span class="p">(</span><span class="n">ephem_table</span><span class="p">)</span>
+            <span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">mepoch</span><span class="p">)</span>
+            <span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">mposition</span><span class="p">)</span>
+            <span class="n">obj_azel</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="s1">&#39;COMET&#39;</span><span class="p">),</span> <span class="s1">&#39;AZELGEO&#39;</span><span class="p">)</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">obj_azel</span><span class="p">,</span> <span class="n">outframe</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># if source_name.upper() in known_ephemeris_list:</span>
+            <span class="k">if</span> <span class="n">is_known_eph_obj</span><span class="p">:</span>
+                <span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">mepoch</span><span class="p">)</span>
+                <span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">mposition</span><span class="p">)</span>
+                <span class="n">obj_azel</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="n">source_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()),</span> <span class="s1">&#39;AZELGEO&#39;</span><span class="p">)</span>
+                <span class="n">ref</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">obj_azel</span><span class="p">,</span> <span class="n">outframe</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not registered in known_ephemeris_list&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">source_name</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">ref</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALMA interferometry imaging workflow &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="VLA interferometry imaging workflow" href="VLA-Imaging-Workflow.html" />
+    <link rel="prev" title="Building the pipeline" href="building_the_pipeline.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">ALMA interferometry imaging workflow</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/develdocmd/ALMA-Imaging-Workflow.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="alma-interferometry-imaging-workflow">
+<h1>ALMA interferometry imaging workflow<a class="headerlink" href="#alma-interferometry-imaging-workflow" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p>hif_makeimlist</p>
+<ul>
+<li><p>minimum task parameters:</p>
+<ul>
+<li><p>intent (default to ‘TARGET’)</p></li>
+<li><p>spw (defaults to science spws)</p></li>
+<li><p>specmode (defaults to ‘cube’ for ‘TARGET’, else ‘mfs’)</p></li>
+</ul>
+</li>
+<li><p>create list of imaging targets with these parameters per target set:</p>
+<ul>
+<li><p>heuristics instance</p></li>
+<li><p>field</p></li>
+<li><p>spw (for specmode=’cont’ remove spws without data -&gt; re-use for VLASS)</p></li>
+<li><p>cell (common size for all targets of one hif_makeimlist call (min of all))</p></li>
+<li><p>phasecenter</p></li>
+<li><p>imsize (common size for all targets of one hif_makeimlist call (max of all))</p></li>
+<li><p>specmode</p></li>
+<li><p>nchan (pilot image)</p></li>
+<li><p>width (pilot image)</p></li>
+<li><p>imagename</p></li>
+<li><p>LSRK spw selection if cont.dat / lines.dat exists</p></li>
+<li><p>nbin (if set by hif_checkproductsize)</p></li>
+<li><p>gridder (’standard’ or ‘mosaic’)</p></li>
+<li><p>stokes ‘I’</p></li>
+<li><p>start (task parameter if set)</p></li>
+<li><p>uvrange (task parameter if set)</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>hif_makeimages</p>
+<ul>
+<li><p>set additional parameters via task interface:</p>
+<ul>
+<li><p>hm_masking (’centralregion’ or ‘auto’)</p></li>
+<li><p>hm_autotest</p></li>
+<li><p>hm_cleaning (’rms’)</p></li>
+<li><p>maxncleans</p></li>
+</ul>
+</li>
+<li><p>run hif_tclean per imaging target (HPC: one job per calibrator image or parallel=True for tclean for intent=’TARGET’)</p></li>
+</ul>
+</li>
+<li><p>hif_tclean</p>
+<ul>
+<li><p>calculate PB limits to define annuli (start with 0.2/0.3, adjust to imsize)</p></li>
+<li><p>determine deconvolver (’mtmfs’ for ‘cont’ if fractional bandwidth &gt; 10% else ‘hogbom’)</p></li>
+<li><p>determine nterms (2 for deconvolver=’mtmfs’ else None)</p></li>
+<li><p>determine start, width, nchan for ‘cube’ (uses LSRK overlap and skips edge channels)</p></li>
+<li><p>determine TOPO spw selections per MS</p></li>
+<li><p>determine aggregate LSRK and TOPO bandwidths</p></li>
+<li><p>calculate sensitivity</p>
+<ul>
+<li><p>median of field ID sensitivities because sensitivity calculator takes only one ID at a time</p></li>
+<li><p>corrections for effective channel width and mosaic overlap</p></li>
+</ul>
+</li>
+<li><p>calculate initial threshold estimate as tlimit * sensitivity</p></li>
+<li><p>make dirty cube</p></li>
+<li><p>make pb based mask using annuli if not ‘auto’</p></li>
+<li><p>calculate dirty cube statistics using annuli</p></li>
+<li><p>calculate dirty dynamic range (max(residual) / sensitivity)</p></li>
+<li><p>adjust threshold using dirty dynamic range heuristics</p></li>
+<li><p>caclulate niter using beam / mask size heuristics</p></li>
+<li><p>copy iter0 products to iter1 names</p></li>
+<li><p>make clean cube</p></li>
+<li><p>calculate clean cube statistics using annuli</p></li>
+</ul>
+</li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="building_the_pipeline.html" class="btn btn-neutral float-left" title="Building the pipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="VLA-Imaging-Workflow.html" class="btn btn-neutral float-right" title="VLA interferometry imaging workflow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

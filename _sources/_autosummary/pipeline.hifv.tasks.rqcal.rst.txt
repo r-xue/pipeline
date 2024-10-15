@@ -1,0 +1,20 @@
+pipeline.hifv.tasks.rqcal
+=========================
+
+.. automodule:: pipeline.hifv.tasks.rqcal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Rqcal
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   resultobjects
+   rqcal

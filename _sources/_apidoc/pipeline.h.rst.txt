@@ -1,0 +1,21 @@
+pipeline.h package
+==================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pipeline.h.cli
+   pipeline.h.heuristics
+   pipeline.h.tasks
+   pipeline.h.templates
+
+Module contents
+---------------
+
+.. automodule:: pipeline.h
+   :members:
+   :undoc-members:
+   :show-inheritance:

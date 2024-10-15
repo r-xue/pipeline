@@ -1,0 +1,29 @@
+pipeline.hifv.tasks.swpowcal package
+====================================
+
+Submodules
+----------
+
+pipeline.hifv.tasks.swpowcal.resultobjects module
+-------------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.swpowcal.resultobjects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.swpowcal.swpowcal module
+--------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.swpowcal.swpowcal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifv.tasks.swpowcal
+   :members:
+   :undoc-members:
+   :show-inheritance:

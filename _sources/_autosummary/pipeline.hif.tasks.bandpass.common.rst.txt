@@ -1,0 +1,17 @@
+pipeline.hif.tasks.bandpass.common
+==================================
+
+.. automodule:: pipeline.hif.tasks.bandpass.common
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BandpassResults
+      CalApplication
+      CalFrom
+      CalToArgs
+      Context
+      VdpCommonBandpassInputs
+   

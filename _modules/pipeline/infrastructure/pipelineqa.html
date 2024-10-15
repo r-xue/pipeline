@@ -1,0 +1,590 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.pipelineqa &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.pipelineqa</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.pipelineqa</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The pipelineqa module contains base classes and plugin registry for the</span>
+<span class="sd">pipeline&#39;s QA framework.</span>
+
+<span class="sd">This module contains four key classes:</span>
+
+<span class="sd">    * QAScore: the base class for QA scores</span>
+<span class="sd">    * QAScorePool: the container for lists of QAScores</span>
+<span class="sd">    * QAPlugin: the base class for task-specific QA handlers</span>
+<span class="sd">    * QARegistry: the registry and manager for QA plug-ins</span>
+
+<span class="sd">Tasks provide and register their own QA handlers that each extends QAPlugin.</span>
+<span class="sd">These QA handlers analyse the results of a task, in the process adding</span>
+<span class="sd">QA scores to the Result for display in the web log.</span>
+
+<span class="sd">The pipeline QA framework is activated whenever a Results instance is accepted</span>
+<span class="sd">into the pipeline context. The pipeline QA framework operates by calling</span>
+<span class="sd">is_handler_for(result) on each registered QAPlugin, passing it the the accepted</span>
+<span class="sd">Results instance for inspection. QAPlugins that claim to handle the Result are</span>
+<span class="sd">given the Result for processing. In this step, the QA framework calls</span>
+<span class="sd">QAPlugin.handle(context, result), the method overridden by the task-specific</span>
+<span class="sd">QAPlugin.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">eventbus</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">logging</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># QAOrigin holds information to help understand how and from where the QA scores are derived</span>
+<span class="n">QAOrigin</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;QAOrigin&#39;</span><span class="p">,</span> <span class="s1">&#39;metric_name metric_score metric_units&#39;</span><span class="p">)</span>
+
+<span class="c1"># Default origin for QAScores that do not define their own origin</span>
+<span class="n">NULL_ORIGIN</span> <span class="o">=</span> <span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;Unknown metric&#39;</span><span class="p">,</span>
+                       <span class="n">metric_score</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">,</span>
+                       <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="WebLogLocation">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.WebLogLocation">[docs]</a>
+<span class="k">class</span> <span class="nc">WebLogLocation</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    WebLogLocation is an enumeration attached to each QA score, specifying</span>
+<span class="sd">    where in the web log this QA score should be included.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Render output to the QA details banner at the top of the task detail page</span>
+    <span class="n">BANNER</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
+    <span class="c1"># Render output to QA section of the accordion at bottom of task detail page</span>
+    <span class="n">ACCORDION</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
+    <span class="c1"># Include this QA score in calculations, but do not render it</span>
+    <span class="n">HIDDEN</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
+    <span class="c1"># Place this score in the banner or accordion, as appropriate. This</span>
+    <span class="c1"># emulates &lt; Cycle 7 behaviour.</span>
+    <span class="n">UNSET</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="TargetDataSelection">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.TargetDataSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">TargetDataSelection</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TargetDataSelection is a struct to hold data selection metadata. Its various</span>
+<span class="sd">    properties (vis, scan, spw, etc.) should be set to specify to which subset of</span>
+<span class="sd">    data something applies.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scan</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">spw</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">ant</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pol</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">session</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">vis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">scan</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scan</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">spw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">intent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">intent</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ant</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ant</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pol</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scan</span> <span class="o">=</span> <span class="n">scan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ant</span> <span class="o">=</span> <span class="n">ant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pol</span> <span class="o">=</span> <span class="n">pol</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">attr_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;session&#39;</span><span class="p">,</span> <span class="s1">&#39;vis&#39;</span><span class="p">,</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">,</span> <span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="s1">&#39;intent&#39;</span><span class="p">,</span> <span class="s1">&#39;ant&#39;</span><span class="p">,</span> <span class="s1">&#39;pol&#39;</span><span class="p">]</span>
+        <span class="n">attr_strs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">attr_names</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">val</span><span class="p">)]))</span>
+            <span class="n">attr_strs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">all_attrs</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">attr_strs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;TargetDataSelection(</span><span class="si">{</span><span class="n">all_attrs</span><span class="si">}</span><span class="s1">)&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="QAScore">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore">[docs]</a>
+<span class="k">class</span> <span class="nc">QAScore</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">NULL_ORIGIN</span><span class="p">,</span>
+                 <span class="n">weblog_location</span><span class="o">=</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">UNSET</span><span class="p">,</span> <span class="n">hierarchy</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="n">applies_to</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TargetDataSelection</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        QAScore represent a normalised assessment of data quality.</span>
+
+<span class="sd">        The QA score is normalised to the range 0.0 to 1.0. Any score outside</span>
+<span class="sd">        this range will be truncated at presentation time to lie within this</span>
+<span class="sd">        range.</span>
+
+<span class="sd">        The long message may be rendered on the task detail page, depending on</span>
+<span class="sd">        whether this score is considered significant and the rendering hints</span>
+<span class="sd">        given by the weblog_location argument.</span>
+
+<span class="sd">        The short message associated with a QA score is used on the task</span>
+<span class="sd">        summary page when this task is considered representative for the stage.</span>
+
+<span class="sd">        A QAScore is derived from an unnormalised metric, which should be</span>
+<span class="sd">        provided as the &#39;origin&#39; argument when available. These metrics may be</span>
+<span class="sd">        exported to the AQUA report, depending on their significance to the</span>
+<span class="sd">        task QA and whether AQUA metric export is enabled for the particular</span>
+<span class="sd">        task.</span>
+
+<span class="sd">        The weblog_location and hierarchy attributes are intended to be used</span>
+<span class="sd">        together, set by appropriate task-specific aggregation logic in the</span>
+<span class="sd">        QAPlugin code, to specify how this score should be aggregated in</span>
+<span class="sd">        overall score calculations and if/how it should be presented in the</span>
+<span class="sd">        weblog.</span>
+
+<span class="sd">        The hierarchy attribute should be in dotted string format, e.g.,</span>
+<span class="sd">        &#39;amp_vs_freq.amp.slope&#39;. QAPlugins use this metadata to organise how</span>
+<span class="sd">        the score should be grouped for processing and aggregation.</span>
+
+<span class="sd">        :param score: numeric QA score, in range 0.0 to 1.0</span>
+<span class="sd">        :param longmsg: verbose textual description of this score</span>
+<span class="sd">        :param shortmsg: concise textual summary of this score</span>
+<span class="sd">        :param vis: name of measurement set assessed by this QA score (DEPRECATED)</span>
+<span class="sd">        :param origin: metric from which this score was calculated</span>
+<span class="sd">        :param weblog_location: destination for web log presentation of this</span>
+<span class="sd">            score</span>
+<span class="sd">        :param hierarchy: location in QA hierarchy, in dot-separated format</span>
+<span class="sd">        :param applies_to: data selection covered by this QA assessment</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">score</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">longmsg</span> <span class="o">=</span> <span class="n">longmsg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortmsg</span> <span class="o">=</span> <span class="n">shortmsg</span>
+
+        <span class="k">if</span> <span class="n">applies_to</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">applies_to</span> <span class="o">=</span> <span class="n">TargetDataSelection</span><span class="p">()</span>
+
+        <span class="c1"># if the &#39;vis&#39; deprecated argument is supplied, add it to the data selection</span>
+        <span class="c1"># TODO refactor all old uses of QAScore to supply applies_to rather than vis</span>
+        <span class="k">if</span> <span class="n">vis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">applies_to</span><span class="o">.</span><span class="n">vis</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">applies_to</span> <span class="o">=</span> <span class="n">applies_to</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weblog_location</span> <span class="o">=</span> <span class="n">weblog_location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hierarchy</span> <span class="o">=</span> <span class="n">hierarchy</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;QAScore(</span><span class="si">{!s}</span><span class="s1">, </span><span class="si">{!r}</span><span class="s1">, </span><span class="si">{!r}</span><span class="s1">, </span><span class="si">{!s}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">longmsg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shortmsg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">applies_to</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="ow">is</span> <span class="n">NULL_ORIGIN</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span>
+
+        <span class="k">return</span> <span class="s1">&#39;QAScore(</span><span class="si">{!s}</span><span class="s1">, longmsg=</span><span class="si">{!r}</span><span class="s1">, shortmsg=</span><span class="si">{!r}</span><span class="s1">, origin=</span><span class="si">{!r}</span><span class="s1">, applies_to=</span><span class="si">{!s}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">longmsg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">applies_to</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="QAScorePool">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScorePool">[docs]</a>
+<span class="k">class</span> <span class="nc">QAScorePool</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">all_unity_longmsg</span> <span class="o">=</span> <span class="s1">&#39;All QA completed successfully&#39;</span>
+    <span class="n">all_unity_shortmsg</span> <span class="o">=</span> <span class="s1">&#39;QA pass&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_representative</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QAScore</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">representative</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_representative</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_representative</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QAScore</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;No QA scores registered for this task&#39;</span><span class="p">,</span> <span class="s1">&#39;No QA&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Maybe have different algorithms here. For now just return the</span>
+        <span class="c1"># QAScore with minimum score of all non-hidden numerical ones.</span>
+        <span class="n">numerical_scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">score_obj</span> <span class="k">for</span> <span class="n">score_obj</span> <span class="ow">in</span> <span class="n">scores_with_location</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="p">,</span>
+                           <span class="p">[</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">ACCORDION</span><span class="p">,</span> <span class="n">WebLogLocation</span><span class="o">.</span><span class="n">BANNER</span><span class="p">,</span> <span class="n">WebLogLocation</span><span class="o">.</span><span class="n">UNSET</span><span class="p">])</span>
+                           <span class="k">if</span> <span class="n">score_obj</span><span class="o">.</span><span class="n">score</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">numerical_scores</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">numerical_scores</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Only None scores. Cannot select a representative one, so</span>
+            <span class="c1"># just return the first in the list.</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@representative</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">representative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_representative</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+
+<div class="viewcode-block" id="QAPlugin">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin">[docs]</a>
+<span class="k">class</span> <span class="nc">QAPlugin</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    QAPlugin is the mandatory base class for all pipeline QA handlers.</span>
+
+<span class="sd">    Each pipeline tasks should create its own task-specific QA handler that</span>
+<span class="sd">    extends QAPlugin and implements the QAPlugin.handle(context, result)</span>
+<span class="sd">    method to perform QA analysis specific to that task. New QA handlers</span>
+<span class="sd">    should specify which type of Results classes they process by defining the</span>
+<span class="sd">    result_cls and child_cls class properties. If the same Results class is</span>
+<span class="sd">    returned by multiple tasks, e.g., fluxscale and setjy, then the</span>
+<span class="sd">    generating_task class property should also be defined, which will cause</span>
+<span class="sd">    the handler to be activated only when the Result instance is generated by</span>
+<span class="sd">    the specified task.</span>
+
+<span class="sd">    The results structure for many pipeline tasks is to return a ResultsList</span>
+<span class="sd">    container object that contains many task-specific Results instances, one</span>
+<span class="sd">    per EB. Two QAPlugins must be registered for this type of task: one to</span>
+<span class="sd">    process the per-EB Results leaf objects, and another to process the</span>
+<span class="sd">    containing ResultsList, pulling up the QA scores on each per-EB Result</span>
+<span class="sd">    into the ResultsList&#39;s QAScorePool and setting a representative score.</span>
+<span class="sd">    This can be achieved with two new QAPlugins, e.g.,</span>
+
+<span class="sd">        # This will process the per-EB results</span>
+<span class="sd">        MyTaskQAPlugin(QAHandler):</span>
+<span class="sd">            result_cls = MyTaskResults</span>
+<span class="sd">            child_cls = None</span>
+
+<span class="sd">        # This will process the container</span>
+<span class="sd">        MyTaskContainerQAPlugin(QAHandler):</span>
+<span class="sd">            result_cls =ResultsList</span>
+<span class="sd">            child_cls = MyTaskResults</span>
+
+<span class="sd">    Within QAPlugin.handle(context, result), a QA Handler can analyse, modify,</span>
+<span class="sd">    or make additions to the Results instances in any way it sees fit. In</span>
+<span class="sd">    practice, the standard modification is to create and add one or more new</span>
+<span class="sd">    QAScore instances to the QAScorePool attribute of the Result.</span>
+
+<span class="sd">    Extending the QAPlugin base class automatically registers the subclass with</span>
+<span class="sd">    with the pipeline QA framework. However, QAPlugin must be explicitly</span>
+<span class="sd">    extended, and not implicitly inherited via another subclass of QAPlugin.</span>
+<span class="sd">    Put another way, if class Foo extends QAPlugin, and class Bar extends Foo,</span>
+<span class="sd">    only Foo is registered with the QA framework. To register Bar, the class</span>
+<span class="sd">    definition must use multiple inheritance, e.g., &#39;class Bar(Foo, QAPlugin):&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># the Results class this handler is expected to handle</span>
+    <span class="n">result_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># if result_cls is a list, the type of classes it is expected to contain</span>
+    <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># the task class that generated the results, or None if it should handle</span>
+    <span class="c1"># all results of this type regardless of which task generated it</span>
+    <span class="n">generating_task</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="QAPlugin.is_handler_for">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin.is_handler_for">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_handler_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if this QAPlugin can process the Result.</span>
+
+<span class="sd">        :param result: the task Result to inspect</span>
+<span class="sd">        :return: True if the Result can be processed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if the result is not a list or the expected results class,</span>
+        <span class="c1"># return False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_cls</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># this is the expected class and we weren&#39;t expecting any</span>
+        <span class="c1"># children, so we should be able to handle the result</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_cls</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span> <span class="ow">is</span> <span class="kc">None</span>
+                                       <span class="ow">or</span> <span class="n">result</span><span class="o">.</span><span class="n">task</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_cls</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">task</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">generating_task</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="c1"># catch case when result does not have a task attribute</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="QAPlugin.handle">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin.handle">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="QAPlugin.handle_with_exception_catch">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin.handle_with_exception_catch">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle_with_exception_catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle QA scoring with an exception catch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context</span>
+<span class="sd">            result: A Pipeline task result instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="c1"># PIPE-2216: use a short generic message and score=-0.1 for QA execution failures and</span>
+            <span class="c1"># present the exception error message in warning.</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QAScore</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;Unable to calculate QA scores.&#39;</span><span class="p">,</span> <span class="s1">&#39;Unable to calculate QA scores&#39;</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;QA execution failed with an exception: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ex</span><span class="p">)</span></div>
+</div>
+
+
+<div class="viewcode-block" id="QARegistry">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QARegistry">[docs]</a>
+<span class="k">class</span> <span class="nc">QARegistry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The registry and manager of the pipeline QA framework.</span>
+
+<span class="sd">    The responsibility of the QARegistry is to pass Results to QAPlugins that</span>
+<span class="sd">    can handle them.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__plugins_loaded</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__handlers</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="QARegistry.add_handler">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QARegistry.add_handler">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">generating_task</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">generating_task</span> <span class="k">else</span> <span class="s1">&#39;all&#39;</span>
+        <span class="n">child_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">child_cls</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
+            <span class="n">child_name</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">child_cls</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">child_cls</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">child_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">handler</span><span class="o">.</span><span class="n">child_cls</span><span class="p">])</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="s1">&#39;s of </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">child_name</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1"> results generated by </span><span class="si">%s</span><span class="s1"> tasks&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">result_cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">container</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Registering </span><span class="si">%s</span><span class="s1"> as new pipeline QA handler for </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__handlers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QARegistry.do_qa">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QARegistry.do_qa">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_qa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__plugins_loaded</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">plugin_class</span> <span class="ow">in</span> <span class="n">QAPlugin</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="n">plugin_class</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__plugins_loaded</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># if this result is iterable, process the lower-level scalar results</span>
+        <span class="c1"># first</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">do_qa</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+
+        <span class="c1"># register the capturing log handler, buffering all messages so that</span>
+        <span class="c1"># we can add them to the result - and subsequently, the weblog</span>
+        <span class="n">logging_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">CapturingHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">ATTENTION</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="n">logging_handler</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># with the leaf results processed, the containing handler can now</span>
+            <span class="c1"># collate the lower-level scores or process as a group</span>
+            <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__handlers</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">is_handler_for</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> handling QA analysis for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                                                                  <span class="n">result</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+                    <span class="n">handler</span><span class="o">.</span><span class="n">handle_with_exception_catch</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;logrecords&#39;</span><span class="p">):</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">logrecords</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">logging_handler</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># now that the messages from the QA stage have been attached to</span>
+            <span class="c1"># the result, remove the capturing logging handler from all loggers</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">remove_handler</span><span class="p">(</span><span class="n">logging_handler</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="scores_with_location">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.scores_with_location">[docs]</a>
+<span class="k">def</span> <span class="nf">scores_with_location</span><span class="p">(</span><span class="n">pool</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">],</span>
+                         <span class="n">locations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">WebLogLocation</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Filter QA scores by web log location.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">locations</span><span class="p">:</span>
+        <span class="n">locations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">WebLogLocation</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">score</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">pool</span> <span class="k">if</span> <span class="n">score</span><span class="o">.</span><span class="n">weblog_location</span> <span class="ow">in</span> <span class="n">locations</span><span class="p">]</span></div>
+
+
+
+<span class="n">qa_registry</span> <span class="o">=</span> <span class="n">QARegistry</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

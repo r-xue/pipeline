@@ -1,0 +1,23 @@
+pipeline.h.tasks.importdata.importdata
+======================================
+
+.. automodule:: pipeline.h.tasks.importdata.importdata
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_correcteddatacolumn_name
+      get_datacolumn_name
+      search_columns
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      ImportData
+      ImportDataInputs
+      ImportDataResults
+   

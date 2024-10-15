@@ -1,0 +1,377 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.utils.positioncorrection &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.utils.positioncorrection</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.utils.positioncorrection</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utilities used for correcting image center coordinates.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">astropy.io.fits</span> <span class="k">as</span> <span class="nn">apfits</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">offset_by</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">logging</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">record_to_quantity</span> <span class="k">as</span> <span class="n">rtq</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;do_wide_field_pos_cor&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="do_wide_field_pos_cor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.positioncorrection.do_wide_field_pos_cor">[docs]</a>
+<span class="k">def</span> <span class="nf">do_wide_field_pos_cor</span><span class="p">(</span><span class="n">fitsname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">date_time</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">obs_long</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">obs_lat</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies mean wide field position correction to FITS WCS in place.</span>
+
+<span class="sd">    Apply a mean correction to the FITS WCS reference position as a function</span>
+<span class="sd">    of mean hour angle of observation and mean declination (see PIPE-587,</span>
+<span class="sd">    PIPE-700, SRDP-412, and VLASS Memo #14).</span>
+
+<span class="sd">    The correction is intended for VLASS-QL images. It is performed as part of</span>
+<span class="sd">    the hifv_exportvlassdata task call in the VLASS-QL pipeline run. It can also</span>
+<span class="sd">    be executed outside of the pipeline.</span>
+
+<span class="sd">    CRVAL1, CUNIT1, CRVAL2, CUNIT2 and HISTORY keywords are updated *in place*</span>
+<span class="sd">    in the input FITS image header.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fitsname: name (and path) of FITS file to be processed.</span>
+<span class="sd">        date_time: Mean date and time of observation in casa_tools.measure.epoch</span>
+<span class="sd">            format, if None use DATE-OBS FITS header value.</span>
+<span class="sd">            e.g. {&#39;m0&#39;: {&#39;unit&#39;: &#39;d&#39;, &#39;value&#39;: 58089.83550347222},</span>
+<span class="sd">                &#39;refer&#39;: &#39;UTC&#39;, &#39;type&#39;: &#39;epoch&#39;}</span>
+<span class="sd">        obs_long: Geographic longitude of observatory, casa_tools.quanta.quantity</span>
+<span class="sd">            format. If None, then use VLA coordinate.</span>
+<span class="sd">            e.g. {&#39;value&#39;: -107.6, &#39;unit&#39;: &#39;deg&#39;}.</span>
+<span class="sd">        obs_lat: Geographic latitude of observatory, casa_tools.quanta.quantity</span>
+<span class="sd">            format. If None, then use VLA coordinate.</span>
+<span class="sd">            e.g. {&#39;value&#39;: 34.1, &#39;unit&#39;: &#39;deg&#39;}.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        file = &quot;VLASS1.1.ql.T19t20.J155950+333000.10.2048.v1.I.iter1.image.pbcor.tt0.subim.fits&quot;</span>
+<span class="sd">        # Mean time of observation</span>
+<span class="sd">        datetime = pipeline.infrastructure.casa_tools.measures.epoch(&#39;utc&#39;, &#39;2017-12-02T20:03:07.500&#39;)</span>
+<span class="sd">        # VLA coordinates</span>
+<span class="sd">        obslong = {&#39;unit&#39;:&#39;deg&#39;,&#39;value&#39;:-107.6}</span>
+<span class="sd">        obslat = {&#39;unit&#39;:&#39;deg&#39;,&#39;value&#39;:34.1}</span>
+<span class="sd">        # Correct reference positions in fits header</span>
+<span class="sd">        do_wide_field_pos_cor(file, date_time=datetime, obs_long=obslong, obs_lat=obslat)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Obtain observatory geographic coordinates</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">obs_long</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">obs_lat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">observatory</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">observatory</span><span class="p">(</span><span class="s1">&#39;VLA&#39;</span><span class="p">)</span>
+        <span class="n">obs_long</span> <span class="o">=</span> <span class="n">observatory</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">]</span>
+        <span class="n">obs_lat</span> <span class="o">=</span> <span class="n">observatory</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fitsname</span><span class="p">):</span>
+        <span class="c1"># Open FITS image and obtain header</span>
+        <span class="k">with</span> <span class="n">apfits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fitsname</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;update&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdulist</span><span class="p">:</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="n">hdulist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span>
+
+            <span class="c1"># Check whether position correction was already applied</span>
+            <span class="k">if</span> <span class="s1">&#39;Position correction &#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Positions are already corrected in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fitsname</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="c1"># Get original coordinates</span>
+            <span class="n">ra_head</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;cunit1&#39;</span><span class="p">],</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;crval1&#39;</span><span class="p">]}</span>
+            <span class="n">dec_head</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;cunit2&#39;</span><span class="p">],</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;crval2&#39;</span><span class="p">]}</span>
+            <span class="n">freq_head</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;cunit3&#39;</span><span class="p">],</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;crval3&#39;</span><span class="p">]}</span>
+
+            <span class="c1"># Mean observing time</span>
+            <span class="k">if</span> <span class="n">date_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">date_obs</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;date-obs&#39;</span><span class="p">]</span>
+                <span class="n">timesys</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;timesys&#39;</span><span class="p">]</span>
+                <span class="n">date_time</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="n">timesys</span><span class="p">,</span> <span class="n">date_obs</span><span class="p">)</span>
+
+            <span class="c1"># Compute correction</span>
+            <span class="n">offset_pa</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">rtq</span><span class="p">(</span><span class="n">calc_wide_field_pos_cor</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="n">ra_head</span><span class="p">,</span> <span class="n">dec</span><span class="o">=</span><span class="n">dec_head</span><span class="p">,</span> <span class="n">obs_long</span><span class="o">=</span><span class="n">obs_long</span><span class="p">,</span>
+                                                         <span class="n">obs_lat</span><span class="o">=</span><span class="n">obs_lat</span><span class="p">,</span> <span class="n">date_time</span><span class="o">=</span><span class="n">date_time</span><span class="p">,</span> <span class="n">offset_pa</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
+
+            <span class="c1"># PIPE-1356: perform additional freqency-dependent scaling from the 3GHz prediction.</span>
+            <span class="n">freq_scale</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.e9</span><span class="o">/</span><span class="n">freq_head</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">offset_pa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset_pa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">freq_scale</span>
+
+            <span class="n">pa_rad</span> <span class="o">=</span> <span class="n">offset_pa</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span>
+            <span class="n">offset_arcsec</span> <span class="o">=</span> <span class="n">offset_pa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">)</span>
+
+            <span class="c1"># Apply corrections</span>
+            <span class="n">ra_fixed</span><span class="p">,</span> <span class="n">dec_fixed</span> <span class="o">=</span> <span class="n">offset_by</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;crval1&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;crval2&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span>
+                                            <span class="n">offset_pa</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">180</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">offset_pa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">))</span>
+
+            <span class="c1"># Update FITS image header, use degrees</span>
+            <span class="n">header</span><span class="p">[</span><span class="s1">&#39;crval1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ra_fixed</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+            <span class="n">header</span><span class="p">[</span><span class="s1">&#39;cunit1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;deg&#39;</span>
+            <span class="n">header</span><span class="p">[</span><span class="s1">&#39;crval2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dec_fixed</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+            <span class="n">header</span><span class="p">[</span><span class="s1">&#39;cunit2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;deg&#39;</span>
+
+            <span class="c1"># Update history, &quot;Position correction...&quot; message should remain the last record in list.</span>
+            <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Uncorrected CRVAL1 = </span><span class="si">{:.12E}</span><span class="s1"> deg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">ra_head</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]),</span>
+                        <span class="s1">&#39;Uncorrected CRVAL2 = </span><span class="si">{:.12E}</span><span class="s1"> deg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">dec_head</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]),</span>
+                        <span class="s1">&#39;Position correction (</span><span class="si">{:.3E}</span><span class="s1">/cos(CRVAL2), </span><span class="si">{:.3E}</span><span class="s1">) arcsec applied&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="o">-</span><span class="n">offset_arcsec</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">),</span> <span class="o">-</span><span class="n">offset_arcsec</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">))]</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+                <span class="n">header</span><span class="o">.</span><span class="n">add_history</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+            <span class="c1"># Save changes and inform log</span>
+            <span class="n">hdulist</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">messages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">fitsname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Image </span><span class="si">{</span><span class="n">fitsname</span><span class="si">}</span><span class="s1"> does not exist. No position correction was done.&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">calc_wide_field_pos_cor</span><span class="p">(</span><span class="n">ra</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">obs_long</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">obs_lat</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+                            <span class="n">date_time</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">offset_pa</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the wide field position correction.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ra: Uncorrected Right Ascension.</span>
+<span class="sd">        dec: Uncorrected Declination.</span>
+<span class="sd">        obs_long: Geographic longitude of observatory.</span>
+<span class="sd">        obs_lat: Geographic latitude of observatory.</span>
+<span class="sd">        date_time: Date and time of observation.</span>
+<span class="sd">        offset_pa: Return the angular offset and parallactic angle instead of offset along RA and Dec.</span>
+
+<span class="sd">    The arguments are all in casa_tools.quanta format (dictionary containing</span>
+<span class="sd">    value (float) and unit (str)). The function internally uses radian units for</span>
+<span class="sd">    computation. The arguments may have any convertible units.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A tuple containing RA and Dec offsets with units (in radians).</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">    &gt;&gt;&gt; ra, dec = {&#39;unit&#39;: &#39;deg&#39;, &#39;value&#39;: 239.9618166667}, {&#39;unit&#39;: &#39;deg&#39;, &#39;value&#39;: 33.5}</span>
+<span class="sd">    &gt;&gt;&gt; obslong, obslat =  {&#39;unit&#39;: &#39;deg&#39;, &#39;value&#39;: -107.61833}, {&#39;unit&#39;: &#39;deg&#39;, &#39;value&#39;: 33.90049},</span>
+<span class="sd">    &gt;&gt;&gt; datetime = {&#39;m0&#39;: {&#39;unit&#39;: &#39;d&#39;, &#39;value&#39;: 58089.82306510417}, &#39;refer&#39;: &#39;UTC&#39;, &#39;type&#39;: &#39;epoch&#39;}</span>
+<span class="sd">    &gt;&gt;&gt; offset = calc_wide_field_pos_cor(ra=ra, dec=dec, obs_long=obslong, obs_lat=obslat, date_time=datetime)</span>
+<span class="sd">    &gt;&gt;&gt; &#39;{}{}&#39;.format(offset[0][&#39;value&#39;], offset[0][&#39;unit&#39;]), &#39;{}{}&#39;.format(offset[1][&#39;value&#39;], offset[1][&#39;unit&#39;])</span>
+<span class="sd">    (&#39;3.696987011896662e-07rad&#39;, &#39;4.588161874447812e-08rad&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get original coordinates in radians</span>
+    <span class="n">ra_rad</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="n">dec_rad</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">dec</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Mean geographic coordinates of antennas in radians</span>
+    <span class="n">obs_long_rad</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">obs_long</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="n">obs_lat_rad</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">obs_lat</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Greenwich Mean Sidereal Time</span>
+    <span class="n">GMST</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">date_time</span><span class="p">,</span> <span class="s1">&#39;GMST1&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Local Sidereal Time</span>
+    <span class="n">LST</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">GMST</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">],</span> <span class="s1">&#39;h&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="mf">24.0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">obs_long_rad</span><span class="p">)</span> <span class="o">/</span> <span class="mf">15.0</span>
+    <span class="k">if</span> <span class="n">LST</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">LST</span> <span class="o">=</span> <span class="n">LST</span> <span class="o">+</span> <span class="mi">24</span>
+    <span class="n">LST_rad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">LST</span> <span class="o">*</span> <span class="mi">15</span><span class="p">)</span>  <span class="c1"># in radians</span>
+
+    <span class="c1"># Hour angle (in radians)</span>
+    <span class="n">ha_rad</span> <span class="o">=</span> <span class="n">LST_rad</span> <span class="o">-</span> <span class="n">ra_rad</span>
+    <span class="k">if</span> <span class="n">ha_rad</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">ha_rad</span> <span class="o">=</span> <span class="n">ha_rad</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+    <span class="c1"># Compute correction</span>
+    <span class="c1"># The amplitude of 0.25 arcsec is defined in VLASS Memo #14 at 3GHz.</span>
+    <span class="n">amp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mf">0.25</span> <span class="o">/</span> <span class="mf">3600.0</span><span class="p">)</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">zd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">obs_lat_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dec_rad</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">obs_lat_rad</span><span class="p">)</span>
+                   <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">dec_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ha_rad</span><span class="p">))</span>
+    <span class="n">chi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ha_rad</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">dec_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">obs_lat_rad</span><span class="p">)</span> <span class="o">-</span>
+                                      <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dec_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ha_rad</span><span class="p">)))</span>
+    <span class="n">deltatot</span> <span class="o">=</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">zd</span><span class="p">)</span>
+
+    <span class="c1"># Restrict ha_rad to the -np.pi to +np.pi range in order to deal with</span>
+    <span class="c1"># denominator of parallactic angle term going to zero at declination of</span>
+    <span class="c1"># arctan(cos(obs_lat_rad)/cos(ha_rad)) and flipping sign of chi: for</span>
+    <span class="c1"># positive ha_rad, maintain chi positive by adding np.pi if needed, and for</span>
+    <span class="c1"># negative ha_rad, subtract np.pi to keep chi negative.</span>
+    <span class="k">if</span> <span class="n">ha_rad</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+        <span class="n">ha_rad</span> <span class="o">=</span> <span class="n">ha_rad</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ha_rad</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">chi</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">):</span>
+        <span class="n">chi</span> <span class="o">=</span> <span class="n">chi</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">ha_rad</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">chi</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">):</span>
+        <span class="n">chi</span> <span class="o">=</span> <span class="n">chi</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+    <span class="c1"># Offset values</span>
+    <span class="k">if</span> <span class="n">offset_pa</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">({</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">deltatot</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;rad&#39;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">chi</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;rad&#39;</span><span class="p">})</span>
+
+    <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">deltatot</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">chi</span><span class="p">)</span>
+    <span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">deltatot</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">chi</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">({</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;rad&#39;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;rad&#39;</span><span class="p">})</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

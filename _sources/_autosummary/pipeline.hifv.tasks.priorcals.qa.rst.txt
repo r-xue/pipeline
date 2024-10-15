@@ -1,0 +1,13 @@
+pipeline.hifv.tasks.priorcals.qa
+================================
+
+.. automodule:: pipeline.hifv.tasks.priorcals.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PriorcalsListQAHandler
+      PriorcalsQAHandler
+   

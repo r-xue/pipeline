@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.common.displays
+===================================
+
+.. automodule:: pipeline.hifa.tasks.common.displays
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   phaseoffset

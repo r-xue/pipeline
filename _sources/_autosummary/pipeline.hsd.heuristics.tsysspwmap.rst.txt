@@ -1,0 +1,18 @@
+pipeline.hsd.heuristics.tsysspwmap
+==================================
+
+.. automodule:: pipeline.hsd.heuristics.tsysspwmap
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      best_spwmap
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TsysSpwMapHeuristics
+   

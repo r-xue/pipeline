@@ -1,0 +1,487 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.heuristics.fitorder &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.heuristics.fitorder</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.heuristics.fitorder</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.api</span> <span class="k">as</span> <span class="nn">api</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="n">EdgeChannels</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;EdgeChannels&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="FittingFunction">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.FittingFunction">[docs]</a>
+<span class="k">class</span> <span class="nc">FittingFunction</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blfunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="n">POLY</span> <span class="o">=</span> <span class="s1">&#39;polynomial&#39;</span><span class="p">,</span>
+    <span class="n">CSPLINE</span> <span class="o">=</span> <span class="s1">&#39;segmented cubic spline&#39;</span>
+    <span class="n">POLYNOMIAL</span> <span class="o">=</span> <span class="n">POLY</span>
+    <span class="n">SPLINE</span> <span class="o">=</span> <span class="n">CSPLINE</span></div>
+
+
+
+<div class="viewcode-block" id="get_fitting_function">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.get_fitting_function">[docs]</a>
+<span class="k">def</span> <span class="nf">get_fitting_function</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FittingFunction</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get FittingFunction enum from name.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name: name of the fitting function</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: unsupported function name</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        FittingFunction enum</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FittingFunction</span><span class="o">.</span><span class="n">__members__</span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Unsupported fitting function: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="is_polynomial_fit">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.is_polynomial_fit">[docs]</a>
+<span class="k">def</span> <span class="nf">is_polynomial_fit</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">FittingFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine if fitting function is polynomial.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if fitting function is polynomial, False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">FittingFunction</span><span class="o">.</span><span class="n">POLY</span></div>
+
+
+
+<div class="viewcode-block" id="is_cubic_spline_fit">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.is_cubic_spline_fit">[docs]</a>
+<span class="k">def</span> <span class="nf">is_cubic_spline_fit</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">FittingFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine if fitting function is cubic spline.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if fitting function is cubic spline, False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">FittingFunction</span><span class="o">.</span><span class="n">CSPLINE</span></div>
+
+
+
+<div class="viewcode-block" id="FitOrderHeuristics">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.FitOrderHeuristics">[docs]</a>
+<span class="k">class</span> <span class="nc">FitOrderHeuristics</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine fitting order from a set of spectral data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MaxDominantFreq</span> <span class="o">=</span> <span class="mi">15</span>
+
+<div class="viewcode-block" id="FitOrderHeuristics.calculate">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.FitOrderHeuristics.calculate">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="n">EdgeChannels</span> <span class="o">=</span> <span class="n">EdgeChannels</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine fitting order from a set of spectral data, data,</span>
+<span class="sd">        with masks for each spectral data, mask, and number of edge</span>
+<span class="sd">        channels to be excluded, edge.</span>
+
+<span class="sd">        First, manipulate each spectral data by the following procedure:</span>
+
+<span class="sd">           1) mask regions specified by mask and edge,</span>
+<span class="sd">           2) subtract average from spectral data,</span>
+<span class="sd">           3) compute one-dimensional discrete Fourier Transform.</span>
+
+<span class="sd">        Then, Fourier power spectrum is averaged and averaged power</span>
+<span class="sd">        spectrum is analyzed to determine optimal polynomial order</span>
+<span class="sd">        for input data array. The heuristics returns one representative</span>
+<span class="sd">        polynomial order per input data array.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: two-dimensional data array with shape (nrow, nchan).</span>
+<span class="sd">            mask: list of mask regions. Value should be a list of</span>
+<span class="sd">                  [[start0,end0],[start1,end1],...] for each spectrum.</span>
+<span class="sd">                  [[-1,-1]] indicates no mask. Default is None.</span>
+<span class="sd">            edge: number of edge channels to be dropped. Default is (0,0).</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Representative polynomial order, None if all data are masked</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="p">(</span><span class="n">nrow</span><span class="p">,</span> <span class="n">nchan</span><span class="p">)</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">effective_nchan</span> <span class="o">=</span> <span class="n">nchan</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+        <span class="n">power_spectrum</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mask_maker</span> <span class="o">=</span> <span class="n">MaskMaker</span><span class="p">(</span><span class="n">nchan</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">edge</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mask_maker</span> <span class="o">=</span> <span class="n">MaskMakerNoLine</span><span class="p">(</span><span class="n">nchan</span><span class="p">,</span> <span class="n">edge</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">irow</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrow</span><span class="p">):</span>
+            <span class="n">spectrum</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">irow</span><span class="p">]</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="n">mask_maker</span><span class="o">.</span><span class="n">get_mask</span><span class="p">(</span><span class="n">irow</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">):</span>
+                <span class="n">average</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">average</span><span class="p">(</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">flag</span> <span class="p">)</span>
+                <span class="n">spectrum</span> <span class="o">=</span> <span class="p">(</span><span class="n">spectrum</span> <span class="o">-</span> <span class="n">average</span><span class="p">)</span> <span class="o">*</span> <span class="n">flag</span>
+
+                <span class="c1"># Apply FFT to the spectrum</span>
+                <span class="n">power_spectrum</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)))</span>
+
+        <span class="c1"># return None if all rows are completely masked</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">power_spectrum</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Average seems to be better than median</span>
+        <span class="c1">#power = numpy.median(power_spectrum, axis=0)</span>
+        <span class="n">power</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">power_spectrum</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">max_freq</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MaxDominantFreq</span> <span class="o">*</span> <span class="n">effective_nchan</span> <span class="o">/</span> <span class="mf">2048.0</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># 2007/09/01 Absolute value of power should be taken into account</span>
+        <span class="c1"># If the power is low, it should be ignored</span>
+        <span class="c1"># Normalize the power</span>
+        <span class="n">power2</span> <span class="o">=</span> <span class="n">power</span> <span class="o">/</span> <span class="n">power</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">max_power</span> <span class="o">=</span> <span class="n">power2</span><span class="p">[:</span><span class="n">max_freq</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">max_power</span> <span class="o">&lt;</span> <span class="mf">3.0</span><span class="p">:</span>
+            <span class="n">poly_order</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">elif</span> <span class="n">max_power</span> <span class="o">&lt;</span> <span class="mf">5.0</span><span class="p">:</span>
+            <span class="n">poly_order</span> <span class="o">=</span> <span class="mf">1.5</span>
+        <span class="k">elif</span> <span class="n">max_power</span> <span class="o">&lt;</span> <span class="mf">10.0</span><span class="p">:</span>
+            <span class="n">poly_order</span> <span class="o">=</span> <span class="mf">2.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_freq</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">power2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">10.0</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">power2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">5.0</span><span class="p">:</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">flag</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">poly_order</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span> <span class="o">+</span> <span class="mf">0.5</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">poly_order</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+
+        <span class="c1"># Finally, convert to polynomial order</span>
+        <span class="c1">#poly_order = int(poly_order * 3.0)</span>
+        <span class="c1">#poly_order = int(poly_order + 1) * 2.0 + 0.5)</span>
+        <span class="n">poly_order</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">poly_order</span> <span class="o">*</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="mf">1.5</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">poly_order</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MaskMakerNoLine">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.MaskMakerNoLine">[docs]</a>
+<span class="k">class</span> <span class="nc">MaskMakerNoLine</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate mask array.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nchan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="n">EdgeChannels</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nchan: number of channels.</span>
+<span class="sd">            edge: number of edge channels to be dropped.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int8</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="p">[:</span><span class="n">edge</span><span class="o">.</span><span class="n">left</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="p">[(</span><span class="n">nchan</span><span class="o">-</span><span class="n">edge</span><span class="o">.</span><span class="n">right</span><span class="p">):]</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="MaskMakerNoLine.get_mask">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.MaskMakerNoLine.get_mask">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get mask array.</span>
+
+<span class="sd">        Value in the returned array are either 1 (valid) or 0 (invalid).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            row: row number (not used)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            mask array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MaskMaker">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.MaskMaker">[docs]</a>
+<span class="k">class</span> <span class="nc">MaskMaker</span><span class="p">(</span><span class="n">MaskMakerNoLine</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate mask array. Lines are masked.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nchan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">edge</span><span class="p">:</span> <span class="n">EdgeChannels</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the instance</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nchan: number of channels.</span>
+<span class="sd">            lines: list of mask regions. Value should be a list of</span>
+<span class="sd">                  [[start0,end0],[start1,end1],...] for each spectrum.</span>
+<span class="sd">                  [[-1,-1]] indicates no mask.</span>
+<span class="sd">            edge: number of edge channels to be dropped.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MaskMaker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">nchan</span><span class="p">,</span> <span class="n">edge</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="n">lines</span>
+
+<div class="viewcode-block" id="MaskMaker.get_mask">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.MaskMaker.get_mask">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get mask array.</span>
+
+<span class="sd">        Value in the returned array are either 1 (valid) or 0 (invalid).</span>
+<span class="sd">        Line ranges are masked.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            row: row number (not used)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            mask array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="n">row</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">flag</span><span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># line[1] is an index of the end of the line</span>
+        <span class="k">return</span> <span class="n">flag</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SwitchPolynomialWhenLargeMaskAtEdgeHeuristic">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic">[docs]</a>
+<span class="k">class</span> <span class="nc">SwitchPolynomialWhenLargeMaskAtEdgeHeuristic</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchPolynomialWhenLargeMaskAtEdgeHeuristic.calculate">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic.calculate">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nchan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="n">EdgeChannels</span><span class="p">,</span> <span class="n">num_pieces</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">masklist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">FittingFunction</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform fitting function heuristics.</span>
+
+<span class="sd">        Logic of the fitting function heuristics is as follows.</span>
+
+<span class="sd">            if nchan_edge &gt;= nchan/2:</span>
+<span class="sd">                fitfunc=POLY</span>
+<span class="sd">                order=1</span>
+<span class="sd">            elif nchan_edge &gt;= nchan_segment:</span>
+<span class="sd">                fitfunc=POLY</span>
+<span class="sd">                order=2</span>
+<span class="sd">            else:</span>
+<span class="sd">                fitfunc=CSPLINE</span>
+
+<span class="sd">        where nchan_segment is a number of channels in one segment,</span>
+<span class="sd">        and nchan_edge is max number of consecutive masked channels</span>
+<span class="sd">        from edges.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nchan: total number of channels</span>
+<span class="sd">            edge: number of channels from the edges to be excluded from the fit [C0, C1]</span>
+<span class="sd">            num_pieces: Number of segments for cspline fitting</span>
+<span class="sd">            masklist: List of fit ranges (included in the fit) [[C0, C1], [C2, C3], ...]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Result of the heuristics as a two tuple of FittingFunction enum and fitting order</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">masklist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># special case: all channels are excluded from the fit</span>
+            <span class="n">nchan_edge0</span> <span class="o">=</span> <span class="n">nchan</span>
+            <span class="n">nchan_edge1</span> <span class="o">=</span> <span class="n">nchan</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># number of masked edge channels: Left side</span>
+            <span class="n">edge_mask0</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">min</span><span class="p">,</span> <span class="n">masklist</span><span class="p">))</span>
+            <span class="k">assert</span> <span class="n">edge</span><span class="o">.</span><span class="n">left</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+            <span class="n">nchan_edge0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">edge_mask0</span><span class="p">),</span> <span class="n">edge</span><span class="o">.</span><span class="n">left</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">edge_mask0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">edge</span><span class="o">.</span><span class="n">left</span>
+            <span class="c1"># number of masked edge channels: Right side</span>
+            <span class="n">edge_mask1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">max</span><span class="p">,</span> <span class="n">masklist</span><span class="p">))</span>
+            <span class="k">assert</span> <span class="n">edge</span><span class="o">.</span><span class="n">right</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+            <span class="n">nchan_edge1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nchan</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">edge_mask1</span><span class="p">),</span> <span class="n">edge</span><span class="o">.</span><span class="n">right</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">edge_mask1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">edge</span><span class="o">.</span><span class="n">right</span>
+            <span class="c1"># merge result</span>
+        <span class="n">nchan_edge</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nchan_edge0</span><span class="p">,</span> <span class="n">nchan_edge1</span><span class="p">)</span>
+        <span class="n">nchan_segment</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">nchan</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_pieces</span><span class="p">))</span>
+        <span class="n">nchan_half</span> <span class="o">=</span> <span class="n">nchan</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">nchan</span> <span class="o">%</span> <span class="mi">2</span>
+        <span class="n">nchan_quarter</span> <span class="o">=</span> <span class="n">nchan</span> <span class="o">//</span> <span class="mi">4</span> <span class="o">+</span> <span class="p">(</span><span class="mi">3</span> <span class="o">+</span> <span class="n">nchan</span> <span class="o">%</span> <span class="mi">4</span><span class="p">)</span> <span class="o">//</span> <span class="mi">4</span>
+        <span class="k">if</span> <span class="n">nchan_edge</span> <span class="o">&gt;=</span> <span class="n">nchan_half</span><span class="p">:</span>
+            <span class="n">fitfunc</span> <span class="o">=</span> <span class="n">FittingFunction</span><span class="o">.</span><span class="n">POLY</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">nchan_edge</span> <span class="o">&gt;=</span> <span class="n">nchan_quarter</span><span class="p">:</span>
+            <span class="n">fitfunc</span> <span class="o">=</span> <span class="n">FittingFunction</span><span class="o">.</span><span class="n">POLY</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fitfunc</span> <span class="o">=</span> <span class="n">FittingFunction</span><span class="o">.</span><span class="n">CSPLINE</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># not used</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DEBUGGING INFORMATION:&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;inclusive masklist=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">masklist</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;edge = (</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">edge</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;nchan_edge = </span><span class="si">{}</span><span class="s1"> (left </span><span class="si">{}</span><span class="s1"> right </span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nchan_edge</span><span class="p">,</span> <span class="n">nchan_edge0</span><span class="p">,</span> <span class="n">nchan_edge1</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;nchan = </span><span class="si">{}</span><span class="s1">, num_pieces = </span><span class="si">{}</span><span class="s1"> =&gt; nchan_segment = </span><span class="si">{}</span><span class="s1">, nchan_half = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nchan</span><span class="p">,</span> <span class="n">num_pieces</span><span class="p">,</span> <span class="n">nchan_segment</span><span class="p">,</span> <span class="n">nchan_half</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;---&gt; RESULT: fitfunc &quot;</span><span class="si">{}</span><span class="s1">&quot; order &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fitfunc</span><span class="o">.</span><span class="n">blfunc</span><span class="p">,</span> <span class="n">order</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">fitfunc</span><span class="p">,</span> <span class="n">order</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+pipeline.hsdn.tasks.importdata package
+======================================
+
+Submodules
+----------
+
+pipeline.hsdn.tasks.importdata.importdata module
+------------------------------------------------
+
+.. automodule:: pipeline.hsdn.tasks.importdata.importdata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hsdn.tasks.importdata
+   :members:
+   :undoc-members:
+   :show-inheritance:

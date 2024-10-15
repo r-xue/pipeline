@@ -1,0 +1,26 @@
+pipeline.hsd.tasks.atmcor
+=========================
+
+.. automodule:: pipeline.hsd.tasks.atmcor
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SDATMCorrection
+      SDATMCorrectionResults
+      SerialSDATMCorrection
+      T2_4MDetailsSingleDishATMCorRenderer
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   atmcor
+   atmcor_test
+   display
+   qa
+   renderer

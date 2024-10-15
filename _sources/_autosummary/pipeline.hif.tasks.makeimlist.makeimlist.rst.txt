@@ -1,0 +1,17 @@
+pipeline.hif.tasks.makeimlist.makeimlist
+========================================
+
+.. automodule:: pipeline.hif.tasks.makeimlist.makeimlist
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CleanTarget
+      DataType
+      MakeImList
+      MakeImListInputs
+      MakeImListResult
+      MakeImagesResult
+   

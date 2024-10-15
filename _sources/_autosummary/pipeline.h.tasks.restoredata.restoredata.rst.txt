@@ -1,0 +1,20 @@
+pipeline.h.tasks.restoredata.restoredata
+========================================
+
+.. automodule:: pipeline.h.tasks.restoredata.restoredata
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      alma_renorm
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      RestoreData
+      RestoreDataInputs
+      RestoreDataResults
+   

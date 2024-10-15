@@ -1,0 +1,22 @@
+pipeline.hifa.tasks.gaincalsnr
+==============================
+
+.. automodule:: pipeline.hifa.tasks.gaincalsnr
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GaincalSnr
+      GaincalSnrResults
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   gaincalsnr
+   qa
+   renderer

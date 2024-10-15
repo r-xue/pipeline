@@ -1,0 +1,13 @@
+pipeline.hif.tasks.tclean.vlassmaskthresholdsequence
+====================================================
+
+.. automodule:: pipeline.hif.tasks.tclean.vlassmaskthresholdsequence
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BaseCleanSequence
+      VlassMaskThresholdSequence
+   

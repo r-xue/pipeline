@@ -1,0 +1,29 @@
+pipeline.hifa.tasks.bandpass package
+====================================
+
+Submodules
+----------
+
+pipeline.hifa.tasks.bandpass.almaphcorbandpass module
+-----------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.bandpass.almaphcorbandpass
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.bandpass.renderer module
+--------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.bandpass.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifa.tasks.bandpass
+   :members:
+   :undoc-members:
+   :show-inheritance:

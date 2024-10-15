@@ -1,0 +1,457 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.domain.unitformat &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.domain.unitformat</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.domain.unitformat</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Format values that are usually associated with a unit.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">bisect</span>
+<span class="kn">import</span> <span class="nn">decimal</span>
+
+<span class="c1"># TODO</span>
+<span class="c1"># for reformatiing GHz, want to say &#39;print precision to nearest 10kHz&#39;</span>
+
+
+<div class="viewcode-block" id="UnitOfMagnitude">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.UnitOfMagnitude">[docs]</a>
+<span class="k">class</span> <span class="nc">UnitOfMagnitude</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Models a unit of magnitude such as &#39;Kilobyte&#39;, &#39;milimetre&#39; or &#39;hectare&#39;.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">html</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">magnitude</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">magnitude</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="nb">format</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="n">html</span>
+
+<div class="viewcode-block" id="UnitOfMagnitude.adjust">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.UnitOfMagnitude.adjust">[docs]</a>
+    <span class="k">def</span> <span class="nf">adjust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnitude</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnitude</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">magnitude</span>
+
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnitude</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">magnitude</span>
+
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnitude</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">magnitude</span>
+
+    <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnitude</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">magnitude</span>
+
+    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnitude</span> <span class="o">&gt;</span> <span class="n">other</span><span class="o">.</span><span class="n">magnitude</span>
+
+    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnitude</span> <span class="o">&gt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">magnitude</span></div>
+
+
+
+<div class="viewcode-block" id="UnitFormat">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.UnitFormat">[docs]</a>
+<span class="k">class</span> <span class="nc">UnitFormat</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefer_integers</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefer_integers</span> <span class="o">=</span> <span class="n">prefer_integers</span>
+
+<div class="viewcode-block" id="UnitFormat.addUnitOfMagnitude">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.UnitFormat.addUnitOfMagnitude">[docs]</a>
+    <span class="k">def</span> <span class="nf">addUnitOfMagnitude</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a unit to this format. For example, to add support for centimetres</span>
+<span class="sd">        to a UnitFormat of metric length, use magnitude of 0.01d (ie 1/100th of</span>
+<span class="sd">        a metre) and number format &#39;###0.# cm&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">html</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">html</span> <span class="o">=</span> <span class="nb">format</span>
+        <span class="n">bisect</span><span class="o">.</span><span class="n">insort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">UnitOfMagnitude</span><span class="p">(</span><span class="n">magnitude</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">html</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="UnitFormat.format">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.UnitFormat.format">[docs]</a>
+    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+        <span class="n">bestUnit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bestUnitForObject</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+        <span class="n">numberAdjusted</span> <span class="o">=</span> <span class="n">bestUnit</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bestUnit</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numberAdjusted</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UnitFormat.html">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.UnitFormat.html">[docs]</a>
+    <span class="k">def</span> <span class="nf">html</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+        <span class="n">bestUnit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bestUnitForObject</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+        <span class="n">numberAdjusted</span> <span class="o">=</span> <span class="n">bestUnit</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bestUnit</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numberAdjusted</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UnitFormat.bestUnitForObject">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.UnitFormat.bestUnitForObject">[docs]</a>
+    <span class="k">def</span> <span class="nf">bestUnitForObject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">()</span>
+
+        <span class="c1"># take the absolute value as some values, such as offsets, could be </span>
+        <span class="c1"># negative</span>
+        <span class="n">as_decimal</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">)))</span>
+
+        <span class="c1"># assume all unit types have one unit with a magnitude of 1, which</span>
+        <span class="c1"># is the case so far.</span>
+        <span class="n">default_units</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">magnitude</span> <span class="o">==</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># a value of 0 has no best unit. So, return the default unit instead.</span>
+        <span class="k">if</span> <span class="n">as_decimal</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">default_units</span>
+
+        <span class="c1"># find the largest unit not bigger than this value</span>
+        <span class="n">best_unit</span> <span class="o">=</span> <span class="n">default_units</span>
+        <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">as_decimal</span> <span class="o">&gt;=</span> <span class="n">unit</span><span class="o">.</span><span class="n">magnitude</span><span class="p">:</span>
+                <span class="n">best_unit</span> <span class="o">=</span> <span class="n">unit</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefer_integers</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">best_unit</span>
+
+        <span class="c1"># it&#39;s preferable to print 100&quot; rather than 1.67&#39;. The next bit of</span>
+        <span class="c1"># code tests whether the number is an integer when expressed in the</span>
+        <span class="c1"># next lowest unit. If the number is a fraction in the best units</span>
+        <span class="c1"># but an integer in the next best units, return the next best units</span>
+        <span class="c1"># instead.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">next_best_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">best_unit</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">best_unit</span>
+
+        <span class="n">adjusted_best</span> <span class="o">=</span> <span class="n">best_unit</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+        <span class="n">adjusted_next</span> <span class="o">=</span> <span class="n">next_best_unit</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+        <span class="n">no_fraction_best</span> <span class="o">=</span> <span class="p">(</span><span class="n">adjusted_best</span> <span class="o">%</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="n">no_fraction_next</span> <span class="o">=</span> <span class="p">(</span><span class="n">adjusted_next</span> <span class="o">%</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">no_fraction_best</span> <span class="ow">and</span> <span class="n">no_fraction_next</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">next_best_unit</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">best_unit</span></div>
+</div>
+
+
+
+<span class="n">file_size</span> <span class="o">=</span> <span class="n">UnitFormat</span><span class="p">()</span>
+<span class="n">file_size</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.0f}</span><span class="s1"> bytes&#39;</span><span class="p">)</span>
+<span class="n">file_size</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.1f}</span><span class="s1"> KiB&#39;</span><span class="p">)</span>
+<span class="n">file_size</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.1f}</span><span class="s1"> MiB&#39;</span><span class="p">)</span>
+<span class="n">file_size</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.1f}</span><span class="s1"> GiB&#39;</span><span class="p">)</span>
+
+<span class="c1"># Create a Unit for measuring lengths</span>
+<span class="n">distance</span> <span class="o">=</span> <span class="n">UnitFormat</span><span class="p">()</span>
+<span class="n">distance</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.1f}</span><span class="s1"> &amp;#181;m&#39;</span><span class="p">)</span>
+<span class="n">distance</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.1f}</span><span class="s1"> mm&#39;</span><span class="p">)</span>
+<span class="n">distance</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.1f}</span><span class="s1"> m&#39;</span><span class="p">)</span>
+<span class="n">distance</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.1f}</span><span class="s1"> km&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># Create a Unit for measuring frequencies</span>
+<div class="viewcode-block" id="get_frequency_format">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.get_frequency_format">[docs]</a>
+<span class="k">def</span> <span class="nf">get_frequency_format</span><span class="p">(</span><span class="n">precision</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;{0:.&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">precision</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;f}&#39;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">UnitFormat</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000001&#39;</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39; &amp;#181;Hz&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.001&#39;</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39; mHz&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39; Hz&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39; kHz&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000000</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39; MHz&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000000000</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39; GHz&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000000000000</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39; THz&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+
+<span class="n">frequency</span> <span class="o">=</span> <span class="n">get_frequency_format</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Create a Unit for measuring flux densities</span>
+<span class="n">flux</span> <span class="o">=</span> <span class="n">UnitFormat</span><span class="p">()</span>
+<span class="n">flux</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> nJy&#39;</span><span class="p">)</span>
+<span class="n">flux</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> &amp;#181;Jy&#39;</span><span class="p">)</span>
+<span class="n">flux</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> mJy&#39;</span><span class="p">)</span>
+<span class="n">flux</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> Jy&#39;</span><span class="p">)</span>
+<span class="n">flux</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> kJy&#39;</span><span class="p">)</span>
+
+<span class="c1"># Create a Unit for measuring energy</span>
+<span class="n">energy</span> <span class="o">=</span> <span class="n">UnitFormat</span><span class="p">()</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000000000000000000000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> yJ&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000000000000000000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> zJ&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000000000000000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> aJ&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000000000000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> fJ&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000000000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> pJ&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> nJ&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> &amp;#181;J&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> mJ&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> J&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> kJ&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> MJ&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000000000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> GJ&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000000000000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> TJ&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000000000000000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> PJ&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000000000000000000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> EJ&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000000000000000000000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> ZJ&#39;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000000000000000000000000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> YJ&#39;</span><span class="p">)</span>
+
+<span class="n">velocity</span> <span class="o">=</span> <span class="n">UnitFormat</span><span class="p">()</span>
+<span class="n">velocity</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> m/s&#39;</span><span class="p">)</span>
+<span class="n">velocity</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> km/s&#39;</span><span class="p">)</span>
+
+<span class="n">proper_motion</span> <span class="o">=</span> <span class="n">UnitFormat</span><span class="p">()</span>
+<span class="n">proper_motion</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> mas/yr&#39;</span><span class="p">)</span>
+<span class="n">proper_motion</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> arcsec/yr&#39;</span><span class="p">)</span>
+<span class="n">proper_motion</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">60</span><span class="o">*</span><span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> arcmin/yr&#39;</span><span class="p">)</span>
+<span class="n">proper_motion</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> deg/yr&#39;</span><span class="p">)</span>	
+
+<span class="n">temperature</span> <span class="o">=</span> <span class="n">UnitFormat</span><span class="p">()</span>
+<span class="n">temperature</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000000000000000000000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> yK&#39;</span><span class="p">)</span>
+<span class="n">temperature</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000000000000000000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> zK&#39;</span><span class="p">)</span>
+<span class="n">temperature</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000000000000000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> aK&#39;</span><span class="p">)</span>
+<span class="n">temperature</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000000000000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> fK&#39;</span><span class="p">)</span>
+<span class="n">temperature</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000000000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> pK&#39;</span><span class="p">)</span>
+<span class="n">temperature</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> nK&#39;</span><span class="p">)</span>
+<span class="n">temperature</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.000001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> &amp;#181;K&#39;</span><span class="p">)</span>
+<span class="n">temperature</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> mK&#39;</span><span class="p">)</span>
+<span class="n">temperature</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> K&#39;</span><span class="p">)</span>
+
+<span class="n">arc</span> <span class="o">=</span> <span class="n">UnitFormat</span><span class="p">()</span>
+<span class="n">arc</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="se">\\</span><span class="s1">u00b0&#39;</span><span class="p">)</span>
+<span class="n">arc</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">60</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="se">\\</span><span class="s1">u2032&#39;</span><span class="p">)</span>
+<span class="n">arc</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3600</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="se">\\</span><span class="s1">u2033&#39;</span><span class="p">)</span>
+<span class="n">arc</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3600000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> mas&#39;</span><span class="p">)</span>
+<span class="n">arc</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3600000000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> &amp;#181;as&#39;</span><span class="p">)</span>
+
+<span class="n">time</span> <span class="o">=</span> <span class="n">UnitFormat</span><span class="p">()</span>
+<span class="n">time</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="s1">&#39;.001&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.0f}</span><span class="s1"> ms&#39;</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.1f}</span><span class="s1"> s&#39;</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.0f}</span><span class="s1"> mins&#39;</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">3600</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.0f}</span><span class="s1"> hours&#39;</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">86400</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.0f}</span><span class="s1"> days&#39;</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">604800</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0:.0f}</span><span class="s1"> weeks&#39;</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">addUnitOfMagnitude</span><span class="p">(</span><span class="mi">31536000</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{3:.0f}</span><span class="s1"> years&#39;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># print some sample file sizes</span>
+    <span class="n">x722b</span> <span class="o">=</span> <span class="mi">722</span>
+    <span class="n">x498kb</span> <span class="o">=</span> <span class="mi">509952</span>
+    <span class="n">x15mb</span> <span class="o">=</span> <span class="mi">15728640</span>
+    <span class="n">x300mb</span> <span class="o">=</span> <span class="mi">314572800</span>
+    <span class="n">x40gb</span> <span class="o">=</span> <span class="mi">42949672960</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x722b</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x498kb</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x498kb</span> <span class="o">+</span> <span class="n">x722b</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x15mb</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x15mb</span> <span class="o">+</span> <span class="n">x498kb</span> <span class="o">+</span> <span class="n">x722b</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x300mb</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x300mb</span> <span class="o">+</span> <span class="n">x15mb</span> <span class="o">+</span> <span class="n">x498kb</span> <span class="o">+</span> <span class="n">x722b</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x40gb</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x40gb</span> <span class="o">+</span> <span class="n">x300mb</span> <span class="o">+</span> <span class="n">x15mb</span> <span class="o">+</span> <span class="n">x498kb</span> <span class="o">+</span> <span class="n">x722b</span><span class="p">))</span>
+
+    <span class="c1"># print some lengths</span>
+    <span class="n">x315um</span> <span class="o">=</span> <span class="mf">0.000315</span>
+    <span class="n">x867mm</span> <span class="o">=</span> <span class="mf">0.867</span>
+    <span class="n">x128m</span> <span class="o">=</span> <span class="mi">128</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x315um</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x867mm</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x128m</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x128m</span> <span class="o">+</span> <span class="n">x867mm</span><span class="p">))</span>
+
+    <span class="n">x300deg</span> <span class="o">=</span> <span class="mf">300.0</span>
+    <span class="n">x3deg</span> <span class="o">=</span> <span class="mf">3.0</span>
+    <span class="n">x3minArc</span> <span class="o">=</span> <span class="mf">0.05</span>
+    <span class="n">x9secArc</span> <span class="o">=</span> <span class="mf">0.0025</span>
+    <span class="n">x1d25secArc</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3600</span><span class="o">/</span><span class="mi">25</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">arc</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x300deg</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">arc</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x3deg</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">arc</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x3minArc</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">arc</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x9secArc</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">arc</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x1d25secArc</span><span class="p">))</span>
+
+    <span class="n">x1maspm</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">x1aspm</span> <span class="o">=</span> <span class="mf">1000.0</span>
+    <span class="n">x1ampm</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">*</span><span class="mf">60.0</span>
+    <span class="n">x1degpm</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">*</span><span class="mf">3600.0</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">proper_motion</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x1maspm</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">proper_motion</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x1aspm</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">proper_motion</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x1ampm</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">proper_motion</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x1degpm</span><span class="p">))</span>
+
+    <span class="n">x218ms</span> <span class="o">=</span> <span class="mf">0.218</span>
+    <span class="n">x18s</span> <span class="o">=</span> <span class="mi">18</span>
+    <span class="n">x2m</span> <span class="o">=</span> <span class="mi">120</span>
+    <span class="n">x3h</span> <span class="o">=</span> <span class="mi">10800</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x218ms</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x18s</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x218ms</span> <span class="o">+</span> <span class="n">x18s</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x2m</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x2m</span> <span class="o">+</span> <span class="n">x18s</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x3h</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x2m</span> <span class="o">+</span> <span class="n">x18s</span><span class="p">))</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,1165 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.tasks.applycal.renderer &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.h.tasks.applycal.renderer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.h.tasks.applycal.renderer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on 24 Oct 2014</span>
+
+<span class="sd">@author: sjw</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.filenamer</span> <span class="k">as</span> <span class="nn">filenamer</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.basetemplates</span> <span class="k">as</span> <span class="nn">basetemplates</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.applycal.applycal</span> <span class="kn">import</span> <span class="n">ApplycalResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="kn">import</span> <span class="n">ResultsList</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.displays.summary</span> <span class="kn">import</span> <span class="n">UVChart</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.renderer.basetemplates</span> <span class="kn">import</span> <span class="n">JsonPlotRenderer</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.renderer.logger</span> <span class="kn">import</span> <span class="n">Plot</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">flagging_renderer_utils</span> <span class="k">as</span> <span class="n">flagutils</span><span class="p">,</span> <span class="n">mstools</span>
+<span class="kn">from</span> <span class="nn">..common.displays</span> <span class="kn">import</span> <span class="n">applycal</span> <span class="k">as</span> <span class="n">applycal</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">T2_4MDetailsApplycalRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;applycal.mako&#39;</span><span class="p">,</span>
+                 <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Apply calibrations from context&#39;</span><span class="p">,</span>
+                 <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsApplycalRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
+
+<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.update_mako_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.update_mako_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">weblog_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pipeline_context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+
+        <span class="c1"># calculate which intents to display in the flagging statistics table</span>
+        <span class="n">intents_to_summarise</span> <span class="o">=</span> <span class="n">flagutils</span><span class="o">.</span><span class="n">intents_to_summarise</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">)</span>
+        <span class="n">flag_table_intents</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TOTAL&#39;</span><span class="p">,</span> <span class="s1">&#39;SCIENCE SPWS&#39;</span><span class="p">]</span>
+        <span class="n">flag_table_intents</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">intents_to_summarise</span><span class="p">)</span>
+
+        <span class="n">flag_totals</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;flagsum&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">flag_totals</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dict_merge</span><span class="p">(</span><span class="n">flag_totals</span><span class="p">,</span>
+                    <span class="n">flagutils</span><span class="o">.</span><span class="n">flags_for_result</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">intents_to_summarise</span><span class="o">=</span><span class="n">intents_to_summarise</span><span class="p">))</span>
+
+        <span class="n">calapps</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="n">calapps</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dict_merge</span><span class="p">(</span><span class="n">calapps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">calapps_for_result</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+
+        <span class="n">caltypes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="n">caltypes</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dict_merge</span><span class="p">(</span><span class="n">caltypes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">caltypes_for_result</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+
+        <span class="n">filesizes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">pipeline_context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">filesizes</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">]</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">_calc_filesize</span><span class="p">()</span>
+
+        <span class="c1"># return all agents so we get ticks and crosses against each one</span>
+        <span class="n">agents</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;before&#39;</span><span class="p">,</span> <span class="s1">&#39;applycal&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Denote whether applycal was invoked with parang=True.</span>
+        <span class="n">parang</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;parang&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">result</span> <span class="k">else</span> <span class="kc">False</span>
+
+        <span class="n">mako_context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+            <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="n">flag_totals</span><span class="p">,</span>
+            <span class="s1">&#39;calapps&#39;</span><span class="p">:</span> <span class="n">calapps</span><span class="p">,</span>
+            <span class="s1">&#39;caltypes&#39;</span><span class="p">:</span> <span class="n">caltypes</span><span class="p">,</span>
+            <span class="s1">&#39;agents&#39;</span><span class="p">:</span> <span class="n">agents</span><span class="p">,</span>
+            <span class="s1">&#39;dirname&#39;</span><span class="p">:</span> <span class="n">weblog_dir</span><span class="p">,</span>
+            <span class="s1">&#39;filesizes&#39;</span><span class="p">:</span> <span class="n">filesizes</span><span class="p">,</span>
+            <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="n">parang</span><span class="p">,</span>
+        <span class="p">})</span>
+
+        <span class="c1"># these dicts map vis to the hrefs of the detail pages</span>
+        <span class="n">amp_vs_freq_subpages</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">phase_vs_freq_subpages</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">amp_vs_uv_subpages</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">amp_vs_time_summary_plots</span><span class="p">,</span> <span class="n">amp_vs_time_subpages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_plots</span><span class="p">(</span>
+            <span class="n">pipeline_context</span><span class="p">,</span>
+            <span class="n">result</span><span class="p">,</span>
+            <span class="n">applycal</span><span class="o">.</span><span class="n">AmpVsTimeSummaryChart</span><span class="p">,</span>
+            <span class="p">[</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">phase_vs_time_summary_plots</span><span class="p">,</span> <span class="n">phase_vs_time_subpages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_plots</span><span class="p">(</span>
+            <span class="n">pipeline_context</span><span class="p">,</span>
+            <span class="n">result</span><span class="p">,</span>
+            <span class="n">applycal</span><span class="o">.</span><span class="n">PhaseVsTimeSummaryChart</span><span class="p">,</span>
+            <span class="p">[</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">amp_vs_freq_summary_plots</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">OrderedDefaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">intents</span> <span class="ow">in</span> <span class="p">[[</span><span class="s1">&#39;PHASE&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;CHECK&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">],</span>
+                        <span class="p">[</span><span class="s1">&#39;POLARIZATION&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;POLANGLE&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">]]:</span>
+            <span class="c1"># it doesn&#39;t matter that the subpages dict is repeatedly redefined.</span>
+            <span class="c1"># The only purpose of the returned dict is to map the vis to a</span>
+            <span class="c1"># non-existing page, which will disable the link.</span>
+
+            <span class="n">plots</span><span class="p">,</span> <span class="n">amp_vs_freq_subpages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_plots</span><span class="p">(</span>
+                <span class="n">pipeline_context</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span>
+                <span class="n">applycal</span><span class="o">.</span><span class="n">AmpVsFrequencyFieldSummaryChart</span><span class="p">,</span>
+                <span class="n">intents</span>
+            <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">vis_plots</span> <span class="ow">in</span> <span class="n">plots</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">amp_vs_freq_summary_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">vis_plots</span><span class="p">)</span>
+
+        <span class="n">phase_vs_freq_summary_plots</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">OrderedDefaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">intents</span> <span class="ow">in</span> <span class="p">[[</span><span class="s1">&#39;PHASE&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;CHECK&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;POLARIZATION&#39;</span><span class="p">],</span>
+                        <span class="p">[</span><span class="s1">&#39;POLANGLE&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">]]:</span>
+            <span class="n">plots</span><span class="p">,</span> <span class="n">phase_vs_freq_subpages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_plots</span><span class="p">(</span>
+                <span class="n">pipeline_context</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span>
+                <span class="n">applycal</span><span class="o">.</span><span class="n">PhaseVsFrequencyPerSpwSummaryChart</span><span class="p">,</span>
+                <span class="n">intents</span>
+            <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">vis_plots</span> <span class="ow">in</span> <span class="n">plots</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">phase_vs_freq_summary_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">vis_plots</span><span class="p">)</span>
+
+        <span class="c1"># CAS-7659: Add plots of all calibrator calibrated amp vs uvdist to</span>
+        <span class="c1"># the WebLog applycal page</span>
+        <span class="n">amp_vs_uv_summary_plots</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">OrderedDefaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">intents</span> <span class="ow">in</span> <span class="p">[[</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;PHASE&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;CHECK&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">],</span>
+                        <span class="p">[</span><span class="s1">&#39;POLARIZATION&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;POLANGLE&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">]]:</span>
+            <span class="n">plots</span><span class="p">,</span> <span class="n">amp_vs_uv_subpages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_plots</span><span class="p">(</span>
+                <span class="n">pipeline_context</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span>
+                <span class="n">applycal</span><span class="o">.</span><span class="n">AmpVsUVFieldSummaryChart</span><span class="p">,</span>
+                <span class="n">intents</span>
+            <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">vis_plots</span> <span class="ow">in</span> <span class="n">plots</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">amp_vs_uv_summary_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">vis_plots</span><span class="p">)</span>
+
+        <span class="c1"># CAS-5970: add science target plots to the applycal page</span>
+        <span class="p">(</span><span class="n">science_amp_vs_freq_summary_plots</span><span class="p">,</span>
+         <span class="n">science_amp_vs_freq_subpages</span><span class="p">,</span>
+         <span class="n">science_amp_vs_uv_summary_plots</span><span class="p">,</span>
+         <span class="n">uv_max</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_science_plots</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="n">corrected_ratio_to_antenna1_plots</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">OrderedDefaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">corrected_ratio_to_uv_dist_plots</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+            <span class="n">uvrange_dist</span> <span class="o">=</span> <span class="n">uv_max</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">in_m</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uvrange_dist</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">))</span>
+            <span class="n">uvrange</span> <span class="o">=</span> <span class="s1">&#39;0~</span><span class="si">%s</span><span class="s1">m&#39;</span> <span class="o">%</span> <span class="n">in_m</span>
+
+            <span class="c1"># CAS-9229: Add amp / model vs antenna id plots for other calibrators</span>
+            <span class="k">for</span> <span class="n">intents</span><span class="p">,</span> <span class="n">uv_cutoff</span> <span class="ow">in</span> <span class="p">[([</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">],</span> <span class="n">uvrange</span><span class="p">),</span>
+                                       <span class="p">([</span><span class="s1">&#39;PHASE&#39;</span><span class="p">],</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                                       <span class="p">([</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">],</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                                       <span class="p">([</span><span class="s1">&#39;CHECK&#39;</span><span class="p">],</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                                       <span class="p">([</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">],</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                                       <span class="p">([</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">],</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                                       <span class="p">([</span><span class="s1">&#39;POLARIZATION&#39;</span><span class="p">],</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                                       <span class="p">([</span><span class="s1">&#39;POLANGLE&#39;</span><span class="p">],</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                                       <span class="p">([</span><span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">],</span> <span class="s1">&#39;&#39;</span><span class="p">)]:</span>
+                <span class="n">p</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_plots</span><span class="p">(</span>
+                    <span class="n">pipeline_context</span><span class="p">,</span>
+                    <span class="p">[</span><span class="n">r</span><span class="p">],</span>
+                    <span class="n">applycal</span><span class="o">.</span><span class="n">CorrectedToModelRatioVsAntenna1SummaryChart</span><span class="p">,</span>
+                    <span class="n">intents</span><span class="p">,</span>
+                    <span class="n">uvrange</span><span class="o">=</span><span class="n">uv_cutoff</span>
+                <span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">vis_plots</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">corrected_ratio_to_antenna1_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">vis_plots</span><span class="p">)</span>
+
+            <span class="n">p</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_plots</span><span class="p">(</span>
+                <span class="n">pipeline_context</span><span class="p">,</span>
+                <span class="p">[</span><span class="n">r</span><span class="p">],</span>
+                <span class="n">applycal</span><span class="o">.</span><span class="n">CorrectedToModelRatioVsUVDistanceSummaryChart</span><span class="p">,</span>
+                <span class="p">[</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">],</span>
+                <span class="n">uvrange</span><span class="o">=</span><span class="n">uvrange</span><span class="p">,</span>
+                <span class="n">plotrange</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">in_m</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">corrected_ratio_to_uv_dist_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span>
+
+        <span class="c1"># these dicts map vis to the list of plots</span>
+        <span class="n">amp_vs_freq_detail_plots</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">phase_vs_freq_detail_plots</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">phase_vs_time_detail_plots</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># CAS-9154 Add per-antenna amplitude vs time plots for applycal stage</span>
+        <span class="c1">#</span>
+        <span class="c1"># Compromise to generate some antenna-specific plots to allow</span>
+        <span class="c1"># bad antennas to be identified while keeping the overall number of</span>
+        <span class="c1"># plots relatively unchanged.</span>
+        <span class="c1">#</span>
+        <span class="n">amp_vs_time_detail_plots</span><span class="p">,</span> <span class="n">amp_vs_time_subpages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_plots</span><span class="p">(</span>
+            <span class="n">pipeline_context</span><span class="p">,</span>
+            <span class="n">result</span><span class="p">,</span>
+            <span class="n">applycal</span><span class="o">.</span><span class="n">CAS9154AmpVsTimeDetailChart</span><span class="p">,</span>
+            <span class="p">[</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">],</span>
+            <span class="n">ApplycalAmpVsTimePlotRenderer</span><span class="p">,</span>
+            <span class="n">avgchannel</span><span class="o">=</span><span class="s1">&#39;9000&#39;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">infrastructure</span><span class="o">.</span><span class="n">generate_detail_plots</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+            <span class="c1"># detail plots. Don&#39;t need the return dictionary, but make sure a</span>
+            <span class="c1"># renderer is passed so the detail page is written to disk</span>
+            <span class="n">amp_vs_freq_detail_plots</span><span class="p">,</span> <span class="n">amp_vs_freq_subpages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_plots</span><span class="p">(</span>
+                <span class="n">pipeline_context</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span>
+                <span class="n">applycal</span><span class="o">.</span><span class="n">AmpVsFrequencyDetailChart</span><span class="p">,</span>
+                <span class="p">[</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">],</span>
+                <span class="n">ApplycalAmpVsFreqPlotRenderer</span>
+            <span class="p">)</span>
+
+            <span class="n">phase_vs_freq_detail_plots</span><span class="p">,</span> <span class="n">phase_vs_freq_subpages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_plots</span><span class="p">(</span>
+                <span class="n">pipeline_context</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span>
+                <span class="n">applycal</span><span class="o">.</span><span class="n">PhaseVsFrequencyDetailChart</span><span class="p">,</span>
+                <span class="p">[</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">],</span>
+                <span class="n">ApplycalPhaseVsFreqPlotRenderer</span>
+            <span class="p">)</span>
+
+            <span class="n">phase_vs_time_detail_plots</span><span class="p">,</span> <span class="n">phase_vs_time_subpages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_plots</span><span class="p">(</span>
+                <span class="n">pipeline_context</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span>
+                <span class="n">applycal</span><span class="o">.</span><span class="n">PhaseVsTimeDetailChart</span><span class="p">,</span>
+                <span class="p">[</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">],</span>
+                <span class="n">ApplycalPhaseVsTimePlotRenderer</span>
+            <span class="p">)</span>
+
+        <span class="c1"># render plots for all EBs in one page</span>
+        <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">subpages</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">amp_vs_freq_detail_plots</span><span class="p">,</span> <span class="n">ApplycalAmpVsFreqPlotRenderer</span><span class="p">,</span> <span class="n">amp_vs_freq_subpages</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">phase_vs_freq_detail_plots</span><span class="p">,</span> <span class="n">ApplycalPhaseVsFreqPlotRenderer</span><span class="p">,</span> <span class="n">phase_vs_freq_subpages</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">amp_vs_time_detail_plots</span><span class="p">,</span> <span class="n">ApplycalAmpVsTimePlotRenderer</span><span class="p">,</span> <span class="n">amp_vs_time_subpages</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">phase_vs_time_detail_plots</span><span class="p">,</span> <span class="n">ApplycalPhaseVsTimePlotRenderer</span><span class="p">,</span> <span class="n">phase_vs_time_subpages</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">d</span><span class="p">:</span>
+                <span class="n">all_plots</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">([</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">()]))</span>
+                <span class="n">renderer</span> <span class="o">=</span> <span class="n">plotter_cls</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">all_plots</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+                    <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+                    <span class="c1"># redirect subpage links to master page</span>
+                    <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">subpages</span><span class="p">:</span>
+                        <span class="n">subpages</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">path</span>
+
+        <span class="c1"># CAS-11511: add plots of UV coverage.</span>
+        <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">contains_single_dish</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">):</span>
+            <span class="n">uv_plots</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">uv_plots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_uv_plots</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">weblog_dir</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-615: Add links to the hif_applycal weblog for viewing each</span>
+        <span class="c1"># callibrary table (and store all callibrary tables in the weblog</span>
+        <span class="c1"># directory)</span>
+        <span class="n">callib_map</span> <span class="o">=</span> <span class="n">copy_callibrary</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-396: Suppress redundant plots from hifa_applycal</span>
+        <span class="n">amp_vs_freq_summary_plots</span> <span class="o">=</span> <span class="n">deduplicate</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">amp_vs_freq_summary_plots</span><span class="p">)</span>
+        <span class="n">amp_vs_uv_summary_plots</span> <span class="o">=</span> <span class="n">deduplicate</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">amp_vs_uv_summary_plots</span><span class="p">)</span>
+        <span class="n">corrected_ratio_to_antenna1_plots</span> <span class="o">=</span> <span class="n">deduplicate</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">corrected_ratio_to_antenna1_plots</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-1327: Link outliers file in weblog</span>
+
+        <span class="c1"># Copy applycal QA outliers file across to weblog directory</span>
+        <span class="n">outliers_filename</span> <span class="o">=</span> <span class="s1">&#39;applycalQA_outliers.txt&#39;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outliers_filename</span><span class="p">):</span>
+            <span class="n">outliers_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weblog_dir</span><span class="p">,</span> <span class="n">outliers_filename</span><span class="p">)</span>
+            <span class="n">outliers_weblink</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span> <span class="n">outliers_filename</span><span class="p">)</span>
+            <span class="n">outliers_path_link</span> <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;</span><span class="si">{!s}</span><span class="s1">&quot; class=&quot;replace-pre&quot; data-title=&quot;</span><span class="si">{!s}</span><span class="s1">&quot;&gt;View&lt;/a&gt;&#39;</span> \
+                                 <span class="s1">&#39; or &lt;a href=&quot;</span><span class="si">{!s}</span><span class="s1">&quot; download=&quot;</span><span class="si">{!s}</span><span class="s1">&quot;&gt;download&lt;/a&gt; </span><span class="si">{!s}</span><span class="s1"> file.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">outliers_weblink</span><span class="p">,</span> <span class="n">outliers_filename</span><span class="p">,</span>
+                                                                                                 <span class="n">outliers_weblink</span><span class="p">,</span> <span class="n">outliers_weblink</span><span class="p">,</span> <span class="n">outliers_filename</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Copying </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">outliers_filename</span><span class="p">,</span> <span class="n">weblog_dir</span><span class="p">))</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">outliers_filename</span><span class="p">,</span> <span class="n">weblog_dir</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">outliers_path_link</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">mako_context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+            <span class="s1">&#39;amp_vs_freq_plots&#39;</span><span class="p">:</span> <span class="n">amp_vs_freq_summary_plots</span><span class="p">,</span>
+            <span class="s1">&#39;phase_vs_freq_plots&#39;</span><span class="p">:</span> <span class="n">phase_vs_freq_summary_plots</span><span class="p">,</span>
+            <span class="s1">&#39;amp_vs_time_plots&#39;</span><span class="p">:</span> <span class="n">amp_vs_time_summary_plots</span><span class="p">,</span>
+            <span class="s1">&#39;amp_vs_uv_plots&#39;</span><span class="p">:</span> <span class="n">amp_vs_uv_summary_plots</span><span class="p">,</span>
+            <span class="s1">&#39;phase_vs_time_plots&#39;</span><span class="p">:</span> <span class="n">phase_vs_time_summary_plots</span><span class="p">,</span>
+            <span class="s1">&#39;corrected_to_antenna1_plots&#39;</span><span class="p">:</span> <span class="n">corrected_ratio_to_antenna1_plots</span><span class="p">,</span>
+            <span class="s1">&#39;corrected_to_model_vs_uvdist_plots&#39;</span><span class="p">:</span> <span class="n">corrected_ratio_to_uv_dist_plots</span><span class="p">,</span>
+            <span class="s1">&#39;science_amp_vs_freq_plots&#39;</span><span class="p">:</span> <span class="n">science_amp_vs_freq_summary_plots</span><span class="p">,</span>
+            <span class="s1">&#39;science_amp_vs_freq_subpages&#39;</span><span class="p">:</span> <span class="n">science_amp_vs_freq_subpages</span><span class="p">,</span>
+            <span class="s1">&#39;science_amp_vs_uv_plots&#39;</span><span class="p">:</span> <span class="n">science_amp_vs_uv_summary_plots</span><span class="p">,</span>
+            <span class="s1">&#39;uv_plots&#39;</span><span class="p">:</span> <span class="n">uv_plots</span><span class="p">,</span>
+            <span class="s1">&#39;uv_max&#39;</span><span class="p">:</span> <span class="n">uv_max</span><span class="p">,</span>
+            <span class="s1">&#39;amp_vs_freq_subpages&#39;</span><span class="p">:</span> <span class="n">amp_vs_freq_subpages</span><span class="p">,</span>
+            <span class="s1">&#39;phase_vs_freq_subpages&#39;</span><span class="p">:</span> <span class="n">phase_vs_freq_subpages</span><span class="p">,</span>
+            <span class="s1">&#39;amp_vs_time_subpages&#39;</span><span class="p">:</span> <span class="n">amp_vs_time_subpages</span><span class="p">,</span>
+            <span class="s1">&#39;amp_vs_uv_subpages&#39;</span><span class="p">:</span> <span class="n">amp_vs_uv_subpages</span><span class="p">,</span>
+            <span class="s1">&#39;phase_vs_time_subpages&#39;</span><span class="p">:</span> <span class="n">phase_vs_time_subpages</span><span class="p">,</span>
+            <span class="s1">&#39;callib_map&#39;</span><span class="p">:</span> <span class="n">callib_map</span><span class="p">,</span>
+            <span class="s1">&#39;flag_table_intents&#39;</span><span class="p">:</span> <span class="n">flag_table_intents</span><span class="p">,</span>
+            <span class="s1">&#39;outliers_path_link&#39;</span><span class="p">:</span> <span class="n">outliers_path_link</span>
+        <span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.create_uv_plots">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.create_uv_plots">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_uv_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">weblog_dir</span><span class="p">):</span>
+        <span class="n">uv_plots</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">UVChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">customflagged</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">weblog_dir</span><span class="p">,</span> <span class="n">title_prefix</span><span class="o">=</span><span class="s2">&quot;Post applycal: &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+            
+            <span class="c1"># PIPE-1294: only attached valid plot wrapper objects.</span>
+            <span class="k">if</span> <span class="n">plot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">uv_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plot</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">uv_plots</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.create_science_plots">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.create_science_plots">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_science_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create plots for the science targets, returning two dictionaries of</span>
+<span class="sd">        vis:[Plots], vis:[subpage paths], and vis:[max UV distances].</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: pipeline context</span>
+<span class="sd">            results: ResultsList instance containing Applycal Results</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Three dictionaries of plot objects, subpage paths, and</span>
+<span class="sd">            max UV distances for each vis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">amp_vs_freq_summary_plots</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="n">amp_vs_uv_summary_plots</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="n">max_uvs</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+
+        <span class="n">amp_vs_freq_detail_plots</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">amp_vs_freq_subpages</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="s1">&#39;null&#39;</span><span class="p">)</span>
+        <span class="n">amp_vs_uv_detail_plots</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+
+            <span class="n">amp_vs_freq_summary_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">amp_vs_uv_summary_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="c1"># Plot for 1 science field (either 1 science target or for a mosaic 1</span>
+            <span class="c1"># pointing). The science field that should be chosen is the one with</span>
+            <span class="c1"># the brightest average amplitude over all spws</span>
+
+            <span class="c1"># Ideally, the uvmax of the spectrum (plots 1 and 2)</span>
+            <span class="c1"># would be set by the appearance of plot 3; that is, if there is</span>
+            <span class="c1"># no obvious drop in amplitude with uvdist, then use all the data.</span>
+            <span class="c1"># A simpler compromise would be to use a uvrange that captures the</span>
+            <span class="c1"># inner half the data.</span>
+            <span class="n">max_uvs</span><span class="p">[</span><span class="n">vis</span><span class="p">],</span> <span class="n">uv_range</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">scale_uv_range</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Setting UV range to </span><span class="si">%s</span><span class="s1"> for </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">uv_range</span><span class="p">,</span> <span class="n">vis</span><span class="p">)</span>
+
+            <span class="c1"># source to select</span>
+            <span class="n">representative_source_name</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_representative_source_spw</span><span class="p">()</span>
+            <span class="n">representative_source</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">sources</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">representative_source_name</span><span class="p">}</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">representative_source</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">representative_source</span> <span class="o">=</span> <span class="n">representative_source</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+            <span class="n">brightest_field</span> <span class="o">=</span> <span class="n">get_brightest_field</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">representative_source</span><span class="p">)</span>
+            <span class="n">plots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_plots_for_result</span><span class="p">(</span><span class="n">context</span><span class="p">,</span>
+                                                  <span class="n">result</span><span class="p">,</span>
+                                                  <span class="n">applycal</span><span class="o">.</span><span class="n">AmpVsFrequencySummaryChart</span><span class="p">,</span>
+                                                  <span class="p">[</span><span class="n">brightest_field</span><span class="o">.</span><span class="n">id</span><span class="p">],</span>
+                                                  <span class="n">uv_range</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">:</span>
+                <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">representative_source</span>
+            <span class="n">amp_vs_freq_summary_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+            <span class="n">plots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_plots_for_result</span><span class="p">(</span><span class="n">context</span><span class="p">,</span>
+                                                  <span class="n">result</span><span class="p">,</span>
+                                                  <span class="n">applycal</span><span class="o">.</span><span class="n">AmpVsUVSummaryChart</span><span class="p">,</span>
+                                                  <span class="p">[</span><span class="n">brightest_field</span><span class="o">.</span><span class="n">id</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">:</span>
+                <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">representative_source</span>
+            <span class="n">amp_vs_uv_summary_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">infrastructure</span><span class="o">.</span><span class="n">generate_detail_plots</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+                <span class="n">scans</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">fields</span><span class="p">}</span>
+
+                <span class="c1"># Science target detail plots. Note that summary plots go onto the</span>
+                <span class="c1"># detail pages; we don&#39;t create plots per spw or antenna</span>
+                <span class="n">plots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_plots_for_result</span><span class="p">(</span><span class="n">context</span><span class="p">,</span>
+                                                      <span class="n">result</span><span class="p">,</span>
+                                                      <span class="n">applycal</span><span class="o">.</span><span class="n">AmpVsFrequencySummaryChart</span><span class="p">,</span>
+                                                      <span class="n">fields</span><span class="p">,</span>
+                                                      <span class="n">uv_range</span><span class="p">,</span>
+                                                      <span class="n">ApplycalAmpVsFreqSciencePlotRenderer</span><span class="p">)</span>
+                <span class="n">amp_vs_freq_detail_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">plots</span>
+
+                <span class="n">plots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_plots_for_result</span><span class="p">(</span><span class="n">context</span><span class="p">,</span>
+                                                      <span class="n">result</span><span class="p">,</span>
+                                                      <span class="n">applycal</span><span class="o">.</span><span class="n">AmpVsUVSummaryChart</span><span class="p">,</span>
+                                                      <span class="n">fields</span><span class="p">,</span>
+                                                      <span class="n">renderer_cls</span><span class="o">=</span><span class="n">ApplycalAmpVsUVSciencePlotRenderer</span><span class="p">)</span>
+                <span class="n">amp_vs_uv_detail_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">plots</span>
+
+        <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">plotter_cls</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">amp_vs_freq_detail_plots</span><span class="p">,</span> <span class="n">ApplycalAmpVsFreqSciencePlotRenderer</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">amp_vs_uv_detail_plots</span><span class="p">,</span> <span class="n">ApplycalAmpVsUVSciencePlotRenderer</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">d</span><span class="p">:</span>
+                <span class="n">all_plots</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">([</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">()]))</span>
+                <span class="n">renderer</span> <span class="o">=</span> <span class="n">plotter_cls</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">all_plots</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+                    <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">plotter_cls</span> <span class="ow">is</span> <span class="n">ApplycalAmpVsFreqSciencePlotRenderer</span><span class="p">:</span>
+                    <span class="n">amp_vs_freq_subpages</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="n">vis</span><span class="p">,</span> <span class="n">renderer</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">amp_vs_freq_summary_plots</span><span class="p">,</span> <span class="n">amp_vs_freq_subpages</span><span class="p">,</span> <span class="n">amp_vs_uv_summary_plots</span><span class="p">,</span> <span class="n">max_uvs</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.science_plots_for_result">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.science_plots_for_result">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">science_plots_for_result</span><span class="p">(</span>
+            <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
+            <span class="n">result</span><span class="p">:</span> <span class="n">ApplycalResults</span><span class="p">,</span>
+            <span class="n">plotter_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">applycal</span><span class="o">.</span><span class="n">PlotmsAntComposite</span><span class="p">,</span> <span class="n">applycal</span><span class="o">.</span><span class="n">PlotmsSpwComposite</span><span class="p">,</span>
+                                    <span class="n">applycal</span><span class="o">.</span><span class="n">PlotmsBasebandComposite</span><span class="p">,</span> <span class="n">applycal</span><span class="o">.</span><span class="n">PlotmsFieldComposite</span><span class="p">,</span>
+                                    <span class="n">applycal</span><span class="o">.</span><span class="n">PlotmsFieldSpwComposite</span><span class="p">,</span> <span class="n">applycal</span><span class="o">.</span><span class="n">PlotmsSpwAntComposite</span><span class="p">,</span>
+                                    <span class="n">applycal</span><span class="o">.</span><span class="n">PlotmsFieldSpwAntComposite</span><span class="p">]],</span>
+            <span class="n">fields</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+            <span class="n">uvrange</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">renderer_cls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">JsonPlotRenderer</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">preserve_coloraxis</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Plot</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create science plots for result</span>
+
+<span class="sd">        Create science plots for result.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            context:            Pipeline Context</span>
+<span class="sd">            result:             Applycal Results</span>
+<span class="sd">            plotter_cls:        Plotter class</span>
+<span class="sd">            fields:             List of field_ids</span>
+<span class="sd">            uvrange:            UV range</span>
+<span class="sd">            renderer_cls:       Renderer class</span>
+<span class="sd">            preserve_coloraxis: True to preserve predefined &#39;coloraxis&#39; (for SD)</span>
+<span class="sd">                                False to override &#39;coloraxis&#39; with &#39;spw&#39; (default)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Plot]: List of Plot instances.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># preserve coloraxis if necessary (PIPE-710: SD needs to preserve &#39;coloraxis&#39;)</span>
+        <span class="n">overrides</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">preserve_coloraxis</span> <span class="k">else</span> <span class="p">{</span><span class="s1">&#39;coloraxis&#39;</span><span class="p">:</span> <span class="s1">&#39;spw&#39;</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">uvrange</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">overrides</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uvrange</span>
+            <span class="c1"># CAS-9395: ALMA pipeline weblog plot of calibrated amp vs.</span>
+            <span class="c1"># frequency with avgantenna=True and a uvrange upper limit leads</span>
+            <span class="c1"># to misleading results and wrong conclusions</span>
+            <span class="n">overrides</span><span class="p">[</span><span class="s1">&#39;avgantenna&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">plot_output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">))</span>
+        <span class="n">calto</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_get_data_selection_for_plot</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;TARGET&#39;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="c1"># override field when plotting amp/phase vs frequency, as otherwise</span>
+            <span class="c1"># the field is resolved to a list of all field IDs</span>
+            <span class="n">overrides</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+
+            <span class="n">plotter</span> <span class="o">=</span> <span class="n">plotter_cls</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">plot_output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">)</span>
+            <span class="n">plots</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
+
+        <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">:</span>
+            <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TARGET&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">renderer_cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">renderer</span> <span class="o">=</span> <span class="n">renderer_cls</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+                <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">plots</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.create_plots">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.create_plots">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create plots and return (dictionary of vis:[Plots], dict of vis:subpage URL).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">subpages</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">plots</span><span class="p">,</span> <span class="n">href</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plots_for_result</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dict_merge</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">plots</span><span class="p">)</span>
+
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+            <span class="n">subpages</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">href</span>
+
+        <span class="k">return</span> <span class="n">d</span><span class="p">,</span> <span class="n">subpages</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.plots_for_result">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.plots_for_result">[docs]</a>
+    <span class="k">def</span> <span class="nf">plots_for_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+        <span class="n">calto</span><span class="p">,</span> <span class="n">str_intents</span> <span class="o">=</span> <span class="n">_get_data_selection_for_plot</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">intents</span><span class="p">)</span>
+
+        <span class="n">plotter</span> <span class="o">=</span> <span class="n">plotter_cls</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">str_intents</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">plots</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">:</span>
+            <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">intents</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="n">vis</span><span class="p">:</span> <span class="n">plots</span><span class="p">}</span>
+
+        <span class="n">path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">renderer_cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">renderer</span> <span class="o">=</span> <span class="n">renderer_cls</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+                <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">path</span>
+
+        <span class="k">return</span> <span class="n">d</span><span class="p">,</span> <span class="n">path</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.calapps_for_result">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.calapps_for_result">[docs]</a>
+    <span class="k">def</span> <span class="nf">calapps_for_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">calapps</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">applied</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">calapps</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">calapps</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.caltypes_for_result">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.caltypes_for_result">[docs]</a>
+    <span class="k">def</span> <span class="nf">caltypes_for_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">type_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;bandpass&#39;</span><span class="p">:</span> <span class="s1">&#39;Bandpass&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;gaincal&#39;</span><span class="p">:</span> <span class="s1">&#39;Gain&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tsys&#39;</span><span class="p">:</span> <span class="s1">&#39;T&lt;sub&gt;sys&lt;/sub&gt;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;wvr&#39;</span><span class="p">:</span> <span class="s1">&#39;WVR&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ps&#39;</span><span class="p">:</span> <span class="s1">&#39;Sky&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">applied</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">calfrom</span> <span class="ow">in</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">:</span>
+                <span class="n">caltype</span> <span class="o">=</span> <span class="n">type_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">calfrom</span><span class="o">.</span><span class="n">caltype</span><span class="p">,</span> <span class="n">calfrom</span><span class="o">.</span><span class="n">caltype</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">calfrom</span><span class="o">.</span><span class="n">caltype</span> <span class="o">==</span> <span class="s1">&#39;gaincal&#39;</span><span class="p">:</span>
+                    <span class="c1"># try heuristics to detect phase-only and amp-only</span>
+                    <span class="c1"># solutions</span>
+                    <span class="n">caltype</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gain_solution_type</span><span class="p">(</span><span class="n">calfrom</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span>
+
+                <span class="n">d</span><span class="p">[</span><span class="n">calfrom</span><span class="o">.</span><span class="n">gaintable</span><span class="p">]</span> <span class="o">=</span> <span class="n">caltype</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.get_gain_solution_type">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.get_gain_solution_type">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_gain_solution_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gaintable</span><span class="p">):</span>
+        <span class="c1"># CAS-9835: hif_applycal() &quot;type&quot; descriptions are misleading /</span>
+        <span class="c1"># incomplete in weblog table</span>
+        <span class="c1">#</span>
+        <span class="c1"># quick hack: match filenamer-generated file names</span>
+        <span class="c1">#</span>
+        <span class="c1"># TODO find a way to attach the originating task to the callibrary entries</span>
+        <span class="k">if</span> <span class="n">gaintable</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.gacal.tbl&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39; (amplitude only)&#39;</span>
+        <span class="k">if</span> <span class="n">gaintable</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.gpcal.tbl&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39; (phase only)&#39;</span>
+        <span class="k">if</span> <span class="n">gaintable</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.gcal.tbl&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># resort to inspecting caltable values to infer what its type is</span>
+
+        <span class="c1"># solve circular import problem by importing at run-time</span>
+        <span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+
+        <span class="c1"># get stats on amp solution of gaintable</span>
+        <span class="n">calstat_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">calstat</span><span class="p">(</span><span class="n">caltable</span><span class="o">=</span><span class="n">gaintable</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span>
+                                         <span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">,</span> <span class="n">useflags</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">calstat_result</span> <span class="o">=</span> <span class="n">calstat_job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">calstat_result</span><span class="p">[</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">]</span>
+
+        <span class="c1"># amp solutions of unity imply phase-only was requested</span>
+        <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-3</span>
+        <span class="n">no_amp_soln</span> <span class="o">=</span> <span class="nb">all</span><span class="p">([</span><span class="n">utils</span><span class="o">.</span><span class="n">approx_equal</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">],</span> <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;npts&#39;</span><span class="p">],</span> <span class="n">tol</span><span class="p">),</span>
+                           <span class="n">utils</span><span class="o">.</span><span class="n">approx_equal</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tol</span><span class="p">),</span>
+                           <span class="n">utils</span><span class="o">.</span><span class="n">approx_equal</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tol</span><span class="p">)])</span>
+
+        <span class="c1"># same again for phase solution</span>
+        <span class="n">calstat_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">calstat</span><span class="p">(</span><span class="n">caltable</span><span class="o">=</span><span class="n">gaintable</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;phase&#39;</span><span class="p">,</span>
+                                         <span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">,</span> <span class="n">useflags</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">calstat_result</span> <span class="o">=</span> <span class="n">calstat_job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">calstat_result</span><span class="p">[</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">]</span>
+
+        <span class="c1"># phase solutions ~ 0 implies amp-only solution</span>
+        <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-5</span>
+        <span class="n">no_phase_soln</span> <span class="o">=</span> <span class="nb">all</span><span class="p">([</span><span class="n">utils</span><span class="o">.</span><span class="n">approx_equal</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tol</span><span class="p">),</span>
+                             <span class="n">utils</span><span class="o">.</span><span class="n">approx_equal</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tol</span><span class="p">),</span>
+                             <span class="n">utils</span><span class="o">.</span><span class="n">approx_equal</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tol</span><span class="p">)])</span>
+
+        <span class="k">if</span> <span class="n">no_phase_soln</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">no_amp_soln</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39; (amplitude only)&#39;</span>
+        <span class="k">if</span> <span class="n">no_amp_soln</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">no_phase_soln</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39; (phase only)&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ApplycalAmpVsFreqPlotRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPlotRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">ApplycalAmpVsFreqPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Calibrated amplitude vs frequency for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vis</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="s1">&#39;amp_vs_freq-</span><span class="si">%s</span><span class="s1">.html&#39;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ApplycalAmpVsFreqPlotRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="s1">&#39;generic_x_vs_y_field_spw_ant_detail_plots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ApplycalPhaseVsFreqPlotRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsFreqPlotRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">ApplycalPhaseVsFreqPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Calibrated phase vs frequency for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vis</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="s1">&#39;phase_vs_freq-</span><span class="si">%s</span><span class="s1">.html&#39;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ApplycalPhaseVsFreqPlotRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="s1">&#39;generic_x_vs_y_field_spw_ant_detail_plots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ApplycalAmpVsFreqSciencePlotRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqSciencePlotRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">ApplycalAmpVsFreqSciencePlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Calibrated amplitude vs frequency for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vis</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="s1">&#39;science_amp_vs_freq-</span><span class="si">%s</span><span class="s1">.html&#39;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ApplycalAmpVsFreqSciencePlotRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="s1">&#39;generic_x_vs_y_spw_field_detail_plots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ApplycalAmpVsFreqPerAntSciencePlotRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPerAntSciencePlotRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">ApplycalAmpVsFreqPerAntSciencePlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to render &#39;per antenna&#39; Amp vs Freq plots for applycal</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
+                 <span class="n">result</span><span class="p">:</span> <span class="n">ApplycalResults</span><span class="p">,</span>
+                 <span class="n">plots</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Plot</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct ApplycalAmpVsFreqPerAntSciencePlotRenderer instance</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context</span>
+<span class="sd">            result:  Applycal Results</span>
+<span class="sd">            plots:   List of Plot instances</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Calibrated amplitude vs frequency for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vis</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="s1">&#39;science_amp_vs_freq-</span><span class="si">%s</span><span class="s1">.html&#39;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ApplycalAmpVsFreqPerAntSciencePlotRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s1">&#39;generic_x_vs_y_field_spw_ant_detail_plots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span>
+            <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ApplycalAmpVsUVSciencePlotRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVSciencePlotRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">ApplycalAmpVsUVSciencePlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Calibrated amplitude vs UV distance for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vis</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="s1">&#39;science_amp_vs_uv-</span><span class="si">%s</span><span class="s1">.html&#39;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ApplycalAmpVsUVSciencePlotRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="s1">&#39;generic_x_vs_y_spw_field_detail_plots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ApplycalAmpVsUVPlotRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVPlotRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">ApplycalAmpVsUVPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Calibrated amplitude vs UV distance for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vis</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="s1">&#39;amp_vs_uv-</span><span class="si">%s</span><span class="s1">.html&#39;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ApplycalAmpVsUVPlotRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="s1">&#39;generic_x_vs_y_field_spw_ant_detail_plots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ApplycalPhaseVsUVPlotRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsUVPlotRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">ApplycalPhaseVsUVPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Calibrated phase vs UV distance for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vis</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="s1">&#39;phase_vs_uv-</span><span class="si">%s</span><span class="s1">.html&#39;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ApplycalPhaseVsUVPlotRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="s1">&#39;generic_x_vs_y_spw_ant_plots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ApplycalAmpVsTimePlotRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsTimePlotRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">ApplycalAmpVsTimePlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Calibrated amplitude vs times for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vis</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="s1">&#39;amp_vs_time-</span><span class="si">%s</span><span class="s1">.html&#39;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ApplycalAmpVsTimePlotRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="s1">&#39;generic_x_vs_y_spw_ant_plots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ApplycalPhaseVsTimePlotRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsTimePlotRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">ApplycalPhaseVsTimePlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Calibrated phase vs times for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vis</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="s1">&#39;phase_vs_time-</span><span class="si">%s</span><span class="s1">.html&#39;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ApplycalPhaseVsTimePlotRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="s1">&#39;generic_x_vs_y_field_spw_ant_detail_plots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_get_data_selection_for_plot</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">intent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Inspect a result, returning a CalTo that matches the data selection of the</span>
+<span class="sd">    applied calibration.</span>
+
+<span class="sd">    Background: we don&#39;t want to create plots for an entire MS, only the data</span>
+<span class="sd">    selection of interest. Rather than calculate and explicitly pass in the</span>
+<span class="sd">    data selection of interest, this function calculates the data selection of</span>
+<span class="sd">    interest by inspecting the results and extracting the data selection that</span>
+<span class="sd">    the calibration is applied to.</span>
+
+<span class="sd">    :param context: pipeline Context</span>
+<span class="sd">    :param result: a Result with an .applied property containing CalApplications</span>
+<span class="sd">    :param intent: pipeline intent</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">spw</span> <span class="o">=</span> <span class="n">_get_calapp_arg</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">)</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">_get_calapp_arg</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;field&#39;</span><span class="p">)</span>
+    <span class="n">antenna</span> <span class="o">=</span> <span class="n">_get_calapp_arg</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;antenna&#39;</span><span class="p">)</span>
+    <span class="n">intent</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+    <span class="n">vis</span> <span class="o">=</span> <span class="p">{</span><span class="n">calapp</span><span class="o">.</span><span class="n">vis</span> <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">applied</span><span class="p">}</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+    <span class="n">wanted</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+    <span class="n">fields_with_intent</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+        <span class="n">intersection</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">wanted</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">intersection</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">fields_with_intent</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields_with_intent</span><span class="p">)</span>
+
+    <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">intent</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">calto</span><span class="p">,</span> <span class="n">intent</span>
+
+
+<span class="k">def</span> <span class="nf">_get_calapp_arg</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">applied</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">calapp</span><span class="p">,</span> <span class="n">arg</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_brightest_field">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.get_brightest_field">[docs]</a>
+<span class="k">def</span> <span class="nf">get_brightest_field</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Analyse all fields associated with a source, identifying the brightest</span>
+<span class="sd">    field as the field with highest median flux averaged over all spws.</span>
+
+<span class="sd">    :param ms: measurementset to analyse</span>
+<span class="sd">    :param source: representative source</span>
+<span class="sd">    :param intent:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get IDs for all science spectral windows</span>
+    <span class="n">spw_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">intent</span><span class="p">):</span>
+        <span class="n">scan_spw_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">dd</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">dd</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">data_descriptions</span><span class="p">}</span>
+        <span class="n">spw_ids</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">scan_spw_ids</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">:</span>
+        <span class="n">science_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">()}</span>
+        <span class="n">spw_ids</span> <span class="o">=</span> <span class="n">spw_ids</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">science_ids</span><span class="p">)</span>
+
+    <span class="n">fields_for_source</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">fields</span> <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
+
+    <span class="c1"># give the sole science target name if there&#39;s only one science target in this ms.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields_for_source</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Only one </span><span class="si">%s</span><span class="s1"> target for Source #</span><span class="si">%s</span><span class="s1">. Bypassing brightest target selection.&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">source</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fields_for_source</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># a list of (field, field flux) tuples</span>
+    <span class="n">mean_flux</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields_for_source</span><span class="p">:</span>
+        <span class="n">fluxes_for_field</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spw_ids</span><span class="p">:</span>
+            <span class="n">fluxes_for_field_and_spw</span> <span class="o">=</span> <span class="n">mstools</span><span class="o">.</span><span class="n">compute_mean_flux</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">fluxes_for_field_and_spw</span><span class="p">:</span>
+                <span class="n">fluxes_for_field</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fluxes_for_field_and_spw</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fluxes_for_field</span><span class="p">:</span>
+            <span class="n">mean_flux</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">field</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">fluxes_for_field</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">fluxes_for_field</span><span class="p">)))</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Median flux for </span><span class="si">%s</span><span class="s1"> targets:&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">field_flux</span> <span class="ow">in</span> <span class="n">mean_flux</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">{!r}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">field_flux</span><span class="p">))</span>
+
+    <span class="c1"># find the ID of the field with the highest average flux</span>
+    <span class="n">sorted_by_flux</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">mean_flux</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">brightest_field</span><span class="p">,</span> <span class="n">highest_flux</span> <span class="o">=</span> <span class="n">sorted_by_flux</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> field </span><span class="si">{!r}</span><span class="s1"> (#</span><span class="si">{}</span><span class="s1">) has highest median flux (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">intent</span><span class="p">,</span> <span class="n">brightest_field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">brightest_field</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">highest_flux</span>
+    <span class="p">))</span>
+    <span class="k">return</span> <span class="n">brightest_field</span></div>
+
+
+
+<div class="viewcode-block" id="copy_callibrary">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.copy_callibrary">[docs]</a>
+<span class="k">def</span> <span class="nf">copy_callibrary</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">,</span> <span class="n">report_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Copy callibrary files across to the weblog stage directory, returning a</span>
+<span class="sd">    Dict mapping MS name to the callibrary location on disk.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">report_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;stage</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">stage_number</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">vis_to_callib</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">callib_map</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">callib_src</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">callib_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># copy callib file across to weblog directory</span>
+            <span class="n">callib_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">callib_src</span><span class="p">)</span>
+            <span class="n">callib_dst</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">callib_basename</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Copying callibrary: src=</span><span class="si">%s</span><span class="s1"> dst=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">callib_src</span><span class="p">,</span> <span class="n">callib_dst</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">callib_src</span><span class="p">,</span> <span class="n">callib_dst</span><span class="p">)</span>
+
+            <span class="n">vis_to_callib</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">)]</span> <span class="o">=</span> <span class="n">callib_dst</span>
+
+    <span class="k">return</span> <span class="n">vis_to_callib</span></div>
+
+
+
+<div class="viewcode-block" id="deduplicate">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.deduplicate">[docs]</a>
+<span class="k">def</span> <span class="nf">deduplicate</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">all_plots</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Plot</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Plot</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Process a dict mapping vis to plots, deduplicating the plot list for</span>
+<span class="sd">    each MS.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">vis_plots</span> <span class="ow">in</span> <span class="n">all_plots</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">deduplicated</span> <span class="o">=</span> <span class="n">_deduplicate_plots</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">vis_plots</span><span class="p">)</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">deduplicated</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_deduplicate_plots</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">plots</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Plot</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Plot</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deduplicate plots by discarding extra plots created for the same scan.</span>
+<span class="sd">    The remaining plot is relabelled as applicable to the discarded intents.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># holds the final deduplicated list of plots</span>
+    <span class="n">deduplicated</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Plot</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># General algorithm is &#39;what scan does this spw and intent correspond to?</span>
+    <span class="c1"># Has this scan already been plotted? If so, discard the plot.&#39;</span>
+    <span class="c1">#</span>
+    <span class="c1"># Plots are made per spw, per intent. Duplicate plots should be removed by</span>
+    <span class="c1"># navigating down to the spw and filtering per spw. Just because spw 16</span>
+    <span class="c1"># BANDPASS cal is also spw 16 AMPLITUDE cal doesn&#39;t mean the same holds</span>
+    <span class="c1"># for other spectral windows.</span>
+
+    <span class="c1"># define functions to get spw and intent for a plot. These are used to</span>
+    <span class="c1"># sort and group the plots.</span>
+    <span class="n">spw_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">plot</span><span class="p">:</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span>
+    <span class="n">intent_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">plot</span><span class="p">:</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span>
+    <span class="n">field_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">plot</span><span class="p">:</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span>
+
+    <span class="c1"># First, group plots by spw</span>
+    <span class="n">plots_by_spw</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">spw_fn</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">spw_plots</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">plots_by_spw</span><span class="p">,</span> <span class="n">spw_fn</span><span class="p">):</span>
+        <span class="c1"># Store group iterator as a list</span>
+        <span class="n">spw_plots</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">spw_plots</span><span class="p">)</span>
+
+        <span class="c1"># dict to map scan ID to plots for that scan.</span>
+        <span class="n">plots_for_scan</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># now group these plots by intent. The intent ordering used here will</span>
+        <span class="c1"># be reflected in the order of the relabelled intents.</span>
+        <span class="n">spw_plots_by_intent</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">spw_plots</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">intent_fn</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw_intent_plots</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">spw_plots_by_intent</span><span class="p">,</span> <span class="n">intent_fn</span><span class="p">):</span>
+            <span class="c1"># Store group iterator as a list</span>
+            <span class="n">spw_intent_plots</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">spw_intent_plots</span><span class="p">)</span>
+
+            <span class="c1"># Try something new... does this fail if no fields? (i.e. need to move back in &#39;if&#39;)?</span>
+            <span class="n">spw_intent_plots_by_field</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">spw_intent_plots</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">field_fn</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw_intent_field_plots</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">spw_intent_plots_by_field</span><span class="p">,</span> <span class="n">field_fn</span><span class="p">):</span>
+                <span class="n">spw_intent_field_plots</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">spw_intent_field_plots</span><span class="p">)</span>
+
+                <span class="c1"># This should result in a single plot. If not, bail. Failsafe</span>
+                <span class="c1"># behaviour is to return original list of plots. It&#39;s better to</span>
+                <span class="c1"># have duplicates present than exceptions.</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spw_intent_field_plots</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Plot deduplication cancelled. &#39;</span>
+                           <span class="s1">&#39;Could not process ambiguous plot for spw </span><span class="si">%s</span><span class="s1"> intent </span><span class="si">%s</span><span class="s1"> field&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">plot</span> <span class="o">=</span> <span class="n">spw_intent_field_plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">scan_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({(</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">)})</span>
+                    <span class="n">scan_ids</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scan_ids</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">scan_ids</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">plots_for_scan</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Retaining plot for scan </span><span class="si">%s</span><span class="s1"> (spw=</span><span class="si">%s</span><span class="s1"> intent=</span><span class="si">%s</span><span class="s1"> field=</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">scan_ids</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+                        <span class="n">plots_for_scan</span><span class="p">[</span><span class="n">scan_ids</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Discarding duplicate plot for scan </span><span class="si">%s</span><span class="s1"> (spw=</span><span class="si">%s</span><span class="s1"> intent=</span><span class="si">%s</span><span class="s1"> field=</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">scan_ids</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+                        <span class="c1"># intents are strings inside lists, e.g., [&#39;BANDPASS&#39;]</span>
+                        <span class="n">old_intent</span> <span class="o">=</span> <span class="n">intent_fn</span><span class="p">(</span><span class="n">plots_for_scan</span><span class="p">[</span><span class="n">scan_ids</span><span class="p">])</span>
+                        <span class="n">new_intent</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">old_intent</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">intent</span><span class="p">))))]</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Deduplicating plot: spw </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> -&gt; </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">old_intent</span><span class="p">,</span> <span class="n">new_intent</span><span class="p">)</span>
+                        <span class="n">plots_for_scan</span><span class="p">[</span><span class="n">scan_ids</span><span class="p">]</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_intent</span>
+        <span class="n">deduplicated</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">plots_for_scan</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">deduplicated</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

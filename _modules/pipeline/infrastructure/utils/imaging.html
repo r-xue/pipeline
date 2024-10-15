@@ -1,0 +1,717 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.utils.imaging &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.utils.imaging</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.utils.imaging</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The imaging module contains utility functions used by the imaging tasks.</span>
+
+<span class="sd">TODO These utility functions should migrate to hif.tasks.common</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Generator</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">utils</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;chan_selection_to_frequencies&#39;</span><span class="p">,</span> <span class="s1">&#39;freq_selection_to_channels&#39;</span><span class="p">,</span> <span class="s1">&#39;spw_intersect&#39;</span><span class="p">,</span> <span class="s1">&#39;update_sens_dict&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;update_beams_dict&#39;</span><span class="p">,</span> <span class="s1">&#39;set_nested_dict&#39;</span><span class="p">,</span> <span class="s1">&#39;intersect_ranges&#39;</span><span class="p">,</span> <span class="s1">&#39;intersect_ranges_by_weight&#39;</span><span class="p">,</span> <span class="s1">&#39;merge_ranges&#39;</span><span class="p">,</span> <span class="s1">&#39;equal_to_n_digits&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;velocity_to_frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;frequency_to_velocity&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;predict_kernel&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_get_cube_freq_axis</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get CASA image/cube frequency axis.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        img: CASA image/cube name</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple of frequency axis components</span>
+<span class="sd">        (reference frequency, delta frequency per channel, frequency unit,</span>
+<span class="sd">         reference pixel, number of pixels of frequency axis)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">iaTool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">image</span>
+
+    <span class="c1"># Get frequency axis</span>
+    <span class="n">iaTool</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+    <span class="n">imInfo</span> <span class="o">=</span> <span class="n">iaTool</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+    <span class="n">iaTool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">fIndex</span> <span class="o">=</span> <span class="n">imInfo</span><span class="p">[</span><span class="s1">&#39;axisnames&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;Frequency&#39;</span><span class="p">)</span>
+    <span class="n">refFreq</span> <span class="o">=</span> <span class="n">imInfo</span><span class="p">[</span><span class="s1">&#39;refval&#39;</span><span class="p">][</span><span class="n">fIndex</span><span class="p">]</span>
+    <span class="n">deltaFreq</span> <span class="o">=</span> <span class="n">imInfo</span><span class="p">[</span><span class="s1">&#39;incr&#39;</span><span class="p">][</span><span class="n">fIndex</span><span class="p">]</span>
+    <span class="n">freqUnit</span> <span class="o">=</span> <span class="n">imInfo</span><span class="p">[</span><span class="s1">&#39;axisunits&#39;</span><span class="p">][</span><span class="n">fIndex</span><span class="p">]</span>
+    <span class="n">refPix</span> <span class="o">=</span> <span class="n">imInfo</span><span class="p">[</span><span class="s1">&#39;refpix&#39;</span><span class="p">][</span><span class="n">fIndex</span><span class="p">]</span>
+    <span class="n">numPix</span> <span class="o">=</span> <span class="n">imInfo</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">][</span><span class="n">fIndex</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">refFreq</span><span class="p">,</span> <span class="n">deltaFreq</span><span class="p">,</span> <span class="n">freqUnit</span><span class="p">,</span> <span class="n">refPix</span><span class="p">,</span> <span class="n">numPix</span>
+
+
+<div class="viewcode-block" id="chan_selection_to_frequencies">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.chan_selection_to_frequencies">[docs]</a>
+<span class="k">def</span> <span class="nf">chan_selection_to_frequencies</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">selection</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;GHz&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert channel selection to frequency tuples for a given CASA cube.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        img:       CASA cube name</span>
+<span class="sd">        selection: Channel selection string using CASA selection syntax</span>
+<span class="sd">        unit:      Frequency unit</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of pairs of frequency values (float) in the desired units</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">selection</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="s1">&#39;ALL&#39;</span><span class="p">,</span> <span class="s1">&#39;ALLCONT&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">selection</span><span class="p">]</span>
+
+    <span class="n">frequencies</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">selection</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">qaTool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="c1"># Get frequency axis</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">refFreq</span><span class="p">,</span> <span class="n">deltaFreq</span><span class="p">,</span> <span class="n">freqUnit</span><span class="p">,</span> <span class="n">refPix</span><span class="p">,</span> <span class="n">numPix</span> <span class="o">=</span> <span class="n">_get_cube_freq_axis</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No frequency axis found in </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">img</span><span class="p">))</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;NONE&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">crange</span> <span class="ow">in</span> <span class="n">selection</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">):</span>
+            <span class="n">c0</span><span class="p">,</span> <span class="n">c1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">crange</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">)))</span>
+            <span class="c1"># Make sure c0 is the lower channel so that the +/-0.5 channel</span>
+            <span class="c1"># adjustments below go in the right direction.</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">c1</span> <span class="o">&lt;</span> <span class="n">c0</span><span class="p">):</span>
+                <span class="n">c0</span><span class="p">,</span> <span class="n">c1</span> <span class="o">=</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c0</span>
+
+            <span class="c1"># Convert the channel range (c0-c1) to the corresponding frequency range</span>
+            <span class="c1"># that spans between the outer edges of this channel range. I.e., from</span>
+            <span class="c1"># the lower frequency edge of c0 to the upper frequency edge of c1.</span>
+            <span class="n">f0</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">({</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">refFreq</span> <span class="o">+</span> <span class="p">(</span><span class="n">c0</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="n">refPix</span><span class="p">)</span> <span class="o">*</span> <span class="n">deltaFreq</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="n">freqUnit</span><span class="p">},</span> <span class="n">unit</span><span class="p">)</span>
+            <span class="n">f1</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">({</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">refFreq</span> <span class="o">+</span> <span class="p">(</span><span class="n">c1</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="n">refPix</span><span class="p">)</span> <span class="o">*</span> <span class="n">deltaFreq</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="n">freqUnit</span><span class="p">},</span> <span class="n">unit</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="n">f0</span><span class="p">,</span> <span class="n">f1</span><span class="p">):</span>
+                <span class="n">frequencies</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">f0</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">f1</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">frequencies</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">f1</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">f0</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">frequencies</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NONE&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">frequencies</span></div>
+
+
+
+<div class="viewcode-block" id="freq_selection_to_channels">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.freq_selection_to_channels">[docs]</a>
+<span class="k">def</span> <span class="nf">freq_selection_to_channels</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">selection</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert frequency selection to channel tuples for a given CASA cube.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        img:       CASA cube name</span>
+<span class="sd">        selection: Frequency selection string using CASA syntax</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of pairs of channel values (int)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">selection</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="s1">&#39;ALL&#39;</span><span class="p">,</span> <span class="s1">&#39;ALLCONT&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">selection</span><span class="p">]</span>
+
+    <span class="n">channels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">selection</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">qaTool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="c1"># Get frequency axis</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">refFreq</span><span class="p">,</span> <span class="n">deltaFreq</span><span class="p">,</span> <span class="n">freqUnit</span><span class="p">,</span> <span class="n">refPix</span><span class="p">,</span> <span class="n">numPix</span> <span class="o">=</span> <span class="n">_get_cube_freq_axis</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No frequency axis found in </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">img</span><span class="p">))</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;NONE&#39;</span><span class="p">]</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([\d.]*)(~)([\d.]*)(\D*)&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">frange</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">selection</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)):</span>
+            <span class="n">f0</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">frange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frange</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="n">freqUnit</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">f1</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">frange</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">frange</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="n">freqUnit</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="c1"># It is assumed here that the frequency ranges are given from</span>
+            <span class="c1"># the lower edge of the lowest frequency channel to the upper</span>
+            <span class="c1"># edge of the highest frequency channel, while the reference frequency</span>
+            <span class="c1"># is specified at the center of the reference pixel (channel). To calculate</span>
+            <span class="c1"># the corresponding channel range, we need to add 0.5 to the lower channel,</span>
+            <span class="c1"># and subtract 0.5 from the upper channel.</span>
+            <span class="n">c0</span> <span class="o">=</span> <span class="p">(</span><span class="n">f0</span> <span class="o">-</span> <span class="n">refFreq</span><span class="p">)</span> <span class="o">/</span> <span class="n">deltaFreq</span>
+            <span class="n">c1</span> <span class="o">=</span> <span class="p">(</span><span class="n">f1</span> <span class="o">-</span> <span class="n">refFreq</span><span class="p">)</span> <span class="o">/</span> <span class="n">deltaFreq</span>
+
+            <span class="c1"># Avoid stepping outside possible channel range</span>
+            <span class="n">c0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">c0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">c0</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c0</span><span class="p">,</span> <span class="n">numPix</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">c0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">(</span><span class="n">c0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+            <span class="n">c0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">c0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">c0</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c0</span><span class="p">,</span> <span class="n">numPix</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">c1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">c1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">numPix</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">c1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">(</span><span class="n">c1</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">))</span>
+            <span class="n">c1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">c1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">numPix</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">c0</span> <span class="o">&lt;</span> <span class="n">c1</span><span class="p">:</span>
+                <span class="n">channels</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">c0</span><span class="p">,</span> <span class="n">c1</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">channels</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">c1</span><span class="p">,</span> <span class="n">c0</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">channels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NONE&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">channels</span></div>
+
+
+
+<div class="viewcode-block" id="spw_intersect">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.spw_intersect">[docs]</a>
+<span class="k">def</span> <span class="nf">spw_intersect</span><span class="p">(</span><span class="n">spw_range</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">line_regions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This utility function takes a frequency range (as numbers with arbitrary</span>
+<span class="sd">    but common units) and computes the intersection with a list of frequency</span>
+<span class="sd">    ranges defining the regions of spectral lines. It returns the remaining</span>
+<span class="sd">    ranges excluding the line frequency ranges.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        spw_range:    List of two numbers defining the spw frequency range</span>
+<span class="sd">        line_regions: List of lists of pairs of numbers defining frequency ranges</span>
+<span class="sd">                      to be excluded</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of lists of pairs of numbers defining the remaining frequency ranges</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">spw_sel_intervals</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">line_region</span> <span class="ow">in</span> <span class="n">line_regions</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">line_region</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">spw_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">line_region</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">spw_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">spw_sel_intervals</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">spw_range</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">break</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">line_region</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">spw_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">line_region</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">spw_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">spw_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">line_region</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">spw_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">line_region</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">spw_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">line_region</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">spw_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">spw_sel_intervals</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">spw_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line_region</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+            <span class="n">spw_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">line_region</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">spw_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="n">line_region</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">spw_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">spw_sel_intervals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spw_range</span><span class="p">)</span>
+            <span class="n">spw_range</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">break</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">line_region</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">spw_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">line_region</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">spw_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">spw_sel_intervals</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">spw_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line_region</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+            <span class="n">spw_range</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">break</span>
+    <span class="k">if</span> <span class="n">spw_range</span> <span class="o">!=</span> <span class="p">[]:</span>
+        <span class="n">spw_sel_intervals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spw_range</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">spw_sel_intervals</span></div>
+
+
+
+<div class="viewcode-block" id="update_sens_dict">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.update_sens_dict">[docs]</a>
+<span class="k">def</span> <span class="nf">update_sens_dict</span><span class="p">(</span><span class="n">dct</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">udct</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update a sensitivity dictionary. All generic solutions</span>
+<span class="sd">    tried so far did not do the job. So this method assumes</span>
+<span class="sd">    an explicit dictionary structure of</span>
+<span class="sd">    [&#39;&lt;MS name&gt;&#39;][&#39;&lt;field name&#39;][&#39;&lt;intent&gt;&#39;][&lt;spw&gt;]: {&lt;sensitivity result&gt;}.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dct:  Sensitivities dictionary</span>
+<span class="sd">        udct: Sensitivities update dictionary</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None. The main dictionary is modified in place.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">msname</span> <span class="ow">in</span> <span class="n">udct</span><span class="p">:</span>
+        <span class="c1"># Exclude special primary keys that are not MS names</span>
+        <span class="k">if</span> <span class="n">msname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;recalc&#39;</span><span class="p">,</span> <span class="s1">&#39;robust&#39;</span><span class="p">,</span> <span class="s1">&#39;uvtaper&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">msname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dct</span><span class="p">:</span>
+                <span class="n">dct</span><span class="p">[</span><span class="n">msname</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">udct</span><span class="p">[</span><span class="n">msname</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dct</span><span class="p">[</span><span class="n">msname</span><span class="p">]:</span>
+                    <span class="n">dct</span><span class="p">[</span><span class="n">msname</span><span class="p">][</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">udct</span><span class="p">[</span><span class="n">msname</span><span class="p">][</span><span class="n">field</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">intent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dct</span><span class="p">[</span><span class="n">msname</span><span class="p">][</span><span class="n">field</span><span class="p">]:</span>
+                        <span class="n">dct</span><span class="p">[</span><span class="n">msname</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="n">intent</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">udct</span><span class="p">[</span><span class="n">msname</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="n">intent</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dct</span><span class="p">[</span><span class="n">msname</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="n">intent</span><span class="p">]:</span>
+                            <span class="n">dct</span><span class="p">[</span><span class="n">msname</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="n">intent</span><span class="p">][</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                        <span class="n">dct</span><span class="p">[</span><span class="n">msname</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="n">intent</span><span class="p">][</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="n">udct</span><span class="p">[</span><span class="n">msname</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="n">intent</span><span class="p">][</span><span class="n">spw</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="update_beams_dict">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.update_beams_dict">[docs]</a>
+<span class="k">def</span> <span class="nf">update_beams_dict</span><span class="p">(</span><span class="n">dct</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">udct</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update a beams dictionary. All generic solutions</span>
+<span class="sd">    tried so far did not do the job. So this method assumes</span>
+<span class="sd">    an explicit dictionary structure of</span>
+<span class="sd">    [&#39;&lt;field name&#39;][&#39;&lt;intent&gt;&#39;][&lt;spwids&gt;]: {&lt;beam&gt;}.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dct:  Beams dictionary</span>
+<span class="sd">        udct: Beams update dictionary</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None. The main dictionary is modified in place.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">udct</span><span class="p">:</span>
+        <span class="c1"># Exclude special primary keys that are not MS names</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;recalc&#39;</span><span class="p">,</span> <span class="s1">&#39;robust&#39;</span><span class="p">,</span> <span class="s1">&#39;uvtaper&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dct</span><span class="p">:</span>
+                <span class="n">dct</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">udct</span><span class="p">[</span><span class="n">field</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">intent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dct</span><span class="p">[</span><span class="n">field</span><span class="p">]:</span>
+                    <span class="n">dct</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="n">intent</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">spwids</span> <span class="ow">in</span> <span class="n">udct</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="n">intent</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">spwids</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dct</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="n">intent</span><span class="p">]:</span>
+                        <span class="n">dct</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="n">intent</span><span class="p">][</span><span class="n">spwids</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">dct</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="n">intent</span><span class="p">][</span><span class="n">spwids</span><span class="p">]</span> <span class="o">=</span> <span class="n">udct</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="n">intent</span><span class="p">][</span><span class="n">spwids</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="set_nested_dict">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.set_nested_dict">[docs]</a>
+<span class="k">def</span> <span class="nf">set_nested_dict</span><span class="p">(</span><span class="n">dct</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set a hierarchy of dictionaries with given keys and value</span>
+<span class="sd">    for the lowest level key.</span>
+
+<span class="sd">    &gt;&gt;&gt; d = {}</span>
+<span class="sd">    &gt;&gt;&gt; set_nested_dict(d, (&#39;key1&#39;, &#39;key2&#39;, &#39;key3&#39;), 1)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    {&#39;key1&#39;: {&#39;key2&#39;: {&#39;key3&#39;: 1}}}</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dct:   Any dictionary</span>
+<span class="sd">        keys : List of keys to build hierarchy</span>
+<span class="sd">        value: Value for lowest level key</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None. The dictionary is modified in place.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">dct</span> <span class="o">=</span> <span class="n">dct</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">dct</span><span class="p">[</span><span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+
+<div class="viewcode-block" id="intersect_ranges">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.intersect_ranges">[docs]</a>
+<span class="k">def</span> <span class="nf">intersect_ranges</span><span class="p">(</span><span class="n">ranges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute intersection of ranges.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ranges: List of tuples defining (frequency) intervals</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        intersect_range: Tuple of two numbers defining the intersection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ranges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">intersect_range</span> <span class="o">=</span> <span class="n">ranges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">myrange</span> <span class="ow">in</span> <span class="n">ranges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">i0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">intersect_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">myrange</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">i1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">intersect_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">myrange</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">i0</span> <span class="o">&lt;=</span> <span class="n">i1</span><span class="p">:</span>
+                <span class="n">intersect_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">i0</span><span class="p">,</span> <span class="n">i1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">intersect_range</span></div>
+
+
+
+<div class="viewcode-block" id="intersect_ranges_by_weight">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.intersect_ranges_by_weight">[docs]</a>
+<span class="k">def</span> <span class="nf">intersect_ranges_by_weight</span><span class="p">(</span><span class="n">ranges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span> <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute intersection of ranges through weight arrays and a threshold.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ranges:    List of tuples defining frequency intervals</span>
+<span class="sd">        delta:     Frequency step to be used for the intersection</span>
+<span class="sd">        threshold: Threshold to be used for the intersection</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        intersect_range: Tuple of two numbers defining the intersection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ranges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">min_v</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+        <span class="n">max_v</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+    <span class="n">max_range</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_v</span><span class="p">,</span> <span class="n">max_v</span><span class="o">+</span><span class="n">delta</span><span class="p">,</span> <span class="n">delta</span><span class="p">)</span>
+    <span class="n">range_weights</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">max_range</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">myrange</span> <span class="ow">in</span> <span class="n">ranges</span><span class="p">:</span>
+        <span class="n">range_weights</span> <span class="o">+=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">max_range</span> <span class="o">&gt;=</span> <span class="n">myrange</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">max_range</span> <span class="o">&lt;=</span> <span class="n">myrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">range_weights</span> <span class="o">/=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span>
+    <span class="n">valid_indices</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">range_weights</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">valid_indices</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">max_range</span><span class="p">[</span><span class="n">valid_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">max_range</span><span class="p">[</span><span class="n">valid_indices</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="merge_ranges">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.merge_ranges">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_ranges</span><span class="p">(</span><span class="n">ranges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Merge overlapping and adjacent ranges and yield the merged ranges</span>
+<span class="sd">    in order. The argument must be an iterable of pairs (start, stop).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ranges: List of tuples of two numbers defining ranges</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Generator yielding tuples of merged ranges</span>
+
+<span class="sd">    &gt;&gt;&gt; list(merge_ranges([(5,7), (3,5), (-1,3)]))</span>
+<span class="sd">    [(-1, 7)]</span>
+<span class="sd">    &gt;&gt;&gt; list(merge_ranges([(5,6), (3,4), (1,2)]))</span>
+<span class="sd">    [(1, 2), (3, 4), (5, 6)]</span>
+<span class="sd">    &gt;&gt;&gt; list(merge_ranges([]))</span>
+<span class="sd">    []</span>
+
+<span class="sd">    (c) Gareth Rees 02/2013</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ranges</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ranges</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">current_start</span><span class="p">,</span> <span class="n">current_stop</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="ow">in</span> <span class="n">ranges</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">current_stop</span><span class="p">:</span>
+            <span class="c1"># Gap between segments: output current segment and start a new one.</span>
+            <span class="k">yield</span> <span class="n">current_start</span><span class="p">,</span> <span class="n">current_stop</span>
+            <span class="n">current_start</span><span class="p">,</span> <span class="n">current_stop</span> <span class="o">=</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Segments adjacent or overlapping: merge.</span>
+            <span class="n">current_stop</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">current_stop</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">current_start</span><span class="p">,</span> <span class="n">current_stop</span></div>
+
+
+
+<div class="viewcode-block" id="equal_to_n_digits">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.equal_to_n_digits">[docs]</a>
+<span class="k">def</span> <span class="nf">equal_to_n_digits</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">numdigits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Approximate equality check up to a given number of digits.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: First floating point number</span>
+<span class="sd">        y: Second floating point number</span>
+<span class="sd">        numdigits: Number of digits to check</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Boolean</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_approx_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">numdigits</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="velocity_to_frequency">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.velocity_to_frequency">[docs]</a>
+<span class="k">def</span> <span class="nf">velocity_to_frequency</span><span class="p">(</span><span class="n">velocity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">restfreq</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert radial velocity to frequency using radio convention.</span>
+
+<span class="sd">    f = f_rest * (1 - v/c)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        velocity: velocity quantity</span>
+<span class="sd">        restfreq: rest frequency quantity</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Frequency quantity in units of restfreq</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+    <span class="n">light_speed</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">constants</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">),</span> <span class="s1">&#39;km/s&#39;</span><span class="p">)))</span>
+    <span class="n">velocity</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">velocity</span><span class="p">),</span> <span class="s1">&#39;km/s&#39;</span><span class="p">)))</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">restfreq</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">velocity</span> <span class="o">/</span> <span class="n">light_speed</span><span class="p">)</span>
+    <span class="n">unit</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">restfreq</span><span class="p">)</span>
+    <span class="n">frequency</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">unit</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">frequency</span></div>
+
+
+
+<div class="viewcode-block" id="frequency_to_velocity">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.frequency_to_velocity">[docs]</a>
+<span class="k">def</span> <span class="nf">frequency_to_velocity</span><span class="p">(</span><span class="n">frequency</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">restfreq</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert frequency to radial velocity using radio convention.</span>
+
+<span class="sd">    v = c * (f_rest - f) / f_rest</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        frequency: frequency quantity</span>
+<span class="sd">        restfreq: rest frequency quantity</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Velocity quantity in units of km/s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+    <span class="n">light_speed</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">constants</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">),</span> <span class="s1">&#39;km/s&#39;</span><span class="p">)))</span>
+    <span class="n">restfreq</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">restfreq</span><span class="p">,</span> <span class="s1">&#39;MHz&#39;</span><span class="p">)))</span>
+    <span class="n">freq</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">frequency</span><span class="p">,</span> <span class="s1">&#39;MHz&#39;</span><span class="p">)))</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">light_speed</span> <span class="o">*</span> <span class="p">((</span><span class="n">restfreq</span> <span class="o">-</span> <span class="n">freq</span><span class="p">)</span> <span class="o">/</span> <span class="n">restfreq</span><span class="p">)</span>
+    <span class="n">velocity</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;km/s&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">velocity</span></div>
+
+
+
+<div class="viewcode-block" id="predict_kernel">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.predict_kernel">[docs]</a>
+<span class="k">def</span> <span class="nf">predict_kernel</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="n">target_beam</span><span class="p">,</span> <span class="n">pstol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">patol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Predict the required convolution kernel to each a target restoring beam.</span>
+<span class="sd">    </span>
+<span class="sd">    pstol: the tolerance in arcsec for original vs. target bmaj/bmin identical or kernel &quot;point source&quot; like. </span>
+<span class="sd">    patol: the tolerance in degree for original vs. target bpa identical </span>
+
+<span class="sd">    return_code:</span>
+<span class="sd">        0:  sucess, the target beam can be reached with a valid convolution kernel</span>
+<span class="sd">        1:  fail, &quot;point source&quot; like</span>
+<span class="sd">        2:  fail, unable to reach the target beam shape, and the original beam is probably already too large in a certain direction.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Although ia.deconvolvefrombeam() can also predict convolution kernel sizes, its return can be misleading</span>
+<span class="sd">        in some circumstances (see CAS-13804). Therefore, we use ia.beamforconvolvedsize() here even though we have to catch the CASA runtime error messages.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+    <span class="n">cia</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">image</span>
+    <span class="n">clog</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">casalog</span>
+
+    <span class="c1"># default return code and kernel: fail (code=2) and a dummy kernel</span>
+    <span class="n">rt_kernel</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;major&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+                 <span class="s1">&#39;minor&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+                 <span class="s1">&#39;pa&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}}</span>
+    <span class="n">rt_code</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="c1"># ia.restoringbeam() return bpa under the key &#39;positionangle&#39; while ia.commombeam() return bpa under &#39;pa&#39;</span>
+    <span class="c1"># we search the exact key here so both versions will work.</span>
+    <span class="n">t_bpa_key</span> <span class="o">=</span> <span class="s1">&#39;positionangle&#39;</span> <span class="k">if</span> <span class="s1">&#39;positionangle&#39;</span> <span class="ow">in</span> <span class="n">target_beam</span> <span class="k">else</span> <span class="s1">&#39;pa&#39;</span>
+    <span class="n">bpa_key</span> <span class="o">=</span> <span class="s1">&#39;positionangle&#39;</span> <span class="k">if</span> <span class="s1">&#39;positionangle&#39;</span> <span class="ow">in</span> <span class="n">beam</span> <span class="k">else</span> <span class="s1">&#39;pa&#39;</span>
+
+    <span class="n">t_bmaj</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">target_beam</span><span class="p">[</span><span class="s1">&#39;major&#39;</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="n">t_bmin</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">target_beam</span><span class="p">[</span><span class="s1">&#39;minor&#39;</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="n">t_bpa</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">target_beam</span><span class="p">[</span><span class="n">t_bpa_key</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="n">bmaj</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">beam</span><span class="p">[</span><span class="s1">&#39;major&#39;</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="n">bmin</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">beam</span><span class="p">[</span><span class="s1">&#39;minor&#39;</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="n">bpa</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">beam</span><span class="p">[</span><span class="n">bpa_key</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t_bmaj</span><span class="o">-</span><span class="n">bmaj</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">pstol</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t_bmin</span><span class="o">-</span><span class="n">bmin</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">pstol</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t_bpa</span><span class="o">-</span><span class="n">bpa</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">patol</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;The target beam is identical or close to the original beam under the specified tolerance: &#39;</span> <span class="o">+</span>
+            <span class="sa">f</span><span class="s1">&#39;pstol = </span><span class="si">{</span><span class="n">pstol</span><span class="si">}</span><span class="s1"> arcsec and patol = </span><span class="si">{</span><span class="n">patol</span><span class="si">}</span><span class="s1"> deg.&#39;</span><span class="p">)</span>
+        <span class="n">rt_code</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">target_bm</span> <span class="o">=</span> <span class="p">[</span><span class="n">cqa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">target_beam</span><span class="p">[</span><span class="s1">&#39;major&#39;</span><span class="p">]),</span> <span class="n">cqa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">target_beam</span><span class="p">[</span><span class="s1">&#39;minor&#39;</span><span class="p">]),</span> <span class="n">cqa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">target_beam</span><span class="p">[</span><span class="n">t_bpa_key</span><span class="p">])]</span>
+        <span class="n">origin_bm</span> <span class="o">=</span> <span class="p">[</span><span class="n">cqa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">beam</span><span class="p">[</span><span class="s1">&#39;major&#39;</span><span class="p">]),</span> <span class="n">cqa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">beam</span><span class="p">[</span><span class="s1">&#39;minor&#39;</span><span class="p">]),</span> <span class="n">cqa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">beam</span><span class="p">[</span><span class="n">bpa_key</span><span class="p">])]</span>
+
+        <span class="c1"># filter out the potential runtime error message when ia.beamforconvolvedsize() fails.</span>
+        <span class="k">with</span> <span class="n">logging</span><span class="o">.</span><span class="n">log_filtermsg</span><span class="p">(</span><span class="s1">&#39;Unable to reach target resolution of major&#39;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">rt_kernel</span> <span class="o">=</span> <span class="n">cia</span><span class="o">.</span><span class="n">beamforconvolvedsize</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">origin_bm</span><span class="p">,</span> <span class="n">convolved</span><span class="o">=</span><span class="n">target_bm</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">rt_kernel</span><span class="p">[</span><span class="s1">&#39;major&#39;</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pstol</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;The kernel from ia.deconvolvefrombeam() is considered as a point-source under the tolerance &#39;</span> <span class="o">+</span>
+                            <span class="sa">f</span><span class="s1">&#39;pstol = </span><span class="si">{</span><span class="n">pstol</span><span class="si">}</span><span class="s1"> arcsec.&#39;</span><span class="p">)</span>
+                    <span class="n">rt_code</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The convolution kernel prediced by ia.deconvolvefrombeam is </span><span class="si">{</span><span class="n">rt_kernel</span><span class="si">}</span><span class="s1"> and larger than the tolerence &#39;</span> <span class="o">+</span>
+                            <span class="sa">f</span><span class="s1">&#39;pstol = </span><span class="si">{</span><span class="n">pstol</span><span class="si">}</span><span class="s1"> arcsec&#39;</span><span class="p">)</span>
+                    <span class="n">rt_code</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Unable to reach the target beam shape because the original beam is probably already too large.&quot;</span><span class="p">)</span>
+                <span class="n">rt_code</span> <span class="o">=</span> <span class="mi">2</span>
+
+
+    <span class="k">return</span> <span class="n">rt_kernel</span><span class="p">,</span> <span class="n">rt_code</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

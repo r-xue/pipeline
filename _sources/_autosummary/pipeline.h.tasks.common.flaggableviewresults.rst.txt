@@ -1,0 +1,12 @@
+pipeline.h.tasks.common.flaggableviewresults
+============================================
+
+.. automodule:: pipeline.h.tasks.common.flaggableviewresults
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FlaggableViewResults
+   

@@ -1,0 +1,30 @@
+pipeline.hifa.tasks.spwphaseup.renderer
+=======================================
+
+.. automodule:: pipeline.hifa.tasks.spwphaseup.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_gaincal_applications
+      get_pcal_table_rows
+      get_phaserms_table_rows
+      get_snr_table_rows
+      get_spwmaps
+      make_rms_plots
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Context
+      PhaseRmsTR
+      PhaseTR
+      ResultsList
+      SnrTR
+      SpwMapInfo
+      SpwPhaseupApplication
+      T2_4MDetailsSpwPhaseupRenderer
+   

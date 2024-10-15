@@ -1,0 +1,544 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.tasks.makecutoutimages.display &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.tasks.makecutoutimages.display</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.tasks.makecutoutimages.display</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">import</span> <span class="n">cm</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.logger</span> <span class="k">as</span> <span class="nn">logger</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils.compatibility</span> <span class="k">as</span> <span class="nn">compatibility</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.displays</span> <span class="kn">import</span> <span class="n">sky</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.displays.imhist</span> <span class="kn">import</span> <span class="n">ImageHistDisplay</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.displays.plotstyle</span> <span class="kn">import</span> <span class="n">matplotlibrc_formal</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># class used to transfer image statistics through to plotting routines</span>
+<span class="n">ImageStats</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;ImageStats&#39;</span><span class="p">,</span> <span class="s1">&#39;rms max&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CutoutimagesSummary">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makecutoutimages.html#pipeline.hif.tasks.makecutoutimages.display.CutoutimagesSummary">[docs]</a>
+<span class="k">class</span> <span class="nc">CutoutimagesSummary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+
+<div class="viewcode-block" id="CutoutimagesSummary.plot">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makecutoutimages.html#pipeline.hif.tasks.makecutoutimages.display.CutoutimagesSummary.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
+                                 <span class="s1">&#39;stage</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Making PNG cutout images for weblog&quot;</span><span class="p">)</span>
+        <span class="n">plot_wrappers</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">subimagename</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">subimagenames</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;.psf.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sky</span><span class="o">.</span><span class="n">SkyDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">subimagename</span><span class="p">,</span>
+                                                           <span class="n">reportdir</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                           <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span>
+                                                           <span class="n">vmin</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.3</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="s1">&#39;.image.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span> <span class="ow">and</span> <span class="s1">&#39;.pbcor&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                <span class="c1"># PIPE-491/1163: report non-pbcor stats and don&#39;t display images; don&#39;t save stats from .tt1</span>
+                <span class="k">if</span> <span class="s1">&#39;.tt1.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">subimagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">image_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;.residual.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span> <span class="ow">and</span> <span class="s1">&#39;.pbcor.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                <span class="c1"># PIPE-491/1163: report non-pbcor stats and don&#39;t display images; don&#39;t save stats from .tt1</span>
+                <span class="k">if</span> <span class="s1">&#39;.tt1.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">subimagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">residual_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;.image.pbcor.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span> <span class="ow">and</span> <span class="s1">&#39;.rms.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                <span class="c1"># CAS-10345/PIPE-1189: use (-5*RMSmedian, 20*RMSmedian) as the colormap scaling range</span>
+                <span class="c1"># We expect &#39;subimagename&#39; here to be: X.image.pbcor.ttX.subim or X.image.pbcor.subim</span>
+                <span class="n">rms_subimagename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">subimagename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;.rms.subim&#39;</span>
+                <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">rms_subimagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+                    <span class="n">rms_median</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;median&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sky</span><span class="o">.</span><span class="n">SkyDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">subimagename</span><span class="p">,</span>
+                                                           <span class="n">reportdir</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                           <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span>
+                                                           <span class="n">vmin</span><span class="o">=-</span><span class="mi">5</span> <span class="o">*</span> <span class="n">rms_median</span><span class="p">,</span>
+                                                           <span class="n">vmax</span><span class="o">=</span><span class="mi">20</span> <span class="o">*</span> <span class="n">rms_median</span><span class="p">))</span>
+                <span class="k">if</span> <span class="s1">&#39;.tt1.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">subimagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">pbcor_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;.rms.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sky</span><span class="o">.</span><span class="n">SkyDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">subimagename</span><span class="p">,</span>
+                                                           <span class="n">reportdir</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                           <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="s1">&#39;.tt1.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">subimagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">rms_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="n">arr</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">getchunk</span><span class="p">()</span>
+                        <span class="c1"># PIPE-489 changed denominators to unmasked (non-zero) pixels</span>
+                        <span class="c1"># get fraction of pixels &lt;= 120 micro Jy VLASS technical goal.  ignore 0 (masked) values.</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">RMSfraction120</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">((</span><span class="n">arr</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">arr</span> <span class="o">&lt;=</span> <span class="mf">120e-6</span><span class="p">))</span> <span class="o">/</span>
+                                                      <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">arr</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)))</span> <span class="o">*</span> <span class="mi">100</span>
+                        <span class="c1"># get fraction of pixels &lt;= 168 micro Jy VLASS SE goal.  ignore 0 (masked) values.</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">RMSfraction168</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">((</span><span class="n">arr</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">arr</span> <span class="o">&lt;=</span> <span class="mf">168e-6</span><span class="p">))</span> <span class="o">/</span>
+                                                      <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">arr</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)))</span> <span class="o">*</span> <span class="mi">100</span>
+                        <span class="c1"># get fraction of pixels &lt;= 200 micro Jy VLASS technical requirement.  ignore 0 (masked) values.</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">RMSfraction200</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">((</span><span class="n">arr</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">arr</span> <span class="o">&lt;=</span> <span class="mf">200e-6</span><span class="p">))</span> <span class="o">/</span>
+                                                      <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">arr</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)))</span> <span class="o">*</span> <span class="mi">100</span>
+                        <span class="c1"># PIPE-642: include the number and percentage of masked pixels in weblog</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">n_masked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">arr</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">pct_masked</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">arr</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">size</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;.residual.pbcor.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">subimagename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.rms&#39;</span><span class="p">):</span>
+                <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sky</span><span class="o">.</span><span class="n">SkyDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">subimagename</span><span class="p">,</span>
+                                                           <span class="n">reportdir</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                           <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="s1">&#39;.tt1.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">subimagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">pbcor_residual_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;.pb.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sky</span><span class="o">.</span><span class="n">SkyDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">subimagename</span><span class="p">,</span>
+                                                           <span class="n">reportdir</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                           <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.</span><span class="p">))</span>
+                <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ImageHistDisplay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">subimagename</span><span class="p">,</span>
+                                                      <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;Primary Beam Response&#39;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;Num. of Pixel&#39;</span><span class="p">,</span>
+                                                      <span class="n">reportdir</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
+                <span class="k">if</span> <span class="s1">&#39;.tt1.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">subimagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">pb_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sky</span><span class="o">.</span><span class="n">SkyDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">subimagename</span><span class="p">,</span>
+                                                           <span class="n">reportdir</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                           <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plot_wrappers</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="VlassCubeCutoutimagesSummary">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makecutoutimages.html#pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutimagesSummary">[docs]</a>
+<span class="k">class</span> <span class="nc">VlassCubeCutoutimagesSummary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class for the VLASS-CUBE makecutout image summary plots.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+
+<div class="viewcode-block" id="VlassCubeCutoutimagesSummary.plot">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makecutoutimages.html#pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutimagesSummary.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
+                                 <span class="s1">&#39;stage</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Making PNG cutout images for weblog&quot;</span><span class="p">)</span>
+        <span class="n">plot_wrappers</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">subimagename</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">subimagenames</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="s1">&#39;.psf.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sky</span><span class="o">.</span><span class="n">SkyDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">plot_per_stokes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">subimagename</span><span class="p">,</span>
+                                                                      <span class="n">reportdir</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stokes_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">],</span>
+                                                                      <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span>
+                                                                      <span class="n">vmin</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.3</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;.image.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span> <span class="ow">and</span> <span class="s1">&#39;.pbcor&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                <span class="c1"># PIPE-491/1163: report non-pbcor stats and don&#39;t display images; don&#39;t save stats from .tt1</span>
+                <span class="k">pass</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;.residual.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span> <span class="ow">and</span> <span class="s1">&#39;.pbcor.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                <span class="c1"># PIPE-491/1163: report non-pbcor stats and don&#39;t display images; don&#39;t save stats from .tt1</span>
+                <span class="k">pass</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;.image.pbcor.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span> <span class="ow">and</span> <span class="s1">&#39;.rms.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                <span class="c1"># CAS-10345/PIPE-1189: use (-5*RMSmedian, 20*RMSmedian) as the colormap scaling range</span>
+                <span class="c1"># We expect &#39;subimagename&#39; here to be: X.image.pbcor.ttX.subim or X.image.pbcor.subim</span>
+                <span class="n">rms_subimagename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">subimagename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;.rms.subim&#39;</span>
+                <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">rms_subimagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+                    <span class="n">rms_median</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;median&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">plots</span> <span class="o">=</span> <span class="n">sky</span><span class="o">.</span><span class="n">SkyDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">plot_per_stokes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">subimagename</span><span class="p">,</span>
+                                                         <span class="n">reportdir</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stokes_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                         <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span>
+                                                         <span class="n">vmin</span><span class="o">=-</span><span class="mi">5</span> <span class="o">*</span> <span class="n">rms_median</span><span class="p">,</span>
+                                                         <span class="n">vmax</span><span class="o">=</span><span class="mi">20</span> <span class="o">*</span> <span class="n">rms_median</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">:</span>
+                    <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;image.pbcor&#39;</span>
+                <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;.rms.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                <span class="n">plots</span> <span class="o">=</span> <span class="n">sky</span><span class="o">.</span><span class="n">SkyDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">plot_per_stokes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">subimagename</span><span class="p">,</span>
+                                                         <span class="n">reportdir</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stokes_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                         <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">:</span>
+                    <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;image.pbcor.rms&#39;</span>
+                <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;.residual.pbcor.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">subimagename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.rms&#39;</span><span class="p">):</span>
+                <span class="n">plots</span> <span class="o">=</span> <span class="n">sky</span><span class="o">.</span><span class="n">SkyDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">plot_per_stokes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">subimagename</span><span class="p">,</span>
+                                                         <span class="n">reportdir</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stokes_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                         <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">:</span>
+                    <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;residual.pbcor&#39;</span>
+                <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;.pb.&#39;</span> <span class="ow">in</span> <span class="n">subimagename</span><span class="p">:</span>
+                <span class="n">plots</span> <span class="o">=</span> <span class="n">sky</span><span class="o">.</span><span class="n">SkyDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">plot_per_stokes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">subimagename</span><span class="p">,</span>
+                                                         <span class="n">reportdir</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stokes_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">],</span>
+                                                         <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">:</span>
+                    <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;pb&#39;</span>
+                <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+                <span class="n">plot_hist</span> <span class="o">=</span> <span class="n">ImageHistDisplay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">subimagename</span><span class="p">,</span>
+                                             <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;Primary Beam Response&#39;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;Num. of Pixel&#39;</span><span class="p">,</span>
+                                             <span class="n">reportdir</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+                <span class="n">plot_hist</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;virtspw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot_wrappers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;virtspw&#39;</span><span class="p">]</span>
+                <span class="n">plot_hist</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;band&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot_wrappers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;band&#39;</span><span class="p">]</span>
+                <span class="n">plot_hist</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot_wrappers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+                <span class="n">plot_hist</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;I&#39;</span>
+                <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plot_hist</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sky</span><span class="o">.</span><span class="n">SkyDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">plot_per_stokes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">subimagename</span><span class="p">,</span>
+                                                                      <span class="n">reportdir</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stokes_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                                      <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">))</span>
+
+        <span class="n">plot_wrappers</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plot_wrappers</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plot_wrappers</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;order_idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;image.pbcor&#39;</span><span class="p">:</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;order_idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;residual.pbcor&#39;</span><span class="p">:</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;order_idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;image.pbcor.rms&#39;</span><span class="p">:</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;order_idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;pb&#39;</span><span class="p">:</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;order_idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;psf&#39;</span><span class="p">:</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;order_idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span>
+
+        <span class="k">return</span> <span class="n">plot_wrappers</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="get_stats_summary">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makecutoutimages.html#pipeline.hif.tasks.makecutoutimages.display.get_stats_summary">[docs]</a>
+<span class="k">def</span> <span class="nf">get_stats_summary</span><span class="p">(</span><span class="n">stats</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reorganize the raw stats (spw,imtype) into a layout (imtype,property) more convenient for tabulation.&quot;&quot;&quot;</span>
+
+    <span class="n">stats_summary</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">stats_spw</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">imtype</span><span class="p">,</span> <span class="n">stats_spw_imtype</span> <span class="ow">in</span> <span class="n">stats_spw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">imtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">,</span> <span class="s1">&#39;reffreq&#39;</span><span class="p">]:</span>
+                <span class="c1"># deal with two special keys</span>
+                <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">stats_spw_imtype</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">imtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stats_summary</span><span class="p">:</span>
+                    <span class="n">stats_summary</span><span class="p">[</span><span class="n">imtype</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stats_summary</span><span class="p">[</span><span class="n">imtype</span><span class="p">]:</span>
+                    <span class="n">stats_summary</span><span class="p">[</span><span class="n">imtype</span><span class="p">][</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+                <span class="n">stats_summary</span><span class="p">[</span><span class="n">imtype</span><span class="p">][</span><span class="n">item</span><span class="p">][</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+                <span class="n">stats_summary</span><span class="p">[</span><span class="n">imtype</span><span class="p">][</span><span class="n">item</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">imtype</span><span class="p">,</span> <span class="n">stats_summary_imtype</span> <span class="ow">in</span> <span class="n">stats_summary</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">item_details</span> <span class="ow">in</span> <span class="n">stats_summary_imtype</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">value_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">item_details</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]))</span>         <span class="c1"># shape=(n_spw, n_pol)</span>
+            <span class="n">spw_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">item_details</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span>                     <span class="c1"># shape=(n_spw,)</span>
+            <span class="c1"># note: np.stats.median_absolute_deviation has the default scale=1.4826 and is deprecated on scipy ver&gt;1.5.0.</span>
+            <span class="c1"># TODO: It should be replaced with scipy.stats.median_abs_deviation(x, scale=&#39;normal&#39;) in the future.</span>
+            <span class="n">mad_func</span> <span class="o">=</span> <span class="n">compatibility</span><span class="o">.</span><span class="n">get_scipy_function_for_mad</span><span class="p">()</span>
+            <span class="n">stats_summary</span><span class="p">[</span><span class="n">imtype</span><span class="p">][</span><span class="n">item</span><span class="p">][</span><span class="s1">&#39;spwwise_madrms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mad_func</span><span class="p">(</span><span class="n">value_arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">stats_summary</span><span class="p">[</span><span class="n">imtype</span><span class="p">][</span><span class="n">item</span><span class="p">][</span><span class="s1">&#39;spwwise_median&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">value_arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">stats_summary</span><span class="p">[</span><span class="n">imtype</span><span class="p">][</span><span class="n">item</span><span class="p">][</span><span class="s1">&#39;range&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">value_arr</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+            <span class="n">idx_maxdev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">value_arr</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">value_arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">stats_summary</span><span class="p">[</span><span class="n">imtype</span><span class="p">][</span><span class="n">item</span><span class="p">][</span><span class="s1">&#39;spw_outlier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_arr</span><span class="p">[</span><span class="n">idx_maxdev</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">stats_summary</span></div>
+
+
+
+<div class="viewcode-block" id="VlassCubeCutoutRmsSummary">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makecutoutimages.html#pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutRmsSummary">[docs]</a>
+<span class="k">class</span> <span class="nc">VlassCubeCutoutRmsSummary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class for the VLASS-CUBE makecutout rms-vs-frequency summary plots.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">info_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info_dict</span> <span class="o">=</span> <span class="n">info_dict</span>
+
+<div class="viewcode-block" id="VlassCubeCutoutRmsSummary.plot">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makecutoutimages.html#pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutRmsSummary.plot">[docs]</a>
+    <span class="nd">@matplotlibrc_formal</span>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">improp_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">improp_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">improp_list</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s1">&#39;MADrms&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;rms&#39;</span><span class="p">,</span> <span class="s1">&#39;Median&#39;</span><span class="p">)]</span>
+        <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
+                                 <span class="s1">&#39;stage</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">)</span>
+
+        <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">improp</span> <span class="ow">in</span> <span class="n">improp_list</span><span class="p">:</span>
+            <span class="n">figfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">improp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">improp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">_vs_freq.png&#39;</span><span class="p">)</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_rms</span><span class="p">(</span><span class="n">figfile</span><span class="o">=</span><span class="n">figfile</span><span class="p">,</span> <span class="n">imtype</span><span class="o">=</span><span class="n">improp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">item</span><span class="o">=</span><span class="n">improp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plot</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_plot_rms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figfile</span><span class="p">,</span> <span class="n">imtype</span><span class="o">=</span><span class="s1">&#39;rms&#39;</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">):</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Creating the </span><span class="si">{</span><span class="n">imtype</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1"> vs. Frequency plot.&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stats</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">spw_labels</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">imtype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">[</span><span class="n">spw</span><span class="p">]:</span>
+                    <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;reffreq&#39;</span><span class="p">])</span>
+                    <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="n">imtype</span><span class="o">.</span><span class="n">lower</span><span class="p">()][</span><span class="n">item</span><span class="o">.</span><span class="n">lower</span><span class="p">()])</span>
+                    <span class="n">spw_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+                    <span class="n">stokes_list</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="mf">1e9</span>  <span class="c1"># GHz</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="mf">1e3</span>  <span class="c1"># mJy</span>
+            <span class="n">spw_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">spw_labels</span><span class="p">)</span>
+
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+            <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;rainbow_r&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">keep_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">info_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">spw_label</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw_label</span> <span class="ow">in</span> <span class="n">spw_labels</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">keep_list</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">spw_labels</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">stokes</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stokes_list</span><span class="p">):</span>
+                <span class="n">color_idx</span> <span class="o">=</span> <span class="n">idx</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">stokes_list</span><span class="p">)</span>
+
+                <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">],</span> <span class="n">facecolors</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">12</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">keep_list</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">keep_list</span><span class="p">,</span> <span class="n">idx</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="n">cmap</span><span class="p">(</span><span class="n">color_idx</span><span class="p">),</span>
+                        <span class="n">markerfacecolor</span><span class="o">=</span><span class="n">cmap</span><span class="p">(</span><span class="n">color_idx</span><span class="p">),</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">fr</span><span class="s1">&#39;$\it </span><span class="si">{</span><span class="n">stokes</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">idx_spw</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">stokes</span> <span class="o">==</span> <span class="s1">&#39;I&#39;</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">spw_labels</span><span class="p">[</span><span class="n">idx_spw</span><span class="p">],</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">idx_spw</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">idx_spw</span><span class="p">,</span> <span class="n">idx</span><span class="p">]),</span>
+                                           <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mf">8.</span><span class="p">)</span>
+                        <span class="n">text</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mf">.7</span><span class="p">)</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Frequency [GHz]&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">imtype</span><span class="si">}</span><span class="s1">&#39;</span><span class="o">+</span><span class="sa">r</span><span class="s1">&#39;$_{\rm &#39;</span><span class="o">+</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1">&#39;</span><span class="o">+</span><span class="s1">&#39;}$ [mJy/beam]&#39;</span><span class="p">)</span>
+            <span class="n">xlim</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+            <span class="n">ylim</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">1.9</span><span class="p">,</span> <span class="mf">4.1</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ylim</span><span class="p">)</span>
+
+            <span class="c1"># &#39;RflagDevHeuristic&#39; is only imported on-demand; if it&#39;s imported during module initialization,</span>
+            <span class="c1"># a circular import will introduce problem (hif-&gt;hifv-&gt;hif)</span>
+            <span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics.rfi</span> <span class="kn">import</span> <span class="n">RflagDevHeuristic</span>
+            <span class="n">sefd</span> <span class="o">=</span> <span class="n">RflagDevHeuristic</span><span class="o">.</span><span class="n">get_vla_sefd</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">sefd_per_band</span> <span class="ow">in</span> <span class="n">sefd</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">sefd_x</span> <span class="o">=</span> <span class="n">sefd_per_band</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mf">1e3</span>
+                <span class="n">sefd_y</span> <span class="o">=</span> <span class="n">sefd_per_band</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">sefd_x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">sefd_x</span><span class="p">):</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Selecting Band </span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s1"> for the SEFD-based rms prediction.&#39;</span><span class="p">)</span>
+                    <span class="n">sefd_spw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sefd_x</span><span class="p">,</span> <span class="n">sefd_y</span><span class="p">)</span>
+                    <span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">y</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">sefd_spw</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]))</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sefd_x</span><span class="p">,</span> <span class="n">sefd_y</span><span class="o">*</span><span class="n">scale</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;SEFD$_{\rm norm}$&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+
+            <span class="c1"># ax.legend(loc=&#39;center left&#39;, bbox_to_anchor=(1, 0.5))</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">labelspacing</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+            <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">figfile</span><span class="p">,</span>
+                               <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;Frequency&#39;</span><span class="p">,</span>
+                               <span class="n">y_axis</span><span class="o">=</span><span class="n">item</span><span class="o">+</span><span class="s1">&#39;&lt;sub&gt;.&#39;</span><span class="o">+</span><span class="n">imtype</span><span class="o">+</span><span class="s1">&#39;&lt;/sub&gt;&#39;</span><span class="p">,</span>
+                               <span class="n">parameters</span><span class="o">=</span><span class="p">{})</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+           <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not create plot </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">figfile</span><span class="p">))</span>
+           <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+           <span class="n">plot</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">plot</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,756 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.heuristics.imageparams_alma &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.heuristics.imageparams_alma</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.heuristics.imageparams_alma</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+
+<span class="kn">from</span> <span class="nn">.imageparams_base</span> <span class="kn">import</span> <span class="n">ImageParamsHeuristics</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA">[docs]</a>
+<span class="k">class</span> <span class="nc">ImageParamsHeuristicsALMA</span><span class="p">(</span><span class="n">ImageParamsHeuristics</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">proj_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">linesfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imaging_params</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="n">ImageParamsHeuristics</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="p">,</span> <span class="n">proj_params</span><span class="p">,</span> <span class="n">contfile</span><span class="p">,</span>
+                                       <span class="n">linesfile</span><span class="p">,</span> <span class="n">imaging_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">=</span> <span class="s1">&#39;ALMA&#39;</span>
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.robust">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.robust">[docs]</a>
+    <span class="k">def</span> <span class="nf">robust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;robust parameter heuristic.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;robust&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">imaging_params</span><span class="p">:</span>
+            <span class="n">robust</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imaging_params</span><span class="p">[</span><span class="s1">&#39;robust&#39;</span><span class="p">]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;ALMA robust heuristics: Using imageprecheck value of robust=</span><span class="si">%.1f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">robust</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">robust</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.5</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.uvtaper">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.uvtaper">[docs]</a>
+    <span class="k">def</span> <span class="nf">uvtaper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam_natural</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protect_long</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">beam_user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tapering_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">repr_freq</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adjustment of uvtaper parameter based on desired resolution or representative baseline length.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Disabled heuristic for ALMA Cycle 6</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;uvtaper&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">imaging_params</span><span class="p">:</span>
+            <span class="n">uvtaper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imaging_params</span><span class="p">[</span><span class="s1">&#39;uvtaper&#39;</span><span class="p">]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;ALMA uvtaper heuristics: Using imageprecheck value of uvtaper=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">uvtaper</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="n">uvtaper</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">beam_natural</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">protect_long</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">cqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="n">repr_target</span><span class="p">,</span> <span class="n">repr_source</span><span class="p">,</span> <span class="n">repr_spw</span><span class="p">,</span> <span class="n">repr_freq</span><span class="p">,</span> <span class="n">reprBW_mode</span><span class="p">,</span> <span class="n">real_repr_target</span><span class="p">,</span> <span class="n">minAcceptableAngResolution</span><span class="p">,</span> <span class="n">maxAcceptableAngResolution</span><span class="p">,</span> <span class="n">maxAllowedBeamAxialRatio</span><span class="p">,</span> <span class="n">sensitivityGoal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">representative_target</span><span class="p">()</span>
+
+        <span class="c1"># Protection against spurious long baselines</span>
+        <span class="k">if</span> <span class="n">protect_long</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">l80</span><span class="p">,</span> <span class="n">min_diameter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_percentile_baseline_length</span><span class="p">(</span><span class="mf">80.</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;ALMA uvtaper heuristic: L80 baseline length is </span><span class="si">%.1f</span><span class="s1"> meter&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">l80</span><span class="p">))</span>
+
+            <span class="n">c</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">constants</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">),</span> <span class="s1">&#39;m/s&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">uvtaper_value</span> <span class="o">=</span> <span class="n">protect_long</span> <span class="o">*</span> <span class="n">l80</span> <span class="o">/</span> <span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">constants</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">),</span> <span class="s1">&#39;m/s&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">repr_freq</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">uvtaper</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">klambda&#39;</span> <span class="o">%</span> <span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">(</span><span class="n">uvtaper_value</span><span class="o">/</span><span class="mf">1000.</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+
+            <span class="k">return</span> <span class="n">uvtaper</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span></div>
+
+
+        <span class="c1"># # Original Cycle 5 heuristic follows below for possible later use.</span>
+        <span class="c1"># if not real_repr_target:</span>
+        <span class="c1">#     LOG.info(&#39;ALMA uvtaper heuristic: No representative target found. Using uvtaper=[]&#39;)</span>
+        <span class="c1">#     return []</span>
+        <span class="c1">#</span>
+        <span class="c1"># try:</span>
+        <span class="c1">#     beam_natural_v = math.sqrt(cqa.getvalue(cqa.convert(beam_natural[&#39;major&#39;], &#39;arcsec&#39;)) * cqa.getvalue(cqa.convert(beam_natural[&#39;minor&#39;], &#39;arcsec&#39;)))</span>
+        <span class="c1"># except Exception as e:</span>
+        <span class="c1">#     LOG.error(&#39;ALMA uvtaper heuristic: Cannot get natural beam size: %s. Using uvtaper=[]&#39; % (e))</span>
+        <span class="c1">#     return []</span>
+        <span class="c1">#</span>
+        <span class="c1"># minAR_v = cqa.getvalue(cqa.convert(minAcceptableAngResolution, &#39;arcsec&#39;))</span>
+        <span class="c1"># maxAR_v = cqa.getvalue(cqa.convert(maxAcceptableAngResolution, &#39;arcsec&#39;))</span>
+        <span class="c1">#</span>
+        <span class="c1"># if beam_natural_v &lt; 1.1 * maxAR_v:</span>
+        <span class="c1">#     beam_taper = math.sqrt(maxAR_v ** 2 - beam_natural_v ** 2)</span>
+        <span class="c1">#     uvtaper = [&#39;%.3garcsec&#39; % (beam_taper)]</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     uvtaper = []</span>
+        <span class="c1">#</span>
+        <span class="c1"># return uvtaper</span>
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.dr_correction">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.dr_correction">[docs]</a>
+    <span class="k">def</span> <span class="nf">dr_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">dirty_dynamic_range</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">tlimit</span><span class="p">,</span> <span class="n">drcorrect</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adjustment of cleaning threshold due to dynamic range limitations.&quot;&quot;&quot;</span>
+
+        <span class="n">qaTool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="n">maxEDR_used</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">DR_correction_factor</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="n">diameter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_measurement_sets</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">antennas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">diameter</span>
+        <span class="n">old_threshold</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">threshold</span><span class="p">,</span> <span class="s1">&#39;Jy&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">drcorrect</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">999</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">drcorrect</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span> <span class="ow">and</span> <span class="n">drcorrect</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">new_threshold</span> <span class="o">=</span> <span class="n">old_threshold</span><span class="o">*</span><span class="n">drcorrect</span>
+                <span class="n">DR_correction_factor</span> <span class="o">=</span> <span class="n">drcorrect</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;DR correction: Modified threshold from </span><span class="si">{:.3g}</span><span class="s1"> Jy to </span><span class="si">{:.3g}</span><span class="s1"> Jy based on the user input correction factor: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">old_threshold</span><span class="p">,</span> <span class="n">new_threshold</span><span class="p">,</span> <span class="n">DR_correction_factor</span><span class="p">))</span>
+                <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%.3g</span><span class="s1">Jy&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">new_threshold</span><span class="p">),</span> <span class="n">DR_correction_factor</span><span class="p">,</span> <span class="n">maxEDR_used</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Got an invalid input value for the DR correction factor: </span><span class="si">{</span><span class="n">drcorrect</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">or</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">:</span>
+            <span class="n">n_dr_max</span> <span class="o">=</span> <span class="mf">2.5</span>
+            <span class="k">if</span> <span class="n">diameter</span> <span class="o">==</span> <span class="mf">12.0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">dirty_dynamic_range</span> <span class="o">&gt;</span> <span class="mf">150.</span><span class="p">:</span>
+                    <span class="n">maxSciEDR</span> <span class="o">=</span> <span class="mf">150.0</span>
+                    <span class="n">new_threshold</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">n_dr_max</span> <span class="o">*</span> <span class="n">old_threshold</span><span class="p">,</span> <span class="n">residual_max</span> <span class="o">/</span> <span class="n">maxSciEDR</span> <span class="o">*</span> <span class="n">tlimit</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;DR heuristic: Applying maxSciEDR(Main array)=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">maxSciEDR</span><span class="p">)</span>
+                    <span class="n">maxEDR_used</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">dirty_dynamic_range</span> <span class="o">&gt;</span> <span class="mf">100.</span><span class="p">:</span>
+                        <span class="n">n_dr</span> <span class="o">=</span> <span class="mf">2.5</span>
+                    <span class="k">elif</span> <span class="mf">50.</span> <span class="o">&lt;</span> <span class="n">dirty_dynamic_range</span> <span class="o">&lt;=</span> <span class="mf">100.</span><span class="p">:</span>
+                        <span class="n">n_dr</span> <span class="o">=</span> <span class="mf">2.0</span>
+                    <span class="k">elif</span> <span class="mf">20.</span> <span class="o">&lt;</span> <span class="n">dirty_dynamic_range</span> <span class="o">&lt;=</span> <span class="mf">50.</span><span class="p">:</span>
+                        <span class="n">n_dr</span> <span class="o">=</span> <span class="mf">1.5</span>
+                    <span class="k">elif</span> <span class="n">dirty_dynamic_range</span> <span class="o">&lt;=</span> <span class="mf">20.</span><span class="p">:</span>
+                        <span class="n">n_dr</span> <span class="o">=</span> <span class="mf">1.0</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;DR heuristic: N_DR=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">n_dr</span><span class="p">)</span>
+                    <span class="n">new_threshold</span> <span class="o">=</span> <span class="n">old_threshold</span> <span class="o">*</span> <span class="n">n_dr</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">numberEBs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vislist</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">numberEBs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># single-EB 7m array datasets have limited dynamic range</span>
+                    <span class="n">maxSciEDR</span> <span class="o">=</span> <span class="mi">30</span>
+                    <span class="n">dirtyDRthreshold</span> <span class="o">=</span> <span class="mi">30</span>
+                    <span class="n">n_dr_max</span> <span class="o">=</span> <span class="mf">2.5</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># multi-EB 7m array datasets will have better dynamic range and can be cleaned somewhat deeper</span>
+                    <span class="n">maxSciEDR</span> <span class="o">=</span> <span class="mi">55</span>
+                    <span class="n">dirtyDRthreshold</span> <span class="o">=</span> <span class="mi">75</span>
+                    <span class="n">n_dr_max</span> <span class="o">=</span> <span class="mf">3.5</span>
+
+                <span class="k">if</span> <span class="n">dirty_dynamic_range</span> <span class="o">&gt;</span> <span class="n">dirtyDRthreshold</span><span class="p">:</span>
+                    <span class="n">new_threshold</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">n_dr_max</span> <span class="o">*</span> <span class="n">old_threshold</span><span class="p">,</span> <span class="n">residual_max</span> <span class="o">/</span> <span class="n">maxSciEDR</span> <span class="o">*</span> <span class="n">tlimit</span><span class="p">)</span>
+                    <span class="n">n_dr_effective</span> <span class="o">=</span> <span class="n">new_threshold</span> <span class="o">/</span> <span class="n">old_threshold</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;DR heuristic: Applying maxSciEDR(ACA)=</span><span class="si">%s</span><span class="s1"> (for </span><span class="si">%d</span><span class="s1"> EB) effective_N_DR=</span><span class="si">%.2f</span><span class="s1">&#39;</span> <span class="o">%</span>
+                             <span class="p">(</span><span class="n">maxSciEDR</span><span class="p">,</span> <span class="n">numberEBs</span><span class="p">,</span> <span class="n">n_dr_effective</span><span class="p">))</span>
+                    <span class="n">maxEDR_used</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">dirty_dynamic_range</span> <span class="o">&gt;</span> <span class="mf">40.</span><span class="p">:</span>
+                        <span class="n">n_dr</span> <span class="o">=</span> <span class="mf">3.0</span>
+                    <span class="k">elif</span> <span class="n">dirty_dynamic_range</span> <span class="o">&gt;</span> <span class="mf">20.</span><span class="p">:</span>
+                        <span class="n">n_dr</span> <span class="o">=</span> <span class="mf">2.5</span>
+                    <span class="k">elif</span> <span class="mf">10.</span> <span class="o">&lt;</span> <span class="n">dirty_dynamic_range</span> <span class="o">&lt;=</span> <span class="mf">20.</span><span class="p">:</span>
+                        <span class="n">n_dr</span> <span class="o">=</span> <span class="mf">2.0</span>
+                    <span class="k">elif</span> <span class="mf">4.</span> <span class="o">&lt;</span> <span class="n">dirty_dynamic_range</span> <span class="o">&lt;=</span> <span class="mf">10.</span><span class="p">:</span>
+                        <span class="n">n_dr</span> <span class="o">=</span> <span class="mf">1.5</span>
+                    <span class="k">elif</span> <span class="n">dirty_dynamic_range</span> <span class="o">&lt;=</span> <span class="mf">4.</span><span class="p">:</span>
+                        <span class="n">n_dr</span> <span class="o">=</span> <span class="mf">1.0</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;DR heuristic: N_DR=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">n_dr</span><span class="p">)</span>
+                    <span class="n">new_threshold</span> <span class="o">=</span> <span class="n">old_threshold</span> <span class="o">*</span> <span class="n">n_dr</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Calibrators are usually dynamic range limited. The sensitivity from apparentsens</span>
+            <span class="c1"># is not a valid estimate for the threshold. Use a heuristic based on the dirty peak</span>
+            <span class="c1"># and some maximum expected dynamic range (EDR) values.</span>
+            <span class="k">if</span> <span class="n">diameter</span> <span class="o">==</span> <span class="mf">12.0</span><span class="p">:</span>
+                <span class="n">maxCalEDR</span> <span class="o">=</span> <span class="mf">1000.0</span>
+                <span class="n">veryHighCalEDR</span> <span class="o">=</span> <span class="mf">3000.0</span>  <span class="c1"># use shallower slope above this value</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;DR heuristic: Applying maxCalEDR=</span><span class="si">%s</span><span class="s1">, veryHighCalEDR=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">maxCalEDR</span><span class="p">,</span> <span class="n">veryHighCalEDR</span><span class="p">))</span>
+                <span class="n">matchPoint</span> <span class="o">=</span> <span class="n">veryHighCalEDR</span><span class="o">/</span><span class="n">maxCalEDR</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># will be 2 for 3000/1000</span>
+                <span class="n">highDR</span> <span class="o">=</span> <span class="n">tlimit</span> <span class="o">*</span> <span class="n">residual_max</span> <span class="o">/</span> <span class="n">maxCalEDR</span> <span class="o">/</span> <span class="n">old_threshold</span>  <span class="c1"># will use this value up to 3000</span>
+                <span class="n">veryHighDR</span> <span class="o">=</span> <span class="n">matchPoint</span> <span class="o">+</span> <span class="n">tlimit</span> <span class="o">*</span> <span class="n">residual_max</span> <span class="o">/</span> <span class="n">veryHighCalEDR</span> <span class="o">/</span> <span class="n">old_threshold</span>  <span class="c1"># will use this value above 3000</span>
+                <span class="n">n_dr</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">highDR</span><span class="p">,</span> <span class="n">veryHighDR</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;DR heuristic: Calculating N_DR as max of (1.0, min of (</span><span class="si">%f</span><span class="s1">, </span><span class="si">%f</span><span class="s1">)) = </span><span class="si">%f</span><span class="s1">&#39;</span>
+                         <span class="s1">&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">highDR</span><span class="p">,</span> <span class="n">veryHighDR</span><span class="p">,</span> <span class="n">n_dr</span><span class="p">))</span>
+                <span class="n">new_threshold</span> <span class="o">=</span> <span class="n">old_threshold</span> <span class="o">*</span> <span class="n">n_dr</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">maxCalEDR</span> <span class="o">=</span> <span class="mf">200.0</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;DR heuristic: Applying maxCalEDR=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">maxCalEDR</span><span class="p">)</span>
+                <span class="n">new_threshold</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">old_threshold</span><span class="p">,</span> <span class="n">residual_max</span> <span class="o">/</span> <span class="n">maxCalEDR</span> <span class="o">*</span> <span class="n">tlimit</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">new_threshold</span> <span class="o">!=</span> <span class="n">old_threshold</span><span class="p">:</span>
+                <span class="n">maxEDR_used</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">new_threshold</span> <span class="o">!=</span> <span class="n">old_threshold</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;DR heuristic: Modified threshold from </span><span class="si">%.3g</span><span class="s1"> Jy to </span><span class="si">%.3g</span><span class="s1"> Jy based on dirty dynamic range calculated&#39;</span>
+                     <span class="s1">&#39; from dirty peak / final theoretical sensitivity: </span><span class="si">%.1f</span><span class="s1">&#39;</span>
+                     <span class="s1">&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">old_threshold</span><span class="p">,</span> <span class="n">new_threshold</span><span class="p">,</span> <span class="n">dirty_dynamic_range</span><span class="p">))</span>
+            <span class="n">DR_correction_factor</span> <span class="o">=</span> <span class="n">new_threshold</span> <span class="o">/</span> <span class="n">old_threshold</span>
+
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%.3g</span><span class="s1">Jy&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">new_threshold</span><span class="p">),</span> <span class="n">DR_correction_factor</span><span class="p">,</span> <span class="n">maxEDR_used</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.niter_correction">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.niter_correction">[docs]</a>
+    <span class="k">def</span> <span class="nf">niter_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">niter</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">imsize</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">residual_robust_rms</span><span class="p">,</span> <span class="n">mask_frac_rad</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adjustment of number of cleaning iterations due to mask size.</span>
+
+<span class="sd">        See base class method for parameter description.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">mask_frac_rad</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">mask_frac_rad</span> <span class="o">=</span> <span class="mf">0.45</span>    <span class="c1"># ALMA specific parameter</span>
+
+        <span class="n">new_niter</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">niter_correction</span><span class="p">(</span><span class="n">niter</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">imsize</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">residual_robust_rms</span><span class="p">,</span>
+                                             <span class="n">mask_frac_rad</span><span class="o">=</span><span class="n">mask_frac_rad</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)</span>
+
+        <span class="c1"># Limit ALMA calibrator niter to 3000</span>
+        <span class="k">if</span> <span class="n">intent</span> <span class="o">!=</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">and</span> <span class="n">new_niter</span> <span class="o">&gt;</span> <span class="mi">3000</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;niter heuristic: Modified niter from </span><span class="si">%d</span><span class="s1"> to 3000 due to calibrator intent&#39;</span>
+                     <span class="s1">&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">new_niter</span><span class="p">))</span>
+            <span class="n">new_niter</span> <span class="o">=</span> <span class="mi">3000</span>
+
+        <span class="k">return</span> <span class="n">new_niter</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.calc_length_of_nth_baseline">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.calc_length_of_nth_baseline">[docs]</a>
+    <span class="k">def</span> <span class="nf">calc_length_of_nth_baseline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the length of the nth baseline for the vis list used in the heuristics instance.&quot;&quot;&quot;</span>
+        <span class="n">baseline_lengths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">msname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vislist</span><span class="p">:</span>
+            <span class="n">ms_do</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">msname</span><span class="p">)</span>
+            <span class="n">baselines_m</span> <span class="o">=</span> <span class="n">ms_do</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">baselines_m</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">baselines_m</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">baseline_lengths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">baselines_m</span><span class="p">)[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">baseline_lengths</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">baseline_lengths</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.get_autobox_params">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.get_autobox_params">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_autobox_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">robust</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Default auto-boxing parameters for ALMA main array and ACA.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Start with generic defaults</span>
+        <span class="n">sidelobethreshold</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">noisethreshold</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">lownoisethreshold</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">minbeamfrac</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">growiterations</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">dogrowprune</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">minpercentchange</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">repBaselineLength</span><span class="p">,</span> <span class="n">min_diameter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_percentile_baseline_length</span><span class="p">(</span><span class="mf">75.</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;autobox heuristic: Representative baseline length is </span><span class="si">%.1f</span><span class="s1"> meter&#39;</span> <span class="o">%</span> <span class="n">repBaselineLength</span><span class="p">)</span>
+
+        <span class="n">baselineThreshold</span> <span class="o">=</span> <span class="mi">400</span>
+
+        <span class="c1"># PIPE-307</span>
+        <span class="k">if</span> <span class="n">min_diameter</span> <span class="o">==</span> <span class="mf">12.0</span> <span class="ow">and</span> <span class="n">repBaselineLength</span> <span class="o">&gt;</span> <span class="n">baselineThreshold</span><span class="p">:</span>
+            <span class="n">fastnoise</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fastnoise</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">intent</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">min_diameter</span> <span class="o">==</span> <span class="mf">12.0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">repBaselineLength</span> <span class="o">&lt;</span> <span class="mi">300</span><span class="p">:</span>
+                    <span class="n">sidelobethreshold</span> <span class="o">=</span> <span class="mf">2.0</span>
+                    <span class="n">noisethreshold</span> <span class="o">=</span> <span class="mf">4.25</span>
+                    <span class="n">lownoisethreshold</span> <span class="o">=</span> <span class="mf">1.5</span>
+                    <span class="n">minbeamfrac</span> <span class="o">=</span> <span class="mf">0.3</span>
+                    <span class="n">dogrowprune</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">minpercentchange</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+                    <span class="k">if</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span><span class="p">:</span>
+                        <span class="n">negativethreshold</span> <span class="o">=</span> <span class="mf">15.0</span>
+                        <span class="n">growiterations</span> <span class="o">=</span> <span class="mi">50</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">negativethreshold</span> <span class="o">=</span> <span class="mf">0.0</span>
+                        <span class="n">growiterations</span> <span class="o">=</span> <span class="mi">75</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">repBaselineLength</span> <span class="o">&lt;</span> <span class="n">baselineThreshold</span><span class="p">:</span>
+                        <span class="n">sidelobethreshold</span> <span class="o">=</span> <span class="mf">2.0</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">sidelobethreshold</span> <span class="o">=</span> <span class="mf">2.5</span>  <span class="c1"># was 3.0</span>
+                    <span class="n">noisethreshold</span> <span class="o">=</span> <span class="mf">5.0</span>
+                    <span class="n">lownoisethreshold</span> <span class="o">=</span> <span class="mf">1.5</span>
+                    <span class="n">minbeamfrac</span> <span class="o">=</span> <span class="mf">0.3</span>
+                    <span class="n">dogrowprune</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">minpercentchange</span> <span class="o">=</span> <span class="mf">1.0</span>
+                    <span class="k">if</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span><span class="p">:</span>
+                        <span class="n">negativethreshold</span> <span class="o">=</span> <span class="mf">7.0</span>
+                        <span class="n">growiterations</span> <span class="o">=</span> <span class="mi">50</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">negativethreshold</span> <span class="o">=</span> <span class="mf">0.0</span>
+                        <span class="n">growiterations</span> <span class="o">=</span> <span class="mi">75</span>
+            <span class="k">elif</span> <span class="n">min_diameter</span> <span class="o">==</span> <span class="mf">7.0</span><span class="p">:</span>
+                <span class="n">sidelobethreshold</span> <span class="o">=</span> <span class="mf">1.25</span>
+                <span class="n">noisethreshold</span> <span class="o">=</span> <span class="mf">5.0</span>
+                <span class="n">lownoisethreshold</span> <span class="o">=</span> <span class="mf">2.0</span>
+                <span class="n">minbeamfrac</span> <span class="o">=</span> <span class="mf">0.1</span>
+                <span class="n">growiterations</span> <span class="o">=</span> <span class="mi">75</span>
+                <span class="n">negativethreshold</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">dogrowprune</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">minpercentchange</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">elif</span> <span class="s1">&#39;CHECK&#39;</span> <span class="ow">in</span> <span class="n">intent</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">min_diameter</span> <span class="o">==</span> <span class="mf">12.0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">repBaselineLength</span> <span class="o">&lt;</span> <span class="mi">300</span><span class="p">:</span>
+                    <span class="n">sidelobethreshold</span> <span class="o">=</span> <span class="mf">2.0</span>
+                    <span class="n">noisethreshold</span> <span class="o">=</span> <span class="mf">4.25</span>
+                    <span class="n">lownoisethreshold</span> <span class="o">=</span> <span class="mf">1.5</span>
+                    <span class="n">minbeamfrac</span> <span class="o">=</span> <span class="mf">0.3</span>
+                    <span class="n">dogrowprune</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">minpercentchange</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+                    <span class="k">if</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span><span class="p">:</span>
+                        <span class="n">negativethreshold</span> <span class="o">=</span> <span class="mf">15.0</span>
+                        <span class="n">growiterations</span> <span class="o">=</span> <span class="mi">50</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">negativethreshold</span> <span class="o">=</span> <span class="mf">0.0</span>
+                        <span class="n">growiterations</span> <span class="o">=</span> <span class="mi">75</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sidelobethreshold</span> <span class="o">=</span> <span class="mf">3.0</span>
+                    <span class="n">noisethreshold</span> <span class="o">=</span> <span class="mf">5.0</span>
+                    <span class="n">lownoisethreshold</span> <span class="o">=</span> <span class="mf">1.5</span>
+                    <span class="n">minbeamfrac</span> <span class="o">=</span> <span class="mf">0.3</span>
+                    <span class="n">dogrowprune</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">minpercentchange</span> <span class="o">=</span> <span class="mf">1.0</span>
+                    <span class="k">if</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span><span class="p">:</span>
+                        <span class="n">negativethreshold</span> <span class="o">=</span> <span class="mf">7.0</span>
+                        <span class="n">growiterations</span> <span class="o">=</span> <span class="mi">50</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">negativethreshold</span> <span class="o">=</span> <span class="mf">0.0</span>
+                        <span class="n">growiterations</span> <span class="o">=</span> <span class="mi">75</span>
+            <span class="k">elif</span> <span class="n">min_diameter</span> <span class="o">==</span> <span class="mf">7.0</span><span class="p">:</span>
+                <span class="n">sidelobethreshold</span> <span class="o">=</span> <span class="mf">1.25</span>
+                <span class="n">noisethreshold</span> <span class="o">=</span> <span class="mf">5.0</span>
+                <span class="n">lownoisethreshold</span> <span class="o">=</span> <span class="mf">2.0</span>
+                <span class="n">minbeamfrac</span> <span class="o">=</span> <span class="mf">0.1</span>
+                <span class="n">growiterations</span> <span class="o">=</span> <span class="mi">75</span>
+                <span class="n">negativethreshold</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">dogrowprune</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">minpercentchange</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">min_diameter</span> <span class="o">==</span> <span class="mf">12.0</span><span class="p">:</span>
+                <span class="n">sidelobethreshold</span> <span class="o">=</span> <span class="mf">2.0</span>
+                <span class="n">noisethreshold</span> <span class="o">=</span> <span class="mf">7.0</span>
+                <span class="n">lownoisethreshold</span> <span class="o">=</span> <span class="mf">3.0</span>
+                <span class="n">minbeamfrac</span> <span class="o">=</span> <span class="mf">0.1</span>
+                <span class="n">growiterations</span> <span class="o">=</span> <span class="mi">75</span>
+                <span class="n">negativethreshold</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">dogrowprune</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">minpercentchange</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="k">elif</span> <span class="n">min_diameter</span> <span class="o">==</span> <span class="mf">7.0</span><span class="p">:</span>
+                <span class="n">sidelobethreshold</span> <span class="o">=</span> <span class="mf">1.5</span>
+                <span class="n">noisethreshold</span> <span class="o">=</span> <span class="mf">6.0</span>
+                <span class="n">lownoisethreshold</span> <span class="o">=</span> <span class="mf">2.0</span>
+                <span class="n">minbeamfrac</span> <span class="o">=</span> <span class="mf">0.1</span>
+                <span class="n">growiterations</span> <span class="o">=</span> <span class="mi">75</span>
+                <span class="n">negativethreshold</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">dogrowprune</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">minpercentchange</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="k">return</span> <span class="n">sidelobethreshold</span><span class="p">,</span> <span class="n">noisethreshold</span><span class="p">,</span> <span class="n">lownoisethreshold</span><span class="p">,</span> <span class="n">negativethreshold</span><span class="p">,</span> <span class="n">minbeamfrac</span><span class="p">,</span> <span class="n">growiterations</span><span class="p">,</span> <span class="n">dogrowprune</span><span class="p">,</span> <span class="n">minpercentchange</span><span class="p">,</span> <span class="n">fastnoise</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.warn_missing_cont_ranges">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.warn_missing_cont_ranges">[docs]</a>
+    <span class="k">def</span> <span class="nf">warn_missing_cont_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.nterms">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.nterms">[docs]</a>
+    <span class="k">def</span> <span class="nf">nterms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="mi">2</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_tlimit_cyclefactor_heuristic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iter0_dirty_dynamic_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">gridder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gridder</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+
+        <span class="n">times_on_source_per_field</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vislist</span><span class="p">:</span>
+            <span class="n">ms_do</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">times_on_source_per_field</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ms_do</span><span class="o">.</span><span class="n">get_times_on_source_per_field_id</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">times_on_source_per_field</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">min_time_on_source_per_field</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">times_on_source_per_field</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">gridder</span> <span class="o">==</span> <span class="s1">&#39;mosaic&#39;</span>
+            <span class="ow">and</span> <span class="n">specmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;cube&#39;</span><span class="p">,</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">min_time_on_source_per_field</span> <span class="o">&lt;=</span> <span class="mf">60.0</span>
+            <span class="ow">and</span> <span class="n">iter0_dirty_dynamic_range</span> <span class="o">&gt;=</span> <span class="mf">30.0</span>
+            <span class="ow">and</span> <span class="n">iteration</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.tlimit">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.tlimit">[docs]</a>
+    <span class="k">def</span> <span class="nf">tlimit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iter0_dirty_dynamic_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">intent</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">specmode</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">iter0_dirty_dynamic_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">2.0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tlimit_cyclefactor_heuristic</span><span class="p">(</span><span class="n">iteration</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">iter0_dirty_dynamic_range</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mf">5.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">2.0</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.cyclefactor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.cyclefactor">[docs]</a>
+    <span class="k">def</span> <span class="nf">cyclefactor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iter0_dirty_dynamic_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">intent</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">specmode</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">iter0_dirty_dynamic_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Use CASA default</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tlimit_cyclefactor_heuristic</span><span class="p">(</span><span class="n">iteration</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">iter0_dirty_dynamic_range</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mf">3.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.mosweight">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.mosweight">[docs]</a>
+    <span class="k">def</span> <span class="nf">mosweight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gridder</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;mosaic&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.tclean_stopcode_ignore">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.tclean_stopcode_ignore">[docs]</a>
+    <span class="k">def</span> <span class="nf">tclean_stopcode_ignore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;tclean stop code(s) to be ignored for warning messages (PIPE-1319).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.keep_iterating">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.keep_iterating">[docs]</a>
+    <span class="k">def</span> <span class="nf">keep_iterating</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">,</span> <span class="n">tclean_stopcode</span><span class="p">,</span> <span class="n">dirty_dynamic_range</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span>
+                       <span class="n">residual_robust_rms</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">specmode</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if another tclean iteration is necessary.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">keep_iterating</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">hm_masking</span> <span class="o">=</span> <span class="n">hm_masking</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">keep_iterating</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="c1"># Check for zero automask</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">hm_masking</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">tclean_stopcode</span> <span class="o">==</span> <span class="mi">7</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">residual_max</span> <span class="o">/</span> <span class="n">residual_robust_rms</span> <span class="o">&gt;</span> <span class="mf">10.0</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">attention</span><span class="p">(</span><span class="s1">&#39;No automatic clean mask was found despite clean residual peak / scaled MAD &gt; 10, &#39;</span>
+                                      <span class="s1">&#39;switched to pb-based mask and tlimit=4. &#39;</span>
+                                      <span class="s1">&#39;Field </span><span class="si">%s</span><span class="s1"> Intent </span><span class="si">%s</span><span class="s1"> SPW </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">attention</span><span class="p">(</span><span class="s1">&#39;No automatic clean mask was found, switched to pb-based mask and tlimit=4. Field </span><span class="si">%s</span><span class="s1"> &#39;</span>
+                                      <span class="s1">&#39;Intent </span><span class="si">%s</span><span class="s1"> SPW </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">))</span>
+                    <span class="c1"># If no automask is found, always try the simple circular mask for calibrators</span>
+                    <span class="n">hm_masking</span> <span class="o">=</span> <span class="s1">&#39;centralregion&#39;</span>
+                    <span class="n">keep_iterating</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">elif</span> <span class="n">intent</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">residual_max</span> <span class="o">/</span> <span class="n">residual_robust_rms</span> <span class="o">&gt;</span> <span class="mf">10.0</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">dirty_dynamic_range</span> <span class="o">&lt;=</span> <span class="mf">30.0</span><span class="p">):</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">attention</span><span class="p">(</span><span class="s1">&#39;No automatic clean mask was found despite clean residual peak / scaled MAD &gt; 10, &#39;</span>
+                                          <span class="s1">&#39;check the results. &#39;</span>
+                                          <span class="s1">&#39;Field </span><span class="si">%s</span><span class="s1"> Intent </span><span class="si">%s</span><span class="s1"> SPW </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">attention</span><span class="p">(</span><span class="s1">&#39;No automatic clean mask was found despite clean residual peak / scaled MAD &gt; 10, &#39;</span>
+                                          <span class="s1">&#39;switched to pb-based mask and tlimit=4. &#39;</span>
+                                          <span class="s1">&#39;Field </span><span class="si">%s</span><span class="s1"> Intent </span><span class="si">%s</span><span class="s1"> SPW </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">))</span>
+                            <span class="c1"># If no automask is found, try the simple circular mask for high DR continuum</span>
+                            <span class="n">hm_masking</span> <span class="o">=</span> <span class="s1">&#39;centralregion&#39;</span>
+                            <span class="n">keep_iterating</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">keep_iterating</span><span class="p">,</span> <span class="n">hm_masking</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.threshold">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.threshold">[docs]</a>
+    <span class="k">def</span> <span class="nf">threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">):</span>
+
+        <span class="n">cqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;0.0mJy&#39;</span>
+        <span class="k">elif</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">maxthreshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imaging_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;maxthreshold&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">maxthreshold</span> <span class="ow">and</span> <span class="n">threshold</span> <span class="ow">and</span> <span class="n">cqa</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">threshold</span><span class="p">,</span> <span class="n">maxthreshold</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Switching to use the pre-defined threshold upper limit value of </span><span class="si">{</span><span class="n">maxthreshold</span><span class="si">}</span><span class="s1"> instead of </span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">maxthreshold</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">threshold</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Fallback to circular mask if auto-boxing fails.</span>
+            <span class="c1"># CAS-10489: old centralregion option needs higher threshold</span>
+            <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">Jy&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">threshold</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">))[</span><span class="mi">0</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.intent">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.intent">[docs]</a>
+    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;TARGET&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.stokes">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.stokes">[docs]</a>
+    <span class="k">def</span> <span class="nf">stokes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">joint_intents</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;POLARIZATION&#39;</span> <span class="ow">and</span> <span class="n">joint_intents</span> <span class="o">==</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;IQUV&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;I&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.reffreq">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.reffreq">[docs]</a>
+    <span class="k">def</span> <span class="nf">reffreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deconvolver</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spwsel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;PIPE-1838: Tclean reffreq parameter heuristics.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">deconvolver</span> <span class="o">!=</span> <span class="s1">&#39;mtmfs&#39;</span> <span class="ow">or</span> <span class="n">specmode</span> <span class="o">!=</span> <span class="s1">&#39;cont&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">spwsel</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">attention</span><span class="p">(</span><span class="s1">&#39;Cannot calculate reference frequency for mtmfs cleaning.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">qaTool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="n">n_sum</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">d_sum</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([\d.]*\s*)(~\s*)([\d.]*\s*)([A-Za-z]*\s*)(;?)&#39;</span><span class="p">)</span>
+        <span class="n">freqRangeFound</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">spwsel_k</span><span class="p">,</span> <span class="n">spwsel_v</span> <span class="ow">in</span> <span class="n">spwsel</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">spwsel_v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;NONE&#39;</span><span class="p">):</span>
+                    <span class="n">freq_ranges</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">spwsel_v</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">freqRangeFound</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">freq_intervals</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">freq_ranges</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ALMA reffreq heuristics: spwsel - key:value - </span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">spwsel_k</span><span class="p">,</span> <span class="n">spwsel_v</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">freq_interval</span> <span class="ow">in</span> <span class="n">freq_intervals</span><span class="p">:</span>
+                        <span class="n">f_low</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">freq_interval</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">freq_interval</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                        <span class="n">f_low_v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">f_low</span><span class="p">,</span> <span class="s1">&#39;GHz&#39;</span><span class="p">)))</span>
+                        <span class="n">f_high</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">freq_interval</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">freq_interval</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                        <span class="n">f_high_v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">f_high</span><span class="p">,</span> <span class="s1">&#39;GHz&#39;</span><span class="p">)))</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ALMA reffreq heuristics: aggregating interval: f_low_v / f_high_v: </span><span class="si">%s</span><span class="s1"> / </span><span class="si">%s</span><span class="s1"> GHz&#39;</span><span class="p">,</span> <span class="n">f_low_v</span><span class="p">,</span> <span class="n">f_high_v</span><span class="p">)</span>
+                        <span class="n">n_sum</span> <span class="o">+=</span> <span class="n">f_high_v</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="n">f_low_v</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="n">d_sum</span> <span class="o">+=</span> <span class="n">f_high_v</span><span class="o">-</span><span class="n">f_low_v</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">attention</span><span class="p">(</span><span class="s1">&#39;Cannot calculate reference frequency for mtmfs cleaning.&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">freqRangeFound</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No continuum frequency ranges found. No reference frequency calculated.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">d_sum</span> <span class="o">*=</span> <span class="mi">2</span>
+
+        <span class="k">if</span> <span class="n">d_sum</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n_sum</span><span class="o">/</span><span class="n">d_sum</span><span class="si">}</span><span class="s1">GHz&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">attentation</span><span class="p">(</span><span class="s1">&#39;Reference frequency calculation led to zero denominator.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsALMA.arrays">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.arrays">[docs]</a>
+    <span class="k">def</span> <span class="nf">arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the array descriptions.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">vislist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">local_vislist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vislist</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">local_vislist</span> <span class="o">=</span> <span class="n">vislist</span>
+
+        <span class="n">antenna_diameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna_diameters</span><span class="p">(</span><span class="n">local_vislist</span><span class="p">)</span>
+        <span class="n">array_descs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="mf">12.0</span> <span class="ow">in</span> <span class="n">antenna_diameters</span><span class="p">:</span>
+            <span class="n">array_descs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;12m&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="mf">7.0</span> <span class="ow">in</span> <span class="n">antenna_diameters</span><span class="p">:</span>
+            <span class="n">array_descs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;7m&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">array_descs</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

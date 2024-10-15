@@ -1,0 +1,23 @@
+pipeline.h.tasks.importdata.renderer
+====================================
+
+.. automodule:: pipeline.h.tasks.importdata.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      make_flux_table
+      make_repsource_table
+      reduce
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FluxTR
+      FrequencyUnits
+      RepsourceTR
+      T2_4MDetailsImportDataRenderer
+   

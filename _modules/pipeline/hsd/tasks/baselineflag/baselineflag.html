@@ -1,0 +1,750 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.baselineflag.baselineflag &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.baselineflag.baselineflag</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.baselineflag.baselineflag</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">fieldnames</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.applycal.applycal</span> <span class="kn">import</span> <span class="n">reshape_flagdata_summary</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">absolute_path</span>
+
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">worker</span>
+<span class="kn">from</span> <span class="nn">.flagsummary</span> <span class="kn">import</span> <span class="n">SDBLFlagSummary</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">sdutils</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
+
+    <span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">Context</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SDBLFlagInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.baselineflag.SDBLFlagInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">SDBLFlagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Inputs for single dish flagging</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__to_numeric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Integral&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert any value into numeric.</span>
+
+<span class="sd">        Utility method for VisDependentProperty.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            val: Any value</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Numeric value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__to_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert any value into boolean.</span>
+
+<span class="sd">        Utility method for VisDependentProperty.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            val: Any value</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert any value into integer.</span>
+
+<span class="sd">        Utility method for VisDependentProperty.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            val: Any value</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Integer value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert any value into integer list.</span>
+
+<span class="sd">        Utility method for VisDependentProperty.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            val: Any value</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Integer list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="c1"># Search order of input vis</span>
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">ATMCORR</span><span class="p">,</span>
+                            <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span> <span class="p">]</span>
+
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">()</span>
+
+    <span class="n">spw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+    <span class="n">iteration</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_int</span><span class="p">)</span>
+    <span class="n">edge</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_list</span><span class="p">)</span>
+    <span class="n">flag_tsys</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_bool</span><span class="p">)</span>
+    <span class="n">tsys_thresh</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_numeric</span><span class="p">)</span>
+    <span class="n">flag_prfre</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_bool</span><span class="p">)</span>
+    <span class="n">prfre_thresh</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">6.0</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_numeric</span><span class="p">)</span>
+    <span class="n">flag_pofre</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_bool</span><span class="p">)</span>
+    <span class="n">pofre_thresh</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">2.6666</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_numeric</span><span class="p">)</span>
+    <span class="n">flag_prfr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_bool</span><span class="p">)</span>
+    <span class="n">prfr_thresh</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">9.0</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_numeric</span><span class="p">)</span>
+    <span class="n">flag_pofr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_bool</span><span class="p">)</span>
+    <span class="n">pofr_thresh</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_numeric</span><span class="p">)</span>
+    <span class="n">flag_prfrm</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_bool</span><span class="p">)</span>
+    <span class="n">prfrm_thresh</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_numeric</span><span class="p">)</span>
+    <span class="n">prfrm_nmean</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_int</span><span class="p">)</span>
+    <span class="n">flag_pofrm</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_bool</span><span class="p">)</span>
+    <span class="n">pofrm_thresh</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_numeric</span><span class="p">)</span>
+    <span class="n">pofrm_nmean</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_int</span><span class="p">)</span>
+    <span class="n">plotflag</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_bool</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Name of input MS.</span>
+
+<span class="sd">        This is just an alias of vis.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MS name or list of MS names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span>
+
+    <span class="nd">@infiles</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Additional conversion operation on infiles.</span>
+
+<span class="sd">        It doesn&#39;t apply any conversion. Instead, this ensures</span>
+<span class="sd">        synchronization of infiles with vis.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: Original value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Converted value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="n">antenna</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="nd">@antenna</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make antenna selection consistent with vis.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: Original antenna selection.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Updated antenna selection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">antennas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="c1"># if all antennas are selected, return &#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">])</span>
+<span class="c1">#         return &#39;,&#39;.join([str(a.id) for a in antennas])</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define default field selection.</span>
+
+<span class="sd">        Default field selection is constructed from vis</span>
+<span class="sd">        and observing intent.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Default field selection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># this will give something like &#39;0542+3243,0343+242&#39;</span>
+        <span class="n">field_finder</span> <span class="o">=</span> <span class="n">fieldnames</span><span class="o">.</span><span class="n">IntentFieldnames</span><span class="p">()</span>
+        <span class="n">intent_fields</span> <span class="o">=</span> <span class="n">field_finder</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+
+        <span class="c1"># run the answer through a set, just in case there are duplicates</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="n">intent_fields</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">pol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define default polarization selection.</span>
+
+<span class="sd">        Default polarization selection is constructed</span>
+<span class="sd">        from vis and spw.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Default polarization selection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># need to convert input (virtual) spw into real spw</span>
+        <span class="n">real_spw</span> <span class="o">=</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">convert_spw_virtual2real</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">])[</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">]</span>
+        <span class="n">selected_spwids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">spwobj</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spwobj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">real_spw</span><span class="p">,</span> <span class="n">with_channels</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+        <span class="n">pols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">selected_spwids</span><span class="p">:</span>
+            <span class="n">pols</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">corr_axis</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pols</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
+                 <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">iteration</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">flag_tsys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">tsys_thresh</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Integral&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">flag_prfre</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">prfre_thresh</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Integral&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">flag_pofre</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pofre_thresh</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Integral&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">flag_prfr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">prfr_thresh</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Integral&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">flag_pofr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pofr_thresh</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Integral&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">flag_prfrm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">prfrm_thresh</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Integral&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">prfrm_nmean</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Integral&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">flag_pofrm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pofrm_thresh</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Integral&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pofrm_nmean</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Integral&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">plotflag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">infiles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">antenna</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">spw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">parallel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct SDBLFlagInputs instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            output_dir: Output directory.</span>
+<span class="sd">            iteration: Number of iterations to perform sigma clipping to</span>
+<span class="sd">                       calculate threshold value of flagging. Defaults to 5.</span>
+<span class="sd">            edge: Number of channels to be dropped from the edge.</span>
+<span class="sd">                  Defaults to [0, 0], which means that all channels</span>
+<span class="sd">                  are processed.</span>
+<span class="sd">            flag_tsys: Activate (True) or deactivate (False) Tsys flag.</span>
+<span class="sd">                       Defaults to True.</span>
+<span class="sd">            tsys_thresh: Threshold value for Tsys flag. Defaults to 3.0.</span>
+<span class="sd">            flag_prfre: Activate (True) or deactivate (False) flag by expected</span>
+<span class="sd">                        rms of pre-fit spectra. Defaults to True.</span>
+<span class="sd">            prfre_thresh: Threshold value for flag by expected rms of pre-fit</span>
+<span class="sd">                          spectra. Defaults to 3.0.</span>
+<span class="sd">            flag_pofre: Activate (True) or deactivate (False) flag by expected</span>
+<span class="sd">                        rms of post-fit spectra. Defualts to True.</span>
+<span class="sd">            pofre_thresh: Threshold value for flag by expected rms of post-fit</span>
+<span class="sd">                          spectra. Defaults to 1.333.</span>
+<span class="sd">            flag_prfr: Activate (True) or deactivate (False) flag by rms of</span>
+<span class="sd">                       pre-fit spectra. Defaults to True.</span>
+<span class="sd">            prfr_thresh: Threshold value for flag by rms of pre-fit spectra.</span>
+<span class="sd">                         Defaults to 4.5.</span>
+<span class="sd">            flag_pofr: Activate (True) or deactivate (False) flag by rms of</span>
+<span class="sd">                       post-fit spectra. Defaults to True.</span>
+<span class="sd">            pofr_thresh: Threshold value for flag by rms of post-fit spectra.</span>
+<span class="sd">                         Defaults to 4.0.</span>
+<span class="sd">            flag_prfrm: Activate (True) or deactivate (False) flag by running</span>
+<span class="sd">                        mean of pre-fit spectra. Defaults to True.</span>
+<span class="sd">            prfrm_thresh: Threshold value for flag by running mean of pre-fit</span>
+<span class="sd">                          spectra. Defaults to 5.5.</span>
+<span class="sd">            prfrm_nmean: Number of channels for running mean of pre-fit spectra.</span>
+<span class="sd">                         Defaults to 5.</span>
+<span class="sd">            flag_pofrm: Activate (True) or deactivate (False) flag by running</span>
+<span class="sd">                        mean of post-fit spectra. Defaults to True.</span>
+<span class="sd">            pofrm_thresh: Threshold value for flag by running mean of post-fit</span>
+<span class="sd">                          spectra. Defaults to 5.0.</span>
+<span class="sd">            pofrm_nmean: Number of channels for running mean of post-fit spectra.</span>
+<span class="sd">                         Defaults to 5.</span>
+<span class="sd">            plotflag: Create summary plots if True. Defaults to True.</span>
+<span class="sd">            infiles: MS selection.</span>
+<span class="sd">            antenna: Antenna selection.</span>
+<span class="sd">            field: Field selection.</span>
+<span class="sd">            spw: Spectral window (spw) selection.</span>
+<span class="sd">            pol: Polarization selection.</span>
+<span class="sd">            parallel: Execute using CASA HPC functionality, if available.</span>
+<span class="sd">                      Default is None, which intends to turn on parallel</span>
+<span class="sd">                      processing if possible.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># context and vis/infiles must be set first so that properties that require</span>
+        <span class="c1"># domain objects can be function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span> <span class="o">=</span> <span class="n">infiles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="c1"># task specific parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="n">iteration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span> <span class="o">=</span> <span class="n">edge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_tsys</span> <span class="o">=</span> <span class="n">flag_tsys</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tsys_thresh</span> <span class="o">=</span> <span class="n">tsys_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_prfre</span> <span class="o">=</span> <span class="n">flag_prfre</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prfre_thresh</span> <span class="o">=</span> <span class="n">prfre_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_pofre</span> <span class="o">=</span> <span class="n">flag_pofre</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pofre_thresh</span> <span class="o">=</span> <span class="n">pofre_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_prfr</span> <span class="o">=</span> <span class="n">flag_prfr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prfr_thresh</span> <span class="o">=</span> <span class="n">prfr_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_pofr</span> <span class="o">=</span> <span class="n">flag_pofr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pofr_thresh</span> <span class="o">=</span> <span class="n">pofr_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_prfrm</span> <span class="o">=</span> <span class="n">flag_prfrm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prfrm_thresh</span> <span class="o">=</span> <span class="n">prfrm_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prfrm_nmean</span> <span class="o">=</span> <span class="n">prfrm_nmean</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_pofrm</span> <span class="o">=</span> <span class="n">flag_pofrm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pofrm_thresh</span> <span class="o">=</span> <span class="n">pofrm_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pofrm_nmean</span> <span class="o">=</span> <span class="n">pofrm_nmean</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plotflag</span> <span class="o">=</span> <span class="n">plotflag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span> <span class="o">=</span> <span class="n">antenna</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pol</span> <span class="o">=</span> <span class="n">pol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
+
+        <span class="c1">### Default Flag rule</span>
+        <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">SDFlagRule</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FlagRuleDictionary</span> <span class="o">=</span> <span class="n">SDFlagRule</span><span class="o">.</span><span class="n">SDFlagRule</span>
+        <span class="c1"># MUST NOT configure FlagRuleDictionary here.</span>
+
+    <span class="k">def</span> <span class="nf">_configureFlagRule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A private method to convert input parameters to FlagRuleDictionary&quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag_tsys</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tsys_thresh</span><span class="p">]),</span>
+             <span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag_prfr</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prfr_thresh</span><span class="p">]),</span>
+             <span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag_pofr</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pofr_thresh</span><span class="p">]),</span>
+             <span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag_prfre</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prfre_thresh</span><span class="p">]),</span>
+             <span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag_pofre</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pofre_thresh</span><span class="p">]),</span>
+             <span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag_prfrm</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prfrm_thresh</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prfrm_nmean</span><span class="p">]),</span>
+             <span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag_pofrm</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pofrm_thresh</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pofrm_nmean</span><span class="p">])}</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Threshold&#39;</span><span class="p">,</span> <span class="s1">&#39;Nmean&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">activateFlagRule</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">FlagRuleDictionary</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">keys</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">b</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">deactivateFlagRule</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Invalid flag operation definition for </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">k</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SDBLFlagInputs.activateFlagRule">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.baselineflag.SDBLFlagInputs.activateFlagRule">[docs]</a>
+    <span class="k">def</span> <span class="nf">activateFlagRule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Activates a flag type specified by the input parameter in FlagRuleDictionary&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">FlagRuleDictionary</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">FlagRuleDictionary</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Error: </span><span class="si">%s</span><span class="s1"> not in predefined Flagging Rules&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SDBLFlagInputs.deactivateFlagRule">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.baselineflag.SDBLFlagInputs.deactivateFlagRule">[docs]</a>
+    <span class="k">def</span> <span class="nf">deactivateFlagRule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deactivates a flag type specified by the input parameter in FlagRuleDictionary&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">FlagRuleDictionary</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">FlagRuleDictionary</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Error: </span><span class="si">%s</span><span class="s1"> not in predefined Flagging Rules&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SDBLFlagResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.baselineflag.SDBLFlagResults">[docs]</a>
+<span class="k">class</span> <span class="nc">SDBLFlagResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The results of SDFalgData</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDBLFlagResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SDBLFlagResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.baselineflag.SDBLFlagResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDBLFlagResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;none&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="SerialSDBLFlag">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.baselineflag.SerialSDBLFlag">[docs]</a>
+<span class="k">class</span> <span class="nc">SerialSDBLFlag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Single dish flagging class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">##################################################</span>
+    <span class="c1"># Note</span>
+    <span class="c1"># The class uses _handle_multiple_vis framework.</span>
+    <span class="c1"># Method, prepare() is called per MS. Inputs.ms</span>
+    <span class="c1"># holds &quot;an&quot; MS instance to be processed.</span>
+    <span class="c1">##################################################</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDBLFlagInputs</span>
+
+<div class="viewcode-block" id="SerialSDBLFlag.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.baselineflag.SerialSDBLFlag.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterates over reduction group and invoke flagdata worker function in each clip_niteration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+        <span class="c1"># name of MS to process</span>
+        <span class="n">cal_name</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">bl_list</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_measurement_sets_of_type</span><span class="p">([</span><span class="n">DataType</span><span class="o">.</span><span class="n">BASELINED</span><span class="p">])</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">match_origin_ms</span><span class="p">(</span><span class="n">bl_list</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
+        <span class="n">bl_name</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">cal_name</span>
+        <span class="n">in_ant</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">antenna</span>
+        <span class="n">in_spw</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span>
+        <span class="n">real_spw</span> <span class="o">=</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">convert_spw_virtual2real</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">in_spw</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">])[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">]</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ms &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">&quot; in_spw=&quot;</span><span class="si">{</span><span class="n">in_spw</span><span class="si">}</span><span class="s1">&quot; real_spw=&quot;</span><span class="si">{</span><span class="n">real_spw</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+        <span class="n">in_field</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">field</span>
+        <span class="n">in_pol</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">pol</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inputs</span><span class="o">.</span><span class="n">pol</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="n">clip_niteration</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">iteration</span>
+        <span class="n">reduction_group</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_reduction_group</span>
+        <span class="c1"># configure FlagRuleDictionary</span>
+        <span class="c1"># this has to be done in runtime rather than in Inputs.__init__</span>
+        <span class="c1"># to accommodate later overwrite of parameters.</span>
+        <span class="n">inputs</span><span class="o">.</span><span class="n">_configureFlagRule</span><span class="p">()</span>
+        <span class="n">flag_rule</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">FlagRuleDictionary</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Flag Rule for </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cal_name</span><span class="p">,</span> <span class="n">flag_rule</span><span class="p">))</span>
+
+        <span class="c1"># sumarize flag before execution</span>
+        <span class="n">full_intent</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">to_CASA_intent</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+        <span class="n">flagdata_summary_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">bl_name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span>
+                                                   <span class="n">antenna</span><span class="o">=</span><span class="n">in_ant</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">in_field</span><span class="p">,</span>
+                                                   <span class="n">spw</span><span class="o">=</span><span class="n">real_spw</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">full_intent</span><span class="p">,</span>
+                                                   <span class="n">spwcorr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fieldcnt</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                   <span class="n">name</span><span class="o">=</span><span class="s1">&#39;before&#39;</span><span class="p">)</span>
+        <span class="n">stats_before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">flagdata_summary_job</span><span class="p">)</span>
+
+        <span class="c1"># collection of field, antenna, and spw ids in reduction group per MS</span>
+        <span class="n">registry</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="n">sdutils</span><span class="o">.</span><span class="n">RGAccumulator</span><span class="p">)</span>
+
+        <span class="c1"># loop over reduction group (spw and source combination)</span>
+        <span class="n">flagResult</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">group_desc</span> <span class="ow">in</span> <span class="n">reduction_group</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Processing Reduction Group </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">group_id</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Group Summary:&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">group_desc</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">%s</span><span class="s1">: Antenna </span><span class="si">%d</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">) Spw </span><span class="si">%d</span><span class="s1"> Field </span><span class="si">%d</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span>
+                          <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">antenna_id</span><span class="p">,</span>
+                           <span class="n">m</span><span class="o">.</span><span class="n">antenna_name</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">field_id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">field_name</span><span class="p">))</span>
+
+            <span class="n">nchan</span> <span class="o">=</span> <span class="n">group_desc</span><span class="o">.</span><span class="n">nchan</span>
+            <span class="k">if</span> <span class="n">nchan</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Skipping a group of channel averaged spw&#39;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">field_sel</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">in_field</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># fine, just go ahead</span>
+                <span class="n">field_sel</span> <span class="o">=</span> <span class="n">in_field</span>
+            <span class="k">elif</span> <span class="n">group_desc</span><span class="o">.</span><span class="n">field_name</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">in_field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]:</span>
+                <span class="c1"># pre-selection of the field name</span>
+                <span class="n">field_sel</span> <span class="o">=</span> <span class="n">group_desc</span><span class="o">.</span><span class="n">field_name</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># no field name is included in in_field, skip</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Skip reduction group </span><span class="si">{:d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_id</span><span class="p">))</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Which group in group_desc list should be processed</span>
+            <span class="n">member_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">get_valid_ms_members</span><span class="p">(</span><span class="n">group_desc</span><span class="p">,</span> <span class="p">[</span><span class="n">cal_name</span><span class="p">],</span> <span class="n">in_ant</span><span class="p">,</span> <span class="n">field_sel</span><span class="p">,</span> <span class="n">real_spw</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;group </span><span class="si">%s</span><span class="s1">: member_list=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">group_id</span><span class="p">,</span> <span class="n">member_list</span><span class="p">))</span>
+
+            <span class="c1"># skip this group if valid member list is empty</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">member_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Skip reduction group </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">group_id</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">member_list</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>  <span class="c1"># list of group_desc IDs to flag</span>
+            <span class="n">antenna_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">group_desc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">antenna_id</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">member_list</span><span class="p">]</span>
+            <span class="n">spwid_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">group_desc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">spw_id</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">member_list</span><span class="p">]</span>
+            <span class="n">ms_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">group_desc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ms</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">member_list</span><span class="p">]</span>
+            <span class="n">fieldid_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">group_desc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">field_id</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">member_list</span><span class="p">]</span>
+            <span class="n">temp_dd_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spwid_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">member_list</span><span class="p">))]</span>
+            <span class="n">pols_list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">corr</span> <span class="k">for</span> <span class="n">corr</span> <span class="ow">in</span> <span class="n">ddobj</span><span class="o">.</span><span class="n">corr_axis</span> <span class="k">if</span> <span class="p">(</span><span class="n">in_pol</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="n">corr</span> <span class="ow">in</span> <span class="n">in_pol</span><span class="p">)]</span>
+                         <span class="k">for</span> <span class="n">ddobj</span> <span class="ow">in</span> <span class="n">temp_dd_list</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">temp_dd_list</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">member_list</span><span class="p">)):</span>
+                <span class="n">member</span> <span class="o">=</span> <span class="n">group_desc</span><span class="p">[</span><span class="n">member_list</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+                <span class="n">registry</span><span class="p">[</span><span class="n">member</span><span class="o">.</span><span class="n">ms</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">member</span><span class="o">.</span><span class="n">field_id</span><span class="p">,</span>
+                                           <span class="n">antenna_id</span><span class="o">=</span><span class="n">member</span><span class="o">.</span><span class="n">antenna_id</span><span class="p">,</span>
+                                           <span class="n">spw_id</span><span class="o">=</span><span class="n">member</span><span class="o">.</span><span class="n">spw_id</span><span class="p">,</span>
+                                           <span class="n">pol_ids</span><span class="o">=</span><span class="n">pols_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="c1"># per-MS loop</span>
+        <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">msobj</span><span class="p">,</span> <span class="n">accumulator</span> <span class="ow">in</span> <span class="n">registry</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">absolute_path</span><span class="p">(</span><span class="n">cal_name</span><span class="p">)</span> <span class="o">==</span> <span class="n">absolute_path</span><span class="p">(</span><span class="n">bl_name</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is not yet baselined. Skipping flag by post-fit statistics for the data.&quot;</span>
+                            <span class="s2">&quot; MASKLIST will also be cleared up. You may go on flagging but the statistics&quot;</span>
+                            <span class="s2">&quot; will contain line emission.&quot;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+
+            <span class="n">antenna_list</span> <span class="o">=</span> <span class="n">accumulator</span><span class="o">.</span><span class="n">get_antenna_id_list</span><span class="p">()</span>
+            <span class="n">fieldid_list</span> <span class="o">=</span> <span class="n">accumulator</span><span class="o">.</span><span class="n">get_field_id_list</span><span class="p">()</span>
+            <span class="n">spwid_list</span> <span class="o">=</span> <span class="n">accumulator</span><span class="o">.</span><span class="n">get_spw_id_list</span><span class="p">()</span>
+            <span class="n">pols_list</span> <span class="o">=</span> <span class="n">accumulator</span><span class="o">.</span><span class="n">get_pol_ids_list</span><span class="p">()</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Members to be processed:&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">pol_ids</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">antenna_list</span><span class="p">,</span> <span class="n">fieldid_list</span><span class="p">,</span> <span class="n">spwid_list</span><span class="p">,</span> <span class="n">pols_list</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{}</span><span class="s2">:: Antenna </span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">) Spw </span><span class="si">{}</span><span class="s2"> Field </span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">) Pol &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">msobj</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                    <span class="n">antenna_id</span><span class="p">,</span>
+                    <span class="n">msobj</span><span class="o">.</span><span class="n">antennas</span><span class="p">[</span><span class="n">antenna_id</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">spw_id</span><span class="p">,</span>
+                    <span class="n">field_id</span><span class="p">,</span>
+                    <span class="n">msobj</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_id</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pol_ids</span><span class="p">)))</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span>
+
+            <span class="n">nchan</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># Calculate flag and update DataTable</span>
+            <span class="n">flagging_inputs</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">SDBLFlagWorkerInputs</span><span class="p">(</span>
+                <span class="n">context</span><span class="p">,</span> <span class="n">clip_niteration</span><span class="p">,</span>
+                <span class="n">msobj</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">antenna_list</span><span class="p">,</span> <span class="n">fieldid_list</span><span class="p">,</span>
+                <span class="n">spwid_list</span><span class="p">,</span> <span class="n">pols_list</span><span class="p">,</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">flag_rule</span><span class="p">)</span>
+            <span class="n">flagging_task</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">SDBLFlagWorker</span><span class="p">(</span><span class="n">flagging_inputs</span><span class="p">)</span>
+
+            <span class="n">flagging_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">flagging_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">thresholds</span> <span class="o">=</span> <span class="n">flagging_results</span><span class="o">.</span><span class="n">outcome</span>
+            <span class="c1"># Summary</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">basetask</span><span class="o">.</span><span class="n">DISABLE_WEBLOG</span><span class="p">:</span>
+                <span class="n">renderer</span> <span class="o">=</span> <span class="n">SDBLFlagSummary</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">msobj</span><span class="p">,</span>
+                                           <span class="n">antenna_list</span><span class="p">,</span> <span class="n">fieldid_list</span><span class="p">,</span> <span class="n">spwid_list</span><span class="p">,</span>
+                                           <span class="n">pols_list</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">,</span> <span class="n">flag_rule</span><span class="p">)</span>
+                <span class="n">result</span><span class="p">,</span> <span class="n">plot_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">flagResult</span> <span class="o">+=</span> <span class="n">result</span>
+                <span class="n">plots</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span> <span class="n">plot_list</span> <span class="p">)</span>
+
+        <span class="c1"># Calculate flag fraction after operation.</span>
+        <span class="c1"># flag summary for By Topic Page (all data in MS are needed)</span>
+        <span class="n">flagkwargs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;spw=&#39;</span><span class="si">{!s}</span><span class="s2">&#39; intent=&#39;</span><span class="si">{}</span><span class="s2">&#39; fieldcnt=True mode=&#39;summary&#39; name=&#39;AntSpw</span><span class="si">{:0&gt;3}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">full_intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                              <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">()]</span>
+        <span class="c1"># add the summary after flagging with data selection</span>
+        <span class="n">flagkwargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;antenna=&#39;</span><span class="si">{</span><span class="n">in_ant</span><span class="si">}</span><span class="s2">&#39; field=&#39;</span><span class="si">{</span><span class="n">in_field</span><span class="si">}</span><span class="s2">&#39; spw=&#39;</span><span class="si">{</span><span class="n">real_spw</span><span class="si">}</span><span class="s2">&#39; intent=&#39;</span><span class="si">{</span><span class="n">full_intent</span><span class="si">}</span><span class="s2">&#39; spwcorr=True fieldcnt=True mode=&#39;summary&#39; name=&#39;after&#39;&quot;</span><span class="p">)</span>
+        <span class="n">detailed_flag_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">bl_name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="n">inpfile</span><span class="o">=</span><span class="n">flagkwargs</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">detailed_flag_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">detailed_flag_job</span><span class="p">)</span>
+        <span class="c1"># Pop the summary with data selection.</span>
+        <span class="n">stats_after</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">detailed_flag_result</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;after&#39;</span><span class="p">:</span>
+                <span class="n">stats_after</span> <span class="o">=</span> <span class="n">detailed_flag_result</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                <span class="k">break</span>
+        <span class="k">assert</span> <span class="n">stats_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="n">outcome</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;flagdata_summary&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">stats_before</span><span class="p">,</span> <span class="n">stats_after</span><span class="p">],</span>
+                   <span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="n">flagResult</span><span class="p">,</span>
+                   <span class="s1">&#39;plots&#39;</span><span class="p">:</span> <span class="n">plots</span> <span class="p">}</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">SDBLFlagResults</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+                                  <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                  <span class="n">outcome</span><span class="o">=</span><span class="n">outcome</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">flagsummary</span> <span class="o">=</span> <span class="n">reshape_flagdata_summary</span><span class="p">(</span><span class="n">detailed_flag_result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="SerialSDBLFlag.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.baselineflag.SerialSDBLFlag.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+
+<div class="viewcode-block" id="SDBLFlag">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.baselineflag.SDBLFlag">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsd_blflag&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
+    <span class="s1">&#39;Perform row-based flagging based on noise level and quality of spectral baseline subtraction.</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="s1">&#39;This stage performs a pipeline calculation without running any CASA commands to be put in this file.&#39;</span>
+<span class="p">)</span>
+<span class="k">class</span> <span class="nc">SDBLFlag</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDBLFlagInputs</span>
+    <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialSDBLFlag</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

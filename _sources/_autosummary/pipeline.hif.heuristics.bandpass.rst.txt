@@ -1,0 +1,12 @@
+pipeline.hif.heuristics.bandpass
+================================
+
+.. automodule:: pipeline.hif.heuristics.bandpass
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MedianSNR
+   

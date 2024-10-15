@@ -1,0 +1,45 @@
+pipeline.hif.tasks.refant package
+=================================
+
+Submodules
+----------
+
+pipeline.hif.tasks.refant.qa module
+-----------------------------------
+
+.. automodule:: pipeline.hif.tasks.refant.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.refant.referenceantenna module
+-------------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.refant.referenceantenna
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.refant.renderer module
+-----------------------------------------
+
+.. automodule:: pipeline.hif.tasks.refant.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.refant.session\_refant module
+------------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.refant.session_refant
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hif.tasks.refant
+   :members:
+   :undoc-members:
+   :show-inheritance:

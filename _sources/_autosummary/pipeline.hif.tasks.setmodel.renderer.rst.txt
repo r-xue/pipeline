@@ -1,0 +1,19 @@
+pipeline.hif.tasks.setmodel.renderer
+====================================
+
+.. automodule:: pipeline.hif.tasks.setmodel.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      make_flux_table
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FluxTR
+      T2_4MDetailsSetjyRenderer
+   

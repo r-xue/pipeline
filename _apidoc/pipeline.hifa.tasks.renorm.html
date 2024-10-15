@@ -1,0 +1,632 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.renorm package &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.renorm package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/pipeline.hifa.tasks.renorm.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hifa-tasks-renorm-package">
+<h1>pipeline.hifa.tasks.renorm package<a class="headerlink" href="#pipeline-hifa-tasks-renorm-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pipeline.hifa.tasks.renorm.qa">
+<span id="pipeline-hifa-tasks-renorm-qa-module"></span><h2>pipeline.hifa.tasks.renorm.qa module<a class="headerlink" href="#module-pipeline.hifa.tasks.renorm.qa" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.qa.RenormListQAHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RenormListQAHandler</span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/qa.html#RenormListQAHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.qa.RenormListQAHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin" title="pipeline.infrastructure.pipelineqa.QAPlugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">QAPlugin</span></code></a></p>
+<p>QA handler for a list containing RenormResults.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.qa.RenormListQAHandler.child_cls">
+<span class="sig-name descname"><span class="pre">child_cls</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.qa.RenormListQAHandler.child_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hifa.tasks.renorm.renorm.RenormResults" title="pipeline.hifa.tasks.renorm.renorm.RenormResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenormResults</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.qa.RenormListQAHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/qa.html#RenormListQAHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.qa.RenormListQAHandler.handle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.qa.RenormListQAHandler.result_cls">
+<span class="sig-name descname"><span class="pre">result_cls</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.qa.RenormListQAHandler.result_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.ResultsList" title="pipeline.infrastructure.basetask.ResultsList"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResultsList</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.qa.RenormQAHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RenormQAHandler</span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/qa.html#RenormQAHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.qa.RenormQAHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin" title="pipeline.infrastructure.pipelineqa.QAPlugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">QAPlugin</span></code></a></p>
+<p>QA handler for an uncontained RenormResults.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.qa.RenormQAHandler.child_cls">
+<span class="sig-name descname"><span class="pre">child_cls</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pipeline.hifa.tasks.renorm.qa.RenormQAHandler.child_cls" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.qa.RenormQAHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/qa.html#RenormQAHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.qa.RenormQAHandler.handle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.qa.RenormQAHandler.result_cls">
+<span class="sig-name descname"><span class="pre">result_cls</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.qa.RenormQAHandler.result_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hifa.tasks.renorm.renorm.RenormResults" title="pipeline.hifa.tasks.renorm.renorm.RenormResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenormResults</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hifa.tasks.renorm.renderer">
+<span id="pipeline-hifa-tasks-renorm-renderer-module"></span><h2>pipeline.hifa.tasks.renorm.renderer module<a class="headerlink" href="#module-pipeline.hifa.tasks.renorm.renderer" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renderer.T2_4MDetailsRenormRenderer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">T2_4MDetailsRenormRenderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'renorm.mako'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Renormalize'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_rerender</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/renderer.html#T2_4MDetailsRenormRenderer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renderer.T2_4MDetailsRenormRenderer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer" title="pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer"><code class="xref py py-class docutils literal notranslate"><span class="pre">T2_4MDetailsDefaultRenderer</span></code></a></p>
+<p>Renders detailed HTML output for the Lowgainflag task.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renderer.T2_4MDetailsRenormRenderer.update_mako_context">
+<span class="sig-name descname"><span class="pre">update_mako_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mako_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/renderer.html#T2_4MDetailsRenormRenderer.update_mako_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renderer.T2_4MDetailsRenormRenderer.update_mako_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renderer.TR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pdf</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renderer.TR" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renderer.TR.max">
+<span class="sig-name descname"><span class="pre">max</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renderer.TR.max" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renderer.TR.pdf">
+<span class="sig-name descname"><span class="pre">pdf</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renderer.TR.pdf" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renderer.TR.source">
+<span class="sig-name descname"><span class="pre">source</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renderer.TR.source" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renderer.TR.spw">
+<span class="sig-name descname"><span class="pre">spw</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renderer.TR.spw" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renderer.TR.vis">
+<span class="sig-name descname"><span class="pre">vis</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renderer.TR.vis" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renderer.getchild">
+<span class="sig-name descname"><span class="pre">getchild</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">el</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/renderer.html#getchild"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renderer.getchild" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renderer.make_renorm_plots">
+<span class="sig-name descname"><span class="pre">make_renorm_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weblog_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.logger.Plot" title="pipeline.infrastructure.renderer.logger.Plot"><span class="pre">Plot</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/renderer.html#make_renorm_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renderer.make_renorm_plots" title="Link to this definition"></a></dt>
+<dd><p>Create and return a list of renorm plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>results</strong> – the renormalization results.</p></li>
+<li><p><strong>weblog_dir</strong> – the weblog directory</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>dictionary with MS with some additional html</dt><dd><p>as the keys and lists of plot objects as the values</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>summary_plots</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renderer.make_renorm_table">
+<span class="sig-name descname"><span class="pre">make_renorm_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weblog_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/renderer.html#make_renorm_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renderer.make_renorm_table" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pipeline.hifa.tasks.renorm.renorm">
+<span id="pipeline-hifa-tasks-renorm-renorm-module"></span><h2>pipeline.hifa.tasks.renorm.renorm module<a class="headerlink" href="#module-pipeline.hifa.tasks.renorm.renorm" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.Renorm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Renorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/renorm.html#Renorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.Renorm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.sessionutils.ParallelTemplate" title="pipeline.infrastructure.sessionutils.ParallelTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelTemplate</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.Renorm.Inputs">
+<span class="sig-name descname"><span class="pre">Inputs</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.Renorm.Inputs" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hifa.tasks.renorm.renorm.RenormInputs" title="pipeline.hifa.tasks.renorm.renorm.RenormInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenormInputs</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.Renorm.Task">
+<span class="sig-name descname"><span class="pre">Task</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.Renorm.Task" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hifa.tasks.renorm.renorm.SerialRenorm" title="pipeline.hifa.tasks.renorm.renorm.SerialRenorm"><code class="xref py py-class docutils literal notranslate"><span class="pre">SerialRenorm</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.RenormInputs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RenormInputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createcaltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excludechan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atm_auto_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bwthreshspw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/renorm.html#RenormInputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.RenormInputs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.vdp.StandardInputs" title="pipeline.infrastructure.vdp.StandardInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">StandardInputs</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.RenormInputs.atm_auto_exclude">
+<span class="sig-name descname"><span class="pre">atm_auto_exclude</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.RenormInputs.atm_auto_exclude" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.RenormInputs.bwthreshspw">
+<span class="sig-name descname"><span class="pre">bwthreshspw</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.RenormInputs.bwthreshspw" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.RenormInputs.caltable">
+<span class="sig-name descname"><span class="pre">caltable</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.RenormInputs.caltable" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.RenormInputs.createcaltable">
+<span class="sig-name descname"><span class="pre">createcaltable</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.RenormInputs.createcaltable" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.RenormInputs.excludechan">
+<span class="sig-name descname"><span class="pre">excludechan</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.RenormInputs.excludechan" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.RenormInputs.parallel">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parallel</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.RenormInputs.parallel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.RenormInputs.spw">
+<span class="sig-name descname"><span class="pre">spw</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.RenormInputs.spw" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.RenormInputs.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.RenormInputs.threshold" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.RenormResults">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RenormResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createcaltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excludechan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calTableCreated</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rnstats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alltdm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atmAutoExclude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atmWarning</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atmExcludeCmd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bwthreshspw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calapps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exception</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/renorm.html#RenormResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.RenormResults" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.Results" title="pipeline.infrastructure.basetask.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.RenormResults.merge_with_context">
+<span class="sig-name descname"><span class="pre">merge_with_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/renorm.html#RenormResults.merge_with_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.RenormResults.merge_with_context" title="Link to this definition"></a></dt>
+<dd><p>See <a href="#id1"><span class="problematic" id="id2">:method:`~pipeline.infrastructure.api.Results.merge_with_context`</span></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.SerialRenorm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SerialRenorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/renorm.html#SerialRenorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.SerialRenorm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.StandardTaskTemplate" title="pipeline.infrastructure.basetask.StandardTaskTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">StandardTaskTemplate</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.SerialRenorm.Inputs">
+<span class="sig-name descname"><span class="pre">Inputs</span></span><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.SerialRenorm.Inputs" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hifa.tasks.renorm.renorm.RenormInputs" title="pipeline.hifa.tasks.renorm.renorm.RenormInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenormInputs</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.SerialRenorm.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/renorm.html#SerialRenorm.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.SerialRenorm.analyse" title="Link to this definition"></a></dt>
+<dd><p>Analyze the result from the task preparing operation.</p>
+<p>This method analyzes the result object returned by the Pipeline task.prepare method
+and returns it with optional modifications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>result</strong> – the task result object generated by <code class="xref py py-func docutils literal notranslate"><span class="pre">prepare()</span></code></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Result</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.renorm.renorm.SerialRenorm.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/renorm/renorm.html#SerialRenorm.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.renorm.renorm.SerialRenorm.prepare" title="Link to this definition"></a></dt>
+<dd><p>Prepare job requests for execution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parameters</strong> – the parameters to pass through to the subclass.
+Refer to the implementing subclass for specific information on
+what these parameters are.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>a class implementing <code class="xref py py-class docutils literal notranslate"><span class="pre">Result</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hifa.tasks.renorm">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline.hifa.tasks.renorm" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

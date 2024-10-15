@@ -1,0 +1,19 @@
+pipeline.hifa.tasks.lock\_refant.renderer
+=========================================
+
+.. automodule:: pipeline.hifa.tasks.lock_refant.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      make_refant_table
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      RefantTR
+      T2_4MDetailsLockRefantRenderer
+   

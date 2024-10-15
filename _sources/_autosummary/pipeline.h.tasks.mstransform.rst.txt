@@ -1,0 +1,21 @@
+pipeline.h.tasks.mstransform
+============================
+
+.. automodule:: pipeline.h.tasks.mstransform
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MsSplit
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   mssplit
+   qa
+   renderer

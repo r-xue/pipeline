@@ -1,0 +1,14 @@
+pipeline.hifv.tasks.flagging.flagcal
+====================================
+
+.. automodule:: pipeline.hifv.tasks.flagging.flagcal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Flagcal
+      FlagcalInputs
+      FlagcalResults
+   

@@ -1,0 +1,22 @@
+pipeline.h.tasks.tsysflag
+=========================
+
+.. automodule:: pipeline.h.tasks.tsysflag
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Tsysflag
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   qa
+   renderer
+   resultobjects
+   tsysflag

@@ -1,0 +1,13 @@
+pipeline.hif.tasks.mstransform.qa
+=================================
+
+.. automodule:: pipeline.hif.tasks.mstransform.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MstransformListQAHandler
+      MstransformQAHandler
+   

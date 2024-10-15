@@ -1,0 +1,14 @@
+pipeline.hif.heuristics.findrefant
+==================================
+
+.. automodule:: pipeline.hif.heuristics.findrefant
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      RefAntFlagging
+      RefAntGeometry
+      RefAntHeuristics
+   

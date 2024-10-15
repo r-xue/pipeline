@@ -1,0 +1,13 @@
+pipeline.hif.tasks.findcont.qa
+==============================
+
+.. automodule:: pipeline.hif.tasks.findcont.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FindContListQAHandler
+      FindContQAHandler
+   

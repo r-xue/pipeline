@@ -1,0 +1,368 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python 3 conversion notes &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pipeline Releases" href="releases.html" />
+    <link rel="prev" title="Pipeline developer documentation" href="DeveloperDocumentation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Python 3 conversion notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#updating-code-with-2to3-tool">Updating code with ‘2to3’ tool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples-best-coding-practices">Examples best coding practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#print-statements">Print statements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#has-key-method-in-dictionaries">‘has_key’ method in dictionaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#raising-exceptions">Raising exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#catching-exceptions">Catching exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#checking-for-type">Checking for type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#relative-imports-within-package">Relative imports within package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#formatted-strings">Formatted strings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reduce-builtin-is-deprecated">“reduce” builtin is deprecated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#is-deprecated-use">&lt;&gt; is deprecated, use !=</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implicit-tuple-parameter-unpacking-is-no-longer-supported">Implicit tuple parameter unpacking is no longer supported</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#map-filter-zip-now-return-an-iterable-object-instead-of-a-list">map, filter, zip now return an iterable object, instead of a list</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Python 3 conversion notes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/develdocmd/python3_conversion_notes.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="python-3-conversion-notes">
+<h1>Python 3 conversion notes<a class="headerlink" href="#python-3-conversion-notes" title="Link to this heading"></a></h1>
+<p>This document provides notes on the conversion of the Pipeline code to become
+Python 3 compatible.</p>
+<p>Python 3 conversion is tracked in
+<a class="reference external" href="https://open-jira.nrao.edu/browse/PIPE-10">PIPE-10</a> and its sub-task tickets.</p>
+<section id="updating-code-with-2to3-tool">
+<h2>Updating code with ‘2to3’ tool<a class="headerlink" href="#updating-code-with-2to3-tool" title="Link to this heading"></a></h2>
+<p>The ‘2to3’ tool has a series of rules to evaluate and convert code to Python 3.
+Below is a summary of which rules have been applied, and which still need to be done.</p>
+<p>Rules that do not require changes in PL code nor in external modules (guard
+against regression):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apply</span><span class="p">,</span> <span class="n">asserts</span><span class="p">,</span> <span class="n">exitfunc</span><span class="p">,</span> <span class="n">getcwdu</span><span class="p">,</span> <span class="n">imports2</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">intern</span><span class="p">,</span> <span class="n">itertools_imports</span><span class="p">,</span>
+<span class="n">nonzero</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">paren</span><span class="p">,</span> <span class="n">renames</span><span class="p">,</span> <span class="n">sys_exc</span><span class="p">,</span> <span class="n">throw</span><span class="p">,</span> <span class="n">xreadlines</span>
+</pre></div>
+</div>
+<p>Rules that have been applied (guard against regression):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">basestring</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="k">except</span><span class="p">,</span> <span class="n">exec</span><span class="p">,</span> <span class="n">execfile</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> <span class="n">funcattrs</span><span class="p">,</span> <span class="n">future</span><span class="p">,</span>
+<span class="n">has_key</span><span class="p">,</span> <span class="n">idioms</span><span class="p">,</span> <span class="n">import</span><span class="p">,</span> <span class="n">imports</span><span class="p">,</span> <span class="nb">isinstance</span><span class="p">,</span> <span class="n">itertools</span><span class="p">,</span> <span class="n">long</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">metaclass</span><span class="p">,</span>
+<span class="n">methodattrs</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="nb">next</span><span class="p">,</span> <span class="n">numliterals</span><span class="p">,</span> <span class="nb">print</span><span class="p">,</span> <span class="k">raise</span><span class="p">,</span> <span class="n">raw_input</span><span class="p">,</span> <span class="n">reduce</span><span class="p">,</span> <span class="nb">repr</span><span class="p">,</span>
+<span class="n">set_literal</span> <span class="p">(</span><span class="n">optional</span><span class="p">),</span> <span class="n">standarderror</span><span class="p">,</span> <span class="n">tuple_params</span><span class="p">,</span> <span class="n">types</span> <span class="p">(</span><span class="n">after</span> <span class="n">idioms</span><span class="p">),</span>
+<span class="n">unicode</span><span class="p">,</span> <span class="n">urllib</span><span class="p">,</span> <span class="n">ws_comma</span> <span class="p">(</span><span class="n">optional</span><span class="p">),</span> <span class="n">xrange</span><span class="p">,</span> <span class="nb">zip</span>
+</pre></div>
+</div>
+</section>
+<section id="examples-best-coding-practices">
+<h2>Examples best coding practices<a class="headerlink" href="#examples-best-coding-practices" title="Link to this heading"></a></h2>
+<p>Included below are a series of examples of best coding practices to use, to
+ensure that the Pipeline stays Python 3 compatible.</p>
+<section id="print-statements">
+<h3>Print statements<a class="headerlink" href="#print-statements" title="Link to this heading"></a></h3>
+<p>Before:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>print “bit of text”
+</pre></div>
+</div>
+<p>After:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>print(“bit of text”)
+</pre></div>
+</div>
+</section>
+<section id="has-key-method-in-dictionaries">
+<h3>‘has_key’ method in dictionaries<a class="headerlink" href="#has-key-method-in-dictionaries" title="Link to this heading"></a></h3>
+<p>Before:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">mydict</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">mykey</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>After:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">mykey</span> <span class="ow">in</span> <span class="n">mydict</span><span class="p">:</span>
+</pre></div>
+</div>
+</section>
+<section id="raising-exceptions">
+<h3>Raising exceptions<a class="headerlink" href="#raising-exceptions" title="Link to this heading"></a></h3>
+<p>Before:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>raise Exception “Oh no!”
+</pre></div>
+</div>
+<p>After:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>raise Exception(“Oh no!”)
+</pre></div>
+</div>
+</section>
+<section id="catching-exceptions">
+<h3>Catching exceptions<a class="headerlink" href="#catching-exceptions" title="Link to this heading"></a></h3>
+<p>Before:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>After:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</pre></div>
+</div>
+</section>
+<section id="checking-for-type">
+<h3>Checking for type<a class="headerlink" href="#checking-for-type" title="Link to this heading"></a></h3>
+<p>Before:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="ow">is</span> <span class="n">types</span><span class="o">.</span><span class="n">ListType</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>After:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</pre></div>
+</div>
+</section>
+<section id="relative-imports-within-package">
+<h3>Relative imports within package<a class="headerlink" href="#relative-imports-within-package" title="Link to this heading"></a></h3>
+<p>Before:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">display</span>
+</pre></div>
+</div>
+<p>After:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">display</span>
+</pre></div>
+</div>
+</section>
+<section id="formatted-strings">
+<h3>Formatted strings<a class="headerlink" href="#formatted-strings" title="Link to this heading"></a></h3>
+<p>The following change is not necessary for Python 3 compatibility,
+but the “before” has been marked as deprecated in Python 3 and
+may be removed in the future.</p>
+<p>Before:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>“bit of %s” % “text”
+</pre></div>
+</div>
+<p>After:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>“bit of {}”.format(“text”)
+</pre></div>
+</div>
+</section>
+<section id="reduce-builtin-is-deprecated">
+<h3>“reduce” builtin is deprecated<a class="headerlink" href="#reduce-builtin-is-deprecated" title="Link to this heading"></a></h3>
+<p>The built-in “reduce” is going away, but is available as part of the
+functools in standard library in both Python 2 and 3.</p>
+<p>Before:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">num_mses</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">mses</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>After:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">functools</span>
+<span class="n">num_mses</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">mses</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="is-deprecated-use">
+<h3>&lt;&gt; is deprecated, use !=<a class="headerlink" href="#is-deprecated-use" title="Link to this heading"></a></h3>
+<p>Before:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">a</span> <span class="o">&lt;&gt;</span> <span class="mi">1</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>After:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">a</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+</pre></div>
+</div>
+</section>
+<section id="implicit-tuple-parameter-unpacking-is-no-longer-supported">
+<h3>Implicit tuple parameter unpacking is no longer supported<a class="headerlink" href="#implicit-tuple-parameter-unpacking-is-no-longer-supported" title="Link to this heading"></a></h3>
+<p>Before:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">lambda</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span> <span class="n">y</span> <span class="o">-</span> <span class="n">x</span>
+</pre></div>
+</div>
+<p>After:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">lambda</span> <span class="n">x_y</span><span class="p">:</span> <span class="n">x_y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">x_y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="map-filter-zip-now-return-an-iterable-object-instead-of-a-list">
+<h3>map, filter, zip now return an iterable object, instead of a list<a class="headerlink" href="#map-filter-zip-now-return-an-iterable-object-instead-of-a-list" title="Link to this heading"></a></h3>
+<p>If the result from a call to map, filter, or zip is expected to be a list, then wrap the call in an explicit list
+statement.</p>
+<p>Before:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spwids</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+<span class="k">return</span> <span class="n">spwids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>After:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spwids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span>
+<span class="k">return</span> <span class="n">spwids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spwids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>As a side-effect of this change, one can no longer use a call to ‘map’ (with/without assigning result to variable)
+to run an implicit for loop. The loop has to be made explicit.</p>
+<p>Before:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">map</span><span class="p">(</span><span class="n">intent_intervaltree</span><span class="o">.</span><span class="n">remove</span><span class="p">,</span> <span class="n">to_remove</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">interval</span> <span class="ow">in</span> <span class="n">to_remove</span><span class="p">:</span>
+    <span class="n">intent_intervaltree</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="DeveloperDocumentation.html" class="btn btn-neutral float-left" title="Pipeline developer documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="releases.html" class="btn btn-neutral float-right" title="Pipeline Releases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

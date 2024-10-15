@@ -1,0 +1,18 @@
+pipeline.qa
+===========
+
+.. automodule:: pipeline.qa
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   bpcal
+   checksource
+   gpcal
+   scorecalculator
+   scorecalculator_test
+   utility

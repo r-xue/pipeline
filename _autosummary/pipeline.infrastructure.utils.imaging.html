@@ -1,0 +1,218 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.utils.imaging &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.utils.imaging</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.infrastructure.utils.imaging.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pipeline.infrastructure.utils.imaging">
+<span id="pipeline-infrastructure-utils-imaging"></span><h1>pipeline.infrastructure.utils.imaging<a class="headerlink" href="#module-pipeline.infrastructure.utils.imaging" title="Link to this heading"></a></h1>
+<p>The imaging module contains utility functions used by the imaging tasks.</p>
+<p>TODO These utility functions should migrate to hif.tasks.common</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.chan_selection_to_frequencies" title="pipeline.infrastructure.utils.imaging.chan_selection_to_frequencies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">chan_selection_to_frequencies</span></code></a>(img, selection)</p></td>
+<td><p>Convert channel selection to frequency tuples for a given CASA cube.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.equal_to_n_digits" title="pipeline.infrastructure.utils.imaging.equal_to_n_digits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">equal_to_n_digits</span></code></a>(x, y[, numdigits])</p></td>
+<td><p>Approximate equality check up to a given number of digits.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.freq_selection_to_channels" title="pipeline.infrastructure.utils.imaging.freq_selection_to_channels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">freq_selection_to_channels</span></code></a>(img, selection)</p></td>
+<td><p>Convert frequency selection to channel tuples for a given CASA cube.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.frequency_to_velocity" title="pipeline.infrastructure.utils.imaging.frequency_to_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frequency_to_velocity</span></code></a>(frequency, restfreq)</p></td>
+<td><p>Convert frequency to radial velocity using radio convention.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.intersect_ranges" title="pipeline.infrastructure.utils.imaging.intersect_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersect_ranges</span></code></a>(ranges)</p></td>
+<td><p>Compute intersection of ranges.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.intersect_ranges_by_weight" title="pipeline.infrastructure.utils.imaging.intersect_ranges_by_weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersect_ranges_by_weight</span></code></a>(ranges, delta, ...)</p></td>
+<td><p>Compute intersection of ranges through weight arrays and a threshold.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.merge_ranges" title="pipeline.infrastructure.utils.imaging.merge_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_ranges</span></code></a>(ranges)</p></td>
+<td><p>Merge overlapping and adjacent ranges and yield the merged ranges in order.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.predict_kernel" title="pipeline.infrastructure.utils.imaging.predict_kernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict_kernel</span></code></a>(beam, target_beam[, pstol, patol])</p></td>
+<td><p>Predict the required convolution kernel to each a target restoring beam.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.set_nested_dict" title="pipeline.infrastructure.utils.imaging.set_nested_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nested_dict</span></code></a>(dct, keys, value)</p></td>
+<td><p>Set a hierarchy of dictionaries with given keys and value for the lowest level key.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.spw_intersect" title="pipeline.infrastructure.utils.imaging.spw_intersect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spw_intersect</span></code></a>(spw_range, line_regions)</p></td>
+<td><p>This utility function takes a frequency range (as numbers with arbitrary but common units) and computes the intersection with a list of frequency ranges defining the regions of spectral lines.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.update_beams_dict" title="pipeline.infrastructure.utils.imaging.update_beams_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_beams_dict</span></code></a>(dct, udct)</p></td>
+<td><p>Update a beams dictionary.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.update_sens_dict" title="pipeline.infrastructure.utils.imaging.update_sens_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_sens_dict</span></code></a>(dct, udct)</p></td>
+<td><p>Update a sensitivity dictionary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.velocity_to_frequency" title="pipeline.infrastructure.utils.imaging.velocity_to_frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity_to_frequency</span></code></a>(velocity, restfreq)</p></td>
+<td><p>Convert radial velocity to frequency using radio convention.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

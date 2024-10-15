@@ -1,0 +1,984 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">casatasks.private.imagerhelpers.imager_parallel_continuum</span> <span class="kn">import</span> <span class="n">PyParallelContSynthesisImager</span>
+<span class="kn">from</span> <span class="nn">casatasks.private.imagerhelpers.input_parameters</span> <span class="kn">import</span> <span class="n">ImagerParameters</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.mpihelpers</span> <span class="k">as</span> <span class="nn">mpihelpers</span>
+<span class="kn">from</span> <span class="nn">.imageparams_base</span> <span class="kn">import</span> <span class="n">ImageParamsHeuristics</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont">[docs]</a>
+<span class="k">class</span> <span class="nc">ImageParamsHeuristicsVlassSeCont</span><span class="p">(</span><span class="n">ImageParamsHeuristics</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">proj_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">linesfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imaging_params</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="n">ImageParamsHeuristics</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="p">,</span> <span class="n">proj_params</span><span class="p">,</span> <span class="n">contfile</span><span class="p">,</span>
+                                       <span class="n">linesfile</span><span class="p">,</span> <span class="n">imaging_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">=</span> <span class="s1">&#39;VLASS-SE-CONT&#39;</span>
+        <span class="c1"># Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># Allow user specified cycleniter that affects only cleaning without user mask in the final imaging stage.</span>
+        <span class="c1"># Value is None or float.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_cycleniter_final_image_nomask</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># niter</span>
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.niter_correction">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.niter_correction">[docs]</a>
+    <span class="k">def</span> <span class="nf">niter_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">niter</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">imsize</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">residual_robust_rms</span><span class="p">,</span>
+                         <span class="n">mask_frac_rad</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adjust niter value between cleaning iteration steps based on imaging parameters, mask and residual&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">niter</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">niter</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">20000</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.niter">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.niter">[docs]</a>
+    <span class="k">def</span> <span class="nf">niter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean niter parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">niter_correction</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.deconvolver">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.deconvolver">[docs]</a>
+    <span class="k">def</span> <span class="nf">deconvolver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stokes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean deconvolver parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;mtmfs&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.robust">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.robust">[docs]</a>
+    <span class="k">def</span> <span class="nf">robust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean robust parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mf">2.0</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.gridder">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.gridder">[docs]</a>
+    <span class="k">def</span> <span class="nf">gridder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean gridder parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;awproject&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.cell">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.cell">[docs]</a>
+    <span class="k">def</span> <span class="nf">cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pixperbeam</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean cell parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;0.6arcsec&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.imsize">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.imsize">[docs]</a>
+    <span class="k">def</span> <span class="nf">imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">primary_beam</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sfpblimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_pixels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">centreonly</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+               <span class="n">vislist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">joint_intents</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean imsize parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">16384</span><span class="p">,</span> <span class="mi">16384</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.reffreq">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.reffreq">[docs]</a>
+    <span class="k">def</span> <span class="nf">reffreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deconvolver</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwsel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean reffreq parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;3.0GHz&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.cyclefactor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.cyclefactor">[docs]</a>
+    <span class="k">def</span> <span class="nf">cyclefactor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iter0_dirty_dynamic_range</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean cyclefactor parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">3.0</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.cycleniter">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.cycleniter">[docs]</a>
+    <span class="k">def</span> <span class="nf">cycleniter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean cycleniter parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="c1"># Special cases: cleaning without mask in 1st stage</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">iteration</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">500</span>
+        <span class="c1"># Cleaning without mask 3rd imaging stage, allow user to set value</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">iteration</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_cycleniter_final_image_nomask</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using user specified cycleniter = </span><span class="si">{}</span><span class="s2"> for cleaning without &quot;</span>
+                         <span class="s2">&quot;user mask (pbmask only).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_cycleniter_final_image_nomask</span><span class="p">))</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_cycleniter_final_image_nomask</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">500</span>
+        <span class="c1"># Special case: 3rd imaging stage</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">iteration</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">3000</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">5000</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.nmajor">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.nmajor">[docs]</a>
+    <span class="k">def</span> <span class="nf">nmajor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean nmajor parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># PIPE-1745: default value of nmajor=220 for all editimlist stages of the VLASS QL/SE imaging workflow</span>
+            <span class="k">return</span> <span class="mi">220</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.scales">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.scales">[docs]</a>
+    <span class="k">def</span> <span class="nf">scales</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean scales parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">iteration</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.uvtaper">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.uvtaper">[docs]</a>
+    <span class="k">def</span> <span class="nf">uvtaper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam_natural</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protect_long</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beam_user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tapering_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">repr_freq</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean uvtaper parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># PIPE-1679: the previous default value of &#39;3arcsec&#39; has been changed to &#39;3/(pi/(4ln(2)))arcsec&#39;</span>
+            <span class="c1"># since CASA ver&gt;=6.5.3 to maintain the beam size consistency due to the math correction from CAS-13260.</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;2.6476arcsec&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.uvrange">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.uvrange">[docs]</a>
+    <span class="k">def</span> <span class="nf">uvrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean uvrange parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;12km&#39;</span><span class="p">,</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.mask">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.mask">[docs]</a>
+    <span class="k">def</span> <span class="nf">mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hm_masking</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rootname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iteration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">results_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">clean_no_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tier-1 mask name to be used for computing Tier-1 and Tier-2 combined mask.</span>
+
+<span class="sd">            Obtain the mask name from the latest MakeImagesResult object in context.results.</span>
+<span class="sd">            If not found, then set empty string (as base heuristics).&quot;&quot;&quot;</span>
+        <span class="n">mask_list</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">results_list</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">results_list</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results_list</span><span class="p">:</span>
+                <span class="n">result_meta</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result_meta</span><span class="p">,</span> <span class="s1">&#39;pipeline_casa_task&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">result_meta</span><span class="o">.</span><span class="n">pipeline_casa_task</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                        <span class="s1">&#39;hifv_vlassmasking&#39;</span><span class="p">):</span>
+                    <span class="n">mask_list</span> <span class="o">=</span> <span class="n">result_meta</span><span class="o">.</span><span class="n">combinedmask</span>
+
+        <span class="c1"># Add &#39;pb&#39; string as a placeholder for cleaning without mask (pbmask only, see PIPE-977). This should</span>
+        <span class="c1"># always stand at the last place in the mask list.</span>
+        <span class="c1"># On request for first imaging stage (selfcal image) and automatically for the final imaging stage.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">clean_no_mask</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">clean_no_mask</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Cleaning without user mask is performed in pre-self calibration imaging stage &#39;</span>
+                         <span class="s1">&#39;(clean_no_mask_selfcal_image=True)&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">mask_list</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="n">mask_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;pb&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">mask_list</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>  <span class="c1"># mask is non-empty string</span>
+                <span class="n">mask_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">mask_list</span><span class="p">,</span> <span class="s1">&#39;pb&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mask_list</span> <span class="o">=</span> <span class="s1">&#39;pb&#39;</span>
+
+        <span class="c1"># In case hif_makeimages result was not found or results_list was not provided</span>
+        <span class="k">return</span> <span class="n">mask_list</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.buffer_radius">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.buffer_radius">[docs]</a>
+    <span class="k">def</span> <span class="nf">buffer_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">1000.</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.specmode">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.specmode">[docs]</a>
+    <span class="k">def</span> <span class="nf">specmode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean specmode parameter heuristics.</span>
+<span class="sd">        See PIPE-1060&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;cont&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.intent">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.intent">[docs]</a>
+    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean intent parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;TARGET&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.nterms">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.nterms">[docs]</a>
+    <span class="k">def</span> <span class="nf">nterms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean nterms parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.stokes">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.stokes">[docs]</a>
+    <span class="k">def</span> <span class="nf">stokes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">joint_intents</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean stokes parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;I&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.pb_correction">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.pb_correction">[docs]</a>
+    <span class="k">def</span> <span class="nf">pb_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.pblimits">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.pblimits">[docs]</a>
+    <span class="k">def</span> <span class="nf">pblimits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pb</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">specmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean pblimit parameter and cleanmask pblimit heuristics.&quot;&quot;&quot;</span>
+
+        <span class="n">pblimit_image</span><span class="p">,</span> <span class="n">pblimit_cleanmask</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pblimits</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span>
+
+        <span class="c1"># Overwrite pblimit_image (to be used in tclean as pblimit parameter) with</span>
+        <span class="c1"># the VLASS-SE-CONT-MOSAIC specific value.</span>
+        <span class="k">return</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">pblimit_cleanmask</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.conjbeams">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.conjbeams">[docs]</a>
+    <span class="k">def</span> <span class="nf">conjbeams</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean conjbeams parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.get_sensitivity">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.get_sensitivity">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms_do</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">chansel</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">imsize</span><span class="p">,</span> <span class="n">weighting</span><span class="p">,</span> <span class="n">robust</span><span class="p">,</span> <span class="n">uvtaper</span><span class="p">)</span> \
+            <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="mf">0.0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.find_fields">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.find_fields">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;0deg&#39;</span><span class="p">,</span> <span class="n">phase_center</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">matchregex</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+
+        <span class="c1"># Created STM 2016-May-16 use center direction measure</span>
+        <span class="c1"># Returns list of fields from msfile within a rectangular box of size distance</span>
+
+        <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+        <span class="n">tb</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">table</span>
+
+        <span class="n">msfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vislist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">fieldlist</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">phase_center</span> <span class="o">=</span> <span class="n">phase_center</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">center_dir</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="n">phase_center</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">phase_center</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">phase_center</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">center_ra</span> <span class="o">=</span> <span class="n">center_dir</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">center_dec</span> <span class="o">=</span> <span class="n">center_dir</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">qdist</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">toangle</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+            <span class="n">qrad</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qdist</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">)</span>
+            <span class="n">maxrad</span> <span class="o">=</span> <span class="n">qrad</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;cannot parse distance </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">distance</span><span class="p">))</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msfile</span> <span class="o">+</span> <span class="s1">&#39;/FIELD&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;could not open </span><span class="si">{}</span><span class="s1">/FIELD&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msfile</span><span class="p">))</span>
+            <span class="k">return</span>
+        <span class="n">field_dirs</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;PHASE_DIR&#39;</span><span class="p">)</span>
+        <span class="n">field_names</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;NAME&#39;</span><span class="p">)</span>
+        <span class="n">tb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="p">(</span><span class="n">nd</span><span class="p">,</span> <span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">)</span> <span class="o">=</span> <span class="n">field_dirs</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Found </span><span class="si">{}</span><span class="s1"> fields&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nf</span><span class="p">))</span>
+
+        <span class="c1"># compile field dictionaries</span>
+        <span class="n">ddirs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">flookup</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nf</span><span class="p">):</span>
+            <span class="n">fra</span> <span class="o">=</span> <span class="n">field_dirs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+            <span class="n">fdd</span> <span class="o">=</span> <span class="n">field_dirs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+            <span class="n">rapos</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">fra</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">)</span>
+            <span class="n">decpos</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">fdd</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">)</span>
+            <span class="n">ral</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">rapos</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tim&quot;</span><span class="p">],</span> <span class="n">prec</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+            <span class="n">decl</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">decpos</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">fdir</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="s1">&#39;J2000&#39;</span><span class="p">,</span> <span class="n">ral</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">decl</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">ddirs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">ddirs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;ra&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fra</span>
+            <span class="n">ddirs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;dec&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fdd</span>
+            <span class="n">ddirs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fdir</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">field_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">ddirs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fn</span>
+            <span class="k">if</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">flookup</span><span class="p">:</span>
+                <span class="n">flookup</span><span class="p">[</span><span class="n">fn</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flookup</span><span class="p">[</span><span class="n">fn</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Cataloged </span><span class="si">{}</span><span class="s1"> fields&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nf</span><span class="p">))</span>
+
+        <span class="c1"># Construct offset separations in ra,dec</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Looking for fields with maximum separation </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">distance</span><span class="p">))</span>
+        <span class="n">nreject</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">skipmatch</span> <span class="o">=</span> <span class="n">matchregex</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="n">matchregex</span> <span class="o">==</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nf</span><span class="p">):</span>
+            <span class="n">dd</span> <span class="o">=</span> <span class="n">ddirs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;dir&#39;</span><span class="p">]</span>
+            <span class="n">dd_ra</span> <span class="o">=</span> <span class="n">dd</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">dd_dec</span> <span class="o">=</span> <span class="n">dd</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">sep_ra</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dd_ra</span> <span class="o">-</span> <span class="n">center_ra</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sep_ra</span> <span class="o">&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+                <span class="n">sep_ra</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="n">sep_ra</span>
+            <span class="c1"># change the following to use dd_dec 2017-02-06</span>
+            <span class="n">sep_ra_sky</span> <span class="o">=</span> <span class="n">sep_ra</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">dd_dec</span><span class="p">)</span>
+
+            <span class="n">sep_dec</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dd_dec</span> <span class="o">-</span> <span class="n">center_dec</span><span class="p">)</span>
+
+            <span class="n">ddirs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;offset_ra&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sep_ra_sky</span>
+            <span class="n">ddirs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;offset_ra&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sep_dec</span>
+
+            <span class="k">if</span> <span class="n">sep_ra_sky</span> <span class="o">&lt;=</span> <span class="n">maxrad</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">sep_dec</span> <span class="o">&lt;=</span> <span class="n">maxrad</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">skipmatch</span><span class="p">:</span>
+                        <span class="n">fieldlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># test regex against name</span>
+                        <span class="n">foundmatch</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="n">fn</span> <span class="o">=</span> <span class="n">ddirs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">rx</span> <span class="ow">in</span> <span class="n">matchregex</span><span class="p">:</span>
+                            <span class="n">mat</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">rx</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="n">foundmatch</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">if</span> <span class="n">foundmatch</span><span class="p">:</span>
+                            <span class="n">fieldlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">nreject</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Found </span><span class="si">{}</span><span class="s1"> fields within </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fieldlist</span><span class="p">),</span> <span class="n">distance</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">skipmatch</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Rejected </span><span class="si">{}</span><span class="s1"> distance matches for regex&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nreject</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">fieldlist</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.keep_iterating">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.keep_iterating">[docs]</a>
+    <span class="k">def</span> <span class="nf">keep_iterating</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">,</span> <span class="n">tclean_stopcode</span><span class="p">,</span> <span class="n">dirty_dynamic_range</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span>
+                       <span class="n">residual_robust_rms</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">specmode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine whether another tclean iteration is necessary.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;auto&#39;</span>
+        <span class="k">elif</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Final VLASS single epoch tclean call with no mask&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.threshold">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.threshold">[docs]</a>
+    <span class="k">def</span> <span class="nf">threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">hm_masking</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean threshold parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">hm_masking</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;0.0mJy&#39;</span>
+        <span class="k">elif</span> <span class="n">hm_masking</span> <span class="o">==</span> <span class="s1">&#39;none&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="n">threshold</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;0.0mJy&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">threshold</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.nsigma">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.nsigma">[docs]</a>
+    <span class="k">def</span> <span class="nf">nsigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">hm_nsigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean nsigma parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">hm_nsigma</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">hm_nsigma</span>
+        <span class="c1"># PSF and dirty image</span>
+        <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">2.0</span>
+        <span class="c1"># Cleaning with pb mask in 3rd imaging stage</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">4.5</span>
+        <span class="c1"># First imaging stage</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">iteration</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">10.0</span>
+        <span class="c1"># Second imaging stage</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">iteration</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">5.0</span>
+        <span class="c1"># Cleaning with user mask in 3rd imaging stage</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">3.0</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.savemodel">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.savemodel">[docs]</a>
+    <span class="k">def</span> <span class="nf">savemodel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean savemodel parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="c1"># Model is saved in first imaging cycle last iteration</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;modelcolumn&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.datacolumn">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.datacolumn">[docs]</a>
+    <span class="k">def</span> <span class="nf">datacolumn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Column parameter to be used as tclean argument&quot;&quot;&quot;</span>
+        <span class="c1"># First imaging stage use data column</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;data&#39;</span>
+        <span class="c1"># Subsequent stages use the self-calibrated and corrected column</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;corrected&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.wprojplanes">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.wprojplanes">[docs]</a>
+    <span class="k">def</span> <span class="nf">wprojplanes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gridder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean wprojplanes parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">32</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.rotatepastep">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.rotatepastep">[docs]</a>
+    <span class="k">def</span> <span class="nf">rotatepastep</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean rotatepastep parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">5.0</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.get_autobox_params">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.get_autobox_params">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_autobox_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">specmode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">robust</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Default auto-boxing parameters.&quot;&quot;&quot;</span>
+
+        <span class="n">sidelobethreshold</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">noisethreshold</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">lownoisethreshold</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">negativethreshold</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">minbeamfrac</span> <span class="o">=</span> <span class="mf">0.3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">minbeamfrac</span> <span class="o">=</span> <span class="mf">0.1</span>
+        <span class="n">growiterations</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">dogrowprune</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">minpercentchange</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">fastnoise</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">sidelobethreshold</span><span class="p">,</span> <span class="n">noisethreshold</span><span class="p">,</span> <span class="n">lownoisethreshold</span><span class="p">,</span> <span class="n">negativethreshold</span><span class="p">,</span> <span class="n">minbeamfrac</span><span class="p">,</span>
+                <span class="n">growiterations</span><span class="p">,</span> <span class="n">dogrowprune</span><span class="p">,</span> <span class="n">minpercentchange</span><span class="p">,</span> <span class="n">fastnoise</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.usepointing">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.usepointing">[docs]</a>
+    <span class="k">def</span> <span class="nf">usepointing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;clean flag to use pointing table.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.get_cfcaches">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.get_cfcaches">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_cfcaches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfcache</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parses comma separated cfcache string</span>
+
+<span class="sd">        Comma separated list is used to input frequency dependent and independent A-term cfcaches in</span>
+<span class="sd">        VLASS-SE-CONT imaging mode.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;,&#39;</span> <span class="ow">in</span> <span class="n">cfcache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">cfch</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">cfch</span> <span class="ow">in</span> <span class="n">cfcache</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">cfcache</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.set_user_cycleniter_final_image_nomask">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.set_user_cycleniter_final_image_nomask">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_user_cycleniter_final_image_nomask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cycleniter_final_image_nomask</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets class variable controlling the cycleniter parameter of the last clean step (cleaning without user mask,</span>
+<span class="sd">        pbmask only) in the third (final) VLASS-SE-CONT imaging stage.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">cycleniter_final_image_nomask</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting user specified cycleniter = </span><span class="si">{}</span><span class="s2"> for cleaning without &quot;</span>
+                     <span class="s2">&quot;user mask (pbmask only).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cycleniter_final_image_nomask</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_cycleniter_final_image_nomask</span> <span class="o">=</span> <span class="n">cycleniter_final_image_nomask</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.smallscalebias">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.smallscalebias">[docs]</a>
+    <span class="k">def</span> <span class="nf">smallscalebias</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A numerical control to bias the scales when using multi-scale or mtmfs algorithms&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">0.4</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.restoringbeam">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.restoringbeam">[docs]</a>
+    <span class="k">def</span> <span class="nf">restoringbeam</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean parameter&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.pointingoffsetsigdev">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.pointingoffsetsigdev">[docs]</a>
+    <span class="k">def</span> <span class="nf">pointingoffsetsigdev</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean parameter&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.pbmask">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.pbmask">[docs]</a>
+    <span class="k">def</span> <span class="nf">pbmask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean pbmask parameter heuristics.</span>
+<span class="sd">        Cleaning with only primary beam mask is used on request (via editimlist).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">0.4</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.get_parallel_cont_synthesis_imager_csys">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.get_parallel_cont_synthesis_imager_csys">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_parallel_cont_synthesis_imager_csys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phasecenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                <span class="n">parallel</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method creates an image with PyParallelContSynthesisImager and returns it&#39;s phase centre.</span>
+
+<span class="sd">        The purpose of this method is to temporarily (until CASA fixes the issue) reduce the phase centre accuracy of</span>
+<span class="sd">        VLASS-SE-CONT masks computed in hifv_makeimages() to the accuracy used in the parallel imager (in the</span>
+<span class="sd">        hif_makeimages() stages).</span>
+
+<span class="sd">        Tclean 6.1 truncates phase center coordinates at ~1E-7 precision. When a mask is provided to tclean</span>
+<span class="sd">        with higher precision reference coordinate, the truncation may lead to the interpolated mask to shift</span>
+<span class="sd">        by a pixel, resulting in slightly different tclean input and output mask.</span>
+
+<span class="sd">        The method also records the phase centre difference in the CASA log.</span>
+
+<span class="sd">        See CAS-13338 and PIPE-728</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">qaTool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="n">do_parallel</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">parse_mpi_input_parameter</span><span class="p">(</span><span class="n">parallel</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">phasecenter</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No phasecenter is provided.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">do_parallel</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Determining exact value of image phase center empirically due to CASA precision issue in parallel mode (CAS-13338)&quot;</span><span class="p">)</span>
+            <span class="n">tmp_psf_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+            <span class="n">paramList</span> <span class="o">=</span> <span class="n">ImagerParameters</span><span class="p">(</span><span class="n">msname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vislist</span><span class="p">,</span>
+                                         <span class="n">phasecenter</span><span class="o">=</span><span class="n">phasecenter</span><span class="p">,</span>
+                                         <span class="n">imagename</span><span class="o">=</span><span class="n">tmp_psf_filename</span><span class="p">,</span>
+                                         <span class="n">imsize</span><span class="o">=</span><span class="n">imsize</span><span class="p">,</span>
+                                         <span class="n">cell</span><span class="o">=</span><span class="n">cell</span><span class="p">,</span>
+                                         <span class="n">stokes</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span>
+                                         <span class="c1"># gridder=self.gridder(None, None),</span>
+                                         <span class="c1"># cfcache=cfcache,</span>
+                                         <span class="n">parallel</span><span class="o">=</span><span class="n">do_parallel</span>
+                                         <span class="p">)</span>
+            <span class="n">makepsf_imager</span> <span class="o">=</span> <span class="n">PyParallelContSynthesisImager</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">paramList</span><span class="p">)</span>
+
+            <span class="n">makepsf_imager</span><span class="o">.</span><span class="n">initializeImagers</span><span class="p">()</span>
+            <span class="n">makepsf_imager</span><span class="o">.</span><span class="n">initializeNormalizers</span><span class="p">()</span>
+            <span class="n">makepsf_imager</span><span class="o">.</span><span class="n">setWeighting</span><span class="p">()</span>
+            <span class="n">makepsf_imager</span><span class="o">.</span><span class="n">makePSF</span><span class="p">()</span>
+            <span class="n">makepsf_imager</span><span class="o">.</span><span class="n">deleteTools</span><span class="p">()</span>
+
+            <span class="c1"># Obtain image reference and header</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.psf&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tmp_psf_filename</span><span class="p">))</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+                <span class="n">csys_image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">coordsys</span><span class="p">()</span>
+            <span class="n">csys_record</span> <span class="o">=</span> <span class="n">csys_image</span><span class="o">.</span><span class="n">torecord</span><span class="p">()</span>
+            <span class="n">csys_image</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+            <span class="n">tmp_psf_images</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.*&#39;</span> <span class="o">%</span> <span class="n">tmp_psf_filename</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">tmp_psf_image</span> <span class="ow">in</span> <span class="n">tmp_psf_images</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">tmp_psf_image</span><span class="p">)</span>
+
+            <span class="c1"># Report coordinate difference:</span>
+            <span class="n">ra_str</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">phasecenter</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">dec_str</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">phasecenter</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+            <span class="n">ra_psf</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">csys_record</span><span class="p">[</span><span class="s1">&#39;direction0&#39;</span><span class="p">][</span><span class="s1">&#39;crval&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                                               <span class="n">csys_record</span><span class="p">[</span><span class="s1">&#39;direction0&#39;</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">dec_psf</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">csys_record</span><span class="p">[</span><span class="s1">&#39;direction0&#39;</span><span class="p">][</span><span class="s1">&#39;crval&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                                                <span class="n">csys_record</span><span class="p">[</span><span class="s1">&#39;direction0&#39;</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Corrected difference between requested phase center and parallel synthesis imager phase &#39;</span>
+                     <span class="s1">&#39;center is delta_ra = </span><span class="si">{:.4e}</span><span class="s1"> arcsec, delta_dec = </span><span class="si">{:.4e}</span><span class="s1"> arcsec&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ra_psf</span> <span class="o">-</span> <span class="n">ra_str</span><span class="p">,</span>
+                                                                                            <span class="n">dec_psf</span> <span class="o">-</span> <span class="n">dec_str</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">csys_record</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">csys_record</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCont.get_outmaskratio">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.get_outmaskratio">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_outmaskratio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>  <span class="n">image</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pbimage</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cleanmask</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                         <span class="n">pblimit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span> <span class="n">frac_lim</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine fractional flux in final image outside cleanmask, only in first imaging stage final image.</span>
+
+<span class="sd">        A threshold of 10x sigma (measured on image) and a pblimit of 0.4 is applied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Only for first imaging stage, restoration with QL mask, and if there is a mask</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cleanmask</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="c1"># Check if files exist</span>
+            <span class="n">warn_message</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> does not exist, flux fraction outside mask cannot be computed.&#39;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn_message</span> <span class="o">%</span> <span class="n">image</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pbimage</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn_message</span> <span class="o">%</span> <span class="n">pbimage</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn_message</span> <span class="o">%</span> <span class="n">cleanmask</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="c1"># threshold for sigma clipping, measure sigma in the image and use 10x the value</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="k">as</span> <span class="n">im</span><span class="p">:</span>
+                <span class="n">threshold</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">robust</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="mf">10.0</span>
+                <span class="n">thr_unit</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">brightnessunit</span><span class="p">()</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Measuring flux fraction outside clean mask with 10 sigma threshold = </span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s2"> &quot;</span>
+                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">thr_unit</span><span class="si">}</span><span class="s2"> and pblimit = </span><span class="si">{</span><span class="n">pblimit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Image flux within mask, above threshold and pb level</span>
+            <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;iif(&quot;</span><span class="si">{</span><span class="n">image</span><span class="si">}</span><span class="s1">&quot; &gt; </span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s1">, &quot;</span><span class="si">{</span><span class="n">image</span><span class="si">}</span><span class="s1">&quot;, 0.0) &#39;</span> \
+                         <span class="sa">f</span><span class="s1">&#39;* iif(&quot;</span><span class="si">{</span><span class="n">pbimage</span><span class="si">}</span><span class="s1">&quot; &gt;= </span><span class="si">{</span><span class="n">pblimit</span><span class="si">}</span><span class="s1">, 1.0, 0.0) &#39;</span> \
+                         <span class="sa">f</span><span class="s1">&#39;* &quot;</span><span class="si">{</span><span class="n">cleanmask</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="n">image_inmask</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">imagecalc</span><span class="p">(</span><span class="n">outfile</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">pixels</span><span class="o">=</span><span class="n">expression</span><span class="p">,</span> <span class="n">imagemd</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">image</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">inmask_flux</span> <span class="o">=</span> <span class="n">image_inmask</span><span class="o">.</span><span class="n">statistics</span><span class="p">()[</span><span class="s1">&#39;sum&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">image_inmask</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+            <span class="c1"># Image flux outside mask, above threshold and pb level</span>
+            <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;iif(&quot;</span><span class="si">{</span><span class="n">image</span><span class="si">}</span><span class="s1">&quot; &gt; </span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s1">, &quot;</span><span class="si">{</span><span class="n">image</span><span class="si">}</span><span class="s1">&quot;, 0.0) &#39;</span> \
+                         <span class="sa">f</span><span class="s1">&#39;* iif(&quot;</span><span class="si">{</span><span class="n">pbimage</span><span class="si">}</span><span class="s1">&quot; &gt;= </span><span class="si">{</span><span class="n">pblimit</span><span class="si">}</span><span class="s1">, 1.0, 0.0) &#39;</span> \
+                         <span class="sa">f</span><span class="s1">&#39;* ((&quot;</span><span class="si">{</span><span class="n">cleanmask</span><span class="si">}</span><span class="s1">&quot; - 1.0) * -1.0)&#39;</span>
+
+            <span class="n">image_outmask</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">imagecalc</span><span class="p">(</span><span class="n">outfile</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">pixels</span><span class="o">=</span><span class="n">expression</span><span class="p">,</span> <span class="n">imagemd</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">image</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">outmask_flux</span> <span class="o">=</span> <span class="n">image_outmask</span><span class="o">.</span><span class="n">statistics</span><span class="p">()[</span><span class="s1">&#39;sum&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">image_outmask</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+            <span class="c1"># calculate ratio of total flux inside and outside mask</span>
+            <span class="n">outmaskratio</span> <span class="o">=</span> <span class="n">outmask_flux</span> <span class="o">/</span> <span class="p">(</span><span class="n">inmask_flux</span> <span class="o">+</span> <span class="n">outmask_flux</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">outmaskratio</span> <span class="o">&gt;</span> <span class="n">frac_lim</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Flux fraction outside cleanmask is </span><span class="si">{</span><span class="s2">&quot;</span><span class="si">%.3g</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">outmaskratio</span><span class="si">}</span><span class="s1">, &#39;</span>
+                            <span class="sa">f</span><span class="s1">&#39;exceeds </span><span class="si">{</span><span class="n">frac_lim</span><span class="si">}</span><span class="s1"> limit!&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Flux fraction outside clean mask (</span><span class="si">{</span><span class="n">cleanmask</span><span class="si">}</span><span class="s1">) is </span><span class="si">{</span><span class="s2">&quot;</span><span class="si">%.3g</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">outmaskratio</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">outmaskratio</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeContAWPP001">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContAWPP001">[docs]</a>
+<span class="k">class</span> <span class="nc">ImageParamsHeuristicsVlassSeContAWPP001</span><span class="p">(</span><span class="n">ImageParamsHeuristicsVlassSeCont</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Special heuristics case when gridder is awproject and the wprojplanes parameter</span>
+<span class="sd">    is set to 1 (in parent class it is 32).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">proj_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">linesfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imaging_params</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="n">ImageParamsHeuristicsVlassSeCont</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="p">,</span> <span class="n">proj_params</span><span class="p">,</span>
+                                                  <span class="n">contfile</span><span class="p">,</span> <span class="n">linesfile</span><span class="p">,</span> <span class="n">imaging_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">=</span> <span class="s1">&#39;VLASS-SE-CONT-AWP-P001&#39;</span>
+        <span class="c1"># Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeContAWPP001.wprojplanes">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContAWPP001.wprojplanes">[docs]</a>
+    <span class="k">def</span> <span class="nf">wprojplanes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gridder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean wprojplanes parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeContAWPP001.gridder">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContAWPP001.gridder">[docs]</a>
+    <span class="k">def</span> <span class="nf">gridder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean gridder parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;awproject&#39;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeContMosaic">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic">[docs]</a>
+<span class="k">class</span> <span class="nc">ImageParamsHeuristicsVlassSeContMosaic</span><span class="p">(</span><span class="n">ImageParamsHeuristicsVlassSeCont</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Special heuristics case when gridder is awproject and the wprojplanes parameter</span>
+<span class="sd">    is set to 1 (in parent class it is 32).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">proj_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">linesfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imaging_params</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="n">ImageParamsHeuristicsVlassSeCont</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="p">,</span> <span class="n">proj_params</span><span class="p">,</span>
+                                                  <span class="n">contfile</span><span class="p">,</span> <span class="n">linesfile</span><span class="p">,</span> <span class="n">imaging_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">=</span> <span class="s1">&#39;VLASS-SE-CONT-MOSAIC&#39;</span>
+        <span class="c1"># Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_cycleniter_final_image_nomask</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeContMosaic.imsize">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.imsize">[docs]</a>
+    <span class="k">def</span> <span class="nf">imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">primary_beam</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sfpblimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_pixels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">centreonly</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+               <span class="n">vislist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">joint_intents</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean imsize parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">12500</span><span class="p">,</span> <span class="mi">12500</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeContMosaic.mosweight">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.mosweight">[docs]</a>
+    <span class="k">def</span> <span class="nf">mosweight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;tclean flag to use mosaic weighting.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Currently only ALMA has decided to use this flag (CAS-11840). So</span>
+        <span class="c1"># the default is set to False here.</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeContMosaic.wprojplanes">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.wprojplanes">[docs]</a>
+    <span class="k">def</span> <span class="nf">wprojplanes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gridder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean wprojplanes parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeContMosaic.gridder">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.gridder">[docs]</a>
+    <span class="k">def</span> <span class="nf">gridder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean gridder parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;mosaic&#39;</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeContMosaic.cycleniter">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.cycleniter">[docs]</a>
+    <span class="k">def</span> <span class="nf">cycleniter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean cycleniter parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="c1"># Special cases: cleaning without mask in 1st stage</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">iteration</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">100</span>
+        <span class="c1"># Cleaning without mask 3rd imaging stage, allow user to set value</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">iteration</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_cycleniter_final_image_nomask</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using user specified cycleniter = </span><span class="si">{}</span><span class="s2"> for cleaning without &quot;</span>
+                         <span class="s2">&quot;user mask (pbmask only).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_cycleniter_final_image_nomask</span><span class="p">))</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_cycleniter_final_image_nomask</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">100</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">500</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeContMosaic.conjbeams">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.conjbeams">[docs]</a>
+    <span class="k">def</span> <span class="nf">conjbeams</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean conjbeams parameter heuristics.&quot;&quot;&quot;</span>
+        <span class="c1"># Might change to True based on stackholder feedback</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeContMosaic.pblimits">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.pblimits">[docs]</a>
+    <span class="k">def</span> <span class="nf">pblimits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pb</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">specmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean pblimit parameter and cleanmask pblimit heuristics.&quot;&quot;&quot;</span>
+        <span class="n">pblimit_image</span><span class="p">,</span> <span class="n">pblimit_cleanmask</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pblimits</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span>
+
+        <span class="c1"># Overwrite pblimit_image (to be used in tclean as pblimit parameter) with</span>
+        <span class="c1"># the VLASS-SE-CONT-MOSAIC specific value.</span>
+        <span class="k">return</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">pblimit_cleanmask</span></div>
+
+
+<div class="viewcode-block" id="ImageParamsHeuristicsVlassSeContMosaic.usepointing">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.usepointing">[docs]</a>
+    <span class="k">def</span> <span class="nf">usepointing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;clean flag to use pointing table.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

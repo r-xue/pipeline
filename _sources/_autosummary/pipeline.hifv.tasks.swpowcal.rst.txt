@@ -1,0 +1,20 @@
+pipeline.hifv.tasks.swpowcal
+============================
+
+.. automodule:: pipeline.hifv.tasks.swpowcal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Swpowcal
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   resultobjects
+   swpowcal

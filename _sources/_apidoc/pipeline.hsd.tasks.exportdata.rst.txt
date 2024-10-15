@@ -1,0 +1,29 @@
+pipeline.hsd.tasks.exportdata package
+=====================================
+
+Submodules
+----------
+
+pipeline.hsd.tasks.exportdata.almasdaqua module
+-----------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.exportdata.almasdaqua
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.exportdata.exportdata module
+-----------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.exportdata.exportdata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hsd.tasks.exportdata
+   :members:
+   :undoc-members:
+   :show-inheritance:

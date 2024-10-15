@@ -1,0 +1,22 @@
+pipeline.hifv.tasks.fluxscale.solint
+====================================
+
+.. automodule:: pipeline.hifv.tasks.fluxscale.solint
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      getCalFlaggedSoln
+      solint_rounded_to_integer_integrations
+      uvrange
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Solint
+      SolintInputs
+      SolintResults
+   

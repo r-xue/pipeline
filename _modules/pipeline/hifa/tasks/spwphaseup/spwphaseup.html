@@ -1,0 +1,1145 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.spwphaseup.spwphaseup &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.spwphaseup.spwphaseup</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.spwphaseup.spwphaseup</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">commonhelpermethods</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.gaincal</span> <span class="kn">import</span> <span class="n">gtypegaincal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.gaincal.common</span> <span class="kn">import</span> <span class="n">GaincalResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics.phasemetrics</span> <span class="kn">import</span> <span class="n">PhaseStabilityHeuristics</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics.phasespwmap</span> <span class="kn">import</span> <span class="n">combine_spwmap</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics.phasespwmap</span> <span class="kn">import</span> <span class="n">simple_n2wspwmap</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics.phasespwmap</span> <span class="kn">import</span> <span class="n">snr_n2wspwmap</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics.phasespwmap</span> <span class="kn">import</span> <span class="n">update_spwmap_for_band_to_band</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.tasks.gaincalsnr</span> <span class="kn">import</span> <span class="n">gaincalsnr</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;SpwPhaseupInputs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SpwPhaseup&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SpwPhaseupResults&#39;</span>
+<span class="p">]</span>
+
+<span class="n">IntentField</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;IntentField&#39;</span><span class="p">,</span> <span class="s1">&#39;intent field&#39;</span><span class="p">)</span>
+<span class="n">SpwMapping</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;SpwMapping&#39;</span><span class="p">,</span> <span class="s1">&#39;combine spwmap low_combinedsnr_spws snr_info&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SpwPhaseupInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.qa.SpwPhaseupInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">SpwPhaseupInputs</span><span class="p">(</span><span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincalInputs</span><span class="p">):</span>
+    <span class="c1"># Spw mapping mode heuristics, options are:</span>
+    <span class="c1">#  &#39;auto&#39;: apply SNR-based heuristics to determine which type of spw</span>
+    <span class="c1">#          mapping / combination is appropriate.</span>
+    <span class="c1">#  &#39;combine&#39;: force use of combined spw mapping</span>
+    <span class="c1">#  &#39;simple&#39;: force use of simple narrow-to-wide spw mapping.</span>
+    <span class="c1">#  &#39;default&#39;: use the standard mapping, mapping each spw to itself.</span>
+    <span class="n">hm_spwmapmode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+
+    <span class="nd">@hm_spwmapmode</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">hm_spwmapmode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">allowed</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="s1">&#39;combine&#39;</span><span class="p">,</span> <span class="s1">&#39;simple&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;</span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Value not in allowed value set (</span><span class="si">{!s}</span><span class="s1">): </span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="c1"># Fraction of bandwidth to ignore on each edge of a spectral window</span>
+    <span class="c1"># for SNR assessment.</span>
+    <span class="n">bwedgefrac</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.03125</span><span class="p">)</span>
+
+    <span class="c1"># Maximum fraction of data that can be flagged for an antenna before that</span>
+    <span class="c1"># antenna is considered &quot;flagged&quot; and no longer considered in SNR</span>
+    <span class="c1"># estimation.</span>
+    <span class="n">maxfracflagged</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.90</span><span class="p">)</span>
+
+    <span class="c1"># Maximum narrow bandwidth.</span>
+    <span class="n">maxnarrowbw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;300MHz&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Width of spw must be larger than minfracmaxbw * maximum bandwith for</span>
+    <span class="c1"># a spw to be a match.</span>
+    <span class="n">minfracmaxbw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+    <span class="c1"># Phase SNR threshold to use in spw mapping assessment to identify low</span>
+    <span class="c1"># SNR spws.</span>
+    <span class="n">phasesnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">32.0</span><span class="p">)</span>
+
+    <span class="c1"># Toggle to select whether to restrict spw matching to the same baseband.</span>
+    <span class="n">samebb</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Antenna flagging heuristics parameter</span>
+    <span class="n">hm_nantennas</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+
+    <span class="nd">@hm_nantennas</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">hm_nantennas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">allowed</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;unflagged&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;</span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Value not in allowed value set (</span><span class="si">{!s}</span><span class="s1">): </span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="c1"># Allow user to set custom filename for the phase offsets caltable.</span>
+    <span class="n">caltable</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Intent to use in data selection for computing phase offsets caltable.</span>
+    <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">)</span>
+
+    <span class="c1"># PIPE-629: parameter to unregister existing phaseup tables before appending to callibrary</span>
+    <span class="n">unregister_existing</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_spwmapmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">phasesnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bwedgefrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_nantennas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxfracflagged</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">maxnarrowbw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minfracmaxbw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">samebb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unregister_existing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_spwmapmode</span> <span class="o">=</span> <span class="n">hm_spwmapmode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phasesnr</span> <span class="o">=</span> <span class="n">phasesnr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bwedgefrac</span> <span class="o">=</span> <span class="n">bwedgefrac</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_nantennas</span> <span class="o">=</span> <span class="n">hm_nantennas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxfracflagged</span> <span class="o">=</span> <span class="n">maxfracflagged</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxnarrowbw</span> <span class="o">=</span> <span class="n">maxnarrowbw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minfracmaxbw</span> <span class="o">=</span> <span class="n">minfracmaxbw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samebb</span> <span class="o">=</span> <span class="n">samebb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unregister_existing</span> <span class="o">=</span> <span class="n">unregister_existing</span></div>
+
+
+
+<div class="viewcode-block" id="SpwPhaseup">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.qa.SpwPhaseup">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_spwphaseup&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">SpwPhaseup</span><span class="p">(</span><span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SpwPhaseupInputs</span>
+
+<div class="viewcode-block" id="SpwPhaseup.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.qa.SpwPhaseup.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="c1"># Simplify the inputs</span>
+        <span class="n">inputs</span><span class="p">:</span> <span class="n">SpwPhaseupInputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Intents to derive separate SpW mappings for:</span>
+        <span class="n">spwmap_intents</span> <span class="o">=</span> <span class="s1">&#39;CHECK,PHASE&#39;</span>
+
+        <span class="c1"># Do not derive separate SpW mappings for fields that also cover any of</span>
+        <span class="c1"># these calibrator intents:</span>
+        <span class="n">exclude_intents</span> <span class="o">=</span> <span class="s1">&#39;AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE,DIFFGAINREF,DIFFGAINSRC&#39;</span>
+
+        <span class="c1"># PIPE-629: if requested, unregister old spwphaseup calibrations from</span>
+        <span class="c1"># local copy of context, to stop these from being pre-applied during</span>
+        <span class="c1"># this stage.</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">unregister_existing</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unregister_spwphaseup</span><span class="p">()</span>
+
+        <span class="c1"># Derive the mapping from phase fields to target/check fields.</span>
+        <span class="n">phasecal_mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derive_phase_to_target_check_mapping</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
+
+        <span class="c1"># Derive the optimal spectral window maps.</span>
+        <span class="n">spwmaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derive_spwmaps</span><span class="p">(</span><span class="n">spwmap_intents</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">)</span>
+
+        <span class="c1"># Compute the spw-to-spw phase offsets (&quot;phaseup&quot;) cal table and accept</span>
+        <span class="c1"># into local context.</span>
+        <span class="n">phaseupresult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_phaseup</span><span class="p">()</span>
+
+        <span class="c1"># Compute diagnostic phase caltables for both phase calibrator fields</span>
+        <span class="c1"># and check source fields, with the spw-to-spw phase offset corrections</span>
+        <span class="c1"># included in pre-apply.</span>
+        <span class="n">diag_phase_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_diagnostic_phasecal</span><span class="p">(</span><span class="n">spwmaps</span><span class="p">)</span>
+
+        <span class="c1"># Compute what SNR is achieved for PHASE fields after the SpW phase-up</span>
+        <span class="c1"># correction.</span>
+        <span class="n">snr_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_median_snr</span><span class="p">(</span><span class="n">diag_phase_results</span><span class="p">)</span>
+
+        <span class="c1"># Do the decoherence assessment</span>
+        <span class="n">phaserms_results</span><span class="p">,</span> <span class="n">phaserms_cycletime</span><span class="p">,</span> <span class="n">phaserms_totaltime</span><span class="p">,</span> <span class="n">phaserms_antout</span> \
+            <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_decoherence_assessment</span><span class="p">()</span>
+
+        <span class="c1"># Create the results object.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">SpwPhaseupResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">phasecal_mapping</span><span class="o">=</span><span class="n">phasecal_mapping</span><span class="p">,</span> <span class="n">phaseup_result</span><span class="o">=</span><span class="n">phaseupresult</span><span class="p">,</span>
+                                   <span class="n">snr_info</span><span class="o">=</span><span class="n">snr_info</span><span class="p">,</span> <span class="n">spwmaps</span><span class="o">=</span><span class="n">spwmaps</span><span class="p">,</span> <span class="n">unregister_existing</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">unregister_existing</span><span class="p">,</span>
+                                   <span class="n">phaserms_totaltime</span><span class="o">=</span><span class="n">phaserms_totaltime</span><span class="p">,</span> <span class="n">phaserms_cycletime</span><span class="o">=</span><span class="n">phaserms_cycletime</span><span class="p">,</span>
+                                   <span class="n">phaserms_results</span><span class="o">=</span><span class="n">phaserms_results</span><span class="p">,</span> <span class="n">phaserms_antout</span><span class="o">=</span><span class="n">phaserms_antout</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SpwPhaseup.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.qa.SpwPhaseup.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="c1"># The caltable portion of the result is treated as if it were any other</span>
+        <span class="c1"># calibration result. With no best caltable to find, our task is simply</span>
+        <span class="c1"># to set the one caltable as the best result.</span>
+
+        <span class="c1"># double-check that the caltable was actually generated</span>
+        <span class="n">on_disk</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">phaseup_result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">phaseup_result</span><span class="o">.</span><span class="n">final</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">on_disk</span>
+
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">phaseup_result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">on_disk</span><span class="p">]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">phaseup_result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">phaseup_result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_derive_phase_to_target_check_mapping</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Derive mapping between PHASE calibrator fields (by name) and</span>
+<span class="sd">        corresponding fields (by name) with TARGET / CHECK intent that these</span>
+<span class="sd">        PHASE calibrators should calibrate.</span>
+
+<span class="sd">        PIPE-1154: This heuristic is intended for ALMA observing, and assumes</span>
+<span class="sd">        that the first scan of a TARGET / CHECK field is always preceded by a</span>
+<span class="sd">        scan of the corresponding PHASE calibrator. This method further assumes</span>
+<span class="sd">        that scan IDs increase sequentially with observing time.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ms: MeasurementSet to derive mapping for.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary of PHASE field names (key) and set of names of</span>
+<span class="sd">            corresponding TARGET/CHECK fields (value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the PHASE field names.</span>
+        <span class="n">phase_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;PHASE&#39;</span><span class="p">)]</span>
+
+        <span class="c1"># Initialize the mapping for each PHASE calibrator field.</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="p">:</span> <span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">phase_fields</span><span class="p">}</span>
+
+        <span class="c1"># Get IDs of PHASE intent scans.</span>
+        <span class="n">phase_scan_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="s1">&#39;PHASE&#39;</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">]:</span>
+            <span class="c1"># Get field names for current intent.</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)]</span>
+
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                <span class="c1"># Get ID of first scan for current field with current intent.</span>
+                <span class="n">first_scan_id</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">scan_intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+
+                <span class="c1"># PIPE-1154: in standard ALMA observing, each first scan of a</span>
+                <span class="c1"># field with TARGET or CHECK intent should be preceded by a</span>
+                <span class="c1"># scan of its corresponding PHASE calibrator.</span>
+                <span class="c1"># Identify PHASE intent scans that preceded the first scan.</span>
+                <span class="n">preceding_phase_scan_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">phase_scan_ids</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">first_scan_id</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">preceding_phase_scan_ids</span><span class="p">:</span>
+                    <span class="c1"># Pick nearest in time PHASE intent scan as the match, and</span>
+                    <span class="c1"># identify name of corresponding field.</span>
+                    <span class="n">matching_phase_scan_id</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">preceding_phase_scan_ids</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Identify PHASE intent scans that followed the first scan.</span>
+                    <span class="n">following_phase_scan_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">phase_scan_ids</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">first_scan_id</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">following_phase_scan_ids</span><span class="p">:</span>
+                        <span class="c1"># As a fall-back, pick nearest in time PHASE intent</span>
+                        <span class="c1"># scan after first field scan, but raise warning.</span>
+                        <span class="n">matching_phase_scan_id</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">following_phase_scan_ids</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: no PHASE scans found prior to the first scan for field </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot; (</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s2">), will match nearest PHASE scan that was taken after.&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">matching_phase_scan_id</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: no PHASE scans found prior or after first scan for field </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot; (</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span>
+
+                <span class="c1"># If a matching PHASE scan was found, then update mapping to</span>
+                <span class="c1"># link the corresponding PHASE field to current field.</span>
+                <span class="k">if</span> <span class="n">matching_phase_scan_id</span><span class="p">:</span>
+                    <span class="n">matching_phase_field</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="n">matching_phase_scan_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fields</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">mapping</span><span class="p">[</span><span class="n">matching_phase_field</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">mapping</span>
+
+    <span class="k">def</span> <span class="nf">_derive_spwmaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwmap_intents</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">IntentField</span><span class="p">,</span> <span class="n">SpwMapping</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute separate optimal spectral window mapping for each field</span>
+<span class="sd">        covering one of the intents specified by &quot;spwmap_intents&quot;, unless the</span>
+<span class="sd">        field is already covered by a calibrator intent specified in</span>
+<span class="sd">        &quot;exclude_intents&quot;.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spwmap_intents: intents to derive separate SpW mappings for.</span>
+<span class="sd">            exclude_intents: do not derive separate SpW mappings for fields</span>
+<span class="sd">                that also cover any of these calibrator intents.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary with (Intent, Field) combinations as keys and</span>
+<span class="sd">            corresponding spectral window mapping as values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Simplify the inputs</span>
+        <span class="n">inputs</span><span class="p">:</span> <span class="n">SpwPhaseupInputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Report which spw mapping heuristics mode is being used.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The spw mapping mode for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2"> is </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">hm_spwmapmode</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Initialize collection of spectral window maps and corresponding</span>
+        <span class="c1"># SNR info.</span>
+        <span class="n">spwmaps</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Identify the combinations of intent and fields for which to derive a</span>
+        <span class="c1"># separate spwmap.</span>
+        <span class="n">intent_field_to_assess</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_intent_field</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">intents</span><span class="o">=</span><span class="n">spwmap_intents</span><span class="p">,</span>
+                                                        <span class="n">exclude_intents</span><span class="o">=</span><span class="n">exclude_intents</span><span class="p">)</span>
+
+        <span class="c1"># Run derivation of spwmap for each intent, field combination.</span>
+        <span class="k">for</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">intent_field_to_assess</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Deriving optimal spw mapping for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">, intent=</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">, field=</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">spwmaps</span><span class="p">[</span><span class="n">IntentField</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derive_spwmap_for_intent_field</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">spwmaps</span>
+
+    <span class="k">def</span> <span class="nf">_derive_spwmap_for_intent_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SpwMapping</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Derive optimal spectral window mapping for specified intent and field.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            intent: intent for which to derive SpW mapping.</span>
+<span class="sd">            field: field for which to derive SpW mapping.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SpwMapping object, representing the spectral window mapping.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Simplify the inputs</span>
+        <span class="n">inputs</span><span class="p">:</span> <span class="n">SpwPhaseupInputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># PIPE-2059: select what SpWs to analyse.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">is_band_to_band</span><span class="p">:</span>
+            <span class="c1"># For a BandToBand MS, restrict the SpWs to diffgain reference SpWs</span>
+            <span class="c1"># for PHASE intent, or to diffgain on-source SpWs for CHECK intent.</span>
+            <span class="k">if</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">:</span>
+                <span class="n">spws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">:</span>
+                <span class="n">spws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: unexpected intent (</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s2">) encountered while deriving SpW mapping&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot; for BandToBand; cannot create SpW mapping.&quot;</span><span class="p">)</span>
+                <span class="n">spws</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># For all other measurement sets, select all science SpWs.</span>
+            <span class="n">spws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># By default, combine is False (i.e., no combining of spws), the</span>
+        <span class="c1"># spwmap is empty (i.e. no mapping of spws), and there are no spws</span>
+        <span class="c1"># whose combined phase SNR does not meet the threshold set by the</span>
+        <span class="c1"># inputs.phasesnr parameter.</span>
+        <span class="n">combine</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">spwmap</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">low_combinedsnr_spws</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Initialize lists needed to assess SNR info that is to be shown in</span>
+        <span class="c1"># task weblog; these will get populated if an SNR test is run</span>
+        <span class="c1"># (depending on the spw mapping mode).</span>
+        <span class="n">snrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">combined_snrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">spwids</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># PIPE-1436: if there is only one SpW, then no SpW re-mapping can be</span>
+        <span class="c1"># done. In this case, just run the SNR test.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spws</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Only 1 science SpW found for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">, intent=</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">, field=</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">, so using&#39;</span>
+                     <span class="sa">f</span><span class="s1">&#39; standard SpW map for this data selection.&#39;</span><span class="p">)</span>
+            <span class="c1"># Run a task to estimate the gaincal SNR for given intent, field,</span>
+            <span class="c1"># and spectral windows.</span>
+            <span class="n">nosnrs</span><span class="p">,</span> <span class="n">spwids</span><span class="p">,</span> <span class="n">snrs</span><span class="p">,</span> <span class="n">goodsnrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_snrtest</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">))</span>
+
+        <span class="c1"># If there are multiple SpWs, then continue with computing the optimal</span>
+        <span class="c1"># SpW map according to the rules defined by each mapping mode.</span>
+        <span class="k">elif</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_spwmapmode</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="c1"># Run a task to estimate the gaincal SNR for given intent, field,</span>
+            <span class="c1"># and spectral windows.</span>
+            <span class="n">nosnrs</span><span class="p">,</span> <span class="n">spwids</span><span class="p">,</span> <span class="n">snrs</span><span class="p">,</span> <span class="n">goodsnrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_snrtest</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">))</span>
+
+            <span class="c1"># No SNR estimates available, default to simple narrow-to-wide spw</span>
+            <span class="c1"># mapping.</span>
+            <span class="k">if</span> <span class="n">nosnrs</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No SNR estimates for any spws - Forcing simple spw mapping for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">,&#39;</span>
+                            <span class="sa">f</span><span class="s1">&#39; intent=</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">, field=</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">spwmap</span> <span class="o">=</span> <span class="n">simple_n2wspwmap</span><span class="p">(</span><span class="n">spws</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">maxnarrowbw</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">minfracmaxbw</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">samebb</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Using spw map </span><span class="si">{</span><span class="n">spwmap</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">, intent=</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">, field=</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># All spws have good SNR values, no spw mapping required.</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">([</span><span class="n">goodsnr</span> <span class="k">for</span> <span class="n">goodsnr</span> <span class="ow">in</span> <span class="n">goodsnrs</span> <span class="k">if</span> <span class="n">goodsnr</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">goodsnrs</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;High SNR - Default spw mapping used for all spws </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Using spw map </span><span class="si">{</span><span class="n">spwmap</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">, intent=</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">, field=</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># No spws have good SNR values, use combined spw mapping, and test</span>
+            <span class="c1"># which spws have too low combined phase SNR.</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">([</span><span class="n">goodsnr</span> <span class="k">for</span> <span class="n">goodsnr</span> <span class="ow">in</span> <span class="n">goodsnrs</span> <span class="k">if</span> <span class="n">goodsnr</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Report spws for which no SNR estimate was available.</span>
+                <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">goodsnrs</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Spws without SNR measurements </span><span class="si">{}</span><span class="s1">&#39;</span>
+                                <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">([</span><span class="n">spwid</span> <span class="k">for</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">goodsnr</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">spwids</span><span class="p">,</span> <span class="n">goodsnrs</span><span class="p">)</span> <span class="k">if</span> <span class="n">goodsnr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]))</span>
+
+                <span class="c1"># Create a spw mapping for combining spws.</span>
+                <span class="n">spwmap</span> <span class="o">=</span> <span class="n">combine_spwmap</span><span class="p">(</span><span class="n">spws</span><span class="p">)</span>
+                <span class="n">combine</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Using combined spw map </span><span class="si">{</span><span class="n">spwmap</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">, intent=</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">, field=</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Run a test on the combined spws to identify spws whose</span>
+                <span class="c1"># combined SNR would not meet the threshold set by</span>
+                <span class="c1"># inputs.phasesnr.</span>
+                <span class="n">low_combinedsnr_spws</span><span class="p">,</span> <span class="n">combined_snrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_combined_snr_test</span><span class="p">(</span><span class="n">spwids</span><span class="p">,</span> <span class="n">snrs</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">)</span>
+
+            <span class="c1"># If some, but not all, spws have good SNR values, then try to use</span>
+            <span class="c1"># an SNR-based approach for, but fall back to combined spw mapping</span>
+            <span class="c1"># if necessary.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Report spws for which no SNR estimate was available.</span>
+                <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">goodsnrs</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Spws without SNR measurements </span><span class="si">{}</span><span class="s1">&#39;</span>
+                                <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">([</span><span class="n">spwid</span> <span class="k">for</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">goodsnr</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">spwids</span><span class="p">,</span> <span class="n">goodsnrs</span><span class="p">)</span> <span class="k">if</span> <span class="n">goodsnr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]))</span>
+
+                <span class="c1"># Create an SNR-based spw mapping.</span>
+                <span class="n">goodmap</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">snr_n2wspwmap</span><span class="p">(</span><span class="n">spws</span><span class="p">,</span> <span class="n">snrs</span><span class="p">,</span> <span class="n">goodsnrs</span><span class="p">)</span>
+
+                <span class="c1"># If the SNR-based mapping gave a good match for all spws, then</span>
+                <span class="c1"># report the final phase up spw map.</span>
+                <span class="k">if</span> <span class="n">goodmap</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Using spw map </span><span class="si">{</span><span class="n">spwmap</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">, intent=</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">, field=</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Otherwise, replace the spwmap with a combined spw map.</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Still unable to match all spws - Forcing combined spw mapping for&#39;</span>
+                                <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                    <span class="c1"># Create a spw mapping for combining spws.</span>
+                    <span class="n">spwmap</span> <span class="o">=</span> <span class="n">combine_spwmap</span><span class="p">(</span><span class="n">spws</span><span class="p">)</span>
+                    <span class="n">combine</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Using combined spw map </span><span class="si">{</span><span class="n">spwmap</span><span class="si">}</span><span class="s1"> for&#39;</span>
+                             <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">, intent=</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">, field=</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                    <span class="c1"># Run a test on the combined spws to identify spws whose</span>
+                    <span class="c1"># combined SNR would not meet the threshold set by</span>
+                    <span class="c1"># inputs.phasesnr.</span>
+                    <span class="n">low_combinedsnr_spws</span><span class="p">,</span> <span class="n">combined_snrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_combined_snr_test</span><span class="p">(</span><span class="n">spwids</span><span class="p">,</span> <span class="n">snrs</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_spwmapmode</span> <span class="o">==</span> <span class="s1">&#39;combine&#39;</span><span class="p">:</span>
+            <span class="n">spwmap</span> <span class="o">=</span> <span class="n">combine_spwmap</span><span class="p">(</span><span class="n">spws</span><span class="p">)</span>
+            <span class="n">combine</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">low_combinedsnr_spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Using combined spw map </span><span class="si">{</span><span class="n">spwmap</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">, intent=</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">, field=</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_spwmapmode</span> <span class="o">==</span> <span class="s1">&#39;simple&#39;</span><span class="p">:</span>
+            <span class="n">spwmap</span> <span class="o">=</span> <span class="n">simple_n2wspwmap</span><span class="p">(</span><span class="n">spws</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">maxnarrowbw</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">minfracmaxbw</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">samebb</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Using simple spw map </span><span class="si">{</span><span class="n">spwmap</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">, intent=</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">, field=</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Using standard spw map </span><span class="si">{</span><span class="n">spwmap</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">, intent=</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">, field=</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-2059: for the PHASE calibrator in a BandToBand MS, adjust the</span>
+        <span class="c1"># newly derived optimal SpW mapping to ensure that diffgain on-source</span>
+        <span class="c1"># SpWs are remapped to an associated diffgain reference SpW.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">is_band_to_band</span> <span class="ow">and</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">:</span>
+            <span class="n">dg_refspws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">)</span>
+            <span class="n">dg_srcspws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">)</span>
+            <span class="n">spwmap</span> <span class="o">=</span> <span class="n">update_spwmap_for_band_to_band</span><span class="p">(</span><span class="n">spwmap</span><span class="p">,</span> <span class="n">dg_refspws</span><span class="p">,</span> <span class="n">dg_srcspws</span><span class="p">)</span>
+
+        <span class="c1"># Collect SNR info.</span>
+        <span class="n">snr_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_snr_info</span><span class="p">(</span><span class="n">spwids</span><span class="p">,</span> <span class="n">snrs</span><span class="p">,</span> <span class="n">combined_snrs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">SpwMapping</span><span class="p">(</span><span class="n">combine</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">,</span> <span class="n">low_combinedsnr_spws</span><span class="p">,</span> <span class="n">snr_info</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_snrtest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run gaincal SNR task to perform SNR test for specified intent and</span>
+<span class="sd">        field.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            intent: intent for which to perform SNR test.</span>
+<span class="sd">            field: field for which to perform SNR test.</span>
+<span class="sd">            spw: SpW IDs for which to perform SNR test.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple containing</span>
+<span class="sd">              * Boolean to denote whether no SNRs were derived for any SpW.</span>
+<span class="sd">              * list of SpW IDs for which SNR was derived</span>
+<span class="sd">              * list of derived SNRs</span>
+<span class="sd">              * list of booleans denoting whether derived SNR</span>
+<span class="sd">                was good (&gt;= SNR threshold)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Simplify inputs.</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">,</span>
+            <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+            <span class="s1">&#39;phasesnr&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">phasesnr</span><span class="p">,</span>
+            <span class="s1">&#39;bwedgefrac&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">bwedgefrac</span><span class="p">,</span>
+            <span class="s1">&#39;hm_nantennas&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_nantennas</span><span class="p">,</span>
+            <span class="s1">&#39;maxfracflagged&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">maxfracflagged</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">gaincalsnr</span><span class="o">.</span><span class="n">GaincalSnrInputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+        <span class="n">gaincalsnr_task</span> <span class="o">=</span> <span class="n">gaincalsnr</span><span class="o">.</span><span class="n">GaincalSnr</span><span class="p">(</span><span class="n">task_inputs</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">gaincalsnr_task</span><span class="p">)</span>
+
+        <span class="n">nosnr</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">spwids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">snrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">goodsnrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">spwids</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">snrs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">spwids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">snrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">goodsnrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">snrs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">inputs</span><span class="o">.</span><span class="n">phasesnr</span><span class="p">:</span>
+                <span class="n">spwids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">snrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">snrs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">goodsnrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">nosnr</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">spwids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">goodsnrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">snrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">snrs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">nosnr</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">nosnr</span><span class="p">,</span> <span class="n">spwids</span><span class="p">,</span> <span class="n">snrs</span><span class="p">,</span> <span class="n">goodsnrs</span>
+
+    <span class="k">def</span> <span class="nf">_do_combined_snr_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">perspwsnr</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate combined SNRs from the &quot;per-SpW SNR&quot; and return a list of SpW</span>
+<span class="sd">        IDs that does not meet phase SNR threshold. Grouping of SpWs is</span>
+<span class="sd">        specified by input parameter spwmap.</span>
+
+<span class="sd">        For each grouped SpWs, combined SNR is calculated by:</span>
+<span class="sd">            combined SNR = numpy.linalg.norm(list of per SpW SNR in a group)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spwlist: List of spw IDs to calculate combined SNR</span>
+<span class="sd">            perspwsnr: List of SNRs of each SpW</span>
+<span class="sd">            spwmap: List representing a spectral window map that specifies</span>
+<span class="sd">                which SpW IDs should be combined together.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of spectral window IDs whose combined phase SNR is below the</span>
+<span class="sd">            threshold specified by inputs.phasesnr, and dictionary containing</span>
+<span class="sd">            for a given reference SpW the corresponding mapped SpWs and</span>
+<span class="sd">            combined SNR.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start combined SpW SNR test&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;- spwlist to analyze: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;- per SpW SNR: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">perspwsnr</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;- spwmap = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spwmap</span><span class="p">))</span>
+
+        <span class="c1"># Initialize return objects.</span>
+        <span class="n">low_snr_spwids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">combined_snrs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Filter reference SpW IDs of each group.</span>
+        <span class="n">unique_mappedspw</span> <span class="o">=</span> <span class="p">{</span><span class="n">spwmap</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwlist</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">mappedspwid</span> <span class="ow">in</span> <span class="n">unique_mappedspw</span><span class="p">:</span>
+            <span class="n">snrlist</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">combined_idx</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="c1"># only consider SpW IDs in spwlist for combination</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spwlist</span><span class="p">)):</span>
+                <span class="n">spwid</span> <span class="o">=</span> <span class="n">spwlist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">spwmap</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">==</span> <span class="n">mappedspwid</span><span class="p">:</span>
+                    <span class="n">snr</span> <span class="o">=</span> <span class="n">perspwsnr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">snr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">snrlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">snr</span><span class="p">)</span>
+                    <span class="n">combined_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">snrlist</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No SpW with valid SNR values; cannot calculate the combined SNR&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">[],</span> <span class="p">{}</span>
+
+            <span class="c1"># calculate combined SNR from per spw SNR</span>
+            <span class="n">combined_snr</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">snrlist</span><span class="p">)</span>
+            <span class="n">combined_spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spwlist</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">combined_idx</span><span class="p">]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Reference SpW ID = </span><span class="si">{}</span><span class="s1"> (Combined SpWs = </span><span class="si">{}</span><span class="s1">) : Combined SNR = </span><span class="si">{}</span><span class="s1">&#39;</span>
+                     <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mappedspwid</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">combined_spws</span><span class="p">),</span> <span class="n">combined_snr</span><span class="p">))</span>
+            <span class="c1"># For current reference SpW, store list of combined SpWs and</span>
+            <span class="c1"># the combined SNR.</span>
+            <span class="n">combined_snrs</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">mappedspwid</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span><span class="n">combined_spws</span><span class="p">,</span> <span class="n">combined_snr</span><span class="p">)</span>
+
+            <span class="c1"># If the combined SNR does not meet the phase SNR threshold, then</span>
+            <span class="c1"># add these to the list of low combined SNR spws.</span>
+            <span class="k">if</span> <span class="n">combined_snr</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">phasesnr</span><span class="p">:</span>
+                <span class="n">low_snr_spwids</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">spwlist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">combined_idx</span><span class="p">])</span>
+
+        <span class="c1"># Log results from SNR test.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;SpW IDs that has low combined SNR (threshold: </span><span class="si">{}</span><span class="s1">) = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">phasesnr</span><span class="p">,</span> <span class="n">low_snr_spwids</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">low_snr_spwids</span><span class="p">,</span> <span class="n">combined_snrs</span>
+
+    <span class="k">def</span> <span class="nf">_do_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">gaintype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">combine</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">minblperant</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">minsnr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs gaincal worker task separately for each SpectralSpec present</span>
+<span class="sd">        among the requested SpWs, each appending to the same caltable.</span>
+
+<span class="sd">        The CalApplications in the result are modified to set calwt to False.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            caltable: name of output caltable</span>
+<span class="sd">            field: field selection string</span>
+<span class="sd">            intent: intent selection string</span>
+<span class="sd">            gaintype: gain type to use</span>
+<span class="sd">            combine: selects whether to combine SpWs</span>
+<span class="sd">            minblperant: minimum baselines per antenna</span>
+<span class="sd">            minsnr: minimum SNR</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Results object from gaincal worker task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
+
+        <span class="c1"># Identify which science spws were selected by inputs parameter.</span>
+        <span class="n">request_spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+
+        <span class="c1"># Identify which scans covered the requested intent, field, and any of</span>
+        <span class="c1"># the requested spws.</span>
+        <span class="n">targeted_scans</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="c1"># Among the requested spws, identify which have a scan among the</span>
+        <span class="c1"># targeted scans.</span>
+        <span class="n">scan_spws</span> <span class="o">=</span> <span class="p">{</span><span class="n">spw</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">targeted_scans</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">spws</span> <span class="k">if</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">request_spws</span><span class="p">}</span>
+
+        <span class="c1"># Create a separate phase solution caltable for each SpectralSpec</span>
+        <span class="c1"># grouping of SpWs and collect the corresponding CalApplications from</span>
+        <span class="c1"># the task results. Each caltable should have a unique filename since</span>
+        <span class="c1"># the filename includes the SpW selection.</span>
+        <span class="n">original_calapps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">spectral_spec</span><span class="p">,</span> <span class="n">tuning_spw_ids</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_spectralspec_to_spwid_map</span><span class="p">(</span><span class="n">scan_spws</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">tuning_spw_str</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">tuning_spw_ids</span><span class="p">)])</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Processing spectral spec </span><span class="si">{}</span><span class="s1">, spws </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spectral_spec</span><span class="p">,</span> <span class="n">tuning_spw_str</span><span class="p">))</span>
+
+            <span class="n">scans_with_data</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">tuning_spw_str</span><span class="p">,</span> <span class="n">scan_intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">scans_with_data</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No data to process for spectral spec </span><span class="si">{}</span><span class="s1">. Continuing...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spectral_spec</span><span class="p">))</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Initialize gaincal inputs.</span>
+            <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+                <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span>
+                <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">,</span>
+                <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">tuning_spw_str</span><span class="p">,</span>
+                <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;inf&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="n">gaintype</span><span class="p">,</span>
+                <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="n">minsnr</span><span class="p">,</span>
+                <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="n">combine</span><span class="p">,</span>
+                <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span>
+                <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">minblperant</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincalInputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+            <span class="c1"># Initialize and execute gaincal task.</span>
+            <span class="n">phasecal_task</span> <span class="o">=</span> <span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">task_inputs</span><span class="p">)</span>
+            <span class="n">phasecal_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">phasecal_task</span><span class="p">)</span>
+
+            <span class="c1"># Collect CalApplications.</span>
+            <span class="n">original_calapps</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">phasecal_result</span><span class="o">.</span><span class="n">pool</span><span class="p">)</span>
+
+        <span class="c1"># Phase solution caltables should always be registered to be applied</span>
+        <span class="c1"># with calwt=False (PIPE-1154). Create an updated version of each</span>
+        <span class="c1"># CalApplication with the override to set calwt to False. Replace any</span>
+        <span class="c1"># existing CalApplications in latest tuning result with complete list</span>
+        <span class="c1"># of all updated CalApplications, and return this as the final result.</span>
+        <span class="n">processed_calapps</span> <span class="o">=</span> <span class="p">[</span><span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">calwt</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">original_calapps</span><span class="p">]</span>
+        <span class="n">phasecal_result</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">processed_calapps</span>
+        <span class="n">phasecal_result</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="n">processed_calapps</span>
+
+        <span class="k">return</span> <span class="n">phasecal_result</span>
+
+    <span class="k">def</span> <span class="nf">_do_phaseup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the SpW-to-SpW phase-up caltable, and merges the resulting</span>
+<span class="sd">        table into the local task context.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Results object from gaincal worker task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Create spw-to-spw phaseup caltable.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Computing spw phase-up table for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">tuning_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">caltable</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+                                         <span class="n">gaintype</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">combine</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">minsnr</span><span class="p">,</span>
+                                         <span class="n">minblperant</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">minblperant</span><span class="p">)</span>
+
+        <span class="c1"># Accept this spw-to-spw phase offsets result into the local context,</span>
+        <span class="c1"># to ensure the caltable is included in pre-apply for subsequent steps</span>
+        <span class="c1"># in this task.</span>
+        <span class="n">tuning_result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">tuning_result</span>
+
+    <span class="k">def</span> <span class="nf">_do_diagnostic_phasecal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwmaps</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">IntentField</span><span class="p">,</span> <span class="n">SpwMapping</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates diagnostic phase caltables for each phase calibrator field and</span>
+<span class="sd">        each check source field, where the SpW-to-SpW phase-up caltable should</span>
+<span class="sd">        be included in pre-apply (since it was merged into local context).</span>
+
+<span class="sd">        These tables are used later in this stage to assess the median SNR</span>
+<span class="sd">        achieved for each phase calibrator / check source in each SpW after the</span>
+<span class="sd">        SpW-to-SpW phase-up is applied (PIPE-665).</span>
+
+<span class="sd">        Use phase gaincal parameters appropriate for the SpW mapping derived</span>
+<span class="sd">        earlier for each phase calibrator / check source field. Similar to</span>
+<span class="sd">        hifa_timegaincal, set minblperant to 4 and minsnr to 3.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spwmaps: dictionary with (Intent, Field) combinations as keys and</span>
+<span class="sd">                corresponding spectral window mapping as values.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of result objects from gaincal worker task(s) that produced</span>
+<span class="sd">            the diagnostic phase caltable(s).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Derive separate phase solutions for each PHASE and each CHECK field.</span>
+        <span class="n">intents</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">]</span>
+        <span class="n">gaincal_results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intents</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">):</span>
+                <span class="c1"># Get optimal value for phase solution parameters &#39;combine&#39; and</span>
+                <span class="c1"># &#39;gaintype&#39; for current field from SpW mappings derived</span>
+                <span class="c1"># earlier in this task.</span>
+                <span class="n">combine</span><span class="p">,</span> <span class="n">gaintype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_phasecal_params</span><span class="p">(</span><span class="n">spwmaps</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+                <span class="c1"># Create diagnostic phase caltables.</span>
+                <span class="c1"># PIPE-665: for the diagnostic phase caltables, always use</span>
+                <span class="c1"># minsnr=3, minblperant=4.</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Computing diagnostic phase caltable for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">, intent=</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">,&#39;</span>
+                         <span class="sa">f</span><span class="s1">&#39; field=</span><span class="si">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                <span class="n">gaincal_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="n">gaintype</span><span class="p">,</span>
+                                                        <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span> <span class="n">minblperant</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">gaincal_results</span>
+
+    <span class="k">def</span> <span class="nf">_compute_median_snr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gaincal_results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method evaluates the diagnostic phase caltable(s) produced in an</span>
+<span class="sd">        earlier step to compute the median achieved SNR for each phase calibrator /</span>
+<span class="sd">        check source field, and for each SpW.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            gaincal_results: List of gaincal worker task results representing</span>
+<span class="sd">                the diagnostic phase caltable(s).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary with intent, field name, and SpW as keys, and</span>
+<span class="sd">            corresponding median achieved SNR as values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Computing median achieved phase SNR information for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+
+        <span class="n">snr_info</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">gaincal_results</span><span class="p">:</span>
+            <span class="c1"># Retrieve intent, field, and caltable.</span>
+            <span class="n">caltable</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span>
+            <span class="n">intent</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span>
+
+            <span class="c1"># Get SpWs and SNR info from caltable.</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+                <span class="n">spws</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;SPECTRAL_WINDOW_ID&quot;</span><span class="p">)</span>
+                <span class="n">snrs</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;SNR&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Evaluate each unique SpW separately.</span>
+            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spws</span><span class="p">)):</span>
+                <span class="c1"># Get indices in caltable data corresponding to current SpW.</span>
+                <span class="n">ind_spw</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">spws</span> <span class="o">==</span> <span class="n">spw</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># Get number of correlations for this SpW.</span>
+                <span class="n">corr_type</span> <span class="o">=</span> <span class="n">commonhelpermethods</span><span class="o">.</span><span class="n">get_corr_products</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">spw</span><span class="p">)</span>
+                <span class="n">ncorrs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">corr_type</span><span class="p">)</span>
+
+                <span class="c1"># Compute median achieved SNR and store in snr_info. If this</span>
+                <span class="c1"># SpW covers a single polarisation, then compute the median SNR</span>
+                <span class="c1"># using only the one corresponding column in the caltable.</span>
+                <span class="k">if</span> <span class="n">ncorrs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># Identify which column in caltable to use for computing</span>
+                    <span class="c1"># the median SNR.</span>
+                    <span class="n">ind_col</span> <span class="o">=</span> <span class="n">commonhelpermethods</span><span class="o">.</span><span class="n">get_pol_id</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">corr_type</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">snr_info</span><span class="p">[(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">)]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">snrs</span><span class="p">[</span><span class="n">ind_col</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ind_spw</span><span class="p">])</span>
+                <span class="c1"># Otherwise, i.e. SpW is multi-pol, use all columns.</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">snr_info</span><span class="p">[(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">)]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">snrs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ind_spw</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">snr_info</span>
+
+    <span class="k">def</span> <span class="nf">_do_decoherence_assessment</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">]:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting phase RMS structure function decoherence assessment.&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Initialize the phase RMS structure function assessment</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="n">phase_rms</span> <span class="o">=</span> <span class="n">PhaseStabilityHeuristics</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outlier_limit</span><span class="o">=</span><span class="mf">180.0</span><span class="p">,</span> <span class="n">flag_tolerance</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">max_poor_ant</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+
+            <span class="c1"># Do the analysis</span>
+            <span class="n">phaserms_results</span><span class="p">,</span> <span class="n">phaserms_cycletime</span><span class="p">,</span> <span class="n">phaserms_totaltime</span><span class="p">,</span> <span class="n">phaserms_antout</span> <span class="o">=</span> <span class="n">phase_rms</span><span class="o">.</span><span class="n">analysis</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">phaserms_results</span><span class="p">,</span> <span class="n">phaserms_cycletime</span><span class="p">,</span> <span class="n">phaserms_totaltime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="n">phaserms_antout</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;For </span><span class="si">{}</span><span class="s2">, phase RMS structure function analysis failed&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">phaserms_results</span><span class="p">,</span> <span class="n">phaserms_cycletime</span><span class="p">,</span> <span class="n">phaserms_totaltime</span><span class="p">,</span> <span class="n">phaserms_antout</span>
+    
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_intent_field</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">intents</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="c1"># If provided, convert &quot;intents to exclude&quot; into set of strings.</span>
+        <span class="k">if</span> <span class="n">exclude_intents</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exclude_intents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">exclude_intents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">exclude_intents</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+
+        <span class="n">intent_field</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intents</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">):</span>
+                <span class="c1"># Check whether found field also covers any of the intents to</span>
+                <span class="c1"># skip.</span>
+                <span class="n">excluded_intents_found</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">exclude_intents</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">excluded_intents_found</span><span class="p">:</span>
+                    <span class="n">intent_field</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Log a message to explain why no spwmap will be derived</span>
+                    <span class="c1"># for this particular combination of field and intent.</span>
+                    <span class="n">excluded_intents_str</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">excluded_intents_found</span><span class="p">))</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">: will not derive spwmap for field </span><span class="si">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> (#</span><span class="si">{</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">) and intent&#39;</span>
+                             <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1"> because this field also covers calibrator intent(s) </span><span class="si">{</span><span class="n">excluded_intents_str</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">intent_field</span>
+
+    <span class="k">def</span> <span class="nf">_unregister_spwphaseup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
+
+        <span class="c1"># predicate function that triggers when the spwphaseup caltable is detected</span>
+        <span class="k">def</span> <span class="nf">spwphaseup_matcher</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalToArgs</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;hifa_spwphaseup&#39;</span> <span class="ow">in</span> <span class="n">calfrom</span><span class="o">.</span><span class="n">gaintable</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Temporarily unregistering previous spwphaseup tables while task executes&#39;</span><span class="p">)</span>
+        <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">unregister_calibrations</span><span class="p">(</span><span class="n">spwphaseup_matcher</span><span class="p">)</span>
+
+        <span class="c1"># Reset the spwmaps registered in the MS. This will be restored if the</span>
+        <span class="c1"># result is not accepted.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Temporarily resetting spwmaps for </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+        <span class="n">ms</span><span class="o">.</span><span class="n">spwmaps</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">_get_snr_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">snrs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">combined_snrs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper method that takes phase SNR info from the SNR test, and returns</span>
+<span class="sd">        phase SNR info for all SpWs specified in inputs.spw.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spwids: list of SpW IDs for which phase SNRs were determined.</span>
+<span class="sd">            snrs: list of phase SNRs.</span>
+<span class="sd">            combined_snrs: dictionary of reference SpWs with list of</span>
+<span class="sd">                corresponding combined SpW and combined phase SNR.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of tuples, specifying string representing SpW(s) and</span>
+<span class="sd">            corresponding phase SNR.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">spw_snr</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">spwids</span><span class="p">,</span> <span class="n">snrs</span><span class="p">)}</span>
+        <span class="n">snr_info</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Create entry for each SpW specified by inputs.</span>
+        <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+            <span class="c1"># If this SpW is the reference SpW for a group of combined SpWs</span>
+            <span class="c1"># then add an entry to list the combined SNR.</span>
+            <span class="k">if</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">combined_snrs</span><span class="p">:</span>
+                <span class="n">combined_spws</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">combined_snrs</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">combined_snr</span> <span class="o">=</span> <span class="n">combined_snrs</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">snr_info</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="sa">f</span><span class="s1">&#39;Combined (</span><span class="si">{</span><span class="n">combined_spws</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">combined_snr</span><span class="p">))</span>
+
+            <span class="c1"># Retrieve SNR info for individual SpW if available.</span>
+            <span class="n">snr</span> <span class="o">=</span> <span class="n">spw_snr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">snr_info</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">spwid</span><span class="p">),</span> <span class="n">snr</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">snr_info</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_phasecal_params</span><span class="p">(</span><span class="n">spwmaps</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">IntentField</span><span class="p">,</span> <span class="n">SpwMapping</span><span class="p">],</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="c1"># By default, no spw mapping or combining, and gaintype=&#39;G&#39;.</span>
+        <span class="n">combine</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">gaintype</span> <span class="o">=</span> <span class="s1">&#39;G&#39;</span>
+
+        <span class="c1"># Try to retrieve SpW mapping info for requested intent and field.</span>
+        <span class="n">spwmapping</span> <span class="o">=</span> <span class="n">spwmaps</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># If a mapping was found, and it requires SpW combination, then update</span>
+        <span class="c1"># combine and gaintype accordingly.</span>
+        <span class="k">if</span> <span class="n">spwmapping</span> <span class="ow">and</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">combine</span><span class="p">:</span>
+            <span class="n">combine</span> <span class="o">=</span> <span class="s1">&#39;spw&#39;</span>
+            <span class="n">gaintype</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
+
+        <span class="k">return</span> <span class="n">combine</span><span class="p">,</span> <span class="n">gaintype</span></div>
+
+
+
+<div class="viewcode-block" id="SpwPhaseupResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.qa.SpwPhaseupResults">[docs]</a>
+<span class="k">class</span> <span class="nc">SpwPhaseupResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">phasecal_mapping</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">phaseup_result</span><span class="p">:</span> <span class="n">GaincalResults</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">snr_info</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spwmaps</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">unregister_existing</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">phaserms_totaltime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">phaserms_cycletime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">phaserms_results</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">phaserms_antout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialise the phaseup spw mapping results object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">spwmaps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">spwmaps</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">phaserms_antout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">phaserms_antout</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phasecal_mapping</span> <span class="o">=</span> <span class="n">phasecal_mapping</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phaseup_result</span> <span class="o">=</span> <span class="n">phaseup_result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snr_info</span> <span class="o">=</span> <span class="n">snr_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwmaps</span> <span class="o">=</span> <span class="n">spwmaps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unregister_existing</span> <span class="o">=</span> <span class="n">unregister_existing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phaserms_totaltime</span> <span class="o">=</span> <span class="n">phaserms_totaltime</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phaserms_cycletime</span> <span class="o">=</span> <span class="n">phaserms_cycletime</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phaserms_results</span> <span class="o">=</span> <span class="n">phaserms_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phaserms_antout</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">phaserms_antout</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpwPhaseupResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.qa.SpwPhaseupResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39; No results to merge &#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">phaseup_result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39; No results to merge &#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># PIPE-629: if requested, unregister previous spwphaseup caltables from</span>
+        <span class="c1"># the context before merging in the newly derived caltable.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unregister_existing</span><span class="p">:</span>
+            <span class="c1"># Identify the MS to process</span>
+            <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+            <span class="c1"># predicate function that triggers when the spwphaseup caltable is</span>
+            <span class="c1"># detected for this MS</span>
+            <span class="k">def</span> <span class="nf">spwphaseup_matcher</span><span class="p">(</span><span class="n">calto</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalToArgs</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+                <span class="n">calto_vis</span> <span class="o">=</span> <span class="p">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">calto</span><span class="o">.</span><span class="n">vis</span><span class="p">}</span>
+                <span class="n">do_delete</span> <span class="o">=</span> <span class="s1">&#39;hifa_spwphaseup&#39;</span> <span class="ow">in</span> <span class="n">calfrom</span><span class="o">.</span><span class="n">gaintable</span> <span class="ow">and</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">calto_vis</span>
+                <span class="k">if</span> <span class="n">do_delete</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unregistering previous spwphaseup tables for </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">do_delete</span>
+
+            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">unregister_calibrations</span><span class="p">(</span><span class="n">spwphaseup_matcher</span><span class="p">)</span>
+
+        <span class="c1"># Merge the spw phaseup offset table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phaseup_result</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ms</span><span class="p">:</span>
+            <span class="c1"># Merge the spectral window mappings and the list of spws whose</span>
+            <span class="c1"># combined SNR does not meet the threshold.</span>
+            <span class="n">ms</span><span class="o">.</span><span class="n">spwmaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spwmaps</span>
+
+            <span class="c1"># Merge the phase calibrator mapping.</span>
+            <span class="n">ms</span><span class="o">.</span><span class="n">phasecal_mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phasecal_mapping</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">phaseup_result</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;SpwPhaseupResults:</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">No spw phaseup table computed&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;SpwPhaseupResults:</span><span class="se">\n</span><span class="s1">vis=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">),</span> <span class="n">spwmapping</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spwmaps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">s</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">:</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="n">s</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t\t</span><span class="s1">Combine = </span><span class="si">{</span><span class="n">spwmapping</span><span class="o">.</span><span class="n">combine</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="n">s</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t\t</span><span class="s1">Spwmap = </span><span class="si">{</span><span class="n">spwmapping</span><span class="o">.</span><span class="n">spwmap</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="k">if</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">combine</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t\t</span><span class="s1">Low combined phase SNR spws = </span><span class="si">{</span><span class="n">spwmapping</span><span class="o">.</span><span class="n">low_combinedsnr_spws</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">return</span> <span class="n">s</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

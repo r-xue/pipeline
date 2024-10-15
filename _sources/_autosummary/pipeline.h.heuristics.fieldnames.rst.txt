@@ -1,0 +1,12 @@
+pipeline.h.heuristics.fieldnames
+================================
+
+.. automodule:: pipeline.h.heuristics.fieldnames
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      IntentFieldnames
+   

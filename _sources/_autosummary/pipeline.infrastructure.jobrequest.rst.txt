@@ -1,0 +1,26 @@
+pipeline.infrastructure.jobrequest
+==================================
+
+.. automodule:: pipeline.infrastructure.jobrequest
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      UUID_to_underscore
+      alphasort
+      basename_if_isfile
+      get_fn_name
+      jobrequest_generator
+      signature
+      truncate_paths
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FunctionArg
+      JobRequest
+      NamelessArg
+   

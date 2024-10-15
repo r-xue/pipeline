@@ -1,0 +1,1247 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.basetask &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.basetask</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.basetask</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">textwrap</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">api</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">eventbus</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">filenamer</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">jobrequest</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">pipelineqa</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">project</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">vdp</span>
+<span class="kn">from</span> <span class="nn">.eventbus</span> <span class="kn">import</span> <span class="n">TaskStartedEvent</span><span class="p">,</span> <span class="n">TaskCompleteEvent</span><span class="p">,</span> <span class="n">TaskAbnormalExitEvent</span>
+<span class="kn">from</span> <span class="nn">.eventbus</span> <span class="kn">import</span> <span class="n">ResultAcceptingEvent</span><span class="p">,</span> <span class="n">ResultAcceptedEvent</span><span class="p">,</span> <span class="n">ResultAcceptErrorEvent</span>
+<span class="kn">from</span> <span class="nn">.casa_tasks</span> <span class="kn">import</span> <span class="n">CasaTasks</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># control generation of the weblog</span>
+<span class="n">DISABLE_WEBLOG</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">VISLIST_RESET_KEY</span> <span class="o">=</span> <span class="s1">&#39;_do_not_reset_vislist&#39;</span>
+
+
+<div class="viewcode-block" id="timestamp">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.timestamp">[docs]</a>
+<span class="k">def</span> <span class="nf">timestamp</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">attach_timestamp_to_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">Timestamps</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">return</span> <span class="n">attach_timestamp_to_results</span></div>
+
+
+
+<div class="viewcode-block" id="result_finaliser">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.result_finaliser">[docs]</a>
+<span class="k">def</span> <span class="nf">result_finaliser</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Copy some useful properties to the Results object before returning it.</span>
+<span class="sd">    This is used in conjunction with execute(), where the Result could be</span>
+<span class="sd">    returned from a number of places but we don&#39;t want to set the properties</span>
+<span class="sd">    in each location.</span>
+
+<span class="sd">    TODO: refactor so this is done as part of execute!</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">finalise_pipeline_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">ResultsList</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">elif</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">pipeline_casa_task</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">_pipeline_casa_task</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="c1"># sub-tasks may not have pipeline_casa_task, but we only need</span>
+                <span class="c1"># it for the top-level task</span>
+                <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">return</span> <span class="n">finalise_pipeline_result</span></div>
+
+
+
+<div class="viewcode-block" id="capture_log">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.capture_log">[docs]</a>
+<span class="k">def</span> <span class="nf">capture_log</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">capture</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="c1"># get the size of the CASA log before task execution</span>
+        <span class="n">logfile</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">logfile</span><span class="p">()</span>
+        <span class="n">size_before</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">logfile</span><span class="p">)</span>
+
+        <span class="c1"># execute the task</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+        <span class="c1"># copy the CASA log entries written since task execution to the result</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">logfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">casalog</span><span class="p">:</span>
+            <span class="n">casalog</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">size_before</span><span class="p">)</span>
+
+            <span class="c1"># sometimes we can&#39;t write properties, such as for flagdeteralma</span>
+            <span class="c1"># when the result is a dict</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">casalog</span> <span class="o">=</span> <span class="n">casalog</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Could not set casalog property on result of type &#39;</span>
+                          <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+
+        <span class="c1"># To save space in the pickle, delete any inner CASA logs. The web</span>
+        <span class="c1"># log will only write the outer CASA log to disk</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s1">&#39;casalog&#39;</span><span class="p">):</span>
+                    <span class="k">del</span> <span class="n">r</span><span class="o">.</span><span class="n">casalog</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="n">capture</span></div>
+
+
+
+<div class="viewcode-block" id="matplotlibrc_handler">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.matplotlibrc_handler">[docs]</a>
+<span class="k">def</span> <span class="nf">matplotlibrc_handler</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">handle_matplotlibrc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># execute method within dedicated matplotlib context to pipeline</span>
+        <span class="c1"># currently default rcParams is used</span>
+        <span class="k">with</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">rc_context</span><span class="p">(</span><span class="n">rc</span><span class="o">=</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParamsDefault</span><span class="p">):</span>
+            <span class="c1"># execute method</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">return</span> <span class="n">handle_matplotlibrc</span></div>
+
+
+
+<div class="viewcode-block" id="ModeTask">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.ModeTask">[docs]</a>
+<span class="k">class</span> <span class="nc">ModeTask</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Task</span><span class="p">):</span>
+    <span class="c1"># override this if your inputs needs visibility of all measurement sets in</span>
+    <span class="c1"># scope</span>
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ModeTask</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># complain if we were given the wrong type of inputs</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Inputs</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> requires inputs of type </span><span class="si">{1}</span><span class="s1"> but got </span><span class="si">{2}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Inputs</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="n">inputs</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delegate</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">get_task</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ModeTask.execute">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.ModeTask.execute">[docs]</a>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_delegate</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delegate</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_delegate</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_delegate</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_check_delegate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update, if necessary, the delegate task so that it matches the</span>
+<span class="sd">        mode specified in the Inputs.</span>
+
+<span class="sd">        This function is necessary as the value of Inputs.mode can change</span>
+<span class="sd">        after the task has been constructed. Therefore, we cannot rely on any</span>
+<span class="sd">        delegate set at construction time. Instead, the delegate must be</span>
+<span class="sd">        updated on every execution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># given two modes, A and B, it&#39;s possible that A is a subclass of B,</span>
+        <span class="c1"># eg. PhcorChannelBandpass extends ChannelBandpass, therefore we</span>
+        <span class="c1"># cannot test whether the current instance is the correct type using</span>
+        <span class="c1"># isinstance. Instead, we need to compare class names.</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">mode</span>
+        <span class="n">mode_cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">_modes</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span>
+        <span class="n">mode_cls_name</span> <span class="o">=</span> <span class="n">mode_cls</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="n">delegate_cls_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delegate</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="k">if</span> <span class="n">mode_cls_name</span> <span class="o">!=</span> <span class="n">delegate_cls_name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delegate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">get_task</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># A simple named tuple to hold the start and end timestamps</span>
+<span class="n">Timestamps</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Timestamps&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="Results">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.Results">[docs]</a>
+<span class="k">class</span> <span class="nc">Results</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Results is the base implementation of the Results API.</span>
+
+<span class="sd">    In practice, all results objects should subclass this object to take</span>
+<span class="sd">    advantage of the shared functionality.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Results</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># set the value used to uniquely identify this object. This value will</span>
+        <span class="c1"># be used to determine whether this results has already been merged</span>
+        <span class="c1"># with the context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uuid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+
+        <span class="c1"># property used to hold pipeline QA values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qa</span> <span class="o">=</span> <span class="n">pipelineqa</span><span class="o">.</span><span class="n">QAScorePool</span><span class="p">()</span>
+
+        <span class="c1"># property used to hold metadata and presentation-focused values</span>
+        <span class="c1"># destined for the weblog. Currently a dict, but could change.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The unique identifier for this results object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uuid</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Object holding presentation-related values destined for the web log</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span>
+
+<div class="viewcode-block" id="Results.merge_with_context">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.Results.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Merge these results with the given context.</span>
+
+<span class="sd">        This method will be called during the execution of accept(). For</span>
+<span class="sd">        calibration tasks, a typical implementation will register caltables</span>
+<span class="sd">        with the pipeline callibrary.</span>
+
+<span class="sd">        At this point the result is deemed safe to merge, so no further checks</span>
+<span class="sd">        on the context need be performed.</span>
+
+<span class="sd">        :param context: the target</span>
+<span class="sd">            :class:`~pipeline.infrastructure.launcher.Context`</span>
+<span class="sd">        :type context: :class:`~pipeline.infrastructure.launcher.Context`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Null implementation of merge_with_context used for </span><span class="si">%s</span><span class="s1">&#39;</span>
+                  <span class="s1">&#39;&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Results.accept">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.Results.accept">[docs]</a>
+    <span class="nd">@matplotlibrc_handler</span>
+    <span class="k">def</span> <span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Accept these results, registering objects with the context and incrementing</span>
+<span class="sd">        stage counters as necessary in preparation for the next task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="n">ResultAcceptingEvent</span><span class="p">(</span><span class="n">context_name</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">stage_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+        <span class="n">eventbus</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># context will be none when called from a CASA interactive</span>
+            <span class="c1"># session. When this happens, we need to locate the global context</span>
+            <span class="c1"># from the stack</span>
+            <span class="kn">import</span> <span class="nn">pipeline.h.cli.utils</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_context</span><span class="p">()</span>
+
+        <span class="c1"># find whether this result is being accepted as part of a task</span>
+        <span class="c1"># execution or whether it&#39;s being accepted after task completion</span>
+        <span class="n">task_completed</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">task_depth</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
+
+        <span class="c1"># Check to ensure this exact result was not already merged into the</span>
+        <span class="c1"># context.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_remerge</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># If all goes well, this result is the one that will be appended to</span>
+        <span class="c1"># the results list of the context.</span>
+        <span class="n">result_to_append</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="c1"># PIPE-16: handle exceptions that may occur during the acceptance of</span>
+        <span class="c1"># the result into the context:</span>
+        <span class="c1"># Try to execute the task-specific (non-pipeline-framework) parts of</span>
+        <span class="c1"># results acceptance, which are the merging of the result into the</span>
+        <span class="c1"># context, and the task QA calculation (for top-level tasks).</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># execute our template function</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+            <span class="c1"># perform QA if accepting this result from a top-level task</span>
+            <span class="k">if</span> <span class="n">task_completed</span><span class="p">:</span>
+                <span class="n">pipelineqa</span><span class="o">.</span><span class="n">qa_registry</span><span class="o">.</span><span class="n">do_qa</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># If an exception happened during the acceptance of a top-level</span>
+        <span class="c1"># pipeline task, then create a new FailedTaskResults that contains</span>
+        <span class="c1"># the exception traceback, and mark this new result as the one</span>
+        <span class="c1"># to append to the context results list.</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">task_completed</span><span class="p">:</span>
+                <span class="c1"># Log error message.</span>
+                <span class="n">tb</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error while accepting pipeline task result into context.&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">tb</span><span class="p">)</span>
+
+                <span class="c1"># Create a special result object representing the failed task.</span>
+                <span class="n">failedresult</span> <span class="o">=</span> <span class="n">FailedTaskResults</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_task</span><span class="p">(),</span> <span class="n">ex</span><span class="p">,</span> <span class="n">tb</span><span class="p">)</span>
+                <span class="c1"># Copy over necessary properties from real result.</span>
+                <span class="n">failedresult</span><span class="o">.</span><span class="n">stage_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage_number</span>
+                <span class="n">failedresult</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+                <span class="n">failedresult</span><span class="o">.</span><span class="n">timestamps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span>
+
+                <span class="c1"># Override the result that is to be appended to the context.</span>
+                <span class="n">result_to_append</span> <span class="o">=</span> <span class="n">failedresult</span>
+
+            <span class="c1"># Re-raise the exception to allow executioner of pipeline tasks to</span>
+            <span class="c1"># decide how to proceed.</span>
+            <span class="k">raise</span>
+
+        <span class="c1"># Whether the result acceptance went ok, or an exception occurred</span>
+        <span class="c1"># and a new FailedTaskResults was created, always carry out the</span>
+        <span class="c1"># following steps on the result_to_append, to ensure that e.g.</span>
+        <span class="c1"># the result is pickled to disk and the weblog is rendered.</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">task_completed</span><span class="p">:</span>
+                <span class="c1"># If accept() is called at the end of a task, create a proxy for</span>
+                <span class="c1"># this result and pickle it to the appropriate weblog stage</span>
+                <span class="c1"># directory. This keeps the context size at a minimum.</span>
+                <span class="n">proxy</span> <span class="o">=</span> <span class="n">ResultsProxy</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+                <span class="n">proxy</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">result_to_append</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">proxy</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">result_to_append</span>
+
+            <span class="c1"># Add the results object to the results list.</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+            <span class="c1"># having called the old constructor, we know that self.context is set.</span>
+            <span class="c1"># Use this context to find the report directory and write to the log</span>
+            <span class="k">if</span> <span class="n">task_completed</span><span class="p">:</span>
+                <span class="c1"># this needs to come before web log generation as the filesizes of</span>
+                <span class="c1"># various logs and scripts are calculated during web log generation</span>
+                <span class="n">write_pipeline_casa_tasks</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+            <span class="c1"># generate weblog if accepting a result from outside a task execution</span>
+            <span class="k">if</span> <span class="n">task_completed</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">DISABLE_WEBLOG</span><span class="p">:</span>
+                <span class="c1"># cannot import at initial import time due to cyclic dependency</span>
+                <span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.htmlrenderer</span> <span class="k">as</span> <span class="nn">htmlrenderer</span>
+                <span class="n">htmlrenderer</span><span class="o">.</span><span class="n">WebLogGenerator</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+            <span class="c1"># If running at DEBUG loglevel and this is a top-level task result,</span>
+            <span class="c1"># then store to disk a pickle of the context as it existed at the</span>
+            <span class="c1"># end of this pipeline stage; this may be useful for debugging.</span>
+            <span class="k">if</span> <span class="n">task_completed</span> <span class="ow">and</span> <span class="n">LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="n">basename</span> <span class="o">=</span> <span class="s1">&#39;context-stage</span><span class="si">%s</span><span class="s1">.pickle&#39;</span> <span class="o">%</span> <span class="n">result_to_append</span><span class="o">.</span><span class="n">stage_number</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                                    <span class="n">context</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                    <span class="s1">&#39;saved_state&#39;</span><span class="p">,</span>
+                                    <span class="n">basename</span><span class="p">)</span>
+
+                <span class="n">utils</span><span class="o">.</span><span class="n">mkdir_p</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+                    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># Event must be sent from inside finally block to ensure that</span>
+            <span class="c1"># the event is always sent even if result acceptance is failed.</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result_to_append</span><span class="p">,</span> <span class="n">FailedTaskResults</span><span class="p">):</span>
+                <span class="c1"># result acceptance failed, so we need to send ResultAcceptErrorEvent</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">ResultAcceptErrorEvent</span><span class="p">(</span><span class="n">context_name</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">stage_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># result acceptance went well, results object must be self</span>
+                <span class="k">assert</span> <span class="n">result_to_append</span> <span class="ow">is</span> <span class="bp">self</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">ResultAcceptedEvent</span><span class="p">(</span><span class="n">context_name</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">stage_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+
+            <span class="c1"># Sending event should be very last line in this method.</span>
+            <span class="c1"># Adding any code after sending event is not recommended because</span>
+            <span class="c1"># the time spent for these lines will not be included in</span>
+            <span class="c1"># the timing statistics generated by timetracker.</span>
+            <span class="n">eventbus</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_check_for_remerge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check whether this result has already been added to the given context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># context.results contains the list of results that have been merged</span>
+        <span class="c1"># with the context. Check whether the UUID of any result or sub-result</span>
+        <span class="c1"># in that list matches the UUID of this result.</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_uuid_in_result</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;This result has already been added to the context&#39;</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_is_uuid_in_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if the UUID of this result matches the UUID of the given</span>
+<span class="sd">        result or any sub-result contained within.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">subtask_result</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;subtask_results&#39;</span><span class="p">,</span> <span class="p">()):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_uuid_in_result</span><span class="p">(</span><span class="n">subtask_result</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">uuid</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_get_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;task&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="FailedTaskResults">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.FailedTaskResults">[docs]</a>
+<span class="k">class</span> <span class="nc">FailedTaskResults</span><span class="p">(</span><span class="n">Results</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    FailedTaskResults represents a results object for a task that encountered</span>
+<span class="sd">    an exception during execution.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origtask_cls</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FailedTaskResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exception</span> <span class="o">=</span> <span class="n">exception</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origtask_cls</span> <span class="o">=</span> <span class="n">origtask_cls</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="n">FailedTask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tb</span> <span class="o">=</span> <span class="n">tb</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;FailedTaskResults:</span><span class="se">\n</span><span class="s2">&quot;</span>\
+             <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">original task: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origtask_cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+
+<div class="viewcode-block" id="ResultsProxy">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.ResultsProxy">[docs]</a>
+<span class="k">class</span> <span class="nc">ResultsProxy</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">context</span>
+
+<div class="viewcode-block" id="ResultsProxy.write">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.ResultsProxy.write">[docs]</a>
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write the pickled result to disk.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># adopt the result&#39;s UUID protecting against repeated addition to the</span>
+        <span class="c1"># context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">uuid</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_stage_logs</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="c1"># only store the basename to allow for relocation between save and</span>
+        <span class="c1"># restore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_basename</span> <span class="o">=</span> <span class="s1">&#39;result-stage</span><span class="si">%s</span><span class="s1">.pickle&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                            <span class="s1">&#39;saved_state&#39;</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_basename</span><span class="p">)</span>
+
+        <span class="n">utils</span><span class="o">.</span><span class="n">mkdir_p</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResultsProxy.read">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.ResultsProxy.read">[docs]</a>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read the pickle from disk, returning the unpickled object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                            <span class="s1">&#39;saved_state&#39;</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_basename</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">pickle_load</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_write_stage_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Take the CASA log snippets attached to each result and write them to</span>
+<span class="sd">        the appropriate weblog directory. The log snippet is deleted from the</span>
+<span class="sd">        result after a successful write to keep the pickle size down.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;casalog&#39;</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
+                                 <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">)</span>
+
+        <span class="n">stagelog_entries</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">casalog</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">timestamps</span><span class="o">.</span><span class="n">start</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">timestamps</span><span class="o">.</span><span class="n">end</span>
+
+        <span class="n">stagelog_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="s1">&#39;casapy.log&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">stagelog_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stagelog</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Writing CASA log entries for stage </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1"> -&gt; </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span>
+                      <span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span>
+            <span class="n">stagelog</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">stagelog_entries</span><span class="p">)</span>
+
+        <span class="c1"># having written the log entries, the CASA log entries have no</span>
+        <span class="c1"># further use. Remove them to keep the size of the pickle small</span>
+        <span class="nb">delattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;casalog&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ResultsList">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.ResultsList">[docs]</a>
+<span class="k">class</span> <span class="nc">ResultsList</span><span class="p">(</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ResultsList</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__results</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__results</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__results</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;ResultsList(</span><span class="si">{!s}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__results</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;ResultsList(</span><span class="si">{!s}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__results</span><span class="p">))</span>
+
+<div class="viewcode-block" id="ResultsList.append">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.ResultsList.append">[docs]</a>
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResultsList.accept">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.ResultsList.accept">[docs]</a>
+    <span class="k">def</span> <span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ResultsList</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResultsList.extend">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.ResultsList.extend">[docs]</a>
+    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">other</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResultsList.merge_with_context">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.ResultsList.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__results</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_get_task</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="StandardTaskTemplate">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.StandardTaskTemplate">[docs]</a>
+<span class="k">class</span> <span class="nc">StandardTaskTemplate</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Task</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    StandardTaskTemplate is a template class for pipeline reduction tasks whose</span>
+<span class="sd">    execution can be described by a common four-step process:</span>
+
+<span class="sd">    #. prepare(): examine the measurement set and prepare a list of\</span>
+<span class="sd">        intermediate job requests to be executed.</span>
+<span class="sd">    #. execute the jobs</span>
+<span class="sd">    #. analyze(): analyze the output of the intermediate job requests,\</span>
+<span class="sd">        deciding if necessary which parameters provide the best results, and\</span>
+<span class="sd">        return these results.</span>
+<span class="sd">    #. return a final list of jobs to be executed using these best-fit\</span>
+<span class="sd">        parameters.</span>
+
+<span class="sd">    Simpletask implements the :class:`Task` interface and steps 2 and 4 in the</span>
+<span class="sd">    above process, leaving subclasses to implement</span>
+<span class="sd">    :func:`~SimpleTask.prepare` and :func:`~SimpleTask.analyse`.</span>
+
+
+<span class="sd">    A Task and its :class:`Inputs` are closely aligned. It is anticipated that</span>
+<span class="sd">    the Inputs for a Task will be created using the :attr:`Task.Inputs`</span>
+<span class="sd">    reference rather than locating and instantiating the partner class</span>
+<span class="sd">    directly, eg.::</span>
+
+<span class="sd">        i = ImplementingTask.Inputs.create_from_context(context)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># HeadTail is an internal class used to associate properties with their</span>
+    <span class="c1"># associated measurement sets</span>
+    <span class="n">HeadTail</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;HeadTail&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="s1">&#39;tail&#39;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new Task with an initial state based on the given inputs.</span>
+
+<span class="sd">        :param Inputs inputs: inputs required for this Task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">StandardTaskTemplate</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># complain if we were given the wrong type of inputs</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">):</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">_task_cls</span><span class="o">.</span><span class="n">Inputs</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Inputs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Inputs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> requires inputs of type </span><span class="si">{1}</span><span class="s1"> but got </span><span class="si">{2}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Inputs</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="n">inputs</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span>
+
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="StandardTaskTemplate.prepare">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.StandardTaskTemplate.prepare">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare job requests for execution.</span>
+
+<span class="sd">        :param parameters: the parameters to pass through to the subclass.</span>
+<span class="sd">            Refer to the implementing subclass for specific information on</span>
+<span class="sd">            what these parameters are.</span>
+<span class="sd">        :rtype: a class implementing :class:`~pipeline.api.Result`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="StandardTaskTemplate.analyse">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.StandardTaskTemplate.analyse">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyze the result from the task preparing operation.</span>
+
+<span class="sd">        This method analyzes the result object returned by the Pipeline task.prepare method</span>
+<span class="sd">        and returns it with optional modifications.</span>
+
+<span class="sd">        :param result: the task result object generated by :func:`~SimpleTask.prepare`</span>
+<span class="sd">        :rtype: :class:`~pipeline.api.Result`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="StandardTaskTemplate.execute">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.StandardTaskTemplate.execute">[docs]</a>
+    <span class="nd">@timestamp</span>
+    <span class="nd">@matplotlibrc_handler</span>
+    <span class="nd">@capture_log</span>
+    <span class="nd">@result_finaliser</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_top_level_task</span><span class="p">():</span>
+            <span class="c1"># Set the task name, but only if this is a top-level task. This</span>
+            <span class="c1"># name will be prepended to every data product name as a sign of</span>
+            <span class="c1"># their origin</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">task_registry</span><span class="o">.</span><span class="n">get_casa_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="n">filenamer</span><span class="o">.</span><span class="n">NamingTemplate</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="n">name</span>
+
+            <span class="c1"># initialise the subtask counter, which will be subsequently</span>
+            <span class="c1"># incremented for every execute within this top-level task</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting execution for stage </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">subtask_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="n">event</span> <span class="o">=</span> <span class="n">TaskStartedEvent</span><span class="p">(</span><span class="n">context_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                     <span class="n">stage_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span><span class="p">)</span>
+            <span class="n">eventbus</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+            <span class="c1"># log the invoked pipeline task and its comment to</span>
+            <span class="c1"># casa_commands.log</span>
+            <span class="n">_log_task</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">subtask_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Create a copy of the inputs - including the context - and attach</span>
+        <span class="c1"># this copy to the Inputs. Tasks can then merge results with this</span>
+        <span class="c1"># duplicate context at will, as we&#39;ll later restore the originals.</span>
+        <span class="n">original_inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">pickle_copy</span><span class="p">(</span><span class="n">original_inputs</span><span class="p">)</span>
+
+        <span class="c1"># create a job executor that tasks can use to execute subtasks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span> <span class="o">=</span> <span class="n">Executor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executable</span> <span class="o">=</span> <span class="n">CasaTasks</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">)</span>
+
+        <span class="c1"># create a new log handler that will capture all messages above</span>
+        <span class="c1"># ATTENTION level.</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">CapturingHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">ATTENTION</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># if this task does not handle multiple input mses but was</span>
+            <span class="c1"># invoked with multiple mses in its inputs, call our utility</span>
+            <span class="c1"># function to invoke the task once per ms.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multi_vis_task</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span> <span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_multiple_vis</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span> <span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">_pipeline_casa_task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Equivalent Pipeline CLI call: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">_pipeline_casa_task</span><span class="p">)</span>
+
+            <span class="c1"># We should not pass unused parameters to prepare(), so first</span>
+            <span class="c1"># inspect the signature to find the names the arguments and then</span>
+            <span class="c1"># create a dictionary containing only those parameters</span>
+            <span class="n">prepare_args</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prepare</span><span class="p">)</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">prepare_parameters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">arg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prepare_args</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="n">prepare_parameters</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span>
+
+            <span class="c1"># register the capturing log handler, buffering all messages so that</span>
+            <span class="c1"># we can add them to the result - and subsequently, the weblog</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
+            <span class="c1"># get our result</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare</span><span class="p">(</span><span class="o">**</span><span class="n">prepare_parameters</span><span class="p">)</span>
+
+            <span class="c1"># analyse them..</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyse</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+            <span class="c1"># tag the result with the class of the originating task</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span>
+
+            <span class="c1"># add the log records to the result</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;logrecords&#39;</span><span class="p">):</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">logrecords</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">buffer</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">logrecords</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span>
+
+            <span class="n">event</span> <span class="o">=</span> <span class="n">TaskCompleteEvent</span><span class="p">(</span><span class="n">context_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                      <span class="n">stage_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span><span class="p">)</span>
+            <span class="n">eventbus</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="c1"># Created a special result object for the failed task, but only if</span>
+            <span class="c1"># this is a top-level task; otherwise, raise the exception higher</span>
+            <span class="c1"># up.</span>
+            <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_top_level_task</span><span class="p">():</span>
+                <span class="c1"># Get the task name from the task registry, otherwise use the</span>
+                <span class="c1"># task class name.</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">task_registry</span><span class="o">.</span><span class="n">get_casa_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+                <span class="c1"># Log error message.</span>
+                <span class="n">tb</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error executing pipeline task </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">tb</span><span class="p">)</span>
+
+                <span class="c1"># Create a special result object representing the failed task.</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">FailedTaskResults</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">ex</span><span class="p">,</span> <span class="n">tb</span><span class="p">)</span>
+
+                <span class="c1"># add the log records to the result</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;logrecords&#39;</span><span class="p">):</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">logrecords</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">buffer</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">logrecords</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span>
+
+                <span class="n">event</span> <span class="o">=</span> <span class="n">TaskAbnormalExitEvent</span><span class="p">(</span><span class="n">context_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                              <span class="n">stage_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span><span class="p">)</span>
+                <span class="n">eventbus</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">result</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># restore the context to the original context</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">original_inputs</span>
+
+            <span class="c1"># delete the task name once the top-level task is complete</span>
+            <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_top_level_task</span><span class="p">():</span>
+                <span class="n">filenamer</span><span class="o">.</span><span class="n">NamingTemplate</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="c1"># now that the WARNING and above messages have been attached to the</span>
+            <span class="c1"># result, remove the capturing logging handler from all loggers</span>
+            <span class="k">if</span> <span class="n">handler</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">remove_handler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
+            <span class="c1"># delete the executor so that the pickled context can be released</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executable</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_handle_multiple_vis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle a single task invoked for multiple measurement sets.</span>
+
+<span class="sd">        This function handles the case when the vis parameter on the Inputs</span>
+<span class="sd">        specifies multiple measurement sets. In this situation, we want to</span>
+<span class="sd">        invoke the task for each individual MS. We could do this by having</span>
+<span class="sd">        each task iterate over the measurement sets involved, but in order to</span>
+<span class="sd">        keep the task implementations as simple as possible, that complexity</span>
+<span class="sd">        (unless overridden) is handled by the template task instead.</span>
+
+<span class="sd">        If the task wants to handle the multiple measurement sets</span>
+<span class="sd">        itself it should override is_multi_vis_task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># The following code loops through the MSes specified in vis,</span>
+        <span class="c1"># executing the task for the first value (head) and then appending the</span>
+        <span class="c1"># results of executing the remainder of the MS list (tail).</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># we don&#39;t return an empty list as the timestamp decorator wants</span>
+            <span class="c1"># to set attributes on this value, which it can&#39;t on a built-in</span>
+            <span class="c1"># list</span>
+            <span class="k">return</span> <span class="n">ResultsList</span><span class="p">()</span>
+
+        <span class="n">container</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">_pipeline_casa_task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Equivalent Pipeline CLI call: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">container</span><span class="o">.</span><span class="n">_pipeline_casa_task</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="n">ResultsList</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">inputs</span> <span class="ow">in</span> <span class="n">container</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span>
+                <span class="n">single_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">single_result</span><span class="p">,</span> <span class="n">ResultsList</span><span class="p">):</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">single_result</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">single_result</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">results</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">container</span>
+
+
+    <span class="k">def</span> <span class="nf">_get_handled_headtails</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">handled</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># no names to get so return empty dict</span>
+            <span class="k">return</span> <span class="n">handled</span>
+
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+                <span class="n">property_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+                <span class="n">head</span> <span class="o">=</span> <span class="n">property_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">tail</span> <span class="o">=</span> <span class="n">property_value</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="n">ht</span> <span class="o">=</span> <span class="n">StandardTaskTemplate</span><span class="o">.</span><span class="n">HeadTail</span><span class="p">(</span><span class="n">head</span><span class="o">=</span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span><span class="o">=</span><span class="n">tail</span><span class="p">)</span>
+
+                <span class="n">handled</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ht</span>
+
+        <span class="k">return</span> <span class="n">handled</span></div>
+
+
+
+<div class="viewcode-block" id="FailedTask">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.FailedTask">[docs]</a>
+<span class="k">class</span> <span class="nc">FailedTask</span><span class="p">(</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FailedTask</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Executor">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.Executor">[docs]</a>
+<span class="k">class</span> <span class="nc">Executor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">output_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmdfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
+                                    <span class="n">context</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;casa_commands&#39;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cmdfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmdfile</span>
+
+    <span class="nd">@cmdfile</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">cmdfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_cmdfile&#39;</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Switch the CASA commands log file from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmdfile</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cmdfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Executor.execute">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.Executor.execute">[docs]</a>
+    <span class="nd">@capture_log</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute the given job or subtask, returning its output.</span>
+
+<span class="sd">        :param job: a job or subtask</span>
+<span class="sd">        :type job: an object conforming to the :class:`~pipeline.api.Task`\</span>
+<span class="sd">            interface</span>
+
+<span class="sd">        :rtype: :class:`~pipeline.api.Result`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># execute the job, capturing its results object</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># if the job was a JobRequest, log it to our command log</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">jobrequest</span><span class="o">.</span><span class="n">JobRequest</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log_jobrequest</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="c1"># if requested, merge the result with the context.</span>
+        <span class="k">if</span> <span class="n">merge</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># PIPE-1522: A &quot;context-free&quot; copy of the Executor instance can be created from the &#39;copy&#39;</span>
+                <span class="c1"># method (exclude_context=True), and sent to MPI servers for Tier0JobRequest executions.</span>
+                <span class="c1"># This reduces the MPI message size.</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;The context object is detached from the Executor instance and </span><span class="se">\</span>
+<span class="s1">                            the job/subtask result merge is not allowed.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_log_jobrequest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job</span><span class="p">):</span>
+        <span class="c1"># CAS-5262: casa_commands.log written by the pipeline should</span>
+        <span class="c1"># be formatted to be more easily readable.</span>
+
+        <span class="c1"># If the output directory is set to a valid string, then replace any</span>
+        <span class="c1"># occurrence of this output path in arguments with an empty string, to</span>
+        <span class="c1"># ensure the casa commands log does not contain hardcoded paths</span>
+        <span class="c1"># specific to where the pipeline ran.</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_dir</span><span class="p">):</span>
+            <span class="n">job_str</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_dir</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">job_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="c1"># wrap the text at the first open bracket</span>
+        <span class="k">if</span> <span class="s1">&#39;(&#39;</span> <span class="ow">in</span> <span class="n">job_str</span><span class="p">:</span>
+            <span class="n">indent</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">job_str</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">))</span> <span class="o">*</span> <span class="s1">&#39; &#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">indent</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="s1">&#39; &#39;</span>
+
+        <span class="n">wrapped</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">job_str</span><span class="p">,</span>
+                                <span class="n">subsequent_indent</span><span class="o">=</span><span class="n">indent</span><span class="p">,</span>
+                                <span class="n">width</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+                                <span class="n">break_long_words</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmdfile</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cmdfile</span><span class="p">:</span>
+            <span class="n">cmdfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wrapped</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Executor.copy">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.Executor.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclude_context</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a shallow copy of the Executor instance.</span>
+
+<span class="sd">        Optionally, we can exclude the &quot;context&quot; object to reduce the return object</span>
+<span class="sd">        size (e.g. when pushing it from the MPI client to the server). However, in that</span>
+<span class="sd">        case, merge=True will not be allowed in the &quot;execute&quot; method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">executor_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">exclude_context</span><span class="p">:</span>
+            <span class="n">executor_copy</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># executor_copy = utils.pickle_copy(executor_copy)</span>
+        <span class="k">return</span> <span class="n">executor_copy</span></div>
+</div>
+
+
+
+<span class="k">def</span> <span class="nf">_log_task</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
+                            <span class="n">context</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;casa_commands&#39;</span><span class="p">])</span>
+    <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="n">wrapped</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="s1">&#39;# &#39;</span> <span class="o">+</span> <span class="n">_CASA_COMMANDS_PROLOGUE</span><span class="p">,</span>
+                                <span class="n">subsequent_indent</span><span class="o">=</span><span class="s1">&#39;# &#39;</span><span class="p">,</span>
+                                <span class="n">width</span><span class="o">=</span><span class="mi">78</span><span class="p">,</span>
+                                <span class="n">break_long_words</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">comment</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;raise Error(</span><span class="se">\&#39;</span><span class="s1">The casa commands log is not executable!</span><span class="se">\&#39;</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span>
+                   <span class="s1">&#39;</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wrapped</span><span class="p">))</span>
+
+    <span class="n">comment</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"># </span><span class="si">%s</span><span class="se">\n</span><span class="s1">#</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span> <span class="s1">&#39;_pipeline_casa_task&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown pipeline task&#39;</span><span class="p">)</span>
+
+    <span class="c1"># get the description of how this task functions and add it to the comment</span>
+    <span class="n">comment</span> <span class="o">+=</span> <span class="n">task_registry</span><span class="o">.</span><span class="n">get_comment</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cmdfile</span><span class="p">:</span>
+        <span class="n">cmdfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="property_with_default">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.property_with_default">[docs]</a>
+<span class="k">def</span> <span class="nf">property_with_default</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a property whose value is reset to a default value when setting the</span>
+<span class="sd">    property value to None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># our standard name for the private property backing the public property</span>
+    <span class="c1"># is a prefix of one underscore</span>
+    <span class="n">varname</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">getx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">varname</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">setx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+<span class="c1">#    def delx(self):</span>
+<span class="c1">#        object.__delattr__(self, varname)</span>
+    <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">getx</span><span class="p">,</span> <span class="n">setx</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="write_pipeline_casa_tasks">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.polcalflag.qa.write_pipeline_casa_tasks">[docs]</a>
+<span class="k">def</span> <span class="nf">write_pipeline_casa_tasks</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write the equivalent pipeline CASA tasks for results in the context to a</span>
+<span class="sd">    file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pipeline_tasks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">proxy</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">proxy</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pipeline_tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">pipeline_casa_task</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">pipeline_tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;# stage </span><span class="si">%s</span><span class="s1">: unknown task generated </span><span class="si">%s</span><span class="s1"> &#39;</span>
+                                  <span class="s1">&#39;result&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
+                                              <span class="n">result</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+    <span class="n">task_string</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;    </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">pipeline_tasks</span><span class="p">])</span>
+    <span class="c1"># replace the working directory with &#39;&#39;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">):</span>
+        <span class="n">task_string</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">task_string</span><span class="p">)</span>
+
+    <span class="n">state_commands</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">project_summary</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">project_structure</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">project_performance_parameters</span><span class="p">):</span>
+        <span class="n">state_commands</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;context.set_state(</span><span class="si">{!r}</span><span class="s1">, </span><span class="si">{!r}</span><span class="s1">, </span><span class="si">{!r}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">project</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">o</span><span class="p">)]</span>
+
+    <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;context = h_init()</span>
+<span class="si">%s</span>
+<span class="s1">try:</span>
+<span class="si">%s</span>
+<span class="s1">finally:</span>
+<span class="s1">    h_save()</span>
+<span class="s1">&#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">state_commands</span><span class="p">),</span> <span class="n">task_string</span><span class="p">)</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;pipeline_script&#39;</span><span class="p">])</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">casatask_file</span><span class="p">:</span>
+        <span class="n">casatask_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="p">)</span></div>
+
+
+
+<span class="n">_CASA_COMMANDS_PROLOGUE</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;This file contains CASA commands run by the pipeline. Although all commands required to calibrate the data are &#39;</span>
+    <span class="s1">&#39;included here, this file cannot be executed, nor does it contain heuristic and flagging calculations performed by &#39;</span>
+    <span class="s1">&#39;pipeline code. This file is useful to understand which CASA commands are being run by each pipeline task. If one &#39;</span>
+    <span class="s1">&#39;wishes to re-run the pipeline, one should use the pipeline script linked on the front page or By Task page of the &#39;</span>
+    <span class="s1">&#39;weblog. Some stages may not have any commands listed here, e.g. hifa_importdata if conversion from ASDM to MS is &#39;</span>
+    <span class="s1">&#39;not required.&#39;</span>
+<span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

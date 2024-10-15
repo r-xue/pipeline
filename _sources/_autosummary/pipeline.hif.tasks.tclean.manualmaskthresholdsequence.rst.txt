@@ -1,0 +1,13 @@
+pipeline.hif.tasks.tclean.manualmaskthresholdsequence
+=====================================================
+
+.. automodule:: pipeline.hif.tasks.tclean.manualmaskthresholdsequence
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BaseCleanSequence
+      ManualMaskThresholdSequence
+   

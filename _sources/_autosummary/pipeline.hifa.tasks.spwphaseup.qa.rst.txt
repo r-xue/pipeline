@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.spwphaseup.qa
+=================================
+
+.. automodule:: pipeline.hifa.tasks.spwphaseup.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SpwPhaseupListQAHandler
+      SpwPhaseupQAHandler
+   

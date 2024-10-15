@@ -1,0 +1,22 @@
+pipeline.hifv.tasks.statwt.statwt
+=================================
+
+.. automodule:: pipeline.hifv.tasks.statwt.statwt
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      contfile_to_spwsel
+      set_add_model_column_parameters
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      Statwt
+      StatwtInputs
+      StatwtResults
+   

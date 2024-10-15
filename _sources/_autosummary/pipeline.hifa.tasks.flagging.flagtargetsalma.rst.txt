@@ -1,0 +1,21 @@
+pipeline.hifa.tasks.flagging.flagtargetsalma
+============================================
+
+.. automodule:: pipeline.hifa.tasks.flagging.flagtargetsalma
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      sanitize_for_ms
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      FlagTargetsALMA
+      FlagTargetsALMAInputs
+      FlagTargetsALMAResults
+   

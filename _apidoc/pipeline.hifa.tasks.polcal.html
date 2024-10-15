@@ -1,0 +1,586 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.polcal package &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.polcal package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/pipeline.hifa.tasks.polcal.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hifa-tasks-polcal-package">
+<h1>pipeline.hifa.tasks.polcal package<a class="headerlink" href="#pipeline-hifa-tasks-polcal-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pipeline.hifa.tasks.polcal.polcal">
+<span id="pipeline-hifa-tasks-polcal-polcal-module"></span><h2>pipeline.hifa.tasks.polcal.polcal module<a class="headerlink" href="#module-pipeline.hifa.tasks.polcal.polcal" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.polcal.Polcal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Polcal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/polcal.html#Polcal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.polcal.Polcal" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.StandardTaskTemplate" title="pipeline.infrastructure.basetask.StandardTaskTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">StandardTaskTemplate</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.polcal.Polcal.Inputs">
+<span class="sig-name descname"><span class="pre">Inputs</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.polcal.Polcal.Inputs" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hifa.tasks.polcal.polcal.PolcalInputs" title="pipeline.hifa.tasks.polcal.polcal.PolcalInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">PolcalInputs</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.polcal.Polcal.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pipeline.hifa.tasks.polcal.polcal.PolcalResults" title="pipeline.hifa.tasks.polcal.polcal.PolcalResults"><span class="pre">PolcalResults</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pipeline.hifa.tasks.polcal.polcal.PolcalResults" title="pipeline.hifa.tasks.polcal.polcal.PolcalResults"><span class="pre">PolcalResults</span></a></span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/polcal.html#Polcal.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.polcal.Polcal.analyse" title="Link to this definition"></a></dt>
+<dd><p>Analyze the PolcalResults: check that all caltables from
+CalApplications exist on disk.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>result</strong> – PolcalResults instance.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>PolcalResults instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.polcal.Polcal.is_multi_vis_task">
+<span class="sig-name descname"><span class="pre">is_multi_vis_task</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#pipeline.hifa.tasks.polcal.polcal.Polcal.is_multi_vis_task" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.polcal.Polcal.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pipeline.hifa.tasks.polcal.polcal.PolcalResults" title="pipeline.hifa.tasks.polcal.polcal.PolcalResults"><span class="pre">PolcalResults</span></a></span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/polcal.html#Polcal.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.polcal.Polcal.prepare" title="Link to this definition"></a></dt>
+<dd><p>Execute polarization calibration heuristics and return Results object
+that includes final caltables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>PolcalResults instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.polcal.PolcalInputs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PolcalInputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minpacov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint_chavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vs_stats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vs_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/polcal.html#PolcalInputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.polcal.PolcalInputs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.vdp.StandardInputs" title="pipeline.infrastructure.vdp.StandardInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">StandardInputs</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.polcal.PolcalInputs.intent">
+<span class="sig-name descname"><span class="pre">intent</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.polcal.PolcalInputs.intent" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.polcal.PolcalInputs.minpacov">
+<span class="sig-name descname"><span class="pre">minpacov</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.polcal.PolcalInputs.minpacov" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.polcal.PolcalInputs.solint_chavg">
+<span class="sig-name descname"><span class="pre">solint_chavg</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.polcal.PolcalInputs.solint_chavg" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.polcal.PolcalInputs.vs_stats">
+<span class="sig-name descname"><span class="pre">vs_stats</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.polcal.PolcalInputs.vs_stats" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.polcal.PolcalInputs.vs_thresh">
+<span class="sig-name descname"><span class="pre">vs_thresh</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.polcal.PolcalInputs.vs_thresh" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.polcal.PolcalResults">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PolcalResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/polcal.html#PolcalResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.polcal.PolcalResults" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.Results" title="pipeline.infrastructure.basetask.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.polcal.PolcalResults.merge_with_context">
+<span class="sig-name descname"><span class="pre">merge_with_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/polcal.html#PolcalResults.merge_with_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.polcal.PolcalResults.merge_with_context" title="Link to this definition"></a></dt>
+<dd><p>See <a href="#id1"><span class="problematic" id="id2">:method:`~pipeline.infrastructure.api.Results.merge_with_context`</span></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hifa.tasks.polcal.qa">
+<span id="pipeline-hifa-tasks-polcal-qa-module"></span><h2>pipeline.hifa.tasks.polcal.qa module<a class="headerlink" href="#module-pipeline.hifa.tasks.polcal.qa" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.qa.PolcalListQAHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PolcalListQAHandler</span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/qa.html#PolcalListQAHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.qa.PolcalListQAHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin" title="pipeline.infrastructure.pipelineqa.QAPlugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">QAPlugin</span></code></a></p>
+<p>QA handler for a list containing PolcalResults.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.qa.PolcalListQAHandler.child_cls">
+<span class="sig-name descname"><span class="pre">child_cls</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.qa.PolcalListQAHandler.child_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hifa.tasks.polcal.polcal.PolcalResults" title="pipeline.hifa.tasks.polcal.polcal.PolcalResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">PolcalResults</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.qa.PolcalListQAHandler.generating_task">
+<span class="sig-name descname"><span class="pre">generating_task</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.qa.PolcalListQAHandler.generating_task" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hifa.tasks.polcal.polcal.Polcal" title="pipeline.hifa.tasks.polcal.polcal.Polcal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Polcal</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.qa.PolcalListQAHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/qa.html#PolcalListQAHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.qa.PolcalListQAHandler.handle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.qa.PolcalListQAHandler.result_cls">
+<span class="sig-name descname"><span class="pre">result_cls</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.qa.PolcalListQAHandler.result_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.qa.PolcalQAHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PolcalQAHandler</span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/qa.html#PolcalQAHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.qa.PolcalQAHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin" title="pipeline.infrastructure.pipelineqa.QAPlugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">QAPlugin</span></code></a></p>
+<p>QA handler for an uncontained PolcalResults.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.qa.PolcalQAHandler.child_cls">
+<span class="sig-name descname"><span class="pre">child_cls</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pipeline.hifa.tasks.polcal.qa.PolcalQAHandler.child_cls" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.qa.PolcalQAHandler.generating_task">
+<span class="sig-name descname"><span class="pre">generating_task</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.qa.PolcalQAHandler.generating_task" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hifa.tasks.polcal.polcal.Polcal" title="pipeline.hifa.tasks.polcal.polcal.Polcal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Polcal</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.qa.PolcalQAHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/qa.html#PolcalQAHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.qa.PolcalQAHandler.handle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.qa.PolcalQAHandler.result_cls">
+<span class="sig-name descname"><span class="pre">result_cls</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.qa.PolcalQAHandler.result_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hifa.tasks.polcal.polcal.PolcalResults" title="pipeline.hifa.tasks.polcal.polcal.PolcalResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">PolcalResults</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hifa.tasks.polcal.renderer">
+<span id="pipeline-hifa-tasks-polcal-renderer-module"></span><h2>pipeline.hifa.tasks.polcal.renderer module<a class="headerlink" href="#module-pipeline.hifa.tasks.polcal.renderer" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.PolcalLeakagePlotRenderer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PolcalLeakagePlotRenderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plots</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/renderer.html#PolcalLeakagePlotRenderer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.PolcalLeakagePlotRenderer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.JsonPlotRenderer" title="pipeline.infrastructure.renderer.basetemplates.JsonPlotRenderer"><code class="xref py py-class docutils literal notranslate"><span class="pre">JsonPlotRenderer</span></code></a></p>
+<p>Renders the page with the detailed plots for the leakage solutions gain vs
+channel.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.ResidPolTR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ResidPolTR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">U</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.ResidPolTR" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.ResidPolTR.I">
+<span class="sig-name descname"><span class="pre">I</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.ResidPolTR.I" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.ResidPolTR.Q">
+<span class="sig-name descname"><span class="pre">Q</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.ResidPolTR.Q" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.ResidPolTR.U">
+<span class="sig-name descname"><span class="pre">U</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.ResidPolTR.U" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.ResidPolTR.V">
+<span class="sig-name descname"><span class="pre">V</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.ResidPolTR.V" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 6</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.ResidPolTR.field">
+<span class="sig-name descname"><span class="pre">field</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.ResidPolTR.field" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.ResidPolTR.session">
+<span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.ResidPolTR.session" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.ResidPolTR.spw">
+<span class="sig-name descname"><span class="pre">spw</span></span><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.ResidPolTR.spw" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">T2_4MDetailsPolcalRenderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'polcal.mako'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'polarization</span> <span class="pre">Calibration'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_rerender</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/renderer.html#T2_4MDetailsPolcalRenderer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer" title="pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer"><code class="xref py py-class docutils literal notranslate"><span class="pre">T2_4MDetailsDefaultRenderer</span></code></a></p>
+<p>Renders detailed HTML output for the Polcal task.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_amp_parang_plots">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_amp_parang_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/renderer.html#T2_4MDetailsPolcalRenderer.create_amp_parang_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_amp_parang_plots" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_amp_scan_plots">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_amp_scan_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/renderer.html#T2_4MDetailsPolcalRenderer.create_amp_scan_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_amp_scan_plots" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_copy_pcontext_with_session_mses">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_copy_pcontext_with_session_mses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/renderer.html#T2_4MDetailsPolcalRenderer.create_copy_pcontext_with_session_mses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_copy_pcontext_with_session_mses" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_gain_ratio_rms_plots">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_gain_ratio_rms_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/renderer.html#T2_4MDetailsPolcalRenderer.create_gain_ratio_rms_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_gain_ratio_rms_plots" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_leakage_vs_channel_plots">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_leakage_vs_channel_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/renderer.html#T2_4MDetailsPolcalRenderer.create_leakage_vs_channel_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_leakage_vs_channel_plots" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_phase_channel_plots">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_phase_channel_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/renderer.html#T2_4MDetailsPolcalRenderer.create_phase_channel_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_phase_channel_plots" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_pol_table_rows">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_pol_table_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tabletype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/renderer.html#T2_4MDetailsPolcalRenderer.create_pol_table_rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_pol_table_rows" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_real_imag_plots">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_real_imag_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/renderer.html#T2_4MDetailsPolcalRenderer.create_real_imag_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_real_imag_plots" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_xy_amp_ant_plots">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_xy_amp_ant_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/renderer.html#T2_4MDetailsPolcalRenderer.create_xy_amp_ant_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_xy_amp_ant_plots" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.update_mako_context">
+<span class="sig-name descname"><span class="pre">update_mako_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mako_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/polcal/renderer.html#T2_4MDetailsPolcalRenderer.update_mako_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.update_mako_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hifa.tasks.polcal">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline.hifa.tasks.polcal" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

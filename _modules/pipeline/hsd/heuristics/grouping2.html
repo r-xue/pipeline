@@ -1,0 +1,584 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.heuristics.grouping2 &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.heuristics.grouping2</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.heuristics.grouping2</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Set of heuristics for data grouping.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Real</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NewType</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.api</span> <span class="k">as</span> <span class="nn">api</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">Angle</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s1">&#39;Angle&#39;</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="GroupByPosition2">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.GroupByPosition2">[docs]</a>
+<span class="k">class</span> <span class="nc">GroupByPosition2</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Grouping by RA/DEC position.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GroupByPosition2.calculate">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.GroupByPosition2.calculate">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">r_combine</span><span class="p">:</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">r_allowance</span><span class="p">:</span> <span class="n">Angle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Group data by RA/DEC position.</span>
+
+<span class="sd">        Divides data into groups by their positions in two</span>
+<span class="sd">        dimensional space which are given by ra and dec.</span>
+<span class="sd">        Groups data within the circle with the radius of</span>
+<span class="sd">        r_combine. Only position difference larger than</span>
+<span class="sd">        r_allowance are regarded as significant.</span>
+<span class="sd">        For r_combine and r_allowance, specified values are</span>
+<span class="sd">        interpreted to be in degree unless their units are</span>
+<span class="sd">        explicitly given.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ra:</span>
+<span class="sd">              List of R.A.</span>
+<span class="sd">            dec:</span>
+<span class="sd">              List of DEC.</span>
+<span class="sd">            r_combine:</span>
+<span class="sd">              Data inside r_combine will be grouped together.</span>
+<span class="sd">            r_allowance:</span>
+<span class="sd">              Data inside r_allowance are assumed to be the same position.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Two-tuple containing information on group membership</span>
+<span class="sd">            (PosDict) and boundaries between groups (PosGap).</span>
+
+<span class="sd">            PosDict is a dictionary whose keys are indices for</span>
+<span class="sd">            ra and dec. Values of PosDict are the list which</span>
+<span class="sd">            contains different value depending on whether the</span>
+<span class="sd">            position specified by the index is reference data</span>
+<span class="sd">            for the group or not. If k is reference index,</span>
+<span class="sd">            PosDict[k] lists indices for group member</span>
+<span class="sd">            ([ID1, ID2,..., IDN]). Otherwise, PosDict[k] is</span>
+<span class="sd">            [-1, m] where m is the index to reference data.</span>
+
+<span class="sd">            PosGap is a list of gaps in terms of array indices</span>
+<span class="sd">            for ra and dec ([IDX1, IDX2,...,IDXN]). Length of</span>
+<span class="sd">            PosGap is (number of groups) - 1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r_combine</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="c1"># r_combine should be quantity</span>
+            <span class="n">CombineRadius</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">r_combine</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">CombineRadius</span> <span class="o">=</span> <span class="n">r_combine</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r_allowance</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="c1"># r_allowance should be quantity</span>
+            <span class="n">AllowanceRadius</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">r_allowance</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">AllowanceRadius</span> <span class="o">=</span> <span class="n">r_allowance</span>
+
+        <span class="n">ThresholdAR</span> <span class="o">=</span> <span class="n">AllowanceRadius</span> <span class="o">*</span> <span class="n">AllowanceRadius</span>
+        <span class="n">CombineDiameter</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">CombineRadius</span>
+
+        <span class="c1"># 2009/2/10 Quicker Method</span>
+        <span class="n">Nrows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+        <span class="n">PosDict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">SelectDict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">MinRA</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">MinDEC</span> <span class="o">=</span> <span class="n">dec</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="c1"># Calculate the lattice position (sRA, sDEC) for each pointings</span>
+        <span class="c1"># Create list of pointings (dictionary) for each lattice position</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nrows</span><span class="p">):</span>
+            <span class="n">sRA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">ra</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">-</span> <span class="n">MinRA</span><span class="p">)</span> <span class="o">/</span> <span class="n">CombineDiameter</span><span class="p">)</span>
+            <span class="n">sDEC</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">dec</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">-</span> <span class="n">MinDEC</span><span class="p">)</span> <span class="o">/</span> <span class="n">CombineDiameter</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sRA</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SelectDict</span><span class="p">:</span>
+                <span class="n">SelectDict</span><span class="p">[</span><span class="n">sRA</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">sDEC</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SelectDict</span><span class="p">[</span><span class="n">sRA</span><span class="p">]:</span>
+                <span class="n">SelectDict</span><span class="p">[</span><span class="n">sRA</span><span class="p">][</span><span class="n">sDEC</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">SelectDict</span><span class="p">[</span><span class="n">sRA</span><span class="p">][</span><span class="n">sDEC</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Create PosDict</span>
+        <span class="c1"># make a list of spectra inside each lattice grid</span>
+        <span class="c1"># store the list in PosDict[i] where &#39;i&#39; is the smallest row number in the list</span>
+        <span class="c1"># Other spectra have a reference to &#39;i&#39;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;SelectDict.keys() : </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">list</span><span class="p">(</span><span class="n">SelectDict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="k">for</span> <span class="n">sRA</span> <span class="ow">in</span> <span class="n">SelectDict</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;len(SelectDict[</span><span class="si">%s</span><span class="s1">].keys()) : </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sRA</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">SelectDict</span><span class="p">[</span><span class="n">sRA</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
+            <span class="k">for</span> <span class="n">sDEC</span> <span class="ow">in</span> <span class="n">SelectDict</span><span class="p">[</span><span class="n">sRA</span><span class="p">]:</span>
+                <span class="n">PosDict</span><span class="p">[</span><span class="n">SelectDict</span><span class="p">[</span><span class="n">sRA</span><span class="p">][</span><span class="n">sDEC</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">SelectDict</span><span class="p">[</span><span class="n">sRA</span><span class="p">][</span><span class="n">sDEC</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">SelectDict</span><span class="p">[</span><span class="n">sRA</span><span class="p">][</span><span class="n">sDEC</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">SelectDict</span><span class="p">[</span><span class="n">sRA</span><span class="p">][</span><span class="n">sDEC</span><span class="p">][</span><span class="mi">1</span><span class="p">:]:</span>
+                        <span class="n">PosDict</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">SelectDict</span><span class="p">[</span><span class="n">sRA</span><span class="p">][</span><span class="n">sDEC</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">del</span> <span class="n">SelectDict</span>
+
+        <span class="c1"># Calculate thresholds to determine gaps</span>
+        <span class="n">DeltaP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">ra</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">ra</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">dec</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">dec</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span>
+        <span class="n">DeltaQ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">DeltaP</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">DeltaP</span> <span class="o">&gt;</span> <span class="n">ThresholdAR</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">DeltaQ</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ThresholdP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">DeltaQ</span><span class="p">)</span> <span class="o">*</span> <span class="mf">10.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ThresholdP</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;threshold:</span><span class="si">%s</span><span class="s1"> deg&#39;</span> <span class="o">%</span> <span class="n">ThresholdP</span><span class="p">)</span>
+
+        <span class="c1"># List rows which distance from the previous position is larger than the threshold</span>
+        <span class="n">PosGap</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Nrows</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">DeltaP</span><span class="p">[</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">ThresholdP</span><span class="p">:</span>
+                <span class="n">PosGap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Position Gap </span><span class="si">%s</span><span class="s1"> deg at row=</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">DeltaP</span><span class="p">[</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">))</span>
+
+        <span class="c1"># Print information</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">PosGap</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">PosGapMsg</span> <span class="o">=</span> <span class="s1">&#39;Found no position gap&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">PosGapMsg</span> <span class="o">=</span> <span class="s1">&#39;Found </span><span class="si">%d</span><span class="s1"> position gap(s)&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">PosGap</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">PosGapMsg</span><span class="p">)</span>
+
+        <span class="c1">#print &#39;\nPosGap&#39;, PosGap</span>
+        <span class="c1">#print &#39;\nPosDict&#39;, PosDict</span>
+        <span class="k">return</span> <span class="n">PosDict</span><span class="p">,</span> <span class="n">PosGap</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GroupByTime2">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.GroupByTime2">[docs]</a>
+<span class="k">class</span> <span class="nc">GroupByTime2</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Grouping by time sequence.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GroupByTime2.calculate">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.GroupByTime2.calculate">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timebase</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Real</span><span class="p">],</span> <span class="n">time_diff</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Real</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Group data by time sequence.</span>
+
+<span class="sd">        Divides data into groups by their difference (time_diff).</span>
+<span class="sd">        Two groups are defined based on &quot;small&quot; and &quot;large&quot; gaps,</span>
+<span class="sd">        which are internally computed by ThresholdForGroupByTime</span>
+<span class="sd">        heuristic. The time_diff is generated from timebase in</span>
+<span class="sd">        most of the cases. The timebase contains all time stamps</span>
+<span class="sd">        and time_diff is created from selected time stamps in</span>
+<span class="sd">        other case.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            timebase:</span>
+<span class="sd">              base list of time stamps for threshold estimation</span>
+<span class="sd">            time_diff:</span>
+<span class="sd">              difference from the previous time stamp</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Two-tuple containing information on group membership</span>
+<span class="sd">            (TimeTable) and boundaries between groups (TimeGap).</span>
+
+<span class="sd">            TimeTable is the &quot;list-of-list&quot; whose items are the set</span>
+<span class="sd">            of indices for each group. TimeTable[0] is the groups</span>
+<span class="sd">            separaged by &quot;small&quot; gap while TimeTable[1] is for</span>
+<span class="sd">            groups separated by &quot;large&quot; gap. They are used for</span>
+<span class="sd">            baseline subtraction (hsd_baseline) and subsequent</span>
+<span class="sd">            flagging (hsd_blflag).</span>
+
+<span class="sd">            TimeTable:</span>
+<span class="sd">                [[[ismall00,...,ismall0M],[...],...,[ismallX0,...,ismallXN]],</span>
+<span class="sd">                 [[ilarge00,...,ilarge0P],[...],...,[ilargeY0,...,ilargeYQ]]]</span>
+<span class="sd">            TimeTable[0]: separated by small gaps</span>
+<span class="sd">            TimeTable[1]: separated by large gaps</span>
+
+<span class="sd">            TimeGap is the list of indices which indicate boundaries</span>
+<span class="sd">            for &quot;small&quot; and &quot;large&quot; gaps. These are used for plotting.</span>
+
+<span class="sd">            TimeGap: [[rowX1, rowX2,...,rowXN], [rowY1, rowY2,...,rowYN]]</span>
+<span class="sd">            TimeGap[0]: small gap</span>
+<span class="sd">            TimeGap[1]: large gap</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Grouping by Time...&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Threshold for grouping</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">ThresholdForGroupByTime</span><span class="p">()</span>
+        <span class="p">(</span><span class="n">Threshold1</span><span class="p">,</span> <span class="n">Threshold2</span><span class="p">)</span> <span class="o">=</span> <span class="n">h</span><span class="p">(</span><span class="n">timebase</span><span class="p">)</span>
+
+        <span class="n">TimeTable</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[]]</span>
+        <span class="n">SubTable1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">SubTable2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">TimeGap</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[]]</span>
+
+        <span class="c1"># Detect small and large time gaps</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">time_diff</span><span class="p">)):</span>
+            <span class="n">indexp1</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">time_diff</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">Threshold1</span><span class="p">:</span>
+                <span class="n">SubTable1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indexp1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">TimeTable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SubTable1</span><span class="p">)</span>
+                <span class="n">SubTable1</span> <span class="o">=</span> <span class="p">[</span><span class="n">indexp1</span><span class="p">]</span>
+                <span class="n">TimeGap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indexp1</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Small Time Gap: </span><span class="si">%s</span><span class="s1"> sec at row=</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time_diff</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">indexp1</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">time_diff</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">Threshold2</span><span class="p">:</span>
+                <span class="n">SubTable2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indexp1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">TimeTable</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SubTable2</span><span class="p">)</span>
+                <span class="n">SubTable2</span> <span class="o">=</span> <span class="p">[</span><span class="n">indexp1</span><span class="p">]</span>
+                <span class="n">TimeGap</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indexp1</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Large Time Gap: </span><span class="si">%s</span><span class="s1"> sec at row=</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time_diff</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">indexp1</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">SubTable1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">TimeTable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SubTable1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">SubTable2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">TimeTable</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SubTable2</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">SubTable1</span><span class="p">,</span> <span class="n">SubTable2</span>
+
+        <span class="c1"># print information</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">TimeGap</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">TimeGapMsg</span> <span class="o">=</span> <span class="s1">&#39;Found no time gap&#39;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">TimeGapMsg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">TimeGapMsg1</span> <span class="o">=</span> <span class="s1">&#39;Found </span><span class="si">%d</span><span class="s1"> small time gap(s)&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">TimeGap</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">TimeGapMsg2</span> <span class="o">=</span> <span class="s1">&#39;Found </span><span class="si">%d</span><span class="s1"> large time gap(s)&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">TimeGap</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">TimeGapMsg1</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">TimeGapMsg2</span><span class="p">)</span>
+
+        <span class="c1">#print &#39;\nTimeGap&#39;, TimeGap</span>
+        <span class="c1">#print &#39;\nTimeTable&#39;, TimeTable</span>
+        <span class="k">return</span> <span class="n">TimeTable</span><span class="p">,</span> <span class="n">TimeGap</span></div>
+</div>
+
+        <span class="c1"># TimeGap is index</span>
+        <span class="c1"># TimeTable[][0] is row, TimeTable[][1] is index</span>
+
+
+<div class="viewcode-block" id="ThresholdForGroupByTime">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.ThresholdForGroupByTime">[docs]</a>
+<span class="k">class</span> <span class="nc">ThresholdForGroupByTime</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate thresholds for large and small time gaps.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ThresholdForGroupByTime.calculate">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.ThresholdForGroupByTime.calculate">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timebase</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Real</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Estimate thresholds for large and small time gaps.</span>
+
+<span class="sd">        Estimate thresholds for large and small time gaps using</span>
+<span class="sd">        base list of time stamps. Threshold for small time gap,</span>
+<span class="sd">        denoted as Threshold1, is computed from a median value</span>
+<span class="sd">        of nonzero time differences multiplied by five, i.e.,</span>
+
+<span class="sd">            dt = timebase[1:] - timebase[:-1]</span>
+<span class="sd">            Threhold1 = 5 * np.median(dt[dt != 0])</span>
+
+<span class="sd">        where timebase is assumed to be np.ndarray. Threshold</span>
+<span class="sd">        for large time gap, denoted as Threshold2, is computed</span>
+<span class="sd">        from a median value of time differences larger than</span>
+<span class="sd">        Threshold1 mutiplied by five, i.e.,</span>
+
+<span class="sd">            Threshold2 = 5 * np.median(</span>
+<span class="sd">                dt[np.logical_and(dt != 0, dt &gt; Threshold1)]</span>
+<span class="sd">            )</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            timebase:</span>
+<span class="sd">              base list of time stamps for threshold estimation</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Two-tuple of threshold values for small and large</span>
+<span class="sd">            time gaps, respectively.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ArrayTime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">timebase</span><span class="p">)</span>
+
+        <span class="c1"># 2009/2/5 adapted for multi beam which assumes to have identical time stamps</span>
+        <span class="c1"># identical time stamps are rejected before determining thresholds</span>
+        <span class="c1"># DeltaT: difference from the previous time stamp</span>
+        <span class="n">DeltaT</span> <span class="o">=</span> <span class="n">ArrayTime</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">ArrayTime</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">DeltaT1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">DeltaT</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">DeltaT</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">Threshold1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">DeltaT1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">5.0</span>
+        <span class="n">DeltaT2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">DeltaT1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">DeltaT1</span> <span class="o">&gt;</span> <span class="n">Threshold1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">DeltaT2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">Threshold2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">DeltaT2</span><span class="p">)</span> <span class="o">*</span> <span class="mf">5.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Threshold2</span> <span class="o">=</span> <span class="n">Threshold1</span>
+
+        <span class="c1"># print information</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Threshold1 = </span><span class="si">%s</span><span class="s1"> sec&#39;</span> <span class="o">%</span> <span class="n">Threshold1</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Threshold2 = </span><span class="si">%s</span><span class="s1"> sec&#39;</span> <span class="o">%</span> <span class="n">Threshold2</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;MaxDeltaT = </span><span class="si">%s</span><span class="s1"> sec&#39;</span> <span class="o">%</span> <span class="n">DeltaT1</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;MinDeltaT = </span><span class="si">%s</span><span class="s1"> sec&#39;</span> <span class="o">%</span> <span class="n">DeltaT1</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">Threshold1</span><span class="p">,</span> <span class="n">Threshold2</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MergeGapTables2">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.MergeGapTables2">[docs]</a>
+<span class="k">class</span> <span class="nc">MergeGapTables2</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge time gap and position gaps.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MergeGapTables2.calculate">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.MergeGapTables2.calculate">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">TimeGap</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">TimeTable</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">PosGap</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">tBEAM</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge time gap and position gaps.</span>
+
+<span class="sd">        Merge time gap list (TimeGap) and position gap list (PosGap).</span>
+<span class="sd">        TimeTable and TimeGap should be the first and the second</span>
+<span class="sd">        elements of the return value of GroupByTime2 heuristic.</span>
+<span class="sd">        Also, PosGap should be the second element of the return value</span>
+<span class="sd">        of GroupByPosition2 heuristic. PosGap is merged into small</span>
+<span class="sd">        TimeGap (TimeGap[0]).</span>
+
+<span class="sd">        tBEAM is used to separate the data by beam for multi-beam</span>
+<span class="sd">        data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            TimeTable:</span>
+<span class="sd">              the first element of output from GroupByTime2 heuristic</span>
+<span class="sd">            TimeGap:</span>
+<span class="sd">              the second element of output from GroupByTime2 heuristic</span>
+<span class="sd">            PosGap:</span>
+<span class="sd">              the second element of output from GroupByPosition2()</span>
+<span class="sd">            tBEAM:</span>
+<span class="sd">              list of beam identifier.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Two-tuple containing information on group membership</span>
+<span class="sd">            (TimeTable) and boundaries between groups (TimeGap).</span>
+
+<span class="sd">            TimeTable is the &quot;list-of-list&quot; whose items are the set</span>
+<span class="sd">            of indices for each group. TimeTable[0] is the groups</span>
+<span class="sd">            separaged by &quot;small&quot; gap while TimeTable[1] is for</span>
+<span class="sd">            groups separated by &quot;large&quot; gap. They are used for</span>
+<span class="sd">            baseline subtraction (hsd_baseline) and subsequent</span>
+<span class="sd">            flagging (hsd_blflag).</span>
+
+<span class="sd">            TimeTable:</span>
+<span class="sd">                [[[ismall00,...,ismall0M],[...],...,[ismallX0,...,ismallXN]],</span>
+<span class="sd">                 [[ilarge00,...,ilarge0P],[...],...,[ilargeY0,...,ilargeYQ]]]</span>
+<span class="sd">            TimeTable[0]: separated by small gaps</span>
+<span class="sd">            TimeTable[1]: separated by large gaps</span>
+
+<span class="sd">            TimeGap is the list of indices which indicate boundaries</span>
+<span class="sd">            for &quot;small&quot; and &quot;large&quot; gaps. The &quot;small&quot; gap is a merged</span>
+<span class="sd">            list of gaps for groups separated by small time gaps and</span>
+<span class="sd">            the ones grouped by positions. These are used for plotting.</span>
+
+<span class="sd">            TimeGap: [[rowX1, rowX2,...,rowXN], [rowY1, rowY2,...,rowYN]]</span>
+<span class="sd">            TimeGap[0]: small gap</span>
+<span class="sd">            TimeGap[1]: large gap</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Merging Position and Time Gap tables...&#39;</span><span class="p">)</span>
+
+        <span class="n">idxs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">TimeTable</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="n">idxs</span> <span class="o">+=</span> <span class="n">TimeTable</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">IDX</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">idxs</span><span class="p">)))</span>
+        <span class="n">tmpGap</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">TimeGap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">PosGap</span><span class="p">)))</span>
+        <span class="n">NewGap</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmpGap</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">n</span> <span class="o">=</span> <span class="n">tmpGap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">tmpGap</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                <span class="k">if</span> <span class="n">t</span> <span class="o">!=</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">IDX</span><span class="p">:</span>
+                    <span class="n">NewGap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+                    <span class="n">t</span> <span class="o">=</span> <span class="n">n</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">IDX</span><span class="p">:</span>
+                <span class="n">NewGap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">TimeGap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">NewGap</span>
+
+        <span class="n">SubTable1</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">TimeTable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">IDX</span><span class="p">)):</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">IDX</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">TimeGap</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">TimeTable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SubTable1</span><span class="p">)</span>
+                <span class="n">SubTable1</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span><span class="p">]</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Small Time Gap at row=</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">n</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">SubTable1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">SubTable1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">TimeTable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SubTable1</span><span class="p">)</span>
+
+        <span class="c1"># 2009/2/6 Divide TimeTable in accordance with the Beam</span>
+        <span class="n">TimeTable2</span> <span class="o">=</span> <span class="n">TimeTable</span><span class="p">[:]</span>
+        <span class="n">TimeTable</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[]]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">TimeTable2</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">TimeTable2</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+                <span class="c1">#rows = TimeTable2[i][index][0]</span>
+                <span class="n">idxs</span> <span class="o">=</span> <span class="n">TimeTable2</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">index</span><span class="p">]</span>
+                <span class="n">BeamDict</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">index2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">idxs</span><span class="p">)):</span>
+                    <span class="c1">#row = rows[index2]</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">idxs</span><span class="p">[</span><span class="n">index2</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">tBEAM</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="ow">in</span> <span class="n">BeamDict</span><span class="p">:</span>
+                        <span class="c1">#BeamDict[tBEAM[row]][0].append(row)</span>
+                        <span class="n">BeamDict</span><span class="p">[</span><span class="n">tBEAM</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">BeamDict</span><span class="p">[</span><span class="n">tBEAM</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                <span class="n">BeamList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">BeamDict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="k">for</span> <span class="n">beam</span> <span class="ow">in</span> <span class="n">BeamList</span><span class="p">:</span>
+                    <span class="n">TimeTable</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">beam</span><span class="p">)</span>
+
+        <span class="c1">#print TimeTable[0]</span>
+        <span class="k">del</span> <span class="n">BeamDict</span><span class="p">,</span> <span class="n">BeamList</span><span class="p">,</span> <span class="n">TimeTable2</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;TimeTable = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">TimeTable</span><span class="p">))</span>
+
+        <span class="c1">#print &#39;\nTimeGap&#39;, TimeGap</span>
+        <span class="c1">#print &#39;\nTimeTable&#39;, TimeTable</span>
+        <span class="k">return</span> <span class="n">TimeTable</span><span class="p">,</span> <span class="n">TimeGap</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

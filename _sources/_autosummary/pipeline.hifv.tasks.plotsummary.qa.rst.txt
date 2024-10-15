@@ -1,0 +1,13 @@
+pipeline.hifv.tasks.plotsummary.qa
+==================================
+
+.. automodule:: pipeline.hifv.tasks.plotsummary.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PlotSummaryListQAHandler
+      PlotSummaryQAHandler
+   

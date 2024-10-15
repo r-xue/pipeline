@@ -1,0 +1,21 @@
+pipeline.hifv.tasks.analyzestokescubes
+======================================
+
+.. automodule:: pipeline.hifv.tasks.analyzestokescubes
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Analyzestokescubes
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   analyzestokescubes
+   display
+   renderer

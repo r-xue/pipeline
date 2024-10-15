@@ -1,0 +1,406 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hifa_flagdata &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">hifa_flagdata</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/_taskdocs/hifa/hifa_flagdata_task.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="hifa-flagdata">
+<h1>hifa_flagdata<a class="headerlink" href="#hifa-flagdata" title="Link to this heading"></a></h1>
+<section id="task-description">
+<h2>Task description<a class="headerlink" href="#task-description" title="Link to this heading"></a></h2>
+<p>The hifa_flagdata data performs basic flagging operations on a list of
+measurements including:</p>
+<ul class="simple">
+<li><p>applying online flags</p></li>
+<li><p>applying a flagging template</p></li>
+<li><p>partial polarization flagging</p></li>
+<li><p>autocorrelation data flagging</p></li>
+<li><p>shadowed antenna data flagging</p></li>
+<li><p>scan-based flagging by intent or scan number</p></li>
+<li><p>edge channel flagging, as needed</p></li>
+<li><p>low atmospheric transmission flagging</p></li>
+</ul>
+<p>About the spectral window edge channel flagging:</p>
+<ul class="simple">
+<li><p>For TDM spectral windows, a number of edge channels are always flagged,
+according to the <code class="docutils literal notranslate"><span class="pre">fracspw</span></code> and <code class="docutils literal notranslate"><span class="pre">fracspwfps</span></code> parameters (the latter
+operates only on spectral windows with 62, 124, or 248 channels). With the
+default setting of <code class="docutils literal notranslate"><span class="pre">fracspw</span></code>, the number of channels flagged on each edge
+is 2, 4, or 8 for 64, 128, or 256-channel spectral windows, respectively.</p></li>
+<li><p>For most FDM spectral windows, no edge flagging is done. The only exceptions
+are ACA spectral windows that encroach too close to the baseband edge.
+Channels that lie closer to the baseband edge than the following values are
+flagged: 62.5, 40, 20, 10, and 5 MHz for spectral windows with bandwidths of
+1000, 500, 250, 125, and 62.5 MHz, respectively. A warning is generated in
+the weblog if flagging occurs due to proximity to the baseband edge.
+By definition, 2000 MHz spectral windows always encroach the baseband edge on
+both sides of the spectral window, and thus are always flagged on both sides
+in order to achieve 1875 MHz bandwidth (in effect, they are flagged by
+62.5 MHz on each side), and thus no warning is generated.</p></li>
+</ul>
+<p>Output:</p>
+<blockquote>
+<div><p>results – The results object for the pipeline task is returned.</p>
+</div></blockquote>
+</section>
+<section id="parameter-list">
+<h2>Parameter List<a class="headerlink" href="#parameter-list" title="Link to this heading"></a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 66.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>parameter name</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>vis</p></td>
+<td><div class="line-block">
+<div class="line">The list of input MeasurementSets. Defaults to the list of</div>
+<div class="line">MeasurementSets defined in the pipeline context.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>autocorr</p></td>
+<td><div class="line-block">
+<div class="line">Flag autocorrelation data.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>shadow</p></td>
+<td><div class="line-block">
+<div class="line">Flag shadowed antennas.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>tolerance</p></td>
+<td><div class="line-block">
+<div class="line">Amount of antenna shadowing tolerated, in meters. A positive number</div>
+<div class="line">allows antennas to overlap in projection. A negative number forces antennas</div>
+<div class="line">apart in projection. Zero implies a distance of radius_1+radius_2 between</div>
+<div class="line">antenna centers.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>scan</p></td>
+<td><div class="line-block">
+<div class="line">Flag a list of specified scans.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>scannumber</p></td>
+<td><div class="line-block">
+<div class="line">A string containing a comma delimited list of scans to be</div>
+<div class="line">flagged.</div>
+<div class="line">Example: scannumber=’3,5,6’</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>intents</p></td>
+<td><div class="line-block">
+<div class="line">A string containing a comma delimited list of intents against</div>
+<div class="line">which the scans to be flagged are matched.</div>
+<div class="line">Example: intents=’<cite>*BANDPASS*</cite>’</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>edgespw</p></td>
+<td><div class="line-block">
+<div class="line">Flag the edge spectral window channels.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>fracspw</p></td>
+<td><div class="line-block">
+<div class="line">Fraction of channels to flag at both edges of TDM spectral windows.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>fracspwfps</p></td>
+<td><div class="line-block">
+<div class="line">Fraction of channels to flag at both edges of ACA TDM</div>
+<div class="line">spectral windows that were created with the earlier (original)</div>
+<div class="line">implementation of the frequency profile synthesis (FPS) algorithm.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>online</p></td>
+<td><div class="line-block">
+<div class="line">Apply the online flags.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>partialpol</p></td>
+<td><div class="line-block">
+<div class="line">Identify integrations in multi-polarisation data where part</div>
+<div class="line">of the polarization products are already flagged, and flag the other</div>
+<div class="line">polarization products in those integrations.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>lowtrans</p></td>
+<td><div class="line-block">
+<div class="line">Flag spectral windows for which a significant fraction of</div>
+<div class="line">the channels have atmospheric transmission below the</div>
+<div class="line">threshold (<code class="docutils literal notranslate"><span class="pre">mintransrepspw</span></code>, <code class="docutils literal notranslate"><span class="pre">mintransnonrepspws</span></code>).</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>mintransnonrepspws</p></td>
+<td><div class="line-block">
+<div class="line">This atmospheric transmissivity threshold is used to flag</div>
+<div class="line">a non-representative science spectral window when more than 60% of</div>
+<div class="line">its channels have a transmissivity below this level.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>mintransrepspw</p></td>
+<td><div class="line-block">
+<div class="line">This atmospheric transmissivity threshold is used to flag the</div>
+<div class="line">representative science spectral window when more than 60% of its channels</div>
+<div class="line">have a transmissivity below this level.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>fileonline</p></td>
+<td><div class="line-block">
+<div class="line">File containing the online flags. These are computed by the</div>
+<div class="line">h_init or hif_importdata data tasks. If the online flags files</div>
+<div class="line">are undefined a name of the form ‘msname.flagonline.txt’ is assumed.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>template</p></td>
+<td><div class="line-block">
+<div class="line">Apply flagging templates</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>filetemplate</p></td>
+<td><div class="line-block">
+<div class="line">The name of a text file that contains the flagging template</div>
+<div class="line">for RFI, birdies, telluric lines, etc. If the template flags files</div>
+<div class="line">is undefined a name of the form ‘msname.flagtemplate.txt’ is assumed.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>hm_tbuff</p></td>
+<td><div class="line-block">
+<div class="line">The heuristic for computing the default time interval padding</div>
+<div class="line">parameter. The options are ‘halfint’ and ‘manual’. In ‘halfint’ mode tbuff</div>
+<div class="line">is set to half the maximum of the median integration time of the science</div>
+<div class="line">and calibrator target observations. The value of 0.048 seconds is</div>
+<div class="line">subtracted from the lower time limit to accommodate the behavior of the</div>
+<div class="line">ALMA Control system.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>tbuff</p></td>
+<td><div class="line-block">
+<div class="line">The time in seconds used to pad flagging command time</div>
+<div class="line">intervals if <code class="docutils literal notranslate"><span class="pre">hm_tbuff</span></code> = ‘manual’. The default in</div>
+<div class="line">manual mode is no flagging.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>qa0</p></td>
+<td><div class="line-block">
+<div class="line">QA0 flags.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>qa2</p></td>
+<td><div class="line-block">
+<div class="line">QA2 flags.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>flagbackup</p></td>
+<td><div class="line-block">
+<div class="line">Back up any pre-existing flags.</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Do basic flagging on a MeasurementSet:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_flagdata</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>2. Do basic flagging on a MeasurementSet flagging additional scans selected
+by number as well:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_flagdata</span><span class="p">(</span><span class="n">scannumber</span><span class="o">=</span><span class="s1">&#39;13,18&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

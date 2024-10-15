@@ -1,0 +1,21 @@
+pipeline.hifv.tasks.syspower
+============================
+
+.. automodule:: pipeline.hifv.tasks.syspower
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Syspower
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   renderer
+   syspower

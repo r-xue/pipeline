@@ -1,0 +1,10 @@
+pipeline.h.templates package
+============================
+
+Module contents
+---------------
+
+.. automodule:: pipeline.h.templates
+   :members:
+   :undoc-members:
+   :show-inheritance:

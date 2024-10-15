@@ -1,0 +1,20 @@
+pipeline.infrastructure.eventbus.eventbus
+=========================================
+
+.. automodule:: pipeline.infrastructure.eventbus.eventbus
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      send_message
+      subscribe
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Event
+      TypeVar
+   

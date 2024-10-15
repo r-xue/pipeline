@@ -1,0 +1,860 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.imaging.worker &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.imaging.worker</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.imaging.worker</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Worker classes of SDImaging.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NewType</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.imagelibrary</span> <span class="k">as</span> <span class="nn">imagelibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">direction_utils</span> <span class="k">as</span> <span class="n">dirutil</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">observatory_policy</span><span class="p">,</span> <span class="n">sdtyping</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">resultobjects</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ImageCoordinateUtil">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.worker.ImageCoordinateUtil">[docs]</a>
+<span class="k">def</span> <span class="nf">ImageCoordinateUtil</span><span class="p">(</span>
+    <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
+    <span class="n">ms_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">ant_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="n">spw_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="n">fieldid_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;sdtyping.Angle&#39;</span><span class="p">,</span> <span class="s1">&#39;sdtyping.Angle&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;sdtyping.Direction&#39;</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate spatial coordinate of image.</span>
+
+<span class="sd">    Items in ant_list can be None, which indicates that the function will take into</span>
+<span class="sd">    account pointing data from all the antennas in MS.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context: Pipeline context</span>
+<span class="sd">        ms_names: List of MS names</span>
+<span class="sd">        ant_list: List of antenna ids. List elements could be None.</span>
+<span class="sd">        spw_list: List of spw ids.</span>
+<span class="sd">        fieldid_list: List of field ids.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: Raises if found unexpected unit of RA/DEC in DataTable.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        - Six tuple containing phasecenter, horizontal and vertical cell sizes,</span>
+<span class="sd">          horizontal and vertical number of pixels, and direction of the origin</span>
+<span class="sd">          (for moving targets).</span>
+<span class="sd">        - False if no valid data exists.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># A flag to use field direction as image center (True) rather than center of the map extent</span>
+    <span class="n">USE_FIELD_DIR</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">ref_msobj</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">ms_names</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">ref_fieldid</span> <span class="o">=</span> <span class="n">fieldid_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ref_spw</span> <span class="o">=</span> <span class="n">spw_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">source_name</span> <span class="o">=</span> <span class="n">ref_msobj</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">ref_fieldid</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+    <span class="c1"># trim source name to workaround &#39;&quot;name&quot;&#39; type of sources</span>
+    <span class="c1"># trimmed_name = source_name.strip(&#39;&quot;&#39;)</span>
+    <span class="n">is_eph_obj</span> <span class="o">=</span> <span class="n">ref_msobj</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">ref_fieldid</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_eph_obj</span>
+    <span class="n">is_known_eph_obj</span> <span class="o">=</span> <span class="n">ref_msobj</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">ref_fieldid</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_known_eph_obj</span>
+
+    <span class="n">imaging_policy</span> <span class="o">=</span> <span class="n">observatory_policy</span><span class="o">.</span><span class="n">get_imaging_policy</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+    <span class="c1"># qa tool</span>
+    <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+    <span class="c1"># msmd-less implementation</span>
+    <span class="n">spw</span> <span class="o">=</span> <span class="n">ref_msobj</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">ref_spw</span><span class="p">)</span>
+    <span class="n">freq_hz</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">mean_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<span class="c1">#     fields = ref_msobj.get_fields(name=trimmed_name)</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="n">ref_msobj</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">source_name</span><span class="p">)</span>
+    <span class="n">fnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">USE_FIELD_DIR</span><span class="p">:</span>
+        <span class="n">me_center</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mdirection</span>
+
+    <span class="c1"># cellx and celly</span>
+    <span class="n">theory_beam_arcsec</span> <span class="o">=</span> <span class="n">imaging_policy</span><span class="o">.</span><span class="n">get_beam_size_arcsec</span><span class="p">(</span><span class="n">ref_msobj</span><span class="p">,</span> <span class="n">ref_spw</span><span class="p">)</span>
+    <span class="n">grid_factor</span> <span class="o">=</span> <span class="n">imaging_policy</span><span class="o">.</span><span class="n">get_beam_size_pixel</span><span class="p">()</span>
+    <span class="n">grid_size</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">theory_beam_arcsec</span><span class="p">,</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)</span>
+    <span class="n">cellx</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">grid_size</span><span class="p">,</span> <span class="n">grid_factor</span><span class="p">)</span>
+    <span class="n">celly</span> <span class="o">=</span> <span class="n">cellx</span>
+    <span class="n">cell_in_deg</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cellx</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Calculating image coordinate of field </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, reference frequency </span><span class="si">%f</span><span class="s1">GHz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fnames</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">freq_hz</span> <span class="o">*</span> <span class="mf">1.e-9</span><span class="p">))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;cell=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">cellx</span><span class="p">)))</span>
+
+    <span class="c1"># nx, ny and center</span>
+    <span class="n">ra0</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">dec0</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">outref</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">org_direction</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">ant_id</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ms_names</span><span class="p">,</span> <span class="n">ant_list</span><span class="p">,</span> <span class="n">fieldid_list</span><span class="p">,</span> <span class="n">spw_list</span><span class="p">):</span>
+
+        <span class="n">msobj</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+        <span class="c1"># get first org_direction if source if ephemeris source</span>
+        <span class="c1"># if is_eph_obj and org_direction==None:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">is_eph_obj</span> <span class="ow">or</span> <span class="n">is_known_eph_obj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">org_direction</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># get org_direction</span>
+            <span class="n">org_direction</span> <span class="o">=</span> <span class="n">msobj</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">org_direction</span>
+
+        <span class="n">datatable_name</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_data_table_path</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">msobj</span><span class="p">)</span>
+        <span class="n">datatable</span> <span class="o">=</span> <span class="n">DataTable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">datatable_name</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="s1">&#39;RA&#39;</span><span class="p">,</span> <span class="s1">&#39;UNIT&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span> <span class="ow">or</span> \
+           <span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="s1">&#39;DEC&#39;</span><span class="p">,</span> <span class="s1">&#39;UNIT&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span> <span class="ow">or</span> \
+           <span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="s1">&#39;OFS_RA&#39;</span><span class="p">,</span> <span class="s1">&#39;UNIT&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span> <span class="ow">or</span> \
+           <span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="s1">&#39;OFS_DEC&#39;</span><span class="p">,</span> <span class="s1">&#39;UNIT&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;deg&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Found unexpected unit of RA/DEC in DataTable. It should be in &#39;deg&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ant_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># take all the antennas into account</span>
+            <span class="n">num_antennas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">msobj</span><span class="o">.</span><span class="n">antennas</span><span class="p">)</span>
+            <span class="n">_vislist</span> <span class="o">=</span> <span class="p">[</span><span class="n">msobj</span><span class="o">.</span><span class="n">origin_ms</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_antennas</span><span class="p">)]</span>
+            <span class="n">_antlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_antennas</span><span class="p">)]</span>
+            <span class="n">_fieldlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">field_id</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_antennas</span><span class="p">)]</span>
+            <span class="n">_spwlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw_id</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_antennas</span><span class="p">)]</span>
+            <span class="n">index_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">get_index_list_for_ms</span><span class="p">(</span><span class="n">datatable</span><span class="p">,</span> <span class="n">_vislist</span><span class="p">,</span> <span class="n">_antlist</span><span class="p">,</span> <span class="n">_fieldlist</span><span class="p">,</span> <span class="n">_spwlist</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">index_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">get_index_list_for_ms</span><span class="p">(</span><span class="n">datatable</span><span class="p">,</span> <span class="p">[</span><span class="n">msobj</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">],</span> <span class="p">[</span><span class="n">ant_id</span><span class="p">],</span> <span class="p">[</span><span class="n">field_id</span><span class="p">],</span> <span class="p">[</span><span class="n">spw_id</span><span class="p">]))</span>
+
+        <span class="c1"># if is_eph_obj:</span>
+        <span class="k">if</span> <span class="n">is_eph_obj</span> <span class="ow">or</span> <span class="n">is_known_eph_obj</span><span class="p">:</span>
+            <span class="n">_ra</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;OFS_RA&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span>
+            <span class="n">_dec</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;OFS_DEC&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_ra</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;RA&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span>
+            <span class="n">_dec</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;DEC&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span>
+
+        <span class="n">ra0</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_ra</span><span class="p">)</span>
+        <span class="n">dec0</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_dec</span><span class="p">)</span>
+
+        <span class="n">outref</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">direction_ref</span>
+        <span class="k">del</span> <span class="n">datatable</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ra0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">antenna_id</span> <span class="o">=</span> <span class="n">ant_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">antenna_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No valid data for source </span><span class="si">%s</span><span class="s1"> spw </span><span class="si">%s</span><span class="s1"> in </span><span class="si">%s</span><span class="s1">. Image will not be created.&#39;</span><span class="p">,</span>
+                        <span class="n">source_name</span><span class="p">,</span> <span class="n">ref_spw</span><span class="p">,</span> <span class="n">ref_msobj</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">antenna_name</span> <span class="o">=</span> <span class="n">ref_msobj</span><span class="o">.</span><span class="n">antennas</span><span class="p">[</span><span class="n">antenna_id</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No valid data for source </span><span class="si">%s</span><span class="s1"> antenna </span><span class="si">%s</span><span class="s1"> spw </span><span class="si">%s</span><span class="s1"> in </span><span class="si">%s</span><span class="s1">. Image will not be created.&#39;</span><span class="p">,</span>
+                        <span class="n">source_name</span><span class="p">,</span> <span class="n">antenna_name</span><span class="p">,</span> <span class="n">ref_spw</span><span class="p">,</span> <span class="n">ref_msobj</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">outref</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No direction reference is set. Assuming ICRS&#39;</span><span class="p">)</span>
+        <span class="n">outref</span> <span class="o">=</span> <span class="s1">&#39;ICRS&#39;</span>
+
+    <span class="c1"># if is_eph_obj:</span>
+    <span class="c1">#     ra_offset = qa.convert( org_direction[&#39;m0&#39;], &#39;deg&#39; )[&#39;value&#39;]</span>
+    <span class="c1">#     dec_offset = qa.convert( org_direction[&#39;m1&#39;], &#39;deg&#39; )[&#39;value&#39;]</span>
+    <span class="c1"># else:</span>
+    <span class="c1">#     ra_offset = 0.0</span>
+    <span class="c1">#     dec_offset = 0.0</span>
+
+    <span class="c1"># convert offset coordinate into shifted coordinate for ephemeris sources</span>
+    <span class="c1"># to determine the image size (size, center, npix)</span>
+    <span class="k">if</span> <span class="n">is_eph_obj</span> <span class="ow">or</span> <span class="n">is_known_eph_obj</span><span class="p">:</span>
+        <span class="n">ra</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dec</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ra1</span><span class="p">,</span> <span class="n">dec1</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ra0</span><span class="p">,</span> <span class="n">dec0</span><span class="p">):</span>
+            <span class="n">ra2</span><span class="p">,</span> <span class="n">dec2</span> <span class="o">=</span> <span class="n">dirutil</span><span class="o">.</span><span class="n">direction_recover</span><span class="p">(</span><span class="n">ra1</span><span class="p">,</span> <span class="n">dec1</span><span class="p">,</span> <span class="n">org_direction</span><span class="p">)</span>
+            <span class="n">ra</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ra2</span><span class="p">)</span>
+            <span class="n">dec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dec2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ra</span> <span class="o">=</span> <span class="n">ra0</span>
+        <span class="n">dec</span> <span class="o">=</span> <span class="n">dec0</span>
+    <span class="k">del</span> <span class="n">ra0</span><span class="p">,</span> <span class="n">dec0</span>
+
+    <span class="n">ra_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+    <span class="n">ra_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+    <span class="n">dec_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+    <span class="n">dec_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">USE_FIELD_DIR</span><span class="p">:</span>
+        <span class="c1"># phasecenter = field direction</span>
+        <span class="n">ra_center</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">me_center</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+        <span class="n">dec_center</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">me_center</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># map center</span>
+        <span class="n">ra_center</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">ra_min</span> <span class="o">+</span> <span class="n">ra_max</span><span class="p">),</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+        <span class="n">dec_center</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">dec_min</span> <span class="o">+</span> <span class="n">dec_max</span><span class="p">),</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+    <span class="n">ra_center_in_deg</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">ra_center</span><span class="p">)</span>
+    <span class="n">dec_center_in_deg</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">dec_center</span><span class="p">)</span>
+    <span class="n">phasecenter</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">outref</span><span class="p">,</span>
+                                       <span class="n">qa</span><span class="o">.</span><span class="n">formxxx</span><span class="p">(</span><span class="n">ra_center</span><span class="p">,</span> <span class="s1">&#39;hms&#39;</span><span class="p">),</span>
+                                       <span class="n">qa</span><span class="o">.</span><span class="n">formxxx</span><span class="p">(</span><span class="n">dec_center</span><span class="p">,</span> <span class="s1">&#39;dms&#39;</span><span class="p">))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;phasecenter=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">phasecenter</span><span class="p">,))</span>
+
+    <span class="n">dec_correction</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">dec_center_in_deg</span> <span class="o">/</span> <span class="mf">180.0</span> <span class="o">*</span> <span class="mf">3.1415926535897931</span><span class="p">)</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">ra_center_in_deg</span> <span class="o">-</span> <span class="n">ra_min</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ra_max</span> <span class="o">-</span> <span class="n">ra_center_in_deg</span><span class="p">))</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">dec_center_in_deg</span> <span class="o">-</span> <span class="n">dec_min</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dec_max</span> <span class="o">-</span> <span class="n">dec_center_in_deg</span><span class="p">))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Map extent: [</span><span class="si">%f</span><span class="s1">, </span><span class="si">%f</span><span class="s1">] arcmin&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">width</span> <span class="o">/</span> <span class="mf">60.</span><span class="p">,</span> <span class="n">height</span> <span class="o">/</span> <span class="mf">60.</span><span class="p">))</span>
+
+    <span class="n">nx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">width</span> <span class="o">/</span> <span class="p">(</span><span class="n">cell_in_deg</span> <span class="o">*</span> <span class="n">dec_correction</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">height</span> <span class="o">/</span> <span class="n">cell_in_deg</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="c1"># Adjust nx and ny to be even number for performance (which is</span>
+    <span class="c1"># recommended by imager).</span>
+    <span class="c1"># Also increase nx and ny  by 2 if they are even number.</span>
+    <span class="c1"># This is due to a behavior of the imager. The imager configures</span>
+    <span class="c1"># direction axis as follows:</span>
+    <span class="c1">#     reference value: phasecenter</span>
+    <span class="c1">#           increment: cellx, celly</span>
+    <span class="c1">#     reference pixel: ceil((nx-1)/2), ceil((ny-1)/2)</span>
+    <span class="c1"># It means that reference pixel will not be map center if nx/ny</span>
+    <span class="c1"># is even number. It results in asymmetric area coverage on both</span>
+    <span class="c1"># sides of the reference pixel, which may miss certain range of</span>
+    <span class="c1"># (order of 1 pixel) observed area near the edge.</span>
+    <span class="k">if</span> <span class="n">nx</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">nx</span> <span class="o">+=</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nx</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">ny</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ny</span> <span class="o">+=</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ny</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># PIPE-1416</span>
+    <span class="n">margin</span> <span class="o">=</span> <span class="n">imaging_policy</span><span class="o">.</span><span class="n">get_image_margin</span><span class="p">()</span>
+    <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="p">(</span><span class="n">nx</span> <span class="o">+</span> <span class="n">margin</span><span class="p">,</span> <span class="n">ny</span> <span class="o">+</span> <span class="n">margin</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Image pixel size: [nx, ny] = [</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">phasecenter</span><span class="p">,</span> <span class="n">cellx</span><span class="p">,</span> <span class="n">celly</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">org_direction</span></div>
+
+
+
+<div class="viewcode-block" id="get_brightness_unit">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.worker.get_brightness_unit">[docs]</a>
+<span class="k">def</span> <span class="nf">get_brightness_unit</span><span class="p">(</span><span class="n">infiles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return image brightness unit according to the unit of input MSes.</span>
+
+<span class="sd">    If multiple units were detected, it will warn it and</span>
+<span class="sd">    return one of the units detected. What is returned is</span>
+<span class="sd">    uncertain.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        infiles: List of MS names</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Brightness unit string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="n">utils</span><span class="o">.</span><span class="n">get_brightness_unit</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span> <span class="k">for</span> <span class="n">infile</span> <span class="ow">in</span> <span class="n">infiles</span><span class="p">}</span>
+    <span class="n">num_units</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;units </span><span class="si">{</span><span class="n">units</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">brightnessunit</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">num_units</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Brightness unit is not consistent among input MSes. Will use </span><span class="si">{</span><span class="n">brightnessunit</span><span class="si">}</span><span class="s1">, but result may not correct.&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">brightnessunit</span></div>
+
+
+
+<div class="viewcode-block" id="SDImagingWorkerInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.worker.SDImagingWorkerInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">SDImagingWorkerInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for imaging worker.</span>
+
+<span class="sd">    NOTE: infile should be a complete list of MSes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Search order of input vis</span>
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">BASELINED</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">ATMCORR</span><span class="p">,</span>
+                            <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
+
+    <span class="n">infiles</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">null_input</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]])</span>
+    <span class="n">outfile</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;LINE&#39;</span><span class="p">)</span>
+    <span class="n">antids</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">spwids</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">fieldids</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">stokes</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">)</span>
+    <span class="n">edge</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">phasecenter</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">cellx</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">celly</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">org_direction</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Synchronization between infiles and vis is still necessary</span>
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">vis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the list of input file names</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of input file names</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">infiles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">outfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">antids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">spwids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">fieldids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">restfreq</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">stokes</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phasecenter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">cellx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;sdtyping.Angle&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">celly</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;sdtyping.Angle&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">nx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ny</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">org_direction</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;sdtyping.Direction&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise an instance of SDImagingWorkerInputs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: pipeline context</span>
+<span class="sd">            infiles: list of input file names</span>
+<span class="sd">            outfile: output file name</span>
+<span class="sd">            mode: imaging mode</span>
+<span class="sd">            antids: list of antenna IDs</span>
+<span class="sd">            spwids: list of spectrum windows IDs</span>
+<span class="sd">            fieldids: list of field IDs</span>
+<span class="sd">            restfreq: Rest frequency</span>
+<span class="sd">            stokes: Stokes Planes</span>
+<span class="sd">            edge: numbers of edge channels to be excluded in imaging. When edge=[10, 20], 10 and 20 channels</span>
+<span class="sd">                  in the beginning and at the end of a spectral window, respectively, are excluded.</span>
+<span class="sd">            phasecenter: Image center</span>
+<span class="sd">            cellx: size(unit and value) per pixel of image axis x</span>
+<span class="sd">            celly: size(unit and value) per pixel of image axis y</span>
+<span class="sd">            nx: the number of pixels x</span>
+<span class="sd">            ny: the number of pixels y</span>
+<span class="sd">            org_direction:  a measure of direction of origin for ephemeris object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># NOTE: spwids and pols are list of numeric id list while scans</span>
+        <span class="c1">#       is string (mssel) list</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDImagingWorkerInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span> <span class="o">=</span> <span class="n">infiles</span>  <span class="c1"># input MS names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span> <span class="o">=</span> <span class="n">outfile</span>  <span class="c1"># output image name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antids</span> <span class="o">=</span> <span class="n">antids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwids</span> <span class="o">=</span> <span class="n">spwids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fieldids</span> <span class="o">=</span> <span class="n">fieldids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restfreq</span> <span class="o">=</span> <span class="n">restfreq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stokes</span> <span class="o">=</span> <span class="n">stokes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span> <span class="o">=</span> <span class="n">edge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phasecenter</span> <span class="o">=</span> <span class="n">phasecenter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cellx</span> <span class="o">=</span> <span class="n">cellx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">celly</span> <span class="o">=</span> <span class="n">celly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nx</span> <span class="o">=</span> <span class="n">nx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ny</span> <span class="o">=</span> <span class="n">ny</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">org_direction</span> <span class="o">=</span> <span class="n">org_direction</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_freq_axis_ascending</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">_ref_spwobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">infiles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">spectral_windows</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">_ref_spwobj</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">chan_freqs</span><span class="o">.</span><span class="n">delta</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+
+
+<div class="viewcode-block" id="SDImagingWorker">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.worker.SDImagingWorker">[docs]</a>
+<span class="k">class</span> <span class="nc">SDImagingWorker</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Worker class of imaging task.&quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDImagingWorkerInputs</span>
+
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="SDImagingWorker.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.worker.SDImagingWorker.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute imaging process of sdimaging task.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SDImagingResultItem instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+        <span class="n">infiles</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">infiles</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">outfile</span>
+        <span class="n">edge</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">edge</span>
+        <span class="n">antid_list</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">antids</span>
+        <span class="n">spwid_list</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spwids</span>
+        <span class="n">fieldid_list</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fieldids</span>
+        <span class="n">imagemode</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">mode</span>
+        <span class="n">mses</span> <span class="o">=</span> <span class="p">[</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">infiles</span><span class="p">]</span>
+        <span class="n">v_spwids</span> <span class="o">=</span> <span class="p">[</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">real2virtual_spw_id</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ms</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">spwid_list</span><span class="p">,</span> <span class="n">mses</span><span class="p">)]</span>
+        <span class="n">rep_ms</span> <span class="o">=</span> <span class="n">mses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">rep_fieldid</span> <span class="o">=</span> <span class="n">fieldid_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ant_name</span> <span class="o">=</span> <span class="n">rep_ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">[</span><span class="n">antid_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">source_name</span> <span class="o">=</span> <span class="n">rep_ms</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">rep_fieldid</span><span class="p">]</span><span class="o">.</span><span class="n">clean_name</span>
+        <span class="n">phasecenter</span><span class="p">,</span> <span class="n">cellx</span><span class="p">,</span> <span class="n">celly</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">org_direction</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_map_coord</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">infiles</span><span class="p">,</span> <span class="n">antid_list</span><span class="p">,</span> <span class="n">spwid_list</span><span class="p">,</span> <span class="n">fieldid_list</span><span class="p">)</span>
+        <span class="n">is_eph_obj</span> <span class="o">=</span> <span class="n">rep_ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">rep_fieldid</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_eph_obj</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_imaging</span><span class="p">(</span><span class="n">infiles</span><span class="p">,</span> <span class="n">antid_list</span><span class="p">,</span> <span class="n">spwid_list</span><span class="p">,</span> <span class="n">fieldid_list</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">imagemode</span><span class="p">,</span>
+                            <span class="n">edge</span><span class="p">,</span> <span class="n">phasecenter</span><span class="p">,</span> <span class="n">cellx</span><span class="p">,</span> <span class="n">celly</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">):</span>
+            <span class="n">specmode</span> <span class="o">=</span> <span class="s1">&#39;cubesource&#39;</span> <span class="k">if</span> <span class="n">is_eph_obj</span> <span class="k">else</span> <span class="s1">&#39;cube&#39;</span>
+            <span class="c1"># missing attributes in result instance will be filled in by the</span>
+            <span class="c1"># parent class</span>
+            <span class="n">image_item</span> <span class="o">=</span> <span class="n">imagelibrary</span><span class="o">.</span><span class="n">ImageItem</span><span class="p">(</span><span class="n">imagename</span><span class="o">=</span><span class="n">outfile</span><span class="p">,</span>
+                                                <span class="n">sourcename</span><span class="o">=</span><span class="n">source_name</span><span class="p">,</span>
+                                                <span class="n">spwlist</span><span class="o">=</span><span class="n">v_spwids</span><span class="p">,</span>  <span class="c1"># virtual</span>
+                                                <span class="n">specmode</span><span class="o">=</span><span class="n">specmode</span><span class="p">,</span>
+                                                <span class="n">sourcetype</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+                                                <span class="n">org_direction</span><span class="o">=</span><span class="n">org_direction</span><span class="p">)</span>
+            <span class="n">image_item</span><span class="o">.</span><span class="n">antenna</span> <span class="o">=</span> <span class="n">ant_name</span>  <span class="c1"># name #(group name)</span>
+            <span class="n">outcome</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_item</span>
+            <span class="n">is_frequency_channel_reversed</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">is_freq_axis_ascending</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">SDImagingResultItem</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                       <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                       <span class="n">outcome</span><span class="o">=</span><span class="n">outcome</span><span class="p">,</span>
+                                                       <span class="n">frequency_channel_reversed</span><span class="o">=</span><span class="n">is_frequency_channel_reversed</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Imaging failed due to missing valid data</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">SDImagingResultItem</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                       <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                       <span class="n">outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SDImagingWorker.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.worker.SDImagingWorker.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inherited method. NOT USE.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_map_coord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">SDImagingWorkerInputs</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">infiles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                       <span class="n">ant_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">spw_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">field_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> \
+            <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;sdtyping.Angle&#39;</span><span class="p">,</span> <span class="s1">&#39;sdtyping.Angle&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;sdtyping.Direction&#39;</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gather or generate the input image parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inputs: SDImagingWorkerInputs object</span>
+<span class="sd">            context: pipeline context</span>
+<span class="sd">            infiles: list of input file names</span>
+<span class="sd">            ant_list: list of anntena IDs</span>
+<span class="sd">            spw_list: list of SPW IDs</span>
+<span class="sd">            field_list: list of field IDs</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: an exception which is raised from ImageCoordinateUtil</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Image coordinate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">phasecenter</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">cellx</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">celly</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">nx</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ny</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">org_direction</span><span class="p">)</span>
+        <span class="n">coord_set</span> <span class="o">=</span> <span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">((</span><span class="n">params</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">inputs</span><span class="o">.</span><span class="n">org_direction</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">coord_set</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">params</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="n">ImageCoordinateUtil</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">infiles</span><span class="p">,</span> <span class="n">ant_list</span><span class="p">,</span> <span class="n">spw_list</span><span class="p">,</span> <span class="n">field_list</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No valid data&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">params</span>
+
+    <span class="k">def</span> <span class="nf">_do_imaging</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">infiles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">antid_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">spwid_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                    <span class="n">fieldid_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">imagename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">imagemode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                    <span class="n">phasecenter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cellx</span><span class="p">:</span> <span class="s1">&#39;sdtyping.Angle&#39;</span><span class="p">,</span> <span class="n">celly</span><span class="p">:</span> <span class="s1">&#39;sdtyping.Angle&#39;</span><span class="p">,</span> <span class="n">nx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ny</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process imaging.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            infiles: list of input file names</span>
+<span class="sd">            antid_list: list of anntena IDs</span>
+<span class="sd">            spwid_list: list of SPW IDs</span>
+<span class="sd">            fieldid_list: list of field IDs</span>
+<span class="sd">            imagename: output image file name</span>
+<span class="sd">            imagemode: imaging mode</span>
+<span class="sd">            edge: numbers of edge channels to be excluded in imaging. When edge=[10, 20], 10 and 20 channels</span>
+<span class="sd">                  in the beginning and at the end of a spectral window, respectively, are excluded.</span>
+<span class="sd">            phasecenter: Image center</span>
+<span class="sd">            cellx: size(unit and value) per pixel of image axis x</span>
+<span class="sd">            celly: size(unit and value) per pixel of image axis y</span>
+<span class="sd">            nx: the number of pixels x</span>
+<span class="sd">            ny: the number of pixels y</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Whether an image file with valid pixels has been generated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+        <span class="n">reference_data</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">infiles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">ref_spwid</span> <span class="o">=</span> <span class="n">spwid_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Members to be processed:&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">infiles</span><span class="p">,</span> <span class="n">antid_list</span><span class="p">,</span> <span class="n">spwid_list</span><span class="p">,</span> <span class="n">fieldid_list</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">MS </span><span class="si">%s</span><span class="s1">: Antenna </span><span class="si">%s</span><span class="s1"> Spw </span><span class="si">%s</span><span class="s1"> Field </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">m</span><span class="p">),</span> <span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+
+        <span class="c1"># Check for ephemeris source</span>
+        <span class="c1"># known_ephemeris_list = [&#39;MERCURY&#39;, &#39;VENUS&#39;, &#39;MARS&#39;, &#39;JUPITER&#39;, &#39;SATURN&#39;, &#39;URANUS&#39;, &#39;NEPTUNE&#39;, &#39;PLUTO&#39;, &#39;SUN&#39;,</span>
+        <span class="c1">#                         &#39;MOON&#39;]</span>
+
+        <span class="n">ephemsrcname</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">reference_field</span> <span class="o">=</span> <span class="n">reference_data</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">fieldid_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">source_name</span> <span class="o">=</span> <span class="n">reference_field</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">is_eph_obj</span> <span class="o">=</span> <span class="n">reference_data</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">fieldid_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_eph_obj</span>
+        <span class="n">is_known_eph_obj</span> <span class="o">=</span> <span class="n">reference_data</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">fieldid_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_known_eph_obj</span>
+
+        <span class="c1"># for ephemeris sources without ephemeris data in MS (eg. not for ALMA)</span>
+        <span class="c1"># if not is_eph_obj:</span>
+        <span class="k">if</span> <span class="n">is_known_eph_obj</span><span class="p">:</span>
+            <span class="c1"># me = casa_tools.measures</span>
+            <span class="c1"># ephemeris_list = me.listcodes(me.direction())[&#39;extra&#39;]</span>
+            <span class="c1"># known_ephemeris_list = numpy.delete( ephemeris_list, numpy.where(ephemeris_list==&#39;COMET&#39;) )</span>
+            <span class="c1"># if source_name.upper() in known_ephemeris_list:</span>
+            <span class="n">ephemsrcname</span> <span class="o">=</span> <span class="n">source_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+        <span class="c1"># baseline</span>
+        <span class="c1"># baseline = &#39;0&amp;&amp;&amp;&#39;</span>
+
+        <span class="c1"># mode</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;channel&#39;</span>
+
+        <span class="c1"># stokes</span>
+        <span class="n">stokes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span>
+
+        <span class="c1"># PIPE-858</span>
+        <span class="c1"># Set stokes to &#39;pseudoI&#39; if &#39;I&#39; is specified. That is to make output images generated by tsdimaging</span>
+        <span class="c1"># compatible with those by sdimaging. Setting stokes=&#39;I&#39; in sdimaging is equivalent to</span>
+        <span class="c1"># stokes=&#39;pseudoI&#39; in tsdimaging. Please see</span>
+        <span class="c1">#</span>
+        <span class="c1">#     https://casadocs.readthedocs.io/en/stable/notebooks/synthesis_imaging.html#Types-of-images</span>
+        <span class="c1">#</span>
+        <span class="c1"># for difference between &#39;I&#39; and &#39;pseudoI&#39;.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Change of parameter is confined to this method not to affect metadata of output images.</span>
+        <span class="k">if</span> <span class="n">stokes</span> <span class="o">==</span> <span class="s1">&#39;I&#39;</span><span class="p">:</span>
+            <span class="n">stokes</span> <span class="o">=</span> <span class="s1">&#39;pseudoI&#39;</span>
+
+        <span class="c1"># start, nchan, step</span>
+        <span class="n">ref_spwobj</span> <span class="o">=</span> <span class="n">reference_data</span><span class="o">.</span><span class="n">spectral_windows</span><span class="p">[</span><span class="n">ref_spwid</span><span class="p">]</span>
+        <span class="n">total_nchan</span> <span class="o">=</span> <span class="n">ref_spwobj</span><span class="o">.</span><span class="n">num_channels</span>
+        <span class="k">if</span> <span class="n">total_nchan</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">nchan</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nchan</span> <span class="o">=</span> <span class="n">total_nchan</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+            <span class="c1"># set start and step values to make the frequency axis of all FITS in ascending order.</span>
+            <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">is_freq_axis_ascending</span><span class="p">):</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">nchan</span> <span class="o">-</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># ampcal</span>
+        <span class="k">if</span> <span class="n">imagemode</span> <span class="o">==</span> <span class="s1">&#39;AMPCAL&#39;</span><span class="p">:</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="n">nchan</span>
+            <span class="n">nchan</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># restfreq</span>
+        <span class="n">restfreq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">restfreq</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">restfreq</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Invalid type for restfreq &#39;</span><span class="si">{0}</span><span class="s2">&#39; (not a string)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">restfreq</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">restfreq</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="c1"># if restfreq is NOT given by user</span>
+            <span class="c1"># first try using SOURCE.REST_FREQUENCY</span>
+            <span class="c1"># if it is not available, use SPECTRAL_WINDOW.REF_FREQUENCY instead</span>
+            <span class="n">source_id</span> <span class="o">=</span> <span class="n">reference_field</span><span class="o">.</span><span class="n">source_id</span>
+            <span class="n">rest_freq_value</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_restfrequency</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">infiles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">spwid</span><span class="o">=</span><span class="n">ref_spwobj</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">source_id</span><span class="o">=</span><span class="n">source_id</span><span class="p">)</span>
+            <span class="n">rest_freq_unit</span> <span class="o">=</span> <span class="s1">&#39;Hz&#39;</span>
+            <span class="k">if</span> <span class="n">rest_freq_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># REST_FREQUENCY is not defined in the SOURCE tableq</span>
+                <span class="n">rest_freq</span> <span class="o">=</span> <span class="n">ref_spwobj</span><span class="o">.</span><span class="n">ref_frequency</span>
+                <span class="n">rest_freq_value</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">double</span><span class="p">(</span><span class="n">rest_freq</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">rest_freq_unit</span> <span class="o">=</span> <span class="n">rest_freq</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;symbol&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">rest_freq_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+                <span class="n">restfreq</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">rest_freq_value</span><span class="p">,</span> <span class="n">rest_freq_unit</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Could not get reference frequency of Spw </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ref_spwid</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># restfreq is given by user</span>
+            <span class="c1"># check if user provided restfreq is valid</span>
+            <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">restfreq</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Invalid restfreq &#39;</span><span class="si">{0}</span><span class="s2">&#39; (must be positive)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">restfreq</span><span class="p">))</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">qa</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Hz&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Invalid restfreq &#39;</span><span class="si">{0}</span><span class="s2">&#39; (inappropriate unit)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">restfreq</span><span class="p">))</span>
+
+        <span class="c1"># outframe</span>
+        <span class="n">outframe</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">is_eph_obj</span> <span class="k">else</span> <span class="s1">&#39;LSRK&#39;</span>
+
+        <span class="c1"># specmode</span>
+        <span class="n">specmode</span> <span class="o">=</span> <span class="s1">&#39;cubesource&#39;</span> <span class="k">if</span> <span class="n">is_eph_obj</span> <span class="k">else</span> <span class="s1">&#39;cube&#39;</span>
+
+        <span class="c1"># gridfunction</span>
+        <span class="n">gridfunction</span> <span class="o">=</span> <span class="s1">&#39;SF&#39;</span>
+
+        <span class="c1"># truncate, gwidth, jwidth, and convsupport</span>
+        <span class="n">truncate</span> <span class="o">=</span> <span class="n">gwidth</span> <span class="o">=</span> <span class="n">jwidth</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># defaults (not used)</span>
+
+        <span class="c1"># PIPE-689: convsupport should be 3 for NRO Pipeline</span>
+        <span class="n">imaging_policy</span> <span class="o">=</span> <span class="n">observatory_policy</span><span class="o">.</span><span class="n">get_imaging_policy</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="n">convsupport</span> <span class="o">=</span> <span class="n">imaging_policy</span><span class="o">.</span><span class="n">get_convsupport</span><span class="p">()</span>
+
+        <span class="n">cleanup_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">,</span> <span class="s1">&#39;infiles&#39;</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">,</span> <span class="s1">&#39;scan&#39;</span><span class="p">]</span>
+
+        <span class="c1"># override phasecenter for sources with ephemeris table</span>
+        <span class="k">if</span> <span class="n">is_eph_obj</span><span class="p">:</span>
+            <span class="n">phasecenter</span> <span class="o">=</span> <span class="s1">&#39;TRACKFIELD&#39;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;phasecenter is overrided with </span><span class="se">\&#39;</span><span class="s2">TRACKFIELD</span><span class="se">\&#39;</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># brightness unit</span>
+        <span class="n">brightnessunit</span> <span class="o">=</span> <span class="n">get_brightness_unit</span><span class="p">(</span><span class="n">infiles</span><span class="p">)</span>
+
+        <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="n">image_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="n">mode</span><span class="p">,</span>
+                      <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s2">&quot;OBSERVE_TARGET#ON_SOURCE&quot;</span><span class="p">,</span>
+                      <span class="s1">&#39;nchan&#39;</span><span class="p">:</span> <span class="n">nchan</span><span class="p">,</span>
+                      <span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="n">start</span><span class="p">,</span>
+                      <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="n">step</span><span class="p">,</span>
+                      <span class="c1"># the task only accepts lower letter</span>
+                      <span class="s1">&#39;outframe&#39;</span><span class="p">:</span> <span class="n">outframe</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+                      <span class="s1">&#39;gridfunction&#39;</span><span class="p">:</span> <span class="n">gridfunction</span><span class="p">,</span>
+                      <span class="s1">&#39;convsupport&#39;</span><span class="p">:</span> <span class="n">convsupport</span><span class="p">,</span>
+                      <span class="s1">&#39;truncate&#39;</span><span class="p">:</span> <span class="n">truncate</span><span class="p">,</span>
+                      <span class="s1">&#39;gwidth&#39;</span><span class="p">:</span> <span class="n">gwidth</span><span class="p">,</span>
+                      <span class="s1">&#39;jwidth&#39;</span><span class="p">:</span> <span class="n">jwidth</span><span class="p">,</span>
+                      <span class="s1">&#39;imsize&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">],</span>
+                      <span class="s1">&#39;cell&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">qa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">cellx</span><span class="p">),</span> <span class="n">qa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">celly</span><span class="p">)],</span>
+                      <span class="s1">&#39;phasecenter&#39;</span><span class="p">:</span> <span class="n">phasecenter</span><span class="p">,</span>
+                      <span class="s1">&#39;restfreq&#39;</span><span class="p">:</span> <span class="n">restfreq</span><span class="p">,</span>
+                      <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="n">stokes</span><span class="p">,</span>
+                      <span class="s1">&#39;ephemsrcname&#39;</span><span class="p">:</span> <span class="n">ephemsrcname</span><span class="p">,</span>
+                      <span class="s1">&#39;brightnessunit&#39;</span><span class="p">:</span> <span class="n">brightnessunit</span><span class="p">}</span>
+
+        <span class="c1"># remove existing image explicitly</span>
+        <span class="k">for</span> <span class="n">rmname</span> <span class="ow">in</span> <span class="p">[</span><span class="n">imagename</span><span class="p">,</span> <span class="n">imagename</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.weight&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">rmname</span><span class="p">):</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">rmname</span><span class="p">)</span>
+
+        <span class="c1"># imaging</span>
+        <span class="n">infile_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">spwsel_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">fieldsel_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">antsel_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">msname</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">infiles</span><span class="p">,</span> <span class="n">antid_list</span><span class="p">,</span> <span class="n">spwid_list</span><span class="p">,</span> <span class="n">fieldid_list</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Registering data to image: vis=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, ant=</span><span class="si">%s</span><span class="s1">, spw=</span><span class="si">%s</span><span class="s1">, field=</span><span class="si">%s%s</span><span class="s1">&#39;</span>
+                      <span class="o">%</span> <span class="p">(</span><span class="n">msname</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39; (ephemeris source)&#39;</span> <span class="k">if</span> <span class="n">ephemsrcname</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)))</span>
+            <span class="n">infile_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msname</span><span class="p">)</span>
+            <span class="n">spwsel_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">))</span>
+            <span class="n">fieldsel_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="p">))</span>
+            <span class="n">antsel_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ant</span><span class="p">))</span>
+        <span class="c1"># collapse selection if possible</span>
+        <span class="n">spwsel_list</span> <span class="o">=</span> <span class="n">spwsel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spwsel_list</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">spwsel_list</span>
+        <span class="n">fieldsel_list</span> <span class="o">=</span> <span class="n">fieldsel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fieldsel_list</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">fieldsel_list</span>
+        <span class="n">antsel_list</span> <span class="o">=</span> <span class="n">antsel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">antsel_list</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">antsel_list</span>
+        <span class="c1"># set-up image dependent parameters</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">cleanup_params</span><span class="p">:</span>
+            <span class="n">image_args</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">image_args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imagename</span>
+        <span class="n">image_args</span><span class="p">[</span><span class="s1">&#39;infiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">infile_list</span>
+        <span class="n">image_args</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spwsel_list</span>
+        <span class="n">image_args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldsel_list</span>
+        <span class="n">image_args</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">antsel_list</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Executing sdimaging task: args=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">image_args</span><span class="p">))</span>
+
+        <span class="c1"># execute job</span>
+        <span class="n">image_args</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">specmode</span>
+        <span class="n">image_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">tsdimaging</span><span class="p">(</span><span class="o">**</span><span class="n">image_args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">image_job</span><span class="p">)</span>
+        <span class="c1"># tsdimaging changes the image filename, workaround to revert it</span>
+        <span class="n">imagename_tmp</span> <span class="o">=</span> <span class="n">imagename</span> <span class="o">+</span> <span class="s1">&#39;.image&#39;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">imagename_tmp</span><span class="p">,</span> <span class="n">imagename</span><span class="p">)</span>
+
+        <span class="c1"># check imaging result</span>
+        <span class="n">imagename</span> <span class="o">=</span> <span class="n">image_args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]</span>
+        <span class="n">weightname</span> <span class="o">=</span> <span class="n">imagename</span> <span class="o">+</span> <span class="s1">&#39;.weight&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">weightname</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Generation of </span><span class="si">%s</span><span class="s2"> failed&quot;</span> <span class="o">%</span> <span class="n">imagename</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># check for valid pixels (non-zero weight)</span>
+        <span class="c1"># Task sdimaging does not fail even if no data is gridded to image.</span>
+        <span class="c1"># In that case, image is not masked, no restoring beam is set to</span>
+        <span class="c1"># image, and all pixels in corresponding weight image is zero.</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">weightname</span><span class="p">)</span> <span class="k">as</span> <span class="n">ia</span><span class="p">:</span>
+            <span class="n">sumsq</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">statistics</span><span class="p">()[</span><span class="s1">&#39;sumsq&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sumsq</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No valid pixel found in image, </span><span class="si">%s</span><span class="s2">. Discarding the image from futher processing.&quot;</span> <span class="o">%</span> <span class="n">imagename</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">virtual_spw_id</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">real2virtual_spw_id</span><span class="p">(</span><span class="n">ref_spwid</span><span class="p">,</span> <span class="n">reference_data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">is_freq_axis_ascending</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Channel frequencies in spw </span><span class="si">{</span><span class="n">virtual_spw_id</span><span class="si">}</span><span class="s2"> is in decending order in observation data. &quot;</span>
+                     <span class="sa">f</span><span class="s2">&quot;They will be reversed to have the frequency axis of output image cube </span><span class="si">{</span><span class="n">imagename</span><span class="si">}</span><span class="s2"> in ascending order.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

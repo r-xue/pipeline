@@ -1,0 +1,12 @@
+pipeline.hifa.tasks.flagging.renderer
+=====================================
+
+.. automodule:: pipeline.hifa.tasks.flagging.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsFlagTargetsALMARenderer
+   

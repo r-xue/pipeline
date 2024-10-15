@@ -1,0 +1,377 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.tasks.bandpass.adapters &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.tasks.bandpass.adapters</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.tasks.bandpass.adapters</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The adapters module contains classes that adapt Heuristics in the</span>
+<span class="sd">:class:`pipeline.heuristics` package, allowing them to be called directly with</span>
+<span class="sd">low-level objects from the pipeline domain.</span>
+
+<span class="sd">Heuristics in the pipeline.heuristics package have simple interfaces; to</span>
+<span class="sd">maximize their ease of use, their interfaces accept only Python and NumPy</span>
+<span class="sd">primitives. </span>
+
+<span class="sd">As the pipeline deals with complex lower-level objects and structures, we need</span>
+<span class="sd">a way to convert from these structures to the simple primitives demanded by</span>
+<span class="sd">the Heuristics. The classes in this module encapsulate that logic, converting</span>
+<span class="sd">objects or reading calibration tables as necessary and extracting the</span>
+<span class="sd">information needed by the wrapped Heuristic.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.adapters</span> <span class="k">as</span> <span class="nn">adapters</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">echoheuristic</span> <span class="k">as</span> <span class="n">echoheuristic</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PhaseUpSolIntAdapter">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.adapters.PhaseUpSolIntAdapter">[docs]</a>
+<span class="k">class</span> <span class="nc">PhaseUpSolIntAdapter</span><span class="p">(</span><span class="n">adapters</span><span class="o">.</span><span class="n">Adapter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;PhaseUpSolIntAdapter adapts the</span>
+<span class="sd">    :class:`~pipeline.hif.heuristics.solint.PhaseUpSolInt` heuristic, taking in a</span>
+<span class="sd">    MeasurementSet and intent and passing the median integration time for</span>
+<span class="sd">    observations with that intent through to the science heuristic.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heuristic</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new PhaseUpSolIntAdapter, wrapping the given heuristic.</span>
+
+<span class="sd">        :param heuristic: the target heuristic</span>
+<span class="sd">        :type heuristic: :class:`~pipeline.hif.heuristics.solint.PhaseUpSolInt`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PhaseUpSolIntAdapter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">heuristic</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PhaseUpSolIntAdapter.calculate">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.adapters.PhaseUpSolIntAdapter.calculate">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">intent</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract the integration time for observations with the given intent</span>
+<span class="sd">        from the measurement set and pass it to the wrapped heuristic,</span>
+<span class="sd">        returning the result.</span>
+
+<span class="sd">        :param ms: the MeasurementSet to examine </span>
+<span class="sd">        :type ms: :class:`~pipeline.domain.measurementset.MeasurementSet`</span>
+<span class="sd">        :param intent: the intent for which to find the integration time </span>
+<span class="sd">        :type intent: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">int_time</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_median_integration_time</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_adaptee</span><span class="p">(</span><span class="n">int_time</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PolynomialHeuristicAdapter">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.adapters.PolynomialHeuristicAdapter">[docs]</a>
+<span class="k">class</span> <span class="nc">PolynomialHeuristicAdapter</span><span class="p">(</span><span class="n">adapters</span><span class="o">.</span><span class="n">Adapter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    PolynomialHeuristicAdapter converts from the pipeline interface for a</span>
+<span class="sd">    polynomial order heuristic, the string name of a caltable, to the data</span>
+<span class="sd">    types needed by the heuristic itself, which are numerical data arrays.    </span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heuristic</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new PolynomialHeuristicAdapter, wrapping the given heuristic.</span>
+
+<span class="sd">        :param heuristic: the target heuristic</span>
+<span class="sd">        :type heuristic: :class:`~pipeline.hifheuristics.bporder.BPOrder`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PolynomialHeuristicAdapter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">heuristic</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PolynomialHeuristicAdapter.calculate">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.adapters.PolynomialHeuristicAdapter.calculate">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>        
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_adaptee</span><span class="p">,</span> <span class="n">echoheuristic</span><span class="o">.</span><span class="n">EchoHeuristic</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_adaptee</span><span class="o">.</span><span class="n">calculate</span><span class="p">()</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_caltable</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">spw</span><span class="p">)</span>
+
+        <span class="n">channel_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_channel_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_adaptee</span><span class="p">(</span><span class="n">channel_data</span><span class="o">=</span><span class="n">channel_data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PolynomialHeuristicAdapter.read_caltable">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.adapters.PolynomialHeuristicAdapter.read_caltable">[docs]</a>
+    <span class="k">def</span> <span class="nf">read_caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to read channel calibration table and return it as a Python</span>
+<span class="sd">        array.</span>
+
+<span class="sd">        Keyword arguments:</span>
+<span class="sd">        table  -- The name of the calibration table</span>
+<span class="sd">        spw    -- The SpW of interest.</span>
+<span class="sd">        msobject -- MeasurementSet domain object from which the calibration</span>
+<span class="sd">                    was calculated.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        data - &#39;view&#39; of calibration gains in numpy complex array[antenna,channel]</span>
+<span class="sd">        flag - flags associated with data array bool[antenna,channel]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">caltable</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Table </span><span class="si">{0}</span><span class="s1"> does not exist. Returning a dummy array&#39;</span>
+                        <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">caltable</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+            <span class="n">num_antenna</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">)</span>            
+            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">num_antenna</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span><span class="p">],</span> <span class="nb">complex</span><span class="p">)</span>
+
+        <span class="n">spw</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+
+        <span class="c1"># The number of channels in the SpW (needed to correct</span>
+        <span class="c1"># for the fact that the calibration table arrays all have</span>
+        <span class="c1"># the number of channels of the largest spw)      </span>
+        <span class="n">nchannels</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span><span class="o">.</span><span class="n">num_channels</span>
+        <span class="n">npol</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="c1"># open the CAL_DESC sub-table and read the column that maps</span>
+        <span class="c1"># CAL_DESC_ID to SPECTRAL_WINDOW_ID</span>
+        <span class="n">cal_desc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">caltable</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;CAL_DESC&#39;</span><span class="p">)</span>        
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">cal_desc</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">caldesc_2_spw</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">caldesc_id</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">caldesc_2_spw</span><span class="p">))[</span><span class="n">caldesc_2_spw</span> <span class="o">==</span> <span class="n">spw</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">caldesc_id</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">caldesc_id</span> <span class="o">=</span> <span class="n">caldesc_id</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;SpW </span><span class="si">%s</span><span class="s1"> not found&#39;</span> <span class="o">%</span> <span class="n">spw</span><span class="p">)</span>
+
+        <span class="c1"># For channel by channel calibrations read the results</span>
+        <span class="c1"># themselves. Limiting the length of the gain and</span>
+        <span class="c1"># cal_flag arrays is to correct for the fact that the</span>
+        <span class="c1"># calibration table arrays all have the number of channels</span>
+        <span class="c1"># of the largest spw. This should change in the future.</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">caltable</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">taql</span> <span class="o">=</span> <span class="s1">&#39;CAL_DESC_ID==</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">caldesc_id</span><span class="p">)</span> 
+            <span class="n">subtable</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">taql</span><span class="p">)</span>
+            <span class="n">antenna1</span> <span class="o">=</span> <span class="n">subtable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA1&#39;</span><span class="p">)</span>
+            <span class="n">gain</span> <span class="o">=</span> <span class="n">subtable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;GAIN&#39;</span><span class="p">)[:,</span> <span class="p">:</span><span class="n">nchannels</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">cal_flag</span> <span class="o">=</span> <span class="n">subtable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">)[:,</span> <span class="p">:</span><span class="n">nchannels</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">subtable</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+            <span class="c1"># average the polarization results</span>
+            <span class="n">antenna_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">antenna</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">]</span>
+            <span class="n">num_antenna</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">)</span>        
+            <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">num_antenna</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">nchannels</span><span class="p">],</span> <span class="nb">complex</span><span class="p">)</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">num_antenna</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">nchannels</span><span class="p">],</span> <span class="nb">bool</span><span class="p">)</span>
+
+            <span class="n">antennas1</span> <span class="o">=</span> <span class="p">[</span><span class="n">antenna1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">gain</span><span class="p">)[</span><span class="mi">2</span><span class="p">])</span>
+                         <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">antenna_ids</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">antennas1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npol</span><span class="p">):</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">ant</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">gain</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">]</span>
+                    <span class="n">flag</span><span class="p">[</span><span class="n">ant</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">flag</span><span class="p">[</span><span class="n">ant</span><span class="p">,</span> <span class="p">:],</span>
+                     <span class="n">cal_flag</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">])</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">ant</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="n">npol</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DegAmpAdapter">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.adapters.DegAmpAdapter">[docs]</a>
+<span class="k">class</span> <span class="nc">DegAmpAdapter</span><span class="p">(</span><span class="n">PolynomialHeuristicAdapter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heuristic</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new DegAmpAdapter, wrapping the given heuristic.</span>
+
+<span class="sd">        :param heuristic: the target heuristic</span>
+<span class="sd">        :type heuristic: :class:`~pipeline.hif.heuristics.bandpass.BPOrder`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DegAmpAdapter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">heuristic</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_channel_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
+        <span class="n">amplitudes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">:</span>
+            <span class="n">identifier</span> <span class="o">=</span> <span class="n">antenna</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">antenna</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="n">antenna</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">amplitudes</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">antenna</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="k">return</span> <span class="n">amplitudes</span></div>
+
+
+
+<div class="viewcode-block" id="DegPhaseAdapter">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.adapters.DegPhaseAdapter">[docs]</a>
+<span class="k">class</span> <span class="nc">DegPhaseAdapter</span><span class="p">(</span><span class="n">PolynomialHeuristicAdapter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heuristic</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new DegPhaseAdapter, wrapping the given heuristic.</span>
+
+<span class="sd">        :param heuristic: the target heuristic</span>
+<span class="sd">        :type heuristic: :class:`~pipeline.hif.heuristics.bandpass.BPOrder`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DegPhaseAdapter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">heuristic</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_channel_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
+        <span class="n">phases</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">:</span>
+            <span class="n">identifier</span> <span class="o">=</span> <span class="n">antenna</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">antenna</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="n">antenna</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">phases</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">antenna</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="k">return</span> <span class="n">phases</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

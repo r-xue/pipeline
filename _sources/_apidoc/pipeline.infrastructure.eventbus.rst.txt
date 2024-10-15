@@ -1,0 +1,29 @@
+pipeline.infrastructure.eventbus package
+========================================
+
+Submodules
+----------
+
+pipeline.infrastructure.eventbus.eventbus module
+------------------------------------------------
+
+.. automodule:: pipeline.infrastructure.eventbus.eventbus
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.infrastructure.eventbus.events module
+----------------------------------------------
+
+.. automodule:: pipeline.infrastructure.eventbus.events
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.infrastructure.eventbus
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,492 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.sessionrefant.sessionrefant &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.sessionrefant.sessionrefant</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.sessionrefant.sessionrefant</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">gaincal</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">sessionutils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">SessionRefAntResults</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;SessionRefAntInputs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SessionRefAntResults&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SessionRefAnt&#39;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="SessionRefAntInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.sessionrefant.html#pipeline.hifa.tasks.sessionrefant.qa.SessionRefAntInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">SessionRefAntInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SessionRefAntInputs defines the inputs for the SessionRefAnt pipeline task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Threshold for detecting &quot;non-zero&quot; phase outliers that imply that</span>
+    <span class="c1"># during a CASA gaincal the specified reference antenna was overridden.</span>
+    <span class="n">phase_threshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phase_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+
+        <span class="c1"># Task specific input parameters.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phase_threshold</span> <span class="o">=</span> <span class="n">phase_threshold</span></div>
+
+
+
+<div class="viewcode-block" id="SessionRefAnt">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.sessionrefant.html#pipeline.hifa.tasks.sessionrefant.qa.SessionRefAnt">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_session_refant&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
+    <span class="s1">&#39;Reference antenna lists from all measurement sets within current session</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="s1">&#39;are evaluated and combined into a single common ranked reference antenna</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="s1">&#39;list for the session, that is to be used in any subsequent pipeline</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="s1">&#39;stages.&#39;</span>
+<span class="p">)</span>
+<span class="k">class</span> <span class="nc">SessionRefAnt</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SessionRefAntInputs</span>
+
+    <span class="c1"># This is a multi-vis task that handles all MSes in a session at once.</span>
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SessionRefAnt</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SessionRefAnt.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.sessionrefant.html#pipeline.hifa.tasks.sessionrefant.qa.SessionRefAnt.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="c1"># Initialize results.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">SessionRefAntResults</span><span class="p">()</span>
+
+        <span class="c1"># Define maximum number of antennas to evaluate phases for.</span>
+        <span class="n">nant</span> <span class="o">=</span> <span class="mi">3</span>
+
+        <span class="c1"># Inspect the vis list to identify sessions and corresponding MSes.</span>
+        <span class="n">vislist_for_session</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">group_vislist_into_sessions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Run reference antenna identification for each session.</span>
+        <span class="k">for</span> <span class="n">session_name</span><span class="p">,</span> <span class="n">vislist</span> <span class="ow">in</span> <span class="n">vislist_for_session</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Evaluating reference antennas for session </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2"> with measurement set(s): </span><span class="si">{}</span><span class="s2">.&quot;</span>
+                     <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">])))</span>
+            <span class="n">refant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identify_best_refant</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">nant</span><span class="o">=</span><span class="n">nant</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Final choice of reference antenna for session </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">refant</span><span class="p">))</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">refant</span><span class="p">[</span><span class="n">session_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vislist&#39;</span><span class="p">:</span> <span class="n">vislist</span><span class="p">,</span> <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">refant</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SessionRefAnt.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.sessionrefant.html#pipeline.hifa.tasks.sessionrefant.qa.SessionRefAnt.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_identify_best_refant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_name</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">nant</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Identify best reference antenna for specified list of measurement sets.</span>
+
+<span class="sd">        First, the reference antenna lists of all measurement sets are combined</span>
+<span class="sd">        into a single ranked list.</span>
+
+<span class="sd">        Secondly, the &#39;nant&#39; highest ranked antennas are tested to see whether</span>
+<span class="sd">        CASA gaincal refant heuristics would accept the antenna or instead</span>
+<span class="sd">        would pick a different refant for one or more solutions. For this test,</span>
+<span class="sd">        a phase caltable is created with refant set to a specific ant, and this</span>
+<span class="sd">        phase caltable is evaluated to count how many rows have &quot;non-zero&quot;</span>
+<span class="sd">        phases (absolute phase above a threshold) for the specified antenna.</span>
+<span class="sd">        These &quot;non-zero&quot; phases are taken as an indirect indication that CASA</span>
+<span class="sd">        gaincal overrode the specified antenna for one or more rows (e.g. spw).</span>
+
+<span class="sd">        If an antenna is found to cause no non-zero phase deviations for</span>
+<span class="sd">        any MS, then it is immediately returned as the highest ranking</span>
+<span class="sd">        &quot;perfect&quot; reference antenna.</span>
+
+<span class="sd">        Otherwise, once the &#39;nant&#39; highest ranking antennas (or all available</span>
+<span class="sd">        ants, whichever is lowest nr.) are evaluated for suitability, then</span>
+<span class="sd">        the antenna with the lowest total number of non-zero phases is chosen</span>
+<span class="sd">        as the final &quot;best&quot; reference antenna for this session.</span>
+
+<span class="sd">        If the measurement sets have only a single reference antenna in</span>
+<span class="sd">        common, then this antenna is immediately returned as the &quot;best&quot;</span>
+<span class="sd">        reference antenna, without running the &quot;non-zero&quot; phase evaluation.</span>
+
+<span class="sd">        If the measurement sets have no reference antennas in common, then an</span>
+<span class="sd">        empty string is returned for &quot;best&quot; reference antenna.</span>
+
+<span class="sd">        :param session_name: name of session</span>
+<span class="sd">        :type session_name: str</span>
+<span class="sd">        :param vislist: list of measurement sets</span>
+<span class="sd">        :type vislist: list [vis, vis, ...]</span>
+<span class="sd">        :param nant: maximum number of antennas to evaluate phases for</span>
+<span class="sd">        :type nant: int</span>
+<span class="sd">        :return: name of best reference antenna</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create ranked refant list.</span>
+        <span class="n">refants</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_combined_refant_list</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">vislist</span><span class="p">)</span>
+
+        <span class="c1"># Handle the edge cases of MSes having only 0 or 1 refant in common.</span>
+        <span class="n">nrefants</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">refants</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nrefants</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Measurement sets for session </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2"> have no reference antennas in common, cannot determine a&quot;</span>
+                        <span class="s2">&quot; final best reference antenna.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_name</span><span class="p">))</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">elif</span> <span class="n">nrefants</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Measurement sets for session </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2"> have only one reference antennas in common (</span><span class="si">{}</span><span class="s2">), which&quot;</span>
+                        <span class="s2">&quot; will be set as the final best reference antenna.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">refants</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="k">return</span> <span class="n">refants</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># If there are multiple candidate refants in common, then continue with</span>
+        <span class="c1"># evaluating the ranked list of refants based on non-zero phases.</span>
+        <span class="n">n_nonzero</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="c1"># If the maximum number of antennas to evaluate phases for is less than</span>
+        <span class="c1"># one, then no best refant can be found.</span>
+        <span class="k">if</span> <span class="n">nant</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Unable to find best reference antenna, maximum number of antennas to evaluate phases for is&quot;</span>
+                        <span class="s2">&quot; set too low: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nant</span><span class="p">))</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># Run phase evaluation for specified nr. of antennas or nr. of</span>
+        <span class="c1"># antennas in common, whichever is lowest.</span>
+        <span class="k">for</span> <span class="n">iant</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">nant</span><span class="p">,</span> <span class="n">nrefants</span><span class="p">)):</span>
+            <span class="n">ant</span> <span class="o">=</span> <span class="n">refants</span><span class="p">[</span><span class="n">iant</span><span class="p">]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Session </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2">: running phase evaluation heuristics for candidate antenna </span><span class="si">{}</span><span class="s2">&quot;</span>
+                     <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">ant</span><span class="p">))</span>
+
+            <span class="c1"># Run a gaincal for each vis with refant set to the current ant.</span>
+            <span class="n">gcal_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_phase_caltables</span><span class="p">(</span><span class="n">vislist</span><span class="p">,</span> <span class="n">ant</span><span class="p">)</span>
+
+            <span class="c1"># Evaluate caltables to detect if refant changed.</span>
+            <span class="n">n_nonzero_phase</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_phase_caltables</span><span class="p">(</span><span class="n">gcal_result</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">phase_threshold</span><span class="p">)</span>
+
+            <span class="c1"># In the (unlikely) case that no refant changes (i.e. no non-zero</span>
+            <span class="c1"># phases) were detected for any MS, then this ant is the highest</span>
+            <span class="c1"># ranking &quot;perfect&quot; reference antenna, and there is no need to</span>
+            <span class="c1"># evaluate any further down the list.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">n_nonzero_phase</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Session </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2">: no phase outlier rows found for candidate antenna </span><span class="si">{}</span><span class="s2">, so will select&quot;</span>
+                         <span class="s2">&quot; this as the highest ranking best reference antenna.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">ant</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">ant</span>
+
+            <span class="c1"># Store total nr. of non-zero phases for this antenna.</span>
+            <span class="n">n_nonzero</span><span class="p">[</span><span class="n">ant</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">n_nonzero_phase</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Session </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2">: number of phase outlier rows found for candidate antenna </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                     <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">n_nonzero</span><span class="p">[</span><span class="n">ant</span><span class="p">]))</span>
+
+        <span class="c1"># From evaluated antennas, pick the one with the lowest total number of non-zero phase values;</span>
+        <span class="n">best_refant</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">n_nonzero</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">n_nonzero</span><span class="o">.</span><span class="n">get</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># If the best choice of reference antenna still resulted in non-zero</span>
+        <span class="c1"># phases, then log a warning.</span>
+        <span class="k">if</span> <span class="n">n_nonzero</span><span class="p">[</span><span class="n">best_refant</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Session </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2">: final choice of best reference antenna (</span><span class="si">{}</span><span class="s2">) resulted in </span><span class="si">{}</span><span class="s2"> phase outliers.&quot;</span>
+                        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">best_refant</span><span class="p">,</span> <span class="n">n_nonzero</span><span class="p">[</span><span class="n">best_refant</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">best_refant</span>
+
+    <span class="k">def</span> <span class="nf">_create_combined_refant_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_name</span><span class="p">,</span> <span class="n">vislist</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Combines the ranked reference antenna lists for all measurement sets</span>
+<span class="sd">        specified in &#39;vislist&#39; to return as a single ranked reference antenna</span>
+<span class="sd">        list.</span>
+
+<span class="sd">        :param session_name: name of session</span>
+<span class="sd">        :type session_name: str</span>
+<span class="sd">        :param vislist: list of measurement sets</span>
+<span class="sd">        :type vislist: list [vis, vis, ...]</span>
+<span class="sd">        :return: list of reference antennas</span>
+<span class="sd">        :rtype: list[str]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If there is just one MS, then return its reference antenna list.</span>
+        <span class="n">nvis</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vislist</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nvis</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Session </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2"> has only one measurement set (</span><span class="si">{}</span><span class="s2">), continuing with its reference antenna list for&quot;</span>
+                     <span class="s2">&quot; evaluation of best reference antenna.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vislist</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vislist</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">reference_antenna</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Otherwise, continue with combining the multiple refant lists.</span>
+
+        <span class="c1"># Sort vislist by start time of observation; this will allow for</span>
+        <span class="c1"># ordering by highest ranking in first observed MS, in cases where</span>
+        <span class="c1"># other sorting (further below) has resulted in equal ranking.</span>
+        <span class="n">vislist</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">vislist</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">start_time</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Collect refant list for all MSes.</span>
+        <span class="n">refant_lists</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span><span class="o">.</span><span class="n">reference_antenna</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">]</span>
+
+        <span class="c1"># Create dictionary of antennas, mapping each antenna to a list of</span>
+        <span class="c1"># their per-MS ranking as refant. If an ant was 1st in the refant list,</span>
+        <span class="c1"># it is assigned rank 1; 2nd in list is rank 2, # etc...</span>
+        <span class="n">refant_ranks</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">refant_list</span> <span class="ow">in</span> <span class="n">refant_lists</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">ant</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">refant_list</span><span class="p">):</span>
+                <span class="n">refant_ranks</span><span class="p">[</span><span class="n">ant</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># For each ant in common among all MSes, retrieve/compute the following</span>
+        <span class="c1"># information:</span>
+        <span class="c1">#  1. name of ant</span>
+        <span class="c1">#  2. the cross-product of their per-MS ranks</span>
+        <span class="c1">#  3. the standard deviation of their per-MS ranks</span>
+        <span class="c1">#  4. their refant rank for the first observed MS</span>
+        <span class="c1">#     (assumed to be first element in list, due to earlier sorting)</span>
+        <span class="n">antinfo</span> <span class="o">=</span> <span class="p">[(</span><span class="n">ant</span><span class="p">,</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">refant_ranks</span><span class="p">[</span><span class="n">ant</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">refant_ranks</span><span class="p">[</span><span class="n">ant</span><span class="p">]),</span> <span class="n">refant_ranks</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                   <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">refant_ranks</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">refant_ranks</span><span class="p">[</span><span class="n">ant</span><span class="p">])</span> <span class="o">==</span> <span class="n">nvis</span><span class="p">]</span>
+
+        <span class="c1"># Create the final list of ranked reference antennas, after sorting</span>
+        <span class="c1"># consecutively by cross-product of per-MS ranks, standard deviation</span>
+        <span class="c1"># of per-MS ranks, and refant ranking for first-observed MS.</span>
+        <span class="n">refants_ranked</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">antinfo</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+        <span class="c1"># Report the combined ranked antenna list.</span>
+        <span class="n">refant_str</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">ant</span><span class="p">)</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">refants_ranked</span><span class="p">]</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Ranked antenna list for session </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2">, listed as &#39;antenna (cross-product of per-MS ranking, stdev&quot;</span>
+                 <span class="s2">&quot; of per-MS ranks, ranking for first observed MS)&#39;: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">refant_str</span><span class="p">)))</span>
+
+        <span class="c1"># Return a list of just the antenna names.</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">ant</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">refants_ranked</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_create_phase_caltables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">refant</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs CASA gaincal to create a phase caltable for every MS in specified</span>
+<span class="sd">        &#39;vislist&#39; with reference antenna set to specified &#39;refant&#39;.</span>
+
+<span class="sd">        :param vislist: list of measurement sets</span>
+<span class="sd">        :type vislist: list [vis, vis, ...]</span>
+<span class="sd">        :param refant: name of reference antenna to use in gaincal</span>
+<span class="sd">        :type refant: str</span>
+<span class="sd">        :return: the Results returned by the gaincal.GTypeGaincal task</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vislist</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s2">&quot;PHASE&quot;</span><span class="p">,</span>
+                                        <span class="n">calmode</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">refant</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">)</span>
+        <span class="n">gaincal_task</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">container</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">gaincal_task</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_evaluate_phase_caltables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate each phase caltable (one per measurement set) in specified</span>
+<span class="sd">        &#39;results&#39; to determine for specified &#39;antenna&#39; how many rows have</span>
+<span class="sd">        absolute phases above the specified &#39;threshold&#39;.</span>
+
+<span class="sd">        :param results: gaincal.GTypeGaincal Results</span>
+<span class="sd">        :param antenna: name of antenna to check for non-zero phase outliers</span>
+<span class="sd">        :type antenna: str</span>
+<span class="sd">        :param threshold: threshold for detecting &quot;non-zero&quot; phase outliers</span>
+<span class="sd">        :type threshold: int or float</span>
+<span class="sd">        :return: dictionary with total number of non-zero phase outliers for</span>
+<span class="sd">            each vis that has a caltable in results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nonzero_phase_per_vis</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+                <span class="n">calapp</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># Convert antenna name to ID.</span>
+                <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+                <span class="n">antenna_id</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">antenna</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+
+                <span class="c1"># Test whether antenna appears in caltable.</span>
+                <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+                    <span class="n">ants</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA1&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">antenna_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ants</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Antenna </span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">) not found in caltable </span><span class="si">{}</span><span class="s2">&quot;</span>
+                                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">antenna</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)))</span>
+                        <span class="k">return</span>
+
+                <span class="c1"># Determine non-zero phases for each spw, and add to total.</span>
+                <span class="n">nonzero</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">calapp</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                    <span class="c1"># Retrieve phase data from caltable for specified antenna and current spw.</span>
+                    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+                        <span class="n">taql</span> <span class="o">=</span> <span class="s2">&quot;ANTENNA1 == </span><span class="si">{}</span><span class="s2"> &amp;&amp; SPECTRAL_WINDOW_ID == </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw</span><span class="p">)</span>
+                        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">taql</span><span class="p">))</span> <span class="k">as</span> <span class="n">subtb</span><span class="p">:</span>
+                            <span class="n">phases</span> <span class="o">=</span> <span class="n">subtb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">)</span>
+
+                    <span class="c1"># Add number of outlier phases to running total of &quot;non-zero&quot; phases.</span>
+                    <span class="n">nonzero</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">phases</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+                <span class="c1"># Store total number of non-zero phase outliers for current vis.</span>
+                <span class="n">nonzero_phase_per_vis</span><span class="p">[</span><span class="n">calapp</span><span class="o">.</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">nonzero</span>
+
+        <span class="k">return</span> <span class="n">nonzero_phase_per_vis</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

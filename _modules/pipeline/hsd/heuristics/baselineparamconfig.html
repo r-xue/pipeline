@@ -1,0 +1,693 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.heuristics.baselineparamconfig &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.heuristics.baselineparamconfig</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.heuristics.baselineparamconfig</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.api</span> <span class="k">as</span> <span class="nn">api</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.heuristics</span> <span class="kn">import</span> <span class="n">fitorder</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TRACE">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.TRACE">[docs]</a>
+<span class="k">def</span> <span class="nf">TRACE</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">LOGGING_LEVELS</span><span class="p">[</span><span class="s1">&#39;trace&#39;</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="DEBUG">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.DEBUG">[docs]</a>
+<span class="k">def</span> <span class="nf">DEBUG</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">LOGGING_LEVELS</span><span class="p">[</span><span class="s1">&#39;debug&#39;</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="BaselineParamKeys">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys">[docs]</a>
+<span class="k">class</span> <span class="nc">BaselineParamKeys</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">ROW</span> <span class="o">=</span> <span class="s1">&#39;row&#39;</span>
+    <span class="n">POL</span> <span class="o">=</span> <span class="s1">&#39;pol&#39;</span>
+    <span class="n">MASK</span> <span class="o">=</span> <span class="s1">&#39;mask&#39;</span>
+    <span class="n">CLIPNITER</span> <span class="o">=</span> <span class="s1">&#39;clipniter&#39;</span>
+    <span class="n">CLIPTHRESH</span> <span class="o">=</span> <span class="s1">&#39;clipthresh&#39;</span>
+    <span class="n">USELF</span> <span class="o">=</span> <span class="s1">&#39;use_linefinder&#39;</span>
+    <span class="n">LFTHRESH</span> <span class="o">=</span> <span class="s1">&#39;thresh&#39;</span>
+    <span class="n">LEDGE</span> <span class="o">=</span> <span class="s1">&#39;Ledge&#39;</span>
+    <span class="n">REDGE</span> <span class="o">=</span> <span class="s1">&#39;Redge&#39;</span>
+    <span class="n">AVG_LIMIT</span> <span class="o">=</span> <span class="s1">&#39;avg_limit&#39;</span>
+    <span class="n">FUNC</span> <span class="o">=</span> <span class="s1">&#39;blfunc&#39;</span>
+    <span class="n">ORDER</span> <span class="o">=</span> <span class="s1">&#39;order&#39;</span>
+    <span class="n">NPIECE</span> <span class="o">=</span> <span class="s1">&#39;npiece&#39;</span>
+    <span class="n">NWAVE</span> <span class="o">=</span> <span class="s1">&#39;nwave&#39;</span></div>
+
+
+
+<span class="n">BLP</span> <span class="o">=</span> <span class="n">BaselineParamKeys</span>
+
+
+<div class="viewcode-block" id="write_blparam">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.write_blparam">[docs]</a>
+<span class="k">def</span> <span class="nf">write_blparam</span><span class="p">(</span><span class="n">fileobj</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
+    <span class="n">param_values</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">BLP</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">param</span><span class="p">:</span>
+            <span class="n">param_values</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">[</span><span class="n">param_values</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">BLP</span><span class="p">]))</span>
+    <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="as_maskstring">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.as_maskstring">[docs]</a>
+<span class="k">def</span> <span class="nf">as_maskstring</span><span class="p">(</span><span class="n">masklist</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">~</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">masklist</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="no_switching">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.no_switching">[docs]</a>
+<span class="k">def</span> <span class="nf">no_switching</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">edge</span><span class="p">,</span> <span class="n">num_pieces</span><span class="p">,</span> <span class="n">masklist</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">fitorder</span><span class="o">.</span><span class="n">FittingFunction</span><span class="o">.</span><span class="n">CSPLINE</span><span class="o">.</span><span class="n">blfunc</span><span class="p">,</span> <span class="mi">0</span></div>
+
+
+
+<div class="viewcode-block" id="do_switching">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.do_switching">[docs]</a>
+<span class="k">def</span> <span class="nf">do_switching</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">edge</span><span class="p">,</span> <span class="n">num_pieces</span><span class="p">,</span> <span class="n">masklist</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">engine</span><span class="p">(</span><span class="n">nchan</span><span class="p">,</span> <span class="n">edge</span><span class="p">,</span> <span class="n">num_pieces</span><span class="p">,</span> <span class="n">masklist</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="BaselineFitParamConfig">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineFitParamConfig">[docs]</a>
+<span class="k">class</span> <span class="nc">BaselineFitParamConfig</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate/update BLParam file according to the input parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ApplicableDuration</span> <span class="o">=</span> <span class="s1">&#39;raster&#39;</span>  <span class="c1"># &#39;raster&#39; | &#39;subscan&#39;</span>
+    <span class="n">MaxPolynomialOrder</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>  <span class="c1"># &#39;none&#39;, 0, 1, 2,...</span>
+    <span class="n">PolynomialOrder</span> <span class="o">=</span> <span class="s1">&#39;automatic&#39;</span>  <span class="c1"># &#39;automatic&#39;, 0, 1, 2, ...</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitfunc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cspline&#39;</span><span class="p">,</span> <span class="n">switchpoly</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct BaselineFitParamConfig instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fitfunc: Fit function to use. Cubic spline (&#39;spline&#39; or &#39;cspline&#39;)</span>
+<span class="sd">                     and polynomial (&#39;poly&#39; or &#39;polynomial&#39;) are available.</span>
+<span class="sd">                     Default is &#39;cspline&#39;.</span>
+<span class="sd">            switchpoly: Whether or not fall back to low order polynomial fit</span>
+<span class="sd">                        when large mask exist at the edge of spw if fitfunc</span>
+<span class="sd">                        is either &#39;cspline&#39; or &#39;spline&#39;. Defaults to True.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: Invalid fitting function was specified.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaselineFitParamConfig</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitfunc</span> <span class="o">=</span> <span class="n">fitorder</span><span class="o">.</span><span class="n">get_fitting_function</span><span class="p">(</span><span class="n">fitfunc</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Baseline parameter is optimized for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fitfunc</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s1"> fitting&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">paramdict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristics_engine</span> <span class="o">=</span> <span class="n">fitorder</span><span class="o">.</span><span class="n">SwitchPolynomialWhenLargeMaskAtEdgeHeuristic</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">switchpoly</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">switching_heuristic</span> <span class="o">=</span> <span class="n">do_switching</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">switching_heuristic</span> <span class="o">=</span> <span class="n">no_switching</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">paramdict</span><span class="p">[</span><span class="n">BLP</span><span class="o">.</span><span class="n">CLIPNITER</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ClipCycle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paramdict</span><span class="p">[</span><span class="n">BLP</span><span class="o">.</span><span class="n">CLIPTHRESH</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5.0</span>
+
+    <span class="c1"># readonly attributes</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ClipCycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">__datacolumn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
+        <span class="n">colname</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+                <span class="n">candidate_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;DATA&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;FLOAT_DATA&#39;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">candidate_names</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tb</span><span class="o">.</span><span class="n">colnames</span><span class="p">():</span>
+                        <span class="n">colname</span> <span class="o">=</span> <span class="n">name</span>
+                        <span class="k">break</span>
+        <span class="k">return</span> <span class="n">colname</span>
+
+<div class="viewcode-block" id="BaselineFitParamConfig.calculate">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineFitParamConfig.calculate">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatable</span><span class="p">:</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span>
+                  <span class="n">rowmap</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">field_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                  <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">fit_order</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+                  <span class="n">edge</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">deviation_mask</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+                  <span class="n">blparam</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate/update BLParam file according to the input parameters.</span>
+
+<span class="sd">        BLParam file will be an input to sdbaseline,.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            datatable: DataTable instance</span>
+<span class="sd">            ms: MS domain object to calculate fitting parameters</span>
+<span class="sd">            rowmap: Row map dictionary between origin_ms and ms</span>
+<span class="sd">            antenna_id: Antenna ID to process</span>
+<span class="sd">            field_id: Field ID to process</span>
+<span class="sd">            spw_id: Spw ID to process</span>
+<span class="sd">            fit_order: Fiting order (&#39;automatic&#39; or number)</span>
+<span class="sd">            edge: Number of edge channels to be excluded from the heuristics</span>
+<span class="sd">                (format: [L, R])</span>
+<span class="sd">            deviation_mask: Deviation mask</span>
+<span class="sd">            blparam: Name of the BLParam file</span>
+<span class="sd">                File contents will be updated by this heuristics</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            In this method, the boundaries of channel ranges are indicated by a list [start, end].</span>
+<span class="sd">            Basically, the treatment of pythonic range is [start, end+1], but it is not intuitive for</span>
+<span class="sd">            dealing with channels and masks of MeasurementSet. Therefore these are written as [start, end]</span>
+<span class="sd">            in this source. Pythonic range-lists as boundaries for MS are only used in local processing</span>
+<span class="sd">            scopes like a local function or loop block. Other than these scopes, we should write</span>
+<span class="sd">            the channel/mask range as [start, end].</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Name of the BLParam file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Starting BaselineFitParamConfig&#39;</span><span class="p">)</span>
+
+        <span class="c1"># fitting order</span>
+        <span class="k">if</span> <span class="n">fit_order</span> <span class="o">==</span> <span class="s1">&#39;automatic&#39;</span><span class="p">:</span>
+            <span class="c1"># fit order heuristics</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Baseline-Fitting order was automatically determined&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fitorder_heuristic</span> <span class="o">=</span> <span class="n">fitorder</span><span class="o">.</span><span class="n">FitOrderHeuristics</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Baseline-Fitting order was fixed to </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fit_order</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fitorder_heuristic</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">fit_order</span> <span class="c1">#self.inputs.fit_order</span>
+
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="n">DEBUG</span><span class="p">()</span> <span class="ow">or</span> <span class="n">TRACE</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;MS &quot;</span><span class="si">{}</span><span class="s1">&quot; ant </span><span class="si">{}</span><span class="s1"> field </span><span class="si">{}</span><span class="s1"> spw </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">),</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">))</span>
+
+        <span class="n">nchan</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span><span class="p">[</span><span class="n">spw_id</span><span class="p">]</span><span class="o">.</span><span class="n">num_channels</span>
+        <span class="n">data_desc</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw_id</span><span class="p">)</span>
+        <span class="n">npol</span> <span class="o">=</span> <span class="n">data_desc</span><span class="o">.</span><span class="n">num_polarizations</span>
+        <span class="c1"># edge must be formatted to [L, R]</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;edge must be a list [L, R]. &quot;</span><span class="si">{0}</span><span class="s1">&quot; was given.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">DEBUG</span><span class="p">()</span> <span class="ow">or</span> <span class="n">TRACE</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;nchan=</span><span class="si">{nchan}</span><span class="s1"> edge=</span><span class="si">{edge}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nchan</span><span class="o">=</span><span class="n">nchan</span><span class="p">,</span> <span class="n">edge</span><span class="o">=</span><span class="n">edge</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ApplicableDuration</span> <span class="o">==</span> <span class="s1">&#39;subscan&#39;</span><span class="p">:</span>
+            <span class="n">timetable_index</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">timetable_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">index_list_total</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">edge</span> <span class="o">=</span> <span class="n">fitorder</span><span class="o">.</span><span class="n">EdgeChannels</span><span class="p">(</span><span class="o">*</span><span class="n">edge</span><span class="p">)</span>
+
+        <span class="c1"># prepare mask arrays</span>
+        <span class="n">mask_array</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nchan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">mask_array</span><span class="p">[:</span><span class="n">edge</span><span class="o">.</span><span class="n">left</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">mask_array</span><span class="p">[</span><span class="n">nchan</span><span class="o">-</span><span class="n">edge</span><span class="o">.</span><span class="n">right</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># deviation mask</span>
+        <span class="k">if</span> <span class="n">DEBUG</span><span class="p">()</span> <span class="ow">or</span> <span class="n">TRACE</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Deviation mask for field </span><span class="si">{}</span><span class="s1"> antenna </span><span class="si">{}</span><span class="s1"> spw </span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">deviation_mask</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">deviation_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">mask_range</span> <span class="ow">in</span> <span class="n">deviation_mask</span><span class="p">:</span>
+                <span class="n">mask_array</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">mask_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span><span class="nb">min</span><span class="p">(</span><span class="n">nchan</span><span class="p">,</span> <span class="n">mask_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">base_mask_array</span> <span class="o">=</span> <span class="n">mask_array</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1">#LOG.info(&#39;base_mask_array = {}&#39;.format(&#39;&#39;.join(map(str, base_mask_array))))</span>
+
+        <span class="n">time_table</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">get_timetable</span><span class="p">(</span><span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">),</span> <span class="n">field_id</span><span class="p">)</span>
+        <span class="n">member_list</span> <span class="o">=</span> <span class="n">time_table</span><span class="p">[</span><span class="n">timetable_index</span><span class="p">]</span>
+
+        <span class="c1"># working with spectral data in scantable</span>
+        <span class="n">nrow_total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">member_list</span><span class="p">))</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Calculating Baseline Fitting Parameter...&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Processing </span><span class="si">{}</span><span class="s1"> spectra...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nrow_total</span><span class="p">))</span>
+
+        <span class="c1">#colname = self.inputs.colname</span>
+        <span class="n">datacolumn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__datacolumn</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">DEBUG</span><span class="p">()</span> <span class="ow">or</span> <span class="n">TRACE</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;data column name is &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datacolumn</span><span class="p">))</span>
+
+        <span class="c1"># open blparam file (append mode)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">blparam</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">blparamfileobj</span><span class="p">:</span>
+
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">member</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span> <span class="n">member_list</span> <span class="p">):</span>
+                    <span class="n">origin_rows</span> <span class="o">=</span> <span class="n">member</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># origin_ms row ID</span>
+                    <span class="n">idxs</span> <span class="o">=</span> <span class="n">member</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># datatable row ID</span>
+                    <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">rowmap</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">origin_rows</span><span class="p">]</span> <span class="c1"># vis row ID</span>
+
+                    <span class="n">spectra</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">),</span> <span class="n">npol</span><span class="p">,</span> <span class="n">nchan</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+                        <span class="n">spectra</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="n">datacolumn</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+                    <span class="c1">#get_mask_from_flagtra: 1 valid 0 invalid</span>
+                    <span class="c1">#arg for mask_to_masklist: 0 valid 1 invalid</span>
+                    <span class="n">flaglist</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__convert_flags_to_masklist</span><span class="p">(</span><span class="n">tb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+                                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
+
+                    <span class="c1">#LOG.trace(&quot;Flag Mask = %s&quot; % str(flaglist))</span>
+
+                    <span class="n">spectra</span><span class="p">[:,</span> <span class="p">:</span><span class="n">edge</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                    <span class="n">spectra</span><span class="p">[:,</span> <span class="n">nchan</span><span class="o">-</span><span class="n">edge</span><span class="o">.</span><span class="n">right</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+                    <span class="c1"># here we assume that masklist is polarization-independent</span>
+                    <span class="c1"># (this is because that line detection/validation process accumulates</span>
+                    <span class="c1"># polarization components together</span>
+                    <span class="n">masklist</span> <span class="o">=</span> <span class="p">[</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;MASKLIST&#39;</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">idxs</span><span class="p">]</span>
+                    <span class="c1">#masklist = [datatable.getcell(&#39;MASKLIST&#39;,idxs[i]) + flaglist[i]</span>
+                    <span class="c1">#            for i in range(len(idxs))]</span>
+                    <span class="c1">#LOG.debug(&#39;DONE {}&#39;.format(y))</span>
+
+                    <span class="n">npol</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npol</span><span class="p">):</span>
+                        <span class="c1"># MS rows contain npol spectra</span>
+                        <span class="k">if</span> <span class="n">pol</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">index_list_total</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">idxs</span><span class="p">)</span>
+
+                        <span class="c1"># fit order determination</span>
+                        <span class="n">averaged_polyorder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fitorder_heuristic</span><span class="p">(</span>
+                            <span class="n">spectra</span><span class="p">[:,</span> <span class="n">pol</span><span class="p">,</span> <span class="p">:],</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">masklist</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">flaglist</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">pol</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">idxs</span><span class="p">))],</span> <span class="n">edge</span><span class="p">)</span>
+                        <span class="c1">#del spectra</span>
+
+                        <span class="c1"># write dummy baseline parameters and skip the subsequent calculations for fully flagged rows</span>
+                        <span class="k">if</span> <span class="n">averaged_polyorder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">irow</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+                                <span class="n">write_blparam</span><span class="p">(</span> <span class="n">blparamfileobj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dummy_baseline_param</span><span class="p">(</span> <span class="n">irow</span><span class="p">,</span> <span class="n">pol</span> <span class="p">)</span> <span class="p">)</span>
+                            <span class="k">continue</span>
+
+                        <span class="c1"># fit order determination (cnt&#39;d)</span>
+                        <span class="k">if</span> <span class="n">fit_order</span> <span class="o">==</span> <span class="s1">&#39;automatic&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaxPolynomialOrder</span> <span class="o">!=</span> <span class="s1">&#39;none&#39;</span><span class="p">:</span>
+                            <span class="n">averaged_polyorder</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">averaged_polyorder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaxPolynomialOrder</span><span class="p">)</span>
+                        <span class="c1">#LOG.debug(&#39;time group {} pol {}: fitting order={}&#39;.format(</span>
+                        <span class="c1">#            y, pol, averaged_polyorder))</span>
+
+                        <span class="n">nrow</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">DEBUG</span><span class="p">()</span> <span class="ow">or</span> <span class="n">TRACE</span><span class="p">():</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;nrow = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nrow</span><span class="p">))</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;len(idxs) = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">idxs</span><span class="p">)))</span>
+
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrow</span><span class="p">):</span>
+                            <span class="n">row</span> <span class="o">=</span> <span class="n">rows</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                            <span class="n">idx</span> <span class="o">=</span> <span class="n">idxs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">TRACE</span><span class="p">():</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;===== Processing at row = </span><span class="si">{}</span><span class="s1"> =====&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="p">))</span>
+                            <span class="c1">#nochange = datatable.getcell(&#39;NOCHANGE&#39;,idx)</span>
+                            <span class="c1">#LOG.trace(&#39;row = %s, Flag = %s&#39;%(row, nochange))</span>
+
+                            <span class="c1"># mask lines</span>
+                            <span class="n">maxwidth</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="c1">#                       _masklist = masklist[i]</span>
+                            <span class="n">_masklist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">masklist</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">flaglist</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">pol</span><span class="p">]</span>
+                            <span class="c1">#LOG.info(&#39;_masklist = {}&#39;.format(_masklist))</span>
+                            <span class="c1">#LOG.info(&#39;masklist[{}] = {}&#39;.format(i, masklist[i]))</span>
+                            <span class="c1">#LOG.info(&#39;flaglist[{}][{}] = {}&#39;.format(i, pol, flaglist[i][pol]))</span>
+                            <span class="c1">#LOG.info(&#39;FLAG[{}][{}] = {}&#39;.format(i, pol, &#39;&#39;.join(map(str, numpy.array(tb.getcell(&#39;FLAG&#39;, row)[pol], dtype=numpy.uint8)))))</span>
+                            <span class="k">for</span> <span class="p">[</span><span class="n">chan0</span><span class="p">,</span> <span class="n">chan1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">_masklist</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">chan1</span> <span class="o">-</span> <span class="n">chan0</span> <span class="o">&gt;=</span> <span class="n">maxwidth</span><span class="p">:</span>
+                                    <span class="n">maxwidth</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">chan1</span> <span class="o">-</span> <span class="n">chan0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1.4</span><span class="p">)</span>
+                                    <span class="c1"># allowance in Process3 is 1/5:</span>
+                                    <span class="c1">#    (1 + 1/5 + 1/5)^(-1) = (5/7)^(-1)</span>
+                                    <span class="c1">#                         = 7/5 = 1.4</span>
+                            <span class="n">max_polyorder</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">nchan</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">edge</span><span class="p">))</span> <span class="o">//</span> <span class="n">maxwidth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">TRACE</span><span class="p">():</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Masked Region from previous processes = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                    <span class="n">_masklist</span><span class="p">))</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;edge parameters= (</span><span class="si">{</span><span class="n">edge</span><span class="o">.</span><span class="n">left</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">edge</span><span class="o">.</span><span class="n">right</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Polynomial order = </span><span class="si">{}</span><span class="s1">  Max Polynomial order = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">averaged_polyorder</span><span class="p">,</span> <span class="n">max_polyorder</span><span class="p">))</span>
+
+                            <span class="c1"># fitting</span>
+                            <span class="n">polyorder</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">averaged_polyorder</span><span class="p">,</span> <span class="n">max_polyorder</span><span class="p">)</span>
+                            <span class="n">mask_array</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">base_mask_array</span>
+                            <span class="c1">#LOG.info(&#39;mask_array = {}&#39;.format(&#39;&#39;.join(map(str, mask_array))))</span>
+                            <span class="c1">#irow = len(row_list_total)+len(row_list)</span>
+                            <span class="c1">#irow = len(index_list_total) + i</span>
+                            <span class="n">irow</span> <span class="o">=</span> <span class="n">row</span>
+                            <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configure_baseline_param</span><span class="p">(</span><span class="n">irow</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">polyorder</span><span class="p">,</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">edge</span><span class="p">,</span> <span class="n">mask_array</span><span class="p">,</span> <span class="n">_masklist</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">TRACE</span><span class="p">():</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Row </span><span class="si">{}</span><span class="s1">: param=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">param</span><span class="p">))</span>
+                            <span class="n">write_blparam</span><span class="p">(</span><span class="n">blparamfileobj</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">blparam</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_configure_baseline_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">pol</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">polyorder</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">nchan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="n">fitorder</span><span class="o">.</span><span class="n">EdgeChannels</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span> <span class="n">mask_list</span><span class="p">:</span> <span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configure baseline parameter values for given row and polarization incides.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            row_idx: Row index</span>
+<span class="sd">            pol: Polarization index (0: XX/RR, 1: YY/LL)</span>
+<span class="sd">            polyorder: Polynomial fitting order</span>
+<span class="sd">            nchan: Number of channels</span>
+<span class="sd">            edge: Number of edge channels to be excluded from the fit</span>
+<span class="sd">            mask: Boolean mask array</span>
+<span class="sd">            mask_list: List of detected lines. Lines are excluded from the fit to protect them.</span>
+<span class="sd">                       Lines are expressed as [start_channel, end_channel].</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Baseline fitting parameters as a dictionary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create mask for line protection</span>
+        <span class="n">effective_nchan</span> <span class="o">=</span> <span class="n">nchan</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+        <span class="c1">#LOG.info(&#39;__ mask (before) = {}&#39;.format(&#39;&#39;.join(map(str, mask))))</span>
+
+        <span class="c1"># a stuff of masklist is a list of index [start, end]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mask_list</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="p">[</span><span class="n">m0</span><span class="p">,</span> <span class="n">m1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">mask_list</span><span class="p">:</span>
+                <span class="n">mask</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">m0</span><span class="p">):</span><span class="nb">min</span><span class="p">(</span><span class="n">nchan</span><span class="p">,</span> <span class="n">m1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Invalid masklist&#39;</span><span class="p">)</span>
+
+        <span class="c1">#LOG.info(&#39;__ mask (after)  = {}&#39;.format(&#39;&#39;.join(map(str, mask))))</span>
+        <span class="n">num_mask</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">effective_nchan</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask</span><span class="p">[</span><span class="n">edge</span><span class="o">.</span><span class="n">left</span><span class="p">:</span><span class="n">nchan</span> <span class="o">-</span> <span class="n">edge</span><span class="o">.</span><span class="n">right</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1.0</span><span class="p">))</span>
+
+        <span class="c1"># here meaning of &quot;masklist&quot; is changed</span>
+        <span class="c1">#         masklist: list of channel ranges to be *excluded* from the fit</span>
+        <span class="c1"># fit_channel_list: list of channel ranges to be *included* in the fit</span>
+        <span class="n">fit_channel_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__convert_mask_to_masklist</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+        <span class="c1">#LOG.info(&#39;__ masklist (before)= {}&#39;.format(masklist))</span>
+        <span class="c1">#LOG.info(&#39;__ masklist (after) = {}&#39;.format(fit_channel_list))</span>
+
+        <span class="k">if</span> <span class="n">TRACE</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;effective_nchan, num_mask, diff=</span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">effective_nchan</span><span class="p">,</span> <span class="n">num_mask</span><span class="p">))</span>
+
+        <span class="n">outdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fit_param</span><span class="p">(</span><span class="n">polyorder</span><span class="p">,</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">edge</span><span class="p">,</span> <span class="n">effective_nchan</span><span class="p">,</span> <span class="n">num_mask</span><span class="p">,</span> <span class="n">fit_channel_list</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">paramdict</span><span class="p">[</span><span class="n">BLP</span><span class="o">.</span><span class="n">ROW</span><span class="p">]</span> <span class="o">=</span> <span class="n">row_idx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paramdict</span><span class="p">[</span><span class="n">BLP</span><span class="o">.</span><span class="n">POL</span><span class="p">]</span> <span class="o">=</span> <span class="n">pol</span>
+
+        <span class="c1"># MASK, in short, fit_channel_list contains lists of indices [start, end+1]</span>
+        <span class="n">fit_channel_list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="p">[</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">]</span> <span class="ow">in</span> <span class="n">fit_channel_list</span><span class="p">]</span>
+        <span class="n">outdata</span><span class="p">[</span><span class="n">BLP</span><span class="o">.</span><span class="n">MASK</span><span class="p">]</span> <span class="o">=</span> <span class="n">as_maskstring</span><span class="p">(</span><span class="n">fit_channel_list</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">TRACE</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;outdata=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">outdata</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">outdata</span>
+
+    <span class="k">def</span> <span class="nf">_dummy_baseline_param</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">pol</span><span class="p">:</span> <span class="nb">int</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">BLP</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a dummy parameter dict for baseline parameters</span>
+
+<span class="sd">        This replaces _calc_baseline_param() for fully flagged rows</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">           row : row number</span>
+<span class="sd">           pol : polarization index</span>
+<span class="sd">        Returns:</span>
+<span class="sd">           dummy parameter dict for baseline parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">BLP</span><span class="o">.</span><span class="n">CLIPNITER</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">BLP</span><span class="o">.</span><span class="n">CLIPTHRESH</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span>
+                <span class="n">BLP</span><span class="o">.</span><span class="n">ROW</span><span class="p">:</span> <span class="n">row</span><span class="p">,</span> <span class="n">BLP</span><span class="o">.</span><span class="n">POL</span><span class="p">:</span> <span class="n">pol</span><span class="p">,</span> <span class="n">BLP</span><span class="o">.</span><span class="n">MASK</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">BLP</span><span class="o">.</span><span class="n">NPIECE</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">BLP</span><span class="o">.</span><span class="n">FUNC</span><span class="p">:</span> <span class="n">fitorder</span><span class="o">.</span><span class="n">FittingFunction</span><span class="o">.</span><span class="n">POLY</span><span class="o">.</span><span class="n">blfunc</span><span class="p">,</span> <span class="n">BLP</span><span class="o">.</span><span class="n">ORDER</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__convert_flags_to_masklist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="s1">&#39;numpy.ndarray[numpy.ndarray[numpy.int64]]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts flag list to masklist.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            flags : list of binary flag are loaded from FLAG column of MeasurementSet.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of masklist</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__convert_mask_to_masklist</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__convert_mask_to_masklist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="s1">&#39;numpy.ndarray[numpy.int64]&#39;</span><span class="p">,</span> <span class="n">end_offset</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts binary mask array to masklist / channellist for fitting.</span>
+
+<span class="sd">        Resulting masklist is a list of channel ranges whose values are 1</span>
+
+<span class="sd">        Argument</span>
+<span class="sd">            mask : an array of channel mask in values 0 or 1</span>
+<span class="sd">            end_offset : the offset value of the &#39;end&#39; of [start, end]</span>
+<span class="sd">        Returns</span>
+<span class="sd">            A list of channel range [start, end]. It means below:</span>
+<span class="sd">            - list of masking channel ranges to be *excluded* from the fit. __conver_flags_to_masklist() calls it.</span>
+<span class="sd">              It consists of a pair of start and end index, [start, end].</span>
+<span class="sd">            - list of fitting channel ranges to be *included* in the fit. ___calc_baseline_param() calls it.</span>
+<span class="sd">              It consists of a pair of start and end+1 index, [start, end+1], for convenience of calculation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get indices of clump boundaries</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">mask</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">^</span> <span class="n">mask</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># idx now contains pairs of start-end indices, edges need handling</span>
+        <span class="c1"># depending on first and last mask value</span>
+        <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span> <span class="o">-</span> <span class="n">end_offset</span><span class="p">]]</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">r</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">r</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">idx</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="p">[[</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">-</span> <span class="n">end_offset</span><span class="p">]</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get_fit_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polyorder</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">nchan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="n">fitorder</span><span class="o">.</span><span class="n">EdgeChannels</span><span class="p">,</span> <span class="n">nchan_without_edge</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">nchan_masked</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">masklist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configure fitting parameter values except mask.</span>
+
+<span class="sd">        This method constructs dictionary that holds baseline parameters</span>
+<span class="sd">        specific to fitting. For polynomial fitting, fitting function and</span>
+<span class="sd">        fitting order are included in the dictionary. For cubic spline</span>
+<span class="sd">        (cspline) fitting, number of segments in addition to fitting function</span>
+<span class="sd">        and fitting order are included. Fitting function can fallback to &#39;poly&#39;</span>
+<span class="sd">        even if input fitting function is &#39;cspline&#39; when too many edge channels</span>
+<span class="sd">        are flagged and user instructs to do so. Please see the implementation</span>
+<span class="sd">        of SwitchPolynomialWhenLargeMaskAtEdgeHeuristic for detail about</span>
+<span class="sd">        fallback.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            polyorder: Polynomial fitting order</span>
+<span class="sd">            nchan: Number of channels</span>
+<span class="sd">            edge: Number of edge channels to be excluded from the fit</span>
+<span class="sd">            nchan_without_edge: Effective number of channels</span>
+<span class="sd">            nchan_masked: Number of masked channels</span>
+<span class="sd">            masklist: List of detected lines. Lines are excluded from the fit to protect them.</span>
+<span class="sd">                       Lines are expressed as [start_channel, end_channel].</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Baseline fitting parameter dictionary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fitorder</span><span class="o">.</span><span class="n">is_polynomial_fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitfunc</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">paramdict</span><span class="p">[</span><span class="n">BLP</span><span class="o">.</span><span class="n">FUNC</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fitfunc</span><span class="o">.</span><span class="n">blfunc</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">paramdict</span><span class="p">[</span><span class="n">BLP</span><span class="o">.</span><span class="n">ORDER</span><span class="p">]</span> <span class="o">=</span> <span class="n">polyorder</span>
+        <span class="k">elif</span> <span class="n">fitorder</span><span class="o">.</span><span class="n">is_cubic_spline_fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitfunc</span><span class="p">):</span>
+            <span class="n">num_nomask</span> <span class="o">=</span> <span class="n">nchan_without_edge</span> <span class="o">-</span> <span class="n">nchan_masked</span>
+            <span class="n">num_pieces</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">polyorder</span> <span class="o">*</span> <span class="n">num_nomask</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">nchan_without_edge</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">num_nomask</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">TRACE</span><span class="p">():</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Cubic Spline Fit: Number of Sections = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num_pieces</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">paramdict</span><span class="p">[</span><span class="n">BLP</span><span class="o">.</span><span class="n">NPIECE</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_pieces</span>
+
+            <span class="n">fitfunc</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">switching_heuristic</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">heuristics_engine</span><span class="p">,</span>
+                <span class="n">nchan</span><span class="p">,</span>
+                <span class="n">edge</span><span class="p">,</span>
+                <span class="n">num_pieces</span><span class="p">,</span>
+                <span class="n">masklist</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">paramdict</span><span class="p">[</span><span class="n">BLP</span><span class="o">.</span><span class="n">FUNC</span><span class="p">]</span> <span class="o">=</span> <span class="n">fitfunc</span><span class="o">.</span><span class="n">blfunc</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">paramdict</span><span class="p">[</span><span class="n">BLP</span><span class="o">.</span><span class="n">ORDER</span><span class="p">]</span> <span class="o">=</span> <span class="n">order</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Should not happen!&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">paramdict</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

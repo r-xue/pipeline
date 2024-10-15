@@ -1,0 +1,13 @@
+pipeline.hif.tasks.checkproductsize.qa
+======================================
+
+.. automodule:: pipeline.hif.tasks.checkproductsize.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CheckProductSizeListQAHandler
+      CheckProductSizeQAHandler
+   

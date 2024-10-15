@@ -1,0 +1,24 @@
+pipeline.hif.tasks.bandpass.renderer
+====================================
+
+.. automodule:: pipeline.hif.tasks.bandpass.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      make_adopted_table
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AdoptedTR
+      BandpassAmpVsFreqPlotRenderer
+      BandpassApplication
+      BandpassPhaseVsFreqPlotRenderer
+      BaseBandpassPlotRenderer
+      PhaseupApplication
+      T2_4MDetailsBandpassRenderer
+   

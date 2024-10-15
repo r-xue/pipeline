@@ -1,0 +1,723 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.tasks.common.displays.sky &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.h.tasks.common.displays.sky</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.h.tasks.common.displays.sky</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ******************************************************************************</span>
+<span class="c1"># ALMA - Atacama Large Millimeter Array</span>
+<span class="c1"># Copyright (c) ATC - Astronomy Technology Center - Royal Observatory Edinburgh, 2011</span>
+<span class="c1"># (in the framework of the ALMA collaboration).</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This library is free software; you can redistribute it and/or</span>
+<span class="c1"># modify it under the terms of the GNU Lesser General Public</span>
+<span class="c1"># License as published by the Free Software Foundation; either</span>
+<span class="c1"># version 2.1 of the License, or (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># This library is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU</span>
+<span class="c1"># Lesser General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU Lesser General Public</span>
+<span class="c1"># License along with this library; if not, write to the Free Software</span>
+<span class="c1"># Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA</span>
+<span class="c1"># *******************************************************************************</span>
+<span class="sd">&quot;&quot;&quot;Module to plot sky images.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="k">as</span> <span class="nn">mpatches</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.text</span> <span class="k">as</span> <span class="nn">mtext</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matplotlib.offsetbox</span> <span class="kn">import</span> <span class="n">AnnotationBbox</span><span class="p">,</span> <span class="n">HPacker</span><span class="p">,</span> <span class="n">TextArea</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.logger</span> <span class="k">as</span> <span class="nn">logger</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">filenamer</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">get_stokes</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">_valid_chars</span> <span class="o">=</span> <span class="s2">&quot;_.</span><span class="si">%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span><span class="p">,</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="plotfilename">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.sky.plotfilename">[docs]</a>
+<span class="k">def</span> <span class="nf">plotfilename</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">,</span> <span class="n">collapseFunction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a filename for a plot based on image and other parameters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        image (str): Path to the image file.</span>
+<span class="sd">        reportdir (str): Directory where the report will be saved.</span>
+<span class="sd">        collapseFunction (Optional[str]): Collapse function used, if any.</span>
+<span class="sd">        stokes (Optional[str]): Stokes parameter, if specified.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The generated filename for the plot.   </span>
+<span class="sd">    </span>
+<span class="sd">    Note:</span>
+<span class="sd">        The Stokes suffix is only attached when explicitly specified (PIPE-1410).         </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name_elements</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">image</span><span class="p">)]</span>
+    <span class="n">name_elements</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">collapseFunction</span><span class="p">,</span> <span class="n">stokes</span><span class="p">,</span> <span class="s1">&#39;sky&#39;</span><span class="p">,</span> <span class="s1">&#39;png&#39;</span><span class="p">]))</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reportdir</span><span class="p">,</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">name_elements</span><span class="p">),</span> <span class="n">valid_chars</span><span class="o">=</span><span class="n">_valid_chars</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">name</span></div>
+
+
+
+<div class="viewcode-block" id="SkyDisplay">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.sky.SkyDisplay">[docs]</a>
+<span class="k">class</span> <span class="nc">SkyDisplay</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to plot sky images.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclude_desc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">6.4</span><span class="p">,</span> <span class="mf">4.8</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exclude_desc</span> <span class="o">=</span> <span class="n">exclude_desc</span>    <span class="c1"># exclude the text descriptions from image metadata.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span> <span class="o">=</span> <span class="n">overwrite</span>          <span class="c1"># decide whether to overwrite existing figures or not.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">figsize</span> <span class="o">=</span> <span class="n">figsize</span>              <span class="c1"># class instance default figsize value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dpi</span> <span class="o">=</span> <span class="n">dpi</span>                     <span class="c1"># class instance default dpi</span>
+
+<div class="viewcode-block" id="SkyDisplay.plot_per_stokes">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.sky.SkyDisplay.plot_per_stokes">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_per_stokes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stokes_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot sky images from a CASA image file with multiple Stokes planes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *args: Positional arguments to be passed to self.plot().</span>
+<span class="sd">            stokes_list (Optional[List[str]]): List of Stokes parameters to plot.</span>
+<span class="sd">                If None, all available Stokes planes will be plotted.</span>
+<span class="sd">            **kwargs: Keyword arguments to be passed to self.plot().</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List: A list of plot objects, one for each Stokes parameter.</span>
+
+<span class="sd">        Description:</span>
+<span class="sd">            This method generates one plot per Stokes parameter for a given image file.</span>
+<span class="sd">            It uses self.plot() to create each individual plot.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            PIPE-1401: A new keyword argument &#39;stokes&#39; is added to SkyDisplay.plot(),</span>
+<span class="sd">            SkyDisplay._plot_panel(), etc. By default (stokes=None), the behavior</span>
+<span class="sd">            before PIPE-1401 is preserved: no additional stokes-related suffix in .png</span>
+<span class="sd">            or &#39;stokes&#39; key in the plot wrapper object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">stokes_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">stokes_list</span> <span class="o">=</span> <span class="n">get_stokes</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="n">stokes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">stokes</span> <span class="ow">in</span> <span class="n">stokes_list</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_default_dpi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the default DPI (dots per inch) for imaging plots.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: The Pipeline context object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float or None: The default DPI value. 400.0 for VLA imaging plots,</span>
+<span class="sd">            self._dpi if set, or None otherwise.</span>
+
+<span class="sd">        Description:</span>
+<span class="sd">            This method determines the default DPI for imaging plots based on</span>
+<span class="sd">            the context and instance settings. It prioritizes the instance&#39;s</span>
+<span class="sd">            _dpi attribute if set, otherwise uses context-based logic.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            For VLA hif_makeimages sky plots, the default is 400 DPI (PIPE-1083).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># class instance default takes precedence over the context-based default</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dpi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dpi</span>
+
+        <span class="n">last_result</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># PIPE-1083: when making VLA/SS hif_makeimages sky plot, we default to 400 dpi</span>
+        <span class="k">if</span> <span class="n">last_result</span><span class="o">.</span><span class="n">taskname</span> <span class="o">==</span> <span class="s1">&#39;hif_makeimages&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">last_result</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
+                <span class="n">first_result</span> <span class="o">=</span> <span class="n">last_result</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">first_result</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;VLA&#39;</span><span class="p">,</span> <span class="s1">&#39;EVLA&#39;</span><span class="p">,</span> <span class="s1">&#39;JVLA&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">first_result</span><span class="o">.</span><span class="n">imaging_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;VLASS&#39;</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="mf">400.0</span>
+
+        <span class="c1"># PIPE-1083: when making sky plots for the tasks/stages below, we default to 400 dpi.</span>
+        <span class="c1">#     hif_makermsimages, hif_makecutoutsimages, and hifv_pbcor</span>
+        <span class="k">if</span> <span class="n">last_result</span><span class="o">.</span><span class="n">taskname</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;hif_makermsimages&#39;</span><span class="p">,</span> <span class="s1">&#39;hif_makecutoutimages&#39;</span><span class="p">,</span> <span class="s1">&#39;hifv_pbcor&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mf">400.0</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_get_vla_band</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">miscinfo</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the VLA band string, only for VLA aggregated cont imaging.&quot;&quot;&quot;</span>
+
+        <span class="n">last_result</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">last_result</span><span class="o">.</span><span class="n">taskname</span> <span class="o">==</span> <span class="s1">&#39;hif_makeimages&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;VLA&#39;</span><span class="p">,</span> <span class="s1">&#39;EVLA&#39;</span><span class="p">,</span> <span class="s1">&#39;JVLA&#39;</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span>
+                <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_measurement_sets</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># only 1 ms for VLA</span>
+                <span class="n">spw2band</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_vla_spw2band</span><span class="p">()</span>
+                <span class="n">bands</span> <span class="o">=</span> <span class="p">{</span><span class="n">spw2band</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">)]</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">miscinfo</span><span class="p">[</span><span class="s1">&#39;virtspw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="ow">in</span> <span class="n">spw2band</span><span class="p">}</span>
+                <span class="c1"># VLA imaging only happens per-band and you will likely end up with one-element set</span>
+                <span class="k">if</span> <span class="n">bands</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="SkyDisplay.plot">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.sky.SkyDisplay.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span>
+             <span class="n">stokes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mom8_fc_peak_snr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">maskname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">imshow_args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot sky images from a image file.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">imagename</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">imshow_args</span><span class="p">[</span><span class="s1">&#39;norm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># The dpi input from a method call takes precedence over the class/context-based default.</span>
+        <span class="k">if</span> <span class="n">dpi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dpi_savefig</span> <span class="o">=</span> <span class="n">dpi</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dpi_savefig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_default_dpi</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="n">plotfile</span><span class="p">,</span> <span class="n">coord_names</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_panel</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">collapseFunction</span><span class="o">=</span><span class="n">collapseFunction</span><span class="p">,</span>
+                                                              <span class="n">stokes</span><span class="o">=</span><span class="n">stokes</span><span class="p">,</span>
+                                                              <span class="n">mom8_fc_peak_snr</span><span class="o">=</span><span class="n">mom8_fc_peak_snr</span><span class="p">,</span>
+                                                              <span class="n">maskname</span><span class="o">=</span><span class="n">maskname</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi_savefig</span><span class="p">,</span> <span class="o">**</span><span class="n">imshow_args</span><span class="p">)</span>
+
+        <span class="c1"># field names may not be unique, which leads to incorrectly merged</span>
+        <span class="c1"># plots in the weblog output. As a temporary fix, change to field +</span>
+        <span class="c1"># intent - which is better but again, not guaranteed unique.</span>
+        <span class="k">if</span> <span class="n">intent</span><span class="p">:</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">field</span><span class="si">!s}</span><span class="s1"> (</span><span class="si">{</span><span class="n">intent</span><span class="si">!s}</span><span class="s1">)&#39;</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+            <span class="n">miscinfo</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">miscinfo</span><span class="p">()</span>
+
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">miscinfo</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;virtspw&#39;</span><span class="p">,</span> <span class="s1">&#39;pol&#39;</span><span class="p">,</span> <span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="s1">&#39;datatype&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;iter&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">miscinfo</span><span class="p">}</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;ant&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;band&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">band</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;moment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">collapseFunction</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stokes</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># PIPE-1401: only save the &#39;stokes&#39; keyword when it was explicitly requested.</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stokes</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;prefix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;prefix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">plot</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">plotfile</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="n">coord_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                           <span class="n">y_axis</span><span class="o">=</span><span class="n">coord_names</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span>
+                           <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">plot</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_collapse_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">stokes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collapse an image along the spectral axis.&quot;&quot;&quot;</span>
+
+        <span class="n">stokes_present</span> <span class="o">=</span> <span class="n">get_stokes</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stokes</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stokes_present</span><span class="p">:</span>
+            <span class="n">stokes_select</span> <span class="o">=</span> <span class="n">stokes_present</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stokes_select</span> <span class="o">=</span> <span class="n">stokes</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+            <span class="n">collapsed</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">collapse</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">collapseFunction</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="n">stokes_select</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">collapsed</span><span class="o">.</span><span class="n">getchunk</span><span class="p">(</span><span class="n">dropdeg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">collapsed</span><span class="o">.</span><span class="n">getchunk</span><span class="p">(</span><span class="n">getmask</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dropdeg</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="n">mdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+            <span class="n">collapsed</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">mdata</span>
+
+    <span class="k">def</span> <span class="nf">_plot_panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span>
+                    <span class="n">stokes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mom8_fc_peak_snr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">maskname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">imshow_args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to plot a map.&quot;&quot;&quot;</span>
+
+        <span class="n">plotfile</span> <span class="o">=</span> <span class="n">plotfilename</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">imagename</span><span class="p">),</span>
+                                <span class="n">reportdir</span><span class="o">=</span><span class="n">reportdir</span><span class="p">,</span> <span class="n">collapseFunction</span><span class="o">=</span><span class="n">collapseFunction</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="n">stokes</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Plotting </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">plotfile</span><span class="p">)</span>
+
+        <span class="n">stokes_present</span> <span class="o">=</span> <span class="n">get_stokes</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stokes</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stokes_present</span><span class="p">:</span>
+            <span class="n">stokes_select</span> <span class="o">=</span> <span class="n">stokes_present</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># PIPE-1401: plot mask sky images for different stokes plane even when the mask file has a single Stokes plane.</span>
+            <span class="c1"># note: the fallback is required for vlass-se-cube because the user input mask is from vlass-se-cont with only Stokes=I.</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stokes</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Stokes </span><span class="si">{</span><span class="n">stokes</span><span class="si">}</span><span class="s1"> is requested, but only Stokes=</span><span class="si">{</span><span class="n">stokes_present</span><span class="si">}</span><span class="s1"> is present.&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;We will try to create a plot with a fallback of Stokes=</span><span class="si">{</span><span class="n">stokes_select</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;No Stokes selection is specified, we will use the first present Stokes plane: Stokes=</span><span class="si">{</span><span class="n">stokes_select</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stokes_select</span> <span class="o">=</span> <span class="n">stokes</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Stokes=</span><span class="si">{</span><span class="n">stokes_select</span><span class="si">}</span><span class="s1"> is selected.&#39;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">collapseFunction</span> <span class="o">==</span> <span class="s1">&#39;center&#39;</span><span class="p">:</span>
+                    <span class="n">collapsed</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">collapse</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">chans</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span>
+                        <span class="n">image</span><span class="o">.</span><span class="n">summary</span><span class="p">()[</span><span class="s1">&#39;shape&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span><span class="o">//</span><span class="mi">2</span><span class="p">),</span> <span class="n">stokes</span><span class="o">=</span><span class="n">stokes_select</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">collapseFunction</span> <span class="o">==</span> <span class="s1">&#39;mom0&#39;</span><span class="p">:</span>
+                    <span class="c1"># image.collapse does not have a true &quot;mom0&quot; option. &quot;sum&quot; is close, but the</span>
+                    <span class="c1"># scaling is different.</span>
+                    <span class="c1"># TODO: Switch the whole _plot_panel method to using immoments(?) Though the</span>
+                    <span class="c1">#       downside is that images can no longer be made just in memory. They</span>
+                    <span class="c1">#       always have to be written to disk.</span>
+                    <span class="n">tmpfile</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span><span class="si">}</span><span class="s1">_mom0_tmp.img&#39;</span>
+                    <span class="n">casa_tasks</span><span class="o">.</span><span class="n">immoments</span><span class="p">(</span><span class="n">imagename</span><span class="o">=</span><span class="n">imagename</span><span class="p">,</span> <span class="n">moments</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outfile</span><span class="o">=</span><span class="n">tmpfile</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="n">stokes_select</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+                    <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">)</span>
+                    <span class="n">collapsed</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">newimagefromimage</span><span class="p">(</span><span class="n">infile</span><span class="o">=</span><span class="n">tmpfile</span><span class="p">)</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">collapseFunction</span> <span class="o">==</span> <span class="s1">&#39;mom8&#39;</span><span class="p">:</span>
+                    <span class="n">collapsed</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">collapse</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="n">stokes_select</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Note: in case &#39;max&#39; and non-pbcor image a moment 0 map was written to disk</span>
+                    <span class="c1"># in the past. With PIPE-558 this is done in hif/tasks/tclean.py tclean._calc_mom0_8()</span>
+                    <span class="n">collapsed</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">collapse</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">collapseFunction</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="n">stokes_select</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="c1"># All channels flagged or some other error. Make collapsed zero image.</span>
+                <span class="n">collapsed_new</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">newimagefromimage</span><span class="p">(</span><span class="n">infile</span><span class="o">=</span><span class="n">imagename</span><span class="p">)</span>
+                <span class="n">collapsed_new</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pixelmask</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pixels</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+                <span class="n">collapsed</span> <span class="o">=</span> <span class="n">collapsed_new</span><span class="o">.</span><span class="n">collapse</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="n">stokes_select</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+                <span class="n">collapsed_new</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+        <span class="n">cs</span> <span class="o">=</span> <span class="n">collapsed</span><span class="o">.</span><span class="n">coordsys</span><span class="p">()</span>  <span class="c1"># needs to explicitly close later</span>
+        <span class="n">coord_names</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">names</span><span class="p">()</span>
+        <span class="n">cs</span><span class="o">.</span><span class="n">setunits</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;direction&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;arcsec arcsec&#39;</span><span class="p">)</span>
+        <span class="n">coord_units</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">units</span><span class="p">()</span>
+        <span class="n">coord_refs</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">referencevalue</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+
+        <span class="n">brightness_unit</span> <span class="o">=</span> <span class="n">collapsed</span><span class="o">.</span><span class="n">brightnessunit</span><span class="p">()</span>
+        <span class="n">miscinfo</span> <span class="o">=</span> <span class="n">collapsed</span><span class="o">.</span><span class="n">miscinfo</span><span class="p">()</span>
+
+        <span class="n">beam_rec</span> <span class="o">=</span> <span class="n">collapsed</span><span class="o">.</span><span class="n">restoringbeam</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s1">&#39;major&#39;</span> <span class="ow">in</span> <span class="n">beam_rec</span><span class="p">:</span>
+            <span class="n">cqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+            <span class="n">bpa</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">beam_rec</span><span class="p">[</span><span class="s1">&#39;positionangle&#39;</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">bmaj</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">beam_rec</span><span class="p">[</span><span class="s1">&#39;major&#39;</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">bmin</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">beam_rec</span><span class="p">[</span><span class="s1">&#39;minor&#39;</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">beam</span> <span class="o">=</span> <span class="p">[</span><span class="n">bmaj</span><span class="p">,</span> <span class="n">bmin</span><span class="p">,</span> <span class="n">bpa</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">beam</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">vla_cont_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_vla_band</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">miscinfo</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">vla_cont_band</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># VLA-specmode=&#39;cont&#39; only, not triggered for ALMA, VLASS.</span>
+            <span class="n">miscinfo</span><span class="p">[</span><span class="s1">&#39;band&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vla_cont_band</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use the reference-frequencey (in Hz) as the fallback value of the &#39;band&#39; key</span>
+            <span class="c1"># This key is only used for VLASS and VLA.</span>
+            <span class="n">miscinfo</span><span class="p">[</span><span class="s1">&#39;band&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">referencevalue</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;n&#39;</span><span class="p">)[</span><span class="s1">&#39;numeric&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+
+        <span class="c1"># don&#39;t replot if a file of the required name already exists</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">plotfile</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;plotfile already exists: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">plotfile</span><span class="p">)</span>
+            <span class="c1"># done with ia.coordsys()</span>
+            <span class="n">cs</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">plotfile</span><span class="p">,</span> <span class="n">coord_names</span><span class="p">,</span> <span class="n">miscinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">miscinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;band&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># otherwise do the plot</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">collapsed</span><span class="o">.</span><span class="n">getchunk</span><span class="p">()</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">collapsed</span><span class="o">.</span><span class="n">getchunk</span><span class="p">(</span><span class="n">getmask</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">collapsed</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">mdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+
+        <span class="c1"># get tl/tr corner positions in offset</span>
+        <span class="n">blc</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">torel</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">toworld</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))[</span><span class="s1">&#39;numeric&#39;</span><span class="p">]</span>
+        <span class="n">trc</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">torel</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">toworld</span><span class="p">([</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))[</span><span class="s1">&#39;numeric&#39;</span><span class="p">]</span>
+
+        <span class="c1"># remove any incomplete matplotlib plots, if left these can cause weird errors</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">figsize</span><span class="p">)</span>
+
+        <span class="c1"># plot data</span>
+        <span class="k">if</span> <span class="s1">&#39;cmap&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">imshow_args</span><span class="p">:</span>
+            <span class="c1"># matplotlib Colormap has its own __copy__ implementation:</span>
+            <span class="c1">#   https://github.com/matplotlib/matplotlib/blob/v3.3.x/lib/matplotlib/colors.py#L616</span>
+            <span class="n">imshow_args</span><span class="p">[</span><span class="s1">&#39;cmap&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">jet</span><span class="p">)</span>
+        <span class="n">imshow_args</span><span class="p">[</span><span class="s1">&#39;cmap&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_bad</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mdata</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;equal&#39;</span><span class="p">,</span>
+                       <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">blc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">trc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">blc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">trc</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="o">**</span><span class="n">imshow_args</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">maskname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">maskname</span><span class="p">):</span>
+            <span class="n">mdata_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collapse_image</span><span class="p">(</span><span class="n">maskname</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">mdata_mask</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.99</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                       <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">blc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">trc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">blc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">trc</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">)</span>
+        <span class="n">lims</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">()</span>
+
+        <span class="c1"># make ticks and labels white</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">get_ticklines</span><span class="p">()</span> <span class="o">+</span> <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">get_ticklines</span><span class="p">():</span>
+            <span class="n">line</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">get_ticklabels</span><span class="p">()</span> <span class="o">+</span> <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">get_ticklabels</span><span class="p">():</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">set_fontsize</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">labels</span><span class="o">.</span><span class="n">get_fontsize</span><span class="p">())</span>
+
+        <span class="c1"># colour bar</span>
+        <span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="k">for</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()</span> <span class="o">+</span> <span class="n">cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">():</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">set_fontsize</span><span class="p">(</span><span class="n">fontsize</span><span class="p">)</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">brightness_unit</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
+
+        <span class="c1"># plot beam</span>
+        <span class="k">if</span> <span class="n">beam</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">beam_patch</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Ellipse</span><span class="p">((</span><span class="n">lims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="n">lims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">lims</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">lims</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="n">lims</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">-</span><span class="n">lims</span><span class="p">[</span><span class="mi">2</span><span class="p">])),</span>
+                                          <span class="n">width</span><span class="o">=</span><span class="n">beam</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="n">beam</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                          <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;solid&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                          <span class="n">angle</span><span class="o">=-</span><span class="n">beam</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">beam_patch</span><span class="p">)</span>
+
+        <span class="c1"># add xy labels</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">coord_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coord_units</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">coord_names</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">coord_units</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="c1"># Add the color text box</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclude_desc</span><span class="p">:</span>
+
+            <span class="c1"># image reference pixel</span>
+            <span class="n">yoff</span> <span class="o">=</span> <span class="mf">0.10</span>
+            <span class="n">yoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plottext</span><span class="p">(</span><span class="mf">1.05</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="s1">&#39;Reference position:&#39;</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coord_refs</span><span class="p">[</span><span class="s1">&#39;string&#39;</span><span class="p">]):</span>
+                <span class="c1"># note: the labels present the reference value at individual axes of the collapsed image</span>
+                <span class="c1"># https://casa.nrao.edu/docs/casaref/image.collapse.html</span>
+                <span class="n">yoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plottext</span><span class="p">(</span><span class="mf">1.05</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">coord_names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">k</span><span class="p">),</span> <span class="mi">40</span><span class="p">,</span> <span class="n">mult</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+            <span class="c1"># if peaksnr is available for the mom8_fc image, include it in the plot</span>
+            <span class="k">if</span> <span class="s1">&#39;mom8_fc&#39;</span> <span class="ow">in</span> <span class="n">imagename</span> <span class="ow">and</span> <span class="n">mom8_fc_peak_snr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">yoff</span> <span class="o">=</span> <span class="mf">0.90</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">plottext</span><span class="p">(</span><span class="mf">1.05</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="s1">&#39;Peak SNR: </span><span class="si">{:.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mom8_fc_peak_snr</span><span class="p">),</span> <span class="mi">40</span><span class="p">)</span>
+
+            <span class="n">mode_texts</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;mom0&#39;</span><span class="p">:</span> <span class="s1">&#39;integ. line int. (mom0)&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="s1">&#39;peak line int. (mom8)&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;mom8&#39;</span><span class="p">:</span> <span class="s1">&#39;peak line int. (mom8)&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="s1">&#39;center slice&#39;</span>
+            <span class="p">}</span>
+
+            <span class="n">image_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="n">mode_texts</span><span class="p">[</span><span class="n">collapseFunction</span><span class="p">]}</span>
+            <span class="n">image_info</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">miscinfo</span><span class="p">)</span>
+
+            <span class="n">type_mapping</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;flux&#39;</span><span class="p">:</span> <span class="s1">&#39;pb&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;mom0_fc&#39;</span><span class="p">:</span> <span class="s1">&#39;Line-free Moment 0&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;mom8_fc&#39;</span><span class="p">:</span> <span class="s1">&#39;Line-free Moment 8&#39;</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="s1">&#39;type&#39;</span> <span class="ow">in</span> <span class="n">image_info</span><span class="p">:</span>
+                <span class="n">image_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">image_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">],</span> <span class="n">image_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">image_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;band&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="c1"># Currently only used for VLA specmode=&#39;cont&#39; imaging results</span>
+                <span class="n">key_color</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">),</span>
+                             <span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">),</span>
+                             <span class="p">(</span><span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">),</span>
+                             <span class="p">(</span><span class="s1">&#39;band&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">),</span>
+                             <span class="p">(</span><span class="s1">&#39;pol&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">),</span>
+                             <span class="p">(</span><span class="s1">&#39;iter&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">key_color</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">),</span>
+                             <span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">),</span>
+                             <span class="p">(</span><span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">),</span>
+                             <span class="p">(</span><span class="s1">&#39;virtspw&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">),</span>
+                             <span class="p">(</span><span class="s1">&#39;pol&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">),</span>
+                             <span class="p">(</span><span class="s1">&#39;iter&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">)]</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">TextArea</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">image_info</span><span class="p">[</span><span class="n">key</span><span class="p">]),</span> <span class="n">textprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">))</span>
+                      <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">key_color</span>
+                      <span class="k">if</span> <span class="n">image_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+
+            <span class="n">txt</span> <span class="o">=</span> <span class="n">HPacker</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;baseline&quot;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+            <span class="n">bbox</span> <span class="o">=</span> <span class="n">AnnotationBbox</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">),</span>
+                                  <span class="n">xycoords</span><span class="o">=</span><span class="s1">&#39;axes fraction&#39;</span><span class="p">,</span>
+                                  <span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                  <span class="n">box_alignment</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-997: plot a 41pix-wide PSF inset if the image is larger than 41*3</span>
+        <span class="k">if</span> <span class="n">miscinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;psf&#39;</span><span class="p">:</span>
+            <span class="c1"># use the same vmin/vmax as the full-size plot.</span>
+            <span class="k">if</span> <span class="s1">&#39;norm&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">imshow_args</span><span class="p">:</span>
+                <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">get_clim</span><span class="p">()</span>
+                <span class="n">imshow_args</span><span class="p">[</span><span class="s1">&#39;norm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_psf_inset</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">mdata</span><span class="p">,</span> <span class="n">imshow_args</span><span class="p">,</span> <span class="n">beam</span><span class="o">=</span><span class="n">beam</span><span class="p">,</span> <span class="n">cs</span><span class="o">=</span><span class="n">cs</span><span class="p">)</span>
+
+        <span class="c1"># save the image</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">plotfile</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">bbox_extra_artists</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">findobj</span><span class="p">(</span><span class="n">mtext</span><span class="o">.</span><span class="n">Text</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">plotfile</span><span class="p">):</span>
+            <span class="c1"># PIPE-2022: Generate a warning if the PNG file is missing. The</span>
+            <span class="c1"># message is caught by a local logging handler for the weblog.</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Plot </span><span class="si">{</span><span class="n">plotfile</span><span class="si">}</span><span class="s1"> is missing on disk&#39;</span><span class="p">)</span>
+
+        <span class="c1"># done with ia.coordsys()</span>
+        <span class="n">cs</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">plotfile</span><span class="p">,</span> <span class="n">coord_names</span><span class="p">,</span> <span class="n">miscinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">miscinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;band&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_plot_psf_inset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">mdata</span><span class="p">,</span> <span class="n">imshow_args</span><span class="p">,</span> <span class="n">beam</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot the PSF inset panel.&quot;&quot;&quot;</span>
+
+        <span class="n">npix_inset_half</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="n">maxfrac_inset</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">3</span>
+        <span class="n">npix_inset</span> <span class="o">=</span> <span class="n">npix_inset_half</span><span class="o">*</span><span class="mf">2.</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">mdata</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">npix_inset</span> <span class="o">&lt;</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">maxfrac_inset</span> <span class="ow">or</span> <span class="n">npix_inset</span> <span class="o">&lt;</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">maxfrac_inset</span><span class="p">:</span>
+            <span class="n">x0</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="n">npix_inset_half</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">npix_inset_half</span><span class="o">+</span><span class="mi">1</span>
+            <span class="n">y0</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="n">npix_inset_half</span>
+            <span class="n">y1</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">npix_inset_half</span><span class="o">+</span><span class="mi">1</span>
+            <span class="n">mdata_sub</span> <span class="o">=</span> <span class="n">mdata</span><span class="p">[</span><span class="n">x0</span><span class="p">:</span><span class="n">x1</span><span class="p">,</span> <span class="n">y0</span><span class="p">:</span><span class="n">y1</span><span class="p">]</span>
+            <span class="n">axinset</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">inset_axes</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">0.60</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.38</span><span class="p">,</span> <span class="mf">0.38</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">cs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">blc</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">torel</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">toworld</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="o">+</span><span class="n">x0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">+</span><span class="n">y0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))[</span><span class="s1">&#39;numeric&#39;</span><span class="p">]</span>
+                <span class="n">trc</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">torel</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">toworld</span><span class="p">([</span><span class="n">x1</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">y1</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))[</span><span class="s1">&#39;numeric&#39;</span><span class="p">]</span>
+                <span class="n">extent</span> <span class="o">=</span> <span class="p">[</span><span class="n">blc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">trc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">blc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">trc</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># if cs is not available, use a fiducial data coordinate system.</span>
+                <span class="c1"># but your beam specification needs to be in pix units to get the plot scale</span>
+                <span class="c1"># right</span>
+                <span class="n">extent</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">npix_inset_half</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">npix_inset_half</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="n">npix_inset_half</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">npix_inset_half</span><span class="o">+</span><span class="mf">0.5</span><span class="p">]</span>
+
+            <span class="n">axinset</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mdata_sub</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span>
+                           <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;equal&#39;</span><span class="p">,</span>
+                           <span class="o">**</span><span class="n">imshow_args</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">spine</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">]:</span>
+                <span class="n">axinset</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="n">spine</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+            <span class="n">axinset</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">mdata_sub</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">],</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linestyles</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span>
+                            <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+            <span class="n">axinset</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+            <span class="n">axinset</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+
+            <span class="k">if</span> <span class="n">beam</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">beam_patch</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Ellipse</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">beam</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="n">beam</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                              <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;solid&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                              <span class="n">angle</span><span class="o">=-</span><span class="n">beam</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="n">axinset</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">beam_patch</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SkyDisplay.plottext">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.sky.SkyDisplay.plottext">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">plottext</span><span class="p">(</span><span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">maxchars</span><span class="p">,</span> <span class="n">ny_subplot</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mult</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Utility method to plot text and put line breaks in to keep the</span>
+<span class="sd">        text within a given limit.</span>
+
+<span class="sd">        Keyword arguments:</span>
+<span class="sd">        xoff       -- world x coord where text is to start.</span>
+<span class="sd">        yoff       -- world y coord where text is to start.</span>
+<span class="sd">        text       -- Text to print.</span>
+<span class="sd">        maxchars   -- Maximum number of characters before a newline is</span>
+<span class="sd">                      inserted.</span>
+<span class="sd">        ny_subplot -- Number of sub-plots along the y-axis of the page.</span>
+<span class="sd">        mult       -- Factor by which the text fontsize is to be multiplied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">words</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">rsplit</span><span class="p">()</span>
+        <span class="n">words_in_line</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)):</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="n">words</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+            <span class="n">words_in_line</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">maxchars</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">words_in_line</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">mult</span><span class="o">*</span><span class="mi">8</span><span class="p">,</span>
+                            <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">yoff</span> <span class="o">-=</span> <span class="mf">0.03</span> <span class="o">*</span> <span class="n">ny_subplot</span> <span class="o">*</span> <span class="n">mult</span>
+                    <span class="n">words_in_line</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">mult</span><span class="o">*</span><span class="mi">8</span><span class="p">,</span>
+                            <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">yoff</span> <span class="o">-=</span> <span class="mf">0.03</span> <span class="o">*</span> <span class="n">ny_subplot</span> <span class="o">*</span> <span class="n">mult</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+                    <span class="n">words_in_line</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">temp</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">mult</span><span class="o">*</span><span class="mi">8</span><span class="p">,</span>
+                    <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">yoff</span> <span class="o">-=</span> <span class="mf">0.03</span> <span class="o">*</span> <span class="n">ny_subplot</span> <span class="o">*</span> <span class="n">mult</span>
+        <span class="n">yoff</span> <span class="o">-=</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="n">ny_subplot</span> <span class="o">*</span> <span class="n">mult</span>
+        <span class="k">return</span> <span class="n">yoff</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

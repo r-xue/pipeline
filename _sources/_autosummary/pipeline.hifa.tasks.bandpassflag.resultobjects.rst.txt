@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.bandpassflag.resultobjects
+==============================================
+
+.. automodule:: pipeline.hifa.tasks.bandpassflag.resultobjects
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BandpassflagResults
+      FullyFlaggedAntennasNotification
+   

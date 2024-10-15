@@ -1,0 +1,819 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.importdata.inspection &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.importdata.inspection</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.importdata.inspection</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Inspection module for importdata.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.datatable</span> <span class="kn">import</span> <span class="n">DataTableImpl</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.singledish</span> <span class="kn">import</span> <span class="n">MSReductionGroupDesc</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.heuristics.rasterscan</span> <span class="kn">import</span> <span class="n">RasterScanHeuristicsResult</span><span class="p">,</span> <span class="n">RasterScanHeuristicsFailure</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.common.inspection_util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">inspect_reduction_group</span><span class="p">,</span>
+                                                       <span class="n">set_beam_size</span><span class="p">)</span>
+<span class="c1"># import pipeline.domain.singledish as singledish</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+
+<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">heuristics</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">reader</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SDInspection">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.inspection.SDInspection">[docs]</a>
+<span class="k">class</span> <span class="nc">SDInspection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inspection class for hsd_importdata.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_rasterscan</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise SDInspection class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: pipeline context</span>
+<span class="sd">            table_name: path to DataTable corresponding to ms</span>
+<span class="sd">            ms: MeasurementSet object for inspection</span>
+<span class="sd">            hm_rasterscan: Heuristics method for raster scan analysis (default: &#39;time&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table_name</span> <span class="o">=</span> <span class="n">table_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">ms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_rasterscan</span> <span class="o">=</span> <span class="n">hm_rasterscan</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_rasterscan</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;direction&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;hm_rasterscan must be either &#39;time&#39; or &#39;direction&#39;&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SDInspection.execute">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.inspection.SDInspection.execute">[docs]</a>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">MSReductionGroupDesc</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute inspection process.</span>
+
+<span class="sd">        This method calls execute method of reader.py.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            reduction_group: dict of reduction group IDs (key) and MSReductionGroupDesc (value)</span>
+<span class="sd">            org_directions: dict of org_direction</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># per ms inspection: beam size and calibration strategy</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;inspect_beam_size&#39;</span><span class="p">)</span>
+        <span class="n">set_beam_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;inspect_calibration_strategy&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inspect_calibration_strategy</span><span class="p">()</span>
+
+        <span class="c1"># per ms inspection: reduction group</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;inspect_reduction_group&#39;</span><span class="p">)</span>
+        <span class="n">reduction_group</span> <span class="o">=</span> <span class="n">inspect_reduction_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
+
+        <span class="c1"># generate MS-based DataTable</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;register meta data to DataTable&#39;</span><span class="p">)</span>
+        <span class="n">table_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_name</span>
+        <span class="n">worker</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">MetaDataReader</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">table_name</span><span class="o">=</span><span class="n">table_name</span><span class="p">)</span>
+        <span class="n">invalid_pointing_data</span><span class="p">,</span> <span class="n">msglist</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">generate_flagdict_for_invalid_pointing_data</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;table_name=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">table_name</span><span class="p">)</span>
+
+        <span class="c1"># worker.set_name(ms.name)</span>
+        <span class="n">org_directions</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="n">datatable</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">get_datatable</span><span class="p">()</span>
+        <span class="n">datatable</span><span class="o">.</span><span class="n">exportdata</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">appended_row</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">appended_row</span>
+        <span class="n">nrow</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">nrow</span>
+        <span class="n">startrow</span> <span class="o">=</span> <span class="n">nrow</span> <span class="o">-</span> <span class="n">appended_row</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> rows are appended (total </span><span class="si">%s</span><span class="s1">, startrow </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">appended_row</span><span class="p">,</span> <span class="n">nrow</span><span class="p">,</span> <span class="n">startrow</span><span class="p">))</span>
+
+        <span class="c1"># MS-wide inspection: data grouping</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;_group_data: ms = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+        <span class="n">position_group_id</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">position_group_id</span>
+        <span class="n">time_group_id_small</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">time_group_id_small</span>
+        <span class="n">time_group_id_large</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">time_group_id_large</span>
+        <span class="n">grouping_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">(</span><span class="n">datatable</span><span class="p">,</span> <span class="n">position_group_id</span><span class="p">,</span>
+                                           <span class="n">time_group_id_small</span><span class="p">,</span> <span class="n">time_group_id_large</span><span class="p">,</span>
+                                           <span class="n">startrow</span><span class="o">=</span><span class="n">startrow</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="n">appended_row</span><span class="p">)</span>
+
+        <span class="c1"># merge grouping result with MS-based DataTable</span>
+        <span class="n">position_group</span> <span class="o">=</span> <span class="n">grouping_result</span><span class="p">[</span><span class="s1">&#39;POSGRP&#39;</span><span class="p">]</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;len(position_group) = </span><span class="si">%s</span><span class="s1"> appended_row = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">position_group</span><span class="p">),</span> <span class="n">appended_row</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;position_group = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">position_group</span><span class="p">)</span>
+        <span class="n">datatable</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;POSGRP&#39;</span><span class="p">,</span> <span class="n">position_group</span><span class="p">[</span><span class="n">startrow</span><span class="p">:],</span> <span class="n">startrow</span><span class="o">=</span><span class="n">startrow</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="n">appended_row</span><span class="p">)</span>
+
+        <span class="n">time_gap</span> <span class="o">=</span> <span class="n">grouping_result</span><span class="p">[</span><span class="s1">&#39;TIMEGAP&#39;</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">_g</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="s1">&#39;POSGRP_REP&#39;</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="k">yield</span> <span class="s1">&#39;POSGRP_LIST&#39;</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="k">yield</span> <span class="s1">&#39;TIMEGAP_S&#39;</span><span class="p">,</span> <span class="n">time_gap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">yield</span> <span class="s1">&#39;TIMEGAP_L&#39;</span><span class="p">,</span> <span class="n">time_gap</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">_g</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;key, value = </span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">grouping_result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;updated value = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mskey</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="p">{</span><span class="n">mskey</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
+            <span class="k">if</span> <span class="n">datatable</span><span class="o">.</span><span class="n">haskeyword</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Updating </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;before: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">getkeyword</span><span class="p">(</span><span class="n">key</span><span class="p">)))</span>
+                <span class="n">current_value</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getkeyword</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">current_value</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">datatable</span><span class="o">.</span><span class="n">putkeyword</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">current_value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Adding </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+                <span class="n">datatable</span><span class="o">.</span><span class="n">putkeyword</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;after: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">getkeyword</span><span class="p">(</span><span class="n">key</span><span class="p">)))</span>
+        <span class="c1"># datatable.putkeyword(&#39;POSGRP_LIST&#39;, grouping_result[&#39;POSGRP_LIST&#39;])</span>
+        <span class="n">time_group</span> <span class="o">=</span> <span class="n">grouping_result</span><span class="p">[</span><span class="s1">&#39;TIMEGRP&#39;</span><span class="p">]</span>
+        <span class="n">time_group_list</span> <span class="o">=</span> <span class="n">grouping_result</span><span class="p">[</span><span class="s1">&#39;TIMEGRP_LIST&#39;</span><span class="p">]</span>
+        <span class="c1"># datatable.putkeyword(&#39;TIMEGAP_S&#39;, time_gap[0])</span>
+        <span class="c1"># datatable.putkeyword(&#39;TIMEGAP_L&#39;, time_gap[1])</span>
+        <span class="k">for</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">member_list</span> <span class="ow">in</span> <span class="n">reduction_group</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">member_list</span><span class="p">:</span>
+                <span class="n">ms</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">ms</span>
+                <span class="n">ant</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">antenna_id</span>
+                <span class="n">spw</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">spw_id</span>
+                <span class="n">field_id</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">field_id</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Adding time table for Reduction Group </span><span class="si">%s</span><span class="s1"> (ms </span><span class="si">%s</span><span class="s1"> antenna </span><span class="si">%s</span><span class="s1"> spw </span><span class="si">%s</span><span class="s1"> field_id </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span>
+                         <span class="p">(</span><span class="n">group_id</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">field_id</span><span class="p">))</span>
+                <span class="n">datatable</span><span class="o">.</span><span class="n">set_timetable</span><span class="p">(</span><span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">time_group_list</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="n">spw</span><span class="p">][</span><span class="n">field_id</span><span class="p">],</span>
+                                        <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time_group</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time_group</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                                        <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">)</span>
+        <span class="n">datatable</span><span class="o">.</span><span class="n">exportdata</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-646 &amp; PIPE-647</span>
+        <span class="c1"># generate flag commands (only for ALMA data)</span>
+        <span class="n">is_alma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;ALMA&#39;</span>
+        <span class="c1"># TODO: heuristics to detect raster scan</span>
+        <span class="c1"># apply pointing flag only for OTF raster</span>
+        <span class="n">is_raster</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">timedomain_rsh_result</span> <span class="o">=</span> <span class="n">RasterScanHeuristicsResult</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_alma</span> <span class="ow">and</span> <span class="n">is_raster</span><span class="p">:</span>
+            <span class="n">worker</span><span class="o">.</span><span class="n">generate_flagcmd</span><span class="p">(</span><span class="n">timedomain_rsh_result</span><span class="p">)</span>
+
+        <span class="n">directional_rsh_result</span> <span class="o">=</span> <span class="n">grouping_result</span><span class="p">[</span><span class="s1">&#39;RASTERHEURISTICSRESULT&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">reduction_group</span><span class="p">,</span> <span class="n">org_directions</span><span class="p">,</span> <span class="n">msglist</span><span class="p">,</span> <span class="n">directional_rsh_result</span><span class="p">,</span> <span class="n">timedomain_rsh_result</span></div>
+
+
+<span class="c1">#     def _inspect_reduction_group(self):</span>
+<span class="c1">#         reduction_group = {}</span>
+<span class="c1">#         group_spw_names = {}</span>
+<span class="c1">#         ms = self.ms</span>
+<span class="c1">#         science_windows = ms.get_spectral_windows(science_windows_only=True)</span>
+<span class="c1">#         assert hasattr(ms, &#39;calibration_strategy&#39;)</span>
+<span class="c1">#         field_strategy = ms.calibration_strategy[&#39;field_strategy&#39;]</span>
+<span class="c1">#         for field_id in field_strategy:</span>
+<span class="c1">#             fields = ms.get_fields(field_id)</span>
+<span class="c1">#             assert len(fields) == 1</span>
+<span class="c1">#             field = fields[0]</span>
+<span class="c1">#             field_name = field.name</span>
+<span class="c1">#             for spw in science_windows:</span>
+<span class="c1">#                 spw_name = spw.name</span>
+<span class="c1">#                 nchan = spw.num_channels</span>
+<span class="c1">#                 min_frequency = float(spw._min_frequency.value)</span>
+<span class="c1">#                 max_frequency = float(spw._max_frequency.value)</span>
+<span class="c1">#                 if len(spw_name) &gt; 0:</span>
+<span class="c1">#                     # grouping by name</span>
+<span class="c1">#                     match = self.__find_match_by_name(spw_name, field_name, group_spw_names)</span>
+<span class="c1">#                 else:</span>
+<span class="c1">#                     # grouping by frequency range</span>
+<span class="c1">#                     match = self.__find_match_by_coverage(nchan, min_frequency, max_frequency,</span>
+<span class="c1">#                                                           reduction_group, fraction=0.99, field_name=field_name)</span>
+<span class="c1">#                 if match == False:</span>
+<span class="c1">#                     # add new group</span>
+<span class="c1">#                     key = len(reduction_group)</span>
+<span class="c1">#                     group_spw_names[key] = (spw_name, field_name)</span>
+<span class="c1">#                     newgroup = singledish.MSReductionGroupDesc(spw_name=spw_name,</span>
+<span class="c1">#                                                                min_frequency=min_frequency,</span>
+<span class="c1">#                                                                max_frequency=max_frequency,</span>
+<span class="c1">#                                                                nchan=nchan,</span>
+<span class="c1">#                                                                field=field)</span>
+<span class="c1">#                     reduction_group[key] = newgroup</span>
+<span class="c1">#                 else:</span>
+<span class="c1">#                     key = match</span>
+<span class="c1">#                 ### Check existance of antenna, spw, field combination in MS</span>
+<span class="c1">#                 ddid = ms.get_data_description(spw=spw)</span>
+<span class="c1">#                 with casa_tools.TableReader(ms.name) as tb:</span>
+<span class="c1">#                     subtb = tb.query(&#39;DATA_DESC_ID==%d &amp;&amp; FIELD_ID==%d&#39; % (ddid.id, field.id),</span>
+<span class="c1">#                                      columns=&#39;ANTENNA1&#39;)</span>
+<span class="c1">#                     valid_antid = set(subtb.getcol(&#39;ANTENNA1&#39;))</span>
+<span class="c1">#                     subtb.close()</span>
+<span class="c1"># #                 myms = casa_tools.ms</span>
+<span class="c1"># #                 valid_antid = myms.msseltoindex(vis=ms.name, spw=spw.id,</span>
+<span class="c1"># #                                                 field=field_id, baseline=&#39;*&amp;&amp;&amp;&#39;)[&#39;antenna1&#39;]</span>
+<span class="c1"># #                 for antenna in ms.antennas:</span>
+<span class="c1"># #                         reduction_group[key].add_member(ms, antenna.id, spw.id, field_id)</span>
+<span class="c1">#                 for ant_id in valid_antid:</span>
+<span class="c1">#                     reduction_group[key].add_member(ms, ant_id, spw.id, field_id)</span>
+<span class="c1">#</span>
+<span class="c1">#         return reduction_group</span>
+
+    <span class="k">def</span> <span class="nf">__select_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatable</span><span class="p">:</span> <span class="n">DataTableImpl</span><span class="p">,</span> <span class="n">startrow</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="p">:</span> <span class="nb">int</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+                                                                                              <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+                                                                                              <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inspect DataTable and return row IDs grouped by antenna, spw, and field.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            datatable: DataTable to inspect</span>
+<span class="sd">            startrow: the row ID in DataTable to start inspection</span>
+<span class="sd">            nrow: number of rows to inspect</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict of antenna id/spectral window/field id</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ms_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getkeyword</span><span class="p">(</span><span class="s1">&#39;FILENAME&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms_name</span><span class="p">)</span> <span class="o">==</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="n">by_antenna</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">by_spw</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">by_field</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ant</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA&#39;</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">startrow</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="n">nrow</span><span class="p">)</span>
+        <span class="n">spw</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;IF&#39;</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">startrow</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="n">nrow</span><span class="p">)</span>
+        <span class="n">field_id</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FIELD_ID&#39;</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">startrow</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="n">nrow</span><span class="p">)</span>
+        <span class="n">srctype</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SRCTYPE&#39;</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">startrow</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="n">nrow</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;ant=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">ant</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;spw=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spw</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nrow</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">nrow</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">nrow</span> <span class="o">-</span> <span class="n">startrow</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;nrow = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">nrow</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrow</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">srctype</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">thisant</span> <span class="o">=</span> <span class="n">ant</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">thisspw</span> <span class="o">=</span> <span class="n">spw</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">thisfield</span> <span class="o">=</span> <span class="n">field_id</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="n">spw_domain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span><span class="p">[</span><span class="n">thisspw</span><span class="p">]</span>
+            <span class="c1">#LOG.debug(&#39;spw.name=\&#39;%s\&#39;&#39;%(spw_domain.name))</span>
+            <span class="c1">#LOG.debug(&#39;spw.intents=%s&#39;%(spw_domain.intents))</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^WVR#&#39;</span><span class="p">,</span> <span class="n">spw_domain</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span>
+                    <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#CH_AVG$&#39;</span><span class="p">,</span> <span class="n">spw_domain</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span>
+                    <span class="s1">&#39;TARGET&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spw_domain</span><span class="o">.</span><span class="n">intents</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">thisant</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">by_antenna</span><span class="p">:</span>
+                <span class="n">by_antenna</span><span class="p">[</span><span class="n">thisant</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">by_antenna</span><span class="p">[</span><span class="n">thisant</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">startrow</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">thisspw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">by_spw</span><span class="p">:</span>
+                <span class="n">by_spw</span><span class="p">[</span><span class="n">thisspw</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">by_spw</span><span class="p">[</span><span class="n">thisspw</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">startrow</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">thisfield</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">by_field</span><span class="p">:</span>
+                <span class="n">by_field</span><span class="p">[</span><span class="n">thisfield</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">by_field</span><span class="p">[</span><span class="n">thisfield</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">startrow</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">by_antenna</span><span class="p">,</span> <span class="n">by_spw</span><span class="p">,</span> <span class="n">by_field</span>
+
+    <span class="k">def</span> <span class="nf">_group_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatable</span><span class="p">:</span> <span class="n">DataTableImpl</span><span class="p">,</span> <span class="n">position_group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">time_group_id_small</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">time_group_id_large</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                    <span class="n">startrow</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="p">:</span> <span class="nb">int</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inspect DataTable and generate time and position groups.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            datatable: DataTable to inspect</span>
+<span class="sd">            position_group_id: position group id</span>
+<span class="sd">            time_group_id_small: time group range id, min</span>
+<span class="sd">            time_group_id_large: time group range id, max</span>
+<span class="sd">            startrow: the row ID in DataTable to start inspection</span>
+<span class="sd">            nrow: number of rows to inspect</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict of grouping</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ms_ant_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">id_ant_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ant_offset</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">nant</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nant</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">ant_offset</span>
+            <span class="n">ms_ant_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ms</span>
+            <span class="n">id_ant_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">ant_offset</span> <span class="o">+=</span> <span class="n">nant</span>
+
+        <span class="k">if</span> <span class="n">nrow</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">nrow</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">nrow</span> <span class="o">-</span> <span class="n">startrow</span>
+        <span class="n">by_antenna</span><span class="p">,</span> <span class="n">by_spw</span><span class="p">,</span> <span class="n">by_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__select_data</span><span class="p">(</span><span class="n">datatable</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">startrow</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="n">nrow</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;by_antenna=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">by_antenna</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;by_spw=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">by_spw</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;len(by_antenna)=</span><span class="si">%s</span><span class="s1"> len(by_spw)=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">by_antenna</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">by_spw</span><span class="p">)))</span>
+
+        <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="n">pos_heuristic2</span> <span class="o">=</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">GroupByPosition2</span><span class="p">()</span>
+        <span class="n">obs_heuristic2</span> <span class="o">=</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">ObservingPattern2</span><span class="p">()</span>
+        <span class="n">time_heuristic2</span> <span class="o">=</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">GroupByTime2</span><span class="p">()</span>
+        <span class="n">merge_heuristic2</span> <span class="o">=</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">MergeGapTables2</span><span class="p">()</span>
+        <span class="n">raster_heuristic</span> <span class="o">=</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">RasterScanHeuristic</span><span class="p">()</span>
+        <span class="n">ra</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;RA&#39;</span><span class="p">))</span>
+        <span class="n">dec</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;DEC&#39;</span><span class="p">))</span>
+        <span class="n">offset_ra</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;OFS_RA&#39;</span><span class="p">))</span>
+        <span class="n">offset_dec</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;OFS_DEC&#39;</span><span class="p">))</span>
+<span class="c1">#         row = numpy.asarray(datatable.getcol(&#39;ROW&#39;))</span>
+        <span class="n">elapsed</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ELAPSED&#39;</span><span class="p">))</span>
+        <span class="n">beam</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;BEAM&#39;</span><span class="p">))</span>
+        <span class="n">posgrp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">nrow</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">timegrp</span> <span class="o">=</span> <span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">nrow</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                   <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">nrow</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">posgrp_rep</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">posgrp_list</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">timegrp_list</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">timegap</span> <span class="o">=</span> <span class="p">[{},</span> <span class="p">{}]</span>
+        <span class="n">last_ra</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">last_dec</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">last_time</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">pos_dict</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">pos_gap</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">time_table</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">time_gap</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">merge_table</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">merge_gap</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">observing_pattern</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">posgrp_id</span> <span class="o">=</span> <span class="n">position_group_id</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;POSGRP: starting ID is </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">posgrp_id</span><span class="p">)</span>
+        <span class="n">timegrp_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">time_group_id_small</span><span class="p">,</span> <span class="n">time_group_id_large</span><span class="p">]</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;TIMEGRP: starting ID is </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">timegrp_id</span><span class="p">)</span>
+
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">rasterscan_heuristics_result</span> <span class="o">=</span> <span class="n">RasterScanHeuristicsResult</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ant</span><span class="p">,</span> <span class="n">vant</span> <span class="ow">in</span> <span class="n">by_antenna</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Start ant </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">ant</span><span class="p">)</span>
+            <span class="n">pattern_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="c1"># ms = ms_ant_map[ant]</span>
+            <span class="n">observatory</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">_beam_size</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">beam_sizes</span><span class="p">[</span><span class="n">id_ant_map</span><span class="p">[</span><span class="n">ant</span><span class="p">]]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">timegap</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">ant</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">posgrp_list</span><span class="p">[</span><span class="n">ant</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">timegrp_list</span><span class="p">[</span><span class="n">ant</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">vspw</span> <span class="ow">in</span> <span class="n">by_spw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Start spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spw</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">spw_domain</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spw_id</span><span class="o">=</span><span class="n">spw</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">pattern_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">posgrp_list</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">timegrp_list</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">timegap</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">ant</span><span class="p">][</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="c1"># beam radius</span>
+                <span class="n">radius</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">_beam_size</span><span class="p">[</span><span class="n">spw</span><span class="p">],</span> <span class="mf">0.5</span><span class="p">)</span>
+                <span class="n">r_combine</span> <span class="o">=</span> <span class="n">radius</span>
+                <span class="n">r_allowance</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">vfield</span> <span class="ow">in</span> <span class="n">by_field</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">pattern_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="n">field_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="n">timegap</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">ant</span><span class="p">][</span><span class="n">spw</span><span class="p">][</span><span class="n">field_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">posgrp_list</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="n">spw</span><span class="p">][</span><span class="n">field_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">timegrp_list</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="n">spw</span><span class="p">][</span><span class="n">field_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+                    <span class="c1"># for (pol,vpol) in self.by_pol.items():</span>
+                    <span class="n">id_list</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">vant</span> <span class="o">&amp;</span> <span class="n">vspw</span> <span class="o">&amp;</span> <span class="n">vfield</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">id_list</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;id_list=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">id_list</span><span class="p">)</span>
+<span class="c1">#                     row_sel = numpy.take(row, id_list)</span>
+                    <span class="n">ra_sel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">id_list</span><span class="p">)</span>
+                    <span class="n">dec_sel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">dec</span><span class="p">,</span> <span class="n">id_list</span><span class="p">)</span>
+                    <span class="n">time_sel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">elapsed</span><span class="p">,</span> <span class="n">id_list</span><span class="p">)</span>
+                    <span class="n">beam_sel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="n">id_list</span><span class="p">)</span>
+
+                    <span class="c1"># new GroupByPosition with translation</span>
+                    <span class="n">update_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">last_ra</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span>
+                                  <span class="nb">len</span><span class="p">(</span><span class="n">ra_sel</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">last_ra</span><span class="p">)</span> <span class="ow">or</span>
+                                  <span class="nb">len</span><span class="p">(</span><span class="n">dec_sel</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">last_dec</span><span class="p">)</span> <span class="ow">or</span>
+                                  <span class="ow">not</span> <span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">ra_sel</span> <span class="o">==</span> <span class="n">last_ra</span><span class="p">)</span> <span class="ow">and</span>
+                                       <span class="nb">all</span><span class="p">(</span><span class="n">dec_sel</span> <span class="o">==</span> <span class="n">last_dec</span><span class="p">)))</span>
+                    <span class="k">if</span> <span class="n">update_pos</span><span class="p">:</span>
+                        <span class="p">(</span><span class="n">pos_dict</span><span class="p">,</span> <span class="n">pos_gap</span><span class="p">)</span> <span class="o">=</span> <span class="n">pos_heuristic2</span><span class="p">(</span><span class="n">ra_sel</span><span class="p">,</span> <span class="n">dec_sel</span><span class="p">,</span>
+                                                             <span class="n">r_combine</span><span class="p">,</span> <span class="n">r_allowance</span><span class="p">)</span>
+                        <span class="n">last_ra</span> <span class="o">=</span> <span class="n">ra_sel</span>
+                        <span class="n">last_dec</span> <span class="o">=</span> <span class="n">dec_sel</span>
+
+                        <span class="c1"># ObsPatternAnalysis</span>
+                        <span class="c1"># 2014/02/04 TN</span>
+                        <span class="c1"># Temporary workaround for TP acceptance data issue</span>
+                        <span class="c1"># Observing pattern is always &#39;RASTER&#39; for ALMA</span>
+                        <span class="k">if</span> <span class="n">observatory</span> <span class="o">==</span> <span class="s1">&#39;ALMA&#39;</span><span class="p">:</span>
+                            <span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;RASTER&#39;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">pattern</span> <span class="o">=</span> <span class="n">obs_heuristic2</span><span class="p">(</span><span class="n">pos_dict</span><span class="p">)</span>
+
+                    <span class="c1"># prepare for Self.Datatable</span>
+                    <span class="c1"># posgrp_list[ant][spw][pol] = []</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;pos_dict = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">pos_dict</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;last_ra = </span><span class="si">%s</span><span class="s1"> last_dec = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">last_ra</span><span class="p">,</span> <span class="n">last_dec</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pos_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;POSGRP_REP: add </span><span class="si">%s</span><span class="s1"> as a representative of group </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">id_list</span><span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">posgrp_id</span><span class="p">))</span>
+                        <span class="n">posgrp_rep</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">posgrp_id</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">id_list</span><span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                            <span class="n">_id</span> <span class="o">=</span> <span class="n">id_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                            <span class="n">posgrp</span><span class="p">[</span><span class="n">_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">posgrp_id</span>
+                        <span class="n">posgrp_list</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="n">spw</span><span class="p">][</span><span class="n">field_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">posgrp_id</span><span class="p">)</span>
+                        <span class="n">posgrp_id</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="c1">#</span>
+
+                    <span class="n">raster_heuristic_ok</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">if</span> <span class="n">pattern</span> <span class="o">==</span> <span class="s1">&#39;RASTER&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_rasterscan</span> <span class="o">==</span> <span class="s1">&#39;direction&#39;</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Performing RasterScanHeuristics for raster scan pattern&#39;</span><span class="p">)</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">sra_sel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">offset_ra</span><span class="p">,</span> <span class="n">id_list</span><span class="p">)</span>
+                            <span class="n">sdec_sel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">offset_dec</span><span class="p">,</span> <span class="n">id_list</span><span class="p">)</span>
+                            <span class="n">merge_table</span><span class="p">,</span> <span class="n">merge_gap</span> <span class="o">=</span> <span class="n">raster_heuristic</span><span class="p">(</span><span class="n">sra_sel</span><span class="p">,</span> <span class="n">sdec_sel</span><span class="p">)</span>
+                            <span class="n">raster_heuristic_ok</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">except</span> <span class="n">RasterScanHeuristicsFailure</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> : EB:</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">execblock_id</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">[</span><span class="n">ant</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span>
+                                      <span class="s1">&#39;This often happens when pointing pattern deviates from regular raster. You may want to check the pointings in observation.&#39;</span><span class="p">)</span>
+                            <span class="n">rasterscan_heuristics_result</span><span class="o">.</span><span class="n">set_result_fail</span><span class="p">(</span><span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">field_id</span><span class="p">)</span>
+                            <span class="n">raster_heuristic_ok</span> <span class="o">=</span> <span class="kc">False</span>
+
+                    <span class="k">if</span> <span class="n">pattern</span> <span class="o">!=</span> <span class="s1">&#39;RASTER&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_rasterscan</span> <span class="o">==</span> <span class="s1">&#39;time&#39;</span> <span class="ow">or</span> <span class="n">raster_heuristic_ok</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                        <span class="c1"># new GroupByTime with translation</span>
+                        <span class="n">time_diff</span> <span class="o">=</span> <span class="n">time_sel</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">time_sel</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">update_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">last_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span>
+                                       <span class="nb">len</span><span class="p">(</span><span class="n">time_diff</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">last_time</span><span class="p">)</span> <span class="ow">or</span>
+                                       <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">time_diff</span> <span class="o">==</span> <span class="n">last_time</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="n">update_time</span><span class="p">:</span>
+                            <span class="p">(</span><span class="n">time_table</span><span class="p">,</span> <span class="n">time_gap</span><span class="p">)</span> <span class="o">=</span> <span class="n">time_heuristic2</span><span class="p">(</span><span class="n">time_sel</span><span class="p">,</span> <span class="n">time_diff</span><span class="p">)</span>
+                            <span class="n">last_time</span> <span class="o">=</span> <span class="n">time_diff</span>
+
+                        <span class="c1"># new MergeGapTable with translation</span>
+                        <span class="k">if</span> <span class="n">update_pos</span> <span class="ow">or</span> <span class="n">update_time</span><span class="p">:</span>
+                            <span class="p">(</span><span class="n">merge_table</span><span class="p">,</span> <span class="n">merge_gap</span><span class="p">)</span> <span class="o">=</span> <span class="n">merge_heuristic2</span><span class="p">(</span><span class="n">time_gap</span><span class="p">,</span> <span class="n">time_table</span><span class="p">,</span> <span class="n">pos_gap</span><span class="p">,</span> <span class="n">beam_sel</span><span class="p">)</span>
+
+                    <span class="c1"># prepare for Self.Datatable</span>
+                    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;small&#39;</span><span class="p">,</span> <span class="s1">&#39;large&#39;</span><span class="p">]</span>
+                    <span class="n">grp_list</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+                        <span class="n">tmp</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">table</span> <span class="o">=</span> <span class="n">merge_table</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">table</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+                                <span class="n">timegrp</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="n">id_list</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">timegrp_id</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                            <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timegrp_id</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                            <span class="n">timegrp_id</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">timegrp_id</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="n">grp_list</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+                        <span class="n">gap</span> <span class="o">=</span> <span class="n">merge_gap</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                        <span class="n">gap_id</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">gap</span><span class="p">:</span>
+                            <span class="n">gap_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">id_list</span><span class="p">[</span><span class="n">v</span><span class="p">])</span>
+                        <span class="n">timegap</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="n">ant</span><span class="p">][</span><span class="n">spw</span><span class="p">][</span><span class="n">field_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">gap_id</span>
+                    <span class="n">timegrp_list</span><span class="p">[</span><span class="n">ant</span><span class="p">][</span><span class="n">spw</span><span class="p">][</span><span class="n">field_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">grp_list</span>
+                    <span class="c1">###</span>
+
+                    <span class="n">pattern_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="n">field_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">pattern</span>
+
+            <span class="c1"># register observing pattern to domain object</span>
+            <span class="c1"># self[ant].pattern = pattern_dict</span>
+            <span class="n">observing_pattern</span><span class="p">[</span><span class="n">ant</span><span class="p">]</span> <span class="o">=</span> <span class="n">pattern_dict</span>
+
+        <span class="n">grouping_result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">grouping_result</span><span class="p">[</span><span class="s1">&#39;POSGRP&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">posgrp</span>
+        <span class="n">grouping_result</span><span class="p">[</span><span class="s1">&#39;POSGRP_REP&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">posgrp_rep</span>
+        <span class="n">grouping_result</span><span class="p">[</span><span class="s1">&#39;POSGRP_LIST&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">posgrp_list</span>
+        <span class="n">grouping_result</span><span class="p">[</span><span class="s1">&#39;TIMEGRP_LIST&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timegrp_list</span>
+        <span class="n">grouping_result</span><span class="p">[</span><span class="s1">&#39;TIMEGRP&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timegrp</span>
+        <span class="n">grouping_result</span><span class="p">[</span><span class="s1">&#39;TIMEGAP&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timegap</span>
+        <span class="n">grouping_result</span><span class="p">[</span><span class="s1">&#39;RASTERHEURISTICSRESULT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rasterscan_heuristics_result</span>
+        <span class="c1"># grouping_result[&#39;OBSERVING_PATTERN&#39;] = observing_pattern</span>
+
+        <span class="n">ms</span><span class="o">.</span><span class="n">observing_pattern</span> <span class="o">=</span> <span class="n">observing_pattern</span>
+
+        <span class="k">return</span> <span class="n">grouping_result</span>
+
+    <span class="k">def</span> <span class="nf">_inspect_calibration_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inspect calibration strategy and set it to MeasurementSet.&quot;&quot;&quot;</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">tsys_transfer</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">calibration_type_heuristic</span> <span class="o">=</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">CalibrationTypeHeuristics</span><span class="p">()</span>
+        <span class="n">spwmap_heuristic</span> <span class="o">=</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">TsysSpwMapHeuristics</span><span class="p">()</span>
+        <span class="n">calibration_type</span> <span class="o">=</span> <span class="n">calibration_type_heuristic</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">science_windows</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">tsys_windows</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span>
+                        <span class="k">if</span> <span class="s1">&#39;ATMOSPHERE&#39;</span> <span class="ow">in</span> <span class="n">spw</span><span class="o">.</span><span class="n">intents</span> <span class="ow">and</span>
+                        <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(CH_AVG|SQLD|WVR)&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;tsys_windows=</span><span class="si">{spws}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spws</span><span class="o">=</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">tsys_windows</span><span class="p">]))</span>
+        <span class="n">TOL</span> <span class="o">=</span> <span class="mf">1.0e-3</span>
+        <span class="k">for</span> <span class="n">spwa</span> <span class="ow">in</span> <span class="n">tsys_windows</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">spwa</span> <span class="ow">in</span> <span class="n">science_windows</span><span class="p">:</span>
+                <span class="c1"># identical spw, skip (not necessary to transfer Tsys)</span>
+                <span class="k">continue</span>
+            <span class="n">fmina</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spwa</span><span class="o">.</span><span class="n">_min_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">fmaxa</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spwa</span><span class="o">.</span><span class="n">_max_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">spwt</span> <span class="ow">in</span> <span class="n">science_windows</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">spwa</span> <span class="o">==</span> <span class="n">spwt</span><span class="p">:</span>
+                    <span class="c1"># identical spw, skip (not necessary to transfer Tsys)</span>
+                    <span class="k">continue</span>
+                <span class="k">elif</span> <span class="n">spwa</span><span class="o">.</span><span class="n">baseband</span> <span class="o">!=</span> <span class="n">spwt</span><span class="o">.</span><span class="n">baseband</span><span class="p">:</span>
+                    <span class="c1"># different baseband, skip</span>
+                    <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">fmint</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spwt</span><span class="o">.</span><span class="n">_min_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                    <span class="n">fmaxt</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spwt</span><span class="o">.</span><span class="n">_max_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                    <span class="n">dfmin</span> <span class="o">=</span> <span class="p">(</span><span class="n">fmint</span> <span class="o">-</span> <span class="n">fmina</span><span class="p">)</span> <span class="o">/</span> <span class="n">fmina</span>
+                    <span class="n">dfmax</span> <span class="o">=</span> <span class="p">(</span><span class="n">fmaxt</span> <span class="o">-</span> <span class="n">fmaxa</span><span class="p">)</span> <span class="o">/</span> <span class="n">fmaxa</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;(fmina,fmaxa) = (</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fmina</span><span class="p">,</span> <span class="n">fmaxa</span><span class="p">))</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;(fmint,fmaxt) = (</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fmint</span><span class="p">,</span> <span class="n">fmaxt</span><span class="p">))</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;dfmin = </span><span class="si">%s</span><span class="s1">, dfmax=</span><span class="si">%s</span><span class="s1">, TOL = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dfmin</span><span class="p">,</span> <span class="n">dfmax</span><span class="p">,</span> <span class="n">TOL</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">dfmin</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">TOL</span> <span class="ow">and</span> <span class="n">dfmax</span> <span class="o">&lt;=</span> <span class="n">TOL</span><span class="p">:</span>
+                        <span class="n">tsys_transfer</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">spwa</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">spwt</span><span class="o">.</span><span class="n">id</span><span class="p">])</span>
+        <span class="n">do_tsys_transfer</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tsys_transfer</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="n">spwmap</span> <span class="o">=</span> <span class="n">spwmap_heuristic</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">tsys_transfer</span><span class="p">)</span>
+
+        <span class="c1"># field mapping (for multi-source EB)</span>
+        <span class="c1"># {target field: reference field}</span>
+        <span class="n">target_fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+        <span class="n">reference_fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;REFERENCE&#39;</span><span class="p">)</span>
+        <span class="n">field_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">target_fields</span><span class="p">:</span>
+            <span class="n">target_name</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;target name: </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">target_name</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference_fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">field_map</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">reference</span> <span class="ow">in</span> <span class="n">reference_fields</span><span class="p">:</span>
+                <span class="n">reference_name</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">name</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;reference name: </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">reference_name</span><span class="p">)</span>
+<span class="c1">#                 tpattern = &#39;^%s_[0-9]$&#39;%(target_name)</span>
+<span class="c1">#                 rpattern = &#39;^%s_[0-9]$&#39;%(reference_name)</span>
+                <span class="k">if</span> <span class="n">target_name</span> <span class="o">==</span> <span class="n">reference_name</span><span class="p">:</span>
+                    <span class="n">field_map</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">elif</span> <span class="n">_check_offsource_fieldname_maching</span><span class="p">(</span><span class="n">reference_name</span><span class="p">,</span> <span class="n">target_name</span><span class="p">):</span>
+                    <span class="n">field_map</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">calibration_strategy</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;tsys&#39;</span><span class="p">:</span> <span class="n">do_tsys_transfer</span><span class="p">,</span>
+                                <span class="s1">&#39;tsys_strategy&#39;</span><span class="p">:</span> <span class="n">spwmap</span><span class="p">,</span>
+                                <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="n">calibration_type</span><span class="p">,</span>
+                                <span class="s1">&#39;field_strategy&#39;</span><span class="p">:</span> <span class="n">field_map</span><span class="p">}</span>
+        <span class="n">ms</span><span class="o">.</span><span class="n">calibration_strategy</span> <span class="o">=</span> <span class="n">calibration_strategy</span></div>
+
+
+<span class="c1">#     def _inspect_beam_size(self):</span>
+<span class="c1">#         ms = self.ms</span>
+<span class="c1">#         beam_size_heuristic = heuristics.SingleDishBeamSize()</span>
+<span class="c1">#         beam_sizes = {}</span>
+<span class="c1">#         for antenna in ms.antennas:</span>
+<span class="c1">#             diameter = antenna.diameter</span>
+<span class="c1">#             antenna_id = antenna.id</span>
+<span class="c1">#             beam_size_for_antenna = {}</span>
+<span class="c1">#             for spw in ms.spectral_windows:</span>
+<span class="c1">#                 spw_id = spw.id</span>
+<span class="c1">#                 center_frequency = float(spw.centre_frequency.convert_to(measures.FrequencyUnits.GIGAHERTZ).value)</span>
+<span class="c1">#                 beam_size = beam_size_heuristic(diameter=diameter, frequency=center_frequency)</span>
+<span class="c1">#                 beam_size_quantity = casa_tools.quanta.quantity(beam_size, &#39;arcsec&#39;)</span>
+<span class="c1">#                 beam_size_for_antenna[spw_id] = beam_size_quantity</span>
+<span class="c1">#             beam_sizes[antenna_id] = beam_size_for_antenna</span>
+<span class="c1">#         ms.beam_sizes = beam_sizes</span>
+
+<span class="c1">#     def __find_match_by_name(self, spw_name, field_name, group_names):</span>
+<span class="c1">#         match = False</span>
+<span class="c1">#         for group_key, names in group_names.items():</span>
+<span class="c1">#             group_spw_name = names[0]</span>
+<span class="c1">#             group_field_name = names[1]</span>
+<span class="c1">#             if group_spw_name == &#39;&#39;:</span>
+<span class="c1">#                 raise RuntimeError(&quot;Got empty group spectral window name&quot;)</span>
+<span class="c1">#             elif spw_name == group_spw_name and field_name == group_field_name:</span>
+<span class="c1">#                 match = group_key</span>
+<span class="c1">#                 break</span>
+<span class="c1">#         return match</span>
+<span class="c1">#</span>
+<span class="c1">#     def __find_match_by_coverage(self, nchan, min_frequency, max_frequency, reduction_group, fraction=0.99,</span>
+<span class="c1">#                                  field_name=None):</span>
+<span class="c1">#         if fraction &lt;= 0 or fraction &gt; 1.0:</span>
+<span class="c1">#             raise ValueError(&quot;overlap fraction should be between 0.0 and 1.0&quot;)</span>
+<span class="c1">#         LOG.warning(&quot;Creating reduction group by frequency overlap. This may not be proper if observation dates extend&quot;</span>
+<span class="c1">#                  &quot; over long period.&quot;)</span>
+<span class="c1">#         match = False</span>
+<span class="c1">#         for group_key, group_desc in reduction_group.items():</span>
+<span class="c1">#             group_field_name = group_desc.field</span>
+<span class="c1">#             if field_name is not None and group_field_name != field_name:</span>
+<span class="c1">#                 continue</span>
+<span class="c1">#             group_range = group_desc.frequency_range</span>
+<span class="c1">#             group_nchan = group_desc.nchan</span>
+<span class="c1">#             overlap = max(0.0, min(group_range[1], max_frequency) - max(group_range[0], min_frequency))</span>
+<span class="c1">#             width = max(group_range[1], max_frequency) - min(group_range[0], min_frequency)</span>
+<span class="c1">#             coverage = overlap/width</span>
+<span class="c1">#             if nchan == group_nchan and coverage &gt;= fraction:</span>
+<span class="c1">#                 match = group_key</span>
+<span class="c1">#                 break</span>
+<span class="c1">#         return match</span>
+
+
+<span class="k">def</span> <span class="nf">_check_offsource_fieldname_maching</span><span class="p">(</span><span class="n">name1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name2</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return True if two fieldnames follow the naming rule of OFF SOURCE.</span>
+
+<span class="sd">    if name1 is &#39;M100&#39;, then name2 should be &#39;M100_OFF_[ID]&#39; (or &#39;M100_[ID]&#39; in old pattern)</span>
+<span class="sd">    Note the method returns False for the exact match, i.e., name1 == name2.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name1: matching string 1</span>
+<span class="sd">        name2: matching string 2</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        boolean matched them</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">trim_name</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">s</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">s</span>
+    <span class="n">name1</span> <span class="o">=</span> <span class="n">trim_name</span><span class="p">(</span><span class="n">name1</span><span class="p">)</span>
+    <span class="n">name2</span> <span class="o">=</span> <span class="n">trim_name</span><span class="p">(</span><span class="n">name2</span><span class="p">)</span>
+    <span class="n">pos1</span> <span class="o">=</span> <span class="n">name1</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">name2</span><span class="p">)</span>
+    <span class="n">pos2</span> <span class="o">=</span> <span class="n">name2</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">name1</span><span class="p">)</span>
+    <span class="c1"># extract suffix part of field name</span>
+    <span class="k">if</span> <span class="n">pos1</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">name1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">name2</span><span class="p">):</span>
+        <span class="c1"># name1 looks like name2 + suffix, try pattern matching for suffix</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="n">name1</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">name2</span><span class="p">):]</span>
+    <span class="k">elif</span> <span class="n">pos2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">name1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">name2</span><span class="p">):</span>
+        <span class="c1"># name2 looks like name1 + suffix, try pattern matching for suffix</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="n">name2</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">name1</span><span class="p">):]</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># field names do not match</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="c1"># Check if the field name matches to pattern</span>
+    <span class="n">off_pattern</span> <span class="o">=</span> <span class="s1">&#39;^_OFF_[0-9]+$&#39;</span>
+    <span class="n">old_pattern</span> <span class="o">=</span> <span class="s1">&#39;^_[0-9]+$&#39;</span>  <span class="c1"># old and unofficial field name pattern</span>
+    <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="p">(</span><span class="n">off_pattern</span><span class="p">,</span> <span class="n">old_pattern</span><span class="p">):</span>
+        <span class="c1"># is_match = lambda s: re.match(pattern, s) is not None</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pattern</span> <span class="o">==</span> <span class="n">old_pattern</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;OFF source field identified using old field name heuristics. You may want to review field&quot;</span>
+                            <span class="s2">&quot; mapping carefully.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

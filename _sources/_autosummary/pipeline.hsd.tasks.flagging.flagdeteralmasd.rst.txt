@@ -1,0 +1,22 @@
+pipeline.hsd.tasks.flagging.flagdeteralmasd
+===========================================
+
+.. automodule:: pipeline.hsd.tasks.flagging.flagdeteralmasd
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      update_flag_pointing
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataTable
+      FlagDeterALMASingleDish
+      FlagDeterALMASingleDishInputs
+      FlagDeterALMASingleDishResults
+      SerialFlagDeterALMASingleDish
+   

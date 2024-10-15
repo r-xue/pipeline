@@ -1,0 +1,12 @@
+pipeline.h.tasks.flagging.renderer
+==================================
+
+.. automodule:: pipeline.h.tasks.flagging.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsFlagDeterBaseRenderer
+   

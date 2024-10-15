@@ -1,0 +1,557 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.tasks.bandpass.renderer &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.tasks.bandpass.renderer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.tasks.bandpass.renderer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on 11 Sep 2014</span>
+
+<span class="sd">@author: sjw</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.filenamer</span> <span class="k">as</span> <span class="nn">filenamer</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.basetemplates</span> <span class="k">as</span> <span class="nn">basetemplates</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.displays</span> <span class="kn">import</span> <span class="n">bandpass</span> <span class="k">as</span> <span class="n">bandpass</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">BandpassApplication</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;BandpassApplication&#39;</span><span class="p">,</span> 
+                                             <span class="s1">&#39;ms bandtype solint intent spw gaintable&#39;</span><span class="p">)</span>
+
+<span class="n">PhaseupApplication</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;PhaseupApplication&#39;</span><span class="p">,</span> 
+                                            <span class="s1">&#39;ms calmode solint minblperant minsnr flagged phaseupbw&#39;</span><span class="p">)</span> 
+
+
+<div class="viewcode-block" id="T2_4MDetailsBandpassRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">T2_4MDetailsBandpassRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    T2_4MDetailsBandpassRenderer generates the detailed T2_4M-level plots and</span>
+<span class="sd">    output specific to the bandpass calibration task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;bandpass.mako&#39;</span><span class="p">,</span> 
+                 <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Bandpass calibration&#39;</span><span class="p">,</span>
+                 <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsBandpassRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span>
+                                                           <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+                                                           <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the Mako context appropriate to the results created by a Bandpass</span>
+<span class="sd">    task.</span>
+<span class="sd">    </span>
+<span class="sd">    This routine triggers the creation of the plots specific to the bandpass</span>
+<span class="sd">    task, creating thumbnail pages as necessary. The returned dictionary  </span>
+<span class="sd">    </span>
+<span class="sd">    :param context: the pipeline Context</span>
+<span class="sd">    :type context: :class:`~pipeline.infrastructure.launcher.Context`</span>
+<span class="sd">    :param results: the bandpass results to describe</span>
+<span class="sd">    :type results: </span>
+<span class="sd">        :class:`~pipeline.infrastructure.tasks.bandpass.common.BandpassResults`</span>
+<span class="sd">    :rtype a dictionary that can be passed to the matching bandpass Mako </span>
+<span class="sd">        template</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="T2_4MDetailsBandpassRenderer.update_mako_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer.update_mako_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">results</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">)</span>
+
+        <span class="c1"># generate the bandpass-specific plots, collecting the Plot objects</span>
+        <span class="c1"># returned by the plot generator </span>
+        <span class="n">bandpass_table_rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">phaseup_applications</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">amp_refant</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">amp_mode</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">amp_details</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">amp_vs_time_subpages</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">phase_refant</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">phase_mode</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">phase_details</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">phase_vs_time_subpages</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">no_cal_results</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">applies_adopted</span><span class="p">]</span>
+        <span class="n">with_cal_results</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">applies_adopted</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">final</span><span class="p">]</span>
+
+        <span class="c1"># we want table entries for all results, but plots only for those with a caltable</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">bandpass_table_rows</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_bandpass_table</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">ms</span><span class="p">))</span>
+            <span class="n">phaseup_applications</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_phaseup_applications</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">ms</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">with_cal_results</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">ms_refant</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">reference_antenna</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># need two summary plots: one for the refant, one for the mode</span>
+            <span class="n">plotter</span> <span class="o">=</span> <span class="n">bandpass</span><span class="o">.</span><span class="n">BandpassAmpVsFreqSummaryChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+            <span class="n">summaries</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+            <span class="n">for_refant</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">summaries</span> 
+                          <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;ant&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ms_refant</span><span class="p">]</span>
+            <span class="n">amp_refant</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">for_refant</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">for_refant</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="c1"># replace mode with first non-refant plot until we have scores</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">todo</span><span class="p">(</span><span class="s1">&#39;Replace bp summary plot with mode when scores are in place&#39;</span><span class="p">)</span>
+            <span class="n">non_refants</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">summaries</span>
+                           <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;ant&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ms_refant</span><span class="p">]</span>
+            <span class="n">amp_mode</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">non_refants</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">non_refants</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="c1"># need two summary plots: one for the refant, one for the mode</span>
+            <span class="n">plotter</span> <span class="o">=</span> <span class="n">bandpass</span><span class="o">.</span><span class="n">BandpassPhaseVsFreqSummaryChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+            <span class="n">summaries</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+            <span class="n">for_refant</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">summaries</span> 
+                          <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;ant&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ms_refant</span><span class="p">]</span>
+            <span class="n">phase_refant</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">for_refant</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">for_refant</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="c1"># use the same typical antenna as for amp vs frequency</span>
+            <span class="n">non_refants</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">summaries</span>
+                           <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;ant&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">amp_mode</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;ant&#39;</span><span class="p">]]</span>
+            <span class="n">phase_mode</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">non_refants</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">non_refants</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="c1"># make phase vs freq plots for all data </span>
+            <span class="n">plotter</span> <span class="o">=</span> <span class="n">bandpass</span><span class="o">.</span><span class="n">BandpassPhaseVsFreqDetailChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+            <span class="n">phase_details</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+            <span class="n">renderer</span> <span class="o">=</span> <span class="n">BandpassPhaseVsFreqPlotRenderer</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> 
+                                                       <span class="n">phase_details</span><span class="p">[</span><span class="n">vis</span><span class="p">])</span>            
+            <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+                <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>    
+                <span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">phase_vs_time_subpages</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">]</span> <span class="o">=</span> <span class="n">outfile</span>
+
+            <span class="n">plotter</span> <span class="o">=</span> <span class="n">bandpass</span><span class="o">.</span><span class="n">BandpassAmpVsFreqDetailChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+            <span class="n">amp_details</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>            
+            <span class="n">renderer</span> <span class="o">=</span> <span class="n">BandpassAmpVsFreqPlotRenderer</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> 
+                                                     <span class="n">amp_details</span><span class="p">[</span><span class="n">vis</span><span class="p">])</span>            
+            <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+                <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>    
+                <span class="c1"># the filename is sanitised - the MS name is not. We need to</span>
+                <span class="c1"># map MS to sanitised filename for link construction.</span>
+                <span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">amp_vs_time_subpages</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">]</span> <span class="o">=</span> <span class="n">outfile</span>
+
+        <span class="c1"># render plots for all EBs in one page</span>
+        <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">subpages</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">phase_details</span><span class="p">,</span> <span class="n">BandpassPhaseVsFreqPlotRenderer</span><span class="p">,</span> <span class="n">phase_vs_time_subpages</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">amp_details</span><span class="p">,</span> <span class="n">BandpassAmpVsFreqPlotRenderer</span><span class="p">,</span> <span class="n">amp_vs_time_subpages</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">d</span><span class="p">:</span>
+                <span class="n">all_plots</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">([</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">()]))</span>
+                <span class="n">renderer</span> <span class="o">=</span> <span class="n">plotter_cls</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">with_cal_results</span><span class="p">,</span> <span class="n">all_plots</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+                    <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+                    <span class="c1"># redirect the subpages to the master page</span>
+                    <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">subpages</span><span class="p">:</span>
+                        <span class="n">subpages</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">path</span>
+
+        <span class="n">bandpass_table_rows</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">bandpass_table_rows</span><span class="p">)</span>
+        <span class="n">adopted_table_rows</span> <span class="o">=</span> <span class="n">make_adopted_table</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+        <span class="c1"># add the PlotGroups to the Mako context. The Mako template will parse</span>
+        <span class="c1"># these objects in order to create links to the thumbnail pages we</span>
+        <span class="c1"># just created</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;bandpass_table_rows&#39;</span><span class="p">:</span> <span class="n">bandpass_table_rows</span><span class="p">,</span>
+                    <span class="s1">&#39;adopted_table&#39;</span><span class="p">:</span> <span class="n">adopted_table_rows</span><span class="p">,</span>
+                    <span class="s1">&#39;phaseup_applications&#39;</span><span class="p">:</span> <span class="n">phaseup_applications</span><span class="p">,</span>
+                    <span class="s1">&#39;amp_mode&#39;</span><span class="p">:</span> <span class="n">amp_mode</span><span class="p">,</span>
+                    <span class="s1">&#39;amp_refant&#39;</span><span class="p">:</span> <span class="n">amp_refant</span><span class="p">,</span>
+                    <span class="s1">&#39;phase_mode&#39;</span><span class="p">:</span> <span class="n">phase_mode</span><span class="p">,</span>
+                    <span class="s1">&#39;phase_refant&#39;</span><span class="p">:</span> <span class="n">phase_refant</span><span class="p">,</span>
+                    <span class="s1">&#39;amp_subpages&#39;</span><span class="p">:</span> <span class="n">amp_vs_time_subpages</span><span class="p">,</span>
+                    <span class="s1">&#39;phase_subpages&#39;</span><span class="p">:</span> <span class="n">phase_vs_time_subpages</span><span class="p">,</span>
+                    <span class="s1">&#39;dirname&#39;</span><span class="p">:</span> <span class="n">stage_dir</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="n">ctx</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsBandpassRenderer.get_phaseup_applications">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer.get_phaseup_applications">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_phaseup_applications</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
+        <span class="c1"># return early if phase-up was not activated</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;phaseup&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">calmode_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="s1">&#39;Phase only&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="s1">&#39;Amplitude only&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;ap&#39;</span><span class="p">:</span> <span class="s1">&#39;Phase and amplitude&#39;</span><span class="p">}</span>
+
+        <span class="c1"># identify phaseup from &#39;preceding&#39; list attached to result</span>
+        <span class="n">phaseup_calapps</span> <span class="o">=</span> <span class="p">[]</span> 
+        <span class="k">for</span> <span class="n">previous_result</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">preceding</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">previous_result</span><span class="p">:</span>
+                <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="n">cf</span> <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span> <span class="k">if</span> <span class="n">cf</span><span class="o">.</span><span class="n">caltype</span> <span class="o">==</span> <span class="s1">&#39;gaincal&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">l</span> <span class="ow">and</span> <span class="n">calapp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">phaseup_calapps</span><span class="p">:</span>
+                    <span class="n">phaseup_calapps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="p">)</span>
+
+        <span class="n">applications</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">phaseup_calapps</span><span class="p">:</span>
+            <span class="n">solint</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_origin_input_arg</span><span class="p">(</span><span class="n">calapp</span><span class="p">,</span> <span class="s1">&#39;solint&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">solint</span> <span class="o">==</span> <span class="s1">&#39;inf&#39;</span><span class="p">:</span>
+                <span class="n">solint</span> <span class="o">=</span> <span class="s1">&#39;Infinite&#39;</span>
+
+            <span class="c1"># Convert solint=int to a real integration time. </span>
+            <span class="c1"># solint is spw dependent; science windows usually have the same</span>
+            <span class="c1"># integration time, though that&#39;s not guaranteed by the MS.</span>
+            <span class="k">if</span> <span class="n">solint</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">:</span>
+                <span class="n">in_secs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">%0.2f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">seconds</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">microseconds</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">)</span> 
+                           <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_intervals</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">calapp</span><span class="p">)]</span>
+                <span class="n">solint</span> <span class="o">=</span> <span class="s1">&#39;Per integration (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">in_secs</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">conjunction</span><span class="o">=</span><span class="s1">&#39;or&#39;</span><span class="p">)</span>
+
+            <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">calmode</span> <span class="o">=</span> <span class="n">origin</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;calmode&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+            <span class="n">calmode</span> <span class="o">=</span> <span class="n">calmode_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">calmode</span><span class="p">,</span> <span class="n">calmode</span><span class="p">)</span>
+            <span class="n">minblperant</span> <span class="o">=</span> <span class="n">origin</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;minblperant&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+            <span class="n">minsnr</span> <span class="o">=</span> <span class="n">origin</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;minsnr&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+            <span class="n">flagged</span> <span class="o">=</span> <span class="s1">&#39;TODO&#39;</span>
+            <span class="n">phaseupbw</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;phaseupbw&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+
+            <span class="n">a</span> <span class="o">=</span> <span class="n">PhaseupApplication</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">calmode</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">minblperant</span><span class="p">,</span>
+                                   <span class="n">minsnr</span><span class="p">,</span> <span class="n">flagged</span><span class="p">,</span> <span class="n">phaseupbw</span><span class="p">)</span>
+            <span class="n">applications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">applications</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsBandpassRenderer.get_bandpass_table">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer.get_bandpass_table">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_bandpass_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
+        <span class="n">applications</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">bandtype_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;Channel&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;BPOLY&#39;</span><span class="p">:</span> <span class="s1">&#39;Polynomial&#39;</span><span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">gaintable</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span>
+            <span class="n">to_intent</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">to_intent</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">to_intent</span> <span class="o">=</span> <span class="s1">&#39;ALL&#39;</span>
+
+            <span class="k">for</span> <span class="n">origin</span> <span class="ow">in</span> <span class="n">calapp</span><span class="o">.</span><span class="n">origins</span><span class="p">:</span>
+                <span class="n">spws</span> <span class="o">=</span> <span class="n">origin</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+                <span class="n">solint</span> <span class="o">=</span> <span class="n">origin</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;solint&#39;</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">solint</span> <span class="o">==</span> <span class="s1">&#39;inf&#39;</span><span class="p">:</span>
+                    <span class="n">solint</span> <span class="o">=</span> <span class="s1">&#39;Infinite&#39;</span>
+
+                <span class="c1"># Convert solint=int to a real integration time. </span>
+                <span class="c1"># solint is spw dependent; science windows usually have the same</span>
+                <span class="c1"># integration time, though that&#39;s not guaranteed by the MS.</span>
+                <span class="k">if</span> <span class="n">solint</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">:</span>
+                    <span class="n">in_secs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">%0.2f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">seconds</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">microseconds</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">)</span> 
+                               <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_intervals</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">calapp</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="n">spws</span><span class="p">))]</span>
+                    <span class="n">solint</span> <span class="o">=</span> <span class="s1">&#39;Per integration (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">in_secs</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">conjunction</span><span class="o">=</span><span class="s1">&#39;or&#39;</span><span class="p">)</span>
+
+                <span class="c1"># TODO get this from the calapp rather than the top-level </span>
+                <span class="c1"># inputs?</span>
+                <span class="n">bandtype</span> <span class="o">=</span> <span class="n">origin</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;bandtype&#39;</span><span class="p">]</span>
+                <span class="n">bandtype</span> <span class="o">=</span> <span class="n">bandtype_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">bandtype</span><span class="p">,</span> <span class="n">bandtype</span><span class="p">)</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="n">BandpassApplication</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">bandtype</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> 
+                                        <span class="n">to_intent</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spws</span><span class="p">),</span> <span class="n">gaintable</span><span class="p">)</span>
+                <span class="n">applications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">applications</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BaseBandpassPlotRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">BaseBandpassPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span>
+                 <span class="n">score_types</span><span class="p">):</span>
+        <span class="c1"># wrap singular lists so the code works the same for scalars and vectors</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">results</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ms</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_pols</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_qa_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ms</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">caltable</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_num_pols</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_num_caltable_polarizations</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_qa_data</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">rawdata</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_score_types</span> <span class="o">=</span> <span class="n">score_types</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaseBandpassPlotRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="n">uri</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BaseBandpassPlotRenderer.update_json_dict">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer.update_json_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_dict</span><span class="p">,</span> <span class="n">plot</span><span class="p">):</span>
+        <span class="n">spw</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ms</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span>
+        <span class="n">dd</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">antennas</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;ant&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;plot antennas != 1&#39;</span>
+        <span class="n">antenna</span> <span class="o">=</span> <span class="n">antennas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">num_pols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_pols</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span>
+        <span class="n">qa_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qa_data</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span>
+
+        <span class="n">scores_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">corr_axis</span> <span class="ow">in</span> <span class="n">dd</span><span class="o">.</span><span class="n">corr_axis</span><span class="p">:</span>
+            <span class="n">pol_id</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">get_polarization_id</span><span class="p">(</span><span class="n">corr_axis</span><span class="p">)</span>
+            <span class="c1"># QA dictionary keys are a function of both antenna and feed.</span>
+            <span class="n">qa_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">antenna</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">*</span> <span class="n">num_pols</span> <span class="o">+</span> <span class="n">pol_id</span>
+            <span class="n">qa_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">qa_id</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">score_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_score_types</span><span class="p">:</span>            
+                <span class="k">if</span> <span class="s1">&#39;QASCORES&#39;</span> <span class="ow">in</span> <span class="n">qa_data</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">score</span> <span class="o">=</span> <span class="n">qa_data</span><span class="p">[</span><span class="s1">&#39;QASCORES&#39;</span><span class="p">][</span><span class="n">score_type</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)][</span><span class="n">qa_str</span><span class="p">]</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not get </span><span class="si">%s</span><span class="s1"> score for </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">) spw </span><span class="si">%s</span><span class="s1"> &#39;</span>
+                                  <span class="s1">&#39;pol </span><span class="si">%s</span><span class="s1"> (id=</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">score_type</span><span class="p">,</span> <span class="n">antenna</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                  <span class="n">antenna</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">corr_axis</span><span class="p">,</span> <span class="n">qa_str</span><span class="p">)</span>
+                        <span class="n">score</span> <span class="o">=</span> <span class="kc">None</span> 
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">score</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+                <span class="n">scores_dict</span><span class="p">[</span><span class="n">score_type</span><span class="p">][</span><span class="n">corr_axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">score</span>
+
+        <span class="n">json_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">scores_dict</span><span class="p">)</span>
+        <span class="n">plot</span><span class="o">.</span><span class="n">scores</span> <span class="o">=</span> <span class="n">scores_dict</span></div>
+</div>
+
+
+    <span class="c1"># def update_mako_context(self, mako_context):</span>
+    <span class="c1">#     super(BaseBandpassPlotRenderer, self).update_mako_context(mako_context)</span>
+    <span class="c1">#     mako_context[&#39;vis&#39;] = self._vis</span>
+
+
+<div class="viewcode-block" id="BandpassAmpVsFreqPlotRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.BandpassAmpVsFreqPlotRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">BandpassAmpVsFreqPlotRenderer</span><span class="p">(</span><span class="n">BaseBandpassPlotRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Calibrated amplitude vs frequency for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vis</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="s1">&#39;amp_vs_freq-</span><span class="si">%s</span><span class="s1">.html&#39;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+        <span class="n">score_types</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">([</span><span class="s1">&#39;AMPLITUDE_SCORE_DD&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;AMPLITUDE_SCORE_FN&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;AMPLITUDE_SCORE_SNR&#39;</span><span class="p">])</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">BandpassAmpVsFreqPlotRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="s1">&#39;bandpass-amp_vs_freq_plots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> 
+                <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">score_types</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="BandpassPhaseVsFreqPlotRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.BandpassPhaseVsFreqPlotRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">BandpassPhaseVsFreqPlotRenderer</span><span class="p">(</span><span class="n">BaseBandpassPlotRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Calibrated phase vs frequency for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vis</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="s1">&#39;phase_vs_freq-</span><span class="si">%s</span><span class="s1">.html&#39;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+        <span class="n">score_types</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">([</span><span class="s1">&#39;PHASE_SCORE_DD&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;PHASE_SCORE_FN&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;PHASE_SCORE_RMS&#39;</span><span class="p">])</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">BandpassPhaseVsFreqPlotRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="s1">&#39;bandpass-phase_vs_freq_plots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> 
+                <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">score_types</span><span class="p">)</span></div>
+
+
+
+<span class="n">AdoptedTR</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;AdoptedTR&#39;</span><span class="p">,</span> <span class="s1">&#39;vis gaintable&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="make_adopted_table">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.make_adopted_table">[docs]</a>
+<span class="k">def</span> <span class="nf">make_adopted_table</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+    <span class="c1"># will hold all the flux stat table rows for the results</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">adopted_result</span> <span class="ow">in</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">applies_adopted</span><span class="p">]:</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adopted_result</span><span class="o">.</span><span class="n">final</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">calapp</span> <span class="o">=</span> <span class="n">adopted_result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">vis_cell</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">gaintable_cell</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span>
+        <span class="n">tr</span> <span class="o">=</span> <span class="n">AdoptedTR</span><span class="p">(</span><span class="n">vis_cell</span><span class="p">,</span> <span class="n">gaintable_cell</span><span class="p">)</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

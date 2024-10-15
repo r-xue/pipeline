@@ -1,0 +1,890 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.imaging.detectcontamination &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.imaging.detectcontamination</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.imaging.detectcontamination</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module provides functionality to detect contamination in spectral data.</span>
+
+<span class="sd">Original code provided by Yoshito Shimajiri.</span>
+<span class="sd">For more details, refer to PIPE-251.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">figure</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.displays.pointing</span> <span class="k">as</span> <span class="nn">pointing</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">display</span> <span class="k">as</span> <span class="n">sd_display</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">sdtyping</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">matplotlib.axes</span> <span class="kn">import</span> <span class="n">Axes</span>
+    <span class="kn">from</span> <span class="nn">matplotlib.axis</span> <span class="kn">import</span> <span class="n">Axis</span>
+    <span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">Formatter</span><span class="p">,</span> <span class="n">Locator</span>
+    <span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">Context</span>
+    <span class="kn">from</span> <span class="nn">pipeline.infrastructure.imagelibrary</span> <span class="kn">import</span> <span class="n">ImageItem</span>
+
+
+<span class="c1"># Initialize logger for this module</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Global parameters</span>
+<span class="n">STDDEV_THRESHOLD_FACTOR</span> <span class="o">=</span> <span class="o">-</span><span class="mf">4.0</span>  <span class="c1"># Threshold factor in terms of standard deviation to detect strong absorption features</span>
+<span class="n">UPPER_INTENSITY_LIMIT_FACTOR</span> <span class="o">=</span> <span class="mf">7.0</span>   <span class="c1"># Upper intensity factor of Masked-avedaged spectrum plot (Y-axis)</span>
+<span class="n">LOWER_INTENSITY_LIMIT_FACTOR</span> <span class="o">=</span> <span class="o">-</span><span class="mf">7.0</span>  <span class="c1"># Lower intensity factor of Masked-avedaged spectrum plot (Y-axis)</span>
+
+<span class="c1"># Parameters for slicing the cube image and determining the scope of processing</span>
+<span class="n">N_SLICES</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># Total number of slices</span>
+<span class="n">N_EDGE</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># Number of edge slices to be excluded from processing</span>
+<span class="n">N_REMAINING</span> <span class="o">=</span> <span class="n">N_SLICES</span> <span class="o">-</span> <span class="n">N_EDGE</span> <span class="o">*</span> <span class="mi">2</span>  <span class="c1"># Number of slices remaining after excluding edges</span>
+
+<span class="c1"># Default color map for peak S/N map and mask map</span>
+<span class="n">DEFAULT_COLORMAP</span> <span class="o">=</span> <span class="s2">&quot;rainbow&quot;</span>
+
+<span class="c1"># Define a named tuple of the frequency specification.</span>
+<span class="c1">#  unit: The unit of the frequency (e.g., pixel, Hz, MHz).</span>
+<span class="c1">#  data: The actual frequency data or values.</span>
+<span class="n">FrequencySpec</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;FrequencySpec&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">])</span>
+
+<span class="c1"># Define a named tuple of the direction specification in astronomical images.</span>
+<span class="c1">#  ref: The reference frame (e.g., J2000, B1950).</span>
+<span class="c1">#  minra: The minimum right ascension value.</span>
+<span class="c1">#  maxra: The maximum right ascension value.</span>
+<span class="c1">#  mindec: The minimum declination value.</span>
+<span class="c1">#  maxdec: The maximum declination value.</span>
+<span class="c1">#  resolution: The resolution of the image in the direction axes.</span>
+<span class="n">DirectionSpec</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;DirectionSpec&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ref&#39;</span><span class="p">,</span> <span class="s1">&#39;minra&#39;</span><span class="p">,</span> <span class="s1">&#39;maxra&#39;</span><span class="p">,</span> <span class="s1">&#39;mindec&#39;</span><span class="p">,</span> <span class="s1">&#39;maxdec&#39;</span><span class="p">,</span> <span class="s1">&#39;resolution&#39;</span><span class="p">])</span>
+
+<span class="c1"># Define a named tuple of the sizes of each axis in a image cube.</span>
+<span class="c1">#  x: The size of the X-axis (typically the R.A. direction in astronomical images).</span>
+<span class="c1">#  y: The size of the Y-axis (typically the Dec direction in astronomical images).</span>
+<span class="c1">#  sp: The size of the spectral axis (e.g., frequency or velocity).</span>
+<span class="n">NAxis</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;NAxis&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;sp&#39;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="detect_contamination">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.detectcontamination.detect_contamination">[docs]</a>
+<span class="k">def</span> <span class="nf">detect_contamination</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
+                         <span class="n">item</span><span class="p">:</span> <span class="s1">&#39;ImageItem&#39;</span><span class="p">,</span>
+                         <span class="n">is_frequency_channel_reversed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">do_plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Detect contamination (the emission at OFF position, which affects the data quality) in the given image item.</span>
+
+<span class="sd">    This method defines &#39;contamination&#39; as a deep absorption feature, which is in most cases</span>
+<span class="sd">    due to a strong emission feature in the OFF position. Note that a strong absorption feature</span>
+<span class="sd">    in the ON position may also be detected as &#39;contamination&#39;.</span>
+
+<span class="sd">    This function is the main routine of the module. It detects contamination in the provided image item</span>
+<span class="sd">    and returns boolean value indicating if potential contamination is detected or not.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context (Context): The pipeline context object.</span>
+<span class="sd">        item (ImageItem): The image item object to be analyzed.</span>
+<span class="sd">        is_frequency_channel_reversed (bool, optional): True if the frequency axis is flipped (case for LSB)</span>
+<span class="sd">            by the imaging process (see worker.py). Defaults to False.</span>
+<span class="sd">        do_plot (bool): Set True to make figure. Default is True.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if potential contamination is detected, False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;=================&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Read FITS and its header</span>
+    <span class="n">cube_regrid</span><span class="p">,</span> <span class="n">naxis</span> <span class="o">=</span> <span class="n">_read_image</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">imagename</span><span class="p">)</span>
+
+    <span class="c1"># Calculate RMS and Peak S/N maps</span>
+    <span class="n">rms_map</span><span class="p">,</span> <span class="n">peak_sn_map</span><span class="p">,</span> <span class="n">spectrum_at_peak</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">idy</span> <span class="o">=</span> \
+        <span class="n">_calculate_rms_and_peak_sn_map</span><span class="p">(</span><span class="n">cube_regrid</span><span class="p">,</span> <span class="n">naxis</span><span class="p">,</span> <span class="n">is_frequency_channel_reversed</span><span class="p">)</span>
+
+    <span class="c1"># Determine the threshold of Peak S/N map for the mask map calculation</span>
+    <span class="n">peak_sn_threshold</span> <span class="o">=</span> <span class="n">_determine_peak_sn_threshold</span><span class="p">(</span><span class="n">cube_regrid</span><span class="p">,</span> <span class="n">rms_map</span><span class="p">)</span>
+
+    <span class="c1"># Calculate the mask map and the masked average spectrum</span>
+    <span class="n">mask_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">peak_sn_map</span> <span class="o">&lt;</span> <span class="n">peak_sn_threshold</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">masked_average_spectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask_map</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">cube_regrid</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="c1"># Check if an absorption feature is detected</span>
+    <span class="n">contaminated</span> <span class="o">=</span> <span class="n">_detect_deep_absorption_feature</span><span class="p">(</span><span class="n">masked_average_spectrum</span><span class="p">)</span>
+
+    <span class="c1"># Generate the contamination report figures</span>
+    <span class="k">if</span> <span class="n">do_plot</span><span class="p">:</span>
+        <span class="c1"># Create a directory for the current stage</span>
+        <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;stage</span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Define the output file name for the contamination report</span>
+        <span class="n">output_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">imagename</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.contamination.png&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The output file name for the contamination report: </span><span class="si">{</span><span class="n">output_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">image_obj</span> <span class="o">=</span> <span class="n">sd_display</span><span class="o">.</span><span class="n">SpectralImage</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">imagename</span><span class="p">)</span>
+        <span class="n">freq_spec</span> <span class="o">=</span> <span class="n">_get_frequency_spec</span><span class="p">(</span><span class="n">naxis</span><span class="p">,</span> <span class="n">image_obj</span><span class="p">)</span>
+        <span class="n">dir_spec</span> <span class="o">=</span> <span class="n">_get_direction_spec</span><span class="p">(</span><span class="n">image_obj</span><span class="p">)</span>
+        <span class="n">_make_figures</span><span class="p">(</span><span class="n">peak_sn_map</span><span class="p">,</span> <span class="n">mask_map</span><span class="p">,</span> <span class="n">rms_map</span><span class="p">,</span> <span class="n">masked_average_spectrum</span><span class="p">,</span>
+                      <span class="n">peak_sn_threshold</span><span class="p">,</span> <span class="n">spectrum_at_peak</span><span class="p">,</span> <span class="n">idy</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">output_name</span><span class="p">,</span>
+                      <span class="n">freq_spec</span><span class="p">,</span> <span class="n">dir_spec</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">contaminated</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_pick_quiet_slice</span><span class="p">(</span><span class="n">naxis</span><span class="p">:</span> <span class="n">NAxis</span><span class="p">,</span>
+                      <span class="n">cube_regrid</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray3D&#39;</span><span class="p">,</span>
+                      <span class="n">is_frequency_channel_reversed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;sdtyping.NpArray2D&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find the most &#39;quiet&#39; image slice within the image cube and estimate RMS.</span>
+
+<span class="sd">    Slice the cube image into N_SLICES frequeucy-wise (or AXIS3 wise), and return the slice</span>
+<span class="sd">    which has the smallest rms value among them.  Each N_EDGE slices on both edges are</span>
+<span class="sd">    excluded from the estimate.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        naxis (NAxis) : namedtuple of the sizes of each axis in a image cube.</span>
+<span class="sd">        cube_regrid (NpArray3D) : data chunk loaded from image cube</span>
+<span class="sd">        is_frequency_channel_reversed (bool) : True if frequency channels are in reversed order. False if not.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        RMS map of the most &#39;quiet&#39; image of the image cube.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Calculate RMS maps for the slices</span>
+    <span class="n">sliced_rms_maps</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">_slice_and_calc_RMS_of_cube_regrid</span><span class="p">(</span><span class="n">naxis</span><span class="p">,</span> <span class="n">cube_regrid</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">is_frequency_channel_reversed</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_EDGE</span><span class="p">,</span> <span class="n">N_SLICES</span> <span class="o">-</span> <span class="n">N_EDGE</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Calculate mean RMS values for each slice</span>
+    <span class="n">mean_rms_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">sliced_rms_maps</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_REMAINING</span><span class="p">)])</span>
+
+    <span class="c1"># Select the RMS map with the smallest mean RMS value</span>
+    <span class="n">rms_map</span> <span class="o">=</span> <span class="n">sliced_rms_maps</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">mean_rms_values</span><span class="p">)]</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;RMS: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">rms_map</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">rms_map</span>
+
+
+<span class="k">def</span> <span class="nf">_slice_and_calc_RMS_of_cube_regrid</span><span class="p">(</span><span class="n">naxis</span><span class="p">:</span> <span class="n">NAxis</span><span class="p">,</span>
+                                       <span class="n">cube_regrid</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray3D&#39;</span><span class="p">,</span>
+                                       <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                                       <span class="n">is_frequency_channel_reversed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;sdtyping.NpArray2D&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get one chunk from N_SLICES chunks of cube_regrid, and calculate RMS of it.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        naxis (NAxis) : namedtuple of the sizes of each axis in a image cube.</span>
+<span class="sd">        cube_regrid (NpAdday3D): data chunk loaded from image cube</span>
+<span class="sd">        pos (int): position to slice</span>
+<span class="sd">        is_frequency_channel_reversed (bool): True if frequency channels are in reversed order. False if not.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        RMS array of the squared standard deviation and mean for the sliced cube.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># calculate start and end positions for slicing the cube</span>
+    <span class="n">_to_int_func</span> <span class="o">=</span> <span class="n">ceil</span> <span class="k">if</span> <span class="n">is_frequency_channel_reversed</span> <span class="k">else</span> <span class="nb">int</span>
+    <span class="n">start_rms_ch</span> <span class="o">=</span> <span class="n">_to_int_func</span><span class="p">(</span><span class="n">naxis</span><span class="o">.</span><span class="n">sp</span> <span class="o">*</span> <span class="n">pos</span> <span class="o">/</span> <span class="n">N_SLICES</span><span class="p">)</span>
+    <span class="n">end_rms_ch</span> <span class="o">=</span> <span class="n">_to_int_func</span><span class="p">(</span><span class="n">naxis</span><span class="o">.</span><span class="n">sp</span> <span class="o">*</span> <span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">N_SLICES</span><span class="p">)</span>
+
+    <span class="c1"># extract a slice from the cube based on the calculated positions</span>
+    <span class="n">sliced_cube</span> <span class="o">=</span> <span class="n">cube_regrid</span><span class="p">[</span><span class="n">start_rms_ch</span><span class="p">:</span><span class="n">end_rms_ch</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+
+    <span class="c1"># calculate the squared standard deviation and mean for the sliced cube</span>
+    <span class="n">stddevsq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">sliced_cube</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.</span>
+    <span class="n">meansq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">sliced_cube</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.</span>
+
+    <span class="c1"># compute and return the RMS using the squared standard deviation and mean</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">stddevsq</span> <span class="o">+</span> <span class="n">meansq</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_make_figures</span><span class="p">(</span><span class="n">peak_sn_map</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray2D&#39;</span><span class="p">,</span>
+                  <span class="n">mask_map</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray2D&#39;</span><span class="p">,</span>
+                  <span class="n">rms_map</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray2D&#39;</span><span class="p">,</span>
+                  <span class="n">masked_average_spectrum</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray1D&#39;</span><span class="p">,</span>
+                  <span class="n">peak_sn_threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                  <span class="n">spectrum_at_peak</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray1D&#39;</span><span class="p">,</span>
+                  <span class="n">idy</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
+                  <span class="n">idx</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
+                  <span class="n">output_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                  <span class="n">freq_spec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FrequencySpec</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">dir_spec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DirectionSpec</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create figures to visualize contamination.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        peak_sn_map (NpArray2D): Array of the peak S/N.</span>
+<span class="sd">        mask_map (NpArray2D): Array of the mask map.</span>
+<span class="sd">        rms_map (NpArray2D): Array of the RMS map.</span>
+<span class="sd">        masked_average_spectrum (NpArray1D): Array of the masked average spectrum.</span>
+<span class="sd">        peak_sn_threshold (float): Threshold value for the peak S/N.</span>
+<span class="sd">        spectrum_at_peak (NpArray1D): Array of the spectrum at the peak.</span>
+<span class="sd">        idy (int64): Y-axis (latitude) index of the maximum peak S/N location.</span>
+<span class="sd">        idx (int64): X-axis (longitude) index of the maximum peak S/N location.</span>
+<span class="sd">        output_name (str): Name of the output file.</span>
+<span class="sd">        freq_spec (FrequencySpec, optional): Frequency specification. Defaults to None.</span>
+<span class="sd">        dir_spec (DirectionSpec, optional): Direction specification. Defaults to None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Initialize the figure with a specified size</span>
+    <span class="n">_figure</span> <span class="o">=</span> <span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">_grid</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+    <span class="n">peak_sn_plot</span><span class="p">,</span> <span class="n">peak_sn_colorbar</span> <span class="o">=</span> \
+        <span class="nb">map</span><span class="p">(</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">,</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpecFromSubplotSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                                                                  <span class="n">subplot_spec</span><span class="o">=</span><span class="n">_grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">mask_map_plot</span><span class="p">,</span> <span class="n">mask_map_colorbar</span> <span class="o">=</span> \
+        <span class="nb">map</span><span class="p">(</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">,</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpecFromSubplotSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                                                                  <span class="n">subplot_spec</span><span class="o">=</span><span class="n">_grid</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">masked_avg_sp_plot</span> <span class="o">=</span> <span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">_grid</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">kw</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Check if direction specification is provided</span>
+    <span class="k">if</span> <span class="n">dir_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_configure_plot_spec</span><span class="p">(</span><span class="n">peak_sn_plot</span><span class="p">,</span> <span class="n">dir_spec</span><span class="p">)</span>
+        <span class="n">_configure_plot_spec</span><span class="p">(</span><span class="n">mask_map_plot</span><span class="p">,</span> <span class="n">dir_spec</span><span class="p">)</span>
+        <span class="n">dir_unit</span> <span class="o">=</span> <span class="n">dir_spec</span><span class="o">.</span><span class="n">ref</span>
+
+        <span class="c1"># Convert pixel coordinates to axes coordinates</span>
+        <span class="n">scx</span> <span class="o">=</span> <span class="p">(</span><span class="n">idx</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="n">peak_sn_map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">scy</span> <span class="o">=</span> <span class="p">(</span><span class="n">idy</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="n">peak_sn_map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Set aspect ratio based on Dec correction factor</span>
+        <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;aspect&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">((</span><span class="n">dir_spec</span><span class="o">.</span><span class="n">mindec</span> <span class="o">+</span> <span class="n">dir_spec</span><span class="o">.</span><span class="n">maxdec</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+        <span class="c1"># Set extent for the plot</span>
+        <span class="n">_half_resolution</span> <span class="o">=</span> <span class="n">dir_spec</span><span class="o">.</span><span class="n">resolution</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;extent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">dir_spec</span><span class="o">.</span><span class="n">maxra</span> <span class="o">+</span> <span class="n">_half_resolution</span><span class="p">,</span> <span class="n">dir_spec</span><span class="o">.</span><span class="n">minra</span> <span class="o">-</span> <span class="n">_half_resolution</span><span class="p">,</span>
+                        <span class="n">dir_spec</span><span class="o">.</span><span class="n">mindec</span> <span class="o">-</span> <span class="n">_half_resolution</span><span class="p">,</span> <span class="n">dir_spec</span><span class="o">.</span><span class="n">maxdec</span> <span class="o">+</span> <span class="n">_half_resolution</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dir_unit</span> <span class="o">=</span> <span class="s1">&#39;pixel&#39;</span>
+        <span class="n">scx</span> <span class="o">=</span> <span class="n">idx</span>
+        <span class="n">scy</span> <span class="o">=</span> <span class="n">peak_sn_map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">idy</span>
+
+    <span class="c1"># Plot the peak S/N map, mask map, and masked averaged spectrum</span>
+    <span class="n">_plot_peak_SN_map</span><span class="p">(</span><span class="n">peak_sn_plot</span><span class="p">,</span> <span class="n">peak_sn_colorbar</span><span class="p">,</span> <span class="n">peak_sn_map</span><span class="p">,</span>
+                      <span class="n">dir_unit</span><span class="p">,</span> <span class="n">dir_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scx</span><span class="p">,</span> <span class="n">scy</span><span class="p">,</span> <span class="n">kw</span><span class="p">)</span>
+    <span class="n">_plot_mask_map</span><span class="p">(</span><span class="n">mask_map_plot</span><span class="p">,</span> <span class="n">mask_map_colorbar</span><span class="p">,</span> <span class="n">mask_map</span><span class="p">,</span>
+                   <span class="n">peak_sn_threshold</span><span class="p">,</span> <span class="n">dir_unit</span><span class="p">,</span> <span class="n">kw</span><span class="p">)</span>
+    <span class="n">_plot_masked_averaged_spectrum</span><span class="p">(</span><span class="n">masked_avg_sp_plot</span><span class="p">,</span> <span class="n">rms_map</span><span class="p">,</span> <span class="n">masked_average_spectrum</span><span class="p">,</span>
+                                   <span class="n">peak_sn_threshold</span><span class="p">,</span> <span class="n">spectrum_at_peak</span><span class="p">,</span> <span class="n">freq_spec</span><span class="p">)</span>
+    <span class="c1"># Save the figure to the specified output file</span>
+    <span class="n">_figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output_name</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_plot_peak_SN_map</span><span class="p">(</span><span class="n">plot</span><span class="p">:</span> <span class="s1">&#39;Axes&#39;</span><span class="p">,</span>
+                      <span class="n">colorbar</span><span class="p">:</span> <span class="s1">&#39;Axes&#39;</span><span class="p">,</span>
+                      <span class="n">peak_sn_map</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray2D&#39;</span><span class="p">,</span>
+                      <span class="n">dir_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                      <span class="n">has_dir_spec</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                      <span class="n">scx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                      <span class="n">scy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                      <span class="n">kw</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot the Peak Signal-to-Noise ratio (Peak S/N) map with specified parameters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        plot (Axes): The matplotlib Axes object to be used for plotting.</span>
+<span class="sd">        colorbar (Axes): The matplotlib Axes object to be used for colorbar.</span>
+<span class="sd">        peak_sn (NpArray2D): The data of the peak S/N.</span>
+<span class="sd">        dir_unit (str): The unit for the R.A. (Right Ascension) and Dec (Declination) axis labels.</span>
+<span class="sd">        has_dir_spec (bool): Flag indicating if a direction specification is provided.</span>
+<span class="sd">        scx (float): The x-coordinate of the maximum peak S/N location.</span>
+<span class="sd">        scy (float): The y-coordinate of the maximum peak S/N location.</span>
+<span class="sd">        kw (Dict[str, Union[float, Tuple[float, float]]]): Additional keyword arguments for the imshow().</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Log the plotting data</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;scx = </span><span class="si">{</span><span class="n">scx</span><span class="si">}</span><span class="s1">, scy = </span><span class="si">{</span><span class="n">scy</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;peak_sn.shape = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">peak_sn_map</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ylim = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">plot</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">())))</span>
+
+    <span class="c1"># plot the peak S/N map</span>
+    <span class="n">_plot_map</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s2">&quot;Peak S/N map&quot;</span><span class="p">,</span> <span class="n">peak_sn_map</span><span class="p">,</span> <span class="n">dir_unit</span><span class="p">,</span> <span class="n">kw</span><span class="p">)</span>
+
+    <span class="c1"># display a colorbar for the image</span>
+    <span class="n">_display_colorbar</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="n">colorbar</span><span class="p">,</span> <span class="n">peak_sn_map</span><span class="p">)</span>
+
+    <span class="c1"># Determine the transformation for the scatter plot marker based on the presence of a direction specification</span>
+    <span class="n">trans</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">transAxes</span> <span class="k">if</span> <span class="n">has_dir_spec</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="c1"># Plot a scatter marker at the specified coordinates of the maximum peak S/N location.</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">scx</span><span class="p">,</span> <span class="n">scy</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">facecolors</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                 <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">trans</span><span class="p">)</span>
+
+    <span class="c1"># dummy scatter to display a legend</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">facecolors</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                 <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Max&quot;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower left&#39;</span><span class="p">,</span> <span class="n">borderaxespad</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_plot_mask_map</span><span class="p">(</span><span class="n">plot</span><span class="p">:</span> <span class="s1">&#39;Axes&#39;</span><span class="p">,</span>
+                   <span class="n">colorbar</span><span class="p">:</span> <span class="s1">&#39;Axes&#39;</span><span class="p">,</span>
+                   <span class="n">mask_map</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray2D&#39;</span><span class="p">,</span>
+                   <span class="n">peak_sn_threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                   <span class="n">dir_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                   <span class="n">kw</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot the mask map with specified parameters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        plot (Axes): The matplotlib Axes object to be used for plotting.</span>
+<span class="sd">        colorbar (Axes): The matplotlib Axes object to be used for colorbar.</span>
+<span class="sd">        mask_map (NpArray2D): The data of the mask map.</span>
+<span class="sd">        peak_sn_threshold (float): The threshold for the peak of signal-to-noise.</span>
+<span class="sd">        dir_unit (str): The unit for the R.A. (Right Ascension) and Dec (Declination) axis labels.</span>
+<span class="sd">        kw (Dict[str, Union[float, Tuple[float, float]]]): Additional keyword arguments for the imshow().</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># plot the mask map</span>
+    <span class="n">_plot_map</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Mask map (1: S/N&lt;</span><span class="si">{</span><span class="n">peak_sn_threshold</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">mask_map</span><span class="p">,</span> <span class="n">dir_unit</span><span class="p">,</span> <span class="n">kw</span><span class="p">)</span>
+
+    <span class="c1"># display the colorbar</span>
+    <span class="n">_display_colorbar</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="n">colorbar</span><span class="p">,</span> <span class="n">mask_map</span><span class="p">,</span>
+                      <span class="p">{</span><span class="s1">&#39;ticks&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                       <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">FixedFormatter</span><span class="p">([</span><span class="s1">&#39;Masked&#39;</span><span class="p">,</span> <span class="s1">&#39;Unmasked&#39;</span><span class="p">])})</span>
+
+
+<span class="k">def</span> <span class="nf">_plot_map</span><span class="p">(</span><span class="n">plot</span><span class="p">:</span> <span class="s1">&#39;Axes&#39;</span><span class="p">,</span>
+              <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+              <span class="nb">map</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray2D&#39;</span><span class="p">,</span>
+              <span class="n">dir_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+              <span class="n">kw</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot map data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        plot (Axes): The matplotlib Axes object to be used for plotting.</span>
+<span class="sd">        title (str): The title of the graph.</span>
+<span class="sd">        map (NpArray2D): The data for plotting.</span>
+<span class="sd">        dir_unit (str): The unit for the R.A. (Right Ascension) and Dec (Declination) axis labels.</span>
+<span class="sd">        kw (Dict[str, Union[float, Tuple[float, float]]]): Additional keyword arguments for the imshow().</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set the title and axis labels for the plot</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;R.A. [</span><span class="si">{</span><span class="n">dir_unit</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dec [</span><span class="si">{</span><span class="n">dir_unit</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Display the map as an image with the specified colormap and keyword arguments</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">flipud</span><span class="p">(</span><span class="nb">map</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">DEFAULT_COLORMAP</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_display_colorbar</span><span class="p">(</span><span class="n">plot</span><span class="p">:</span> <span class="s1">&#39;Axes&#39;</span><span class="p">,</span>
+                      <span class="n">colorbar</span><span class="p">:</span> <span class="s1">&#39;Axes&#39;</span><span class="p">,</span>
+                      <span class="nb">map</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray2D&#39;</span><span class="p">,</span>
+                      <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display a colorbar for the plot.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        plot (Axes): The matplotlib Axes object to be used for plotting.</span>
+<span class="sd">        colorbar (Axes): The matplotlib Axes object to be used for colorbar.</span>
+<span class="sd">        map (NpArray2D): 2D array for plotting.</span>
+<span class="sd">        options (Optional[Dict[str, Any]], optional): Additional keyword arguments for</span>
+<span class="sd">            matplotlib.colorbar.Colorbar. Defaults to {}.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># do not use offset notation</span>
+    <span class="n">colorbar</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">get_major_formatter</span><span class="p">()</span><span class="o">.</span><span class="n">set_useOffset</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">colorbar</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">get_major_formatter</span><span class="p">()</span><span class="o">.</span><span class="n">set_useOffset</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># display the colorbar of DEFAULT_COLORMAP colored</span>
+    <span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">colorbar</span><span class="p">,</span>
+        <span class="n">mappable</span><span class="o">=</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">ScalarMappable</span><span class="p">(</span>
+            <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="nb">map</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="nb">map</span><span class="p">)),</span>
+            <span class="n">DEFAULT_COLORMAP</span><span class="p">),</span>
+        <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+
+    <span class="c1"># set position of the colorbar</span>
+    <span class="n">ppos</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+    <span class="n">cpos</span> <span class="o">=</span> <span class="n">colorbar</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+    <span class="n">colorbar</span><span class="o">.</span><span class="n">set_position</span><span class="p">([</span><span class="n">ppos</span><span class="o">.</span><span class="n">x1</span><span class="o">+</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">ppos</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span> <span class="n">cpos</span><span class="o">.</span><span class="n">x1</span><span class="o">-</span><span class="n">cpos</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span> <span class="n">ppos</span><span class="o">.</span><span class="n">y1</span><span class="o">-</span><span class="n">ppos</span><span class="o">.</span><span class="n">y0</span><span class="p">])</span>
+
+
+<span class="k">def</span> <span class="nf">_plot_masked_averaged_spectrum</span><span class="p">(</span><span class="n">plot</span><span class="p">:</span> <span class="s1">&#39;Axes&#39;</span><span class="p">,</span>
+                                   <span class="n">rms_map</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray2D&#39;</span><span class="p">,</span>
+                                   <span class="n">masked_average_spectrum</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray1D&#39;</span><span class="p">,</span>
+                                   <span class="n">peak_sn_threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                   <span class="n">spectrum_at_peak</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray1D&#39;</span><span class="p">,</span>
+                                   <span class="n">freq_spec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FrequencySpec</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot the masked-averaged spectrum with specified parameters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        plot (Axes): The matplotlib Axes object to be used for plotting.</span>
+<span class="sd">        rms_map (NpArray2D): The data of the RMS map.</span>
+<span class="sd">        masked_average_spectrum (NpArray1D): 1D array of the average spectrum of the masked regions.</span>
+<span class="sd">        peak_sn_threshold (float): The threshold for the peak signal-to-noise.</span>
+<span class="sd">        spectrum_at_peak (NpArray1D): The spectrum data at the peak.</span>
+<span class="sd">        freq_spec (Optional[FrequencySpec]): Frequency specifications. Defaults to None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Calculate the standard deviation of the masked averaged spectrum</span>
+    <span class="n">stddev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">masked_average_spectrum</span><span class="p">)</span>
+
+    <span class="c1"># Create a subplot for the masked-averaged spectrum</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Masked-averaged spectrum&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">freq_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">abc</span> <span class="o">=</span> <span class="n">freq_spec</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">abc</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">spectrum_at_peak</span><span class="p">)</span>
+        <span class="n">plot</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Frequency [</span><span class="si">{</span><span class="n">freq_spec</span><span class="o">.</span><span class="n">unit</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">abc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spectrum_at_peak</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">plot</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Channel&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Get the width and the minimum value of the frequency or channel range</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">abc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">abc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">minabc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">abc</span><span class="p">)</span>
+
+    <span class="c1"># Set y-axis label and limits</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Intensity [K]&quot;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">stddev</span> <span class="o">*</span> <span class="n">LOWER_INTENSITY_LIMIT_FACTOR</span><span class="p">,</span> <span class="n">stddev</span> <span class="o">*</span> <span class="n">UPPER_INTENSITY_LIMIT_FACTOR</span><span class="p">)</span>
+
+    <span class="c1"># Plot the spectrum at the peak and the masked averaged spectrum</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">abc</span><span class="p">,</span> <span class="n">spectrum_at_peak</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;spectrum at peak&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">abc</span><span class="p">,</span> <span class="n">masked_average_spectrum</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;masked averaged&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Define the edges for horizontal lines</span>
+    <span class="n">_edge</span> <span class="o">=</span> <span class="p">[</span><span class="n">abc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">abc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="c1"># Plot horizontal lines for reference</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">_edge</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">_edge</span><span class="p">,</span> <span class="p">[</span><span class="n">STDDEV_THRESHOLD_FACTOR</span> <span class="o">*</span> <span class="n">stddev</span><span class="p">,</span> <span class="n">STDDEV_THRESHOLD_FACTOR</span> <span class="o">*</span> <span class="n">stddev</span><span class="p">],</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">_edge</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">rms_map</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">rms_map</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">_edge</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">rms_map</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">rms_map</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">)],</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Plot additional lines and annotations if the standard deviation is above the threshold</span>
+    <span class="k">if</span> <span class="n">stddev</span> <span class="o">*</span> <span class="n">UPPER_INTENSITY_LIMIT_FACTOR</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">rms_map</span><span class="p">)</span> <span class="o">*</span> <span class="n">peak_sn_threshold</span><span class="p">:</span>
+        <span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">_edge</span><span class="p">,</span>
+                  <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">rms_map</span><span class="p">)</span> <span class="o">*</span> <span class="n">peak_sn_threshold</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">rms_map</span><span class="p">)</span> <span class="o">*</span> <span class="n">peak_sn_threshold</span><span class="p">],</span>
+                  <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
+        <span class="n">plot</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">minabc</span> <span class="o">+</span> <span class="n">w</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">rms_map</span><span class="p">)</span> <span class="o">*</span> <span class="n">peak_sn_threshold</span><span class="p">,</span>
+                  <span class="s2">&quot;lower 10</span><span class="si">% le</span><span class="s2">vel&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Add text annotations for the plotted lines</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">minabc</span> <span class="o">+</span> <span class="n">w</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">rms_map</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.</span><span class="p">,</span> <span class="s2">&quot;1.0 x rms&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">minabc</span> <span class="o">+</span> <span class="n">w</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">rms_map</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">),</span> <span class="s2">&quot;-1.0 x rms&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">minabc</span> <span class="o">+</span> <span class="n">w</span> <span class="o">*</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">STDDEV_THRESHOLD_FACTOR</span> <span class="o">*</span> <span class="n">stddev</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">STDDEV_THRESHOLD_FACTOR</span><span class="si">}</span><span class="s2"> x std&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Display the legend</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+    <span class="c1"># Add a warning text if the minimum of the masked averaged spectrum is below the threshold</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">masked_average_spectrum</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">STDDEV_THRESHOLD_FACTOR</span> <span class="o">*</span> <span class="n">stddev</span><span class="p">:</span>
+        <span class="n">plot</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">minabc</span> <span class="o">+</span> <span class="n">w</span> <span class="o">*</span> <span class="mf">2.</span> <span class="o">/</span> <span class="mf">5.</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.</span> <span class="o">*</span> <span class="n">stddev</span><span class="p">,</span> <span class="s2">&quot;Warning!!&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Orange&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_configure_plot_spec</span><span class="p">(</span><span class="n">plot</span><span class="p">:</span> <span class="s1">&#39;Axes&#39;</span><span class="p">,</span>
+                         <span class="n">dir_spec</span><span class="p">:</span> <span class="n">DirectionSpec</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure the plot specifications based on the provided direction specifications.</span>
+
+<span class="sd">    This function adjusts the x and y axis labels, ticks, and rotations based on the provided</span>
+<span class="sd">    direction specifications. It uses the pointing module to determine the appropriate formatting</span>
+<span class="sd">    and rotation for the R.A. and Dec labels.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        plot (Axes): The plot object to be configured.</span>
+<span class="sd">        dir_spec (DirectionSpec): The direction specifications containing details about R.A. and Dec.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Calculate the span based on the maximum and minimum R.A. and Dec values, and the resolution</span>
+    <span class="n">_span</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dir_spec</span><span class="o">.</span><span class="n">maxra</span> <span class="o">-</span> <span class="n">dir_spec</span><span class="o">.</span><span class="n">minra</span> <span class="o">+</span> <span class="n">dir_spec</span><span class="o">.</span><span class="n">resolution</span><span class="p">,</span>
+                <span class="n">dir_spec</span><span class="o">.</span><span class="n">maxdec</span> <span class="o">-</span> <span class="n">dir_spec</span><span class="o">.</span><span class="n">mindec</span> <span class="o">+</span> <span class="n">dir_spec</span><span class="o">.</span><span class="n">resolution</span><span class="p">)</span>
+
+    <span class="c1"># Get the appropriate locators and formatters for R.A. and Dec based on the span and reference</span>
+    <span class="n">RAlocator</span><span class="p">,</span> <span class="n">Declocator</span><span class="p">,</span> <span class="n">RAformatter</span><span class="p">,</span> <span class="n">Decformatter</span> <span class="o">=</span> <span class="n">pointing</span><span class="o">.</span><span class="n">XYlabel</span><span class="p">(</span><span class="n">_span</span><span class="p">,</span> <span class="n">dir_spec</span><span class="o">.</span><span class="n">ref</span><span class="p">)</span>
+
+    <span class="c1"># Configure the x-axis (R.A.) and y-axis (Dec) with the obtained formatters, locators, and rotations</span>
+    <span class="n">_configure_axis</span><span class="p">(</span><span class="n">plot</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">RAformatter</span><span class="p">,</span> <span class="n">RAlocator</span><span class="p">,</span> <span class="n">pointing</span><span class="o">.</span><span class="n">RArotation</span><span class="p">)</span>
+    <span class="n">_configure_axis</span><span class="p">(</span><span class="n">plot</span><span class="o">.</span><span class="n">yaxis</span><span class="p">,</span> <span class="n">Decformatter</span><span class="p">,</span> <span class="n">Declocator</span><span class="p">,</span> <span class="n">pointing</span><span class="o">.</span><span class="n">DECrotation</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_configure_axis</span><span class="p">(</span><span class="n">axis</span><span class="p">:</span> <span class="s1">&#39;Axis&#39;</span><span class="p">,</span>
+                    <span class="n">formatter</span><span class="p">:</span> <span class="s1">&#39;Formatter&#39;</span><span class="p">,</span>
+                    <span class="n">locator</span><span class="p">:</span> <span class="s1">&#39;Locator&#39;</span><span class="p">,</span>
+                    <span class="n">rotation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;pointing.RArotation&#39;</span><span class="p">,</span> <span class="s1">&#39;pointing.DECrotation&#39;</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure the given axis with the specified formatter, locator, and rotation.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        axis (Axis): The axis to be configured.</span>
+<span class="sd">        formatter (Formatter): The formatter to be set for the axis.</span>
+<span class="sd">        locator (Locator): The locator to be set for the axis.</span>
+<span class="sd">        rotation (Union[pointing.RArotation, pointing.DECrotation]): The rotation to be set for the axis labels.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="n">rotation</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_detect_deep_absorption_feature</span><span class="p">(</span><span class="n">masked_average_spectrum</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray1D&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if a strong absorption feature exists in the spectrum.</span>
+
+<span class="sd">    This function checks the masked average spectrum for any strong absorption features.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        masked_average_spectrum (NpArray1D): 1D array of the average spectrum of the masked regions.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if contamination was detected, False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Calculate the standard deviation of the masked average spectrum</span>
+    <span class="n">std_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">masked_average_spectrum</span><span class="p">)</span>
+
+    <span class="c1"># Determine if the spectrum has a strong absorption feature</span>
+    <span class="n">_has_strong_absorption</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">masked_average_spectrum</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">STDDEV_THRESHOLD_FACTOR</span> <span class="o">*</span> <span class="n">std_value</span>
+
+    <span class="k">return</span> <span class="n">_has_strong_absorption</span>
+
+
+<span class="k">def</span> <span class="nf">_read_image</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;sdtyping.NpArray3D&#39;</span><span class="p">,</span> <span class="n">NAxis</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read image file (FITS or CASA image) and extract its header information using casatools.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input (str): Path to the image file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple containing:</span>
+<span class="sd">        - Data chunk extracted from the image.</span>
+<span class="sd">        - Sizes of axes of 3D image cube.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;FITS: </span><span class="si">{</span><span class="nb">input</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract data chunk and coordinate system from the image file</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="k">as</span> <span class="n">ia</span><span class="p">:</span>
+        <span class="n">cube</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">getchunk</span><span class="p">()</span>
+
+    <span class="c1"># Reorder the axes of the cube for further processing</span>
+    <span class="n">cube_regrid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">cube</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Extract dimensions and increments from the cube and coordinate system</span>
+    <span class="n">naxis</span> <span class="o">=</span> <span class="n">NAxis</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">cube</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">cube</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sp</span><span class="o">=</span><span class="n">cube</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">cube_regrid</span><span class="p">,</span> <span class="n">naxis</span>
+
+
+<span class="k">def</span> <span class="nf">_get_direction_spec</span><span class="p">(</span><span class="n">image_obj</span><span class="p">:</span> <span class="s1">&#39;sd_display.SpectralImage&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DirectionSpec</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract direction specifications from a given SpectralImage object.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        image_obj: SpectralImage object containing image metadata.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        DirectionSpec object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Convert R.A. and Dec values from the image object to degrees</span>
+    <span class="n">minra</span><span class="p">,</span> <span class="n">maxra</span> <span class="o">=</span> <span class="n">_convert_to_degrees</span><span class="p">(</span><span class="n">image_obj</span><span class="o">.</span><span class="n">ra_min</span><span class="p">,</span> <span class="n">image_obj</span><span class="o">.</span><span class="n">ra_max</span><span class="p">)</span>
+    <span class="n">mindec</span><span class="p">,</span> <span class="n">maxdec</span> <span class="o">=</span> <span class="n">_convert_to_degrees</span><span class="p">(</span><span class="n">image_obj</span><span class="o">.</span><span class="n">dec_min</span><span class="p">,</span> <span class="n">image_obj</span><span class="o">.</span><span class="n">dec_max</span><span class="p">)</span>
+
+    <span class="c1"># The grid size is obtained by dividing the beam size by 3.</span>
+    <span class="n">grid_size</span> <span class="o">=</span> <span class="n">image_obj</span><span class="o">.</span><span class="n">beam_size</span> <span class="o">/</span> <span class="mi">3</span>
+
+    <span class="k">return</span> <span class="n">DirectionSpec</span><span class="p">(</span><span class="n">ref</span><span class="o">=</span><span class="n">image_obj</span><span class="o">.</span><span class="n">direction_reference</span><span class="p">,</span>
+                         <span class="n">minra</span><span class="o">=</span><span class="n">minra</span><span class="p">,</span> <span class="n">maxra</span><span class="o">=</span><span class="n">maxra</span><span class="p">,</span>
+                         <span class="n">mindec</span><span class="o">=</span><span class="n">mindec</span><span class="p">,</span> <span class="n">maxdec</span><span class="o">=</span><span class="n">maxdec</span><span class="p">,</span>
+                         <span class="n">resolution</span><span class="o">=</span><span class="n">grid_size</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_convert_to_degrees</span><span class="p">(</span><span class="n">min_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                        <span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert given values to degrees using CASA quanta tool.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        min_value (float): Minimum value to convert.</span>
+<span class="sd">        max_value (float): Maximum value to convert.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple containing the converted minimum and maximum values in degrees.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Initialize CASA quanta tool for unit conversion</span>
+    <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+    <span class="k">return</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">max_value</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_get_frequency_spec</span><span class="p">(</span><span class="n">naxis</span><span class="p">:</span> <span class="n">NAxis</span><span class="p">,</span>
+                        <span class="n">image_obj</span><span class="p">:</span> <span class="s1">&#39;sd_display.SpectralImage&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrequencySpec</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract frequency specifications from a given SpectralImage object.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        naxis (NAxis) : namedtuple of the sizes of each axis in a image cube.</span>
+<span class="sd">        image_obj (SpectralImage) : SpectralImage object containing image metadata.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        FrequencySpec object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Retrieve spectral axis details in GHz from the image object</span>
+    <span class="n">refpix</span><span class="p">,</span> <span class="n">refval</span><span class="p">,</span> <span class="n">increment</span> <span class="o">=</span> <span class="n">image_obj</span><span class="o">.</span><span class="n">spectral_axis</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="s1">&#39;GHz&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Calculate the frequency values based on the spectral axis details</span>
+    <span class="n">frequency</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">refval</span> <span class="o">+</span> <span class="n">increment</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">refpix</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">naxis</span><span class="o">.</span><span class="n">sp</span><span class="p">)])</span>
+
+    <span class="k">return</span> <span class="n">FrequencySpec</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="s1">&#39;GHz&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">frequency</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_calculate_rms_and_peak_sn_map</span><span class="p">(</span><span class="n">cube_regrid</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray3D&#39;</span><span class="p">,</span>
+                                   <span class="n">naxis</span><span class="p">:</span> <span class="n">NAxis</span><span class="p">,</span>
+                                   <span class="n">is_frequency_channel_reversed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> \
+        <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;sdtyping.NpArray2D&#39;</span><span class="p">,</span> <span class="s1">&#39;sdtyping.NpArray2D&#39;</span><span class="p">,</span> <span class="s1">&#39;sdtyping.NpArray1D&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the RMS (Root Mean Square) and Peak S/N maps for the given data cube.</span>
+
+<span class="sd">    This function computes the RMS map for the data cube and then calculates the peak S/N for each pixel.</span>
+<span class="sd">    It also identifies the location (idx, idy) of the maximum peak S/N in the image.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cube_regrid (NpArray3D): 3D data cube containing the image data.</span>
+<span class="sd">        naxis (NAxis) : namedtuple of the sizes of each axis in a image cube.</span>
+<span class="sd">        is_frequency_channel_reversed (bool): Indicates if the frequency channels are in reversed order.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[NpArray2D, NpArray2D, NpArray1D, np.int64, np.int64]:</span>
+<span class="sd">            - rms_map: 2D array containing the RMS values for each pixel.</span>
+<span class="sd">            - peak_sn_map: 2D array containing the peak S/N values for each pixel.</span>
+<span class="sd">            - spectrum_at_peak: 1D array containing the spectrum at the location of the maximum peak S/N.</span>
+<span class="sd">            - idx: x-coordinate of the maximum peak S/N location.</span>
+<span class="sd">            - idy: y-coordinate of the maximum peak S/N location.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Decide the lower RMS map of the data cube</span>
+    <span class="n">rms_map</span> <span class="o">=</span> <span class="n">_pick_quiet_slice</span><span class="p">(</span><span class="n">naxis</span><span class="p">,</span> <span class="n">cube_regrid</span><span class="p">,</span> <span class="n">is_frequency_channel_reversed</span><span class="p">)</span>
+
+    <span class="c1"># Calculate the peak S/N for each pixel</span>
+    <span class="n">peak_sn_map</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">cube_regrid</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="o">/</span> <span class="n">rms_map</span>
+
+    <span class="c1"># Identify the location of the maximum peak S/N in the image</span>
+    <span class="n">idy</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanargmax</span><span class="p">(</span><span class="n">peak_sn_map</span><span class="p">),</span> <span class="n">peak_sn_map</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;idx </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">, idy </span><span class="si">{</span><span class="n">idy</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Extract the spectrum at the location of the maximum peak S/N</span>
+    <span class="n">spectrum_at_peak</span> <span class="o">=</span> <span class="n">cube_regrid</span><span class="p">[:,</span> <span class="n">idy</span><span class="p">,</span> <span class="n">idx</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">rms_map</span><span class="p">,</span> <span class="n">peak_sn_map</span><span class="p">,</span> <span class="n">spectrum_at_peak</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">idy</span>
+
+
+<span class="k">def</span> <span class="nf">_count_valid_pixels</span><span class="p">(</span><span class="n">cube_regrid</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray3D&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Count valid pixels for the given data cube.</span>
+
+<span class="sd">    This function counts the pixels with a valid value (not NaN) in the data cube.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cube_regrid (NpArray3D): 3D data cube containing the image data.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Number of pixels with a valid value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">total_pix</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">cube_regrid</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="c1"># Iterate over the data cube and count valid pixels</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nx</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ny</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">cube_regrid</span><span class="p">[:,</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">])):</span>
+                <span class="n">total_pix</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">total_pix</span>
+
+
+<span class="k">def</span> <span class="nf">_determine_peak_sn_threshold</span><span class="p">(</span><span class="n">cube_regrid</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray3D&#39;</span><span class="p">,</span>
+                                 <span class="n">rms_map</span><span class="p">:</span> <span class="s1">&#39;sdtyping.NpArray2D&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine the threshold of peak S/N.</span>
+
+<span class="sd">    This function calculates the peak S/N for each pixel in the image and then determines a threshold</span>
+<span class="sd">    based on a certain percentage of the total number of valid pixels.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cube_regrid (NpArray3D): 3D data cube containing the image data.</span>
+<span class="sd">        rms_map (NpArray2D): 2D array containing the root mean square (RMS) values for each pixel.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The calculated threshold of peak S/N.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Calculate the peak S/N for each pixel</span>
+    <span class="n">peak_sn</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">cube_regrid</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="o">/</span> <span class="n">rms_map</span>
+
+    <span class="c1"># Flatten the 2D peak S/N array to a 1D array and sort it</span>
+    <span class="n">peak_sn_1d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">peak_sn</span><span class="p">)</span>
+    <span class="n">peak_sn_1d</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+    <span class="c1"># Define the percentage threshold</span>
+    <span class="n">percent_threshold</span> <span class="o">=</span> <span class="mf">10.</span>  <span class="c1"># %</span>
+
+    <span class="c1"># Calculate the number of pixels corresponding to the percentage threshold</span>
+    <span class="n">total_pix</span> <span class="o">=</span> <span class="n">_count_valid_pixels</span><span class="p">(</span><span class="n">cube_regrid</span><span class="p">)</span>
+    <span class="n">pix_num_threshold</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">total_pix</span> <span class="o">*</span> <span class="n">percent_threshold</span> <span class="o">/</span> <span class="mf">100.</span><span class="p">)</span>
+
+    <span class="c1"># Return the peak S/N value corresponding to the pixel number threshold</span>
+    <span class="k">if</span> <span class="n">peak_sn_1d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">peak_sn_1d</span><span class="p">[</span><span class="n">pix_num_threshold</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.domain.singledish &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.domain.singledish</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.domain.singledish</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="MSReductionGroupMember">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.singledish.MSReductionGroupMember">[docs]</a>
+<span class="k">class</span> <span class="nc">MSReductionGroupMember</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">ms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antenna_id</span> <span class="o">=</span> <span class="n">antenna_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw_id</span> <span class="o">=</span> <span class="n">spw_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field_id</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">field_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">field_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linelist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channelmap_range</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">npol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">spw_id</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">antenna_id</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">antenna_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">field_id</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">name</span>
+
+<div class="viewcode-block" id="MSReductionGroupMember.iter_countup">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.singledish.MSReductionGroupMember.iter_countup">[docs]</a>
+    <span class="k">def</span> <span class="nf">iter_countup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="MSReductionGroupMember.iter_reset">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.singledish.MSReductionGroupMember.iter_reset">[docs]</a>
+    <span class="k">def</span> <span class="nf">iter_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="MSReductionGroupMember.add_linelist">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.singledish.MSReductionGroupMember.add_linelist">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_linelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">linelist</span><span class="p">,</span> <span class="n">pols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">channelmap_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linelist</span> <span class="o">=</span> <span class="n">linelist</span>
+        <span class="k">if</span> <span class="n">channelmap_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channelmap_range</span> <span class="o">=</span> <span class="n">channelmap_range</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channelmap_range</span> <span class="o">=</span> <span class="n">linelist</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;MSReductionGroupMember(ms=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, antenna=</span><span class="si">%s</span><span class="s1">, spw=</span><span class="si">%s</span><span class="s1">, field_id=</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="c1">#LOG.debug(&#39;MSReductionGroupMember.__eq__&#39;)</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">antenna_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna_id</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">spw_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw_id</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">field_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_id</span>
+
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">antenna_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna_id</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">spw_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw_id</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">field_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_id</span></div>
+
+
+
+<div class="viewcode-block" id="MSReductionGroupDesc">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.singledish.MSReductionGroupDesc">[docs]</a>
+<span class="k">class</span> <span class="nc">MSReductionGroupDesc</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_frequency</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_frequency</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw_name</span> <span class="o">=</span> <span class="n">spw_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_frequency</span> <span class="o">=</span> <span class="n">max_frequency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_frequency</span> <span class="o">=</span> <span class="n">min_frequency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nchan</span> <span class="o">=</span> <span class="n">nchan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">frequency_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">min_frequency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_frequency</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>    
+
+<div class="viewcode-block" id="MSReductionGroupDesc.merge">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.singledish.MSReductionGroupDesc.merge">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">other</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;ms.name=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s1"> antenna=</span><span class="si">%s</span><span class="s1"> spw=</span><span class="si">%s</span><span class="s1">, field_id=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                      <span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">member</span><span class="o">.</span><span class="n">antenna_id</span><span class="p">,</span> <span class="n">member</span><span class="o">.</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">member</span><span class="o">.</span><span class="n">field_id</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Adding (</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span>
+                          <span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">member</span><span class="o">.</span><span class="n">antenna_id</span><span class="p">,</span> <span class="n">member</span><span class="o">.</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">member</span><span class="o">.</span><span class="n">field_id</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">member</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MSReductionGroupDesc.add_member">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.singledish.MSReductionGroupDesc.add_member">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">new_member</span> <span class="o">=</span> <span class="n">MSReductionGroupMember</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">field_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">new_member</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_member</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MSReductionGroupDesc.get_iteration">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.singledish.MSReductionGroupDesc.get_iteration">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">member</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_search_member</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">field_id</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">member</span><span class="o">.</span><span class="n">iteration</span></div>
+
+
+<div class="viewcode-block" id="MSReductionGroupDesc.iter_countup">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.singledish.MSReductionGroupDesc.iter_countup">[docs]</a>
+    <span class="k">def</span> <span class="nf">iter_countup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">member</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_search_member</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">field_id</span><span class="p">)]</span>
+        <span class="n">member</span><span class="o">.</span><span class="n">iter_countup</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MSReductionGroupDesc.add_linelist">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.singledish.MSReductionGroupDesc.add_linelist">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_linelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">linelist</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">channelmap_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">member</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_search_member</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">field_id</span><span class="p">)]</span>
+        <span class="n">member</span><span class="o">.</span><span class="n">add_linelist</span><span class="p">(</span><span class="n">linelist</span><span class="p">,</span> <span class="n">channelmap_range</span><span class="o">=</span><span class="n">channelmap_range</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_search_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">indx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="n">member</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="ow">and</span> <span class="n">member</span><span class="o">.</span><span class="n">antenna_id</span> <span class="o">==</span> <span class="n">antenna_id</span> <span class="ow">and</span> <span class="n">member</span><span class="o">.</span><span class="n">spw_id</span> <span class="o">==</span> <span class="n">spw_id</span> <span class="ow">and</span> <span class="n">member</span><span class="o">.</span><span class="n">field_id</span> <span class="o">==</span> <span class="n">field_id</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">indx</span>
+                <span class="k">break</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="c1">#LOG.debug(&#39;MSReductionGroupDesc.__eq__&#39;)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw_name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_frequency</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">max_frequency</span> \
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_frequency</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">min_frequency</span> \
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">nchan</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">nchan</span> \
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">field_name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw_name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">spw_name</span> \
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">field_name</span>
+
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw_name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_frequency</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">max_frequency</span> \
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_frequency</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">min_frequency</span> \
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">nchan</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">nchan</span> \
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">field_name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw_name</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">spw_name</span> \
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">field_name</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw_name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;MSReductionGroupDesc(frequency_range=</span><span class="si">%s</span><span class="s1">, nchan=</span><span class="si">%s</span><span class="s1">, field=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, member=</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nchan</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="bp">self</span><span class="p">[:])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;MSReductionGroupDesc(spw_name=</span><span class="si">%s</span><span class="s1">, frequency_range=</span><span class="si">%s</span><span class="s1">, nchan=</span><span class="si">%s</span><span class="s1">, field=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, member=</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nchan</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="bp">self</span><span class="p">[:])</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

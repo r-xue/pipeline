@@ -1,0 +1,12 @@
+pipeline.hifv.heuristics.standard
+=================================
+
+.. automodule:: pipeline.hifv.heuristics.standard
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Standard
+   

@@ -1,0 +1,873 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.optimize</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">mswrapper</span>
+
+
+<span class="n">MEMORY_CHUNK_SIZE</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Size of the memory chunk when loading the MS (in GB)</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># AntennaFit is used to associate ant/pol metadata with the amp/phase best fits</span>
+<span class="n">AntennaFit</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;AntennaFit&#39;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s1">&#39;ant&#39;</span><span class="p">,</span> <span class="s1">&#39;pol&#39;</span><span class="p">,</span> <span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="s1">&#39;phase&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="c1"># LinearFitParameters is a struct to hold best fit parameters for a linear model</span>
+<span class="n">LinearFitParameters</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;LinearFitParameters&#39;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s1">&#39;slope&#39;</span><span class="p">,</span> <span class="s1">&#39;intercept&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="c1"># Outlier describes an outlier data selection with why it&#39;s an outlier, and by how much</span>
+<span class="n">Outlier</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;Outlier&#39;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">,</span> <span class="s1">&#39;intent&#39;</span><span class="p">,</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">,</span> <span class="s1">&#39;ant&#39;</span><span class="p">,</span> <span class="s1">&#39;pol&#39;</span><span class="p">,</span> <span class="s1">&#39;num_sigma&#39;</span><span class="p">,</span> <span class="s1">&#39;phase_offset_gt90deg&#39;</span><span class="p">,</span> <span class="s1">&#39;reason&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="c1"># ValueAndUncertainty is a simple 2-tuple to hold a value and the uncertainty in that value</span>
+<span class="n">ValueAndUncertainty</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;ValueAndUncertainty&#39;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;unc&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+
+
+<span class="c1"># nsigma thresholds for marking deviating fits as an outlier</span>
+<span class="n">AMPLITUDE_SLOPE_THRESHOLD</span> <span class="o">=</span> <span class="mf">25.0</span>
+<span class="n">AMPLITUDE_INTERCEPT_THRESHOLD</span> <span class="o">=</span> <span class="mf">53.0</span>
+<span class="n">PHASE_SLOPE_THRESHOLD</span> <span class="o">=</span> <span class="mf">40.0</span>
+<span class="n">PHASE_INTERCEPT_THRESHOLD</span> <span class="o">=</span> <span class="mf">60.5</span>
+
+
+<div class="viewcode-block" id="score_all_scans">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_all_scans">[docs]</a>
+<span class="k">def</span> <span class="nf">score_all_scans</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flag_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">memory_gb</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">MEMORY_CHUNK_SIZE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Outlier</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate best fits for amplitude vs frequency and phase vs frequency</span>
+<span class="sd">    for time-averaged visibilities, score each fit by comparison against a</span>
+<span class="sd">    reference value, and return outliers.</span>
+
+<span class="sd">    Outliers are returned as a list of Outlier objects.</span>
+
+<span class="sd">    By default, outliers are measured against a PWG-defined threshold for</span>
+<span class="sd">    each fit type. Set flag_all to True to make classify all fits as outliers.</span>
+<span class="sd">    This is useful when testing QA plugin score roll-up functionality.</span>
+
+<span class="sd">    :param ms: MeasurementSet to process</span>
+<span class="sd">    :param intent: data intent to process</span>
+<span class="sd">    :param memory_gb: maximum chunk size (in GB) used when loading the MeasurementSet</span>
+<span class="sd">    :param flag_all: (optional) True if all fits should be classified as</span>
+<span class="sd">        outliers</span>
+<span class="sd">    :return: outliers that deviate from a reference fit</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">outliers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">wrappers</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">scans</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">intent</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">:</span>
+        <span class="n">spws</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">spw</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">spws</span> <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;FDM&#39;</span><span class="p">,</span> <span class="s1">&#39;TDM&#39;</span><span class="p">)],</span>
+                      <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Applycal QA analysis: processing </span><span class="si">{}</span><span class="s1"> scan </span><span class="si">{}</span><span class="s1"> spw </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+            <span class="n">wrapper</span> <span class="o">=</span> <span class="n">mswrapper</span><span class="o">.</span><span class="n">MSWrapper</span><span class="o">.</span><span class="n">create_averages_from_ms</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">memory_gb</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">wrappers</span><span class="p">:</span>
+                <span class="n">wrappers</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">wrappers</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wrapper</span><span class="p">)</span>
+
+            <span class="n">fits</span> <span class="o">=</span> <span class="n">get_best_fits_per_ant</span><span class="p">(</span><span class="n">wrapper</span><span class="p">)</span>
+
+            <span class="n">outlier_fn</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+                <span class="n">Outlier</span><span class="p">,</span>
+                <span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="p">},</span>
+                <span class="n">intent</span><span class="o">=</span><span class="p">{</span><span class="n">intent</span><span class="p">,</span> <span class="p">},</span>
+                <span class="n">spw</span><span class="o">=</span><span class="p">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="p">},</span>
+                <span class="n">scan</span><span class="o">=</span><span class="p">{</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="p">}</span>
+            <span class="p">)</span>
+
+            <span class="n">outliers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">score_all</span><span class="p">(</span><span class="n">fits</span><span class="p">,</span> <span class="n">outlier_fn</span><span class="p">,</span> <span class="n">flag_all</span><span class="p">))</span>
+
+    <span class="c1"># Score all scans for a given spw</span>
+    <span class="k">for</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="n">wrappers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">wrappers</span><span class="p">[</span><span class="n">spw_id</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Applycal QA analysis: processing </span><span class="si">{}</span><span class="s1"> scan average spw </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">))</span>
+            <span class="c1"># Average wrappers</span>
+            <span class="n">average_wrapper</span> <span class="o">=</span> <span class="n">mswrapper</span><span class="o">.</span><span class="n">MSWrapper</span><span class="o">.</span><span class="n">create_averages_from_combination</span><span class="p">(</span><span class="n">wrappers</span><span class="p">[</span><span class="n">spw_id</span><span class="p">])</span>
+            <span class="n">average_fits</span> <span class="o">=</span> <span class="n">get_best_fits_per_ant</span><span class="p">(</span><span class="n">average_wrapper</span><span class="p">)</span>
+            <span class="n">outlier_fn</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+                <span class="n">Outlier</span><span class="p">,</span>
+                <span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="p">},</span>
+                <span class="n">intent</span><span class="o">=</span><span class="p">{</span><span class="n">intent</span><span class="p">,</span> <span class="p">},</span>
+                <span class="n">spw</span><span class="o">=</span><span class="p">{</span><span class="n">spw_id</span><span class="p">,</span> <span class="p">},</span>
+                <span class="n">scan</span><span class="o">=</span><span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">}</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Score average</span>
+            <span class="n">outliers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">score_all</span><span class="p">(</span><span class="n">average_fits</span><span class="p">,</span> <span class="n">outlier_fn</span><span class="p">,</span> <span class="n">flag_all</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Applycal QA analysis: skipping </span><span class="si">{}</span><span class="s1"> scan average spw </span><span class="si">{}</span><span class="s1"> due to single scan&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">outliers</span></div>
+
+
+
+<div class="viewcode-block" id="get_best_fits_per_ant">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_best_fits_per_ant">[docs]</a>
+<span class="k">def</span> <span class="nf">get_best_fits_per_ant</span><span class="p">(</span><span class="n">wrapper</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate and return the best amp/phase vs freq fits for data in the input</span>
+<span class="sd">    MSWrapper.</span>
+
+<span class="sd">    This function calculates an independent best fit per polarisation per</span>
+<span class="sd">    antenna, returning a list of AntennaFit objects that characterise the fit</span>
+<span class="sd">    parameters and fit uncertainties per fit.</span>
+
+<span class="sd">    :param wrapper: MSWrapper to process</span>
+<span class="sd">    :return: a list of AntennaFit objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">V_k</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">V</span>
+
+    <span class="n">corrected_data</span> <span class="o">=</span> <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;corrected_data&#39;</span><span class="p">]</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span>
+
+    <span class="n">num_antennas</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">num_chans</span> <span class="o">=</span> <span class="n">corrected_data</span><span class="o">.</span><span class="n">shape</span>
+    <span class="c1"># Filter cross-pol data</span>
+    <span class="n">pol_indices</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">wrapper</span><span class="o">.</span><span class="n">corr_axis</span><span class="o">==</span><span class="s1">&#39;XX&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">wrapper</span><span class="o">.</span><span class="n">corr_axis</span><span class="o">==</span><span class="s1">&#39;YY&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">all_fits</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_antennas</span><span class="p">):</span>
+        <span class="n">frequencies</span> <span class="o">=</span> <span class="n">V_k</span><span class="p">[</span><span class="s1">&#39;chan_freq&#39;</span><span class="p">][</span><span class="n">ant</span><span class="p">]</span>
+
+        <span class="n">bandwidth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">frequencies</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">frequencies</span><span class="p">)</span>
+        <span class="n">band_midpoint</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">frequencies</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">frequencies</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">frequency_scale</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">bandwidth</span>
+
+        <span class="n">amp_model_fn</span> <span class="o">=</span> <span class="n">get_linear_function</span><span class="p">(</span><span class="n">band_midpoint</span><span class="p">,</span> <span class="n">frequency_scale</span><span class="p">)</span>
+        <span class="n">ang_model_fn</span> <span class="o">=</span> <span class="n">get_angular_linear_function</span><span class="p">(</span><span class="n">band_midpoint</span><span class="p">,</span> <span class="n">frequency_scale</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pol_indices</span><span class="p">:</span>
+            <span class="n">visibilities</span> <span class="o">=</span> <span class="n">corrected_data</span><span class="p">[</span><span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">ta_sigma</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">[</span><span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="p">:]</span>
+
+            <span class="k">if</span> <span class="n">visibilities</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Could not fit ant </span><span class="si">{}</span><span class="s1"> pol </span><span class="si">{}</span><span class="s1">: data is completely flagged&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">))</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># PIPE-884: as of NumPy ver1.20, ma.abs() doesn&#39;t convert MaskedArray fill_value to float automatically. This</span>
+            <span class="c1"># introduces a casting-related ComplexWarning when the result is passed to ma.median(). We mitigate the warning</span>
+            <span class="c1"># by using the real part of filled value explicitly. See also below.</span>
+            <span class="n">median_sn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">visibilities</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ta_sigma</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">median_sn</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># PIPE-401: Check S/N and either fit or use average</span>
+                <span class="c1"># Fit the amplitude</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">amp_fit</span><span class="p">,</span> <span class="n">amp_err</span> <span class="o">=</span> <span class="n">get_amp_fit</span><span class="p">(</span><span class="n">amp_model_fn</span><span class="p">,</span> <span class="n">frequencies</span><span class="p">,</span> <span class="n">visibilities</span><span class="p">,</span> <span class="n">ta_sigma</span><span class="p">)</span>
+                    <span class="n">amplitude_fit</span> <span class="o">=</span> <span class="n">to_linear_fit_parameters</span><span class="p">(</span><span class="n">amp_fit</span><span class="p">,</span> <span class="n">amp_err</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="c1"># Antenna probably flagged..</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Could not fit phase vs frequency for ant </span><span class="si">{}</span><span class="s1"> pol </span><span class="si">{}</span><span class="s1"> (high S/N; amp. vs frequency)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">))</span>
+                    <span class="k">continue</span>
+                <span class="c1"># Fit the phase</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">phase_fit</span><span class="p">,</span> <span class="n">phase_err</span> <span class="o">=</span> <span class="n">get_phase_fit</span><span class="p">(</span><span class="n">amp_model_fn</span><span class="p">,</span> <span class="n">ang_model_fn</span><span class="p">,</span> <span class="n">frequencies</span><span class="p">,</span> <span class="n">visibilities</span><span class="p">,</span> <span class="n">ta_sigma</span><span class="p">)</span>
+                    <span class="n">phase_fit</span> <span class="o">=</span> <span class="n">to_linear_fit_parameters</span><span class="p">(</span><span class="n">phase_fit</span><span class="p">,</span> <span class="n">phase_err</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="c1"># Antenna probably flagged..</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Could not fit phase vs frequency for ant </span><span class="si">{}</span><span class="s1"> pol </span><span class="si">{}</span><span class="s1"> (high S/N; phase vs frequency)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">))</span>
+                    <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Low S/N for ant </span><span class="si">{}</span><span class="s1"> pol </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">))</span>
+                <span class="c1"># &#39;Fit&#39; the amplitude</span>
+                <span class="k">try</span><span class="p">:</span>  <span class="c1"># NOTE: PIPE-401 This try block may not be necessary</span>
+                    <span class="n">amp_vis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">visibilities</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+                    <span class="n">n_channels_unmasked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">~</span><span class="n">amp_vis</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">n_channels_unmasked</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">amplitude_fit</span> <span class="o">=</span> <span class="n">LinearFitParameters</span><span class="p">(</span>
+                            <span class="n">slope</span><span class="o">=</span><span class="n">ValueAndUncertainty</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">unc</span><span class="o">=</span><span class="mf">1.0e06</span><span class="p">),</span>
+                            <span class="n">intercept</span><span class="o">=</span><span class="n">ValueAndUncertainty</span><span class="p">(</span>
+                                <span class="n">value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">amp_vis</span><span class="p">),</span>
+                                <span class="n">unc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">amp_vis</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n_channels_unmasked</span><span class="p">))</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="s1">&#39;Could not fit phase vs frequency for ant </span><span class="si">{}</span><span class="s1"> pol </span><span class="si">{}</span><span class="s1"> (low S/N; amp. vs frequency)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">))</span>
+                        <span class="k">continue</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="c1"># Antenna probably flagged..</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="s1">&#39;Could not fit phase vs frequency for ant </span><span class="si">{}</span><span class="s1"> pol </span><span class="si">{}</span><span class="s1"> (low S/N; amp. vs frequency)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">))</span>
+                    <span class="k">continue</span>
+                <span class="c1"># &#39;Fit&#39; the phase</span>
+                <span class="k">try</span><span class="p">:</span>  <span class="c1"># NOTE: PIPE-401 This try block may not be necessary</span>
+                    <span class="n">phase_vis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">visibilities</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+                    <span class="n">n_channels_unmasked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">~</span><span class="n">phase_vis</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">n_channels_unmasked</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">phase_fit</span> <span class="o">=</span> <span class="n">LinearFitParameters</span><span class="p">(</span>
+                            <span class="n">slope</span><span class="o">=</span><span class="n">ValueAndUncertainty</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">unc</span><span class="o">=</span><span class="mf">1.0e06</span><span class="p">),</span>
+                            <span class="n">intercept</span><span class="o">=</span><span class="n">ValueAndUncertainty</span><span class="p">(</span>
+                                <span class="n">value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">phase_vis</span><span class="p">),</span>
+                                <span class="n">unc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">phase_vis</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n_channels_unmasked</span><span class="p">)</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="s1">&#39;Could not fit phase vs frequency for ant </span><span class="si">{}</span><span class="s1"> pol </span><span class="si">{}</span><span class="s1"> (low S/N; phase vs frequency)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">))</span>
+                        <span class="k">continue</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="c1"># Antenna probably flagged..</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Could not fit phase vs frequency for ant </span><span class="si">{}</span><span class="s1"> pol </span><span class="si">{}</span><span class="s1"> (low S/N; phase vs frequency)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">))</span>
+                    <span class="k">continue</span>
+
+            <span class="n">fit_obj</span> <span class="o">=</span> <span class="n">AntennaFit</span><span class="p">(</span><span class="n">ant</span><span class="o">=</span><span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">amp</span><span class="o">=</span><span class="n">amplitude_fit</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="n">phase_fit</span><span class="p">)</span>
+            <span class="n">all_fits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fit_obj</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">all_fits</span></div>
+
+
+
+<div class="viewcode-block" id="score_all">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_all">[docs]</a>
+<span class="k">def</span> <span class="nf">score_all</span><span class="p">(</span><span class="n">all_fits</span><span class="p">,</span> <span class="n">outlier_fn</span><span class="p">,</span> <span class="n">flag_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compare and score the calculated best fits based on how they deviate from</span>
+<span class="sd">    a reference value.</span>
+
+<span class="sd">    For all amplitude or slope vs frequency fits, score the slope or intercept</span>
+<span class="sd">    of the fit against the slope or intercept of the median best fit or a value</span>
+<span class="sd">    of 0, marking fits that deviate by sigma_threshold from the median dispersion</span>
+<span class="sd">    as outliers. Identified outliers are returned as a list of Outlier object</span>
+<span class="sd">    returned by the outlier_fn.</span>
+
+<span class="sd">    The outlier_fn argument should be a function that returns Outlier objects.</span>
+<span class="sd">    In practice, this function should be a partially-applied Outlier</span>
+<span class="sd">    constructor that requires a more required arguments to be</span>
+<span class="sd">    supplied for an Outlier instance to be created.</span>
+
+<span class="sd">    Setting the test argument flag_all to True sets all fits as outliers. This</span>
+<span class="sd">    is useful for testing the QA score roll-up and summary functions in the QA</span>
+<span class="sd">    plugin.</span>
+
+<span class="sd">    :param all_fits: list of all AntennaFit best fit parameters for all metrics</span>
+<span class="sd">    :param outlier_fn: a function returning Outlier objects</span>
+<span class="sd">    :param flag_all: True if all fits should be classed as outliers</span>
+<span class="sd">    :return: list of Outlier objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Dictionary for the different cases to consider. Each is defined by a tuple</span>
+    <span class="c1">#  with: attr, ref_value_fn, sigma_threshold</span>
+    <span class="n">score_definitions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;amp_slope&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;amp.slope&#39;</span><span class="p">,</span> <span class="n">get_median_fit</span><span class="p">,</span> <span class="n">AMPLITUDE_SLOPE_THRESHOLD</span><span class="p">),</span>
+        <span class="s2">&quot;amp_intercept&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;amp.intercept&#39;</span><span class="p">,</span> <span class="n">get_median_fit</span><span class="p">,</span> <span class="n">AMPLITUDE_INTERCEPT_THRESHOLD</span><span class="p">),</span>
+        <span class="s2">&quot;phase_slope&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;phase.slope&#39;</span><span class="p">,</span> <span class="n">PHASE_REF_FN</span><span class="p">,</span> <span class="n">PHASE_SLOPE_THRESHOLD</span><span class="p">),</span>
+        <span class="s2">&quot;phase_intercept&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;phase.intercept&#39;</span><span class="p">,</span> <span class="n">PHASE_REF_FN</span><span class="p">,</span> <span class="n">PHASE_INTERCEPT_THRESHOLD</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="n">outliers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">score_definitions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">flag_all</span> <span class="k">else</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">score_X_vs_freq_fits</span><span class="p">(</span><span class="n">all_fits</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">outlier_fn</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+        <span class="n">outliers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">outliers</span></div>
+
+
+
+<div class="viewcode-block" id="get_median_fit">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_median_fit">[docs]</a>
+<span class="k">def</span> <span class="nf">get_median_fit</span><span class="p">(</span><span class="n">all_fits</span><span class="p">,</span> <span class="n">accessor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the median best fit from a list of best fits.</span>
+
+<span class="sd">    The accessor argument should be a function that, when given the list of</span>
+<span class="sd">    all fits, returns fits of the desired type (amp.slope, phase.intercept,</span>
+<span class="sd">    etc.)</span>
+
+<span class="sd">    :param all_fits: mixed list of best fits</span>
+<span class="sd">    :type: list of AntennaFit instances</span>
+<span class="sd">    :param accessor: function to filter best fits</span>
+<span class="sd">    :return: median value and uncertainty of fits of selected type</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pol_slopes</span> <span class="o">=</span> <span class="p">[</span><span class="n">accessor</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">all_fits</span><span class="p">]</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">pol_slopes</span><span class="p">]</span>
+    <span class="n">median</span><span class="p">,</span> <span class="n">median_sigma</span> <span class="o">=</span> <span class="n">robust_stats</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ValueAndUncertainty</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">median</span><span class="p">,</span> <span class="n">unc</span><span class="o">=</span><span class="n">median_sigma</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="score_X_vs_freq_fits">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_X_vs_freq_fits">[docs]</a>
+<span class="k">def</span> <span class="nf">score_X_vs_freq_fits</span><span class="p">(</span><span class="n">all_fits</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">ref_value_fn</span><span class="p">,</span> <span class="n">outlier_fn</span><span class="p">,</span> <span class="n">sigma_threshold</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Score a set of best fits, comparing the fits identified by the &#39;attr&#39;</span>
+<span class="sd">    attribute against a reference value calculated by the ref_value_fn,</span>
+<span class="sd">    marking outliers that deviate by more than sigma_threshold from this</span>
+<span class="sd">    reference value as outliers, to be returned as Outlier objects created by</span>
+<span class="sd">    the outlier_fn.</span>
+
+<span class="sd">    :param all_fits: a list of fit parameters</span>
+<span class="sd">    :param attr: identifier of the fits to consider, e.g., &#39;amp.slope&#39;</span>
+<span class="sd">    :param ref_value_fn: a function that takes a list of fits and returns a</span>
+<span class="sd">        value to be used as a reference value in fit comparisons</span>
+<span class="sd">    :param outlier_fn: a function returning Outlier objects</span>
+<span class="sd">    :param sigma_threshold: the nsigma threshold to be considered an outlier</span>
+<span class="sd">    :return: list of Outlier objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># convert linear fit metadata to a reason that identifies this fit as</span>
+    <span class="c1"># originating from this metric in a wider context, e.g., from &#39;amp.slope&#39;</span>
+    <span class="c1"># to &#39;amp_vs_freq.slope&#39;</span>
+    <span class="n">y_axis</span><span class="p">,</span> <span class="n">fit_parameter</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="n">reason</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">y_axis</span><span class="si">}</span><span class="s1">_vs_freq.</span><span class="si">{</span><span class="n">fit_parameter</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">outlier_fn</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">outlier_fn</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="p">{</span><span class="n">reason</span><span class="p">,</span> <span class="p">})</span>
+
+    <span class="n">accessor</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+    <span class="n">outliers</span> <span class="o">=</span> <span class="n">score_fits</span><span class="p">(</span><span class="n">all_fits</span><span class="p">,</span> <span class="n">ref_value_fn</span><span class="p">,</span> <span class="n">accessor</span><span class="p">,</span> <span class="n">outlier_fn</span><span class="p">,</span> <span class="n">sigma_threshold</span><span class="p">)</span>
+
+    <span class="c1"># Check for &gt;90deg phase offsets which should have extra QA messages</span>
+    <span class="k">if</span> <span class="n">y_axis</span> <span class="o">==</span> <span class="s1">&#39;phase&#39;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">outliers</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">outliers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">phase_offset_gt90deg</span><span class="p">:</span>
+                <span class="n">outliers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Outlier</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">outliers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                                      <span class="n">intent</span><span class="o">=</span><span class="n">outliers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+                                      <span class="n">scan</span><span class="o">=</span><span class="n">outliers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">scan</span><span class="p">,</span>
+                                      <span class="n">spw</span><span class="o">=</span><span class="n">outliers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+                                      <span class="n">ant</span><span class="o">=</span><span class="n">outliers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ant</span><span class="p">,</span>
+                                      <span class="n">pol</span><span class="o">=</span><span class="n">outliers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">pol</span><span class="p">,</span>
+                                      <span class="n">num_sigma</span><span class="o">=</span><span class="n">outliers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">num_sigma</span><span class="p">,</span>
+                                      <span class="n">phase_offset_gt90deg</span><span class="o">=</span><span class="n">outliers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">phase_offset_gt90deg</span><span class="p">,</span>
+                                      <span class="n">reason</span><span class="o">=</span><span class="p">{</span><span class="sa">f</span><span class="s1">&#39;gt90deg_offset_</span><span class="si">{</span><span class="n">y_axis</span><span class="si">}</span><span class="s1">_vs_freq.</span><span class="si">{</span><span class="n">fit_parameter</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">})</span>
+    <span class="k">return</span> <span class="n">outliers</span></div>
+
+
+
+<div class="viewcode-block" id="score_fits">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_fits">[docs]</a>
+<span class="k">def</span> <span class="nf">score_fits</span><span class="p">(</span><span class="n">all_fits</span><span class="p">,</span> <span class="n">reference_value_fn</span><span class="p">,</span> <span class="n">accessor</span><span class="p">,</span> <span class="n">outlier_fn</span><span class="p">,</span> <span class="n">sigma_threshold</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Score a list of best fit parameters against a reference value, identifying</span>
+<span class="sd">    outliers as fits that deviate by more than sigma_threshold * std dev from</span>
+<span class="sd">    the reference value.</span>
+
+<span class="sd">    :param all_fits: list of AntennaFits</span>
+<span class="sd">    :param reference_value_fn: function that returns a reference</span>
+<span class="sd">        ValueAndUncertainty from a list of these objects</span>
+<span class="sd">    :param accessor: function that returns one LinearFitParameters from an</span>
+<span class="sd">        AntennaFit</span>
+<span class="sd">    :param outlier_fn: function that returns an Outlier instance</span>
+<span class="sd">    :param sigma_threshold: threshold nsigma deviation for comparisons</span>
+<span class="sd">    :return: list of Outliers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">median_cor_factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>  <span class="c1"># PIPE-401: factor due to using the median instead of the mean</span>
+    <span class="n">outliers</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">pols</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">pol</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">all_fits</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pols</span><span class="p">:</span>
+        <span class="n">pol_fits</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">all_fits</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">pol</span> <span class="o">==</span> <span class="n">pol</span><span class="p">]</span>
+        <span class="n">n_antennas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pol_fits</span><span class="p">)</span>
+
+        <span class="c1"># get reference val. Usually median, could be zero for phase</span>
+        <span class="n">reference_val</span><span class="p">,</span> <span class="n">sigma_sample</span> <span class="o">=</span> <span class="n">reference_value_fn</span><span class="p">(</span><span class="n">pol_fits</span><span class="p">,</span> <span class="n">accessor</span><span class="p">)</span>
+        <span class="n">reference_sigma</span> <span class="o">=</span> <span class="n">median_cor_factor</span> <span class="o">*</span> <span class="n">sigma_sample</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n_antennas</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">fit</span> <span class="ow">in</span> <span class="n">pol_fits</span><span class="p">:</span>
+            <span class="n">ant</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">ant</span>
+            <span class="n">unc</span> <span class="o">=</span> <span class="n">accessor</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span><span class="o">.</span><span class="n">unc</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">accessor</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">this_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">reference_sigma</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">unc</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">num_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="n">value</span> <span class="o">-</span> <span class="n">reference_val</span><span class="p">)</span> <span class="o">/</span> <span class="n">this_sigma</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">num_sigma</span> <span class="o">&gt;</span> <span class="n">sigma_threshold</span><span class="p">:</span>
+                <span class="n">outlier</span> <span class="o">=</span> <span class="n">outlier_fn</span><span class="p">(</span><span class="n">ant</span><span class="o">=</span><span class="p">{</span><span class="n">ant</span><span class="p">,</span> <span class="p">},</span> <span class="n">pol</span><span class="o">=</span><span class="p">{</span><span class="n">pol</span><span class="p">,</span> <span class="p">},</span> <span class="n">num_sigma</span><span class="o">=</span><span class="n">num_sigma</span><span class="p">,</span> <span class="n">phase_offset_gt90deg</span><span class="o">=</span><span class="nb">abs</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">phase</span><span class="o">.</span><span class="n">intercept</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+                <span class="n">outliers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outlier</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">outliers</span></div>
+
+
+
+<div class="viewcode-block" id="to_linear_fit_parameters">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.to_linear_fit_parameters">[docs]</a>
+<span class="k">def</span> <span class="nf">to_linear_fit_parameters</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span> <span class="n">err</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert tuples from the best fit evaluation into a LinearFitParameters</span>
+<span class="sd">    namedtuple.</span>
+
+<span class="sd">    :param fit: 2-tuple of (slope, intercept) best-fit parameters</span>
+<span class="sd">    :param err: 2-tuple of uncertainty in (slope, intercept) parameters</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">LinearFitParameters</span><span class="p">(</span><span class="n">slope</span><span class="o">=</span><span class="n">ValueAndUncertainty</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">unc</span><span class="o">=</span><span class="n">err</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                               <span class="n">intercept</span><span class="o">=</span><span class="n">ValueAndUncertainty</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">fit</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">unc</span><span class="o">=</span><span class="n">err</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span></div>
+
+
+
+<div class="viewcode-block" id="get_amp_fit">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_amp_fit">[docs]</a>
+<span class="k">def</span> <span class="nf">get_amp_fit</span><span class="p">(</span><span class="n">amp_model_fn</span><span class="p">,</span> <span class="n">frequencies</span><span class="p">,</span> <span class="n">visibilities</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fit a linear amplitude vs frequency model to a set of time-averaged</span>
+<span class="sd">    visibilities.</span>
+
+<span class="sd">    :param amp_model_fn: the amplitude linear model to optimise</span>
+<span class="sd">    :param frequencies: numpy array of channel frequencies</span>
+<span class="sd">    :param visibilities: numpy array of time-averaged visibilities</span>
+<span class="sd">    :param sigma: numpy array of uncertainies in time-averaged visibilities</span>
+<span class="sd">    :return: tuple of best fit params, uncertainty tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># calculate amplitude and phase from visibility, inc. std. deviations for each</span>
+    <span class="n">amp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">visibilities</span><span class="p">)</span>
+    <span class="c1"># angle of complex argument, in radians</span>
+    <span class="n">sigma_amp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">visibilities</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">visibilities</span><span class="o">.</span><span class="n">imag</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">amp</span>
+    <span class="n">sigma_phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">visibilities</span><span class="o">.</span><span class="n">imag</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">visibilities</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+            <span class="n">amp</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># curve_fit doesn&#39;t handle MaskedArrays, so mask out all bad data and</span>
+    <span class="c1"># convert to standard NumPy arrays</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">amp</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">sigma_amp</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sigma_phase</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">trimmed_frequencies</span> <span class="o">=</span> <span class="n">frequencies</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+    <span class="n">trimmed_amp</span> <span class="o">=</span> <span class="n">amp</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+    <span class="n">trimmed_sigma_amp</span> <span class="o">=</span> <span class="n">sigma_amp</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+
+    <span class="n">Cinit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">trimmed_amp</span><span class="p">)</span>
+
+    <span class="n">amp_fit</span><span class="p">,</span> <span class="n">amp_cov</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span><span class="n">amp_model_fn</span><span class="p">,</span> <span class="n">trimmed_frequencies</span><span class="p">,</span> <span class="n">trimmed_amp</span><span class="p">,</span>
+                                                <span class="n">p0</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">Cinit</span><span class="p">],</span> <span class="n">sigma</span><span class="o">=</span><span class="n">trimmed_sigma_amp</span><span class="p">,</span> <span class="n">absolute_sigma</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">amp_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">amp_cov</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">amp_fit</span><span class="p">,</span> <span class="n">amp_err</span></div>
+
+
+
+<div class="viewcode-block" id="get_phase_fit">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_phase_fit">[docs]</a>
+<span class="k">def</span> <span class="nf">get_phase_fit</span><span class="p">(</span><span class="n">amp_model_fn</span><span class="p">,</span> <span class="n">ang_model_fn</span><span class="p">,</span> <span class="n">frequencies</span><span class="p">,</span> <span class="n">visibilities</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fit a linear model for phase vs frequency to a set of time-averaged</span>
+<span class="sd">    visibilities.</span>
+
+<span class="sd">    :param amp_model_fn: model function for amplitude</span>
+<span class="sd">    :param ang_model_fn: model function for phase angle</span>
+<span class="sd">    :param frequencies: numpy array of channel frequencies</span>
+<span class="sd">    :param visibilities: numpy array of time-averaged visibilities</span>
+<span class="sd">    :param sigma: numpy array of uncertainies in time-averaged visibilities</span>
+<span class="sd">    :return: tuple of best fit params, uncertainty tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># calculate amplitude and phase from visibility, inc. std. deviations for each</span>
+    <span class="n">amp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">visibilities</span><span class="p">)</span>
+    <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">visibilities</span><span class="p">)</span>
+
+    <span class="n">zeroamp</span> <span class="o">=</span> <span class="p">(</span><span class="n">amp</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">amp</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">zeroamp</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">phase</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">zeroamp</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">sigma_amp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">visibilities</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span>
+            <span class="n">visibilities</span><span class="o">.</span><span class="n">imag</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">amp</span>
+    <span class="n">sigma_phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">visibilities</span><span class="o">.</span><span class="n">imag</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span>
+            <span class="n">visibilities</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">amp</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># curve_fit doesn&#39;t handle MaskedArrays, so mask out all bad data and</span>
+    <span class="c1"># convert to standard NumPy arrays</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">amp</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">sigma_amp</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sigma_phase</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">trimmed_frequencies</span> <span class="o">=</span> <span class="n">frequencies</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+    <span class="n">trimmed_phase</span> <span class="o">=</span> <span class="n">phase</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+    <span class="n">trimmed_sigma_phase</span> <span class="o">=</span> <span class="n">sigma_phase</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+
+    <span class="n">phi_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">trimmed_phase</span><span class="p">)</span>
+
+    <span class="c1"># normalise visibilities by amplitude to fit linear angular model</span>
+    <span class="n">normalised_visibilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">visibilities</span><span class="p">,</span> <span class="n">amp</span><span class="p">)</span>
+    <span class="n">normalised_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">amp</span><span class="p">)</span>
+
+    <span class="n">ang_fit_res</span> <span class="o">=</span> <span class="n">fit_angular_model</span><span class="p">(</span><span class="n">ang_model_fn</span><span class="p">,</span> <span class="n">frequencies</span><span class="p">,</span> <span class="n">normalised_visibilities</span><span class="p">,</span> <span class="n">normalised_sigma</span><span class="p">)</span>
+
+    <span class="c1"># Detrend phases using fit</span>
+    <span class="n">detrend_model</span> <span class="o">=</span> <span class="n">ang_model_fn</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="o">-</span><span class="n">ang_fit_res</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">ang_fit_res</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">detrend_data</span> <span class="o">=</span> <span class="n">normalised_visibilities</span> <span class="o">*</span> <span class="n">detrend_model</span>
+    <span class="n">detrend_phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">detrend_data</span><span class="p">)[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+
+    <span class="c1"># Refit phases to obtain errors from the same curve_fit method</span>
+    <span class="n">zerophasefit</span><span class="p">,</span> <span class="n">phasecov</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span><span class="n">amp_model_fn</span><span class="p">,</span> <span class="n">trimmed_frequencies</span><span class="p">,</span> <span class="n">detrend_phase</span><span class="p">,</span>
+                                                      <span class="n">p0</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">phi_init</span> <span class="o">-</span> <span class="n">ang_fit_res</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]],</span>
+                                                      <span class="n">sigma</span><span class="o">=</span><span class="n">trimmed_sigma_phase</span><span class="p">,</span> <span class="n">absolute_sigma</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Final result is detrending model + new fit (close to zero)</span>
+    <span class="n">phase_fit</span> <span class="o">=</span> <span class="n">ang_fit_res</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">zerophasefit</span>
+
+    <span class="n">phase_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">phasecov</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">phase_fit</span><span class="p">,</span> <span class="n">phase_err</span></div>
+
+
+
+<div class="viewcode-block" id="get_linear_function">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_linear_function">[docs]</a>
+<span class="k">def</span> <span class="nf">get_linear_function</span><span class="p">(</span><span class="n">midpoint</span><span class="p">,</span> <span class="n">x_scale</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a scaled linear function (a function of slope and intercept).</span>
+
+<span class="sd">    :param midpoint:</span>
+<span class="sd">    :param x_scale:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">slope</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">midpoint</span><span class="p">)),</span>
+            <span class="n">x_scale</span>
+        <span class="p">)</span> <span class="o">+</span> <span class="n">intercept</span>
+
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+
+<div class="viewcode-block" id="get_angular_linear_function">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_angular_linear_function">[docs]</a>
+<span class="k">def</span> <span class="nf">get_angular_linear_function</span><span class="p">(</span><span class="n">midpoint</span><span class="p">,</span> <span class="n">x_scale</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Angular linear model to fit phases only.</span>
+
+<span class="sd">    :param midpoint:</span>
+<span class="sd">    :param x_scale:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">linear_fn</span> <span class="o">=</span> <span class="n">get_linear_function</span><span class="p">(</span><span class="n">midpoint</span><span class="p">,</span> <span class="n">x_scale</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">linear_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+
+<div class="viewcode-block" id="get_chi2_ang_model">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_chi2_ang_model">[docs]</a>
+<span class="k">def</span> <span class="nf">get_chi2_ang_model</span><span class="p">(</span><span class="n">angular_model</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">angdata</span><span class="p">,</span> <span class="n">angsigma</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">angular_model</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">angdata</span> <span class="o">-</span> <span class="n">m</span>
+    <span class="n">aux</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">real</span> <span class="o">/</span> <span class="n">angsigma</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">imag</span> <span class="o">/</span> <span class="n">angsigma</span><span class="o">.</span><span class="n">imag</span><span class="p">))[</span><span class="o">~</span><span class="n">angdata</span><span class="o">.</span><span class="n">mask</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">aux</span><span class="o">.</span><span class="n">real</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="fit_angular_model">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.fit_angular_model">[docs]</a>
+<span class="k">def</span> <span class="nf">fit_angular_model</span><span class="p">(</span><span class="n">angular_model</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">angdata</span><span class="p">,</span> <span class="n">angsigma</span><span class="p">):</span>
+    <span class="n">f_aux</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">omega_phi</span><span class="p">:</span> <span class="n">get_chi2_ang_model</span><span class="p">(</span><span class="n">angular_model</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">omega_phi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">omega_phi</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">angdata</span><span class="p">,</span> <span class="n">angsigma</span><span class="p">)</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">angdata</span><span class="p">[</span><span class="o">~</span><span class="n">angdata</span><span class="o">.</span><span class="n">mask</span><span class="p">])</span>
+    <span class="n">phi_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+    <span class="n">fitres</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">f_aux</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">phi_init</span><span class="p">]),</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;L-BFGS-B&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fitres</span></div>
+
+
+
+<div class="viewcode-block" id="robust_stats">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.robust_stats">[docs]</a>
+<span class="k">def</span> <span class="nf">robust_stats</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return median and estimate standard deviation</span>
+<span class="sd">    of numpy array A using median statistics</span>
+
+<span class="sd">    :param a:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># correction factor for obtaining sigma from MAD</span>
+    <span class="n">madfactor</span> <span class="o">=</span> <span class="mf">1.482602218505602</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="c1"># Fitting parameters for sample size correction factor b(n)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.32</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.5</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.32</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.9</span>
+    <span class="n">bn</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">beta</span><span class="p">)</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">bn</span><span class="p">)</span> <span class="o">*</span> <span class="n">madfactor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">mu</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span></div>
+
+
+
+<div class="viewcode-block" id="consolidate_data_selections">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.consolidate_data_selections">[docs]</a>
+<span class="k">def</span> <span class="nf">consolidate_data_selections</span><span class="p">(</span><span class="n">outliers</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Consolidate a list of Outliers into a smaller set of equivalent Outliers</span>
+<span class="sd">    by consolidating their data selection arguments.</span>
+
+<span class="sd">    This function works by merging Outliers that have the same list of</span>
+<span class="sd">    reasons.</span>
+
+<span class="sd">    :param outliers: an iterable of Outliers</span>
+<span class="sd">    :return: an equivalent consolidated list of Outliers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># dict mapping an reason hash to the reason itself:</span>
+    <span class="n">hash_to_reason</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># dict mapping from object hash to corresponding list of Outliers</span>
+    <span class="n">reason_hash_to_outliers</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="c1"># create our maps of hashes, which we need to test for overlapping data</span>
+    <span class="c1"># selections</span>
+    <span class="k">for</span> <span class="n">outlier</span> <span class="ow">in</span> <span class="n">outliers</span><span class="p">:</span>
+        <span class="c1"># create a tuple, as lists are not hashable</span>
+        <span class="n">reason_hash</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">hash</span><span class="p">(</span><span class="n">reason</span><span class="p">)</span> <span class="k">for</span> <span class="n">reason</span> <span class="ow">in</span> <span class="n">outlier</span><span class="o">.</span><span class="n">reason</span><span class="p">])</span>
+        <span class="n">reason_hash_to_outliers</span><span class="p">[</span><span class="n">reason_hash</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outlier</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">reason_hash</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">hash_to_reason</span><span class="p">:</span>
+            <span class="n">hash_to_reason</span><span class="p">[</span><span class="n">reason_hash</span><span class="p">]</span> <span class="o">=</span> <span class="n">outlier</span><span class="o">.</span><span class="n">reason</span>
+
+    <span class="c1"># dict that maps holds accepted data selections and their reasons</span>
+    <span class="n">accepted</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">reason_hash</span><span class="p">,</span> <span class="n">outliers</span> <span class="ow">in</span> <span class="n">reason_hash_to_outliers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># assemble the other outliers which we will compare for conflicts</span>
+        <span class="n">other_outliers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">reason_hash_to_outliers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">reason_hash</span><span class="p">]:</span>
+            <span class="n">other_outliers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">outlier_to_merge</span> <span class="ow">in</span> <span class="n">outliers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">reason_hash</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">accepted</span><span class="p">:</span>
+                <span class="c1"># first time round for this outlier, therefore it can always</span>
+                <span class="c1"># be added as there will be nothing to merge</span>
+                <span class="n">accepted</span><span class="p">[</span><span class="n">reason_hash</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">outlier_to_merge</span><span class="p">)]</span>
+                <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">existing_outlier</span> <span class="ow">in</span> <span class="n">accepted</span><span class="p">[</span><span class="n">reason_hash</span><span class="p">]:</span>
+                <span class="n">proposed_outlier</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">existing_outlier</span><span class="p">)</span>
+
+                <span class="n">proposed_outlier</span><span class="o">.</span><span class="n">vis</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">outlier_to_merge</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+                <span class="n">proposed_outlier</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">outlier_to_merge</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+                <span class="n">proposed_outlier</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">outlier_to_merge</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+                <span class="n">proposed_outlier</span><span class="o">.</span><span class="n">scan</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">outlier_to_merge</span><span class="o">.</span><span class="n">scan</span><span class="p">)</span>
+                <span class="n">proposed_outlier</span><span class="o">.</span><span class="n">ant</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">outlier_to_merge</span><span class="o">.</span><span class="n">ant</span><span class="p">)</span>
+                <span class="n">proposed_outlier</span><span class="o">.</span><span class="n">pol</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">outlier_to_merge</span><span class="o">.</span><span class="n">pol</span><span class="p">)</span>
+
+                <span class="c1"># if the merged outlier does not conflict with any of the</span>
+                <span class="c1"># explicitly registered outliers that require a different</span>
+                <span class="c1"># reason, then it is safe to add the merged outlier and</span>
+                <span class="c1"># discard the unmerged data selection</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">((</span><span class="n">data_selection_contains</span><span class="p">(</span><span class="n">proposed_outlier</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">other_outliers</span><span class="p">)):</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;No conflicting outlier detected&#39;</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Accepting merged outlier: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">proposed_outlier</span><span class="p">))</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Discarding unmerged outlier: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">outlier_to_merge</span><span class="p">))</span>
+                    <span class="n">accepted</span><span class="p">[</span><span class="n">reason_hash</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">proposed_outlier</span><span class="p">]</span>
+                    <span class="k">break</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># we get here if all of the proposed outliers conflict with</span>
+                <span class="c1"># the outlier in hand. In this case, it should be added as it</span>
+                <span class="c1"># stands, completely unaltered.</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Merged outlier conflicts with other registrations&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Abandoning proposed outlier: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">proposed_outlier</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Appending new unmerged outlier: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">outlier_to_merge</span><span class="p">))</span>
+                <span class="n">unmergeable</span> <span class="o">=</span> <span class="n">outlier_to_merge</span>
+                <span class="n">accepted</span><span class="p">[</span><span class="n">reason_hash</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unmergeable</span><span class="p">)</span>
+
+    <span class="c1"># dict values are lists, which we need to flatten into a single list</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">accepted</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="data_selection_contains">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.data_selection_contains">[docs]</a>
+<span class="k">def</span> <span class="nf">data_selection_contains</span><span class="p">(</span><span class="n">proposed</span><span class="p">,</span> <span class="n">ds_args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return True if one data selection is contained within another.</span>
+
+<span class="sd">    :param proposed: data selection 1</span>
+<span class="sd">    :param ds_args: data selection 2</span>
+<span class="sd">    :return: True if data selection 2 is contained within data selection 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="ow">not</span> <span class="n">proposed</span><span class="o">.</span><span class="n">vis</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">ds_args</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span>
+                <span class="ow">not</span> <span class="n">proposed</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">ds_args</span><span class="o">.</span><span class="n">intent</span><span class="p">),</span>
+                <span class="ow">not</span> <span class="n">proposed</span><span class="o">.</span><span class="n">scan</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">ds_args</span><span class="o">.</span><span class="n">scan</span><span class="p">),</span>
+                <span class="ow">not</span> <span class="n">proposed</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">ds_args</span><span class="o">.</span><span class="n">spw</span><span class="p">),</span>
+                <span class="ow">not</span> <span class="n">proposed</span><span class="o">.</span><span class="n">ant</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">ds_args</span><span class="o">.</span><span class="n">ant</span><span class="p">),</span>
+                <span class="ow">not</span> <span class="n">proposed</span><span class="o">.</span><span class="n">pol</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">ds_args</span><span class="o">.</span><span class="n">pol</span><span class="p">)])</span></div>
+
+
+
+<span class="c1"># The function used to create the reference value for phase vs frequency best fits</span>
+<span class="c1"># Select this to compare fits against the median</span>
+<span class="c1"># PHASE_REF_FN = get_median_fit</span>
+<span class="c1"># Select this to compare fits against zero</span>
+<span class="n">PHASE_REF_FN</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">,</span> <span class="n">__</span><span class="p">:</span> <span class="n">ValueAndUncertainty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

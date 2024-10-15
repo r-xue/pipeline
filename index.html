@@ -1,0 +1,541 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pipeline Documentation &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Pipeline Heuristics Tasks" href="pipeline_tasks/pipeline_tasks.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Pipeline Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-documentation">
+<h1>Pipeline Documentation<a class="headerlink" href="#pipeline-documentation" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline_tasks/_autosummary_tasks/pipeline.html">pipeline</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pipeline.h.cli.html#module-pipeline.h.cli" title="pipeline.h.cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipeline.h.cli</span></code></a></p></td>
+<td><p>Generic Tasks</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pipeline.hif.cli.html#module-pipeline.hif.cli" title="pipeline.hif.cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipeline.hif.cli</span></code></a></p></td>
+<td><p>Interferometry Generic Tasks</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pipeline.hifa.cli.html#module-pipeline.hifa.cli" title="pipeline.hifa.cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipeline.hifa.cli</span></code></a></p></td>
+<td><p>Interferometry ALMA Tasks</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pipeline.hifv.cli.html#module-pipeline.hifv.cli" title="pipeline.hifv.cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipeline.hifv.cli</span></code></a></p></td>
+<td><p>Interferometry VLA Tasks</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pipeline.hsd.cli.html#module-pipeline.hsd.cli" title="pipeline.hsd.cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipeline.hsd.cli</span></code></a></p></td>
+<td><p>ALMA Single Dish Tasks</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pipeline.hsdn.cli.html#module-pipeline.hsdn.cli" title="pipeline.hsdn.cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipeline.hsdn.cli</span></code></a></p></td>
+<td><p>Nobeyama Tasks</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pipeline.domain.html#module-pipeline.domain" title="pipeline.domain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipeline.domain</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.html#module-pipeline.infrastructure.launcher" title="pipeline.infrastructure.launcher"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code></a></p></td>
+<td><p>The launcher module contains classes to initialize the pipeline, potentially from a saved context state.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="graphviz"><img src="_images/inheritance-ea1a4b72b93da41f66e5177d0dffd4020355d96f.png" alt="Inheritance diagram of sphinx.ext.inheritance_diagram.InheritanceDiagram" class="inheritance graphviz" /></div>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pipeline.domain.html#module-pipeline.domain" title="pipeline.domain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipeline.domain</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.html#module-pipeline.infrastructure.launcher" title="pipeline.infrastructure.launcher"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code></a></p></td>
+<td><p>The launcher module contains classes to initialize the pipeline, potentially from a saved context state.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="heuristics/field_parameter.html">Field parameter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="heuristics/field_parameter.html#background-info-on-usage-of-field-in-alma-and-casa">Background info on usage of ‘field’ in ALMA and CASA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heuristics/field_parameter.html#definition-of-field-in-pipeline">Definition of Field in Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heuristics/field_parameter.html#use-case-for-field-in-pipeline">Use-case for ‘field’ in Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heuristics/field_parameter.html#heuristics-to-derive-field-from-intent">Heuristics to derive field from intent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heuristics/field_parameter.html#future-development-ideas">Future development ideas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="heuristics/FlaggingTasks.html#summary-current-pipeline-tasks">Summary current pipeline tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heuristics/FlaggingTasks.html#general-overview-of-a-flagging-task-within-framework">General overview of a flagging task within framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heuristics/FlaggingTasks.html#how-individual-flagging-tasks-work">How individual flagging tasks work</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modular.html">Run the Pipeline in a Conda environment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modular.html#setup-the-environment-step-by-step">Setup the environment -  step-by-step</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modular.html#run-pipeline">Run Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modular.html#useful-shorthand">Useful shorthand</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies of <cite>Pipeline</cite></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dependencies.html#runtime">Runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dependencies.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basics.html">pipeline.domain</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basics.html#classes">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.Antenna.html">Antenna</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.AntennaArray.html">AntennaArray</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.DataDescription.html">DataDescription</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.DataTable.html">DataTable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.DataType.html">DataType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.Field.html">Field</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.FluxMeasurement.html">FluxMeasurement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.MeasurementSet.html">MeasurementSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.ObservingRun.html">ObservingRun</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.Polarization.html">Polarization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.Scan.html">Scan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.Source.html">Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.SpectralWindow.html">SpectralWindow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.SpectralWindowWithChannelSelection.html">SpectralWindowWithChannelSelection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.domain.State.html">State</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="basics.html#class-inheritance-diagram">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basics.html#id1">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.Context.html">Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.Pipeline.html">Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="basics.html#id2">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html">pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="task_classes.html#classes">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.ALMAAntpos.html">ALMAAntpos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.ALMAExportData.html">ALMAExportData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.ALMAImportData.html">ALMAImportData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.ALMAPhcorBandpass.html">ALMAPhcorBandpass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.ALMARestoreData.html">ALMARestoreData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.ALMATsysflag.html">ALMATsysflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.Bandpassflag.html">Bandpassflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.BpSolint.html">BpSolint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.DiffGaincal.html">DiffGaincal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.FlagDeterALMA.html">FlagDeterALMA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.FlagTargetsALMA.html">FlagTargetsALMA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.FluxcalFlag.html">FluxcalFlag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.GaincalSnr.html">GaincalSnr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.GcorFluxscale.html">GcorFluxscale</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.Gfluxscaleflag.html">Gfluxscaleflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.ImagePreCheck.html">ImagePreCheck</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.LockRefAnt.html">LockRefAnt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.Polcal.html">Polcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.Polcalflag.html">Polcalflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.Renorm.html">Renorm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.SessionALMAPhcorBandpass.html">SessionALMAPhcorBandpass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.SessionGcorFluxscale.html">SessionGcorFluxscale</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.SessionRefAnt.html">SessionRefAnt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.SpwPhaseup.html">SpwPhaseup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.Targetflag.html">Targetflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.TimeGaincal.html">TimeGaincal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.TsysFlagContamination.html">TsysFlagContamination</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.UnlockRefAnt.html">UnlockRefAnt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.Wvrgcal.html">Wvrgcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hifa.tasks.Wvrgcalflag.html">Wvrgcalflag</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="task_classes.html#class-inheritance-diagram">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="task_classes.html#id1">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Analyzealpha.html">Analyzealpha</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Antpos.html">Antpos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Bandpass.html">Bandpass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.BandpassMode.html">BandpassMode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.ChannelBandpass.html">ChannelBandpass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.CheckProductSize.html">CheckProductSize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Correctedampflag.html">Correctedampflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Editimlist.html">Editimlist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.FindCont.html">FindCont</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Fluxscale.html">Fluxscale</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.GSplineGaincal.html">GSplineGaincal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.GTypeGaincal.html">GTypeGaincal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Gaincal.html">Gaincal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.GaincalMode.html">GaincalMode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.IFApplycal.html">IFApplycal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.KTypeGaincal.html">KTypeGaincal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Lowgainflag.html">Lowgainflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.MakeImList.html">MakeImList</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.MakeImages.html">MakeImages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Makecutoutimages.html">Makecutoutimages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Makermsimages.html">Makermsimages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Mstransform.html">Mstransform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.PhcorBandpass.html">PhcorBandpass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Polarization.html">Polarization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.PolcalWorker.html">PolcalWorker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Rawflagchans.html">Rawflagchans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.RefAnt.html">RefAnt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Selfcal.html">Selfcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.SerialIFApplycal.html">SerialIFApplycal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.SerialRefAnt.html">SerialRefAnt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.SetModels.html">SetModels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Setjy.html">Setjy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Tclean.html">Tclean</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.Transformimagedata.html">Transformimagedata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_automodapi/pipeline.hif.tasks.UVcontSub.html">UVcontSub</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="task_classes.html#id2">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#pipeline-diagram">pipeline-diagram</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="task_classes.html#inheriance-diagram-for-importdata-classes">Inheriance Diagram for ImportData Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="task_classes.html#inheriance-diagram-taskclass">Inheriance Diagram TaskClass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="task_classes.html#inheriance-diagram-inputclass">Inheriance Diagram InputClass</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html#ppr">PPR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html#series-of-steps-invoking-casa-pipeline-tasks">Series of steps invoking CASA Pipeline tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html#creating-and-running-pipeline-tasks-bypassing-casa-task-interface">Creating and running Pipeline tasks, bypassing CASA task interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html#running-pipeline-with-the-recipereducer">Running Pipeline with the “recipereducer”</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html#create-custom-pipeline-processing-recipes-from-srdp-mustache-templates">Create custom Pipeline processing recipes from SRDP Mustache templates</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html#workflow-break-resume">Workflow Break/Resume</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html#context-by-stage">Context-by-Stage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html#break-resume">Break/Resume</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html#re-render-weblog">Re-render Weblog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html#note-on-using-executeppr-recipereducer-and-pipeline-cli-tasks">Note on using executeppr/recipereducer and Pipeline CLI tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html#known-issues">Known issues</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/comparing_pipeline_executions.html#ordered-pipeline-execution-logs">Ordered pipeline execution logs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/comparing_pipeline_executions.html#log-all-casa-task-calls">Log all CASA task calls</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/comparing_pipeline_executions.html#log-all-casa-tool-calls">Log all CASA tool calls</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/comparing_pipeline_executions.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/building_the_pipeline.html">Building the pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/building_the_pipeline.html#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/building_the_pipeline.html#downloading-and-installing-casa">Downloading and Installing CASA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/building_the_pipeline.html#dependency-requirements">Dependency Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/building_the_pipeline.html#standard-install">Standard install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/building_the_pipeline.html#developer-install">Developer install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/building_the_pipeline.html#pairing-casa-and-pipeline-at-runtime">Pairing CASA and Pipeline at runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/building_the_pipeline.html#pipeline-versioning">Pipeline versioning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/VLASS-SE-CONT-Imaging-Workflow.html#imaging-modes">Imaging modes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/VLASS-SE-CONT-Imaging-Workflow.html#task-level-workflow">Task level workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/VLASS-SE-CONT-Imaging-Workflow.html#hif-editimlist">hif_editimlist()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/VLASS-SE-CONT-Imaging-Workflow.html#hifv-vlassmasking">hifv_vlassmasking()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/VLASS-SE-CONT-Imaging-Workflow.html#hif-makeimages">hif_makeimages()</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/VLASS-SE-CONT-Imaging-Workflow.html#casa-6-1-specific-workaround">CASA 6.1 specific workaround</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html#task-changes">Task Changes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html#hifv-restorepims">hifv_restorepims</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html#hif-editimlist-pipe-1401">hif_editimlist (PIPE-1401)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html#hif-makeimages-pipe-1401">hif_makeimages (PIPE-1401)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html#hif-makermsimages">hif_makermsimages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html#hif-makecutoutimages">hif_makecutoutimages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html#hifv-analyzestokescubes-pipe-1356">hifv_analyzestokescubes (PIPE-1356)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html#hifv-exportvlassdata-pipe-1434">hifv_exportvlassdata (PIPE-1434)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html#workflow-summary">Workflow Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/selfcal_workflow.html#auto-selfcal-prototype">auto_selfcal prototype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/selfcal_workflow.html#pipelinetask-hif-selfcal">PipelineTask: <code class="docutils literal notranslate"><span class="pre">hif_selfcal</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/selfcal_workflow.html#ms-caltable-image-naming-convention-tentative">MS/Caltable/Image naming convention (tentative):</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/selfcal_workflow.html#ms-names">MS names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/selfcal_workflow.html#caltable-names">Caltable Names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/selfcal_workflow.html#image-names">Image Names</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/pipeline_tests.html">Pipeline testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/pipeline_tests.html#unit-tests">Unit tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/pipeline_tests.html#regression-tests">Regression tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/pipeline_tests.html#custom-pytest-options">Custom pytest options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/pipeline_tests.html#custom-markers">Custom markers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/QA_scores.html#pipeline-qa-handler-class-registration">Pipeline QA “Handler” Class Registration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/QA_scores.html#reference-on-alma-quality-assurance">Reference on ALMA Quality Assurance</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/DeveloperDocumentation.html#possible-sections">Possible sections</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/DeveloperDocumentation.html#context">Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/DeveloperDocumentation.html#imaging">Imaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/DeveloperDocumentation.html#task-interface">Task interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/DeveloperDocumentation.html#domain-object">Domain Object</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/python3_conversion_notes.html#updating-code-with-2to3-tool">Updating code with ‘2to3’ tool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develdocmd/python3_conversion_notes.html#examples-best-coding-practices">Examples best coding practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/python3_conversion_notes.html#print-statements">Print statements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/python3_conversion_notes.html#has-key-method-in-dictionaries">‘has_key’ method in dictionaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/python3_conversion_notes.html#raising-exceptions">Raising exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/python3_conversion_notes.html#catching-exceptions">Catching exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/python3_conversion_notes.html#checking-for-type">Checking for type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/python3_conversion_notes.html#relative-imports-within-package">Relative imports within package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/python3_conversion_notes.html#formatted-strings">Formatted strings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/python3_conversion_notes.html#reduce-builtin-is-deprecated">“reduce” builtin is deprecated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/python3_conversion_notes.html#is-deprecated-use">&lt;&gt; is deprecated, use !=</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/python3_conversion_notes.html#implicit-tuple-parameter-unpacking-is-no-longer-supported">Implicit tuple parameter unpacking is no longer supported</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develdocmd/python3_conversion_notes.html#map-filter-zip-now-return-an-iterable-object-instead-of-a-list">map, filter, zip now return an iterable object, instead of a list</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/test1.html">test</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/test1.html#id1">test</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/test2.html">Example 1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/test2.html#code-block-and-figure">Code Block and Figure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/test2.html#math-equations">Math Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/test2.html#citations-from-bib">Citations (from .bib)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline_tasks/pipeline_tasks.html" class="btn btn-neutral float-right" title="Pipeline Heuristics Tasks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,599 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.tasks.lowgainflag.lowgainflag &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.tasks.lowgainflag.lowgainflag</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.tasks.lowgainflag.lowgainflag</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain</span> <span class="k">as</span> <span class="nn">domain</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">calibrationtableaccess</span> <span class="k">as</span> <span class="n">caltableaccess</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">commonresultobjects</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">viewflaggers</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.flagging.flagdatasetter</span> <span class="kn">import</span> <span class="n">FlagdataSetter</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">bandpass</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">gaincal</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.refantflag</span> <span class="kn">import</span> <span class="n">identify_fully_flagged_antennas_from_flagview</span><span class="p">,</span> \
+    <span class="n">mark_antennas_for_refant_update</span><span class="p">,</span> <span class="n">aggregate_fully_flagged_antenna_notifications</span>
+<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">LowgainflagDataResults</span>
+<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">LowgainflagResults</span>
+<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">LowgainflagViewResults</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;LowgainflagInputs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Lowgainflag&#39;</span>
+<span class="p">]</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LowgainflagInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.lowgainflag.html#pipeline.hif.tasks.lowgainflag.lowgainflag.LowgainflagInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">LowgainflagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    LowgainflagInputs defines the inputs for the Lowgainflag pipeline task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">flag_nmedian</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fnm_hi_limit</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+    <span class="n">fnm_lo_limit</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># default to the intent that would be used for bandpass</span>
+        <span class="c1"># calibration</span>
+        <span class="n">bp_inputs</span> <span class="o">=</span> <span class="n">bandpass</span><span class="o">.</span><span class="n">PhcorBandpass</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bp_inputs</span><span class="o">.</span><span class="n">intent</span>
+
+    <span class="c1"># Flagging view is created if number of antennas in a set equals-or-exceeds</span>
+    <span class="c1"># the threshold.</span>
+    <span class="n">min_nants_threshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">niter</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># PIPE-566, PIPE-808: set threshold for &quot;too many entirely flagged&quot;</span>
+    <span class="n">tmef1_limit</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.666</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">refant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># we cannot find the context value without the measurement set</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># get the reference antenna for this measurement set</span>
+        <span class="n">ant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">reference_antenna</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ant</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">ant</span> <span class="o">=</span> <span class="n">ant</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># return the antenna name/id if this is an Antenna domain object</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ant</span><span class="p">,</span> <span class="n">domain</span><span class="o">.</span><span class="n">Antenna</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ant</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">ant</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="c1"># otherwise return whatever we found. We assume the calling function</span>
+        <span class="c1"># knows how to handle an object of this type.</span>
+        <span class="k">return</span> <span class="n">ant</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">science_spws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">with_channels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_nmedian</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fnm_lo_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fnm_hi_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_nants_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmef1_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LowgainflagInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># pipeline inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="c1"># vis must be set first, as other properties may depend on it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+
+        <span class="c1"># data selection arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refant</span> <span class="o">=</span> <span class="n">refant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_nants_threshold</span> <span class="o">=</span> <span class="n">min_nants_threshold</span>
+
+        <span class="c1"># flagging parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_nmedian</span> <span class="o">=</span> <span class="n">flag_nmedian</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fnm_hi_limit</span> <span class="o">=</span> <span class="n">fnm_hi_limit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fnm_lo_limit</span> <span class="o">=</span> <span class="n">fnm_lo_limit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">niter</span> <span class="o">=</span> <span class="n">niter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmef1_limit</span> <span class="o">=</span> <span class="n">tmef1_limit</span></div>
+
+
+
+<div class="viewcode-block" id="Lowgainflag">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.lowgainflag.html#pipeline.hif.tasks.lowgainflag.lowgainflag.Lowgainflag">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_lowgainflag&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
+    <span class="s1">&#39;Sometimes antennas have significantly lower gain than nominal. Even when calibrated, it is better for ALMA data to&#39;</span>
+    <span class="s1">&#39; flag these antennas. The pipeline detects this by calculating a long solint amplitude gain on the bandpass &#39;</span>
+    <span class="s1">&#39;calibrator.  First, temporary phase and bandpass solutions are calculated, and then that temporary bandpass is &#39;</span>
+    <span class="s1">&#39;used to calculate a short solint phase and long solint amplitude solution.&#39;</span>
+<span class="p">)</span>
+<span class="k">class</span> <span class="nc">Lowgainflag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">LowgainflagInputs</span>
+
+<div class="viewcode-block" id="Lowgainflag.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.lowgainflag.html#pipeline.hif.tasks.lowgainflag.lowgainflag.Lowgainflag.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Initialize result and store vis in result</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">LowgainflagResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Construct the task that will read the data.</span>
+        <span class="n">datainputs</span> <span class="o">=</span> <span class="n">LowgainflagDataInputs</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+            <span class="n">refant</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">)</span>
+        <span class="n">datatask</span> <span class="o">=</span> <span class="n">LowgainflagData</span><span class="p">(</span><span class="n">datainputs</span><span class="p">)</span>
+
+        <span class="c1"># Construct the generator that will create the view of the data</span>
+        <span class="c1"># that is the basis for flagging.</span>
+        <span class="n">viewtask</span> <span class="o">=</span> <span class="n">LowgainflagView</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+            <span class="n">spw</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span>
+            <span class="n">min_nants_threshold</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">min_nants_threshold</span><span class="p">)</span>
+
+        <span class="c1"># Construct the task that will set any flags raised in the</span>
+        <span class="c1"># underlying data.</span>
+        <span class="n">flagsetterinputs</span> <span class="o">=</span> <span class="n">FlagdataSetter</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="n">inpfile</span><span class="o">=</span><span class="p">[])</span>
+        <span class="n">flagsettertask</span> <span class="o">=</span> <span class="n">FlagdataSetter</span><span class="p">(</span><span class="n">flagsetterinputs</span><span class="p">)</span>
+
+        <span class="c1"># Define which type of flagger to use.</span>
+        <span class="n">flagger</span> <span class="o">=</span> <span class="n">viewflaggers</span><span class="o">.</span><span class="n">MatrixFlagger</span>
+
+        <span class="c1"># Translate the input flagging parameters to a more compact</span>
+        <span class="c1"># list of rules.</span>
+        <span class="n">rules</span> <span class="o">=</span> <span class="n">flagger</span><span class="o">.</span><span class="n">make_flag_rules</span><span class="p">(</span>
+            <span class="n">flag_nmedian</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">flag_nmedian</span><span class="p">,</span>
+            <span class="n">fnm_lo_limit</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">fnm_lo_limit</span><span class="p">,</span>
+            <span class="n">fnm_hi_limit</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">fnm_hi_limit</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-566: append a rule to detect when a flagging view has no usable</span>
+        <span class="c1"># (unflagged) data at all for a spw (e.g. because gaincal could not</span>
+        <span class="c1"># compute any solutions). In this case the underlying (bad) data in the</span>
+        <span class="c1"># MS for this spw should get flagged explicitly.</span>
+        <span class="n">rules</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">flagger</span><span class="o">.</span><span class="n">make_flag_rules</span><span class="p">(</span><span class="n">flag_tmef1</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tmef1_axis</span><span class="o">=</span><span class="s1">&#39;Antenna1&#39;</span><span class="p">,</span> <span class="n">tmef1_limit</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">tmef1_limit</span><span class="p">))</span>
+
+        <span class="c1"># Construct the flagger task around the data view task and the</span>
+        <span class="c1"># flagsetter task. </span>
+        <span class="n">matrixflaggerinputs</span> <span class="o">=</span> <span class="n">flagger</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">datatask</span><span class="o">=</span><span class="n">datatask</span><span class="p">,</span> <span class="n">viewtask</span><span class="o">=</span><span class="n">viewtask</span><span class="p">,</span>
+            <span class="n">flagsettertask</span><span class="o">=</span><span class="n">flagsettertask</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="n">rules</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">niter</span><span class="p">,</span>
+            <span class="n">extendfields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="s1">&#39;scan&#39;</span><span class="p">],</span> <span class="n">iter_datatask</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">skip_fully_flagged</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">flaggertask</span> <span class="o">=</span> <span class="n">flagger</span><span class="p">(</span><span class="n">matrixflaggerinputs</span><span class="p">)</span>
+
+        <span class="c1"># Execute the flagger task.</span>
+        <span class="n">flaggerresult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">flaggertask</span><span class="p">)</span>
+
+        <span class="c1"># Import views, flags, and &quot;measurement set or caltable to flag&quot;</span>
+        <span class="c1"># into final result</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">importfrom</span><span class="p">(</span><span class="n">flaggerresult</span><span class="p">)</span>
+
+        <span class="c1"># Copy flagging summaries to final result</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">summaries</span> <span class="o">=</span> <span class="n">flaggerresult</span><span class="o">.</span><span class="n">summaries</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="Lowgainflag.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.lowgainflag.html#pipeline.hif.tasks.lowgainflag.lowgainflag.Lowgainflag.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Analyses the Lowgainflag result.</span>
+
+<span class="sd">        :param result: LowgainflagResults object</span>
+<span class="sd">        :return: LowgainflagResults object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identify_refants_to_update</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_identify_refants_to_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the Lowgainflag result to mark any antennas that were found</span>
+<span class="sd">        to be fully flagged by the newly introduced flagging commands</span>
+<span class="sd">        to be demoted and/or removed when result gets accepted.</span>
+
+<span class="sd">        :param result: LowgainflagResults object</span>
+<span class="sd">        :return: LowgainflagResults object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># First summarize which antennas are fully flagged in any flagging view.</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
+
+        <span class="c1"># The flagging view shows antennas with flagging commands introduced in this stage,</span>
+        <span class="c1"># as well as those which have been flagged by earlier stages.</span>
+        <span class="c1"># OTOH the flagging commands only show the effect of this stage alone.</span>
+        <span class="c1"># The two uncommented lines below implement the former approach (currently used),</span>
+        <span class="c1"># and the commented-out line - the latter.</span>
+
+        <span class="n">scan_to_field_names</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">):</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">scans</span><span class="p">}</span>
+        <span class="n">fully_flagged_antennas</span> <span class="o">=</span> <span class="n">identify_fully_flagged_antennas_from_flagview</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">scan_to_field_names</span><span class="p">)</span>
+
+        <span class="c1"># fully_flagged_antennas = identify_fully_flagged_antennas_from_flagcmds(ms, result.flagcmds())</span>
+
+        <span class="c1"># If any fully flagged antennas were found, then update result to mark</span>
+        <span class="c1"># these antennas for demotion and/or removal.</span>
+        <span class="n">all_spw_ids</span> <span class="o">=</span> <span class="p">{</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)}</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">mark_antennas_for_refant_update</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">fully_flagged_antennas</span><span class="p">,</span> <span class="n">all_spw_ids</span><span class="p">)</span>
+
+        <span class="c1"># Aggregate the list of fully flagged antennas by intent, field and spw for subsequent QA scoring</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">fully_flagged_antenna_notifications</span> <span class="o">=</span> <span class="n">aggregate_fully_flagged_antenna_notifications</span><span class="p">(</span>
+            <span class="n">fully_flagged_antennas</span><span class="p">,</span> <span class="n">all_spw_ids</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<span class="k">class</span> <span class="nc">LowgainflagDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LowgainflagDataInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># pipeline inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="c1"># vis must be set first, as other properties may depend on it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+
+        <span class="c1"># data selection arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refant</span> <span class="o">=</span> <span class="n">refant</span>
+
+
+<span class="k">class</span> <span class="nc">LowgainflagData</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">LowgainflagDataInputs</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LowgainflagData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Initialize result structure</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">LowgainflagDataResults</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span>
+
+        <span class="c1"># Calculate a phased-up bpcal</span>
+        <span class="n">bpcal_inputs</span> <span class="o">=</span> <span class="n">bandpass</span><span class="o">.</span><span class="n">PhcorBandpass</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+            <span class="n">spw</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="s1">&#39;inf,7.8125MHz&#39;</span><span class="p">)</span>
+        <span class="n">bpcal_task</span> <span class="o">=</span> <span class="n">bandpass</span><span class="o">.</span><span class="n">PhcorBandpass</span><span class="p">(</span><span class="n">bpcal_inputs</span><span class="p">)</span>
+        <span class="n">bpcal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">bpcal_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bpcal</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No bandpass solution computed for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bpcal</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># Calculate gain phases</span>
+        <span class="n">gpcal_inputs</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+                                                   <span class="n">spw</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span> <span class="n">calmode</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+                                                   <span class="n">solint</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+        <span class="n">gpcal_task</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">gpcal_inputs</span><span class="p">)</span>
+        <span class="n">gpcal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">gpcal_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">gpcal</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No phase time solution computed for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gpcal</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># Calculate gain amplitudes</span>
+        <span class="n">gacal_inputs</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+            <span class="n">refant</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span>
+            <span class="n">calmode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="s1">&#39;inf&#39;</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
+        <span class="n">gacal_task</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">gacal_inputs</span><span class="p">)</span>
+        <span class="n">gacal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">gacal_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">gacal</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">gatable</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">gacal</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
+            <span class="n">gatable</span> <span class="o">=</span> <span class="n">gatable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No amplitude time solution computed for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">gatable</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">table_available</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gacal</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+            <span class="n">gatable</span> <span class="o">=</span> <span class="n">gacal</span><span class="o">.</span><span class="n">final</span>
+            <span class="n">gatable</span> <span class="o">=</span> <span class="n">gatable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">gatable</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">table_available</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">class</span> <span class="nc">LowgainflagView</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">min_nants_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refant</span> <span class="o">=</span> <span class="n">refant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_nants_threshold</span> <span class="o">=</span> <span class="n">min_nants_threshold</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+        <span class="c1"># Initialize result structure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">LowgainflagViewResults</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">table_available</span><span class="p">:</span>
+
+            <span class="c1"># Calculate the view</span>
+            <span class="n">gatable</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">table</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Computing flagging metrics for caltable </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">gatable</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calculate_view</span><span class="p">(</span><span class="n">gatable</span><span class="p">)</span>
+
+        <span class="c1"># Add visibility name to result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">calculate_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        table -- Name of gain table to be analysed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Open gains caltable.</span>
+        <span class="n">gtable</span> <span class="o">=</span> <span class="n">caltableaccess</span><span class="o">.</span><span class="n">CalibrationTableDataFiller</span><span class="o">.</span><span class="n">getcal</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+
+        <span class="c1"># Get range of scans covered.</span>
+        <span class="n">scans</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">gtable</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
+            <span class="c1"># The gain table is T, should be no pol dimension</span>
+            <span class="n">npols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">npols</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;table has polarization results&#39;</span><span class="p">)</span>
+            <span class="n">scans</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SCAN_NUMBER&#39;</span><span class="p">)])</span>
+        <span class="n">scans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">scans</span><span class="p">))</span>
+
+        <span class="c1"># Create translation of scan ID to flagging view axis ID.</span>
+        <span class="n">scanid_to_axisid</span> <span class="o">=</span> <span class="p">{</span><span class="n">scan_id</span><span class="p">:</span> <span class="n">axis_id</span> <span class="k">for</span> <span class="n">axis_id</span><span class="p">,</span> <span class="n">scan_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">scans</span><span class="p">)}</span>
+
+        <span class="c1"># Get the MS domain object.</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Get spw IDs from MS: the task input &quot;spw&quot; arg may contain channel</span>
+        <span class="c1"># specification, so let MS parse input and read spw ID from the</span>
+        <span class="c1"># SpectralWindow domain objects that are returned.</span>
+        <span class="n">spwids</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">)]</span>
+
+        <span class="c1"># Identify set of unique antenna diameters present in MS.</span>
+        <span class="n">ant_diameters</span> <span class="o">=</span> <span class="p">{</span><span class="n">antenna</span><span class="o">.</span><span class="n">diameter</span> <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">}</span>
+
+        <span class="c1"># Create separate flagging view for each set of antennas with</span>
+        <span class="c1"># same diameter.</span>
+        <span class="k">for</span> <span class="n">antdiam</span> <span class="ow">in</span> <span class="n">ant_diameters</span><span class="p">:</span>
+            <span class="c1"># Identify antennas with current diameter.</span>
+            <span class="n">antenna_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">antenna</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span> <span class="k">if</span> <span class="n">antenna</span><span class="o">.</span><span class="n">diameter</span> <span class="o">==</span> <span class="n">antdiam</span><span class="p">])</span>
+
+            <span class="c1"># Create translation of antenna ID to flagging view axis ID.</span>
+            <span class="n">antid_to_axisid</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant_id</span><span class="p">:</span> <span class="n">axis_id</span> <span class="k">for</span> <span class="n">axis_id</span><span class="p">,</span> <span class="n">ant_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">)}</span>
+            <span class="n">nants</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">)</span>
+
+            <span class="c1"># If the number of antennas is below the threshold, then skip</span>
+            <span class="c1"># flagging for the set with current diameter.</span>
+            <span class="k">if</span> <span class="n">nants</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_nants_threshold</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Number of antennas with diameter of </span><span class="si">{:.1f}</span><span class="s2"> m is&quot;</span>
+                    <span class="s2">&quot; below the minimum threshold (</span><span class="si">{}</span><span class="s2">), skipping&quot;</span>
+                    <span class="s2">&quot; flagging for these antennas (no flagging view&quot;</span>
+                    <span class="s2">&quot; created).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">antdiam</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_nants_threshold</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Create flagging view for each spwid.</span>
+                <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwids</span><span class="p">:</span>
+
+                    <span class="c1"># Initialize arrays for flagging view.</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">nants</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">scans</span><span class="p">)])</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">nants</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">scans</span><span class="p">)],</span> <span class="nb">bool</span><span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">gtable</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
+                        <span class="n">ant</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ANTENNA1&#39;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">spwid</span> <span class="ow">and</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">antenna_ids</span><span class="p">:</span>
+                            <span class="n">gain</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">gainflag</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">scan</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SCAN_NUMBER&#39;</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">gainflag</span><span class="p">:</span>
+                                <span class="n">data</span><span class="p">[</span><span class="n">antid_to_axisid</span><span class="p">[</span><span class="n">ant</span><span class="p">],</span> <span class="n">scanid_to_axisid</span><span class="p">[</span><span class="n">scan</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">gain</span><span class="p">)</span>
+                                <span class="n">flag</span><span class="p">[</span><span class="n">antid_to_axisid</span><span class="p">[</span><span class="n">ant</span><span class="p">],</span> <span class="n">scanid_to_axisid</span><span class="p">[</span><span class="n">scan</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span>
+
+                    <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">commonresultobjects</span><span class="o">.</span><span class="n">ResultAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Antenna1&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">)),</span>
+                        <span class="n">commonresultobjects</span><span class="o">.</span><span class="n">ResultAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Scan&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">],</span>
+                                                       <span class="n">channel_width</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="p">]</span>
+
+                    <span class="c1"># associate the result with a generic filename - using</span>
+                    <span class="c1"># specific names gives confusing duplicates on the weblog</span>
+                    <span class="c1"># display</span>
+                    <span class="n">ants</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">ant</span><span class="p">)</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">antenna_ids</span><span class="p">])</span>
+                    <span class="n">viewresult</span> <span class="o">=</span> <span class="n">commonresultobjects</span><span class="o">.</span><span class="n">ImageResult</span><span class="p">(</span>
+                        <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">(gtable)&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">gtable</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span>
+                        <span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="n">flag</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span>
+                        <span class="n">datatype</span><span class="o">=</span><span class="s1">&#39;gain amplitude&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spwid</span><span class="p">,</span>
+                        <span class="n">ant</span><span class="o">=</span><span class="n">ants</span><span class="p">)</span>
+
+                    <span class="c1"># add the view results and their children results to the</span>
+                    <span class="c1"># class result structure</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">viewresult</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">viewresult</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

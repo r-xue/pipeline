@@ -1,0 +1,14 @@
+pipeline.hif.tasks.bandpass.qa
+==============================
+
+.. automodule:: pipeline.hif.tasks.bandpass.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BandpassListQAHandler
+      BandpassQAHandler
+      BandpassQAPool
+   

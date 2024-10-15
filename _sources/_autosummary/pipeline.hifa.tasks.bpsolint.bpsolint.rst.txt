@@ -1,0 +1,21 @@
+pipeline.hifa.tasks.bpsolint.bpsolint
+=====================================
+
+.. automodule:: pipeline.hifa.tasks.bpsolint.bpsolint
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      check_strong_atm_lines
+      get_median_tsys_spectrum_from_caltable
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BpSolint
+      BpSolintInputs
+      BpSolintResults
+   

@@ -1,0 +1,347 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.common.direction_utils &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.common.direction_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.common.direction_utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">direction_utils.py: methods to convert coordinates for ephemeris sources.</span>
+
+<span class="sd">Methods to convert coordinates of ephemeris sources for single-dish pipeline</span>
+<span class="sd">are accumulated here.</span>
+<span class="sd">For SD ephemeris sources, two types of coordinates are introduced:</span>
+<span class="sd">&#39;Shifted-direction&#39; and &#39;Offset-direction&#39;.</span>
+<span class="sd">Both coodinates deal with time-by-time observing direction </span>
+<span class="sd">when an ephemeris source is scanned (typically with raster scan).</span>
+<span class="sd">&#39;Offset-direction&#39; is a coordinate-system where the time-by-time direction </span>
+<span class="sd">is shifted so that the source position is centered at the origin (0 ,0)</span>
+<span class="sd">of the RA/Dec plane. In other words, diretions of each observing point </span>
+<span class="sd">during the scan are calculated as the offset from the ephemeris source.</span>
+<span class="sd">&#39;Shifted-direction&#39; is a coordinate-system where </span>
+<span class="sd">the time-by-time direction is shifted so that the source position </span>
+<span class="sd">is centered at &#39;origin&#39; (or org_direction), </span>
+<span class="sd">which is where the epheris source resided on the RA/Dec plane </span>
+<span class="sd">at the time of the first on-source observing point in the dataset. </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">NewType</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="n">Quantity</span>  <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span> <span class="s1">&#39;Quantity&#39;</span><span class="p">,</span>  <span class="n">Dict</span> <span class="p">)</span>
+<span class="n">Direction</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span> <span class="s1">&#39;Direction&#39;</span><span class="p">,</span> <span class="n">Dict</span> <span class="p">)</span>
+<span class="n">Epoch</span>     <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span> <span class="s1">&#39;Epoch&#39;</span><span class="p">,</span>     <span class="n">Dict</span> <span class="p">)</span>
+<span class="n">Position</span>  <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span> <span class="s1">&#39;Position&#39;</span><span class="p">,</span>  <span class="n">Dict</span> <span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;direction_shift&#39;</span><span class="p">,</span> <span class="s1">&#39;direction_offset&#39;</span><span class="p">,</span> <span class="s1">&#39;direction_recover&#39;</span><span class="p">,</span> <span class="s1">&#39;direction_convert&#39;</span> <span class="p">}</span>
+
+
+<div class="viewcode-block" id="direction_shift">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.direction_utils.direction_shift">[docs]</a>
+<span class="k">def</span> <span class="nf">direction_shift</span><span class="p">(</span> <span class="n">direction</span><span class="p">:</span><span class="n">Direction</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span><span class="n">Direction</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span><span class="n">Direction</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Direction</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the &#39;shifted-direction&#39; of the observing point.</span>
+
+<span class="sd">    This method calculates the &#39;shifted-direction&#39; of the observing point</span>
+<span class="sd">    from the time-by-time diretion of obsering points and the moving source,</span>
+<span class="sd">    and a given &#39;origin&#39;. </span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        direction: direction to be converted  </span>
+<span class="sd">                   (eg. time-by-time position of observing points)</span>
+<span class="sd">        reference: reference direction </span>
+<span class="sd">                   (eg. time-by-time position of the moving source on the sky)</span>
+<span class="sd">        origin:    direction of the origin </span>
+<span class="sd">                   (eg. where to centerized the new image)           </span>
+<span class="sd">    Returns:                           </span>
+<span class="sd">        shifted-direction (reference centerized at origin)</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        RunTimeRrror: If &#39;refer&#39;s are inconsistent among direction, reference, and origin</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check if &#39;refer&#39;s are all identical for each directions</span>
+    <span class="k">if</span> <span class="n">origin</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">reference</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span> <span class="s2">&quot;&#39;refer&#39; of reference and origin should be identical&quot;</span> <span class="p">)</span>
+    <span class="k">if</span> <span class="n">direction</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">reference</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span> <span class="s2">&quot;&#39;refer&#39; of reference and direction should be identical&quot;</span> <span class="p">)</span>
+
+    <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span> <span class="n">reference</span><span class="p">,</span> <span class="n">origin</span> <span class="p">)</span>
+    <span class="n">posang</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">posangle</span><span class="p">(</span> <span class="n">reference</span><span class="p">,</span> <span class="n">origin</span> <span class="p">)</span>
+    <span class="n">new_direction</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span> <span class="n">direction</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">pa</span><span class="o">=</span><span class="n">posang</span> <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_direction</span></div>
+
+
+
+<div class="viewcode-block" id="direction_offset">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.direction_utils.direction_offset">[docs]</a>
+<span class="k">def</span> <span class="nf">direction_offset</span><span class="p">(</span> <span class="n">direction</span><span class="p">:</span><span class="n">Direction</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span><span class="n">Direction</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Direction</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the &#39;offset-direction&#39; of the observing point.</span>
+
+<span class="sd">    This method calculates the &#39;offset-direction&#39; of the observing point </span>
+<span class="sd">    from the time-by-time diretion of obsering points and the moving source.</span>
+<span class="sd">    This is equivallent to calling </span>
+<span class="sd">    direction_shift( direction, reference, origin ) with </span>
+<span class="sd">    the coordinate-origin (0, 0) as &#39;origin&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        direction: direction to be converted  </span>
+<span class="sd">                   (eg. time-by-time position of observing points)</span>
+<span class="sd">        reference: reference direction </span>
+<span class="sd">                   (eg. time-by-time position of the moving source on the sky)</span>
+<span class="sd">    Returns:                           </span>
+<span class="sd">        offset-direction (reference centerized at (0,0) )</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        RunTimeError: If &#39;refer&#39;s of directoin and reference are inconsistent</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check if &#39;refer&#39;s are all identical for each directions</span>
+    <span class="k">if</span> <span class="n">direction</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">reference</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span> <span class="s2">&quot;&#39;refer&#39; of reference and direction should be identical&quot;</span> <span class="p">)</span>
+
+    <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span> <span class="n">reference</span><span class="p">,</span> <span class="n">direction</span> <span class="p">)</span>
+    <span class="n">posang</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">posangle</span><span class="p">(</span> <span class="n">reference</span><span class="p">,</span> <span class="n">direction</span> <span class="p">)</span>
+
+    <span class="n">outref</span> <span class="o">=</span> <span class="n">direction</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]</span>
+    <span class="n">zero_direction</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span> <span class="n">outref</span><span class="p">,</span> <span class="s1">&#39;0.0deg&#39;</span><span class="p">,</span> <span class="s1">&#39;0.0deg&#39;</span> <span class="p">)</span>
+    <span class="n">new_direction</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span> <span class="n">zero_direction</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">pa</span><span class="o">=</span><span class="n">posang</span> <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_direction</span></div>
+
+
+
+<div class="viewcode-block" id="direction_recover">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.direction_utils.direction_recover">[docs]</a>
+<span class="k">def</span> <span class="nf">direction_recover</span><span class="p">(</span> <span class="n">ra</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">org_direction</span><span class="p">:</span><span class="n">Direction</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Recovers the &#39;Shifted-coordinate&#39; from &#39;Offset-coordinate&#39;.</span>
+
+<span class="sd">    Recovers the &#39;Shifted-coordinate&#39; values from the specified </span>
+<span class="sd">    &#39;Offset-coordinate&#39; values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ra:  ra of &#39;Offset-corrdinate&#39;</span>
+<span class="sd">        dec: dec of &#39;Offset-coordinate&#39;</span>
+<span class="sd">        org_direction: direction of the origin</span>
+<span class="sd">    Returns:                                                               </span>
+<span class="sd">        return value: ra, dec in &#39;Shift-coordinate&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+    <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+    <span class="n">direction</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span> <span class="n">org_direction</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">],</span>
+                              <span class="nb">str</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;deg&#39;</span> <span class="p">)</span>
+    <span class="n">zero_direction</span>  <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span> <span class="n">org_direction</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">],</span> <span class="s1">&#39;0deg&#39;</span><span class="p">,</span> <span class="s1">&#39;0deg&#39;</span> <span class="p">)</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span> <span class="n">zero_direction</span><span class="p">,</span> <span class="n">direction</span> <span class="p">)</span>
+    <span class="n">posang</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">posangle</span><span class="p">(</span> <span class="n">zero_direction</span><span class="p">,</span> <span class="n">direction</span> <span class="p">)</span>
+    <span class="n">new_direction</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span> <span class="n">org_direction</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">pa</span><span class="o">=</span><span class="n">posang</span> <span class="p">)</span>
+    <span class="n">new_ra</span>  <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span> <span class="n">new_direction</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span> <span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="n">new_dec</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span> <span class="n">new_direction</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span> <span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">new_ra</span><span class="p">,</span> <span class="n">new_dec</span></div>
+
+
+
+<div class="viewcode-block" id="direction_convert">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.direction_utils.direction_convert">[docs]</a>
+<span class="k">def</span> <span class="nf">direction_convert</span><span class="p">(</span><span class="n">direction</span><span class="p">:</span><span class="n">Direction</span><span class="p">,</span> <span class="n">mepoch</span><span class="p">:</span><span class="n">Epoch</span><span class="p">,</span> <span class="n">mposition</span><span class="p">:</span><span class="n">Position</span><span class="p">,</span> <span class="n">outframe</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert the frame of the &#39;direction&#39; to &#39;outframe&#39;.</span>
+
+<span class="sd">    Convert the &#39;frame&#39; of the direction to that specified as &#39;outframe&#39;.</span>
+<span class="sd">    If &#39;outframe&#39; is identical to the frame of the &#39;direction&#39;, </span>
+<span class="sd">    the original &#39;direction&#39; will be returned.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        direction:  original direction</span>
+<span class="sd">        mepoch:     epoch</span>
+<span class="sd">        mposition:  position</span>
+<span class="sd">        outframe:   frame of output direction</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        return values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">direction_type</span> <span class="o">=</span> <span class="n">direction</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">direction_type</span> <span class="o">==</span> <span class="s1">&#39;direction&#39;</span>
+    <span class="n">inframe</span> <span class="o">=</span> <span class="n">direction</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]</span>
+
+    <span class="c1"># if outframe is same as input direction reference, just return</span>
+    <span class="c1"># direction as it is</span>
+    <span class="k">if</span> <span class="n">outframe</span> <span class="o">==</span> <span class="n">inframe</span><span class="p">:</span>
+        <span class="c1"># return direction</span>
+        <span class="k">return</span> <span class="n">direction</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">],</span> <span class="n">direction</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">]</span>
+
+    <span class="c1"># conversion using measures tool</span>
+    <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+    <span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">mepoch</span><span class="p">)</span>
+    <span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">mposition</span><span class="p">)</span>
+    <span class="n">out_direction</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">outframe</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out_direction</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">],</span> <span class="n">out_direction</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

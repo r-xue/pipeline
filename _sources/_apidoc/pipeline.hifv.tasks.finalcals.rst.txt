@@ -1,0 +1,53 @@
+pipeline.hifv.tasks.finalcals package
+=====================================
+
+Submodules
+----------
+
+pipeline.hifv.tasks.finalcals.applycals module
+----------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.finalcals.applycals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.finalcals.display module
+--------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.finalcals.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.finalcals.finalcals module
+----------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.finalcals.finalcals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.finalcals.qa module
+---------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.finalcals.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.finalcals.renderer module
+---------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.finalcals.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifv.tasks.finalcals
+   :members:
+   :undoc-members:
+   :show-inheritance:

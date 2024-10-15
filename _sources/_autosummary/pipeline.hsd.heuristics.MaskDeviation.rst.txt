@@ -1,0 +1,13 @@
+pipeline.hsd.heuristics.MaskDeviation
+=====================================
+
+.. automodule:: pipeline.hsd.heuristics.MaskDeviation
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MaskDeviation
+      MaskDeviationHeuristic
+   

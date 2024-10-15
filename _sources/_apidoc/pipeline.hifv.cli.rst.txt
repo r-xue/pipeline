@@ -1,0 +1,285 @@
+pipeline.hifv.cli package
+=========================
+
+Submodules
+----------
+
+pipeline.hifv.cli.hifv\_analyzestokescubes module
+-------------------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_analyzestokescubes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_applycals module
+----------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_applycals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_checkflag module
+----------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_checkflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_circfeedpolcal module
+---------------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_circfeedpolcal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_exportdata module
+-----------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_exportdata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_exportvlassdata module
+----------------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_exportvlassdata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_finalcals module
+----------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_finalcals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_fixpointing module
+------------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_fixpointing
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_flagcal module
+--------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_flagcal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_flagdata module
+---------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_flagdata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_flagtargetsdata module
+----------------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_flagtargetsdata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_fluxboot module
+---------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_fluxboot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_gaincurves module
+-----------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_gaincurves
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_hanning module
+--------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_hanning
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_importdata module
+-----------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_importdata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_mstransform module
+------------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_mstransform
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_opcal module
+------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_opcal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_pbcor module
+------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_pbcor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_plotsummary module
+------------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_plotsummary
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_priorcals module
+----------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_priorcals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_restoredata module
+------------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_restoredata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_restorepims module
+------------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_restorepims
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_rqcal module
+------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_rqcal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_selfcal module
+--------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_selfcal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_semiFinalBPdcals module
+-----------------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_semiFinalBPdcals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_solint module
+-------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_solint
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_statwt module
+-------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_statwt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_swpowcal module
+---------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_swpowcal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_syspower module
+---------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_syspower
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_targetflag module
+-----------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_targetflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_tecmaps module
+--------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_tecmaps
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_testBPdcals module
+------------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_testBPdcals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_vlasetjy module
+---------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_vlasetjy
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.cli.hifv\_vlassmasking module
+-------------------------------------------
+
+.. automodule:: pipeline.hifv.cli.hifv_vlassmasking
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifv.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:

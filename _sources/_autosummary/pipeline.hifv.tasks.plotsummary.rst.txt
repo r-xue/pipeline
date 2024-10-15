@@ -1,0 +1,22 @@
+pipeline.hifv.tasks.plotsummary
+===============================
+
+.. automodule:: pipeline.hifv.tasks.plotsummary
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PlotSummary
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   plotsummary
+   qa
+   renderer

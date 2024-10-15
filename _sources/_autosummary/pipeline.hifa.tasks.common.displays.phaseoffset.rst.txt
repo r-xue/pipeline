@@ -1,0 +1,19 @@
+pipeline.hifa.tasks.common.displays.phaseoffset
+===============================================
+
+.. automodule:: pipeline.hifa.tasks.common.displays.phaseoffset
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      reduce
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PhaseOffsetPlot
+      PhaseOffsetPlotHelper
+   

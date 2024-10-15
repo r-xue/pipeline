@@ -1,0 +1,21 @@
+pipeline.hif.tasks.makecutoutimages
+===================================
+
+.. automodule:: pipeline.hif.tasks.makecutoutimages
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Makecutoutimages
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   makecutoutimages
+   renderer

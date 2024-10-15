@@ -1,0 +1,13 @@
+pipeline.hif.heuristics.imageparams\_alma
+=========================================
+
+.. automodule:: pipeline.hif.heuristics.imageparams_alma
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ImageParamsHeuristics
+      ImageParamsHeuristicsALMA
+   

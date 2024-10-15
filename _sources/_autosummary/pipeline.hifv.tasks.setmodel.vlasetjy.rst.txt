@@ -1,0 +1,21 @@
+pipeline.hifv.tasks.setmodel.vlasetjy
+=====================================
+
+.. automodule:: pipeline.hifv.tasks.setmodel.vlasetjy
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      find_EVLA_band
+      find_standards
+      standard_sources
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      VLASetjy
+      VLASetjyInputs
+   

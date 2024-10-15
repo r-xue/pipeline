@@ -1,0 +1,45 @@
+pipeline.infrastructure.eventbus
+================================
+
+.. automodule:: pipeline.infrastructure.eventbus
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      send_message
+      subscribe
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ContextCreatedEvent
+      ContextLifecycleEvent
+      ContextResumedEvent
+      Event
+      ResultAcceptErrorEvent
+      ResultAcceptedEvent
+      ResultAcceptingEvent
+      ResultLifecycleEvent
+      TaskAbnormalExitEvent
+      TaskCompleteEvent
+      TaskLifecycleEvent
+      TaskStartedEvent
+      WebLogLifecycleEvent
+      WebLogRenderingCompleteEvent
+      WebLogRenderingStartedEvent
+      WebLogStageLifecycleEvent
+      WebLogStageRenderingAbnormalExitEvent
+      WebLogStageRenderingCompleteEvent
+      WebLogStageRenderingStartedEvent
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   eventbus
+   events

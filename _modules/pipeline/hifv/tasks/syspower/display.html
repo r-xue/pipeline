@@ -1,0 +1,783 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.syspower.display &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.syspower.display</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.syspower.display</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span> <span class="k">as</span> <span class="n">atime</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.logger</span> <span class="k">as</span> <span class="nn">logger</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.casa_tasks</span> <span class="k">as</span> <span class="nn">casa_tasks</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.casa_tools</span> <span class="k">as</span> <span class="nn">casa_tools</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="syspowerBoxChart">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBoxChart">[docs]</a>
+<span class="k">class</span> <span class="nc">syspowerBoxChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">dat_common</span><span class="p">,</span> <span class="n">band</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dat_common</span> <span class="o">=</span> <span class="n">dat_common</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">band</span> <span class="o">=</span> <span class="n">band</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">gaintable</span>
+        <span class="c1"># results[4].read()[0].rq_result[0].final[0].gaintable</span>
+
+<div class="viewcode-block" id="syspowerBoxChart.plot">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBoxChart.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">(</span><span class="s1">&#39;syspower_box&#39;</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="syspowerBoxChart.create_plot">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBoxChart.create_plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+        <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+
+        <span class="n">antenna_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">]</span>
+
+        <span class="c1"># box plot of Pdiff template</span>
+        <span class="n">dat_common</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dat_common</span> <span class="c1"># self.result.dat_common</span>
+        <span class="n">clip_sp_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">clip_sp_template</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating syspower box chart for </span><span class="si">{!s}</span><span class="s2">-band...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+        <span class="n">dshape</span> <span class="o">=</span> <span class="n">dat_common</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">ant_dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">dat_common</span><span class="p">,</span> <span class="n">newshape</span><span class="o">=</span><span class="p">(</span><span class="n">dshape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">dshape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])))</span>
+        <span class="n">ant_dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ant_dat</span><span class="p">)</span>
+        <span class="n">ant_dat</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">ant_dat</span><span class="p">)</span>
+        <span class="n">ant_dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_outside</span><span class="p">(</span><span class="n">ant_dat</span><span class="p">,</span> <span class="n">clip_sp_template</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">clip_sp_template</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">ant_dat_filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">ant_dat</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">~</span><span class="n">ant_dat</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dshape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">ant_dat_filtered</span><span class="p">,</span> <span class="n">whis</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sym</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">clip_sp_template</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">clip_sp_template</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Template Pdiff   </span><span class="si">{!s}</span><span class="s1">-band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Antenna&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="syspowerBoxChart.get_figfile">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBoxChart.get_figfile">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
+                            <span class="s1">&#39;syspower-</span><span class="si">{!s}</span><span class="s1">-&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">)</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">-box.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="syspowerBoxChart.get_plot_wrapper">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBoxChart.get_plot_wrapper">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+        <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+
+        <span class="n">wrapper</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">figfile</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;freq&#39;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                                                                                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">prefix</span><span class="p">,</span>
+                                                                                <span class="s1">&#39;largecaption&#39;</span><span class="p">:</span> <span class="s1">&#39;Template pdiff&#39;</span><span class="p">,</span>
+                                                                                <span class="s1">&#39;smallcaption&#39;</span><span class="p">:</span> <span class="s1">&#39;Template pdiff&#39;</span><span class="p">,</span>
+                                                                                <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                                                <span class="s1">&#39;band&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">figfile</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;syspower summary plot not found. Creating new plot.&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">create_plot</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not create &#39;</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39; plot.&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">wrapper</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="syspowerBarChart">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBarChart">[docs]</a>
+<span class="k">class</span> <span class="nc">syspowerBarChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span>  <span class="n">dat_common</span><span class="p">,</span> <span class="n">band</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dat_common</span> <span class="o">=</span> <span class="n">dat_common</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">band</span> <span class="o">=</span> <span class="n">band</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">gaintable</span>
+        <span class="c1"># results[4].read()[0].rq_result[0].final[0].gaintable</span>
+
+<div class="viewcode-block" id="syspowerBarChart.plot">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBarChart.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">(</span><span class="s1">&#39;syspower_bar&#39;</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="syspowerBarChart.create_plot">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBarChart.create_plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+        <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+
+        <span class="n">antenna_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">]</span>
+
+        <span class="c1"># box plot of Pdiff template</span>
+        <span class="n">dat_common</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dat_common</span>  <span class="c1"># self.result.dat_common</span>
+        <span class="n">clip_sp_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">clip_sp_template</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating syspower bar chart for </span><span class="si">{!s}</span><span class="s2">-band...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+        <span class="n">dshape</span> <span class="o">=</span> <span class="n">dat_common</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">ant_dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">dat_common</span><span class="p">,</span> <span class="n">newshape</span><span class="o">=</span><span class="p">(</span><span class="n">dshape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">dshape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])))</span>
+        <span class="n">ant_dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ant_dat</span><span class="p">)</span>
+        <span class="n">ant_dat</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">ant_dat</span><span class="p">)</span>
+        <span class="n">ant_dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_outside</span><span class="p">(</span><span class="n">ant_dat</span><span class="p">,</span> <span class="n">clip_sp_template</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">clip_sp_template</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># fraction of flagged data in Pdiff template</span>
+        <span class="n">percent_flagged_by_antenna</span> <span class="o">=</span> <span class="p">[</span><span class="mf">100.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ant_dat</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">ant_dat</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dshape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">dshape</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span> <span class="n">percent_flagged_by_antenna</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Fraction of Flagged Solutions (%)     </span><span class="si">{!s}</span><span class="s1">-band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Antenna&#39;</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="syspowerBarChart.get_figfile">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBarChart.get_figfile">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
+                            <span class="s1">&#39;syspower-</span><span class="si">{!s}</span><span class="s1">-&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">)</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">-bar.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="syspowerBarChart.get_plot_wrapper">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBarChart.get_plot_wrapper">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+        <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+
+        <span class="n">wrapper</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">figfile</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;freq&#39;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                                                                                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">prefix</span><span class="p">,</span>
+                                                                                <span class="s1">&#39;largecaption&#39;</span><span class="p">:</span> <span class="s1">&#39;Fraction of flagged solutions&#39;</span><span class="p">,</span>
+                                                                                <span class="s1">&#39;smallcaption&#39;</span><span class="p">:</span> <span class="s1">&#39;Fraction of flagged solutions&#39;</span><span class="p">,</span>
+                                                                                <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                                                <span class="s1">&#39;band&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">figfile</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;syspower summary plot not found. Creating new plot.&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">create_plot</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not create &#39;</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39; plot.&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">wrapper</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="compressionSummary">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.compressionSummary">[docs]</a>
+<span class="k">class</span> <span class="nc">compressionSummary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">spowerdict</span><span class="p">,</span> <span class="n">band</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spowerdict</span> <span class="o">=</span> <span class="n">spowerdict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">band</span> <span class="o">=</span> <span class="n">band</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">gaintable</span>
+
+<div class="viewcode-block" id="compressionSummary.plot">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.compressionSummary.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">(</span><span class="s1">&#39;compressionSummary&#39;</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="compressionSummary.create_plot">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.compressionSummary.create_plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+        <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating syspower compression summary chart for </span><span class="si">{!s}</span><span class="s2">-band...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">))</span>
+
+        <span class="n">spws</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">basebands</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">baseband</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">band_baseband_spw</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">]:</span>
+            <span class="n">spws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">band_baseband_spw</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">][</span><span class="n">baseband</span><span class="p">])</span>
+            <span class="n">basebands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">baseband</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;/SYSPOWER&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">stb</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID in [</span><span class="si">{!s}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">])))</span>
+            <span class="n">sp_time</span> <span class="o">=</span> <span class="n">stb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+
+        <span class="n">sorted_time</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">sp_time</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+        <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="n">utc_time</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">time</span> <span class="ow">in</span> <span class="n">sorted_time</span><span class="p">:</span>
+            <span class="n">q1</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span>
+            <span class="n">time1</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;fits&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">datetime_object</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">timestr</span> <span class="o">=</span> <span class="n">time1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">timestr</span> <span class="o">=</span> <span class="n">timestr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;T24&#39;</span><span class="p">,</span> <span class="s1">&#39;T23&#39;</span><span class="p">)</span>
+                <span class="n">datetime_object</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">timestr</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S&#39;</span><span class="p">)</span>
+                <span class="n">datetime_object</span> <span class="o">+=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">utc_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime_object</span><span class="p">)</span>
+
+        <span class="c1"># Get scans</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+        <span class="n">scans</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spws</span><span class="p">)</span>
+
+        <span class="n">scantimes</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">:</span>
+            <span class="n">epoch</span> <span class="o">=</span> <span class="n">scan</span><span class="o">.</span><span class="n">start_time</span>
+            <span class="c1"># PIPE-2156, replacing quanta.splitdate with astropy.time</span>
+            <span class="c1"># to resolve a bug in plotting</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">atime</span><span class="p">(</span><span class="n">epoch</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;mjd&#39;</span><span class="p">)</span>
+            <span class="n">dd</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">datetime</span>
+            <span class="c1"># datestring = dd.strftime(&#39;%Y-%m-%dT%H:%M:%S&#39;)</span>
+            <span class="n">scantimes</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;scanid&#39;</span><span class="p">:</span> <span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">dd</span><span class="p">})</span>
+
+        <span class="n">pdiff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spowerdict</span><span class="p">[</span><span class="s1">&#39;spower_common&#39;</span><span class="p">]</span>  <span class="c1"># self.result.spowerdict[&#39;spower_common&#39;]</span>
+        <span class="n">pdiff_ma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_equal</span><span class="p">(</span><span class="n">pdiff</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">numsubplots</span> <span class="o">=</span> <span class="mi">4</span>   <span class="c1"># Default</span>
+        <span class="n">ncorr</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">basebands</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">numsubplots</span> <span class="o">=</span> <span class="n">ncorr</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">basebands</span><span class="p">)</span>
+        <span class="n">fig0</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">numsubplots</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="s1">&#39;col&#39;</span><span class="p">)</span>
+        <span class="n">this_alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="n">pc</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Running plot count</span>
+        <span class="k">for</span> <span class="n">iplot</span><span class="p">,</span> <span class="n">baseband</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">basebands</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">jplot</span><span class="p">,</span> <span class="n">corr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;RR&#39;</span><span class="p">,</span> <span class="s1">&#39;LL&#39;</span><span class="p">]):</span>
+                <span class="n">axes</span><span class="p">[</span><span class="n">pc</span><span class="p">]</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">utc_time</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">pdiff_ma</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="n">iplot</span><span class="p">,</span> <span class="n">jplot</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">mfc</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">mew</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                   <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">this_alpha</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">)</span>
+                <span class="n">axes</span><span class="p">[</span><span class="n">pc</span><span class="p">]</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">utc_time</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">pdiff_ma</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="n">iplot</span><span class="p">,</span> <span class="n">jplot</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">mfc</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">mew</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                   <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">this_alpha</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">)</span>
+                <span class="n">axes</span><span class="p">[</span><span class="n">pc</span><span class="p">]</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">utc_time</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">pdiff_ma</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="n">iplot</span><span class="p">,</span> <span class="n">jplot</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">mfc</span><span class="o">=</span><span class="s1">&#39;brown&#39;</span><span class="p">,</span> <span class="n">mew</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                   <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">this_alpha</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
+                <span class="n">axes</span><span class="p">[</span><span class="n">pc</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">)</span>
+                <span class="n">axes</span><span class="p">[</span><span class="n">pc</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{!s}</span><span class="s1"> </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">baseband</span><span class="p">,</span> <span class="n">corr</span><span class="p">))</span>
+                <span class="n">pc</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Assumes at least one baseband in the SDM</span>
+        <span class="k">for</span> <span class="n">scantime</span> <span class="ow">in</span> <span class="n">scantimes</span><span class="p">:</span>
+            <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot_date</span><span class="p">([</span><span class="n">scantime</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]],</span> <span class="p">[</span><span class="mf">1.2</span><span class="p">],</span> <span class="s1">&#39;k|&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mf">20.0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">scantime</span><span class="p">[</span><span class="s1">&#39;scanid&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">offset</span> <span class="o">=</span> <span class="mf">1.225</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">offset</span> <span class="o">=</span> <span class="mf">1.285</span>
+            <span class="n">plottime</span> <span class="o">=</span> <span class="n">scantime</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+            <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">plottime</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">scantime</span><span class="p">[</span><span class="s1">&#39;scanid&#39;</span><span class="p">]),</span> <span class="n">fontsize</span><span class="o">=</span><span class="s1">&#39;xx-small&#39;</span><span class="p">)</span>
+        <span class="c1"># leg = axes[0].legend(loc=&#39;lower center&#39;, ncol=3, bbox_to_anchor=(0.5, 1.0), frameon=True, numpoints=1,</span>
+        <span class="c1">#                      fancybox=False)</span>
+        <span class="n">leg</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center right&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.52</span><span class="p">),</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">numpoints</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                             <span class="n">fancybox</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># title = axes[0].set_title(&#39;P_diff template summary    {!s}-band&#39;.format(self.band))</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;  &#39;</span><span class="p">)</span>
+        <span class="n">title</span><span class="o">.</span><span class="n">set_position</span><span class="p">([</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">1.225</span><span class="p">])</span>
+
+        <span class="n">axes</span><span class="p">[</span><span class="n">numsubplots</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;UTC Day Time [Day HH:MM]      </span><span class="si">{!s}</span><span class="s1">-band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">))</span>
+
+        <span class="n">fig0</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span>
+        <span class="n">leg</span><span class="o">.</span><span class="n">set_bbox_to_anchor</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">))</span>
+        <span class="c1"># mpld3.save_html(fig0, figname.replace(&#39;.png&#39;, &#39;.html&#39;))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig0</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="compressionSummary.get_figfile">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.compressionSummary.get_figfile">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
+                            <span class="s1">&#39;syspower-</span><span class="si">{!s}</span><span class="s1">-&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">)</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">-compressionSummary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="compressionSummary.get_plot_wrapper">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.compressionSummary.get_plot_wrapper">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+        <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+
+        <span class="n">wrapper</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">figfile</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;pdiff&#39;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                                                                                   <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">prefix</span><span class="p">,</span>
+                                                                                   <span class="s1">&#39;largecaption&#39;</span><span class="p">:</span> <span class="s1">&#39;Compression pdiff template summary&#39;</span><span class="p">,</span>
+                                                                                   <span class="s1">&#39;smallcaption&#39;</span><span class="p">:</span> <span class="s1">&#39;Compression summary (scan numbers indicated on the top axis)&#39;</span><span class="p">,</span>
+                                                                                   <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                                                   <span class="s1">&#39;band&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">figfile</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;syspower compressionSummary plot not found. Creating new plot.&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">create_plot</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not create &#39;</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39; plot.&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">wrapper</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="medianSummary">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.medianSummary">[docs]</a>
+<span class="k">class</span> <span class="nc">medianSummary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">spowerdict</span><span class="p">,</span> <span class="n">band</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spowerdict</span> <span class="o">=</span> <span class="n">spowerdict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">band</span> <span class="o">=</span> <span class="n">band</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">gaintable</span>
+
+<div class="viewcode-block" id="medianSummary.plot">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.medianSummary.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">(</span><span class="s1">&#39;medianSummary&#39;</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="medianSummary.create_plot">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.medianSummary.create_plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+        <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+
+        <span class="c1"># Note that the original script needs the following variables (named differently)</span>
+        <span class="c1"># Original pdiff from spower_common</span>
+        <span class="c1"># New variable determined via np.ma.masked_equal(pdiff, 0)</span>
+        <span class="c1"># Second variable determined via np.ma.masked_where(&lt;2nd variable&gt;== 0, &lt;2nd variable&gt;)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating syspower compression median pdiff summary chart for </span><span class="si">{!s}</span><span class="s2">-band...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">))</span>
+
+        <span class="n">spws</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">basebands</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">baseband</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">band_baseband_spw</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">]:</span>
+            <span class="n">spws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">band_baseband_spw</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">][</span><span class="n">baseband</span><span class="p">])</span>
+            <span class="n">basebands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">baseband</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;/SYSPOWER&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">stb</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID in [</span><span class="si">{!s}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">])))</span>
+            <span class="n">sp_time</span> <span class="o">=</span> <span class="n">stb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+
+        <span class="n">sorted_time</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">sp_time</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+        <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="n">utc_time</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">time</span> <span class="ow">in</span> <span class="n">sorted_time</span><span class="p">:</span>
+            <span class="n">q1</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span>
+            <span class="n">time1</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;fits&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">datetime_object</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">timestr</span> <span class="o">=</span> <span class="n">time1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">timestr</span> <span class="o">=</span> <span class="n">timestr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;T24&#39;</span><span class="p">,</span> <span class="s1">&#39;T23&#39;</span><span class="p">)</span>
+                <span class="n">datetime_object</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">timestr</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S&#39;</span><span class="p">)</span>
+                <span class="n">datetime_object</span> <span class="o">+=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">utc_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime_object</span><span class="p">)</span>
+
+        <span class="c1"># Get scans</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+        <span class="n">scans</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spws</span><span class="p">)</span>
+
+        <span class="n">scantimes</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">:</span>
+            <span class="n">epoch</span> <span class="o">=</span> <span class="n">scan</span><span class="o">.</span><span class="n">start_time</span>
+            <span class="c1"># PIPE-2156, replacing quanta.splitdate with astropy.time</span>
+            <span class="c1"># to resolve a bug in plotting</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">atime</span><span class="p">(</span><span class="n">epoch</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;mjd&#39;</span><span class="p">)</span>
+            <span class="n">dd</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">datetime</span>
+            <span class="c1"># datestring = dd.strftime(&#39;%Y-%m-%dT%H:%M:%S&#39;)</span>
+            <span class="n">scantimes</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;scanid&#39;</span><span class="p">:</span> <span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">dd</span><span class="p">})</span>
+
+        <span class="n">pd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spowerdict</span><span class="p">[</span><span class="s1">&#39;spower_common&#39;</span><span class="p">]</span>  <span class="c1"># self.result.spowerdict[&#39;spower_common&#39;]</span>
+        <span class="n">pdiff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_equal</span><span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">pdiff_ma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_where</span><span class="p">(</span><span class="n">pdiff</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pdiff</span><span class="p">)</span>
+
+        <span class="n">xrange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">pdiff</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+        <span class="n">pdiff_ma</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">pdiff_ma</span> <span class="o">&gt;</span> <span class="mf">1.1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.1</span>
+        <span class="n">pdiff_ma</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">pdiff_ma</span> <span class="o">&lt;</span> <span class="mf">0.8</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.7</span>
+        <span class="n">n_blank</span> <span class="o">=</span> <span class="mi">100</span>
+
+        <span class="c1"># https://github.com/numpy/numpy/issues/14650</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pdiff_ma</span><span class="o">.</span><span class="n">mask</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:</span><span class="n">n_blank</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">pdiff_ma</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">:</span>
+                <span class="n">pdiff_ma</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">pdiff_ma</span><span class="p">)</span>
+            <span class="n">pdiff_ma</span><span class="o">.</span><span class="n">mask</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:</span><span class="n">n_blank</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Issue with the array mask </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No zero values in pdiff - mask value set to a scalar boolean.  Reset to a matrix. &quot;</span><span class="p">)</span>
+
+        <span class="n">ma_medians</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">pdiff_ma</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">fig0</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">iplot</span><span class="p">,</span> <span class="n">baseband</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">basebands</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">jplot</span><span class="p">,</span> <span class="n">corr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;RR&#39;</span><span class="p">,</span> <span class="s1">&#39;LL&#39;</span><span class="p">]):</span>
+                <span class="n">these_medians</span> <span class="o">=</span> <span class="n">ma_medians</span><span class="p">[</span><span class="n">iplot</span><span class="p">,</span> <span class="n">jplot</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="n">hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">these_medians</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">utc_time</span><span class="p">)[</span><span class="n">hits</span><span class="p">],</span> <span class="n">these_medians</span><span class="p">[</span><span class="n">hits</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">mew</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                              <span class="n">label</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{!s}</span><span class="s1"> </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">baseband</span><span class="p">,</span> <span class="n">corr</span><span class="p">))</span>
+
+        <span class="c1"># Scale</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mf">0.98</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ma_medians</span><span class="p">),</span> <span class="mf">1.01</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ma_medians</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">scantime</span> <span class="ow">in</span> <span class="n">scantimes</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot_date</span><span class="p">([</span><span class="n">scantime</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]],</span> <span class="p">[</span><span class="mf">1.01</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ma_medians</span><span class="p">)],</span> <span class="s1">&#39;k|&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mf">20.0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">scantime</span><span class="p">[</span><span class="s1">&#39;scanid&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">offset</span> <span class="o">=</span> <span class="mf">1.0105</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">offset</span> <span class="o">=</span> <span class="mf">1.0120</span>
+            <span class="n">plottime</span> <span class="o">=</span> <span class="n">scantime</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">plottime</span><span class="p">,</span> <span class="n">offset</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ma_medians</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">scantime</span><span class="p">[</span><span class="s1">&#39;scanid&#39;</span><span class="p">]),</span> <span class="n">fontsize</span><span class="o">=</span><span class="s1">&#39;xx-small&#39;</span><span class="p">)</span>
+
+        <span class="c1"># plt.xlim(0, pdiff.shape[3])</span>
+        <span class="n">leg</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper center&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="s1">&#39;x-small&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;UTC Day Time [Day HH:MM]&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;median P_diff     </span><span class="si">{!s}</span><span class="s1">-band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">))</span>
+        <span class="c1"># p lt.ticklabel_format(useOffset=False)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span>
+        <span class="n">leg</span><span class="o">.</span><span class="n">set_bbox_to_anchor</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">))</span>
+        <span class="c1"># mpld3.save_html(fig0, figname.replace(&#39;.png&#39;, &#39;.html&#39;))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig0</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="medianSummary.get_figfile">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.medianSummary.get_figfile">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
+                            <span class="s1">&#39;syspower-</span><span class="si">{!s}</span><span class="s1">-&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">)</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">-medianSummary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="medianSummary.get_plot_wrapper">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.medianSummary.get_plot_wrapper">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+        <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+
+        <span class="n">wrapper</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">figfile</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;pdiff&#39;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                                                                                  <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">prefix</span><span class="p">,</span>
+                                                                                  <span class="s1">&#39;largecaption&#39;</span><span class="p">:</span> <span class="s1">&#39;Median pdiff summary&#39;</span><span class="p">,</span>
+                                                                                  <span class="s1">&#39;smallcaption&#39;</span><span class="p">:</span> <span class="s1">&#39;Median pdiff summary (scan numbers indicated on the top axis)&#39;</span><span class="p">,</span>
+                                                                                  <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                                                  <span class="s1">&#39;band&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">figfile</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;syspower medianSummary plot not found. Creating new plot.&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">create_plot</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not create &#39;</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39; plot.&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">wrapper</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="syspowerPerAntennaChart">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerPerAntennaChart">[docs]</a>
+<span class="k">class</span> <span class="nc">syspowerPerAntennaChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">fileprefix</span><span class="p">,</span> <span class="n">tabletype</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">selectbasebands</span><span class="p">,</span> <span class="n">science_scan_ids</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span> <span class="o">=</span> <span class="n">yaxis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fileprefix</span> <span class="o">=</span> <span class="n">fileprefix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tabletype</span> <span class="o">=</span> <span class="n">tabletype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">band</span> <span class="o">=</span> <span class="n">band</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selectbasebands</span> <span class="o">=</span> <span class="n">selectbasebands</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">science_scan_ids</span> <span class="o">=</span> <span class="n">science_scan_ids</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">json</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">json_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
+                                          <span class="n">yaxis</span> <span class="o">+</span> <span class="n">fileprefix</span> <span class="o">+</span> <span class="n">tabletype</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
+
+<div class="viewcode-block" id="syspowerPerAntennaChart.plot">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerPerAntennaChart.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">numAntenna</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">antennas</span><span class="p">)</span>
+        <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Plotting syspower &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabletype</span> <span class="o">+</span> <span class="s2">&quot; charts for &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span> <span class="o">+</span>
+                 <span class="s2">&quot; and </span><span class="si">{!s}</span><span class="s2">-band&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">))</span>
+        <span class="n">nplots</span> <span class="o">=</span> <span class="n">numAntenna</span>
+
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nplots</span><span class="p">):</span>
+
+            <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fileprefix</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabletype</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">{!s}</span><span class="s1">_&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span>
+            <span class="n">antPlot</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span>
+
+            <span class="n">stage</span> <span class="o">=</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span>
+            <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="n">stage</span><span class="p">)</span>
+
+            <span class="n">figfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+            <span class="n">plotrange</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span> <span class="o">==</span> <span class="s1">&#39;spgain&#39;</span><span class="p">:</span>
+                <span class="n">plotrange</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span> <span class="o">==</span> <span class="s1">&#39;tsys&#39;</span><span class="p">:</span>
+                <span class="n">plotrange</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+                <span class="n">spws</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_all_spectral_windows</span><span class="p">()</span>
+                <span class="n">freqs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">spw</span><span class="o">.</span><span class="n">max_frequency</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">})</span>
+                <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">freqs</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mf">18000000000.0</span><span class="p">:</span>
+                    <span class="n">plotrange</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabletype</span> <span class="o">==</span> <span class="s1">&#39;pdiff&#39;</span><span class="p">:</span>
+                <span class="n">clip_sp_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">clip_sp_template</span>
+                <span class="n">plotrange</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">clip_sp_template</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">clip_sp_template</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">figfile</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># Get antenna name</span>
+                    <span class="n">antName</span> <span class="o">=</span> <span class="n">antPlot</span>
+                    <span class="k">if</span> <span class="n">antPlot</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">domain_antennas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">antPlot</span><span class="p">)</span>
+                        <span class="n">idents</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">domain_antennas</span><span class="p">]</span>
+                        <span class="n">antName</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">idents</span><span class="p">)</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sys Power Plot, using antenna=</span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">antName</span><span class="p">))</span>
+
+                    <span class="n">tabletype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabletype</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabletype</span> <span class="o">==</span> <span class="s1">&#39;pdiff&#39;</span><span class="p">:</span>
+                        <span class="n">tabletype</span> <span class="o">=</span> <span class="s1">&#39;pdfif_</span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">)</span>
+
+                    <span class="n">numspws</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+                    <span class="n">pindexlist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">numspws</span><span class="p">))</span>
+                    <span class="n">cplots</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pindexlist</span><span class="p">]</span>
+                    <span class="n">cplots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+                    <span class="c1"># Extra check for single spw, single baseband SDMs</span>
+                    <span class="k">if</span> <span class="n">numspws</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">pindexlist</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                    <span class="k">for</span> <span class="n">pindex</span> <span class="ow">in</span> <span class="n">pindexlist</span><span class="p">:</span>
+
+                        <span class="n">spwtouse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="n">pindex</span><span class="p">]</span>
+                        <span class="n">baseband</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectbasebands</span><span class="p">[</span><span class="n">pindex</span><span class="p">]</span>
+                        <span class="n">spwobj</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">spwtouse</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">mean_freq</span> <span class="o">=</span> <span class="n">spwobj</span><span class="o">.</span><span class="n">mean_frequency</span>
+
+                        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">plotms</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="p">,</span> <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                <span class="n">antenna</span><span class="o">=</span><span class="n">antPlot</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spwtouse</span><span class="p">,</span> <span class="n">timerange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                <span class="n">plotindex</span><span class="o">=</span><span class="n">pindex</span><span class="p">,</span> <span class="n">gridrows</span><span class="o">=</span><span class="n">numspws</span><span class="p">,</span> <span class="n">gridcols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowindex</span><span class="o">=</span><span class="n">pindex</span><span class="p">,</span>
+                                                <span class="n">colindex</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">plotrange</span><span class="o">=</span><span class="n">plotrange</span><span class="p">,</span> <span class="n">coloraxis</span><span class="o">=</span><span class="s1">&#39;corr&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                <span class="n">clearplots</span><span class="o">=</span><span class="n">cplots</span><span class="p">[</span><span class="n">pindex</span><span class="p">],</span>
+                                                <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Sys Power &#39;</span> <span class="o">+</span> <span class="n">tabletype</span> <span class="o">+</span>
+                                                      <span class="s1">&#39;.tbl  Antenna: </span><span class="si">{!s}</span><span class="s1">  </span><span class="si">{!s}</span><span class="s1">-band  </span><span class="si">{!s}</span><span class="s1">  spw: </span><span class="si">{!s}</span><span class="s1">   </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">antName</span><span class="p">,</span>
+                                                                                                         <span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">,</span>
+                                                                                                         <span class="n">baseband</span><span class="p">,</span>
+                                                                                                         <span class="n">spwtouse</span><span class="p">,</span>
+                                                                                                         <span class="n">mean_freq</span><span class="p">),</span>
+                                                <span class="n">titlefont</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">xaxisfont</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">yaxisfont</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">showgui</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plotfile</span><span class="o">=</span><span class="n">figfile</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">science_scan_ids</span><span class="p">)</span>
+
+                        <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Unable to plot &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Using existing &#39;</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39; plot.&#39;</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">plot</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">figfile</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">title</span><span class="p">(),</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                   <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+                                               <span class="s1">&#39;pol&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;ant&#39;</span><span class="p">:</span> <span class="n">antName</span><span class="p">,</span>
+                                               <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabletype</span><span class="p">,</span>
+                                               <span class="s1">&#39;band&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">,</span>
+                                               <span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">figfile</span><span class="p">)})</span>
+                <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plot</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Unable to add plot to stack&quot;</span><span class="p">)</span>
+                <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

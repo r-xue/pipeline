@@ -1,0 +1,13 @@
+pipeline.hifv.tasks.selfcal.renderer
+====================================
+
+.. automodule:: pipeline.hifv.tasks.selfcal.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsselfcalRenderer
+      VLASubPlotRenderer
+   

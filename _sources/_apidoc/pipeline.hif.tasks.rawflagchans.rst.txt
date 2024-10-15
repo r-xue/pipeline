@@ -1,0 +1,45 @@
+pipeline.hif.tasks.rawflagchans package
+=======================================
+
+Submodules
+----------
+
+pipeline.hif.tasks.rawflagchans.qa module
+-----------------------------------------
+
+.. automodule:: pipeline.hif.tasks.rawflagchans.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.rawflagchans.rawflagchans module
+---------------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.rawflagchans.rawflagchans
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.rawflagchans.renderer module
+-----------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.rawflagchans.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.rawflagchans.resultobjects module
+----------------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.rawflagchans.resultobjects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hif.tasks.rawflagchans
+   :members:
+   :undoc-members:
+   :show-inheritance:

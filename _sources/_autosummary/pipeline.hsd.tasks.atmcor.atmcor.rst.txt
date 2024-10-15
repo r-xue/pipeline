@@ -1,0 +1,27 @@
+pipeline.hsd.tasks.atmcor.atmcor
+================================
+
+.. automodule:: pipeline.hsd.tasks.atmcor.atmcor
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      generate_ms
+      inspect_reduction_group
+      merge_reduction_group
+      relative_path
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ATMModelParam
+      Context
+      DataType
+      HpcSDATMCorrection
+      SDATMCorrectionInputs
+      SDATMCorrectionResults
+      SerialSDATMCorrection
+   

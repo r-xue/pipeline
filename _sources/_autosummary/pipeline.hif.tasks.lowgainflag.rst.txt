@@ -1,0 +1,22 @@
+pipeline.hif.tasks.lowgainflag
+==============================
+
+.. automodule:: pipeline.hif.tasks.lowgainflag
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Lowgainflag
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   lowgainflag
+   qa
+   renderer
+   resultobjects

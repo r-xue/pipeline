@@ -1,0 +1,24 @@
+pipeline.infrastructure.pipelineqa
+==================================
+
+.. automodule:: pipeline.infrastructure.pipelineqa
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      scores_with_location
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      QAOrigin
+      QAPlugin
+      QARegistry
+      QAScore
+      QAScorePool
+      TargetDataSelection
+      WebLogLocation
+   

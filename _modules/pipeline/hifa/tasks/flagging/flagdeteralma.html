@@ -1,0 +1,852 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.flagging.flagdeteralma &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.flagging.flagdeteralma</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.flagging.flagdeteralma</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">AltAz</span><span class="p">,</span> <span class="n">EarthLocation</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">pipeline.extern.adopted</span> <span class="kn">import</span> <span class="n">getMedianPWV</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">atmutil</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.arrayflaggerbase</span> <span class="kn">import</span> <span class="n">channel_ranges</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.flagging</span> <span class="kn">import</span> <span class="n">flagdeterbase</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">utils</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;FlagDeterALMA&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;FlagDeterALMAInputs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;FlagDeterALMAResults&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FlagDeterALMAResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.flagging.html#pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMAResults">[docs]</a>
+<span class="k">class</span> <span class="nc">FlagDeterALMAResults</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseResults</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="FlagDeterALMAInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.flagging.html#pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMAInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">FlagDeterALMAInputs</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    FlagDeterALMAInputs defines the inputs for the FlagDeterALMA pipeline task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tolerance</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">edgespw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">flagbackup</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fracspw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.03125</span><span class="p">)</span>
+    <span class="c1"># PIPE-1028: in hifa_flagdata, flag integrations with only partial</span>
+    <span class="c1"># polarization products.</span>
+    <span class="n">partialpol</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># PIPE-624: parameters for flagging low transmission.</span>
+    <span class="n">lowtrans</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">mintransnonrepspws</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">mintransrepspw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># new property for ACA correlator</span>
+    <span class="n">fracspwfps</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.048387</span><span class="p">)</span>
+
+    <span class="c1"># New property for QA0 / QA2 flags</span>
+    <span class="n">qa0</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">qa2</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">autocorr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shadow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">scan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scannumber</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">edgespw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fracspw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fracspwfps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">online</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">partialpol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lowtrans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mintransnonrepspws</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mintransrepspw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fileonline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filetemplate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_tbuff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tbuff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FlagDeterALMAInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="n">flagbackup</span><span class="p">,</span> <span class="n">autocorr</span><span class="o">=</span><span class="n">autocorr</span><span class="p">,</span> <span class="n">shadow</span><span class="o">=</span><span class="n">shadow</span><span class="p">,</span>
+            <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scan</span><span class="p">,</span> <span class="n">scannumber</span><span class="o">=</span><span class="n">scannumber</span><span class="p">,</span> <span class="n">intents</span><span class="o">=</span><span class="n">intents</span><span class="p">,</span> <span class="n">edgespw</span><span class="o">=</span><span class="n">edgespw</span><span class="p">,</span> <span class="n">fracspw</span><span class="o">=</span><span class="n">fracspw</span><span class="p">,</span>
+            <span class="n">fracspwfps</span><span class="o">=</span><span class="n">fracspwfps</span><span class="p">,</span> <span class="n">online</span><span class="o">=</span><span class="n">online</span><span class="p">,</span> <span class="n">fileonline</span><span class="o">=</span><span class="n">fileonline</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">,</span>
+            <span class="n">filetemplate</span><span class="o">=</span><span class="n">filetemplate</span><span class="p">,</span> <span class="n">hm_tbuff</span><span class="o">=</span><span class="n">hm_tbuff</span><span class="p">,</span> <span class="n">tbuff</span><span class="o">=</span><span class="n">tbuff</span><span class="p">,</span> <span class="n">partialpol</span><span class="o">=</span><span class="n">partialpol</span><span class="p">,</span>
+            <span class="n">lowtrans</span><span class="o">=</span><span class="n">lowtrans</span><span class="p">,</span> <span class="n">mintransnonrepspws</span><span class="o">=</span><span class="n">mintransnonrepspws</span><span class="p">,</span> <span class="n">mintransrepspw</span><span class="o">=</span><span class="n">mintransrepspw</span><span class="p">)</span>
+
+        <span class="c1"># solution parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qa0</span> <span class="o">=</span> <span class="n">qa0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qa2</span> <span class="o">=</span> <span class="n">qa2</span></div>
+
+
+
+<div class="viewcode-block" id="FlagDeterALMA">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.flagging.html#pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMA">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_flagdata&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
+    <span class="s1">&#39;Flags generated by the online telescope software, by the QA0 process, and manually set by the pipeline user.&#39;</span>
+<span class="p">)</span>
+<span class="k">class</span> <span class="nc">FlagDeterALMA</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBase</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FlagDeterALMAInputs</span>
+
+    <span class="c1"># PIPE-425: define allowed bandwidths of ACA spectral windows for which to</span>
+    <span class="c1"># perform the ACA FDM edge channel flagging heuristic, and define</span>
+    <span class="c1"># corresponding thresholds.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Note: at present, February 2020, ALMA correlators produce</span>
+    <span class="c1"># spectral windows whose bandwidths are quantized:</span>
+    <span class="c1">#</span>
+    <span class="c1">#   Baseline correlator (BLC) widths:</span>
+    <span class="c1">#     1875, 937.5, 468.75, 234.375, 117.1875, 58.5375 MHz</span>
+    <span class="c1">#   ACA correlator widths:</span>
+    <span class="c1">#     2000, 1000, 500, 250, 125, 62.5 MHz</span>
+    <span class="c1">#</span>
+    <span class="c1"># This edge channel heuristic is defined for all ACA correlator widths</span>
+    <span class="c1"># except the 2000 MHz, where the latter is already covered by the heuristic</span>
+    <span class="c1"># covering bandwidths &gt; 1875 MHz, introduced in CAS-5231.</span>
+    <span class="n">_aca_edge_flag_thresholds</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1"># spw bandwidth (MHz): threshold frequency</span>
+        <span class="mf">62.5</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">),</span>
+        <span class="mi">125</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">),</span>
+        <span class="mi">250</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">),</span>
+        <span class="mi">500</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="mf">40.0</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">),</span>
+        <span class="mi">1000</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="mf">62.5</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="c1"># PIPE-624: Threshold for fraction of data with low transmission above</span>
+    <span class="c1"># which a SpW is flagged for low transmission.</span>
+    <span class="n">_max_frac_low_trans</span> <span class="o">=</span> <span class="mf">0.6</span>
+
+<div class="viewcode-block" id="FlagDeterALMA.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.flagging.html#pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMA.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># PIPE-1759: this list collects the spws with missing basebands subsequently used to create a QA score</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">missing_baseband_spws</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Wrap results from parent in hifa_flagdata specific result to enable</span>
+        <span class="c1"># separate QA scoring.</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">FlagDeterALMAResults</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">summaries</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">flagcmds</span><span class="p">())</span>
+
+        <span class="c1"># PIPE-1759: store the list of spws with missing basebands for a subsequent QA score</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">missing_baseband_spws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">missing_baseband_spws</span>
+
+        <span class="c1"># PIPE-933</span>
+        <span class="c1"># save deterministic flag state</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;save&#39;</span><span class="p">,</span> <span class="n">versionname</span><span class="o">=</span><span class="s2">&quot;after_deterministic_flagging&quot;</span><span class="p">,</span>
+                                      <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;save deterministic flag state&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="FlagDeterALMA.get_fracspw">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.flagging.html#pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMA.get_fracspw">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_fracspw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
+        <span class="c1"># From T. Hunter on PIPE-425: in early ALMA Cycles, the ACA</span>
+        <span class="c1"># correlator&#39;s frequency profile synthesis (fps) algorithm produced TDM</span>
+        <span class="c1"># spws that had 64 channels in full-polarisation, 124 channels in dual</span>
+        <span class="c1"># pol, and 248 channels in single-pol.</span>
+        <span class="c1"># TODO: find out whether it should be 62 (as in code) or 64 (as per above comment)</span>
+        <span class="c1">#</span>
+        <span class="c1"># By comparison, the baseline correlator (BLC) standard values are 128</span>
+        <span class="c1"># channels for dual pol, and 256 channels for single pol, and in more</span>
+        <span class="c1"># recent cycles, the ACA TDM spws agree in channel number and bandwidth</span>
+        <span class="c1"># with the BLC TDM spws.</span>
+        <span class="c1">#</span>
+        <span class="c1"># The following override is preserved to handle the old &quot;FPS&quot; generated</span>
+        <span class="c1"># ACA TDM spws, for which a different threshold is used.</span>
+        <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">62</span><span class="p">,</span> <span class="mi">124</span><span class="p">,</span> <span class="mi">248</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">fracspwfps</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span></div>
+
+
+<div class="viewcode-block" id="FlagDeterALMA.verify_spw">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.flagging.html#pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMA.verify_spw">[docs]</a>
+    <span class="k">def</span> <span class="nf">verify_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
+        <span class="c1"># Override the default verifier:</span>
+        <span class="c1">#  - first run the default verifier</span>
+        <span class="c1">#  - then run extra test to skip flagging of TDM windows</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FlagDeterALMA</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">verify_spw</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+
+        <span class="c1"># Test whether the spw is TDM or FDM. If it is FDM, then raise a</span>
+        <span class="c1"># ValueError. From T. Hunter on PIPE-425:</span>
+        <span class="c1"># TDM spectral windows have either 4*64 channels in full polarisation,</span>
+        <span class="c1"># 2*128 for dual polarisation, or 1*256 channels for single</span>
+        <span class="c1"># polarisation; i.e., in all cases, a TDM spw has ncorr*nchans = 256.</span>
+        <span class="c1">#</span>
+        <span class="c1"># By comparison, the smallest number of channels in an FDM spectral</span>
+        <span class="c1"># window is 4*120 (full pol), 2*240 (dual-pol), or 1*480 (single-pol)</span>
+        <span class="c1"># when online binning is set to 16.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Based on this, it is assumed that any spw with ncorr*nchans &lt;= 256 is</span>
+        <span class="c1"># TDM, and any spw with ncorr*nchans &gt; 256 is FDM.</span>
+        <span class="n">dd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)</span>
+        <span class="n">ncorr</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dd</span><span class="o">.</span><span class="n">corr_axis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ncorr</span> <span class="o">*</span> <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span> <span class="o">&gt;</span> <span class="mi">256</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Spectral window </span><span class="si">{}</span><span class="s1"> is an FDM spectral window, skipping the TDM edge flagging&#39;</span>
+                             <span class="s1">&#39;heuristics.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_partialpol_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ALMA specific step to identify and flag data where only part of the</span>
+<span class="sd">        polarization products are flagged.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of flagging commands.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">load_partialpols_alma</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_lowtrans_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ALMA specific step to identify and flag data with low atmospheric</span>
+<span class="sd">        transmission.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of flagging commands.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">lowtrans_alma</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">mintransrepspw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">mintransrepspw</span><span class="p">,</span>
+                             <span class="n">mintransnonrepspws</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">mintransnonrepspws</span><span class="p">,</span>
+                             <span class="n">max_frac_low_trans</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_frac_low_trans</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_edgespw_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Run default edge channel flagging first.</span>
+        <span class="n">to_flag</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FlagDeterALMA</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_get_edgespw_cmds</span><span class="p">()</span>
+
+        <span class="c1"># Loop over the spectral windows, generate a flagging command for each</span>
+        <span class="c1"># spw in the ms. Calling get_spectral_windows() with no arguments</span>
+        <span class="c1"># returns just the science windows, which is exactly what we want.</span>
+        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Test whether this spw should be evaluated for edge channel</span>
+                <span class="c1"># flagging.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">verify_spw</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="c1"># If we get here, then the spw verification failed. Proceed</span>
+                <span class="c1"># with alternate edge channel flagging.</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Proceeding with FDM edge channel flagging heuristics for spw </span><span class="si">{}</span><span class="s1">&#39;</span>
+                          <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+                <span class="c1"># CAS-5231: FDM edge channel flagging heuristic for spectral</span>
+                <span class="c1"># windows whose bandwidth exceeds 1875 MHz.</span>
+                <span class="n">threshold</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="mi">1875</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
+                    <span class="n">to_flag</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_fdm_edgespw_cmds</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">threshold</span><span class="p">))</span>
+
+                <span class="c1"># PIPE-425: run a separate edge channel flagging heuristic for</span>
+                <span class="c1"># ACA spectral windows with shorter bandwidth (defined above),</span>
+                <span class="c1"># to ensure that channels tuned too close to the edge of the</span>
+                <span class="c1"># baseband are flagged. Assume that the ACA spw bandwidths are</span>
+                <span class="c1"># stored in MHz.</span>
+                <span class="c1">#</span>
+                <span class="c1"># TODO: in CASA 6.1, the correlator type should start to be</span>
+                <span class="c1"># propagated from ASDM to MS. Once available, this test could</span>
+                <span class="c1"># be future-proofed (w.r.t. possible new correlators) by</span>
+                <span class="c1"># explicitly checking whether the spw is an ACA spw</span>
+                <span class="c1"># (e.g., self.inputs.ms.correlator_name == &#39;ALMA_ACA&#39;)</span>
+                <span class="n">spw_bw_in_mhz</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">otherUnits</span><span class="o">=</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">spw_bw_in_mhz</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aca_edge_flag_thresholds</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">to_flag</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_aca_edgespw_cmds</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aca_edge_flag_thresholds</span><span class="p">[</span><span class="n">spw_bw_in_mhz</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">to_flag</span>
+
+    <span class="k">def</span> <span class="nf">_get_fdm_edgespw_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        FDM spectral window edge flagging heuristic.</span>
+
+<span class="sd">        Returns a list containing a flagging command that will flag all channels</span>
+<span class="sd">        that lie beyond &quot;threshold/2&quot; from the center frequency.</span>
+
+<span class="sd">        For example: if the threshold is 1875 MHz, this will flag any channels</span>
+<span class="sd">        +- 937.5 MHz from the center frequency.</span>
+
+<span class="sd">        :param spw: spectral window to evaluate</span>
+<span class="sd">        :param threshold: bandwidth threshold</span>
+<span class="sd">        :return: list containing flagging command as string</span>
+<span class="sd">        :rtype: list[str]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Bandwidth greater than </span><span class="si">{}</span><span class="s1"> for spw </span><span class="si">{}</span><span class="s1">. Proceeding with flagging all channels beyond +-</span><span class="si">{}</span><span class="s1"> from the&#39;</span>
+                  <span class="s1">&#39; center frequency.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">threshold</span><span class="p">),</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">threshold</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)))</span>
+
+        <span class="n">cen_freq</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">centre_frequency</span>
+
+        <span class="c1"># channel range lower than threshold</span>
+        <span class="n">lo_freq</span> <span class="o">=</span> <span class="n">cen_freq</span> <span class="o">-</span> <span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">hi_freq</span> <span class="o">=</span> <span class="n">cen_freq</span> <span class="o">-</span> <span class="n">threshold</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">minchan_lo</span><span class="p">,</span> <span class="n">maxchan_lo</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">channel_range</span><span class="p">(</span><span class="n">lo_freq</span><span class="p">,</span> <span class="n">hi_freq</span><span class="p">)</span>
+
+        <span class="c1"># upper range higher than threshold</span>
+        <span class="n">lo_freq</span> <span class="o">=</span> <span class="n">cen_freq</span> <span class="o">+</span> <span class="n">threshold</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">hi_freq</span> <span class="o">=</span> <span class="n">cen_freq</span> <span class="o">+</span> <span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">minchan_hi</span><span class="p">,</span> <span class="n">maxchan_hi</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">channel_range</span><span class="p">(</span><span class="n">lo_freq</span><span class="p">,</span> <span class="n">hi_freq</span><span class="p">)</span>
+
+        <span class="c1"># Append to flag list</span>
+        <span class="c1"># Clean up order of channel ranges high to low</span>
+        <span class="n">chan1</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">~</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">minchan_lo</span><span class="p">,</span> <span class="n">maxchan_lo</span><span class="p">)</span>
+        <span class="n">chan2</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">~</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">minchan_hi</span><span class="p">,</span> <span class="n">maxchan_hi</span><span class="p">)</span>
+        <span class="n">chans</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">chan1</span><span class="p">,</span> <span class="n">chan2</span><span class="p">])</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">:</span><span class="si">{1}</span><span class="s1">;</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">chans</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">chans</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">to_flag</span> <span class="o">=</span> <span class="p">[</span><span class="n">cmd</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">to_flag</span>
+
+    <span class="k">def</span> <span class="nf">_get_aca_edgespw_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ACA FDM spectral window edge flagging heuristic.</span>
+
+<span class="sd">        Return a list containing a flagging command that will flag all channels</span>
+<span class="sd">        that lie too close to the edge of the baseband.</span>
+
+<span class="sd">        :param spw: spectral window to evaluate</span>
+<span class="sd">        :param threshold: threshold frequency range used to determine whether</span>
+<span class="sd">        spectral window channels are too close to edge of baseband</span>
+<span class="sd">        :return: list containing flagging command as string</span>
+<span class="sd">        :rtype: list[str]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Spectral window </span><span class="si">{}</span><span class="s1"> is an ACA FDM spectral window. Proceeding with flagging channels&#39;</span>
+                  <span class="s1">&#39; that are too close to the baseband edge.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+        <span class="c1"># For the given spectral window, identify the corresponding SQLD</span>
+        <span class="c1"># spectral window(s) with TARGET intent taken in same baseband.</span>
+        <span class="n">bb_spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                   <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">baseband</span> <span class="o">==</span> <span class="n">spw</span><span class="o">.</span><span class="n">baseband</span> <span class="ow">and</span> <span class="n">s</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;SQLD&#39;</span> <span class="ow">and</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
+
+        <span class="c1"># If no baseband spw could be identified, add the spw to the list of</span>
+        <span class="c1"># missing basebands and return with no new flagging commands.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bb_spws</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">missing_baseband_spws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="c1"># If exactly 1 matching baseband spw was found, use that.</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">bb_spws</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">bb_spw</span> <span class="o">=</span> <span class="n">bb_spws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># If multiple matches were found within the same baseband, then</span>
+        <span class="c1"># attempt to further match against the same spectral tuning</span>
+        <span class="c1"># (SpectralSpec, PIPE-1991).</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bb_spws_same_ss</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">bb_spws</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">spectralspec</span> <span class="o">==</span> <span class="n">spw</span><span class="o">.</span><span class="n">spectralspec</span><span class="p">]</span>
+            <span class="c1"># If exactly 1 match was found with same SpectralSpec, use that.</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bb_spws_same_ss</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">bb_spw</span> <span class="o">=</span> <span class="n">bb_spws_same_ss</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># Otherwise, log a warning that no unambiguous match could be found,</span>
+            <span class="c1"># and proceed to use first match from original filter.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bb_spw</span> <span class="o">=</span> <span class="n">bb_spws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: unable to find unambiguous match of baseband SpW for science&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot; SpW </span><span class="si">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">, selected first match (SpW </span><span class="si">{</span><span class="n">bb_spw</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Compute frequency ranges for which any channel that falls within the</span>
+        <span class="c1"># range should be flagged; these ranges are set by the baseband edges</span>
+        <span class="c1"># and the provided threshold.</span>
+        <span class="n">bb_edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyRange</span><span class="p">(</span><span class="n">bb_spw</span><span class="o">.</span><span class="n">min_frequency</span><span class="p">,</span> <span class="n">bb_spw</span><span class="o">.</span><span class="n">min_frequency</span> <span class="o">+</span> <span class="n">threshold</span><span class="p">),</span>
+                    <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyRange</span><span class="p">(</span><span class="n">bb_spw</span><span class="o">.</span><span class="n">max_frequency</span> <span class="o">-</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">bb_spw</span><span class="o">.</span><span class="n">max_frequency</span><span class="p">)]</span>
+
+        <span class="c1"># Compute list of channels to flag as those channels that have an</span>
+        <span class="c1"># overlap with either edge range of the baseband.</span>
+        <span class="n">to_flag</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">channels</span><span class="p">)</span>
+                   <span class="k">if</span> <span class="n">ch</span><span class="o">.</span><span class="n">frequency_range</span><span class="o">.</span><span class="n">overlaps</span><span class="p">(</span><span class="n">other</span><span class="o">=</span><span class="n">bb_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                   <span class="ow">or</span> <span class="n">ch</span><span class="o">.</span><span class="n">frequency_range</span><span class="o">.</span><span class="n">overlaps</span><span class="p">(</span><span class="n">other</span><span class="o">=</span><span class="n">bb_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+
+        <span class="c1"># If flagging is needed, turn the list of channels into a list of</span>
+        <span class="c1"># a flagging command with spectral window id, and consolidated channel</span>
+        <span class="c1"># ranges. utils.find_ranges returns comma separated ranges, but for</span>
+        <span class="c1"># multiple channel ranges within a single spw, CASA&#39;s flagdata expects</span>
+        <span class="c1"># these to be separated by semi-colon.</span>
+        <span class="k">if</span> <span class="n">to_flag</span><span class="p">:</span>
+            <span class="n">chan_to_flag</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">(</span><span class="n">to_flag</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;;&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">attention</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> - Flagging edge channels for ACA spectral window </span><span class="si">{}</span><span class="s1">, channel(s) </span><span class="si">{}</span><span class="s1">, due to proximity&#39;</span>
+                          <span class="s1">&#39; to edge of baseband.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">chan_to_flag</span><span class="p">))</span>
+            <span class="n">to_flag</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">chan_to_flag</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">to_flag</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">load_partialpols_alma</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve the relevant data to extend partial polarization flagging to all the polarizations (see PIPE-1028).</span>
+<span class="sd">    It returns the list of flagging commands required to flag the partial polarization.</span>
+
+<span class="sd">    :param ms: Measurement set to load</span>
+<span class="sd">    :return: list containing flagging commands as strings</span>
+<span class="sd">    :rtype: List[str]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Get the spw IDs and corresponding DATA DESC IDs for which to assess the</span>
+    <span class="c1"># partial polarization flagging.</span>
+    <span class="c1"># TODO: This function takes care of translating spws to DATA_DESC_IDs but it may not be necessary and it</span>
+    <span class="c1">#  is possible that it can be replaced by the pipeline domain object function, such as:</span>
+    <span class="c1">#  all_spws = ms.get_spectral_windows()</span>
+    <span class="n">spws_ids</span><span class="p">,</span> <span class="n">datadescids</span> <span class="o">=</span> <span class="n">get_partialpol_spws</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="c1"># PIPE-1245: restrict evaluation of partial polarization flagging to scans</span>
+    <span class="c1"># that do not cover the following intents:</span>
+    <span class="n">unwanted_intents</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span> <span class="s1">&#39;FOCUS&#39;</span><span class="p">,</span> <span class="s1">&#39;POINTING&#39;</span><span class="p">}</span>
+    <span class="n">scan_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">scan</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">unwanted_intents</span><span class="p">)]</span>
+    <span class="n">spw_scan_selections</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">((</span><span class="n">spw</span><span class="p">,</span> <span class="n">dd</span><span class="p">,</span> <span class="n">scan</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">dd</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">spws_ids</span><span class="p">,</span> <span class="n">datadescids</span><span class="p">)</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scan_ids</span><span class="p">)</span>
+
+    <span class="c1"># Initialize flagging command parameters.</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+        <span class="c1"># Run evaluation for each combination of SpW id (with corresponding</span>
+        <span class="c1"># data_desc_id) and scan id.</span>
+        <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">ddid</span><span class="p">,</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">spw_scan_selections</span><span class="p">:</span>  <span class="c1"># Iterate over relevant spws</span>
+
+            <span class="c1"># Create table selection for current spw and get flag column.</span>
+            <span class="n">table_sel</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DATA_DESC_ID == </span><span class="si">{</span><span class="n">ddid</span><span class="si">}</span><span class="s2"> &amp;&amp; SCAN_NUMBER == </span><span class="si">{</span><span class="n">scan</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">flags</span> <span class="o">=</span> <span class="n">table_sel</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Number of polarisations present.</span>
+            <span class="n">n_pol</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span>
+
+            <span class="c1"># For multi-pol data, assess if there are any rows where part of</span>
+            <span class="c1"># the polarisation is flagged.</span>
+            <span class="k">if</span> <span class="n">n_pol</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Multiple polarization data found for DATA_DESC_IDs </span><span class="si">{</span><span class="n">ddid</span><span class="si">}</span><span class="s2">, scan </span><span class="si">{</span><span class="n">scan</span><span class="si">}</span><span class="s2">, checking if any&quot;</span>
+                          <span class="sa">f</span><span class="s2">&quot; polarization data are partially flagged.&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Count how often no pols, some pols, and/or all pols are</span>
+                <span class="c1"># flagged.</span>
+                <span class="n">npolflag</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_pol</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)):</span>
+                    <span class="n">npolflag</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+                <span class="c1"># Report how often n number of pols are flagged, and assess</span>
+                <span class="c1"># if any there are any occurrences where polarisation data is</span>
+                <span class="c1"># partially flagged.</span>
+                <span class="n">do_partial_pol</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">nflag</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">npolflag</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">nflag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Polarization data completely unflagged: N = </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">nflag</span> <span class="o">&lt;</span> <span class="n">n_pol</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Polarization data partially flagged - </span><span class="si">{</span><span class="n">nflag</span><span class="si">}</span><span class="s2"> out of </span><span class="si">{</span><span class="n">n_pol</span><span class="si">}</span><span class="s2">: N = </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">do_partial_pol</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Polarization data completely flagged: N = </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Continue with actual flagging of partial polarization rows.</span>
+                <span class="k">if</span> <span class="n">do_partial_pol</span><span class="p">:</span>
+                    <span class="n">ant1</span> <span class="o">=</span> <span class="n">table_sel</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA1&#39;</span><span class="p">)</span>
+                    <span class="n">ant2</span> <span class="o">=</span> <span class="n">table_sel</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA2&#39;</span><span class="p">)</span>
+                    <span class="n">time</span> <span class="o">=</span> <span class="n">table_sel</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+                    <span class="n">interval</span> <span class="o">=</span> <span class="n">table_sel</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;INTERVAL&#39;</span><span class="p">)</span>
+                    <span class="n">params_spw</span> <span class="o">=</span> <span class="n">get_partialpol_flag_cmd_params</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="n">ant1</span><span class="p">,</span> <span class="n">ant2</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">interval</span><span class="p">)</span>
+                    <span class="c1"># Add the spw and time_unit to the params</span>
+                    <span class="n">time_unit</span> <span class="o">=</span> <span class="n">table_sel</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">,</span> <span class="s1">&#39;QuantumUnits&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="c1"># Add the spw and time_unit to the dictionaries</span>
+                    <span class="n">updated_params_spw</span> <span class="o">=</span> <span class="p">[{</span><span class="o">**</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;spw&quot;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span> <span class="s2">&quot;time_unit&quot;</span><span class="p">:</span> <span class="n">time_unit</span><span class="p">}</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">params_spw</span><span class="p">]</span>
+                    <span class="n">params</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">updated_params_spw</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No multiple polarization data found for DATA_DESC_IDs </span><span class="si">{</span><span class="n">ddid</span><span class="si">}</span><span class="s2">, scan </span><span class="si">{</span><span class="n">scan</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Free resources held by table selection.</span>
+            <span class="n">table_sel</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">commands</span> <span class="o">=</span> <span class="n">convert_params_to_commands</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">commands</span>
+
+
+<span class="k">def</span> <span class="nf">get_partialpol_spws</span><span class="p">(</span><span class="n">ms_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtain the spws and DATA_DESC_IDs required for the Partial Polarization flagging agent.</span>
+<span class="sd">    According to the comments in PIPE-1028 they are all non-WVR/non-SQLD spws with an intent that</span>
+<span class="sd">    starts with OBSERVE_TARGET or CALIBRATE_PHASE (which includes the Science spws).</span>
+
+<span class="sd">    Note that there is a chance that this function can be refactored using one on the pipeline domain object</span>
+<span class="sd">    functions. If the translation of spw to DATA_DESC_ID is not required, this function may not be needed at all.</span>
+
+<span class="sd">    :param ms_name: Name of the Measurement Set</span>
+<span class="sd">    :return: List of spws.ids and list of DATA_DESC_IDs (with the same length)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Note: In all the examples checked, spw id and DATA_DESC_ID are the same, but as this may not be always true and</span>
+    <span class="c1">#  Todd uses this translation in his code, both sets of data (spws and DATA_DESC_IDs) are retrieved.</span>
+    <span class="c1"># Note: In the examples checked, non-Science spws do not have usable data.</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSMDReader</span><span class="p">(</span><span class="n">ms_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">msmd</span><span class="p">:</span>
+        <span class="n">spws_fdm_tdm</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">almaspws</span><span class="p">(</span><span class="n">fdm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tdm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">spws_observe_target</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">spwsforintent</span><span class="p">(</span><span class="s1">&#39;OBSERVE_TARGET*&#39;</span><span class="p">)</span>
+        <span class="n">spws_calibrate_phase</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">spwsforintent</span><span class="p">(</span><span class="s1">&#39;CALIBRATE_PHASE*&#39;</span><span class="p">)</span>
+        <span class="n">spws</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">union1d</span><span class="p">(</span><span class="n">spws_observe_target</span><span class="p">,</span> <span class="n">spws_calibrate_phase</span><span class="p">),</span> <span class="n">spws_fdm_tdm</span><span class="p">)</span>
+        <span class="n">datadescids</span> <span class="o">=</span> <span class="p">[</span><span class="n">msmd</span><span class="o">.</span><span class="n">datadescids</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">spws</span><span class="p">),</span> <span class="n">datadescids</span>
+
+
+<span class="k">def</span> <span class="nf">get_partialpol_flag_cmd_params</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="n">ant1</span><span class="p">,</span> <span class="n">ant2</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the parameters that identify points where partial polarizations need to be flagged.</span>
+<span class="sd">    This function should be called only if the data presents more than one polarization.</span>
+<span class="sd">    At the moment it only handles data with 3 dimensions (n_pol, n_channels, n_params).</span>
+
+<span class="sd">    :param flags: numpy array with the flags with shape (n_pol, n_channels, n_params)</span>
+<span class="sd">    :param ant1: numpy array with the antenna1s with shape (n_params, )</span>
+<span class="sd">    :param ant2: numpy array with the antenna2s with shape (n_params, )</span>
+<span class="sd">    :param time: numpy array with the times with shape (n_params, )</span>
+<span class="sd">    :param interval: numpy array with the intervals with shape (n_params, )</span>
+<span class="sd">    :return: List of dictionaries with the set of params to identify partial polarizations.</span>
+<span class="sd">      The dictionaries contain the keys:</span>
+<span class="sd">       * &quot;ant1&quot; - ID of the antenna1,</span>
+<span class="sd">       * &quot;ant2&quot; - ID of the antenna2,</span>
+<span class="sd">       * &quot;time&quot; - Central time of the &#39;scan&#39;,</span>
+<span class="sd">       * &quot;interval&quot; - Duration of the &#39;scan&#39;, and</span>
+<span class="sd">       * &quot;channels&quot;- a list of numerical values of affected channels that can be compressed later.</span>
+<span class="sd">    :rtype: List[Dict]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span>
+    <span class="c1"># Check: Is there any chance that there are data with only 2 dimensions?</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Partial Polarization flagging: Data with no channel information are not handled by the pipeline yet&quot;</span><span class="p">)</span>
+    <span class="n">n_pol</span><span class="p">,</span> <span class="n">n_channels</span><span class="p">,</span> <span class="n">n_params</span> <span class="o">=</span> <span class="n">shape</span>
+    <span class="c1"># Create a table of shape (n_channels, n_params) with the number of pols flagged</span>
+    <span class="n">folded_flags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># Identify where polarization data is partially flagged.</span>
+    <span class="n">to_extend_idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">folded_flags</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">folded_flags</span> <span class="o">&lt;</span> <span class="n">n_pol</span><span class="p">)</span>
+    <span class="c1"># Identify the sets of parameters that have partial polarizations for any</span>
+    <span class="c1"># of the channels.</span>
+    <span class="n">param_sets_to_check</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">to_extend_idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Iterate only through the sets of parameters with partial polarizations</span>
+    <span class="k">for</span> <span class="n">param_set_idx</span> <span class="ow">in</span> <span class="n">param_sets_to_check</span><span class="p">:</span>
+        <span class="c1"># Get the numerical values of the channels that have partial polarizations</span>
+        <span class="n">channel_sel</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">to_extend_idx</span><span class="p">[:,</span> <span class="n">param_set_idx</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">&quot;ant1&quot;</span><span class="p">:</span> <span class="n">ant1</span><span class="p">[</span><span class="n">param_set_idx</span><span class="p">],</span>
+            <span class="s2">&quot;ant2&quot;</span><span class="p">:</span> <span class="n">ant2</span><span class="p">[</span><span class="n">param_set_idx</span><span class="p">],</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">time</span><span class="p">[</span><span class="n">param_set_idx</span><span class="p">],</span>
+            <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="n">interval</span><span class="p">[</span><span class="n">param_set_idx</span><span class="p">],</span>
+            <span class="s2">&quot;channels&quot;</span><span class="p">:</span> <span class="n">channel_sel</span>
+        <span class="p">})</span>
+    <span class="k">return</span> <span class="n">params</span>
+
+
+<span class="k">def</span> <span class="nf">convert_params_to_commands</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">ant_id_map</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert the identified partial polarization parameters to flagging commands.</span>
+
+<span class="sd">    :param ms: Measurement Set to get the antenna id map (it can be None if ant_id_map is entered)</span>
+<span class="sd">    :param params: List of dictionaries with the parameters</span>
+<span class="sd">    :param ant_id_map: Dictionary mapping antenna IDs to their names (optional; overrides data from ms)</span>
+<span class="sd">    :return: List of flagging commands</span>
+<span class="sd">    :rtype: List[str]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ant_id_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ant_id_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">ant</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">}</span>
+    <span class="n">commands</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="c1"># Antennas</span>
+        <span class="n">antenna_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&amp;&amp;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ant_id_map</span><span class="p">[</span><span class="n">param</span><span class="p">[</span><span class="s2">&quot;ant1&quot;</span><span class="p">]],</span> <span class="n">ant_id_map</span><span class="p">[</span><span class="n">param</span><span class="p">[</span><span class="s2">&quot;ant2&quot;</span><span class="p">]])</span>
+        <span class="c1"># spw and channels</span>
+        <span class="n">ch_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">param</span><span class="p">[</span><span class="s2">&quot;spw&quot;</span><span class="p">])</span>
+        <span class="n">ch_ranges</span> <span class="o">=</span> <span class="n">channel_ranges</span><span class="p">(</span><span class="n">param</span><span class="p">[</span><span class="s2">&quot;channels&quot;</span><span class="p">])</span>
+        <span class="n">ch_str</span> <span class="o">+=</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">~</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">down</span><span class="p">,</span> <span class="n">up</span><span class="p">)</span> <span class="k">if</span> <span class="n">down</span> <span class="o">!=</span> <span class="n">up</span> <span class="k">else</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">down</span><span class="p">)</span> <span class="k">for</span> <span class="n">down</span><span class="p">,</span> <span class="n">up</span> <span class="ow">in</span> <span class="n">ch_ranges</span><span class="p">])</span>
+        <span class="c1"># Times</span>
+        <span class="n">time_start</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">param</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">param</span><span class="p">[</span><span class="s2">&quot;interval&quot;</span><span class="p">],</span> <span class="n">param</span><span class="p">[</span><span class="s2">&quot;time_unit&quot;</span><span class="p">])</span>
+        <span class="n">time_end</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">param</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">param</span><span class="p">[</span><span class="s2">&quot;interval&quot;</span><span class="p">],</span> <span class="n">param</span><span class="p">[</span><span class="s2">&quot;time_unit&quot;</span><span class="p">])</span>
+        <span class="n">time_str_start</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="n">time_start</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s2">&quot;ymd&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">time_str_end</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="n">time_end</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s2">&quot;ymd&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">time_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">~</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time_str_start</span><span class="p">,</span> <span class="n">time_str_end</span><span class="p">)</span>
+        <span class="c1"># Combine</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;antenna=&#39;</span><span class="si">{}</span><span class="s2">&#39; spw=&#39;</span><span class="si">{}</span><span class="s2">&#39; timerange=&#39;</span><span class="si">{}</span><span class="s2">&#39; reason=&#39;partialpol&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">antenna_str</span><span class="p">,</span> <span class="n">ch_str</span><span class="p">,</span> <span class="n">time_str</span><span class="p">)</span>
+        <span class="n">commands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">commands</span>
+
+
+<span class="k">def</span> <span class="nf">lowtrans_alma</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">mintransrepspw</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mintransnonrepspws</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                  <span class="n">max_frac_low_trans</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create flagging commands to flag science spectral windows with low</span>
+<span class="sd">    atmospheric transmission (PIPE-624).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ms: Measurement Set to evaluate.</span>
+<span class="sd">        mintransrepspw: Atmospheric transmissivity threshold used to flag</span>
+<span class="sd">            the representative science spectral window when fraction of data</span>
+<span class="sd">            with low transmissivity exceeds &quot;frac_low_trans&quot;.</span>
+<span class="sd">        mintransnonrepspws: Atmospheric transmissivity threshold used to flag</span>
+<span class="sd">            the non-representative science spectral window(s) when fraction of</span>
+<span class="sd">            data with low transmissivity exceeds &quot;frac_low_trans&quot;.</span>
+<span class="sd">        max_frac_low_trans: Threshold fraction of data with low transmission</span>
+<span class="sd">            at-or-above which a SpW is flagged for low transmission.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of flagging commands.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Initialize flagging commands.</span>
+    <span class="n">commands</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Compute the PWV for current MS. If this PWV value is invalid, then skip</span>
+    <span class="c1"># the rest of the heuristic.</span>
+    <span class="n">pwv</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">getMedianPWV</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pwv</span> <span class="o">==</span> <span class="mf">1.0</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pwv</span><span class="p">)</span> <span class="ow">or</span> <span class="n">pwv</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid value for PWV (</span><span class="si">{</span><span class="n">pwv</span><span class="si">}</span><span class="s1">) encountered during evaluation of low atmospheric transmission&#39;</span>
+                  <span class="sa">f</span><span class="s1">&#39; flagging, no flagging commands generated.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">commands</span>
+
+    <span class="c1"># Get list of science scans and science SpWs, and representative SpW.</span>
+    <span class="n">scans</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="s2">&quot;TARGET&quot;</span><span class="p">)</span>
+    <span class="n">scispws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">()</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">repr_spwid</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_representative_source_spw</span><span class="p">()</span>
+
+    <span class="c1"># Compute the mean airmass for each science scan.</span>
+    <span class="n">airmass_for_scan</span> <span class="o">=</span> <span class="p">{</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">get_airmass_for_alma_scan</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">}</span>
+
+    <span class="c1"># Initializes atmospheric profile for a defined set of atmospheric</span>
+    <span class="c1"># parameters from PIPE-624, that are common for all scans and SpWs.</span>
+    <span class="n">myat</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">atmosphere</span>
+    <span class="n">atmutil</span><span class="o">.</span><span class="n">init_atm</span><span class="p">(</span><span class="n">myat</span><span class="p">,</span> <span class="n">altitude</span><span class="o">=</span><span class="mf">5059.0</span><span class="p">,</span> <span class="n">humidity</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">273.0</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="mf">563.0</span><span class="p">,</span> <span class="n">max_altitude</span><span class="o">=</span><span class="mf">48.0</span><span class="p">,</span>
+                     <span class="n">delta_p</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">delta_pm</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">atmtype</span><span class="o">=</span><span class="n">atmutil</span><span class="o">.</span><span class="n">AtmType</span><span class="o">.</span><span class="n">tropical</span><span class="p">)</span>
+
+    <span class="c1"># Evaluate low transmission for each SpW:</span>
+    <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">scispws</span><span class="p">:</span>
+        <span class="c1"># Set transmission threshold based on whether current SpW is the</span>
+        <span class="c1"># representative SpW.</span>
+        <span class="n">thresh_transm</span> <span class="o">=</span> <span class="n">mintransrepspw</span> <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">repr_spwid</span> <span class="k">else</span> <span class="n">mintransnonrepspws</span>
+
+        <span class="c1"># Initialize spectral window setting in atmosphere tool for current SpW,</span>
+        <span class="c1"># and update atmospheric profile to set PWV (needs to happen after SpW is</span>
+        <span class="c1"># initialized).</span>
+        <span class="n">atmutil</span><span class="o">.</span><span class="n">init_spw</span><span class="p">(</span><span class="n">myat</span><span class="p">,</span> <span class="n">fcenter</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">mean_frequency</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)),</span>
+                         <span class="n">nchan</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span><span class="p">,</span>
+                         <span class="n">resolution</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span> <span class="o">/</span> <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span><span class="p">))</span>
+        <span class="n">myqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="n">myat</span><span class="o">.</span><span class="n">setUserWH2O</span><span class="p">(</span><span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">pwv</span><span class="p">,</span> <span class="s1">&#39;mm&#39;</span><span class="p">))</span>
+
+        <span class="c1"># Get wet and dry opacity from atmospheric profile, for channels of</span>
+        <span class="c1"># current SpW.</span>
+        <span class="n">dry_opacity</span> <span class="o">=</span> <span class="n">atmutil</span><span class="o">.</span><span class="n">get_dry_opacity</span><span class="p">(</span><span class="n">myat</span><span class="p">)</span>
+        <span class="n">wet_opacity</span> <span class="o">=</span> <span class="n">atmutil</span><span class="o">.</span><span class="n">get_wet_opacity</span><span class="p">(</span><span class="n">myat</span><span class="p">)</span>
+
+        <span class="c1"># Get transmission spectrum for opacity profiles for current SpW and</span>
+        <span class="c1"># airmass of each scan.</span>
+        <span class="n">transm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">atmutil</span><span class="o">.</span><span class="n">calc_transmission</span><span class="p">(</span><span class="n">airmass_for_scan</span><span class="p">[</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">],</span> <span class="n">dry_opacity</span><span class="p">,</span> <span class="n">wet_opacity</span><span class="p">)</span>
+                             <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">])</span>
+
+        <span class="c1"># For collection of transmission spectra for current SpW, assess the</span>
+        <span class="c1"># fraction of data points (channels, scans) that fall below the</span>
+        <span class="c1"># threshold.</span>
+        <span class="n">n_low_trans</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">transm</span> <span class="o">&lt;</span> <span class="n">thresh_transm</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">frac_below_thresh</span> <span class="o">=</span> <span class="n">n_low_trans</span> <span class="o">/</span> <span class="n">transm</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="c1"># If the fraction of data points below transmission threshold is equal</span>
+        <span class="c1"># to or higher than the given (fraction) threshold, then generate a</span>
+        <span class="c1"># flagging command to flag the current SpW entirely.</span>
+        <span class="k">if</span> <span class="n">frac_below_thresh</span> <span class="o">&gt;=</span> <span class="n">max_frac_low_trans</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">, SpW </span><span class="si">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: fraction of data with low transmission = </span><span class="si">{</span><span class="n">n_low_trans</span><span class="si">}</span><span class="s2"> /&quot;</span>
+                     <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">transm</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">frac_below_thresh</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">; this is equal/above the max fraction of&quot;</span>
+                     <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">max_frac_low_trans</span><span class="si">}</span><span class="s2"> therefore this SpW will become flagged.&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Add new flagging command for current SpW.</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;mode=&#39;manual&#39; spw=&#39;</span><span class="si">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39; reason=&#39;low_transmission&#39;&quot;</span>
+            <span class="n">commands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">, SpW </span><span class="si">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: fraction of data with low transmission = </span><span class="si">{</span><span class="n">n_low_trans</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">transm</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> =&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">frac_below_thresh</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">; this is below the max fraction of </span><span class="si">{</span><span class="n">max_frac_low_trans</span><span class="si">}</span><span class="s2">, therefore&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; therefore this SpW will not be flagged.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">commands</span>
+
+
+<span class="k">def</span> <span class="nf">get_elevation_for_alma_scan</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="n">edge</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the elevation for the beginning or the end of an ALMA scan.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scan: Scan object.</span>
+<span class="sd">        edge: Selects which edge of the scan, either &quot;start&quot; or &quot;end&quot;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Astropy quantity corresponding to the elevation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">alma_site</span> <span class="o">=</span> <span class="n">EarthLocation</span><span class="o">.</span><span class="n">from_geocentric</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">2225015.30883296</span><span class="p">,</span> <span class="n">y</span><span class="o">=-</span><span class="mf">5440016.41799762</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mf">2481631.27428014</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span>
+    <span class="n">scan_field</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">fields</span><span class="p">))</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span>
+        <span class="n">scan_field</span><span class="o">.</span><span class="n">mdirection</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">],</span>  <span class="c1"># RA</span>
+        <span class="n">scan_field</span><span class="o">.</span><span class="n">mdirection</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">],</span>  <span class="c1"># DEC</span>
+        <span class="n">frame</span><span class="o">=</span><span class="n">scan_field</span><span class="o">.</span><span class="n">mdirection</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+        <span class="n">unit</span><span class="o">=</span><span class="p">(</span><span class="n">scan_field</span><span class="o">.</span><span class="n">mdirection</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;unit&#39;</span><span class="p">],</span> <span class="n">scan_field</span><span class="o">.</span><span class="n">mdirection</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">][</span><span class="s1">&#39;unit&#39;</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="n">edge</span> <span class="o">==</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">start_time</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;mjd&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">edge</span> <span class="o">==</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">end_time</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;mjd&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The parameter edge should be either &quot;start&quot; or &quot;end&quot;.&#39;</span><span class="p">)</span>
+    <span class="n">coords_altaz</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">AltAz</span><span class="p">(</span><span class="n">obstime</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="n">alma_site</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">coords_altaz</span><span class="o">.</span><span class="n">alt</span>
+
+
+<span class="k">def</span> <span class="nf">get_airmass_for_alma_scan</span><span class="p">(</span><span class="n">scan</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the airmass corresponding to an ALMA observation scan.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scan: Scan object.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Mean airmass of the scan.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start_elevation</span> <span class="o">=</span> <span class="n">get_elevation_for_alma_scan</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">)</span>
+    <span class="n">end_elevation</span> <span class="o">=</span> <span class="n">get_elevation_for_alma_scan</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span>
+    <span class="n">start_airmass</span> <span class="o">=</span> <span class="n">atmutil</span><span class="o">.</span><span class="n">calc_airmass</span><span class="p">(</span><span class="n">start_elevation</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+    <span class="n">end_airmass</span> <span class="o">=</span> <span class="n">atmutil</span><span class="o">.</span><span class="n">calc_airmass</span><span class="p">(</span><span class="n">end_elevation</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">start_airmass</span> <span class="o">+</span> <span class="n">end_airmass</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

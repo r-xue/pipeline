@@ -1,0 +1,987 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.tasks.tclean.cleanbase &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.tasks.tclean.cleanbase</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.tasks.tclean.cleanbase</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.mpihelpers</span> <span class="k">as</span> <span class="nn">mpihelpers</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.imageheader</span> <span class="k">as</span> <span class="nn">imageheader</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">logging</span>
+
+<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">TcleanResult</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># The basic clean tasks classes. Clean performs a single clean run.</span>
+
+
+<div class="viewcode-block" id="CleanBaseInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.cleanbase.CleanBaseInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">CleanBaseInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+
+    <span class="c1"># simple properties ------------------------------------------------------------------------------------------------</span>
+
+    <span class="n">antenna</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">datacolumn</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">datatype</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">datatype_info</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">deconvolver</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">cycleniter</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">999</span><span class="p">)</span>
+    <span class="n">cyclefactor</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.0</span><span class="p">)</span>
+    <span class="n">nmajor</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">cfcache</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">gridder</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">imagename</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="nb">iter</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">hm_dogrowprune</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">hm_growiterations</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">999</span><span class="p">)</span>
+    <span class="n">hm_lownoisethreshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.0</span><span class="p">)</span>
+    <span class="n">hm_masking</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+    <span class="n">hm_minbeamfrac</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.0</span><span class="p">)</span>
+    <span class="n">hm_minpercentchange</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.0</span><span class="p">)</span>
+    <span class="n">hm_minpsffraction</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.0</span><span class="p">)</span>
+    <span class="n">hm_maxpsffraction</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.0</span><span class="p">)</span>
+    <span class="n">hm_fastnoise</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">hm_negativethreshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.0</span><span class="p">)</span>
+    <span class="n">hm_noisethreshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.0</span><span class="p">)</span>
+    <span class="n">hm_sidelobethreshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.0</span><span class="p">)</span>
+    <span class="n">mosweight</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">nchan</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">nbin</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">niter</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+    <span class="n">hm_nsigma</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">hm_perchanweightdensity</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">hm_npixels</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">nterms</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">orig_specmode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">outframe</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;LSRK&#39;</span><span class="p">)</span>
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">)</span>
+    <span class="n">pblimit</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">is_per_eb</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">phasecenter</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">psf_phasecenter</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">restoringbeam</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;common&#39;</span><span class="p">)</span>
+    <span class="n">robust</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.0</span><span class="p">)</span>
+    <span class="n">savemodel</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
+    <span class="n">startmodel</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">scales</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">spwsel_all_cont</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">spwsel_low_bandwidth</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">spwsel_low_spread</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">stokes</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">)</span>
+    <span class="n">threshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">usepointing</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">uvrange</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">uvtaper</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">weighting</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;briggs&#39;</span><span class="p">)</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">restfreq</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">wprojplanes</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">wbawp</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">rotatepastep</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">calcpsf</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">calcres</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">pbmask</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># properties requiring some logic ----------------------------------------------------------------------------------</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">cell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="nd">@imsize</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">):</span>
+            <span class="c1"># Remove the characters [, ], and &#39; from the value.</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="s2">&quot;[]&#39;&quot;</span><span class="p">))</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">temp</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">specmode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;cube&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;mfs&#39;</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">first_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">first_ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">()])</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">spwsel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imagename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype_info</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwsel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwsel_all_cont</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwsel_low_bandwidth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwsel_low_spread</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orig_specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gridder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">deconvolver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvtaper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nterms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cycleniter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cyclefactor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nmajor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_minpsffraction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">hm_maxpsffraction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scales</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outframe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phasecenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">psf_phasecenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nbin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">robust</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">restoringbeam</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">savemodel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">startmodel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_masking</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">hm_sidelobethreshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_noisethreshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_lownoisethreshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wprojplanes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">hm_negativethreshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_minbeamfrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_growiterations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_dogrowprune</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">hm_minpercentchange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_fastnoise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pblimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_nsigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">hm_perchanweightdensity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_npixels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reffreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">restfreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conjbeams</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_per_eb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">usepointing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mosweight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">heuristics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rotatepastep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cfcache</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calcpsf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">calcres</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wbawp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbmask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">imagename</span> <span class="o">=</span> <span class="n">imagename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacolumn</span> <span class="o">=</span> <span class="n">datacolumn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span> <span class="o">=</span> <span class="n">datatype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatype_info</span> <span class="o">=</span> <span class="n">datatype_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwsel</span> <span class="o">=</span> <span class="n">spwsel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwsel_all_cont</span> <span class="o">=</span> <span class="n">spwsel_all_cont</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwsel_low_bandwidth</span> <span class="o">=</span> <span class="n">spwsel_low_bandwidth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwsel_low_spread</span> <span class="o">=</span> <span class="n">spwsel_low_spread</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uvrange</span> <span class="o">=</span> <span class="n">uvrange</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">savemodel</span> <span class="o">=</span> <span class="n">savemodel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">startmodel</span> <span class="o">=</span> <span class="n">startmodel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orig_specmode</span> <span class="o">=</span> <span class="n">orig_specmode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">specmode</span> <span class="o">=</span> <span class="n">specmode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gridder</span> <span class="o">=</span> <span class="n">gridder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deconvolver</span> <span class="o">=</span> <span class="n">deconvolver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uvtaper</span> <span class="o">=</span> <span class="n">uvtaper</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nterms</span> <span class="o">=</span> <span class="n">nterms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycleniter</span> <span class="o">=</span> <span class="n">cycleniter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cyclefactor</span> <span class="o">=</span> <span class="n">cyclefactor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nmajor</span> <span class="o">=</span> <span class="n">nmajor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_minpsffraction</span> <span class="o">=</span> <span class="n">hm_minpsffraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_maxpsffraction</span> <span class="o">=</span> <span class="n">hm_maxpsffraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scales</span> <span class="o">=</span> <span class="n">scales</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outframe</span> <span class="o">=</span> <span class="n">outframe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imsize</span> <span class="o">=</span> <span class="n">imsize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phasecenter</span> <span class="o">=</span> <span class="n">phasecenter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">psf_phasecenter</span> <span class="o">=</span> <span class="n">psf_phasecenter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nchan</span> <span class="o">=</span> <span class="n">nchan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nbin</span> <span class="o">=</span> <span class="n">nbin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stokes</span> <span class="o">=</span> <span class="n">stokes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weighting</span> <span class="o">=</span> <span class="n">weighting</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">robust</span> <span class="o">=</span> <span class="n">robust</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restoringbeam</span> <span class="o">=</span> <span class="n">restoringbeam</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iter</span> <span class="o">=</span> <span class="nb">iter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pbmask</span> <span class="o">=</span> <span class="n">pbmask</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_masking</span> <span class="o">=</span> <span class="n">hm_masking</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_sidelobethreshold</span> <span class="o">=</span> <span class="n">hm_sidelobethreshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_noisethreshold</span> <span class="o">=</span> <span class="n">hm_noisethreshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_lownoisethreshold</span> <span class="o">=</span> <span class="n">hm_lownoisethreshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_negativethreshold</span> <span class="o">=</span> <span class="n">hm_negativethreshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_minbeamfrac</span> <span class="o">=</span> <span class="n">hm_minbeamfrac</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_growiterations</span> <span class="o">=</span> <span class="n">hm_growiterations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_dogrowprune</span> <span class="o">=</span> <span class="n">hm_dogrowprune</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_minpercentchange</span> <span class="o">=</span> <span class="n">hm_minpercentchange</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_fastnoise</span> <span class="o">=</span> <span class="n">hm_fastnoise</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfcache</span> <span class="o">=</span> <span class="n">cfcache</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pblimit</span> <span class="o">=</span> <span class="n">pblimit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">niter</span> <span class="o">=</span> <span class="n">niter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_nsigma</span> <span class="o">=</span> <span class="n">hm_nsigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_perchanweightdensity</span> <span class="o">=</span> <span class="n">hm_perchanweightdensity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_npixels</span> <span class="o">=</span> <span class="n">hm_npixels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sensitivity</span> <span class="o">=</span> <span class="n">sensitivity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reffreq</span> <span class="o">=</span> <span class="n">reffreq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restfreq</span> <span class="o">=</span> <span class="n">restfreq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conjbeams</span> <span class="o">=</span> <span class="n">conjbeams</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_per_eb</span> <span class="o">=</span> <span class="n">is_per_eb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span> <span class="o">=</span> <span class="n">antenna</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">usepointing</span> <span class="o">=</span> <span class="n">usepointing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mosweight</span> <span class="o">=</span> <span class="n">mosweight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wprojplanes</span> <span class="o">=</span> <span class="n">wprojplanes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wbawp</span> <span class="o">=</span> <span class="n">wbawp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rotatepastep</span> <span class="o">=</span> <span class="n">rotatepastep</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristics</span> <span class="o">=</span> <span class="n">heuristics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calcpsf</span> <span class="o">=</span> <span class="n">calcpsf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calcres</span> <span class="o">=</span> <span class="n">calcres</span></div>
+
+
+
+<div class="viewcode-block" id="CleanBase">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.cleanbase.CleanBase">[docs]</a>
+<span class="k">class</span> <span class="nc">CleanBase</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">CleanBaseInputs</span>
+
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="CleanBase.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.cleanbase.CleanBase.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Make sure inputs.vis is a list, even it is one that contains a</span>
+        <span class="c1"># single measurement set</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">]</span>
+
+        <span class="c1"># Remove MSs that do not contain data for the given field(s)</span>
+        <span class="n">scanidlist</span><span class="p">,</span> <span class="n">visindexlist</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">get_scanidlist</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+        <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">visindexlist</span><span class="p">]</span>
+        <span class="n">inputs</span><span class="o">.</span><span class="n">spwsel</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="o">.</span><span class="n">spwsel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">visindexlist</span><span class="p">]</span>
+
+        <span class="c1"># Initialize imaging results structure</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inputs</span><span class="o">.</span><span class="n">result</span><span class="p">:</span>
+            <span class="n">plotdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
+                                   <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">field_ids</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">TcleanResult</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                                  <span class="n">datacolumn</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">datacolumn</span><span class="p">,</span>
+                                  <span class="n">datatype</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">datatype</span><span class="p">,</span>
+                                  <span class="n">datatype_info</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">datatype_info</span><span class="p">,</span>
+                                  <span class="n">sourcename</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span>
+                                  <span class="n">field_ids</span><span class="o">=</span><span class="n">field_ids</span><span class="p">,</span>
+                                  <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+                                  <span class="n">spw</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+                                  <span class="n">orig_specmode</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">orig_specmode</span><span class="p">,</span>
+                                  <span class="n">specmode</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span>
+                                  <span class="n">stokes</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">,</span>
+                                  <span class="n">multiterm</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">nterms</span> <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">deconvolver</span> <span class="o">==</span> <span class="s1">&#39;mtmfs&#39;</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">plotdir</span><span class="o">=</span><span class="n">plotdir</span><span class="p">,</span> <span class="n">imaging_mode</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">imaging_mode</span><span class="p">,</span>
+                                  <span class="n">is_per_eb</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">is_per_eb</span><span class="p">,</span>
+                                  <span class="n">is_eph_obj</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">is_eph_obj</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">result</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_clean_cycle</span><span class="p">(</span><span class="n">scanidlist</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">iter</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">error_msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Cleaning failure for field </span><span class="si">{!s}</span><span class="s1">, intent </span><span class="si">{!s}</span><span class="s1">, specmode </span><span class="si">{!s}</span><span class="s1">, spw </span><span class="si">{!s}</span><span class="s1">, iteration </span><span class="si">{!s}</span><span class="s1">: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span>
+                         <span class="nb">format</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">iter</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">CleanBaseError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">,</span> <span class="s1">&#39;Cleaning failure&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="CleanBase.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.cleanbase.CleanBase.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_clean_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scanidlist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute a clean image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">scanidlist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scanidlist</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Derive names of clean products for this iteration</span>
+        <span class="n">old_model_name</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">model</span>
+        <span class="n">model_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">.iter</span><span class="si">%s</span><span class="s1">.model&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">imagename</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">,</span> <span class="nb">iter</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">old_model_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">old_model_name</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">multiterm</span><span class="p">:</span>
+                    <span class="n">rename_image</span><span class="p">(</span><span class="n">old_name</span><span class="o">=</span><span class="n">old_model_name</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">,</span>
+                                 <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;.tt</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">nterm</span> <span class="k">for</span> <span class="n">nterm</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">multiterm</span><span class="p">)])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">rename_image</span><span class="p">(</span><span class="n">old_name</span><span class="o">=</span><span class="n">old_model_name</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">niter</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span> <span class="ow">and</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spwsel_all_cont</span><span class="p">):</span>
+            <span class="n">image_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">image_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">.iter</span><span class="si">%s</span><span class="s1">.image&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">inputs</span><span class="o">.</span><span class="n">imagename</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">,</span> <span class="nb">iter</span><span class="p">)</span>
+
+        <span class="n">residual_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">.iter</span><span class="si">%s</span><span class="s1">.residual&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">imagename</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">,</span> <span class="nb">iter</span><span class="p">)</span>
+        <span class="n">psf_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">.iter</span><span class="si">%s</span><span class="s1">.psf&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">imagename</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">,</span> <span class="nb">iter</span><span class="p">)</span>
+        <span class="n">flux_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">.iter</span><span class="si">%s</span><span class="s1">.pb&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">imagename</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">,</span> <span class="nb">iter</span><span class="p">)</span>
+        <span class="n">mask_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">.iter</span><span class="si">%s</span><span class="s1">.mask&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">imagename</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">,</span> <span class="nb">iter</span><span class="p">)</span>
+        <span class="n">alpha_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">.iter</span><span class="si">%s</span><span class="s1">.alpha&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">imagename</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">,</span> <span class="nb">iter</span><span class="p">)</span>
+        <span class="n">pbcor_image_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">.iter</span><span class="si">%s</span><span class="s1">.image.pbcor&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">imagename</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">,</span> <span class="nb">iter</span><span class="p">)</span>
+
+        <span class="n">parallel</span> <span class="o">=</span> <span class="nb">all</span><span class="p">([</span><span class="n">mpihelpers</span><span class="o">.</span><span class="n">parse_mpi_input_parameter</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">parallel</span><span class="p">),</span>
+                        <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">])</span>
+
+        <span class="c1"># Need to translate the virtual spw IDs to real ones</span>
+        <span class="n">real_spwsel</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_real_spwsel</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">spwsel</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Common tclean parameters</span>
+        <span class="n">tclean_job_parameters</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span>           <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;imagename&#39;</span><span class="p">:</span>     <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">.iter</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">imagename</span><span class="p">),</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">,</span> <span class="nb">iter</span><span class="p">),</span>
+            <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span>    <span class="n">inputs</span><span class="o">.</span><span class="n">datacolumn</span><span class="p">,</span>
+            <span class="s1">&#39;antenna&#39;</span><span class="p">:</span>       <span class="n">inputs</span><span class="o">.</span><span class="n">antenna</span><span class="p">,</span>
+            <span class="s1">&#39;field&#39;</span><span class="p">:</span>         <span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span>
+            <span class="s1">&#39;spw&#39;</span><span class="p">:</span>           <span class="n">real_spwsel</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span>        <span class="n">utils</span><span class="o">.</span><span class="n">to_CASA_intent</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">),</span>
+            <span class="s1">&#39;specmode&#39;</span><span class="p">:</span>      <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">!=</span> <span class="s1">&#39;cont&#39;</span> <span class="k">else</span> <span class="s1">&#39;mfs&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;gridder&#39;</span><span class="p">:</span>       <span class="n">inputs</span><span class="o">.</span><span class="n">gridder</span><span class="p">,</span>
+            <span class="s1">&#39;pblimit&#39;</span><span class="p">:</span>       <span class="n">inputs</span><span class="o">.</span><span class="n">pblimit</span><span class="p">,</span>
+            <span class="s1">&#39;niter&#39;</span><span class="p">:</span>         <span class="n">inputs</span><span class="o">.</span><span class="n">niter</span><span class="p">,</span>
+            <span class="s1">&#39;threshold&#39;</span><span class="p">:</span>     <span class="n">inputs</span><span class="o">.</span><span class="n">threshold</span><span class="p">,</span>
+            <span class="s1">&#39;deconvolver&#39;</span><span class="p">:</span>   <span class="n">inputs</span><span class="o">.</span><span class="n">deconvolver</span><span class="p">,</span>
+            <span class="s1">&#39;interactive&#39;</span><span class="p">:</span>   <span class="kc">False</span><span class="p">,</span>
+            <span class="s1">&#39;nchan&#39;</span><span class="p">:</span>         <span class="n">inputs</span><span class="o">.</span><span class="n">nchan</span><span class="p">,</span>
+            <span class="s1">&#39;start&#39;</span><span class="p">:</span>         <span class="n">inputs</span><span class="o">.</span><span class="n">start</span><span class="p">,</span>
+            <span class="s1">&#39;width&#39;</span><span class="p">:</span>         <span class="n">inputs</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+            <span class="s1">&#39;imsize&#39;</span><span class="p">:</span>        <span class="n">inputs</span><span class="o">.</span><span class="n">imsize</span><span class="p">,</span>
+            <span class="s1">&#39;cell&#39;</span><span class="p">:</span>          <span class="n">inputs</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span>
+            <span class="s1">&#39;cfcache&#39;</span><span class="p">:</span>       <span class="n">inputs</span><span class="o">.</span><span class="n">cfcache</span><span class="p">,</span>
+            <span class="s1">&#39;stokes&#39;</span><span class="p">:</span>        <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">,</span>
+            <span class="s1">&#39;weighting&#39;</span><span class="p">:</span>     <span class="n">inputs</span><span class="o">.</span><span class="n">weighting</span><span class="p">,</span>
+            <span class="s1">&#39;robust&#39;</span><span class="p">:</span>        <span class="n">inputs</span><span class="o">.</span><span class="n">robust</span><span class="p">,</span>
+            <span class="s1">&#39;restoringbeam&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">restoringbeam</span><span class="p">,</span>
+            <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span>       <span class="n">inputs</span><span class="o">.</span><span class="n">uvrange</span><span class="p">,</span>
+            <span class="s1">&#39;savemodel&#39;</span><span class="p">:</span>     <span class="n">inputs</span><span class="o">.</span><span class="n">savemodel</span><span class="p">,</span>
+            <span class="s1">&#39;startmodel&#39;</span><span class="p">:</span>    <span class="n">inputs</span><span class="o">.</span><span class="n">startmodel</span><span class="p">,</span>
+            <span class="s1">&#39;perchanweightdensity&#39;</span><span class="p">:</span>  <span class="n">inputs</span><span class="o">.</span><span class="n">hm_perchanweightdensity</span><span class="p">,</span>
+            <span class="s1">&#39;npixels&#39;</span><span class="p">:</span>    <span class="n">inputs</span><span class="o">.</span><span class="n">hm_npixels</span><span class="p">,</span>
+            <span class="s1">&#39;parallel&#39;</span><span class="p">:</span>     <span class="n">parallel</span><span class="p">,</span>
+            <span class="s1">&#39;wbawp&#39;</span><span class="p">:</span>        <span class="n">inputs</span><span class="o">.</span><span class="n">wbawp</span><span class="p">,</span>
+            <span class="s1">&#39;fullsummary&#39;</span><span class="p">:</span>   <span class="kc">True</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Set special phasecenter and outframe for ephemeris objects.</span>
+        <span class="c1"># Needs to be done here since the explicit coordinates are</span>
+        <span class="c1"># used in heuristics methods upstream.</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">is_eph_obj</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">):</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;TRACKFIELD&#39;</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;psfphasecenter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># 2018-08-13: Spectral tracking has been implemented via a new</span>
+            <span class="c1"># specmode option (CAS-11766).</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;cubesource&#39;</span>
+            <span class="c1"># 2018-04-19: &#39;REST&#39; does not yet work (see CAS-8965, CAS-9997)</span>
+            <span class="c1">#tclean_job_parameters[&#39;outframe&#39;] = &#39;REST&#39;</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;outframe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="c1"># 2018-07-10: Parallel imaging of ephemeris objects does not</span>
+            <span class="c1"># yet work (see CAS-11631)</span>
+            <span class="c1"># 2021-02-16: PIPE-981 asks for allowing parallelized tclean</span>
+            <span class="c1"># runs for ephemeris sources.</span>
+            <span class="c1">#tclean_job_parameters[&#39;parallel&#39;] = False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">phasecenter</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">gridder</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;mosaic&#39;</span><span class="p">,</span> <span class="s1">&#39;awproject&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">inputs</span><span class="o">.</span><span class="n">psf_phasecenter</span> <span class="o">!=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">phasecenter</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;psfphasecenter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">psf_phasecenter</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">used_psfphasecenter</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;psfphasecenter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;outframe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">outframe</span>
+
+        <span class="k">if</span> <span class="n">scanidlist</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[[],</span> <span class="kc">None</span><span class="p">]:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;scan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scanidlist</span>
+
+        <span class="c1"># special frequency interpolation setting for cube mode and nbin=2 (PIPE-2115)</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span> <span class="ow">and</span> <span class="n">inputs</span><span class="o">.</span><span class="n">nbin</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;interpolation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;nearest&#39;</span>
+
+        <span class="c1"># Set up masking parameters</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_masking</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;usemask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;auto-multithresh&#39;</span>
+
+            <span class="c1"># get heuristics parameters</span>
+            <span class="p">(</span><span class="n">sidelobethreshold</span><span class="p">,</span> <span class="n">noisethreshold</span><span class="p">,</span> <span class="n">lownoisethreshold</span><span class="p">,</span> <span class="n">negativethreshold</span><span class="p">,</span> <span class="n">minbeamfrac</span><span class="p">,</span> <span class="n">growiterations</span><span class="p">,</span>
+             <span class="n">dogrowprune</span><span class="p">,</span> <span class="n">minpercentchange</span><span class="p">,</span>
+             <span class="n">fastnoise</span><span class="p">)</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">get_autobox_params</span><span class="p">(</span><span class="nb">iter</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">robust</span><span class="p">)</span>
+
+            <span class="c1"># Override individually with manual settings</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_sidelobethreshold</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">999.0</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;sidelobethreshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_sidelobethreshold</span>
+            <span class="k">elif</span> <span class="n">sidelobethreshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;sidelobethreshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sidelobethreshold</span>
+
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_noisethreshold</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">999.0</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;noisethreshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_noisethreshold</span>
+            <span class="k">elif</span> <span class="n">noisethreshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;noisethreshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">noisethreshold</span>
+
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_lownoisethreshold</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">999.0</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;lownoisethreshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_lownoisethreshold</span>
+            <span class="k">elif</span> <span class="n">lownoisethreshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;lownoisethreshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lownoisethreshold</span>
+
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_negativethreshold</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">999.0</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;negativethreshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_negativethreshold</span>
+            <span class="k">elif</span> <span class="n">negativethreshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;negativethreshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">negativethreshold</span>
+
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_minbeamfrac</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">999.0</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;minbeamfrac&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_minbeamfrac</span>
+            <span class="k">elif</span> <span class="n">minbeamfrac</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;minbeamfrac&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">minbeamfrac</span>
+
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_growiterations</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">999</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;growiterations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_growiterations</span>
+            <span class="k">elif</span> <span class="n">growiterations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;growiterations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">growiterations</span>
+
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_dogrowprune</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;dogrowprune&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_dogrowprune</span>
+            <span class="k">elif</span> <span class="n">dogrowprune</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;dogrowprune&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dogrowprune</span>
+
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_minpercentchange</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">999</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;minpercentchange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_minpercentchange</span>
+            <span class="k">elif</span> <span class="n">minpercentchange</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;minpercentchange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">minpercentchange</span>
+
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_fastnoise</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;fastnoise&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_fastnoise</span>
+            <span class="k">elif</span> <span class="n">fastnoise</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;fastnoise&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fastnoise</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_fastnoise</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;fastnoise&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_fastnoise</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;fastnoise&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_masking</span> <span class="o">!=</span> <span class="s1">&#39;none&#39;</span> <span class="ow">and</span> <span class="n">inputs</span><span class="o">.</span><span class="n">mask</span> <span class="o">==</span> <span class="s1">&#39;pb&#39;</span><span class="p">:</span>
+                <span class="c1"># In manual cleaning mode decide for cleaning with pbmask according</span>
+                <span class="c1"># to heuristic class method (see PIPE-977)</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;usemask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;pb&#39;</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;pbmask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">pbmask</span> <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">pbmask</span> <span class="k">else</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">pbmask</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">hm_masking</span> <span class="o">!=</span> <span class="s1">&#39;none&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">mask</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;usemask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;user&#39;</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">mask</span>
+
+        <span class="c1"># Show nterms parameter only if it is used.</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">multiterm</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;nterms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">multiterm</span>
+
+        <span class="c1"># Select whether to restore image</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">niter</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span> <span class="ow">and</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spwsel_all_cont</span><span class="p">):</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;restoration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;pbcor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;restoration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;pbcor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">pb_correction</span><span class="p">()</span>
+
+        <span class="c1"># Re-use products from previous iteration.</span>
+        <span class="k">if</span> <span class="nb">iter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;restart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;calcpsf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;calcres&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Allow setting calcpsf and calcres explicitly</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">calcpsf</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;calcpsf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">calcpsf</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">calcres</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;calcres&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">calcres</span>
+
+        <span class="c1"># Additional heuristics or task parameters</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">cyclefactor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">999</span><span class="p">):</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;cyclefactor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">cyclefactor</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Call first and assign to variable to avoid calling slow methods twice</span>
+            <span class="n">cyclefactor</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">cyclefactor</span><span class="p">(</span><span class="nb">iter</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cyclefactor</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;cyclefactor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cyclefactor</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_minpsffraction</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">999</span><span class="p">):</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;minpsffraction&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_minpsffraction</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_maxpsffraction</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">999</span><span class="p">):</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;maxpsffraction&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_maxpsffraction</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">cycleniter</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">999</span><span class="p">):</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;cycleniter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">cycleniter</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cycleniter</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">cycleniter</span><span class="p">(</span><span class="nb">iter</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cycleniter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;cycleniter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cycleniter</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">nmajor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">999</span><span class="p">):</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;nmajor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">nmajor</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nmajor</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">nmajor</span><span class="p">(</span><span class="nb">iter</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">nmajor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;nmajor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nmajor</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">scales</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;scales&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">scales</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scales</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">scales</span><span class="p">(</span><span class="nb">iter</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">scales</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;scales&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scales</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">uvrange</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">uvrange</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">uvrange</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">uvrange</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">uvrange</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uvrange</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">uvtaper</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;uvtaper&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">uvtaper</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">uvtaper</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">uvtaper</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">uvtaper</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;uvtaper&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uvtaper</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">reffreq</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">reffreq</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reffreq</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">reffreq</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">reffreq</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reffreq</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">restfreq</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;restfreq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">restfreq</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">restfreq</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">restfreq</span><span class="p">(</span><span class="n">specmode</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">nchan</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">restfreq</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;restfreq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">restfreq</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">conjbeams</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;conjbeams&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">conjbeams</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">conjbeams</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">conjbeams</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">conjbeams</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;conjbeams&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">conjbeams</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">usepointing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;usepointing&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">usepointing</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">usepointing</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">usepointing</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">usepointing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;usepointing&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">usepointing</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">mosweight</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;mosweight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">mosweight</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mosweight</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">mosweight</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mosweight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;mosweight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mosweight</span>
+
+        <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;nsigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">nsigma</span><span class="p">(</span><span class="nb">iter</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_nsigma</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_masking</span><span class="p">)</span>
+        <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;wprojplanes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">wprojplanes</span><span class="p">(</span><span class="n">gridder</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">gridder</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+        <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;rotatepastep&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">rotatepastep</span><span class="p">()</span>
+        <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;smallscalebias&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">smallscalebias</span><span class="p">()</span>
+        <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;usepointing&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">usepointing</span><span class="p">()</span>
+        <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;pointingoffsetsigdev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">pointingoffsetsigdev</span><span class="p">()</span>
+        <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;psfcutoff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">psfcutoff</span><span class="p">()</span>
+
+        <span class="c1"># Up until CASA 6.1 (including) it is was necessary to run tclean calls with</span>
+        <span class="c1"># restoringbeam == &#39;common&#39; in two steps in HPC mode (CAS-10849).</span>
+        <span class="c1"># With CASA 6.2.0-57 the cube refactor is in place and the two step</span>
+        <span class="c1"># process is no longer needed (PIPE-980). See removed code at:</span>
+        <span class="c1"># https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/hif/tasks/tclean/cleanbase.py?at=15e495a29d0bfc93892c65eceb660d61a1805790#521</span>
+
+        <span class="c1"># PIPE-1672: use fullsummary=False for cube imaging to avoid potential MPIbuffer-related issues.</span>
+        <span class="k">if</span> <span class="s1">&#39;cube&#39;</span> <span class="ow">in</span> <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">]:</span>
+            <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;fullsummary&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">tclean</span><span class="p">(</span><span class="o">**</span><span class="n">tclean_job_parameters</span><span class="p">)</span>
+        <span class="n">tclean_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="c1"># Record last tclean command for weblog</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">set_tclean_command</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="p">))</span>
+
+        <span class="n">tclean_stopcode_ignore</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">tclean_stopcode_ignore</span><span class="p">(</span><span class="nb">iter</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_masking</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">niter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="n">tclean_stopcode</span> <span class="o">=</span> <span class="n">tclean_result</span><span class="p">[</span><span class="s1">&#39;stopcode&#39;</span><span class="p">]</span>
+            <span class="n">tclean_iterdone</span> <span class="o">=</span> <span class="n">tclean_result</span><span class="p">[</span><span class="s1">&#39;iterdone&#39;</span><span class="p">]</span>
+            <span class="n">tclean_niter</span> <span class="o">=</span> <span class="n">tclean_result</span><span class="p">[</span><span class="s1">&#39;niter&#39;</span><span class="p">]</span>
+            <span class="n">tclean_nmajordone</span> <span class="o">=</span> <span class="n">tclean_result</span><span class="p">[</span><span class="s1">&#39;nmajordone&#39;</span><span class="p">]</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">set_tclean_stopcode</span><span class="p">(</span><span class="n">tclean_stopcode</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">set_tclean_stopreason</span><span class="p">(</span><span class="n">tclean_stopcode</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">set_tclean_iterdone</span><span class="p">(</span><span class="n">tclean_iterdone</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">set_nmajordone</span><span class="p">(</span><span class="nb">iter</span><span class="p">,</span> <span class="n">tclean_nmajordone</span><span class="p">)</span>
+
+            <span class="c1"># The return structure of tclean_result[&#39;summaryminor&#39;] has changed after CAS-6692 (CASA ver&gt;=6.5).</span>
+            <span class="c1"># Before CAS-6692, tclean_result[&#39;summaryminor&#39;] is a 2D array with 6 rows,</span>
+            <span class="c1">#   idx=0 : iteration number</span>
+            <span class="c1">#   idx=1 : peak residual</span>
+            <span class="c1">#   idx=2 : model flux</span>
+            <span class="c1">#   idx=3 : cyclethreshold</span>
+            <span class="c1">#   idx=4 : deconvolver id (for multi-field)</span>
+            <span class="c1">#   idx=5 : subimage id (related to channel id, stokes id..)</span>
+            <span class="c1"># https://open-jira.nrao.edu/browse/CAS-6692?focusedCommentId=60810&amp;page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-60810</span>
+            <span class="c1"># note that the subimage id (also called planeid or chunckid here) is formulated as:</span>
+            <span class="c1">#   chunkid = chanid+polid*nSubChans</span>
+            <span class="c1"># which can be obscure and depending on the MPI setup:</span>
+            <span class="c1"># https://open-jira.nrao.edu/browse/CAS-6692?focusedCommentId=190256&amp;page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-190256</span>
+            <span class="c1">#</span>
+            <span class="c1"># After CAS-6692, tclean_result[&#39;summaryminor&#39;] is described in details on the latest CASAdocs:</span>
+            <span class="c1"># https://casadocs.readthedocs.io/en/latest/notebooks/synthesis_imaging.html#Returned-Dictionary</span>
+            <span class="c1">#</span>
+            <span class="c1"># Also see the comparison from one practical example:</span>
+            <span class="c1"># https://open-jira.nrao.edu/browse/CAS-6692?focusedCommentId=190220&amp;page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-190220</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tclean_result</span><span class="p">[</span><span class="s1">&#39;summaryminor&#39;</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="c1"># after CAS-6692</span>
+                <span class="n">tclean_summaryminor</span> <span class="o">=</span> <span class="n">tclean_result</span><span class="p">[</span><span class="s1">&#39;summaryminor&#39;</span><span class="p">]</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">set_summaryminor</span><span class="p">(</span><span class="nb">iter</span><span class="p">,</span> <span class="n">tclean_summaryminor</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># before CAS-6692</span>
+                <span class="n">tclean_nminordone</span> <span class="o">=</span> <span class="n">tclean_result</span><span class="p">[</span><span class="s1">&#39;summaryminor&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="n">tclean_peakresidual</span> <span class="o">=</span> <span class="n">tclean_result</span><span class="p">[</span><span class="s1">&#39;summaryminor&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="n">tclean_totalflux</span> <span class="o">=</span> <span class="n">tclean_result</span><span class="p">[</span><span class="s1">&#39;summaryminor&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="n">tclean_planeid</span> <span class="o">=</span> <span class="n">tclean_result</span><span class="p">[</span><span class="s1">&#39;summaryminor&#39;</span><span class="p">][</span><span class="mi">5</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">set_nminordone_array</span><span class="p">(</span><span class="nb">iter</span><span class="p">,</span> <span class="n">tclean_nminordone</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">set_peakresidual_array</span><span class="p">(</span><span class="nb">iter</span><span class="p">,</span> <span class="n">tclean_peakresidual</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">set_totalflux_array</span><span class="p">(</span><span class="nb">iter</span><span class="p">,</span> <span class="n">tclean_totalflux</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">set_planeid_array</span><span class="p">(</span><span class="nb">iter</span><span class="p">,</span> <span class="n">tclean_planeid</span><span class="p">)</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;tclean used </span><span class="si">%d</span><span class="s1"> iterations&#39;</span> <span class="o">%</span> <span class="n">tclean_iterdone</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">tclean_stopcode</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">tclean_iterdone</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;tclean exit status 0 for Field: </span><span class="si">%s</span><span class="s1"> SPW: </span><span class="si">%s</span><span class="s1">: the image may not be cleaned as expected.&#39;</span> <span class="o">%</span>
+                            <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">tclean_stopcode</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">CleanBaseError</span><span class="p">(</span><span class="s1">&#39;tclean reached niter limit. Field: </span><span class="si">%s</span><span class="s1"> SPW: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                                              <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">),</span> <span class="s1">&#39;Reached niter limit&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span> <span class="k">if</span> <span class="n">tclean_stopcode</span> <span class="ow">in</span> <span class="n">tclean_stopcode_ignore</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
+                    <span class="s1">&#39;tclean reached niter limit of </span><span class="si">{}</span><span class="s1"> for </span><span class="si">{}</span><span class="s1"> / spw</span><span class="si">{}</span><span class="s1"> / iter</span><span class="si">{}</span><span class="s1"> !&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">tclean_niter</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">dequote</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">),</span>
+                        <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="nb">iter</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">tclean_stopcode</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">CleanBaseError</span><span class="p">(</span><span class="s1">&#39;tclean stopped to prevent divergence (stop code </span><span class="si">%d</span><span class="s1">). Field: </span><span class="si">%s</span><span class="s1"> SPW: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                                              <span class="p">(</span><span class="n">tclean_stopcode</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">),</span>
+                                              <span class="s1">&#39;tclean stopped to prevent divergence.&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span> <span class="k">if</span> <span class="n">tclean_stopcode</span> <span class="ow">in</span> <span class="n">tclean_stopcode_ignore</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
+                        <span class="s1">&#39;tclean stopped to prevent divergence (stop code </span><span class="si">{}</span><span class="s1">). Field: </span><span class="si">{}</span><span class="s1"> SPW: </span><span class="si">{}</span><span class="s1"> iter</span><span class="si">{}</span><span class="s1"> !&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">tclean_stopcode</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="nb">iter</span><span class="p">))</span>
+
+        <span class="c1"># Collect images to be examined and stored in TcleanResult</span>
+        <span class="n">im_names</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Using virtual spw setups for all interferometry pipelines</span>
+        <span class="n">virtspw</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="nb">iter</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span> <span class="ow">and</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spwsel_all_cont</span><span class="p">):</span>
+            <span class="n">im_names</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_name</span>
+            <span class="n">im_names</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_name</span>
+            <span class="n">im_names</span><span class="p">[</span><span class="s1">&#39;pbcorimage&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pbcor_image_name</span>
+            <span class="n">im_names</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">alpha_name</span>
+
+        <span class="n">im_names</span><span class="p">[</span><span class="s1">&#39;residual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">residual_name</span>
+        <span class="n">im_names</span><span class="p">[</span><span class="s1">&#39;psf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">psf_name</span>
+        <span class="n">im_names</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flux_name</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">mask</span><span class="p">):</span>
+            <span class="n">im_names</span><span class="p">[</span><span class="s1">&#39;cleanmask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">mask</span>
+        <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">mask_name</span><span class="p">):</span>
+            <span class="n">im_names</span><span class="p">[</span><span class="s1">&#39;cleanmask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask_name</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="n">im_names</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">im_names</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">im_type</span><span class="p">,</span> <span class="n">im_name</span> <span class="ow">in</span> <span class="n">im_names</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Set misc info on imaging products</span>
+            <span class="c1"># - Usually we only need to do this for a single image per image type;</span>
+            <span class="c1"># - For multiterm calls, we create an image list depending on the image type;</span>
+            <span class="c1">#   - current, only include .tt0 and .tt1</span>
+            <span class="n">name_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">im_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">multiterm</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">im_type</span> <span class="o">==</span> <span class="s1">&#39;pbcorimage&#39;</span> <span class="ow">and</span> <span class="n">im_name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">name_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">im_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.image.&#39;</span><span class="o">+</span><span class="n">mterm</span><span class="o">+</span><span class="s1">&#39;.pbcor&#39;</span><span class="p">)</span>
+                                 <span class="k">for</span> <span class="n">mterm</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;tt0&#39;</span><span class="p">,</span> <span class="s1">&#39;tt1&#39;</span><span class="p">]]</span>
+                <span class="k">if</span> <span class="n">im_type</span> <span class="o">==</span> <span class="s1">&#39;alpha&#39;</span><span class="p">:</span>
+                    <span class="n">name_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">im_name</span><span class="p">,</span> <span class="n">im_name</span><span class="o">+</span><span class="s1">&#39;.error&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">im_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="s1">&#39;psf&#39;</span><span class="p">,</span> <span class="s1">&#39;flux&#39;</span><span class="p">]:</span>
+                    <span class="n">name_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">im_name</span><span class="p">,</span> <span class="n">mterm</span><span class="p">)</span> <span class="k">for</span> <span class="n">mterm</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;tt0&#39;</span><span class="p">,</span> <span class="s1">&#39;tt1&#39;</span><span class="p">]]</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">name_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+                    <span class="n">imageheader</span><span class="o">.</span><span class="n">set_miscinfo</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">virtspw</span><span class="o">=</span><span class="n">virtspw</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span>
+                                             <span class="n">datatype</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">datatype</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">im_type</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="nb">iter</span><span class="p">,</span>
+                                             <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">orig_specmode</span><span class="p">,</span>
+                                             <span class="n">robust</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">robust</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">weighting</span><span class="p">,</span>
+                                             <span class="n">is_per_eb</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">is_per_eb</span><span class="p">,</span>
+                                             <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
+            <span class="c1"># Store in TcleanResult</span>
+            <span class="k">if</span> <span class="n">im_type</span> <span class="o">==</span> <span class="s1">&#39;model&#39;</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">im_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">im_type</span> <span class="o">==</span> <span class="s1">&#39;pbcorimage&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">set_image</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">im_names</span><span class="p">[</span><span class="s1">&#39;pbcorimage&#39;</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">set_image</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">im_names</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">im_type</span> <span class="o">==</span> <span class="s1">&#39;residual&#39;</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">set_residual</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">im_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">im_type</span> <span class="o">==</span> <span class="s1">&#39;psf&#39;</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">set_psf</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">im_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">im_type</span> <span class="o">==</span> <span class="s1">&#39;flux&#39;</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">set_flux</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">im_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">im_type</span> <span class="o">==</span> <span class="s1">&#39;cleanmask&#39;</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">set_cleanmask</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">im_name</span><span class="p">)</span>
+
+        <span class="c1"># Keep threshold and sensitivity for QA and weblog</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">set_threshold</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">threshold</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">set_sensitivity</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">sensitivity</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">set_imaging_params</span><span class="p">(</span><span class="nb">iter</span><span class="p">,</span> <span class="n">tclean_job_parameters</span><span class="p">)</span>
+
+        <span class="c1"># This operation is used as a workaround for CAS-13401 and can be removed after the CAS ticket is resolved.</span>
+        <span class="k">if</span> <span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;I&#39;</span> <span class="ow">and</span> <span class="n">inputs</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">!=</span> <span class="s1">&#39;ALMA&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_copy_restoringbeam_from_psf</span><span class="p">(</span><span class="n">tclean_job_parameters</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_copy_restoringbeam_from_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Copy the per-plane beam set from .psf image to .image/.residual.</span>
+
+<span class="sd">        Note: this is a workaround for CAS-13401, in which CASA/tclean(stokes=&#39;IQUV&#39;) doesn&#39;t save</span>
+<span class="sd">              the per-plane restoring beam information into the residual and restored images.</span>
+<span class="sd">              For CASA ver&gt;=6.6.0 (after the CAS-13401 implementation), this block should act as a no-op.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bm_src</span> <span class="o">=</span> <span class="s1">&#39;.psf&#39;</span>
+        <span class="n">bm_src_ext_try</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;.tt0&#39;</span><span class="p">]</span>
+        <span class="n">bm_dst</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.residual&#39;</span><span class="p">,</span> <span class="s1">&#39;.image.pbcor&#39;</span><span class="p">]</span>
+        <span class="n">bm_dst_ext</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;.tt0&#39;</span><span class="p">,</span> <span class="s1">&#39;.tt1&#39;</span><span class="p">,</span> <span class="s1">&#39;.tt2&#39;</span><span class="p">]</span>
+
+        <span class="n">is_src_present</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">bm_src_ext</span> <span class="ow">in</span> <span class="n">bm_src_ext_try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="o">+</span><span class="n">bm_src</span><span class="o">+</span><span class="n">bm_src_ext</span><span class="p">):</span>
+                <span class="n">is_src_present</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_src_present</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;The restoring beam information source image is not found.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Try to copy the restoring beam set from </span><span class="si">{</span><span class="n">imagename</span><span class="o">+</span><span class="n">bm_src</span><span class="o">+</span><span class="n">bm_src_ext</span><span class="si">}</span><span class="s1"> to the corresponding image products&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">imagename</span><span class="o">+</span><span class="n">bm_src</span><span class="o">+</span><span class="n">bm_src_ext</span><span class="p">)</span> <span class="k">as</span> <span class="n">bm_src_im</span><span class="p">:</span>
+            <span class="n">src_shape</span> <span class="o">=</span> <span class="n">bm_src_im</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;The restoring beam information source image &#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">bm_dst0</span> <span class="ow">in</span> <span class="n">bm_dst</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">bm_ext0</span> <span class="ow">in</span> <span class="n">bm_dst_ext</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="o">+</span><span class="n">bm_dst0</span><span class="o">+</span><span class="n">bm_ext0</span><span class="p">):</span>
+                        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">imagename</span><span class="o">+</span><span class="n">bm_dst0</span><span class="o">+</span><span class="n">bm_ext0</span><span class="p">)</span> <span class="k">as</span> <span class="n">bm_dst_im</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">bm_dst_im</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span> <span class="o">==</span> <span class="n">src_shape</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">bm_dst_im</span><span class="o">.</span><span class="n">restoringbeam</span><span class="p">():</span>
+                                <span class="c1"># PIPE-2061: we only copy the beam info if the target and source images have the same shape</span>
+                                <span class="c1"># and the target image doesn&#39;t have a beam.</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Copy the per-plane beam set to </span><span class="si">{</span><span class="n">imagename</span><span class="o">+</span><span class="n">bm_dst0</span><span class="o">+</span><span class="n">bm_ext0</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                                <span class="k">for</span> <span class="n">idx_c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">src_shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]):</span>
+                                    <span class="k">for</span> <span class="n">idx_p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">src_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+                                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;working on idx_chan=</span><span class="si">{</span><span class="n">idx_c</span><span class="si">}</span><span class="s1">, idx_pol=</span><span class="si">{</span><span class="n">idx_p</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                                        <span class="n">bm</span> <span class="o">=</span> <span class="n">bm_src_im</span><span class="o">.</span><span class="n">restoringbeam</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">idx_c</span><span class="p">,</span> <span class="n">polarization</span><span class="o">=</span><span class="n">idx_p</span><span class="p">)</span>
+                                        <span class="n">bm_dst_im</span><span class="o">.</span><span class="n">setrestoringbeam</span><span class="p">(</span><span class="n">beam</span><span class="o">=</span><span class="n">bm</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="n">idx_c</span><span class="p">,</span> <span class="n">polarization</span><span class="o">=</span><span class="n">idx_p</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                                    <span class="s1">&#39;The restoring beam copying source and target images have different shapes or the target &#39;</span>
+                                    <span class="s1">&#39;image already has a beam. We will skip copying the restoring beam&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="rename_image">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.cleanbase.rename_image">[docs]</a>
+<span class="k">def</span> <span class="nf">rename_image</span><span class="p">(</span><span class="n">old_name</span><span class="p">,</span> <span class="n">new_name</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rename an image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">old_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">extension</span> <span class="ow">in</span> <span class="n">extensions</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">old_name</span><span class="p">,</span> <span class="n">extension</span><span class="p">))</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+                <span class="n">image</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">new_name</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CleanBaseError">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.cleanbase.CleanBaseError">[docs]</a>
+<span class="k">class</span> <span class="nc">CleanBaseError</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clean Base Error Class to transfer detailed messages for weblog</span>
+<span class="sd">    reporting.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">longmsg</span> <span class="o">=</span> <span class="n">longmsg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortmsg</span> <span class="o">=</span> <span class="n">shortmsg</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

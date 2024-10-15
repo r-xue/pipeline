@@ -1,0 +1,635 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.bpsolint.bpsolint &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.bpsolint.bpsolint</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.bpsolint.bpsolint</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">calibrationtableaccess</span> <span class="k">as</span> <span class="n">caltableaccess</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics</span> <span class="kn">import</span> <span class="n">snr</span> <span class="k">as</span> <span class="n">snr_heuristics</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="BpSolintInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bpsolint.html#pipeline.hifa.tasks.bpsolint.bpsolint.BpSolintInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">BpSolintInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Return field names in the current ms that have been</span>
+        <span class="c1"># observed with the desired intent</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+        <span class="n">fieldids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">sorted</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">]))</span>
+        <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">fieldid</span> <span class="ow">in</span> <span class="n">fieldids</span><span class="p">:</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">fieldid</span><span class="p">)</span>
+            <span class="n">fieldnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">field_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">fieldnames</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">field_names</span><span class="p">)</span>
+
+    <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># Get the science spw ids</span>
+        <span class="n">sci_spws</span> <span class="o">=</span> <span class="p">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)}</span>
+
+        <span class="c1"># Get the bandpass spw ids</span>
+        <span class="n">bandpass_spws</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">):</span>
+            <span class="n">bandpass_spws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">spws</span><span class="p">)</span>
+        <span class="n">bandpass_spws</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">bandpass_spws</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">sci_spws</span><span class="p">)</span>
+
+        <span class="c1"># Get science target spw ids</span>
+        <span class="n">target_spws</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">):</span>
+            <span class="n">target_spws</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">spws</span><span class="p">])</span>
+        <span class="n">target_spws</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">target_spws</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">sci_spws</span><span class="p">)</span>
+
+        <span class="c1"># Compute the intersection of the bandpass and science target spw</span>
+        <span class="c1"># ids</span>
+        <span class="n">spws</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">bandpass_spws</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">target_spws</span><span class="p">))</span>
+        <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">spws</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spws</span><span class="p">)</span>
+
+    <span class="n">phaseupsnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">20.0</span><span class="p">)</span>
+    <span class="n">minphaseupints</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">evenbpints</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">bpsnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">50.0</span><span class="p">)</span>
+    <span class="n">minbpsnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">20.0</span><span class="p">)</span>
+    <span class="n">minbpnchan</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">hm_nantennas</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;unflagged&#39;</span><span class="p">)</span>
+    <span class="n">maxfracflagged</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.90</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minphaseupints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">evenbpints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bpsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minbpsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minbpnchan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_nantennas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxfracflagged</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">BpSolintInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">phaseupsnr</span> <span class="o">=</span> <span class="n">phaseupsnr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minphaseupints</span> <span class="o">=</span> <span class="n">minphaseupints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evenbpints</span> <span class="o">=</span> <span class="n">evenbpints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpsnr</span> <span class="o">=</span> <span class="n">bpsnr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minbpsnr</span> <span class="o">=</span> <span class="n">minbpsnr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minbpnchan</span> <span class="o">=</span> <span class="n">minbpnchan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_natennas</span> <span class="o">=</span> <span class="n">hm_nantennas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxfracflagged</span> <span class="o">=</span> <span class="n">maxfracflagged</span></div>
+
+
+
+<div class="viewcode-block" id="BpSolint">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bpsolint.html#pipeline.hifa.tasks.bpsolint.bpsolint.BpSolint">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_bpsolint&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Compute the best per spw bandpass solution intervals.&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">BpSolint</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">BpSolintInputs</span>
+
+<div class="viewcode-block" id="BpSolint.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bpsolint.html#pipeline.hifa.tasks.bpsolint.bpsolint.BpSolint.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+
+        <span class="c1"># Simplify the inputs</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Turn the CASA field name and spw id lists into Python lists</span>
+        <span class="n">fieldlist</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="n">spwlist</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+
+        <span class="c1"># Setup BP SNR</span>
+        <span class="n">bpsnr</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">bpsnr</span> <span class="k">if</span> <span class="s1">&#39;bpsnr&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameters</span> <span class="k">else</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;bpsnr&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Log the data selection choices</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Estimating bandpass solution intervals for MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    Setting bandpass intent to </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    Selecting bandpass fields </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">fieldlist</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    Selecting bandpass spws </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">spwlist</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    Setting requested phaseup snr to </span><span class="si">%0.1f</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">phaseupsnr</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    Setting requested bandpass snr to </span><span class="si">%0.1f</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">bpsnr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fieldlist</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">spwlist</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    No bandpass data&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">BpSolintResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Compute the bandpass solint parameters and return a solution</span>
+        <span class="c1"># dictionary</span>
+        <span class="n">solint_dict</span> <span class="o">=</span> <span class="n">snr_heuristics</span><span class="o">.</span><span class="n">estimate_bpsolint</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span>
+                                                       <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_nantennas</span><span class="p">,</span>
+                                                       <span class="n">inputs</span><span class="o">.</span><span class="n">maxfracflagged</span><span class="p">,</span>
+                                                       <span class="n">inputs</span><span class="o">.</span><span class="n">phaseupsnr</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">minphaseupints</span><span class="p">,</span> <span class="n">bpsnr</span><span class="p">,</span>
+                                                       <span class="n">inputs</span><span class="o">.</span><span class="n">minbpnchan</span><span class="p">,</span> <span class="n">evenbpsolints</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">evenbpints</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">solint_dict</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No solution interval dictionary&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">BpSolintResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Check the existence of strong atmospheric line and recalculate</span>
+        <span class="c1"># solution interval with lower bpsnr if necessary</span>
+        <span class="k">if</span> <span class="n">bpsnr</span> <span class="o">&gt;</span> <span class="n">inputs</span><span class="o">.</span><span class="n">minbpsnr</span> <span class="ow">and</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_max_solint_channels</span><span class="p">(</span><span class="n">solint_dict</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># check if Tsys caltable exists in context</span>
+            <span class="n">caltable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_tsys_caltable</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">caltable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No Tsys calibration table found for MS </span><span class="si">%s</span><span class="s2">. Skipping strong atmospheric line check.&quot;</span> <span class="o">%</span>
+                            <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">check_strong_atm_lines</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">,</span> <span class="n">solint_dict</span><span class="p">,</span> <span class="n">caltable</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Strong atmospheric line(s) detected in Tsys spectra. Recalculating solution interval with bpsnr = </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">minbpsnr</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare</span><span class="p">(</span><span class="n">bpsnr</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">minbpsnr</span><span class="p">)</span>
+
+        <span class="c1"># Construct the results object</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_results</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">,</span> <span class="n">solint_dict</span><span class="p">)</span>
+
+        <span class="c1"># Return the results</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="BpSolint.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bpsolint.html#pipeline.hifa.tasks.bpsolint.bpsolint.BpSolint.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="c1"># Get final results from the spw dictionary</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_results</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">solint_dict</span><span class="p">):</span>
+
+        <span class="c1"># Initialize result structure.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">BpSolintResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="n">spwidlist</span><span class="p">)</span>
+
+        <span class="c1"># Initialize the lists</span>
+        <span class="n">phsolints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">phintsolints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">nphsolutions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">phsensitivities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">phintsnrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">exptimes</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">bpsolints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bpchansolints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">nbpsolutions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bpsensitivities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bpchansnrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bandwidths</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Loop over the spws. Values for spws with</span>
+        <span class="c1"># not dictionary entries are set to None</span>
+        <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwidlist</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">spwid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">solint_dict</span><span class="p">:</span>
+
+                <span class="n">phsolints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">phintsolints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">nphsolutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">phsensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">phintsnrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">exptimes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+                <span class="n">bpsolints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">bpchansolints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">nbpsolutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">bpsensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">bpchansnrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">bandwidths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="n">phsolints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;phaseup_solint&#39;</span><span class="p">])</span>
+                <span class="n">phintsolints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nint_phaseup_solint&#39;</span><span class="p">])</span>
+                <span class="n">nphsolutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nphaseup_solutions&#39;</span><span class="p">])</span>
+                <span class="n">phsensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%f</span><span class="s1">mJy&#39;</span> <span class="o">%</span> <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;sensitivity_per_integration_mJy&#39;</span><span class="p">])</span>
+                <span class="n">phintsnrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;snr_per_integration&#39;</span><span class="p">])</span>
+                <span class="n">exptimes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="mi">60</span><span class="o">*</span><span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;exptime_minutes&#39;</span><span class="p">]))</span>
+
+                <span class="n">bpsolints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bpsolint&#39;</span><span class="p">])</span>
+                <span class="n">bpchansolints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nchan_bpsolint&#39;</span><span class="p">])</span>
+                <span class="n">nbpsolutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;nbandpass_solutions&#39;</span><span class="p">])</span>
+                <span class="n">bpsensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%f</span><span class="s1">mJy&#39;</span> <span class="o">%</span> <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;sensitivity_per_channel_mJy&#39;</span><span class="p">])</span>
+                <span class="n">bpchansnrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;snr_per_channel&#39;</span><span class="p">])</span>
+                <span class="n">bandwidths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%f</span><span class="s1">Hz&#39;</span> <span class="o">%</span> <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bandwidth&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Populate the result.</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">phsolints</span> <span class="o">=</span> <span class="n">phsolints</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">phintsolints</span> <span class="o">=</span> <span class="n">phintsolints</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">nphsolutions</span> <span class="o">=</span> <span class="n">nphsolutions</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">phsensitivities</span> <span class="o">=</span> <span class="n">phsensitivities</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">phintsnrs</span> <span class="o">=</span> <span class="n">phintsnrs</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">exptimes</span> <span class="o">=</span> <span class="n">exptimes</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="n">bpsolints</span> <span class="o">=</span> <span class="n">bpsolints</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">bpchansolints</span> <span class="o">=</span> <span class="n">bpchansolints</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">nbpsolutions</span> <span class="o">=</span> <span class="n">nbpsolutions</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">bpchansensitivities</span> <span class="o">=</span> <span class="n">bpsensitivities</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">bpchansnrs</span> <span class="o">=</span> <span class="n">bpchansnrs</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">bandwidths</span> <span class="o">=</span> <span class="n">bandwidths</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_max_solint_channels</span><span class="p">(</span><span class="n">solint_dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The method returns maximum BP solution interval of all SPWs</span>
+<span class="sd">        in solution interval dictionary (solint_dict)</span>
+
+<span class="sd">        Inputs: solution interval dictionary returned by snr.estimate_bpsolint</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">max_solint</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">spw_solint</span> <span class="ow">in</span> <span class="n">solint_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">max_solint</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">spw_solint</span><span class="p">[</span><span class="s1">&#39;nchan_bpsolint&#39;</span><span class="p">],</span> <span class="n">max_solint</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">max_solint</span>
+
+    <span class="k">def</span> <span class="nf">_get_tsys_caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
+        <span class="n">caltables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">(</span>
+            <span class="n">caltypes</span><span class="o">=</span><span class="s1">&#39;tsys&#39;</span><span class="p">)</span>
+
+        <span class="c1"># return just the tsys table that matches the vis being handled</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">caltables</span><span class="p">:</span>
+            <span class="c1"># Get the tsys table name</span>
+            <span class="n">tsystable_vis</span> <span class="o">=</span> <span class="n">caltableaccess</span><span class="o">.</span><span class="n">CalibrationTableDataFiller</span><span class="o">.</span><span class="n">_readvis</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tsystable_vis</span> <span class="ow">in</span> <span class="n">vis</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">name</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">result</span>        </div>
+
+
+
+<div class="viewcode-block" id="BpSolintResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bpsolint.html#pipeline.hifa.tasks.bpsolint.bpsolint.BpSolintResults">[docs]</a>
+<span class="k">class</span> <span class="nc">BpSolintResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="p">[],</span>
+                 <span class="n">phsolints</span><span class="o">=</span><span class="p">[],</span> <span class="n">phintsolints</span><span class="o">=</span><span class="p">[],</span> <span class="n">nphsolutions</span><span class="o">=</span><span class="p">[],</span>
+                 <span class="n">phsensitivities</span><span class="o">=</span><span class="p">[],</span> <span class="n">phintsnrs</span><span class="o">=</span><span class="p">[],</span> <span class="n">exptimes</span> <span class="o">=</span> <span class="p">[],</span>
+                 <span class="n">bpsolints</span><span class="o">=</span><span class="p">[],</span> <span class="n">bpchansolints</span><span class="o">=</span><span class="p">[],</span> <span class="n">nbpsolutions</span><span class="o">=</span><span class="p">[],</span>
+                 <span class="n">bpsensitivities</span><span class="o">=</span><span class="p">[],</span> <span class="n">bpchansnrs</span><span class="o">=</span><span class="p">[],</span> <span class="n">bandwidths</span> <span class="o">=</span> <span class="p">[]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialise the results object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BpSolintResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+
+        <span class="c1"># Spw list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwids</span> <span class="o">=</span> <span class="n">spwids</span>
+
+        <span class="c1"># Phaseup solutions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phsolints</span> <span class="o">=</span> <span class="n">phsolints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phintsolints</span> <span class="o">=</span> <span class="n">phintsolints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nphsolutions</span> <span class="o">=</span> <span class="n">nphsolutions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phsensitivities</span> <span class="o">=</span> <span class="n">phsensitivities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phintsnrs</span> <span class="o">=</span> <span class="n">phintsnrs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exptimes</span> <span class="o">=</span> <span class="n">exptimes</span>
+
+        <span class="c1"># Bandpass solutions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpsolints</span> <span class="o">=</span> <span class="n">bpsolints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpchansolints</span> <span class="o">=</span> <span class="n">bpchansolints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nbpsolutions</span> <span class="o">=</span> <span class="n">nbpsolutions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpchansensitivities</span> <span class="o">=</span> <span class="n">bpsensitivities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpchansnrs</span> <span class="o">=</span> <span class="n">bpchansnrs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bandwidths</span> <span class="o">=</span> <span class="n">bandwidths</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">spwids</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;BpSolintResults:</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">No bandpass solution intervals computed&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;BpSolintResults:</span><span class="se">\n</span><span class="s1">vis </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="s1">&#39;Phaseup solution time intervals</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spwids</span><span class="p">)):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> \
+                       <span class="s2">&quot;    spwid </span><span class="si">%2d</span><span class="s2"> solint &#39;</span><span class="si">%s</span><span class="s2">&#39; intsolint </span><span class="si">%2d</span><span class="s2"> sensitivity </span><span class="si">%s</span><span class="s2"> intsnr </span><span class="si">%0.1f</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> \
+                       <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">phsolints</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">phintsolints</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">phsensitivities</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">phintsnrs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="s1">&#39;Bandpass frequency solution intervals</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spwids</span><span class="p">)):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> \
+                       <span class="s2">&quot;    spwid </span><span class="si">%2d</span><span class="s2"> solint &#39;</span><span class="si">%s</span><span class="s2">&#39; channels </span><span class="si">%2d</span><span class="s2"> sensitivity </span><span class="si">%s</span><span class="s2"> chansnr </span><span class="si">%0.1f</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> \
+                       <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">bpsolints</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">bpchansolints</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">bpchansensitivities</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">bpchansnrs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">line</span></div>
+
+
+
+<div class="viewcode-block" id="check_strong_atm_lines">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bpsolint.html#pipeline.hifa.tasks.bpsolint.bpsolint.check_strong_atm_lines">[docs]</a>
+<span class="k">def</span> <span class="nf">check_strong_atm_lines</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">solint_dict</span><span class="p">,</span> <span class="n">tsysname</span><span class="p">,</span> <span class="n">lineStrengthThreshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                           <span class="n">minAdjacantChannels</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nSigma</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function tests if existence of strong atmospheric lines in Tsys spectra</span>
+<span class="sd">    (see CAS-11951).</span>
+
+<span class="sd">    Inputs:</span>
+<span class="sd">        ms: Measurementset object</span>
+<span class="sd">        fieldlist: a list of field names</span>
+<span class="sd">        intents: an intent string</span>
+<span class="sd">        spwidlist: a list of spw IDs</span>
+<span class="sd">        solint_dict: solution interval dictionary returned by snr.estimate_bpsolint</span>
+<span class="sd">        tsysname: the name of Tsys caltable</span>
+
+<span class="sd">    Conditions of strong atmospheric line:</span>
+<span class="sd">        (a) the peak of atmospheric line components is larger than a threshold, AND</span>
+<span class="sd">        (b) there is at least an atmospheric line with it&#39;s width larger than a threshold</span>
+
+<span class="sd">    Returns: True if any of SpW meets condition of strong atmospheric lines</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Check for strong atmospheric line in Tsys spectra of fields, </span><span class="si">%s</span><span class="s1">, in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> \
+             <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fieldlist</span><span class="p">),</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+    <span class="c1"># make sure MS and Tsys caltable corresponds</span>
+    <span class="n">tsystable_vis</span> <span class="o">=</span> <span class="n">caltableaccess</span><span class="o">.</span><span class="n">CalibrationTableDataFiller</span><span class="o">.</span><span class="n">_readvis</span><span class="p">(</span><span class="n">tsysname</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tsystable_vis</span> <span class="o">!=</span> <span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Input MS (</span><span class="si">{}</span><span class="s2">) and Tsys caltable (</span><span class="si">{}</span><span class="s2">) does not correspond.&quot;</span>
+                           <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">tsysname</span><span class="p">)))</span>
+
+    <span class="n">tsys_info</span> <span class="o">=</span> <span class="n">snr_heuristics</span><span class="o">.</span><span class="n">get_tsysinfo</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">)</span>
+
+    <span class="n">strong_atm_lines</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwidlist</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tsys_info</span> <span class="ow">or</span> <span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">solint_dict</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">tsys_spw</span> <span class="o">=</span> <span class="n">solint_dict</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;tsys_spw&#39;</span><span class="p">]</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Investigating Tsys spectra for spw </span><span class="si">%d</span><span class="s1"> (Tsys spw </span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">tsys_spw</span><span class="p">))</span>
+
+        <span class="c1"># Obtain median Tsys spectrum</span>
+        <span class="n">scanobj</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_id</span> <span class="o">=</span> <span class="n">tsys_info</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;tsys_scan&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">atmfields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">)</span>
+        <span class="n">fieldids</span> <span class="o">=</span> <span class="p">[</span><span class="n">fobj</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">fobj</span> <span class="ow">in</span> <span class="n">scanobj</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">atmfields</span><span class="p">))]</span>
+        <span class="n">median_tsys</span> <span class="o">=</span> <span class="n">get_median_tsys_spectrum_from_caltable</span><span class="p">(</span><span class="n">tsysname</span><span class="p">,</span> <span class="n">tsys_spw</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">median_tsys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Unable to define median Tsys spectrum for Tsys spw = </span><span class="si">%d</span><span class="s1">, scan = </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="n">tsys_spw</span><span class="p">,</span> <span class="n">tsys_info</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;tsys_scan&#39;</span><span class="p">]))</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Smooth median Tsys spectrum with kernel size, # of Tsys chans /16</span>
+        <span class="n">kernel_width</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">median_tsys</span><span class="p">)</span> <span class="o">//</span> <span class="mi">16</span>
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">kernel_width</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">kernel_width</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Subtracting smoothed Tsys spectrum (kernel = </span><span class="si">%d</span><span class="s2"> channels)&quot;</span> <span class="o">%</span> <span class="n">kernel_width</span><span class="p">)</span>
+        <span class="n">smoothed_tsys</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">median_tsys</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Define an index range to avoid edge effect of smoothing</span>
+        <span class="n">idx_offset</span> <span class="o">=</span> <span class="n">kernel_width</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">idx_range</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">idx_offset</span><span class="p">,</span> <span class="n">idx_offset</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">median_tsys</span><span class="p">)</span><span class="o">-</span><span class="n">kernel_width</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Take absolute difference of median Tsys spectum w/ and w/o smoothing</span>
+        <span class="n">diff_tsys</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">median_tsys</span> <span class="o">-</span> <span class="n">smoothed_tsys</span><span class="p">)[</span><span class="n">idx_range</span><span class="p">]</span>
+
+        <span class="c1"># If peak is smaller than a threshold, no strong line -&gt; continue to the next spw</span>
+        <span class="n">peak</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">diff_tsys</span><span class="p">)</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">lineStrengthThreshold</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">median_tsys</span><span class="p">[</span><span class="n">idx_range</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">peak</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No strong line is found. peak = </span><span class="si">%f</span><span class="s1">, threshold = </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">peak</span><span class="p">,</span> <span class="n">threshold</span><span class="p">))</span>
+            <span class="k">continue</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Strong line(s) are found. peak = </span><span class="si">%f</span><span class="s1">, threshold = </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">peak</span><span class="p">,</span> <span class="n">threshold</span><span class="p">))</span>
+
+        <span class="c1"># Scaled MAD of diff_tsys</span>
+        <span class="n">scaled_mad</span> <span class="o">=</span> <span class="mf">1.4826</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">diff_tsys</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">diff_tsys</span><span class="p">)))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;*** Scaled MAD of diff_tsys = </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">scaled_mad</span><span class="p">)</span>
+
+        <span class="c1"># Check amplitude and width of diff_tsys (presumably atm lines).</span>
+        <span class="c1"># If both exceeds thresholds -&gt; strong line </span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Examining line intensities and widths &#39;</span> <span class="o">+</span> \
+                 <span class="s1">&#39;(thresholds: intensity = </span><span class="si">%f</span><span class="s1">, width = </span><span class="si">%d</span><span class="s1"> channels)&#39;</span> <span class="o">%</span> \
+                 <span class="p">(</span><span class="n">nSigma</span> <span class="o">*</span> <span class="n">scaled_mad</span><span class="p">,</span> <span class="n">minAdjacantChannels</span><span class="p">))</span>
+        <span class="n">diff_tsys</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">diff_tsys</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;</span> <span class="n">nSigma</span> <span class="o">*</span> <span class="n">scaled_mad</span><span class="p">)</span>
+        <span class="n">line_slices</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">notmasked_contiguous</span><span class="p">(</span><span class="n">diff_tsys</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">line_slices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># notmasked_contiguous returns None when all array is masked.</span>
+            <span class="c1"># this happens when diff_tsys does not exceed nSigma threshold.</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No line exceeds intensity threshold.&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">line_slices</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;*** line channels: start = </span><span class="si">%d</span><span class="s1">, width=</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> \
+                      <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">start</span><span class="o">+</span><span class="n">idx_offset</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">stop</span><span class="o">-</span><span class="n">line</span><span class="o">.</span><span class="n">start</span><span class="p">))</span>
+            <span class="c1"># check line width</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">stop</span><span class="o">-</span><span class="n">line</span><span class="o">.</span><span class="n">start</span> <span class="o">&lt;</span> <span class="n">minAdjacantChannels</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># strong atmospheric line</span>
+                <span class="n">strong_atm_lines</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;*** Found a spectral line with &gt;= </span><span class="si">%d</span><span class="s1"> channels&#39;</span> <span class="o">%</span> <span class="n">minAdjacantChannels</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">strong_atm_lines</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;*** All lines are &lt; </span><span class="si">%d</span><span class="s1"> channels&#39;</span> <span class="o">%</span> <span class="n">minAdjacantChannels</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">strong_atm_lines</span></div>
+
+
+
+<div class="viewcode-block" id="get_median_tsys_spectrum_from_caltable">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bpsolint.html#pipeline.hifa.tasks.bpsolint.bpsolint.get_median_tsys_spectrum_from_caltable">[docs]</a>
+<span class="k">def</span> <span class="nf">get_median_tsys_spectrum_from_caltable</span><span class="p">(</span><span class="n">tsysname</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">,</span> <span class="n">interpolate_flagged</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns masked median Tsys spectrum of an SPW and scan combination in Tsys caltable.</span>
+
+<span class="sd">    Inputs:</span>
+<span class="sd">        tsysname: the path to Tsys caltable</span>
+<span class="sd">        spwid: SPW ID of Tsys to select</span>
+<span class="sd">        fieldid: field ID of Tsys to select</span>
+<span class="sd">        interpolate_flag: if True, operate piecewise linear interpolation of flagged channels</span>
+
+<span class="sd">    Returns: masked array of median Tsys spectrum</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tsysname</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Could not find Tsys caltable, </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">tsysname</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">tsysname</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+        <span class="n">seltb</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID == </span><span class="si">%s</span><span class="s1"> &amp;&amp; FIELD_ID == </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">seltb</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">seltb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No matching Tsys measurement for SPW=</span><span class="si">%s</span><span class="s1"> and field=</span><span class="si">%s</span><span class="s1"> in Tsys caltable </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">,</span> <span class="n">tsysname</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span> <span class="c1"># axis order: [POL, FREQ, ROW]</span>
+            <span class="n">tsys</span> <span class="o">=</span> <span class="n">seltb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FPARAM&#39;</span><span class="p">)</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="n">seltb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">seltb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">ma_median</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">(</span><span class="n">tsys</span><span class="p">,</span> <span class="n">flag</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">ma_median</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># No valid channel</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">interpolate_flagged</span><span class="p">:</span>
+        <span class="n">ma_median</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ma_median</span><span class="o">.</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ma_median</span><span class="o">.</span><span class="n">mask</span><span class="o">==</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                                                      <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ma_median</span><span class="o">.</span><span class="n">mask</span><span class="o">==</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                                                      <span class="n">ma_median</span><span class="p">[</span><span class="o">~</span><span class="n">ma_median</span><span class="o">.</span><span class="n">mask</span><span class="p">])</span>
+        <span class="c1"># clear-up mask</span>
+        <span class="n">ma_median</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">ma_median</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

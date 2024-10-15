@@ -1,0 +1,1183 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.finalcals.finalcals &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.finalcals.finalcals</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.finalcals.finalcals</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.hif.heuristics.findrefant</span> <span class="k">as</span> <span class="nn">findrefant</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics</span> <span class="kn">import</span> <span class="n">getCalFlaggedSoln</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.tablereader</span> <span class="kn">import</span> <span class="n">find_EVLA_band</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics</span> <span class="kn">import</span> <span class="n">standard</span> <span class="k">as</span> <span class="n">standard</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics</span> <span class="kn">import</span> <span class="n">weakbp</span><span class="p">,</span> <span class="n">do_bandpass</span><span class="p">,</span> <span class="n">uvrange</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.setmodel.vlasetjy</span> <span class="kn">import</span> <span class="n">standard_sources</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FinalcalsInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.finalcals.FinalcalsInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">FinalcalsInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for the hifv_finalcals pipeline task.  Used on VLA measurement sets.</span>
+
+<span class="sd">    The class inherits from vdp.StandardInputs.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">weakbp</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">refantignore</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">refant</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weakbp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refantignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            context (:obj:): Pipeline context</span>
+<span class="sd">            vis(str, optional): String name of the measurement set</span>
+<span class="sd">            weakbp(Boolean):  weak bandpass heuristics on/off - currently not used - see PIPE-104</span>
+<span class="sd">            refantignore(str):  csv string of reference antennas to ignore - &#39;ea24,ea15,ea08&#39;</span>
+<span class="sd">            refant(List): A csv string of reference antenna(s). When used, disables refantignore.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FinalcalsInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weakbp</span> <span class="o">=</span> <span class="n">weakbp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refantignore</span> <span class="o">=</span> <span class="n">refantignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refant</span> <span class="o">=</span> <span class="n">refant</span></div>
+
+
+
+<div class="viewcode-block" id="FinalcalsResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.finalcals.FinalcalsResults">[docs]</a>
+<span class="k">class</span> <span class="nc">FinalcalsResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class for the hifv_finalcals pipeline task.  Used on VLA measurement sets.</span>
+
+<span class="sd">    The class inherits from basetask.Results.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preceding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bpdgain_touse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">gtypecaltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ktypecaltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">phaseshortgaincaltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">finalampgaincaltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">finalphasegaincaltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flaggedSolnApplycalbandpass</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">flaggedSolnApplycaldelay</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            final(List, optional): Calibration list applied - not used</span>
+<span class="sd">            pool(List, optional): Calibration list assesed - not used</span>
+<span class="sd">            preceding(List, optional): DEPRECATED results from worker tasks executed by this task</span>
+<span class="sd">            bpdgain_touse(Dict):  Dictionary of tables per band</span>
+<span class="sd">            gtypecaltable(Dict): Dictionary of tables per band</span>
+<span class="sd">            ktypecaltable(Dict): Dictionary of tables per band</span>
+<span class="sd">            bpcaltable(Dict): Dictionary of tables per band</span>
+<span class="sd">            phaseshortgaincaltable(Dict):  Dictionary of short phase tables per band</span>
+<span class="sd">            finalampgaincaltable(Dict):  Amp gain table to be passed to applycal</span>
+<span class="sd">            finalphasegaincaltable(Dict):  Phase gain table to be paseed to applycal</span>
+<span class="sd">            flaggedSolnApplycalbandpass(Dict): returned from getCalFlaggedSoln for bpdgain_touse (per band)</span>
+<span class="sd">            flaggedSolnApplycaldelay(Dict): returned from getCalFlaggedSoln for ktypecaltable (per band)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">final</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">final</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">preceding</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">preceding</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">FinalcalsResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">pool</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="n">final</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preceding</span> <span class="o">=</span> <span class="n">preceding</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpdgain_touse</span> <span class="o">=</span> <span class="n">bpdgain_touse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gtypecaltable</span> <span class="o">=</span> <span class="n">gtypecaltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ktypecaltable</span> <span class="o">=</span> <span class="n">ktypecaltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpcaltable</span> <span class="o">=</span> <span class="n">bpcaltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phaseshortgaincaltable</span> <span class="o">=</span> <span class="n">phaseshortgaincaltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">finalampgaincaltable</span> <span class="o">=</span> <span class="n">finalampgaincaltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">finalphasegaincaltable</span> <span class="o">=</span> <span class="n">finalphasegaincaltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flaggedSolnApplycalbandpass</span> <span class="o">=</span> <span class="n">flaggedSolnApplycalbandpass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flaggedSolnApplycaldelay</span> <span class="o">=</span> <span class="n">flaggedSolnApplycaldelay</span>
+
+<div class="viewcode-block" id="FinalcalsResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.finalcals.FinalcalsResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No results to merge&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Adding calibration to callibrary:</span><span class="se">\n</span><span class="s1">&#39;</span>
+                      <span class="s1">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">))</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Finalcals">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.finalcals.Finalcals">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_finalcals&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Finalcals</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for the finalcals pipeline task.  Used on VLA measurement sets.</span>
+
+<span class="sd">    The class inherits from basetask.StandardTaskTemplate</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FinalcalsInputs</span>
+
+<div class="viewcode-block" id="Finalcals.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.finalcals.Finalcals.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Bulk of task execution occurs here.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FinalcalsResults()</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">spw2band</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_spw2band</span><span class="p">()</span>
+        <span class="n">band2spw</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">spwobjlist</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">listspws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwobjlist</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">spw2band</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">listspws</span><span class="p">:</span>  <span class="c1"># Science intents only</span>
+                <span class="n">band2spw</span><span class="p">[</span><span class="n">band</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">bpdgain_touse</span><span class="p">,</span> <span class="n">gtypecaltable</span><span class="p">,</span> <span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="p">,</span> <span class="n">phaseshortgaincaltable</span><span class="p">,</span> \
+        <span class="n">finalampgaincaltable</span><span class="p">,</span> <span class="n">finalphasegaincaltable</span><span class="p">,</span> \
+        <span class="n">flaggedSolnApplycalbandpass</span><span class="p">,</span> <span class="n">flaggedSolnApplycaldelay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_finalscals</span><span class="p">(</span><span class="n">band2spw</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">FinalcalsResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">,</span>
+                                <span class="n">bpdgain_touse</span><span class="o">=</span><span class="n">bpdgain_touse</span><span class="p">,</span> <span class="n">gtypecaltable</span><span class="o">=</span><span class="n">gtypecaltable</span><span class="p">,</span>
+                                <span class="n">ktypecaltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="o">=</span><span class="n">bpcaltable</span><span class="p">,</span>
+                                <span class="n">phaseshortgaincaltable</span><span class="o">=</span><span class="n">phaseshortgaincaltable</span><span class="p">,</span>
+                                <span class="n">finalampgaincaltable</span><span class="o">=</span><span class="n">finalampgaincaltable</span><span class="p">,</span>
+                                <span class="n">finalphasegaincaltable</span><span class="o">=</span><span class="n">finalphasegaincaltable</span><span class="p">,</span>
+                                <span class="n">flaggedSolnApplycalbandpass</span><span class="o">=</span><span class="n">flaggedSolnApplycalbandpass</span><span class="p">,</span>
+                                <span class="n">flaggedSolnApplycaldelay</span><span class="o">=</span><span class="n">flaggedSolnApplycaldelay</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_finalscals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">band2spw</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute finalcals heuristics</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            band2spw(Dict):  Band dictionary with key/value as band/spws</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bpdgain_touse(str):  bp&#39;d gain table used</span>
+<span class="sd">            gtypecaltable(str):  G-type table from gaincal</span>
+<span class="sd">            ktypecaltable(str):  K-type table from gaincal</span>
+<span class="sd">            bpcaltable(str):     BP cal table</span>
+<span class="sd">            phaseshortgaincaltable(Dict): Dictionary of short phase tables per band</span>
+<span class="sd">            finalampgaincaltable(Dict):  Amp gain table to be passed to applycal</span>
+<span class="sd">            finalphasegaincaltable(Dict):  Phase gain table to be paseed to applycal</span>
+<span class="sd">            flaggedSolnApplycalbandpass(Dict):  returned from getCalFlaggedSoln for bpdgain_tous</span>
+<span class="sd">            flaggedSolnApplycaldelay(Dict): returned from getCalFlaggedSoln for ktypecaltable</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parang</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setjy_results</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">setjy_results</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">stage_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stage_number</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">stage_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">stage_number</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="n">tableprefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="s1">&#39;hifv_finalcals.s&#39;</span>
+
+        <span class="n">gtypecaltable</span> <span class="o">=</span> <span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_1.&#39;</span> <span class="o">+</span> <span class="s1">&#39;finaldelayinitialgain.tbl&#39;</span>
+        <span class="n">ktypecaltable</span> <span class="o">=</span> <span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_2.&#39;</span> <span class="o">+</span> <span class="s1">&#39;finaldelay.tbl&#39;</span>
+        <span class="n">bpcaltable</span> <span class="o">=</span> <span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_4.&#39;</span> <span class="o">+</span> <span class="s1">&#39;finalBPcal.tbl&#39;</span>
+        <span class="n">tablebase</span> <span class="o">=</span> <span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_3.&#39;</span> <span class="o">+</span> <span class="s1">&#39;finalBPinitialgain&#39;</span>
+        <span class="n">table_suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.tbl&#39;</span><span class="p">,</span> <span class="s1">&#39;3.tbl&#39;</span><span class="p">,</span> <span class="s1">&#39;10.tbl&#39;</span><span class="p">]</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignorerefant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">ignorerefant</span>
+
+        <span class="c1"># PIPE-1637: adding &#39;,&#39; in the manual and auto refantignore parameter</span>
+        <span class="n">refantignore</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">refantignore</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ignorerefant</span><span class="p">])</span>
+        <span class="n">refantfield</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">calibrator_field_select_string</span>
+        <span class="c1"># PIPE-595: if refant list is not provided, compute refants else use provided refant list.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">refantobj</span> <span class="o">=</span> <span class="n">findrefant</span><span class="o">.</span><span class="n">RefAntHeuristics</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">refantfield</span><span class="p">,</span>
+                                                    <span class="n">geometry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flagging</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                    <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">refantignore</span><span class="o">=</span><span class="n">refantignore</span><span class="p">)</span>
+
+            <span class="n">RefAntOutput</span> <span class="o">=</span> <span class="n">refantobj</span><span class="o">.</span><span class="n">calculate</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">RefAntOutput</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+        <span class="n">refAnt</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">RefAntOutput</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The pipeline will use antenna(s) &quot;</span> <span class="o">+</span> <span class="n">refAnt</span> <span class="o">+</span> <span class="s2">&quot; as the reference&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">spwlist</span> <span class="ow">in</span> <span class="n">band2spw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing G-type delaycal for band </span><span class="si">{!s}</span><span class="s2">  spws: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_gtype_delaycal</span><span class="p">(</span><span class="n">caltable</span><span class="o">=</span><span class="n">gtypecaltable</span><span class="p">,</span> <span class="n">refAnt</span><span class="o">=</span><span class="n">refAnt</span><span class="p">,</span> <span class="n">spwlist</span><span class="o">=</span><span class="n">spwlist</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">spwlist</span> <span class="ow">in</span> <span class="n">band2spw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing K-type delaycal for band </span><span class="si">{!s}</span><span class="s2">  spws: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_ktype_delaycal</span><span class="p">(</span><span class="n">caltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">addcaltable</span><span class="o">=</span><span class="n">gtypecaltable</span><span class="p">,</span> <span class="n">refAnt</span><span class="o">=</span><span class="n">refAnt</span><span class="p">,</span>
+                                    <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Delay calibration complete&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Do initial gaincal on BP calibrator then semi-final BP calibration</span>
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">spwlist</span> <span class="ow">in</span> <span class="n">band2spw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">gain_solint1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">gain_solint1</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_gtype_bpdgains</span><span class="p">(</span><span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">addcaltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span>
+                                    <span class="n">solint</span><span class="o">=</span><span class="n">gain_solint1</span><span class="p">,</span> <span class="n">refAnt</span><span class="o">=</span><span class="n">refAnt</span><span class="p">,</span> <span class="n">spwlist</span><span class="o">=</span><span class="n">spwlist</span><span class="p">)</span>
+
+        <span class="n">bpdgain_touse</span> <span class="o">=</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Initial BP gain calibration complete&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">spwlist</span> <span class="ow">in</span> <span class="n">band2spw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">append</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">isdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">bpcaltable</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">isdir</span><span class="p">:</span>
+                <span class="n">append</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Appending to existing table: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bpcaltable</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">weakbp</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;USING WEAKBP HEURISTICS&quot;</span><span class="p">)</span>
+
+                <span class="n">interp</span> <span class="o">=</span> <span class="n">weakbp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="o">=</span><span class="n">RefAntOutput</span><span class="p">,</span>
+                                <span class="n">ktypecaltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">bpdgain_touse</span><span class="o">=</span><span class="n">bpdgain_touse</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="s1">&#39;inf&#39;</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="n">append</span><span class="p">,</span>
+                                <span class="n">executor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using REGULAR heuristics&quot;</span><span class="p">)</span>
+                <span class="n">interp</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="n">do_bandpass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="o">=</span><span class="n">RefAntOutput</span><span class="p">,</span>
+                            <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">),</span> <span class="n">ktypecaltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">bpdgain_touse</span><span class="o">=</span><span class="n">bpdgain_touse</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="s1">&#39;inf&#39;</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="n">append</span><span class="p">,</span>
+                            <span class="n">executor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Bandpass calibration complete&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Derive an average phase solution for the bandpass calibrator to apply</span>
+        <span class="c1"># to all data to make QA plots easier to interpret.</span>
+
+        <span class="n">refantmode</span> <span class="o">=</span> <span class="s1">&#39;flex&#39;</span>
+        <span class="n">intents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">[</span><span class="n">intent</span> <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intents</span> <span class="k">if</span> <span class="s1">&#39;POL&#39;</span> <span class="ow">in</span> <span class="n">intent</span><span class="p">]:</span>
+            <span class="c1"># set to strict</span>
+            <span class="n">refantmode</span> <span class="o">=</span> <span class="s1">&#39;strict&#39;</span>
+
+        <span class="n">avgpgain</span> <span class="o">=</span> <span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_5.&#39;</span> <span class="o">+</span> <span class="s1">&#39;averagephasegain.tbl&#39;</span>
+
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">spwlist</span> <span class="ow">in</span> <span class="n">band2spw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_avgphasegaincal</span><span class="p">(</span><span class="n">avgpgain</span><span class="p">,</span> <span class="n">refAnt</span><span class="p">,</span>
+                                     <span class="n">ktypecaltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="o">=</span><span class="n">bpcaltable</span><span class="p">,</span> <span class="n">refantmode</span><span class="o">=</span><span class="n">refantmode</span><span class="p">,</span>
+                                     <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+
+        <span class="c1"># In case any antenna is flagged by this process, unflag all solutions</span>
+        <span class="c1"># in this gain table (if an antenna does exist or has bad solutions from</span>
+        <span class="c1"># other steps, it will be flagged by those gain tables).</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_unflag</span><span class="p">(</span><span class="n">avgpgain</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_applycal</span><span class="p">(</span><span class="n">ktypecaltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span>
+                          <span class="n">bpcaltable</span><span class="o">=</span><span class="n">bpcaltable</span><span class="p">,</span> <span class="n">avgphasegaincaltable</span><span class="o">=</span><span class="n">avgpgain</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">)</span>
+
+        <span class="c1"># ---------------------------------------------------</span>
+
+        <span class="n">calMs</span> <span class="o">=</span> <span class="s1">&#39;finalcalibrators.ms&#39;</span>
+        <span class="n">isdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">calMs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">isdir</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">calMs</span><span class="p">)</span>
+        <span class="n">split_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_split</span><span class="p">(</span><span class="n">calMs</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># , &#39;,&#39;.join(spwlist))</span>
+
+        <span class="c1"># Run setjy execution per band</span>
+        <span class="n">all_sejy_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_doall_setjy</span><span class="p">(</span><span class="n">calMs</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using power-law fits results from fluxscale.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">fs_result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">fluxscale_result</span><span class="p">:</span>
+            <span class="n">powerfit_setjy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_powerfitsetjy</span><span class="p">(</span><span class="n">calMs</span><span class="p">,</span> <span class="n">fs_result</span><span class="p">)</span>
+
+        <span class="n">phaseshortgaincaltable</span> <span class="o">=</span> <span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_6.&#39;</span> <span class="o">+</span> <span class="s1">&#39;phaseshortgaincal.tbl&#39;</span>
+        <span class="n">finalampgaincaltable</span> <span class="o">=</span> <span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_7.&#39;</span> <span class="o">+</span> <span class="s1">&#39;finalampgaincal.tbl&#39;</span>
+        <span class="n">finalphasegaincaltable</span> <span class="o">=</span> <span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_8.&#39;</span> <span class="o">+</span> <span class="s1">&#39;finalphasegaincal.tbl&#39;</span>
+
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">spwlist</span> <span class="ow">in</span> <span class="n">band2spw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">new_gain_solint1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">new_gain_solint1</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+            <span class="n">phaseshortgaincal_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_calibratorgaincal</span><span class="p">(</span><span class="n">calMs</span><span class="p">,</span> <span class="n">phaseshortgaincaltable</span><span class="p">,</span>
+                                                                   <span class="n">new_gain_solint1</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="n">refAnt</span><span class="p">,</span>
+                                                                   <span class="n">refantmode</span><span class="o">=</span><span class="n">refantmode</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+
+            <span class="n">gain_solint2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">gain_solint2</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+            <span class="n">finalampgaincal_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_calibratorgaincal</span><span class="p">(</span><span class="n">calMs</span><span class="p">,</span> <span class="n">finalampgaincaltable</span><span class="p">,</span> <span class="n">gain_solint2</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span>
+                                                                 <span class="s1">&#39;ap&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">phaseshortgaincaltable</span><span class="p">],</span> <span class="n">refAnt</span><span class="p">,</span>
+                                                                 <span class="n">refantmode</span><span class="o">=</span><span class="n">refantmode</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+
+            <span class="n">finalphasegaincal_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_calibratorgaincal</span><span class="p">(</span><span class="n">calMs</span><span class="p">,</span> <span class="n">finalphasegaincaltable</span><span class="p">,</span> <span class="n">gain_solint2</span><span class="p">,</span>
+                                                                   <span class="mf">3.0</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">finalampgaincaltable</span><span class="p">],</span> <span class="n">refAnt</span><span class="p">,</span>
+                                                                   <span class="n">refantmode</span><span class="o">=</span><span class="n">refantmode</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+
+        <span class="n">tablesToAdd</span> <span class="o">=</span> <span class="p">[(</span><span class="n">ktypecaltable</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">bpcaltable</span><span class="p">,</span> <span class="s1">&#39;linear,linearflag&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                       <span class="p">(</span><span class="n">avgpgain</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">finalampgaincaltable</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                       <span class="p">(</span><span class="n">finalphasegaincaltable</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)]</span>
+        <span class="c1"># tablesToAdd = [(table, interp, gainfield) for table, interp, gainfield in tablesToAdd]</span>
+
+        <span class="n">callist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">addcaltable</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">gainfield</span> <span class="ow">in</span> <span class="n">tablesToAdd</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finalcals stage:  Adding &quot;</span> <span class="o">+</span> <span class="n">addcaltable</span> <span class="o">+</span> <span class="s2">&quot; to callibrary.&quot;</span><span class="p">)</span>
+            <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">calfrom</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">(</span><span class="n">gaintable</span><span class="o">=</span><span class="n">addcaltable</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">,</span> <span class="n">calwt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                         <span class="n">caltype</span><span class="o">=</span><span class="s1">&#39;finalcal&#39;</span><span class="p">,</span> <span class="n">gainfield</span><span class="o">=</span><span class="n">gainfield</span><span class="p">)</span>
+            <span class="n">calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">)</span>
+            <span class="n">callist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="p">)</span>
+
+        <span class="n">flaggedSolnApplycalbandpass</span> <span class="o">=</span> <span class="n">getCalFlaggedSoln</span><span class="p">(</span><span class="n">bpdgain_touse</span><span class="p">)</span>
+        <span class="n">flaggedSolnApplycaldelay</span> <span class="o">=</span> <span class="n">getCalFlaggedSoln</span><span class="p">(</span><span class="n">ktypecaltable</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">bpdgain_touse</span><span class="p">,</span> <span class="n">gtypecaltable</span><span class="p">,</span> <span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="p">,</span> <span class="n">phaseshortgaincaltable</span><span class="p">,</span>\
+               <span class="n">finalampgaincaltable</span><span class="p">,</span> <span class="n">finalphasegaincaltable</span><span class="p">,</span> <span class="n">flaggedSolnApplycalbandpass</span><span class="p">,</span> <span class="n">flaggedSolnApplycaldelay</span>
+
+<div class="viewcode-block" id="Finalcals.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.finalcals.Finalcals.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the best parameters by analysing the given jobs before returning any final jobs to execute.</span>
+
+<span class="sd">        Override method of basetask.StandardTaskTemplate.analyze()</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            results (list of class: `~pipeline.infrastructure.jobrequest.JobRequest`):</span>
+<span class="sd">                the job requests generated by :func:`~SimpleTask.prepare`</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            class:`~pipeline.api.Result`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_gtype_delaycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refAnt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform a G-Type delay calibration with CASA task gaincal</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            caltable(str): Name of the caltable to be created</span>
+<span class="sd">            refAnt(str): Antenna values to use as reference antennas - &#39;ea01,ea24,...&#39;</span>
+<span class="sd">            spwlist(List): List of string values for spws pertaining to the particular band - [&#39;0&#39;, &#39;1&#39;, &#39;2&#39;, ...]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">append</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">isdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">isdir</span><span class="p">:</span>
+            <span class="n">append</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Appending to existing table: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">caltable</span><span class="p">))</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">delay_field_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">delay_field_select_string</span>
+        <span class="n">tst_delay_spw</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_tst_bpass_spw</span><span class="p">(</span><span class="n">spwlist</span><span class="o">=</span><span class="n">spwlist</span><span class="p">)</span>
+        <span class="n">delay_scan_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">delay_scan_select_string</span>
+        <span class="n">minBL_for_cal</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">vla_minbaselineforcal</span><span class="p">()</span>
+
+        <span class="n">delaycal_task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                              <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+                              <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">tst_delay_spw</span><span class="p">,</span>
+                              <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">delay_scan_select_string</span><span class="p">,</span>
+                              <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;preavg&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                              <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">refAnt</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+                              <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">minBL_for_cal</span><span class="p">,</span>
+                              <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+                              <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;smodel&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;append&#39;</span><span class="p">:</span> <span class="n">append</span><span class="p">,</span>
+                              <span class="s1">&#39;docallib&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">()),</span>
+                              <span class="s1">&#39;gainfield&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;interp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parang</span><span class="p">}</span>
+
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">delay_field_select_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">fieldidstring</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="n">fieldid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fieldidstring</span><span class="p">)</span>
+            <span class="n">uvrangestring</span> <span class="o">=</span> <span class="n">uvrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">)</span>
+            <span class="n">delaycal_task_args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldidstring</span>
+            <span class="n">delaycal_task_args</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uvrangestring</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">caltable</span><span class="p">):</span>
+                <span class="n">delaycal_task_args</span><span class="p">[</span><span class="s1">&#39;append&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">gaincal</span><span class="p">(</span><span class="o">**</span><span class="n">delaycal_task_args</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_do_ktype_delaycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">addcaltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">refAnt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform a K-Type delay calibration with CASA task gaincal</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            caltable(str): Name of the caltable to be created</span>
+<span class="sd">            addcaltable(str):  String name of table to temporarily be added to the gaincal gaintable parameter</span>
+<span class="sd">            refAnt(str): Antenna values to use as reference antennas - &#39;ea01,ea24,...&#39;</span>
+<span class="sd">            spw(str): csv string values for spws pertaining to the particular band - &#39;0,1,2,3,4,5,6&#39;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">append</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">isdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">isdir</span><span class="p">:</span>
+            <span class="n">append</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Appending to existing table: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">caltable</span><span class="p">))</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">delay_field_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">delay_field_select_string</span>
+        <span class="n">delay_scan_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">delay_scan_select_string</span>
+        <span class="n">minBL_for_cal</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">vla_minbaselineforcal</span><span class="p">()</span>
+
+        <span class="n">GainTables</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">())</span>
+        <span class="n">GainTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">addcaltable</span><span class="p">)</span>
+
+        <span class="n">delaycal_task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                              <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+                              <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                              <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">delay_scan_select_string</span><span class="p">,</span>
+                              <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;inf&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;preavg&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                              <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">refAnt</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+                              <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">minBL_for_cal</span><span class="p">,</span>
+                              <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+                              <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;smodel&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;append&#39;</span><span class="p">:</span> <span class="n">append</span><span class="p">,</span>
+                              <span class="s1">&#39;docallib&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="n">GainTables</span><span class="p">,</span>
+                              <span class="s1">&#39;gainfield&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;interp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parang</span><span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">fieldidstring</span> <span class="ow">in</span> <span class="n">delay_field_select_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+            <span class="n">fieldid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fieldidstring</span><span class="p">)</span>
+            <span class="n">uvrangestring</span> <span class="o">=</span> <span class="n">uvrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">)</span>
+            <span class="n">delaycal_task_args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldidstring</span>
+            <span class="n">delaycal_task_args</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uvrangestring</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">caltable</span><span class="p">):</span>
+                <span class="n">delaycal_task_args</span><span class="p">[</span><span class="s1">&#39;append&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">gaincal</span><span class="p">(</span><span class="o">**</span><span class="n">delaycal_task_args</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_do_gtype_bpdgains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">addcaltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+                           <span class="n">refAnt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform a G-Type cal with CASA task gaincal on the bp&#39;d gaintable</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            caltable(str): Name of the caltable to be created</span>
+<span class="sd">            addcaltable(str):  String name of table to temporarily be added to the gaincal gaintable parameter</span>
+<span class="sd">            solint(str):  String value for solint keyword of CASA task gaincal</span>
+<span class="sd">            refAnt(str): Antenna values to use as reference antennas - &#39;ea01,ea24,...&#39;</span>
+<span class="sd">            spwlist(List): List of string values for spws pertaining to the particular band - [&#39;0&#39;, &#39;1&#39;, &#39;2&#39;, ...]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">append</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">isdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">isdir</span><span class="p">:</span>
+            <span class="n">append</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Appending to existing table: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">caltable</span><span class="p">))</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">tst_bpass_spw</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_tst_bpass_spw</span><span class="p">(</span><span class="n">spwlist</span><span class="o">=</span><span class="n">spwlist</span><span class="p">)</span>
+        <span class="n">bandpass_scan_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">bandpass_scan_select_string</span>
+        <span class="n">minBL_for_cal</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">vla_minbaselineforcal</span><span class="p">()</span>
+
+        <span class="n">GainTables</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">())</span>
+        <span class="n">GainTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">addcaltable</span><span class="p">)</span>
+
+        <span class="n">bpdgains_task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                              <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+                              <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">tst_bpass_spw</span><span class="p">,</span>
+                              <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="n">solint</span><span class="p">,</span>
+                              <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;preavg&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                              <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">refAnt</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+                              <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">minBL_for_cal</span><span class="p">,</span>
+                              <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+                              <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;smodel&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;append&#39;</span><span class="p">:</span> <span class="n">append</span><span class="p">,</span>
+                              <span class="s1">&#39;docallib&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="n">GainTables</span><span class="p">,</span>
+                              <span class="s1">&#39;gainfield&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;interp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parang</span><span class="p">}</span>
+
+        <span class="n">bpscanslist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">bandpass_scan_select_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span>
+        <span class="n">scanobjlist</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="n">bpscanslist</span><span class="p">)</span>
+        <span class="n">fieldidlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scanobj</span> <span class="ow">in</span> <span class="n">scanobjlist</span><span class="p">:</span>
+            <span class="n">fieldobj</span><span class="p">,</span> <span class="o">=</span> <span class="n">scanobj</span><span class="o">.</span><span class="n">fields</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">fieldobj</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fieldidlist</span><span class="p">:</span>
+                <span class="n">fieldidlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fieldobj</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">fieldidstring</span> <span class="ow">in</span> <span class="n">fieldidlist</span><span class="p">:</span>
+            <span class="n">fieldid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fieldidstring</span><span class="p">)</span>
+            <span class="n">uvrangestring</span> <span class="o">=</span> <span class="n">uvrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">)</span>
+            <span class="n">bpdgains_task_args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldidstring</span>
+            <span class="n">bpdgains_task_args</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uvrangestring</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">caltable</span><span class="p">):</span>
+                <span class="n">bpdgains_task_args</span><span class="p">[</span><span class="s1">&#39;append&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">gaincal</span><span class="p">(</span><span class="o">**</span><span class="n">bpdgains_task_args</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_do_avgphasegaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refAnt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ktypecaltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">bpcaltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">refantmode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;flex&#39;</span><span class="p">,</span>
+                            <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform a G-Type cal with CASA task gaincal for average phase</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            caltable(str): Name of the caltable to be created</span>
+<span class="sd">            refAnt(str): Antenna values to use as reference antennas - &#39;ea01,ea24,...&#39;</span>
+<span class="sd">            ktypecaltable(str):  K cal table</span>
+<span class="sd">            bpcaltable(str):  BP caltable</span>
+<span class="sd">            refantmode(str):  Default of flex</span>
+<span class="sd">            spw(str):  spw string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">append</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">isdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">isdir</span><span class="p">:</span>
+            <span class="n">append</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Appending to existing table: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">caltable</span><span class="p">))</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">bandpass_field_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">bandpass_field_select_string</span>
+        <span class="n">bandpass_scan_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">bandpass_scan_select_string</span>
+        <span class="n">minBL_for_cal</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">vla_minbaselineforcal</span><span class="p">()</span>
+
+        <span class="n">AllCalTables</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">())</span>
+        <span class="n">AllCalTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ktypecaltable</span><span class="p">)</span>
+        <span class="n">AllCalTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bpcaltable</span><span class="p">)</span>
+
+        <span class="n">avgphasegaincal_task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                                     <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+                                     <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                                     <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;inf&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;preavg&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                                     <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">refAnt</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+                                     <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">minBL_for_cal</span><span class="p">,</span>
+                                     <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                                     <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                     <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;smodel&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                                     <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;append&#39;</span><span class="p">:</span> <span class="n">append</span><span class="p">,</span>
+                                     <span class="s1">&#39;docallib&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                     <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="n">AllCalTables</span><span class="p">,</span>
+                                     <span class="s1">&#39;gainfield&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                                     <span class="s1">&#39;interp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                                     <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                                     <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parang</span><span class="p">,</span>
+                                     <span class="s1">&#39;refantmode&#39;</span><span class="p">:</span> <span class="n">refantmode</span><span class="p">}</span>
+
+        <span class="n">bpscanslist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">bandpass_scan_select_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span>
+        <span class="n">scanobjlist</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="n">bpscanslist</span><span class="p">)</span>
+        <span class="n">allfieldidlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scanobj</span> <span class="ow">in</span> <span class="n">scanobjlist</span><span class="p">:</span>
+            <span class="n">fieldobj</span><span class="p">,</span> <span class="o">=</span> <span class="n">scanobj</span><span class="o">.</span><span class="n">fields</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">fieldobj</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allfieldidlist</span><span class="p">:</span>
+                <span class="n">allfieldidlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fieldobj</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+        <span class="c1"># See vlascanheuristics - only use the first bandpass calibrator</span>
+        <span class="n">fieldidlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">fieldid</span> <span class="k">for</span> <span class="n">fieldid</span> <span class="ow">in</span> <span class="n">allfieldidlist</span> <span class="k">if</span> <span class="n">fieldid</span> <span class="ow">in</span> <span class="n">bandpass_field_select_string</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">fieldidstring</span> <span class="ow">in</span> <span class="n">fieldidlist</span><span class="p">:</span>
+            <span class="n">fieldid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fieldidstring</span><span class="p">)</span>
+            <span class="n">uvrangestring</span> <span class="o">=</span> <span class="n">uvrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">)</span>
+            <span class="n">avgphasegaincal_task_args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldidstring</span>
+            <span class="n">avgphasegaincal_task_args</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uvrangestring</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">caltable</span><span class="p">):</span>
+                <span class="n">avgphasegaincal_task_args</span><span class="p">[</span><span class="s1">&#39;append&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">gaincal</span><span class="p">(</span><span class="o">**</span><span class="n">avgphasegaincal_task_args</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_do_unflag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gaintable</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute flagdata with mode unflag</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            gaintable(str):  Name of table for parameter vis</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Executed job</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">gaintable</span><span class="p">,</span>
+                     <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;unflag&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;savepars&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ktypecaltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">avgphasegaincaltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">interp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run CASA task applycal</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ktypecaltable(str): output from K-type gaincal</span>
+<span class="sd">            bpcaltable(str): BP caltable to use</span>
+<span class="sd">            avgphasegaincaltable(str):  gain table</span>
+<span class="sd">            interp(str): applycal CASA task keyword</span>
+<span class="sd">            spw(str): csv string values for spws pertaining to the particular band - &#39;0,1,2,3,4,5,6&#39;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Executed job</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">calibrator_scan_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">calibrator_scan_select_string</span>
+
+        <span class="n">AllCalTables</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">())</span>
+        <span class="n">AllCalTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ktypecaltable</span><span class="p">)</span>
+        <span class="n">AllCalTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bpcaltable</span><span class="p">)</span>
+        <span class="n">AllCalTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">avgphasegaincaltable</span><span class="p">)</span>
+
+        <span class="n">ntables</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">AllCalTables</span><span class="p">)</span>
+
+        <span class="n">applycal_task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                              <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                              <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">calibrator_scan_select_string</span><span class="p">,</span>
+                              <span class="s1">&#39;docallib&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="n">AllCalTables</span><span class="p">,</span>
+                              <span class="s1">&#39;gainfield&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;interp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">interp</span><span class="p">],</span>
+                              <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;calwt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">ntables</span><span class="p">,</span>
+                              <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parang</span><span class="p">,</span>
+                              <span class="s1">&#39;applymode&#39;</span><span class="p">:</span> <span class="s1">&#39;calflagstrict&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">applycal</span><span class="p">(</span><span class="o">**</span><span class="n">applycal_task_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calMs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split off the corrected data column / cal scans</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            calMs(str): name of output MS</span>
+<span class="sd">            spw(str):  spw selection</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Executed job</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">calibrator_scan_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">calibrator_scan_select_string</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                     <span class="s1">&#39;outputvis&#39;</span><span class="p">:</span> <span class="n">calMs</span><span class="p">,</span>
+                     <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;keepmms&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                     <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                     <span class="s1">&#39;antenna&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;timebin&#39;</span><span class="p">:</span> <span class="s1">&#39;0s&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;timerange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">calibrator_scan_select_string</span><span class="p">,</span>
+                     <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;array&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;observation&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;keepflags&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_doall_setjy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calMs</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute setjy with the appropriate model image</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            calMS: calibrator MS</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">field_spws</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_field_spws</span><span class="p">()</span>
+        <span class="n">spw2band</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_spw2band</span><span class="p">()</span>
+
+        <span class="n">standard_source_names</span><span class="p">,</span> <span class="n">standard_source_fields</span> <span class="o">=</span> <span class="n">standard_sources</span><span class="p">(</span><span class="n">calMs</span><span class="p">)</span>
+
+        <span class="c1"># Look in spectral window domain object as this information already exists!</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/SPECTRAL_WINDOW&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">spw_bandwidths</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TOTAL_BANDWIDTH&#39;</span><span class="p">)</span>
+            <span class="n">reference_frequencies</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;REF_FREQUENCY&#39;</span><span class="p">)</span>
+
+        <span class="n">center_frequencies</span> <span class="o">=</span> <span class="p">[</span><span class="n">rf</span> <span class="o">+</span> <span class="n">spwbw</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">rf</span><span class="p">,</span> <span class="n">spwbw</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">reference_frequencies</span><span class="p">,</span> <span class="n">spw_bandwidths</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">fields</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">standard_source_fields</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">myfield</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                <span class="n">domainfield</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">myfield</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;AMPLITUDE&#39;</span> <span class="ow">in</span> <span class="n">domainfield</span><span class="o">.</span><span class="n">intents</span><span class="p">:</span>
+                    <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">VLAspws</span> <span class="o">=</span> <span class="n">field_spws</span><span class="p">[</span><span class="n">myfield</span><span class="p">]</span>
+                    <span class="n">strlistVLAspws</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">VLAspws</span><span class="p">)</span>
+                    <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">strlistVLAspws</span><span class="p">)]</span>
+
+                    <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
+                        <span class="n">reference_frequency</span> <span class="o">=</span> <span class="n">center_frequencies</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">EVLA_band</span> <span class="o">=</span> <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Unable to get band from spw id - using reference frequency instead&#39;</span><span class="p">)</span>
+                            <span class="n">EVLA_band</span> <span class="o">=</span> <span class="n">find_EVLA_band</span><span class="p">(</span><span class="n">reference_frequency</span><span class="p">)</span>
+
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Center freq for spw &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                            <span class="n">reference_frequency</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;, observing band = &quot;</span> <span class="o">+</span> <span class="n">EVLA_band</span><span class="p">)</span>
+
+                        <span class="n">model_image</span> <span class="o">=</span> <span class="n">standard_source_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">EVLA_band</span> <span class="o">+</span> <span class="s1">&#39;.im&#39;</span>
+
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="s2">&quot;Setting model for field &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">myfield</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; spw &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; using &quot;</span> <span class="o">+</span> <span class="n">model_image</span><span class="p">)</span>
+
+                        <span class="c1"># Double check, but the fluxdensity=-1 should not matter since</span>
+                        <span class="c1">#  the model image take precedence</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_setjy</span><span class="p">(</span><span class="n">calMs</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">myfield</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="n">model_image</span><span class="p">)</span>
+                            <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+                            <span class="c1"># result.measurements.update(setjy_result.measurements)</span>
+                        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                            <span class="c1"># something has gone wrong, return an empty result</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                <span class="s2">&quot;SetJy issue with field id=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">kw</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; and spw=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">kw</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]))</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Merging flux scaling operation for setjy jobs for &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+                    <span class="n">jobs_and_components</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_jobs</span><span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">setjy</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;spw&#39;</span><span class="p">,))</span>
+                    <span class="k">for</span> <span class="n">job</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">jobs_and_components</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                <span class="s2">&quot;SetJy issue with field id=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">kw</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; and spw=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">kw</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_do_setjy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calMs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model_image</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute CASA task setjy</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            field(str):  field id</span>
+<span class="sd">            spw(str): spw id</span>
+<span class="sd">            model_image(str):  Model name on disk</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Job to execute</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">calMs</span><span class="p">,</span>
+                         <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span>
+                         <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                         <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                         <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="n">model_image</span><span class="p">,</span>
+                         <span class="s1">&#39;listmodels&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                         <span class="s1">&#39;scalebychan&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                         <span class="s1">&#39;fluxdensity&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                         <span class="s1">&#39;standard&#39;</span><span class="p">:</span> <span class="n">standard</span><span class="o">.</span><span class="n">Standard</span><span class="p">()(</span><span class="n">field</span><span class="p">),</span>
+                         <span class="s1">&#39;usescratch&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">setjy</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">job</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_do_powerfitsetjy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calMs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fluxscale_result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute setjy with results from fluxscale</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            calMs(str): input name of calibrator MS</span>
+<span class="sd">            fluxscale_result(Dict): output result from CASA task fluxscale</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting power-law fit in the model column&quot;</span><span class="p">)</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># fluxscale_result = self.inputs.context.evla[&#39;msinfo&#39;][m.name].fluxscale_result</span>
+        <span class="n">dictkeys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">fluxscale_result</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">keys_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;freq&#39;</span><span class="p">,</span> <span class="s1">&#39;spwName&#39;</span><span class="p">,</span> <span class="s1">&#39;spwID&#39;</span><span class="p">]</span>
+        <span class="n">dictkeys</span> <span class="o">=</span> <span class="p">[</span><span class="n">field_id</span> <span class="k">for</span> <span class="n">field_id</span> <span class="ow">in</span> <span class="n">dictkeys</span> <span class="k">if</span> <span class="n">field_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys_to_remove</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">fieldid</span> <span class="ow">in</span> <span class="n">dictkeys</span><span class="p">:</span>
+            <span class="n">jobs_calMs</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="n">spws</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">fluxscale_result</span><span class="p">[</span><span class="s1">&#39;spwID&#39;</span><span class="p">])</span>
+            <span class="n">scispws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+            <span class="n">newspws</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">spwint</span><span class="p">)</span> <span class="k">for</span> <span class="n">spwint</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">scispws</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">spws</span><span class="p">))]</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Running setjy for field &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">fieldid</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">fluxscale_result</span><span class="p">[</span><span class="n">fieldid</span><span class="p">][</span><span class="s1">&#39;fieldName&#39;</span><span class="p">]))</span>
+                <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">calMs</span><span class="p">,</span>
+                             <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">fluxscale_result</span><span class="p">[</span><span class="n">fieldid</span><span class="p">][</span><span class="s1">&#39;fieldName&#39;</span><span class="p">],</span>
+                             <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">newspws</span><span class="p">),</span>
+                             <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                             <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;listmodels&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                             <span class="s1">&#39;scalebychan&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="s1">&#39;fluxdensity&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">fluxscale_result</span><span class="p">[</span><span class="n">fieldid</span><span class="p">][</span><span class="s1">&#39;fitFluxd&#39;</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                             <span class="s1">&#39;spix&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">fluxscale_result</span><span class="p">[</span><span class="n">fieldid</span><span class="p">][</span><span class="s1">&#39;spidx&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">:]),</span>
+                             <span class="s1">&#39;reffreq&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">fluxscale_result</span><span class="p">[</span><span class="n">fieldid</span><span class="p">][</span><span class="s1">&#39;fitRefFreq&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;Hz&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;standard&#39;</span><span class="p">:</span> <span class="s1">&#39;manual&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;usescratch&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+                <span class="c1"># job = casa_tasks.setjy(**task_args)</span>
+                <span class="n">jobs_calMs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">casa_tasks</span><span class="o">.</span><span class="n">setjy</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">))</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+            <span class="c1"># merge identical jobs into one job with a multi-spw argument</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Merging setjy jobs for finalcalibrators.ms&quot;</span><span class="p">)</span>
+            <span class="n">jobs_and_components_calMs</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_jobs</span><span class="p">(</span><span class="n">jobs_calMs</span><span class="p">,</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">setjy</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;spw&#39;</span><span class="p">,))</span>
+            <span class="k">for</span> <span class="n">job</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">jobs_and_components_calMs</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_do_calibratorgaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calMs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">solint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">minsnr</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">calmode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                              <span class="n">gaintablelist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">refAnt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                              <span class="n">refantmode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;flex&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the CASA task gaincal with the calibrator MS using a provided list of gaintables</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            calMs(str): input name of calibrator MS</span>
+<span class="sd">            caltable(str):  output caltable</span>
+<span class="sd">            solint(str):  gaincal solution interval</span>
+<span class="sd">            minsnr(float):  Min SNR</span>
+<span class="sd">            calmode(str):   Specified mode</span>
+<span class="sd">            gaintablelist(List):  String list of tables, if any</span>
+<span class="sd">            refAnt(str): csv string of reference antennas</span>
+<span class="sd">            refantmode(str):  Default of flex</span>
+<span class="sd">            spw(str):  spw string</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">append</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">isdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">isdir</span><span class="p">:</span>
+            <span class="n">append</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Appending to existing table: </span><span class="si">{!s}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">caltable</span><span class="p">))</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">calibrator_scan_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">calibrator_scan_select_string</span>
+
+        <span class="n">scanlist</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">calibrator_scan_select_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+        <span class="n">scanids_perband</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="n">scanlist</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)])</span>
+
+        <span class="n">minBL_for_cal</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">vla_minbaselineforcal</span><span class="p">()</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">calMs</span><span class="p">,</span>
+                     <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+                     <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                     <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="n">solint</span><span class="p">,</span>
+                     <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;preavg&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                     <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">refAnt</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+                     <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">minBL_for_cal</span><span class="p">,</span>
+                     <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="n">minsnr</span><span class="p">,</span>
+                     <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;smodel&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                     <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="n">calmode</span><span class="p">,</span>
+                     <span class="s1">&#39;append&#39;</span><span class="p">:</span> <span class="n">append</span><span class="p">,</span>
+                     <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="n">gaintablelist</span><span class="p">,</span>
+                     <span class="s1">&#39;gainfield&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;interp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                     <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parang</span><span class="p">,</span>
+                     <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;refantmode&#39;</span><span class="p">:</span> <span class="n">refantmode</span><span class="p">}</span>
+
+        <span class="n">calscanslist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">scanids_perband</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span>
+        <span class="n">scanobjlist</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="n">calscanslist</span><span class="p">,</span>
+                                  <span class="n">scan_intent</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">,</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">])</span>
+        <span class="n">fieldidlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scanobj</span> <span class="ow">in</span> <span class="n">scanobjlist</span><span class="p">:</span>
+            <span class="n">fieldobj</span><span class="p">,</span> <span class="o">=</span> <span class="n">scanobj</span><span class="o">.</span><span class="n">fields</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">fieldobj</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fieldidlist</span><span class="p">:</span>
+                <span class="n">fieldidlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fieldobj</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">fieldidstring</span> <span class="ow">in</span> <span class="n">fieldidlist</span><span class="p">:</span>
+            <span class="n">fieldid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fieldidstring</span><span class="p">)</span>
+            <span class="n">uvrangestring</span> <span class="o">=</span> <span class="n">uvrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">)</span>
+            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldidstring</span>
+            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uvrangestring</span>
+            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;selectdata&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">caltable</span><span class="p">):</span>
+                <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;append&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">gaincal</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

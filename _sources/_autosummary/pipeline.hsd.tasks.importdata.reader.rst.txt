@@ -1,0 +1,33 @@
+pipeline.hsd.tasks.importdata.reader
+====================================
+
+.. automodule:: pipeline.hsd.tasks.importdata.reader
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      TableSelector
+      get_state_id
+      get_value_in_deg
+      initialize_template
+      merge_flagcmd
+      merge_timerange
+      mjd_to_datestring
+      mjd_to_datetime
+      mjdsec2str
+      set_nominal_direction
+      write_flagcmd
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ColMaskList
+      Context
+      DataTable
+      MeasurementSet
+      MetaDataReader
+      RasterScanHeuristicsResult
+   

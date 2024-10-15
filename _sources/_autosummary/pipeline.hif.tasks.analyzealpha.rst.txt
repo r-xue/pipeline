@@ -1,0 +1,19 @@
+pipeline.hif.tasks.analyzealpha
+===============================
+
+.. automodule:: pipeline.hif.tasks.analyzealpha
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Analyzealpha
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   analyzealpha

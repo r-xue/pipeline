@@ -1,0 +1,22 @@
+pipeline.infrastructure.renderer.basetemplates
+==============================================
+
+.. automodule:: pipeline.infrastructure.renderer.basetemplates
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      reorder_dicts
+      time_order_dicts
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CommonRenderer
+      JsonPlotRenderer
+      T2_4MDetailsDefaultRenderer
+      T2_4MDetailsFailedTaskRenderer
+   

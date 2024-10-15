@@ -1,0 +1,12 @@
+pipeline.h.tasks.common.displays.imhist
+=======================================
+
+.. automodule:: pipeline.h.tasks.common.displays.imhist
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ImageHistDisplay
+   

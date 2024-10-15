@@ -1,0 +1,490 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.restorepims.restorepims &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.restorepims.restorepims</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.restorepims.restorepims</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">tarfile</span>
+<span class="kn">from</span> <span class="nn">fnmatch</span> <span class="kn">import</span> <span class="n">fnmatch</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.exceptions</span> <span class="k">as</span> <span class="nn">exceptions</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.makeimages</span> <span class="kn">import</span> <span class="n">MakeImages</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="RestorepimsResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.restorepims.html#pipeline.hifv.tasks.restorepims.restorepims.RestorepimsResults">[docs]</a>
+<span class="k">class</span> <span class="nc">RestorepimsResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">restore_resources</span><span class="p">,</span> <span class="n">mask_list</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_casa_task</span> <span class="o">=</span> <span class="s1">&#39;Restorepims&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restore_resources</span> <span class="o">=</span> <span class="n">restore_resources</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_list</span> <span class="o">=</span> <span class="n">mask_list</span>
+
+<div class="viewcode-block" id="RestorepimsResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.restorepims.html#pipeline.hifv.tasks.restorepims.restorepims.RestorepimsResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See :method:`~pipeline.infrastructure.api.Results.merge_with_context`.&quot;&quot;&quot;</span>
+        <span class="k">return</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;RestorepimsResults:</span><span class="se">\n\t</span><span class="s1">mask_list=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_list</span><span class="si">}</span><span class="s1">&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="RestorepimsInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.restorepims.html#pipeline.hifv.tasks.restorepims.restorepims.RestorepimsInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">RestorepimsInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+
+    <span class="n">reimaging_resources</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;reimaging_resources.tgz&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reimaging_resources</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reimaging_resources</span> <span class="o">=</span> <span class="n">reimaging_resources</span></div>
+
+
+
+<div class="viewcode-block" id="Restorepims">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.restorepims.html#pipeline.hifv.tasks.restorepims.restorepims.Restorepims">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_restorepims&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Restore RFI-flagged and self-calibrated visibility for a per-image measurement set (PIMS) using reimaging resources from the single-epoch continuum imaging products.&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Restorepims</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">RestorepimsInputs</span>
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imagename</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;sSTAGENUMBER.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="c1"># flag version to be used for backup from hifv_restorepims()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flagversion_backup</span> <span class="o">=</span> <span class="s1">&#39;hifv_restorepims_initial&#39;</span>
+        <span class="c1"># flag version after hifv_checkflag and before hifv_statwt in **the SEIP production workflow**.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flagversion</span> <span class="o">=</span> <span class="s1">&#39;statwt_1&#39;</span>
+
+<div class="viewcode-block" id="Restorepims.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.restorepims.html#pipeline.hifv.tasks.restorepims.restorepims.Restorepims.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;This Restorepims class is running.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># extract all essential resources</span>
+        <span class="n">restore_resources</span><span class="p">,</span> <span class="n">is_resources_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_resources</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_resources_available</span><span class="p">:</span>
+            <span class="n">exception_msg</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">restore_resources</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">exception_msg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">:</span><span class="s2">20</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">exception_msg</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Some resources required for hifv_restorepims()/hif_makeimages() are not available, and Pipeline cannot continue.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">PipelineException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">120</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exception_msg</span><span class="p">)</span><span class="o">+</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">120</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># backup the intial flag state when needed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_backup_flags</span><span class="p">()</span>
+
+        <span class="c1"># restore the MODEL column to the identical state used in the SE hifv_selfcal() and hifv_statwt() stages.</span>
+        <span class="c1"># the flag state at this moment should be identical to the initial state in the SEIP worflow (before SE/hifv_checkflag)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_restoremodel</span><span class="p">(</span><span class="n">restore_resources</span><span class="p">[</span><span class="s1">&#39;model_images&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># restore the flag version (after SE/hifv_checkflag and before SE/hifv_statwt) from the SE flag file.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_restoreflags</span><span class="p">(</span><span class="n">versionname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">flagversion</span><span class="p">)</span>
+
+        <span class="c1"># calculate WEIGHT from DATA-MODEL, identical to the one generated in SE:hifv_statwt()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_statwt</span><span class="p">()</span>
+
+        <span class="c1"># apply the selfcal table from the SE reimaging resources to get the CORRECTED column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_applycal</span><span class="p">(</span><span class="n">restore_resources</span><span class="p">[</span><span class="s1">&#39;selfcal_table&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">mask_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">restore_resources</span><span class="p">[</span><span class="s1">&#39;tier1_mask&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">restore_resources</span><span class="p">[</span><span class="s1">&#39;tier2_mask&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">RestorepimsResults</span><span class="p">(</span><span class="n">restore_resources</span><span class="p">,</span> <span class="n">mask_list</span><span class="o">=</span><span class="n">mask_list</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="Restorepims.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.restorepims.html#pipeline.hifv.tasks.restorepims.restorepims.Restorepims.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_backup_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Backup the initial FLAS state in PIMS, in case the task gets re-run.&quot;&quot;&quot;</span>
+
+        <span class="n">flagversion_backup_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="o">+</span><span class="s1">&#39;.flagversions/flags.&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">flagversion_backup</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">flagversion_backup_path</span><span class="p">):</span>
+            <span class="c1"># back up the initial flags, in case one wants to rerun hifv_restorepims().</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;save&#39;</span><span class="p">,</span>
+                                         <span class="n">versionname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">flagversion_backup</span><span class="p">,</span>
+                                         <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;flagversion before running hifv_restorepims() first time&#39;</span><span class="p">,</span>
+                                         <span class="n">merge</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Found the FLAGs backup from hifv_restorepims() under the name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">flagversion_backup</span><span class="si">}</span><span class="s1">, and will skip new backup&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_check_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># Create the resource request list</span>
+        <span class="c1"># - self.imagename at this point is from SEIP_parameter.list of the SEIP products.</span>
+        <span class="c1"># - inputs.vis should be identical to the SEIP input with the same flag state.</span>
+        <span class="c1"># Therefore, we verify these names against the file list inside reimaging_resources.tgz</span>
+
+        <span class="n">restore_resources</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">reimaging_resources_tgz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">reimaging_resources</span>
+        <span class="n">flagd_pat_key_desc</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="o">+</span><span class="s1">&#39;.flagversions*&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;flag directory&#39;</span><span class="p">)</span>
+        <span class="n">flagv_pat_key_desc</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="o">+</span><span class="sa">f</span><span class="s1">&#39;.flagversions/flags.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">flagversion</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_version&#39;</span><span class="p">,</span> <span class="s1">&#39;flag version&#39;</span><span class="p">)</span>
+        <span class="n">sctab_pat_key_desc</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="o">+</span><span class="s1">&#39;.*.phase-self-cal.tbl*&#39;</span><span class="p">,</span> <span class="s1">&#39;selfcal_table&#39;</span><span class="p">,</span> <span class="s1">&#39;selfcal table&#39;</span><span class="p">)</span>
+        <span class="n">model_pat_key_desc</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;s*_0.&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">imagename</span><span class="o">+</span><span class="s1">&#39;.I.iter1.model*&#39;</span><span class="p">,</span> <span class="s1">&#39;model_images&#39;</span><span class="p">,</span> <span class="s1">&#39;model image(s)&#39;</span><span class="p">)</span>
+        <span class="n">tier1_pat_key_desc</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;s*_0.&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">imagename</span><span class="o">+</span><span class="s1">&#39;.QLcatmask-tier1.mask*&#39;</span><span class="p">,</span> <span class="s1">&#39;tier1_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;tier1 mask&#39;</span><span class="p">)</span>
+        <span class="n">tier2_pat_key_desc</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;s*_0.&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">imagename</span><span class="o">+</span><span class="s1">&#39;.combined-tier2.mask*&#39;</span><span class="p">,</span> <span class="s1">&#39;tier2_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;tier2 mask&#39;</span><span class="p">)</span>
+        <span class="n">pkd_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">flagd_pat_key_desc</span><span class="p">,</span> <span class="n">flagv_pat_key_desc</span><span class="p">,</span> <span class="n">sctab_pat_key_desc</span><span class="p">,</span>
+                    <span class="n">model_pat_key_desc</span><span class="p">,</span> <span class="n">tier1_pat_key_desc</span><span class="p">,</span> <span class="n">tier2_pat_key_desc</span><span class="p">]</span>
+
+        <span class="c1"># check the reimaging resources tarball before trying unpacking.</span>
+
+        <span class="n">is_resources_available</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">reimaging_resources_tgz</span><span class="p">)</span> <span class="ow">and</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">is_tarfile</span><span class="p">(</span><span class="n">reimaging_resources_tgz</span><span class="p">)</span>
+        <span class="n">restore_resources</span><span class="p">[</span><span class="s1">&#39;reimaging_resources&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">reimaging_resources_tgz</span><span class="p">,</span> <span class="n">is_resources_available</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">is_resources_available</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found the reimaging resources tarball: </span><span class="si">{</span><span class="n">reimaging_resources_tgz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The reimaging resources tarball </span><span class="si">{</span><span class="n">reimaging_resources_tgz</span><span class="si">}</span><span class="s2"> doesn&#39;t exist or is not a tarfile.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">restore_resources</span><span class="p">,</span> <span class="n">is_resources_available</span>
+
+        <span class="c1"># untar any files required for the restorepims operation:</span>
+
+        <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">reimaging_resources_tgz</span><span class="p">,</span> <span class="s1">&#39;r:gz&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>
+
+            <span class="n">members</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">tar</span><span class="o">.</span><span class="n">getmembers</span><span class="p">():</span>
+                <span class="n">is_resource</span> <span class="o">=</span> <span class="nb">any</span><span class="p">([</span><span class="n">fnmatch</span><span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">pkd</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">pkd</span> <span class="ow">in</span> <span class="n">pkd_list</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">is_resource</span><span class="p">:</span>
+                    <span class="n">members</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+            <span class="c1"># if the request flagversion already exists, do not override the flagversions directory to preserve</span>
+            <span class="c1"># any recent flagversions, e.g. the hifv_restorepims backup.</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">flagv_pat_key_desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">flagv_pat_key_desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> exists and the .flagversions directory will be re-used and not extracted.&#39;</span><span class="p">)</span>
+                <span class="n">members</span> <span class="o">=</span> <span class="p">[</span><span class="n">member</span> <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">members</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">fnmatch</span><span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">flagd_pat_key_desc</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;extracting: </span><span class="si">{</span><span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">tar</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">members</span><span class="o">=</span><span class="n">members</span><span class="p">)</span>
+
+        <span class="c1"># check against the resource requirement list</span>
+
+        <span class="k">for</span> <span class="n">pkd</span> <span class="ow">in</span> <span class="n">pkd_list</span><span class="p">:</span>
+            <span class="n">paths</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="n">pkd</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">paths</span><span class="p">:</span>
+                <span class="n">restore_resources</span><span class="p">[</span><span class="n">pkd</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>  <span class="c1"># (file_list, True)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found the request </span><span class="si">{</span><span class="n">pkd</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">restore_resources</span><span class="p">[</span><span class="n">pkd</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="n">pkd</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>        <span class="c1"># (file_pattern, False)</span>
+                <span class="n">is_resources_available</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot find the request </span><span class="si">{</span><span class="n">pkd</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2"> using the name pattern: </span><span class="si">{</span><span class="n">pkd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">restore_resources</span><span class="p">,</span> <span class="n">is_resources_available</span>
+
+    <span class="k">def</span> <span class="nf">_do_restoreflags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">versionname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">versionname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">versionname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flagversion</span>
+
+        <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;restore&#39;</span><span class="p">,</span> <span class="n">versionname</span><span class="o">=</span><span class="n">versionname</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_reinitialize_pims</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Re-intialize the WEIGHTs/FLAGs of a PIMS.</span>
+
+<span class="sd">        Note: this method is only called when hifv_restorepims() gets rerun.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Because the FLAGs/WEIGHTs are likely already modified, to recover the PIMS initial state, we attempt to:&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; 1. restore FLAGs from earlier backup from hifv_restorepims().&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; 2. re-initialize WEIGHTs/SIGMAs.&#39;</span><span class="p">)</span>
+
+        <span class="n">flagversion_backup_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="o">+</span><span class="s1">&#39;.flagversions/flags.&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">flagversion_backup</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">flagversion_backup_path</span><span class="p">):</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;restore&#39;</span><span class="p">,</span> <span class="n">versionname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">flagversion_backup</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Cannot find earlier FLAGS backup by hifv_restorepims, but will continue.&#39;</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Re-initializing the weights in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">initweights</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">wtmode</span><span class="o">=</span><span class="s1">&#39;nyq&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_restoremodel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_images</span><span class="p">):</span>
+
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">is_modelcolumn_present</span> <span class="o">=</span> <span class="s1">&#39;MODEL_DATA&#39;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">colnames</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;/SOURCE&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">is_virtualmodel_present</span> <span class="o">=</span> <span class="s1">&#39;SOURCE_MODEL&#39;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">colnames</span><span class="p">()</span>
+
+        <span class="c1"># remove any (unlikely) virtual/otf model in the MS/SOURCE subtable to prevent it overriding the effect of the modelcolumn.</span>
+        <span class="c1"># see: https://casadocs.readthedocs.io/en/latest/api/tt/casatasks.imaging.tclean.html?highlight=savemodel#savemodel</span>
+        <span class="k">if</span> <span class="n">is_virtualmodel_present</span><span class="p">:</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">delmod</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">otf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">scr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="c1"># re-initialze FLAGs/WEIGHTs if needed to ensure identical predicting (vs. SE-CONT) from model image created with normtype=&#39;flatnoise&#39;.</span>
+        <span class="k">if</span> <span class="n">is_modelcolumn_present</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;MODEL_DATA column found in </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> and will be overwritten.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reinitialize_pims</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Writing model data to </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+
+        <span class="n">mp_nthreads</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">casalog</span><span class="o">.</span><span class="n">ompGetNumThreads</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Predicting the MODEL column with openmp_nthreads : </span><span class="si">{</span><span class="n">mp_nthreads</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">model_image</span> <span class="o">=</span> <span class="n">model_images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">last_idx</span> <span class="o">=</span> <span class="n">model_image</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;.model&#39;</span><span class="p">)</span>
+        <span class="n">restore_imagename</span> <span class="o">=</span> <span class="n">model_image</span><span class="p">[:</span><span class="n">last_idx</span><span class="p">]</span>
+        <span class="n">restore_startmodel</span> <span class="o">=</span> <span class="n">model_images</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span><span class="p">:</span>    <span class="c1"># just one target for VLASS-SE-CONT*</span>
+            <span class="n">target</span><span class="p">[</span><span class="s1">&#39;niter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>   <span class="c1"># not essential but ensure this indicated this is for a selfcal restoration.</span>
+            <span class="n">target</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>   <span class="c1"># empty the mask list to stop tclean beyond iter=0 (just for the model restoration)</span>
+            <span class="n">target</span><span class="p">[</span><span class="s1">&#39;heuristics&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">restore_imagename</span> <span class="o">=</span> <span class="n">restore_imagename</span>      <span class="c1"># this has been sorted: xx.tt0, xx.tt1.</span>
+            <span class="c1"># the tclean imagename used in the production selfcal-imaging flow</span>
+            <span class="n">target</span><span class="p">[</span><span class="s1">&#39;heuristics&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">restore_startmodel</span> <span class="o">=</span> <span class="n">restore_startmodel</span>
+            <span class="c1"># note: both restore_imagename/_startmodel here can be used to recover the modelcolumn via tclean()</span>
+            <span class="c1"># we add both but later use &#39;restore_imagname&#39; due to the csys mismatch issue (CAS-13338) during the parallel=True-&gt;False switch in</span>
+            <span class="c1"># stage5 when the vlass-se-cont workflow is done in mpicasa.</span>
+            <span class="c1">#   tclean/startmodel will always regrid when csys mismatch</span>
+            <span class="c1">#   tclean/imagename will just reset to use the cys on the disk, leaving the model untouch.</span>
+            <span class="c1">#   the later is what we prefer to reproduce the sequence in the mpicasa+awp situation</span>
+
+        <span class="n">makeimages_inputs</span> <span class="o">=</span> <span class="n">MakeImages</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">hm_masking</span><span class="o">=</span><span class="s1">&#39;manual&#39;</span><span class="p">)</span>
+        <span class="n">makeimages_task</span> <span class="o">=</span> <span class="n">MakeImages</span><span class="p">(</span><span class="n">makeimages_inputs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">makeimages_task</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_do_statwt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rerun statwt following the SE setting.</span>
+
+<span class="sd">        Also see the SEIP setting in hifv_statwt()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                     <span class="s1">&#39;fitspw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;fitcorr&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;minsamp&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+                     <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="s1">&#39;residual_data&#39;</span><span class="p">}</span>
+
+        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;combine&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;field,scan,state,corr&#39;</span>
+        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;minsamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;chanbin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;timebin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1yr&#39;</span>
+
+        <span class="c1"># the flag state has already been restored from SE/statwt_1 at this point, no need to backup again</span>
+        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;flagbackup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">statwt</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gaintable</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rerun applycal using the selfcal table from the SE reimaging resources.</span>
+
+<span class="sd">        Also see the SEIP setting in hifv_selfcal()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">spwsobjlist</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwsobjlist</span><span class="p">]</span>
+        <span class="n">numspws</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        <span class="n">lowestscispwid</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">spws</span><span class="p">)</span>  <span class="c1"># PIPE-101, PIPE-1042: spwmap parameter in applycal must be a list of integers</span>
+        <span class="c1"># VLASS mode</span>
+        <span class="n">applycal_task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="n">gaintable</span><span class="p">,</span>
+                              <span class="s1">&#39;interp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;nearestPD&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">numspws</span> <span class="o">*</span> <span class="p">[</span><span class="n">lowestscispwid</span><span class="p">]],</span>
+                              <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;applymode&#39;</span><span class="p">:</span> <span class="s1">&#39;calonly&#39;</span><span class="p">}</span>
+
+        <span class="n">applycal_task_args</span><span class="p">[</span><span class="s1">&#39;calwt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">applycal_task_args</span><span class="p">[</span><span class="s1">&#39;interp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;nearest&#39;</span><span class="p">]</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">applycal</span><span class="p">(</span><span class="o">**</span><span class="n">applycal_task_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

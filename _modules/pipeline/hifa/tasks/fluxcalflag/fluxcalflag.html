@@ -1,0 +1,737 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.fluxcalflag.fluxcalflag &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.fluxcalflag.fluxcalflag</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.fluxcalflag.fluxcalflag</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">.solsyslinesdict</span> <span class="kn">import</span> <span class="n">SolarSystemLineList</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;FluxcalFlag&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;FluxcalFlagInputs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;FluxcalFlagResults&#39;</span>
+<span class="p">]</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FluxcalFlagInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxcalflag.html#pipeline.hifa.tasks.fluxcalflag.fluxcalflag.FluxcalFlagInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">FluxcalFlagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialise the flux calibration flagging task inputs object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Return each field in the current ms that has been observed</span>
+        <span class="c1"># with the desired intent</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+        <span class="n">field_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">field_names</span><span class="p">)</span>
+
+    <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">)</span>
+    <span class="n">threshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+    <span class="n">appendlines</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">linesfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">vis_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">vis_root</span> <span class="o">+</span> <span class="s1">&#39;_.txt&#39;</span>
+
+    <span class="n">applyflags</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">appendlines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linesfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">applyflags</span><span class="o">=</span><span class="kc">None</span>
+                 <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FluxcalFlagInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># pipeline inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="c1"># vis must be set first, as other properties may depend on it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">appendlines</span> <span class="o">=</span> <span class="n">appendlines</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linesfile</span> <span class="o">=</span> <span class="n">linesfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">applyflags</span> <span class="o">=</span> <span class="n">applyflags</span></div>
+
+
+
+<div class="viewcode-block" id="FluxcalFlagResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxcalflag.html#pipeline.hifa.tasks.fluxcalflag.fluxcalflag.FluxcalFlagResults">[docs]</a>
+<span class="k">class</span> <span class="nc">FluxcalFlagResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">fluxcal_linelist</span><span class="o">=</span><span class="p">[],</span> <span class="n">fluxcal_flagcmds</span><span class="o">=</span><span class="p">[],</span> <span class="n">refspwmap</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">science_spw_ids</span><span class="o">=</span><span class="p">[]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialise the flux calibration flagging task results object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FluxcalFlagResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fluxcal_linelist</span> <span class="o">=</span> <span class="n">fluxcal_linelist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fluxcal_flagcmds</span> <span class="o">=</span> <span class="n">fluxcal_flagcmds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refspwmap</span> <span class="o">=</span> <span class="n">refspwmap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_science_spw_ids</span> <span class="o">=</span> <span class="n">science_spw_ids</span>
+
+<div class="viewcode-block" id="FluxcalFlagResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxcalflag.html#pipeline.hifa.tasks.fluxcalflag.fluxcalflag.FluxcalFlagResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39; No results to merge &#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Store the refspwmap and flagging commands</span>
+        <span class="c1"># in the context. Leave out the line list for now</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_vis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ms</span><span class="p">:</span>
+            <span class="c1">#ms.fluxcal_linelist = self._fluxcal_linelist</span>
+            <span class="n">ms</span><span class="o">.</span><span class="n">flagcmds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxcal_flagcmds</span><span class="p">)</span>
+            <span class="n">ms</span><span class="o">.</span><span class="n">reference_spwmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refspwmap</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxcal_linelist</span><span class="p">:</span>
+            <span class="k">return</span><span class="p">(</span><span class="s1">&#39;FluxcalFlagResults:</span><span class="se">\n</span><span class="s1">&#39;</span>
+                   <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">No lines detected in flux calibrators&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">linelist</span> <span class="o">=</span> <span class="s1">&#39;FluxcalFlagResults:</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxcal_linelist</span><span class="p">:</span>
+                <span class="n">linelist</span> <span class="o">=</span> <span class="n">linelist</span> <span class="o">+</span> \
+                    <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">field=</span><span class="si">%s</span><span class="s1"> line=</span><span class="si">%s</span><span class="s1"> spw=</span><span class="si">%d</span><span class="s1">:</span><span class="si">%d</span><span class="s1">~</span><span class="si">%d</span><span class="s1"> nchan=</span><span class="si">%d</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> \
+                    <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">species</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">,</span> \
+                     <span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">)</span> 
+            <span class="k">return</span> <span class="n">linelist</span></div>
+
+
+
+<div class="viewcode-block" id="FluxcalFlag">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxcalflag.html#pipeline.hifa.tasks.fluxcalflag.fluxcalflag.FluxcalFlag">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_fluxcalflag&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
+    <span class="s1">&#39;This stage performs a pipeline calculation without running any CASA commands to be put in this file.&#39;</span>
+<span class="p">)</span>
+<span class="k">class</span> <span class="nc">FluxcalFlag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FluxcalFlagInputs</span>
+
+<div class="viewcode-block" id="FluxcalFlag.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxcalflag.html#pipeline.hifa.tasks.fluxcalflag.fluxcalflag.FluxcalFlag.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># TODO there&#39;s so much mixed tab/tabspace formatting in this file I</span>
+        <span class="c1"># can&#39;t read the identation. Once fixed, summaries should be moved</span>
+        <span class="c1"># closer to the creation of the results</span>
+        <span class="n">summaries</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Return if the MS has no data with the required intent.</span>
+        <span class="n">flux_fields</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flux_fields</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Field(s) </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> in </span><span class="si">%s</span><span class="s1"> have no data with intent </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">))</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">FluxcalFlagResults</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">summaries</span> <span class="o">=</span> <span class="n">summaries</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># Get the science spws. </span>
+        <span class="n">science_spws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">science_spws</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No science spw(s) specified for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">FluxcalFlagResults</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">summaries</span> <span class="o">=</span> <span class="n">summaries</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="n">science_spw_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">]</span>
+
+        <span class="c1"># Get all the spws. These will be used to construct refspwmap</span>
+        <span class="n">all_spws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Read in user defined lines and append them to the builtin</span>
+        <span class="c1"># lines dictionary.</span>
+        <span class="n">UserSolarSystemLineList</span> <span class="o">=</span> <span class="n">SolarSystemLineList</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">appendlines</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Appending user line list </span><span class="si">%s</span><span class="s1"> to builtin dictionary&#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">linesfile</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_append_linesfile</span><span class="p">(</span><span class="n">UserSolarSystemLineList</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">linesfile</span><span class="p">)</span>
+
+        <span class="c1"># Get the pipeline to CASA intents mapping to be used in the CASA</span>
+        <span class="c1"># flagging commands. Should be handled transparently by framework</span>
+        <span class="c1"># as is the case for the calibration software.</span>
+        <span class="c1">#    Intent mapping problem ?</span>
+        <span class="n">amp_obsmodes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">states</span><span class="p">:</span>
+            <span class="n">amp_obsmodes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">get_obs_mode_for_intent</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">))</span>
+        <span class="n">amp_obsmodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">amp_obsmodes</span><span class="p">))</span>
+
+        <span class="c1"># Loop over the list of flux calibrators and create a list of</span>
+        <span class="c1"># lines ordered by field and spw</span>
+        <span class="n">fluxcal_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">flux_fields</span><span class="p">:</span>
+
+            <span class="c1"># Skip if field not in solar system object line list</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">UserSolarSystemLineList</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Searching field </span><span class="si">%s</span><span class="s1"> for spectral lines&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">))</span> 
+
+            <span class="c1"># Loop over the science spectral windows for that field</span>
+            <span class="c1"># NOTE: Use in field.valid_spws() in future</span>
+            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">:</span>
+
+                <span class="c1"># Loop over the target solar system object lines</span>
+                <span class="k">for</span> <span class="n">molecule</span> <span class="ow">in</span> <span class="n">UserSolarSystemLineList</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]:</span>
+                    <span class="n">species</span> <span class="o">=</span> <span class="n">molecule</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">lines</span> <span class="o">=</span> <span class="n">molecule</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+                    <span class="c1"># Loop over the lines for each molecule</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+
+                        <span class="c1"># Return channel overlap for each line</span>
+                        <span class="n">chanrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_chanrange</span><span class="p">(</span>
+                            <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                            <span class="n">fieldid</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                            <span class="n">minfreq</span><span class="o">=</span><span class="mf">1.0e9</span><span class="o">*</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                            <span class="n">maxfreq</span><span class="o">=</span><span class="mf">1.0e9</span><span class="o">*</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                            <span class="n">refframe</span><span class="o">=</span><span class="s1">&#39;GEO&#39;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">chanrange</span> <span class="o">==</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                            <span class="k">continue</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    Found line </span><span class="si">%s</span><span class="s1"> </span><span class="si">%.3f</span><span class="s1">~</span><span class="si">%.3f</span><span class="s1">GHz in spw </span><span class="si">%d</span><span class="s1">:</span><span class="si">%d</span><span class="s1">~</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span>
+                                 <span class="p">(</span><span class="n">species</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+                        <span class="c1"># Create the line object and add it into a list of</span>
+                        <span class="c1"># line objects.</span>
+                        <span class="n">fluxcal_line</span> <span class="o">=</span> <span class="n">MolecularLine</span><span class="p">(</span>
+                            <span class="n">fieldname</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                            <span class="n">species</span><span class="o">=</span><span class="n">species</span><span class="p">,</span> <span class="n">freqrange</span><span class="o">=</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                            <span class="n">spwid</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">chanrange</span><span class="o">=</span><span class="n">chanrange</span><span class="p">,</span>
+                            <span class="n">nchan</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span><span class="p">)</span>
+                        <span class="n">fluxcal_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fluxcal_line</span><span class="p">)</span>
+
+        <span class="c1"># Generate the channel flagging statistics per field and spw.</span>
+        <span class="n">flagstats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_newflagstats</span><span class="p">(</span><span class="n">fluxcal_lines</span><span class="p">)</span>
+
+        <span class="c1"># Compute the reference spw map</span>
+        <span class="n">flagall</span><span class="p">,</span> <span class="n">refspwmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refspwmap</span><span class="p">(</span><span class="n">all_spws</span><span class="p">,</span> <span class="n">science_spws</span><span class="p">,</span> <span class="n">flagstats</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">threshold</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Spectral window map for flux scaling </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">refspwmap</span><span class="p">)</span>
+
+        <span class="c1"># Generate a list of flagging commands</span>
+        <span class="n">flagcmds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flagcmds</span><span class="p">(</span><span class="n">fluxcal_lines</span><span class="p">,</span> <span class="n">flagstats</span><span class="p">,</span> <span class="n">amp_obsmodes</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">threshold</span><span class="p">,</span> <span class="n">flagall</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Flagging commands generated&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flagcmds</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    None&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="n">flagcmds</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">cmd</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">applyflags</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Applying flags&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Add the summary commands to the flagging commands</span>
+                <span class="n">allflagcmds</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mode=&#39;summary&#39; name=&#39;before&#39;&quot;</span><span class="p">]</span>
+                <span class="n">allflagcmds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">flagcmds</span><span class="p">)</span>
+                <span class="n">allflagcmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;mode=&#39;summary&#39; name=&#39;after&#39;&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Flag the data</span>
+                <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;apply&#39;</span><span class="p">,</span> <span class="n">inpfile</span><span class="o">=</span><span class="n">allflagcmds</span><span class="p">,</span>
+                                           <span class="n">savepars</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">flagresults</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+                <span class="n">stats_before</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">stats_after</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">summary</span> <span class="ow">in</span> <span class="n">flagresults</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">flagresults</span><span class="p">[</span><span class="n">summary</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;before&#39;</span><span class="p">:</span>
+                        <span class="n">stats_before</span> <span class="o">=</span> <span class="n">flagresults</span><span class="p">[</span><span class="n">summary</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="n">flagresults</span><span class="p">[</span><span class="n">summary</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;after&#39;</span><span class="p">:</span>
+                        <span class="n">stats_after</span> <span class="o">=</span> <span class="n">flagresults</span><span class="p">[</span><span class="n">summary</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">stats_before</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">stats_after</span><span class="p">:</span>
+                    <span class="n">summaries</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">summaries</span> <span class="o">=</span> <span class="p">[</span><span class="n">stats_before</span><span class="p">,</span> <span class="n">stats_after</span><span class="p">]</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">FluxcalFlagResults</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">fluxcal_linelist</span><span class="o">=</span><span class="n">fluxcal_lines</span><span class="p">,</span> <span class="n">fluxcal_flagcmds</span><span class="o">=</span><span class="n">flagcmds</span><span class="p">,</span>
+                                    <span class="n">refspwmap</span><span class="o">=</span><span class="n">refspwmap</span><span class="p">,</span> <span class="n">science_spw_ids</span><span class="o">=</span><span class="n">science_spw_ids</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">summaries</span> <span class="o">=</span> <span class="n">summaries</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="FluxcalFlag.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxcalflag.html#pipeline.hifa.tasks.fluxcalflag.fluxcalflag.FluxcalFlag.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="c1"># Read in a file containing lines regions and append it to </span>
+    <span class="c1"># the builtin dictionary.</span>
+    <span class="c1">#    Blank lines and comments beginning with # are skipped</span>
+    <span class="c1">#    The data is contained in 4 whitespace delimited fields</span>
+    <span class="c1">#    containing the solar system object field name, e.g. &#39;Callisto&#39;</span>
+    <span class="c1">#    the molecular species name, e.g. &#39;13CO&#39; and the starting</span>
+    <span class="c1">#    and ending frequency in GHz.</span>
+    <span class="c1">#</span>
+    <span class="k">def</span> <span class="nf">_append_linesfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">linedict</span><span class="p">,</span> <span class="n">linefile</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">linefile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">datafile</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">datafile</span><span class="p">:</span>
+
+                <span class="c1"># Parse the line</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">source</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">species</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">region</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+
+                <span class="c1"># New source</span>
+                <span class="k">if</span> <span class="n">source</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">linedict</span><span class="p">:</span>
+                    <span class="n">linedict</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="p">[(</span><span class="n">species</span><span class="p">,</span> <span class="p">[</span><span class="n">region</span><span class="p">])]</span>
+                <span class="c1"># Existing source</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># New molecular species</span>
+                    <span class="c1">#    If not append line to species list</span>
+                    <span class="c1">#    If not create new species list</span>
+                    <span class="n">newspecies</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">linedict</span><span class="p">[</span><span class="n">source</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">species</span><span class="p">:</span> 
+                            <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+                            <span class="n">newspecies</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">if</span> <span class="n">newspecies</span><span class="p">:</span>
+                        <span class="n">linedict</span><span class="p">[</span><span class="n">source</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">species</span><span class="p">,</span> <span class="p">[</span><span class="n">region</span><span class="p">]))</span>
+
+    <span class="c1"># Generate channel flagging statistics per field and spw allowing</span>
+    <span class="c1"># for line region overlaps. For each field, spwid combination create</span>
+    <span class="c1"># a mask array of zeros equal to the size of the spw. Populate the</span>
+    <span class="c1"># mask corresponding to line regions with 1&#39;s. When appropriate</span>
+    <span class="c1"># compute the fraction of the array containing 1&#39;s by summing the</span>
+    <span class="c1"># array and dividing by the total number of channels.</span>
+    <span class="k">def</span> <span class="nf">_newflagstats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fluxcal_lines</span><span class="p">):</span>
+
+        <span class="n">flagstats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">maskarrays</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">prev_fieldname</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">prev_spwid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fluxcal_lines</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">fieldname</span> <span class="o">!=</span> <span class="n">prev_fieldname</span><span class="p">:</span>
+                <span class="n">flagstats</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">maskarrays</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">spwmask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+                <span class="n">spwmask</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> 
+                <span class="n">flagstats</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">spwmask</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">)</span> 
+                <span class="n">maskarrays</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="n">spwmask</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">spwid</span> <span class="o">!=</span> <span class="n">prev_spwid</span><span class="p">:</span>
+                <span class="n">spwmask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+                <span class="n">spwmask</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> 
+                <span class="n">flagstats</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">spwmask</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">)</span> 
+                <span class="n">maskarrays</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="n">spwmask</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">spwmask</span> <span class="o">=</span> <span class="n">maskarrays</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span>
+                <span class="n">spwmask</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> 
+                <span class="n">flagstats</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">spwmask</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">)</span> 
+
+            <span class="n">prev_fieldname</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">fieldname</span>
+            <span class="n">prev_spwid</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">spwid</span>
+
+        <span class="c1"># Delete the mask arrays</span>
+        <span class="k">for</span> <span class="n">key1</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">maskarrays</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">for</span> <span class="n">key2</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">maskarrays</span><span class="p">[</span><span class="n">key1</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="k">del</span><span class="p">(</span><span class="n">maskarrays</span><span class="p">[</span><span class="n">key1</span><span class="p">][</span><span class="n">key2</span><span class="p">])</span>
+            <span class="n">maskarrays</span><span class="p">[</span><span class="n">key1</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="c1"># return flagging statistic</span>
+        <span class="k">return</span> <span class="n">flagstats</span>
+
+    <span class="c1"># Compute the reference spwmap</span>
+    <span class="k">def</span> <span class="nf">_refspwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allspws</span><span class="p">,</span> <span class="n">scispws</span><span class="p">,</span> <span class="n">flagstats</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+
+        <span class="c1"># Determine which science windows should be flagged</span>
+        <span class="c1"># entirely and which not. Assume that the same spw in</span>
+        <span class="c1"># different fields will have the same flagging statistics</span>
+
+        <span class="n">max_spwid</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">flaggedspws</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">unflaggedspws</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">scispws</span><span class="p">:</span>
+
+            <span class="c1"># Find the maximum science spw id</span>
+            <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="n">max_spwid</span><span class="p">:</span>
+                <span class="n">max_spwid</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
+
+            <span class="c1"># Field loop</span>
+            <span class="n">flagged</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">fvalue</span> <span class="ow">in</span> <span class="n">flagstats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># Spw loop</span>
+                <span class="k">for</span> <span class="n">skey</span><span class="p">,</span> <span class="n">svalue</span> <span class="ow">in</span> <span class="n">fvalue</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">skey</span> <span class="o">==</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+                        <span class="n">flagged</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">if</span> <span class="n">svalue</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
+                            <span class="n">flaggedspws</span><span class="p">[</span><span class="n">skey</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw</span>
+                        <span class="k">else</span><span class="p">:</span> 
+                            <span class="n">unflaggedspws</span><span class="p">[</span><span class="n">skey</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">flagged</span><span class="p">:</span>
+                <span class="n">unflaggedspws</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw</span>
+
+        <span class="c1"># None need be completely flagged. </span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flaggedspws</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Initialize the spwmap. All spw ids up to the maximum</span>
+        <span class="c1"># science spw id must be defined.</span>
+        <span class="n">refspwmap</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_spwid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">refspwmap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="c1"># All Science windows would be completely flagged</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">unflaggedspws</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># For spectral windows which are completely</span>
+        <span class="c1"># flagged find the closest unflagged window.</span>
+        <span class="k">for</span> <span class="n">fkey</span><span class="p">,</span> <span class="n">fvalue</span> <span class="ow">in</span> <span class="n">flaggedspws</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">maxdiff</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">float_info</span><span class="o">.</span><span class="n">max</span>
+            <span class="n">ctrfreq</span> <span class="o">=</span> <span class="n">fvalue</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">closest_spwid</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">ufvalue</span> <span class="ow">in</span> <span class="n">unflaggedspws</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">uctrfreq</span> <span class="o">=</span> <span class="n">ufvalue</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">value</span>
+                <span class="n">diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ctrfreq</span> <span class="o">-</span> <span class="n">uctrfreq</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="n">maxdiff</span><span class="p">:</span>
+                    <span class="n">closest_spwid</span> <span class="o">=</span> <span class="n">ufvalue</span><span class="o">.</span><span class="n">id</span>
+                    <span class="n">maxdiff</span> <span class="o">=</span> <span class="n">diff</span>
+            <span class="k">if</span> <span class="n">closest_spwid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">refspwmap</span><span class="p">[</span><span class="n">fkey</span><span class="p">]</span> <span class="o">=</span> <span class="n">closest_spwid</span>
+
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">refspwmap</span>
+
+    <span class="c1"># Generate flagging commands one per field and spw</span>
+    <span class="k">def</span> <span class="nf">_flagcmds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fluxcal_lines</span><span class="p">,</span> <span class="n">flagstats</span><span class="p">,</span> <span class="n">obsmodes</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">flagall</span><span class="p">):</span>
+
+        <span class="c1"># Generate the flagging commands</span>
+        <span class="n">flagcmds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">flagcmd</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">prev_fieldname</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">prev_spwid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fluxcal_lines</span><span class="p">:</span>
+
+            <span class="c1"># Field or spw has changed so start a new command</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">fieldname</span> <span class="o">!=</span> <span class="n">prev_fieldname</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">spwid</span> <span class="o">!=</span> <span class="n">prev_spwid</span><span class="p">:</span>
+
+                <span class="c1"># Write out the previous command</span>
+                <span class="c1"># Note: the first single quote closes the value of the spw field</span>
+                <span class="k">if</span> <span class="n">flagcmd</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                    <span class="n">flagcmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flagcmd</span> <span class="o">+</span> <span class="s2">&quot;&#39; reason=&#39;Flux_calibrator_atmospheric_line&#39;&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Initialize the command</span>
+                <span class="n">flagcmd</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">if</span> <span class="n">flagall</span> <span class="ow">and</span> <span class="n">flagstats</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Note: the value of spw field is not closed by single quote, </span>
+                    <span class="c1"># for in case additional channel ranges are added.</span>
+                    <span class="n">flagcmd</span> <span class="o">=</span> <span class="s2">&quot;mode=&#39;manual&#39; field=&#39;</span><span class="si">%s</span><span class="s2">&#39; intent=&#39;</span><span class="si">%s</span><span class="s2">&#39; spw=&#39;</span><span class="si">%d</span><span class="s2">:</span><span class="si">%d</span><span class="s2">~</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> \
+                        <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">obsmodes</span><span class="p">),</span> <span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="c1"># Append a new channel range if appropriate.</span>
+            <span class="k">elif</span> <span class="n">flagall</span> <span class="ow">and</span> <span class="n">flagstats</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flagcmd</span> <span class="o">=</span> <span class="n">flagcmd</span> <span class="o">+</span> <span class="s1">&#39;;&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">~</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> \
+                    <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">prev_fieldname</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">fieldname</span>
+            <span class="n">prev_spwid</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">spwid</span>
+
+        <span class="c1"># Finish off last command</span>
+        <span class="k">if</span> <span class="n">flagcmd</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="c1"># Note: the first single quote closes the value of the spw field</span>
+            <span class="n">flagcmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flagcmd</span> <span class="o">+</span> <span class="s2">&quot;&#39; reason=&#39;Flux_calibrator_atmospheric_line&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">flagcmds</span>
+
+    <span class="k">def</span> <span class="nf">_get_chanrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fieldid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minfreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxfreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refframe</span><span class="o">=</span><span class="s1">&#39;TOPO&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a tuple containing the two channels in an spw corresponding</span>
+<span class="sd">           to the minimum and maximum frequency in the given ref frame</span>
+
+<span class="sd">            vis - MS name</span>
+<span class="sd">        fieldid - field id of the observed field for reference frame \</span>
+<span class="sd">                  calculations</span>
+<span class="sd">          spwid - id of the spw </span>
+<span class="sd">        minfreq - minimum freq in Hz</span>
+<span class="sd">        maxfreq - maximum freq in Hz</span>
+<span class="sd">        refframe - frequency reference frame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">vis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">spwid</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">minfreq</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">maxfreq</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;_get_chanrange : Undefined values for vis, spwid, minfreq, and maxfreq&#39;</span><span class="p">)</span>
+
+        <span class="n">rval</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">minfreq</span> <span class="o">&gt;</span> <span class="n">maxfreq</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">rval</span>
+
+        <span class="n">iminfreq</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">imaxfreq</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="c1"># Get frequencies</span>
+        <span class="n">mse</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">mse</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">mse</span><span class="o">.</span><span class="n">cvelfreqs</span><span class="p">(</span><span class="n">fieldids</span><span class="o">=</span><span class="p">[</span><span class="n">fieldid</span><span class="p">],</span> <span class="n">spwids</span><span class="o">=</span><span class="p">[</span><span class="n">spwid</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="n">outframe</span><span class="o">=</span><span class="n">refframe</span><span class="p">)</span>
+        <span class="n">mse</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c1"># Initialize</span>
+        <span class="n">ichanmax</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">ascending</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">lowedge</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ilowedge</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">upedge</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">ichanmax</span><span class="p">]</span>
+        <span class="n">iupedge</span> <span class="o">=</span> <span class="n">ichanmax</span>
+        <span class="k">if</span> <span class="n">ichanmax</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">ichanmax</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>  <span class="c1"># frequencies are descending</span>
+            <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">lowedge</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">ichanmax</span><span class="p">]</span>
+            <span class="n">upedge</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ilowedge</span> <span class="o">=</span> <span class="n">ichanmax</span>
+            <span class="n">iupedge</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">minfreq</span> <span class="o">&lt;</span> <span class="n">lowedge</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">maxfreq</span> <span class="o">&gt;</span> <span class="n">lowedge</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">maxfreq</span> <span class="o">&gt;</span> <span class="n">upedge</span><span class="p">:</span>
+                    <span class="n">iminfreq</span> <span class="o">=</span> <span class="n">ilowedge</span>
+                    <span class="n">imaxfreq</span> <span class="o">=</span> <span class="n">iupedge</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">iminfreq</span> <span class="o">=</span> <span class="n">ilowedge</span>
+                    <span class="c1"># use imaxfreq from below search</span>
+                    <span class="n">imaxfreq</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+            <span class="c1">#else:</span>
+                <span class="c1"># both imaxfreq and iminfreq are -1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">minfreq</span> <span class="o">&lt;</span> <span class="n">upedge</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">maxfreq</span> <span class="o">&gt;=</span> <span class="n">upedge</span><span class="p">:</span>
+                    <span class="c1"># take iminfreq from below search</span>
+                    <span class="n">iminfreq</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+                    <span class="n">imaxfreq</span> <span class="o">=</span> <span class="n">iupedge</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># take both iminfreq and imaxfreq from above search</span>
+                    <span class="n">iminfreq</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+                    <span class="n">imaxfreq</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+            <span class="c1">#else:</span>
+                <span class="c1"># both imaxfreq and iminfreq are -1</span>
+
+        <span class="k">if</span> <span class="n">ascending</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">iminfreq</span> <span class="o">==</span> <span class="o">-</span><span class="mi">2</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">minfreq</span><span class="p">:</span>
+                        <span class="n">iminfreq</span> <span class="o">=</span> <span class="n">i</span>
+                        <span class="k">break</span>
+            <span class="k">if</span> <span class="n">imaxfreq</span> <span class="o">==</span> <span class="o">-</span><span class="mi">2</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iminfreq</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">maxfreq</span><span class="p">:</span>
+                        <span class="n">imaxfreq</span> <span class="o">=</span> <span class="n">j</span>
+                        <span class="k">break</span>
+            <span class="n">rval</span> <span class="o">=</span> <span class="p">(</span><span class="n">iminfreq</span><span class="p">,</span> <span class="n">imaxfreq</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">iminfreq</span> <span class="o">==</span> <span class="o">-</span><span class="mi">2</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">minfreq</span><span class="p">:</span>
+                        <span class="n">iminfreq</span> <span class="o">=</span> <span class="n">i</span>
+                        <span class="k">break</span>
+            <span class="k">if</span> <span class="n">imaxfreq</span> <span class="o">==</span> <span class="o">-</span><span class="mi">2</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iminfreq</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">maxfreq</span><span class="p">:</span>
+                        <span class="n">imaxfreq</span> <span class="o">=</span> <span class="n">j</span>
+                        <span class="k">break</span>
+
+            <span class="n">rval</span> <span class="o">=</span> <span class="p">(</span><span class="n">imaxfreq</span><span class="p">,</span> <span class="n">iminfreq</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">rval</span> <span class="o">==</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">rval</span></div>
+
+
+
+<span class="k">class</span> <span class="nc">MolecularLine</span><span class="p">():</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">species</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">freqrange</span><span class="o">=</span><span class="p">(),</span> <span class="n">spwid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chanrange</span><span class="o">=</span><span class="p">(),</span> <span class="n">nchan</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span> <span class="o">=</span> <span class="n">fieldname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">species</span> <span class="o">=</span> <span class="n">species</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">freqrange</span> <span class="o">=</span> <span class="n">freqrange</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwid</span> <span class="o">=</span> <span class="n">spwid</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">chanrange</span> <span class="o">=</span> <span class="n">chanrange</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nchan</span> <span class="o">=</span> <span class="n">nchan</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

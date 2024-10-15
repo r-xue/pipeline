@@ -1,0 +1,670 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.flagging.flagdeteralmasd &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.flagging.flagdeteralmasd</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.flagging.flagdeteralmasd</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataTable</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.flagging</span> <span class="kn">import</span> <span class="n">flagdeterbase</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.displays</span> <span class="kn">import</span> <span class="n">pointing</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">SpectralWindow</span>
+    <span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">Context</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FlagDeterALMASingleDishInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.flagging.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterALMASingleDishInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">FlagDeterALMASingleDishInputs</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    FlagDeterALMASingleDishInputs defines the inputs for the FlagDeterALMASingleDish pipeline task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">()</span>
+
+    <span class="n">autocorr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">edgespw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fracspw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;1.875GHz&#39;</span><span class="p">)</span>
+    <span class="n">fracspwfps</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.048387</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">intents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define default list of intents to be flagged.&quot;&quot;&quot;</span>
+        <span class="c1"># return just the unwanted intents that are present in the MS</span>
+        <span class="n">intents_to_flag</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;POINTING&#39;</span><span class="p">,</span> <span class="s1">&#39;FOCUS&#39;</span><span class="p">,</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIDEBAND&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;UNKNOWN&#39;</span><span class="p">,</span> <span class="s1">&#39;SYSTEM_CONFIGURATION&#39;</span><span class="p">,</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">intents_to_flag</span><span class="p">))</span>
+
+    <span class="n">template</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseInputs</span><span class="o">.</span><span class="n">filetemplate</span><span class="o">.</span><span class="n">postprocess</span>
+    <span class="k">def</span> <span class="nf">filetemplate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unprocessed</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post-process filetemplate.</span>
+
+<span class="sd">        This ensures filetemplate value is string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            unprocessed: Unprocessed value of filetemplate.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            String value of filetemplate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unprocessed</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">unprocessed</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">unprocessed</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">unprocessed</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="n">pointing</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">incompleteraster</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">filepointing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define defualt name of pointing flag file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Default name of pointing flag file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vis_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">vis_root</span> <span class="o">+</span> <span class="s1">&#39;.flagpointing.txt&#39;</span>
+
+    <span class="c1"># New property for QA0 / QA2 flags</span>
+    <span class="n">qa0</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">qa2</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
+                 <span class="n">vis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">flagbackup</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">autocorr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">shadow</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">scan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">scannumber</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">intents</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edgespw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fracspw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fracspwfps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">online</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fileonline</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">template</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">filetemplate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pointing</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">filepointing</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">incompleteraster</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">hm_tbuff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">tbuff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">qa0</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">qa2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">parallel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct FlagDeterALMASingleDishInputs instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            vis: The list of input MeasurementSets. Defaults to the</span>
+<span class="sd">                 list of MeasurementSets defined in the pipeline context.</span>
+<span class="sd">            output_dir: Output directory.</span>
+<span class="sd">            flagbackup: Back up any pre-existing flags before applying</span>
+<span class="sd">                        new ones. Defaults to True.</span>
+<span class="sd">            autocorr: Flag autocorrelation data. Defaults to False.</span>
+<span class="sd">            shadow: Flag shadowed antennas. Defaults to True.</span>
+<span class="sd">            scan: Flag a list of scans specified by scannumber.</span>
+<span class="sd">                  Defaults to True.</span>
+<span class="sd">            scannumber: A string containing a comma delimited list of scans to be</span>
+<span class="sd">                        flagged. Defaults to &#39;&#39; (no scans are flagged).</span>
+<span class="sd">            intents: A string containing a comma delimited list of intents against</span>
+<span class="sd">                     which the scans to be flagged are matched. Defaults to</span>
+<span class="sd">                     intents that are not relevant to pipeline processing.</span>
+<span class="sd">            edgespw: Flag the edge spectral window channels. Defaults to True.</span>
+<span class="sd">            fracspw: Fraction of the baseline correlator TDM edge channels</span>
+<span class="sd">                     to be flagged. Defaults to &#39;1.875GHz&#39;.</span>
+<span class="sd">            fracspwfps: Fraction of the ACS correlator TDM edge channels</span>
+<span class="sd">                        to be flagged. Defaults to 0.048387.</span>
+<span class="sd">            online: Apply the online flags. Defaults to True.</span>
+<span class="sd">            fileonline: File containing the online flags. These are computed</span>
+<span class="sd">                        by the h_init or hif_importdata data tasks. If the</span>
+<span class="sd">                        online flags files are undefined a name of the form</span>
+<span class="sd">                        &#39;msname.flagonline.txt&#39; is assumed.</span>
+<span class="sd">            template: Apply a flagging template. Defaults to True.</span>
+<span class="sd">            filetemplate: The name of a text file that contains the flagging</span>
+<span class="sd">                          template for RFI, birdies, telluric lines, etc.</span>
+<span class="sd">                          If the template flags files is undefined a name of</span>
+<span class="sd">                          the form &#39;msname.flagtemplate.txt&#39; is assumed.</span>
+<span class="sd">            pointing: Apply a flagging template for pointing flag.</span>
+<span class="sd">                      Defaults to True.</span>
+<span class="sd">            filepointing: The name of a text file that contains the flagging</span>
+<span class="sd">                          template for pointing flag. If the template flags</span>
+<span class="sd">                          files is undefined a name of the form</span>
+<span class="sd">                          &#39;msname.flagpointing.txt&#39; is assumed.</span>
+<span class="sd">            incompleteraster: Apply commands to flag incomplete raster sequence.</span>
+<span class="sd">                              If this is False, relevant commands in filepointing</span>
+<span class="sd">                              are simply commented out. Defualts to True.</span>
+<span class="sd">            hm_tbuff: The heuristic for computing the default time interval</span>
+<span class="sd">                      padding parameter. The options are &#39;halfint&#39; and &#39;manual&#39;.</span>
+<span class="sd">                      In &#39;halfint&#39; mode tbuff is set to half the maximum of the</span>
+<span class="sd">                      median integration time of the science and calibrator target</span>
+<span class="sd">                      observations.</span>
+<span class="sd">            tbuff: The time in seconds used to pad flagging command time intervals</span>
+<span class="sd">                   if hm_tbuff=&#39;manual&#39;. Defaults to 0.0.</span>
+<span class="sd">            qa0: Apply QA0 flags. Defaults to True.</span>
+<span class="sd">            qa2: Apply QA2 flags. Defaults to True.</span>
+<span class="sd">            parallel: Execute using CASA HPC functionality, if available.</span>
+<span class="sd">                      Default is None, which intends to turn on parallel</span>
+<span class="sd">                      processing if possible.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="n">flagbackup</span><span class="p">,</span> <span class="n">autocorr</span><span class="o">=</span><span class="n">autocorr</span><span class="p">,</span> <span class="n">shadow</span><span class="o">=</span><span class="n">shadow</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scan</span><span class="p">,</span>
+            <span class="n">scannumber</span><span class="o">=</span><span class="n">scannumber</span><span class="p">,</span> <span class="n">intents</span><span class="o">=</span><span class="n">intents</span><span class="p">,</span> <span class="n">edgespw</span><span class="o">=</span><span class="n">edgespw</span><span class="p">,</span> <span class="n">fracspw</span><span class="o">=</span><span class="n">fracspw</span><span class="p">,</span> <span class="n">fracspwfps</span><span class="o">=</span><span class="n">fracspwfps</span><span class="p">,</span>
+            <span class="n">online</span><span class="o">=</span><span class="n">online</span><span class="p">,</span> <span class="n">fileonline</span><span class="o">=</span><span class="n">fileonline</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">,</span> <span class="n">filetemplate</span><span class="o">=</span><span class="n">filetemplate</span><span class="p">,</span> <span class="n">hm_tbuff</span><span class="o">=</span><span class="n">hm_tbuff</span><span class="p">,</span>
+            <span class="n">tbuff</span><span class="o">=</span><span class="n">tbuff</span><span class="p">)</span>
+
+        <span class="c1"># solution parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qa0</span> <span class="o">=</span> <span class="n">qa0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qa2</span> <span class="o">=</span> <span class="n">qa2</span>
+
+        <span class="c1"># pointing flag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointing</span> <span class="o">=</span> <span class="n">pointing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filepointing</span> <span class="o">=</span> <span class="n">filepointing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">incompleteraster</span> <span class="o">=</span> <span class="n">incompleteraster</span>
+
+        <span class="c1"># Tier-0 parallelization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
+
+<div class="viewcode-block" id="FlagDeterALMASingleDishInputs.to_casa_args">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.flagging.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterALMASingleDishInputs.to_casa_args">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Initialize the arguments from the inherited</span>
+        <span class="c1"># FlagDeterBaseInputs() class</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+
+        <span class="c1"># Return the tflagdata task arguments</span>
+        <span class="k">return</span> <span class="n">task_args</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FlagDeterALMASingleDishResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.flagging.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterALMASingleDishResults">[docs]</a>
+<span class="k">class</span> <span class="nc">FlagDeterALMASingleDishResults</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseResults</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FlagDeterALMASingleDishResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.flagging.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterALMASingleDishResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="c1"># call parent&#39;s method</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># regenerate pointing plots</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">basetask</span><span class="o">.</span><span class="n">DISABLE_WEBLOG</span><span class="p">:</span>
+            <span class="n">ephem_names</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">listcodes</span><span class="p">(</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">direction</span><span class="p">())[</span><span class="s1">&#39;extra&#39;</span><span class="p">]</span>
+            <span class="n">valid_ephem_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ephem_names</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="s1">&#39;COMET&#39;</span><span class="p">]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Regenerate pointing plots to update flag information&#39;</span><span class="p">)</span>
+            <span class="n">msobj</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">pointing</span><span class="o">.</span><span class="n">SingleDishPointingChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">msobj</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">msobj</span><span class="o">.</span><span class="n">antennas</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">target</span><span class="p">,</span> <span class="n">reference</span> <span class="ow">in</span> <span class="n">msobj</span><span class="o">.</span><span class="n">calibration_strategy</span><span class="p">[</span><span class="s1">&#39;field_strategy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;target field id </span><span class="si">%s</span><span class="s1"> / reference field id </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">))</span>
+                    <span class="n">task</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">revise_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span> <span class="n">target_field_id</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+                              <span class="n">reference_field_id</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span> <span class="n">target_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">task</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">revise_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span> <span class="n">target_field_id</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+                              <span class="n">reference_field_id</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span> <span class="n">target_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+                    <span class="c1"># if the target is ephemeris, offset pointing pattern should also be plotted</span>
+                    <span class="n">target_field</span> <span class="o">=</span> <span class="n">msobj</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">target</span><span class="p">]</span>
+                    <span class="n">source_name</span> <span class="o">=</span> <span class="n">target_field</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">name</span>
+                    <span class="n">offset_pointings</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">if</span> <span class="n">source_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="n">valid_ephem_names</span><span class="p">:</span>
+                        <span class="n">plotres</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">revise_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span> <span class="n">target_field_id</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+                                            <span class="n">reference_field_id</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span> <span class="n">target_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ofs_coord</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">plotres</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">offset_pointings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plotres</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="update_flag_pointing">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.flagging.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.update_flag_pointing">[docs]</a>
+<span class="k">def</span> <span class="nf">update_flag_pointing</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flag_incomplete_raster</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Disable &quot;uniform_image_rms&quot; flag commands if necessary.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filename: Name of the flag commands file.</span>
+<span class="sd">        flag_incomplete_raster: Set True to disable &quot;uniform_image_rms&quot;</span>
+<span class="sd">                                flag commands.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.bak&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">tmpfile</span><span class="p">)</span>
+        <span class="n">reason</span> <span class="o">=</span> <span class="s2">&quot;reason=&#39;SDPL:uniform_image_rms&#39;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">flag_incomplete_raster</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="c1"># uncomment commands</span>
+                <span class="n">gen</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">reason</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span> <span class="n">f</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Disabling flag commands for reason &quot;</span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="c1"># comment out commands</span>
+                <span class="n">gen</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;#</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">reason</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span> <span class="n">f</span>
+                <span class="p">)</span>
+
+            <span class="n">lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SerialFlagDeterALMASingleDish">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.flagging.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.SerialFlagDeterALMASingleDish">[docs]</a>
+<span class="k">class</span> <span class="nc">SerialFlagDeterALMASingleDish</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBase</span><span class="p">):</span>
+
+    <span class="c1"># Make the member functions of the FlagDeterALMASingleDishInputs() class member</span>
+    <span class="c1"># functions of this class</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FlagDeterALMASingleDishInputs</span>
+
+    <span class="c1"># Flag edge channels if bandwidth exceeds bandwidth_limit</span>
+    <span class="c1"># Currently, default bandwidth limit is set to 1.875GHz but it is</span>
+    <span class="c1"># controllable via parameter &#39;fracspw&#39;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bandwidth_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.875e9</span>  <span class="c1"># 1.875GHz</span>
+
+<div class="viewcode-block" id="SerialFlagDeterALMASingleDish.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.flagging.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.SerialFlagDeterALMASingleDish.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+
+        <span class="c1"># update datatable</span>
+        <span class="c1"># this task uses _handle_multiple_vis framework</span>
+        <span class="n">msobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">origin_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">msobj</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
+        <span class="n">table_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_datatable_name</span><span class="p">,</span> <span class="n">origin_basename</span><span class="p">)</span>
+        <span class="n">datatable</span> <span class="o">=</span> <span class="n">DataTable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">table_name</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">datatable</span><span class="o">.</span><span class="n">_update_flag</span><span class="p">(</span><span class="n">msobj</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">datatable</span><span class="o">.</span><span class="n">exportdata</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">FlagDeterALMASingleDishResults</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">summaries</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">flagcmds</span><span class="p">())</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_yield_edge_spw_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Yield flag commands to flag edge channels.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            flag command string to flag edge channels.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="c1"># loop over the spectral windows, generate a flagging command for each</span>
+        <span class="c1"># spw in the ms. Calling get_spectral_windows() with no arguments</span>
+        <span class="c1"># returns just the science windows, which is exactly what we want.</span>
+        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># test that this spw should be flagged by assessing number of</span>
+                <span class="c1"># correlations, TDM/FDM mode etc.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">verify_spw</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1"># this spw should not be or is incapable of being flagged</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># get fraction of spw to flag from template function</span>
+            <span class="n">fracspw_org</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fracspw_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">_frac</span> <span class="ow">in</span> <span class="n">fracspw_org</span><span class="p">:</span>
+                    <span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span> <span class="o">=</span> <span class="n">_frac</span>
+                    <span class="n">fracspw_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_fracspw</span><span class="p">(</span><span class="n">spw</span><span class="p">))</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span> <span class="o">=</span> <span class="n">fracspw_org</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fracspw_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">fracspw_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">fracspw_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fracspw_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="c1"># If the twice the number of flagged channels is greater than the</span>
+            <span class="c1"># number of channels for a given spectral window, skip it.</span>
+            <span class="c1"># frac_chan = int(utils.round_half_up(fracspw * spw.num_channels + 0.5))</span>
+            <span class="c1"># Make rounding less agressive</span>
+            <span class="n">frac_chan_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">fracspw_list</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">frac_chan_list</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Too many flagged channels </span><span class="si">%s</span><span class="s1"> for spw </span><span class="si">%s</span><span class="s1"> &#39;</span>
+                          <span class="s1">&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># calculate the channel ranges to flag. No need to calculate the</span>
+            <span class="c1"># left minimum as it is always channel 0.</span>
+            <span class="n">l_max</span> <span class="o">=</span> <span class="n">frac_chan_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="c1"># r_min = spw.num_channels - frac_chan - 1</span>
+            <span class="c1"># Fix asymmetry</span>
+            <span class="n">r_min</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span> <span class="o">-</span> <span class="n">frac_chan_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">r_max</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span> <span class="o">-</span> <span class="mi">1</span>
+
+            <span class="c1"># state the spw and channels to flag in flagdata format, adding</span>
+            <span class="c1"># the statement to the list of flag commands</span>
+            <span class="k">def</span> <span class="nf">yield_channel_ranges</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">l_max</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="s1">&#39;0~</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l_max</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">r_max</span> <span class="o">&gt;=</span> <span class="n">r_min</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">~</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r_min</span><span class="p">,</span> <span class="n">r_max</span><span class="p">)</span>
+
+            <span class="n">channel_ranges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">yield_channel_ranges</span><span class="p">())</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">channel_ranges</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">cmd</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">:</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">channel_ranges</span><span class="p">))</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;list type edge fraction specification for spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;cmd=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">cmd</span><span class="p">)</span>
+
+            <span class="k">yield</span> <span class="n">cmd</span>
+
+    <span class="k">def</span> <span class="nf">_get_edgespw_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct and return list of flag commands.</span>
+
+<span class="sd">        Returned list contains flag commands for edge channel flagging.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of flag commands for edge channel flag.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">to_flag</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_edgespw_cmds</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="c1"># inputs.fracspw is iterable indicating that the user want to flag</span>
+            <span class="c1"># edge channels with different fractions/number of channels for</span>
+            <span class="c1"># left and right edges</span>
+
+            <span class="c1"># to_flag is the list to which flagging commands will be appended</span>
+            <span class="n">to_flag</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_yield_edge_spw_cmds</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">to_flag</span>
+
+<div class="viewcode-block" id="SerialFlagDeterALMASingleDish.get_fracspw">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.flagging.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.SerialFlagDeterALMASingleDish.get_fracspw">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_fracspw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="s1">&#39;SpectralWindow&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get fraction of total number of spw channels that are to be flagged on each side of the spw.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spw: SpectralWindow domain object for target spw.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Fraction of number of channels to be flagged.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># override the default fracspw getter with our ACA-aware code</span>
+        <span class="c1"># if spw.num_channels in (62, 124, 248):</span>
+        <span class="c1">#    return self.inputs.fracspwfps</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#    return self.inputs.fracspw</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;bandwidth limited edge flagging for spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">bandwidth_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandwidth_limit</span>
+            <span class="n">bandwidth</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">fracspw</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">bandwidth</span> <span class="o">-</span> <span class="n">bandwidth_limit</span><span class="p">)</span> <span class="o">/</span> <span class="n">bandwidth</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;fraction is </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">fracspw</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">fracspw</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SerialFlagDeterALMASingleDish.verify_spw">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.flagging.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.SerialFlagDeterALMASingleDish.verify_spw">[docs]</a>
+    <span class="k">def</span> <span class="nf">verify_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="s1">&#39;SpectralWindow&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if given spw needs to be processed by edgespw flagging.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spw: SpectralWindow domain object for target spw.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Bandwidth of the spw is less than bandwidth limit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># override the default verifier, adding bandwidth check</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">verify_spw</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+
+        <span class="c1"># Skip if TDM mode where TDM modes are defined to be modes with</span>
+        <span class="c1"># &lt;= 256 channels per correlation</span>
+        <span class="c1"># dd = self.inputs.ms.get_data_description(spw=spw)</span>
+        <span class="c1"># ncorr = len(dd.corr_axis)</span>
+        <span class="c1"># if ncorr * spw.num_channels &gt; 256:</span>
+        <span class="c1">#    raise ValueError(&#39;Skipping edge flagging for FDM spw %s&#39; % spw.id)</span>
+
+        <span class="c1"># Skip if edge channel flagging is based on bandwidth limit, and</span>
+        <span class="c1"># bandwidth is less than bandwidth limit</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandwidth_limit</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Skipping edge flagging for spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_flag_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Edit flag commands so that all summaries are based on target data instead of total.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flag_cmds</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_flag_commands</span><span class="p">()</span>
+
+        <span class="c1"># PIPE-646 &amp; PIPE-647</span>
+        <span class="c1"># apply flag commands in flagpointing.txt</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">pointing</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">filepointing</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s1">&#39;Pointing flag file </span><span class="se">\&#39;</span><span class="si">{}</span><span class="se">\&#39;</span><span class="s1"> was not found. Pointing &#39;</span>
+                    <span class="s1">&#39;flagging for </span><span class="si">{}</span><span class="s1"> disabled.&#39;</span>
+                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">filepointing</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">update_flag_pointing</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">filepointing</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">incompleteraster</span><span class="p">)</span>
+                <span class="n">pointing_cmds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_flagfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">filepointing</span><span class="p">)</span>
+                <span class="n">pointing_cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;mode=&#39;summary&#39; name=&#39;pointing&#39; reason=&#39;SDPL:missing_pointing_data&#39;&quot;</span><span class="p">)</span>
+
+                <span class="c1"># insert flag commands between shadow and edgespw</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flag_cmds</span><span class="p">)</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(mode|name)=&#39;shadow&#39;&quot;</span><span class="p">,</span> <span class="n">c</span><span class="p">)]</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                <span class="n">sep</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">flag_cmds</span> <span class="o">=</span> <span class="n">flag_cmds</span><span class="p">[:</span><span class="n">sep</span><span class="p">]</span> <span class="o">+</span> <span class="n">pointing_cmds</span> <span class="o">+</span> <span class="n">flag_cmds</span><span class="p">[</span><span class="n">sep</span><span class="p">:]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">flag_cmds</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">flag_cmds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;mode=&#39;summary&#39;&quot;</span><span class="p">):</span>
+                <span class="n">flag_cmds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&quot; intent=&#39;OBSERVE_TARGET#ON_SOURCE&#39;&quot;</span>
+
+        <span class="k">return</span> <span class="n">flag_cmds</span></div>
+
+
+
+<div class="viewcode-block" id="FlagDeterALMASingleDish">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.flagging.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterALMASingleDish">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsd_flagdata&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
+    <span class="s1">&#39;Flags generated by the online telescope software, by the QA0 process, and manually set by the pipeline user.&#39;</span>
+<span class="p">)</span>
+<span class="k">class</span> <span class="nc">FlagDeterALMASingleDish</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FlagDeterALMASingleDishInputs</span>
+    <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialFlagDeterALMASingleDish</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

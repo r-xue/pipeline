@@ -1,0 +1,816 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.exportdata.exportdata &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.exportdata.exportdata</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.exportdata.exportdata</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The exportdata for SD module.</span>
+
+<span class="sd">This module provides base classes for preparing data products on disk</span>
+<span class="sd">for upload to the archive.</span>
+
+<span class="sd">To test these classes, register some data with the pipeline using ImportData,</span>
+<span class="sd">then execute:</span>
+
+<span class="sd">import pipeline</span>
+<span class="sd"># Create a pipeline context and register some data</span>
+<span class="sd">context = pipeline.Pipeline().context</span>
+<span class="sd">output_dir = &quot;.&quot;</span>
+<span class="sd">products_dir = &quot;./products&quot;</span>
+<span class="sd">inputs = pipeline.tasks.singledish.SDExportData.Inputs(context, output_dir,</span>
+<span class="sd">                                                       products_dir)</span>
+<span class="sd">task = pipeline.tasks.singledish.SDExportData (inputs)</span>
+<span class="sd">results = task.execute ()</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">tarfile</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.h.tasks.exportdata.exportdata</span> <span class="k">as</span> <span class="nn">exportdata</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">absolute_path</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.project</span> <span class="k">as</span> <span class="nn">project</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.importdata.importdata</span> <span class="kn">import</span> <span class="n">SDImportDataResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.restoredata.restoredata</span> <span class="kn">import</span> <span class="n">SDRestoreDataResults</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">almasdaqua</span>
+
+<span class="c1"># the logger for this module</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SDExportDataInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.exportdata.html#pipeline.hsd.tasks.exportdata.exportdata.SDExportDataInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">SDExportDataInputs</span><span class="p">(</span><span class="n">exportdata</span><span class="o">.</span><span class="n">ExportDataInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for SDExportData.</span>
+
+<span class="sd">    Inputs class must be separated per task class even if</span>
+<span class="sd">    it&#39;s effectively the same.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="SDExportData">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.exportdata.html#pipeline.hsd.tasks.exportdata.exportdata.SDExportData">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsd_exportdata&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;The output data products are computed.&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">SDExportData</span><span class="p">(</span><span class="n">exportdata</span><span class="o">.</span><span class="n">ExportData</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class for exporting single dish data to the products subdirectory.</span>
+
+<span class="sd">    It performs the following additional operations after ExportData does:</span>
+
+<span class="sd">    - Exports auxiliary tar files of the calibration tables one per session</span>
+<span class="sd">    - Exports auxiliary MS products (calibration apply files) in text files</span>
+<span class="sd">    - Saves a K2JY reference file and flag files into tarball</span>
+<span class="sd">    - Saves the AQUA report file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDExportDataInputs</span>
+
+<div class="viewcode-block" id="SDExportData.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.exportdata.html#pipeline.hsd.tasks.exportdata.exportdata.SDExportData.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">exportdata</span><span class="o">.</span><span class="n">ExportDataResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare and execute an export data job appropriate to the task inputs.</span>
+
+<span class="sd">        This is almost equivalent to ALMAExportData.prepare().</span>
+<span class="sd">        Only difference is to use self._make_lists() instead of</span>
+<span class="sd">        ExportData._make_lists()</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ExportDataResults object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SDExportData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+
+        <span class="n">oussid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">get_oussid</span><span class="p">()</span>
+
+        <span class="c1"># Make the imaging list of names of MeasurementSet and the sessions lists.</span>
+        <span class="n">session_list</span><span class="p">,</span> <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span><span class="p">,</span> <span class="n">vislist</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_lists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">imaging_only_mses</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;vislist=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vislist</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="c1"># Export the auxiliary caltables if any</span>
+            <span class="c1">#    These are currently the uvcontinuum fit tables.</span>
+            <span class="n">auxcaltables</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_do_aux_session_products</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">oussid</span><span class="p">,</span>
+                                              <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">)</span>
+
+            <span class="c1"># Export the auxiliary cal apply files if any</span>
+            <span class="c1">#    These are currently the uvcontinuum fit tables.</span>
+            <span class="n">auxcalapplys</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_do_aux_ms_products</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">auxcaltables</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">auxcalapplys</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Export the auxiliary file products into a single tar file</span>
+        <span class="c1">#    These are optional for reprocessing but informative to the user</span>
+        <span class="c1">#    The calibrator source fluxes file</span>
+        <span class="c1">#    The antenna positions file</span>
+        <span class="c1">#    The continuum regions file</span>
+        <span class="c1">#    The target flagging file</span>
+        <span class="n">recipe_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_recipename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">recipe_name</span><span class="p">:</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="n">oussid</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="n">oussid</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">recipe_name</span>
+        <span class="n">auxfproducts</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_auxiliary_products</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">oussid</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">)</span>
+
+        <span class="c1"># Export the AQUA report</span>
+        <span class="n">pipe_aqua_reportfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_export_aqua_report</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+                                                        <span class="n">oussid</span><span class="o">=</span><span class="n">prefix</span><span class="p">,</span>
+                                                        <span class="n">products_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">,</span>
+                                                        <span class="n">report_generator</span><span class="o">=</span><span class="n">almasdaqua</span><span class="o">.</span><span class="n">AlmaAquaXmlGenerator</span><span class="p">(),</span>
+                                                        <span class="n">weblog_filename</span><span class="o">=</span><span class="n">results</span><span class="o">.</span><span class="n">weblog</span><span class="p">)</span>
+
+        <span class="c1"># Update the manifest</span>
+        <span class="k">if</span> <span class="n">auxfproducts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pipe_aqua_reportfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">manifest_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">products_dir</span><span class="p">,</span>
+                                         <span class="n">results</span><span class="o">.</span><span class="n">manifest</span><span class="p">)</span>
+            <span class="n">recipe_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">project_structure</span><span class="o">.</span><span class="n">recipe_name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_to_manifest</span><span class="p">(</span><span class="n">manifest_file</span><span class="p">,</span> <span class="n">auxfproducts</span><span class="p">,</span> <span class="n">auxcaltables</span><span class="p">,</span>
+                                  <span class="n">auxcalapplys</span><span class="p">,</span> <span class="n">pipe_aqua_reportfile</span><span class="p">,</span> <span class="n">oussid</span><span class="p">,</span> <span class="n">recipe_name</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_make_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                    <span class="n">vis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span> <span class="n">imaging_only_mses</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> \
+            <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the list of names of MeasurementSet and ones of session.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context : Pipeline context</span>
+<span class="sd">            session : session names</span>
+<span class="sd">            vis : a name of MeasurementSet or list of it</span>
+<span class="sd">            imaging_only_mses : a flag of imaging-only measurement sets.</span>
+<span class="sd">                                In single dish pipeline, all mses are non-</span>
+<span class="sd">                                imaging ones but they need to be returned</span>
+<span class="sd">                                even when imaging is False so no filtering</span>
+<span class="sd">                                is done. NOT IN USE.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            a tuple of session list, session name list,</span>
+<span class="sd">            list of MeasurementSet names lists associated with each session,</span>
+<span class="sd">            list of MeasurementSet names</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Single dish specific _make_lists&#39;</span><span class="p">)</span>
+        <span class="c1"># Force inputs.vis to be a list.</span>
+        <span class="n">vislist</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vislist</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">vislist</span> <span class="o">=</span> <span class="p">[</span><span class="n">vislist</span><span class="p">,</span> <span class="p">]</span>
+
+        <span class="c1"># Get the session list and the visibility files associated with</span>
+        <span class="c1"># each session.</span>
+        <span class="n">session_list</span><span class="p">,</span> <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_sessions</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">vislist</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">session_list</span><span class="p">,</span> <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span><span class="p">,</span> <span class="n">vislist</span>
+
+    <span class="k">def</span> <span class="nf">_do_aux_session_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">oussid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                 <span class="n">session_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                                 <span class="n">session_vislists</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+                                 <span class="n">products_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> \
+            <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export auxiliary calibration tables to products directory and return session dictionary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context : pipeline context</span>
+<span class="sd">            oussid : OUS status ID</span>
+<span class="sd">            session_names : list of session names</span>
+<span class="sd">            session_vislists : list of MeasurementSet names associated with each session</span>
+<span class="sd">            products_dir : path of products directory</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ordered dictionary object contains session name(key) and a list of file name of</span>
+<span class="sd">            MeasurementSet and the name of auxiliary calibration product associated with the</span>
+<span class="sd">            session (value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Make the standard sessions dictionary and export per session products</span>
+        <span class="c1">#    Currently these are compressed tar files of per session calibration tables</span>
+        <span class="c1"># Export tar files of the calibration tables one per session</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;_do_aux_session_products&#39;</span><span class="p">)</span>
+        <span class="n">caltable_file_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">session_names</span><span class="p">)):</span>
+            <span class="n">caltable_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_export_final_baseline_calfiles</span><span class="p">(</span>
+                <span class="n">context</span><span class="p">,</span> <span class="n">oussid</span><span class="p">,</span> <span class="n">session_names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">session_vislists</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">products_dir</span><span class="p">)</span>
+            <span class="n">caltable_file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">caltable_file</span><span class="p">)</span>
+
+        <span class="c1"># Create the ordered session dictionary</span>
+        <span class="c1">#    The keys are the session names</span>
+        <span class="c1">#    The values are a tuple containing the vislist and the caltables</span>
+        <span class="n">sessiondict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">session_names</span><span class="p">)):</span>
+            <span class="n">sessiondict</span><span class="p">[</span><span class="n">session_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">visfile</span><span class="p">)</span> <span class="k">for</span> <span class="n">visfile</span>
+                 <span class="ow">in</span> <span class="n">session_vislists</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">caltable_file_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">sessiondict</span>
+
+    <span class="k">def</span> <span class="nf">__get_last_baseline_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sort baseline table names and return the last of them.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vis : MeasurementSet name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the last baseline table name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">))</span>
+        <span class="n">bl_tables</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.*hsd_baseline*.bl.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basename</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bl_tables</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">bl_tables</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">bl_tables</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;bl cal table for </span><span class="si">{}</span><span class="s1"> is </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_export_final_baseline_calfiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">oussid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                        <span class="n">session</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                                        <span class="n">products_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the final baseline tables in a tarfile one file per session.</span>
+
+<span class="sd">        This method is an exact copy of same method in superclass</span>
+<span class="sd">        except for handling baseline caltables.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context : pipeline context</span>
+<span class="sd">            oussid : OUS status ID</span>
+<span class="sd">            session : session name</span>
+<span class="sd">            vislist : list of MeasurementSet names</span>
+<span class="sd">            products_dir : products directory</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tar file name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Save the current working directory and move to the pipeline</span>
+        <span class="c1"># working directory. This is required for tarfile IO</span>
+
+        <span class="c1"># Define the name of the output tarfile</span>
+        <span class="n">tarfilename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NameBuilder</span><span class="o">.</span><span class="n">caltables</span><span class="p">(</span><span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="n">oussid</span><span class="p">,</span>
+                                                 <span class="n">session_name</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
+                                                 <span class="n">aux_product</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># tarfilename = &#39;{}.{}.auxcaltables.tgz&#39;.format(oussid, session)</span>
+        <span class="c1"># tarfilename = &#39;{}.{}.caltables.tgz&#39;.format(oussid, session)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Saving final caltables for </span><span class="si">%s</span><span class="s1"> in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">tarfilename</span><span class="p">)</span>
+
+        <span class="c1"># Create the tar file</span>
+
+<span class="c1">#             caltables = set()</span>
+
+        <span class="n">bl_caltables</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">visfile</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collecting final caltables for </span><span class="si">%s</span><span class="s1"> in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">visfile</span><span class="p">),</span> <span class="n">tarfilename</span><span class="p">)</span>
+
+            <span class="c1"># Create the list of baseline caltable for that vis</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_last_baseline_table</span><span class="p">(</span><span class="n">visfile</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">bl_caltables</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">tarfilename</span><span class="p">),</span> <span class="s1">&#39;w:gz&#39;</span><span class="p">)</span>\
+                    <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>
+                <span class="c1"># Tar the session list.</span>
+                <span class="c1"># for table in caltables:</span>
+                <span class="c1">#     tar.add(table, arcname=os.path.basename(table))</span>
+
+                <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">bl_caltables</span><span class="p">:</span>
+                    <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">arcname</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">table</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">tarfilename</span>
+
+    <span class="k">def</span> <span class="nf">_do_aux_ms_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                            <span class="n">products_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> \
+            <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export auxiliary MS products.</span>
+
+<span class="sd">        This method exports calibration apply files per MeasurementSet which</span>
+<span class="sd">        store calibration commands to apply baseline tables.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context : pipeline context</span>
+<span class="sd">            vislist : list of MeasurementSet names</span>
+<span class="sd">            products_dir : path of products directory</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            an ordered dictionary which contains MeasurementSet name (key) and</span>
+<span class="sd">            calibration apply file name(value)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Loop over the MeasurementSets in the working directory, and</span>
+        <span class="c1"># create the calibration apply file(s) in the products directory.</span>
+        <span class="n">apply_file_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">visfile</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="n">apply_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_export_final_baseline_applylist</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">visfile</span><span class="p">,</span>
+                                                               <span class="n">products_dir</span><span class="p">)</span>
+            <span class="n">apply_file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">apply_file</span><span class="p">)</span>
+
+        <span class="c1"># Create the ordered MeasurementSet names dictionary</span>
+        <span class="c1">#    The keys are the base MeasurementSet names</span>
+        <span class="c1">#    The values are a tuple containing the flags and applycal files</span>
+        <span class="n">visdict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vislist</span><span class="p">)):</span>
+            <span class="n">visdict</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vislist</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span> <span class="o">=</span> \
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">apply_file_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">visdict</span>
+
+    <span class="k">def</span> <span class="nf">_export_final_baseline_applylist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                         <span class="n">products_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save commands to apply the final baseline table to a file.</span>
+
+<span class="sd">        For now this is a text file. Eventually it will be the CASA callibrary</span>
+<span class="sd">        file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context : pipeline context</span>
+<span class="sd">            vis : MeasurementSet name</span>
+<span class="sd">            products_dir : path of products directory</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the name of calibration apply file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">applyfile_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NameBuilder</span><span class="o">.</span><span class="n">calapply_list</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">),</span>
+                                                        <span class="n">aux_product</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># applyfile_name = os.path.basename(vis) + &#39;.auxcalapply.txt&#39;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Storing calibration apply list for </span><span class="si">%s</span><span class="s1"> in  </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">),</span> <span class="n">applyfile_name</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Log the list in human readable form. Better way to do this ?</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="s2">&quot;sdbaseline(infile=&#39;$</span><span class="si">{infile}</span><span class="s2">&#39;, &quot;</span>
+                                  <span class="s2">&quot;datacolumn=&#39;corrected&#39;, spw=&#39;$</span><span class="si">{spw}</span><span class="s2">&#39;, &quot;</span>
+                                  <span class="s2">&quot;blmode=&#39;apply&#39;, bltable=&#39;$</span><span class="si">{bltable}</span><span class="s2">&#39;, &quot;</span>
+                                  <span class="s2">&quot;blfunc=&#39;poly&#39;, outfile=&#39;$</span><span class="si">{outfile}</span><span class="s2">&#39;, &quot;</span>
+                                  <span class="s2">&quot;overwrite=True)&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Create the list of baseline caltable for that vis</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_last_baseline_table</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">science_spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">applied_calstate</span> <span class="o">=</span> \
+                    <span class="n">cmd</span><span class="o">.</span><span class="n">safe_substitute</span><span class="p">(</span><span class="n">infile</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">bltable</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span>
+                                        <span class="n">outfile</span><span class="o">=</span><span class="n">vis</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_bl&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Open the file.</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">applyfile_name</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> \
+                        <span class="k">as</span> <span class="n">applyfile</span><span class="p">:</span>
+                    <span class="n">applyfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;# Apply file for </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                    <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">)))</span>
+                    <span class="n">applyfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">applied_calstate</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">applyfile_name</span> <span class="o">=</span> <span class="s1">&#39;Undefined&#39;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No calibrations for MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">applyfile_name</span>
+
+    <span class="k">def</span> <span class="nf">_detect_jyperk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect K2Jy file and return it.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context : pipeline context</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: raise if multiple K2Jy files are detected</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            path of K2Jy file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reffile_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_reffile</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reffile_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># if no reffile is found, return None</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;No K2Jy factor file found.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reffile_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;K2Jy conversion file must be only one. </span><span class="si">%s</span><span class="s2"> found.&quot;</span>
+                               <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">reffile_list</span><span class="p">)))</span>
+
+        <span class="n">jyperk</span> <span class="o">=</span> <span class="n">reffile_list</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">jyperk</span><span class="p">):</span>
+            <span class="c1"># if reffile doesn&#39;t exist, return None</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;K2Jy file </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> not found&#39;</span> <span class="o">%</span> <span class="n">jyperk</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Exporting </span><span class="si">{0}</span><span class="s1"> as a product&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">jyperk</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">absolute_path</span><span class="p">(</span><span class="n">jyperk</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__get_reffile</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find SDK2JyCalResults and yield K2JY reference file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            results : a list of ResultsProxy</span>
+<span class="sd">                      (contains Results object of every tasks)</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            K2JY reference file, default: jyperk.csv</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">proxy</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">proxy</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">result</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;SDK2JyCalResults&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s1">&#39;reffile&#39;</span><span class="p">):</span>
+                    <span class="n">reffile</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">reffile</span>
+                    <span class="k">if</span> <span class="n">reffile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">reffile</span><span class="p">):</span>
+                        <span class="k">yield</span> <span class="n">reffile</span>
+
+    <span class="k">def</span> <span class="nf">_do_auxiliary_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">oussid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                               <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save a K2JY reference file and flag files into tarball.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context : pipeline context</span>
+<span class="sd">            oussid : OUS Status UID</span>
+<span class="sd">            output_dir : path of output directory</span>
+<span class="sd">            products_dir : path of products directory</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tarball file name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Track whether any auxiliary products exist to be exported.</span>
+        <span class="n">aux_prod_exists</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Get the jyperk file, check whether it exists.</span>
+        <span class="n">jyperk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detect_jyperk</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">jyperk</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">jyperk</span><span class="p">):</span>
+            <span class="n">aux_prod_exists</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Export the general and target source template flagging files</span>
+        <span class="c1">#    The general template flagging files are not required</span>
+        <span class="c1">#    for the restore but are informative to the user.</span>
+        <span class="c1">#    Whether or not the target template files should be exported to</span>
+        <span class="c1">#    the archive depends on the final place of the target flagging</span>
+        <span class="c1">#    step in the work flow and how flags will or will not be stored</span>
+        <span class="c1">#    back into the ASDM.</span>
+        <span class="n">flags_file_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;*.flag*template.txt&#39;</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">flags_file_list</span><span class="p">:</span>
+            <span class="n">aux_prod_exists</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># If no auxiliary product was found, skip creation of tarfile</span>
+        <span class="c1"># and return early.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">aux_prod_exists</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Create the tarfile.</span>
+        <span class="c1"># Define the name of the output tarfile.</span>
+        <span class="n">tarfilename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NameBuilder</span><span class="o">.</span><span class="n">auxiliary_products</span><span class="p">(</span>
+            <span class="s1">&#39;auxproducts.tgz&#39;</span><span class="p">,</span> <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="n">oussid</span><span class="p">)</span>
+        <span class="c1"># tarfilename = &#39;{}.auxproducts.tgz&#39;.format(oussid)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Saving auxiliary data products in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">tarfilename</span><span class="p">)</span>
+
+        <span class="c1"># Open tarfile.</span>
+        <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">tarfilename</span><span class="p">),</span> <span class="s1">&#39;w:gz&#39;</span><span class="p">)</span> \
+                <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>
+
+            <span class="c1"># Save flux file.</span>
+            <span class="k">if</span> <span class="n">jyperk</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">jyperk</span><span class="p">):</span>
+                <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">jyperk</span><span class="p">,</span> <span class="n">arcname</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">jyperk</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Saving auxiliary data product &#39;</span>
+                         <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">jyperk</span><span class="p">),</span> <span class="n">tarfilename</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">jyperk</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Auxiliary data product &#39;</span>
+                         <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> does not exist&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">jyperk</span><span class="p">)))</span>
+
+            <span class="c1"># Save flag files.</span>
+            <span class="k">for</span> <span class="n">flags_file</span> <span class="ow">in</span> <span class="n">flags_file_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">flags_file</span><span class="p">):</span>
+                    <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">flags_file</span><span class="p">,</span> <span class="n">arcname</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">flags_file</span><span class="p">))</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Saving auxiliary data product &#39;</span>
+                             <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">flags_file</span><span class="p">),</span> <span class="n">tarfilename</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Auxiliary data product &#39;</span>
+                             <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> does not exist&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">flags_file</span><span class="p">)))</span>
+
+            <span class="n">tar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">tarfilename</span>
+
+    <span class="k">def</span> <span class="nf">_export_casa_restore_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">script_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                    <span class="n">products_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">oussid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                    <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                                    <span class="n">session_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the CASA restore script.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context : pipeline context</span>
+<span class="sd">            script_name : name of the restore script</span>
+<span class="sd">            products_dir : name of the product directory</span>
+<span class="sd">            oussid : OUS Status ID</span>
+<span class="sd">            vislist : list of MeasurementSet names</span>
+<span class="sd">            session_list : list of session</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            path of output CASA script file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tmpvislist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.ms&#39;</span><span class="p">):</span>
+                <span class="n">filename</span><span class="p">,</span> <span class="n">filext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">tmpvislist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">restore_task_name</span> <span class="o">=</span> <span class="s1">&#39;hsd_restoredata&#39;</span>
+        <span class="n">hm_rasterscan</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hm_rasterscan_value</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">tmpvislist</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session_list</span><span class="p">,</span>
+                                       <span class="n">ocorr_mode</span><span class="o">=</span><span class="s1">&#39;ao&#39;</span><span class="p">,</span> <span class="n">hm_rasterscan</span><span class="o">=</span><span class="n">hm_rasterscan</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_export_casa_restore_script_template</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">script_name</span><span class="p">,</span>
+                                                         <span class="n">products_dir</span><span class="p">,</span> <span class="n">oussid</span><span class="p">,</span>
+                                                         <span class="n">restore_task_name</span><span class="p">,</span>
+                                                         <span class="n">args</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_hm_rasterscan_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve hm_rasterscan value from Results object.</span>
+
+<span class="sd">        This method checks if either SDImportDataResults or</span>
+<span class="sd">        SDRestoreDataResults object is registered to Pipeline context.</span>
+<span class="sd">        If exists, hm_rasterscan value is retrieved from the results</span>
+<span class="sd">        object. If no SDImportDataResults nor SDRestoreDataResults</span>
+<span class="sd">        object is registered, &#39;time&#39; will be returned.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The hm_rasterscan value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results_filter</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">SDImportDataResults</span><span class="p">,</span> <span class="n">SDRestoreDataResults</span><span class="p">)),</span>
+            <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">importdata_results</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">results_filter</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">importdata_results</span><span class="p">:</span>
+            <span class="n">hm_rasterscan</span> <span class="o">=</span> <span class="n">importdata_results</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hm_rasterscan&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hm_rasterscan</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span>
+
+        <span class="k">return</span> <span class="n">hm_rasterscan</span>
+
+    <span class="k">def</span> <span class="nf">_export_casa_restore_script_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
+                                             <span class="n">script_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                             <span class="n">products_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                             <span class="n">oussid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                             <span class="n">restore_task_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                             <span class="n">restore_task_args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span>\
+            <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate and export CASA restore script.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context : pipeline context</span>
+<span class="sd">            script_name : Name of the restore script</span>
+<span class="sd">            products_dir : Name of the product directory</span>
+<span class="sd">            oussid : OUS Status ID</span>
+<span class="sd">            restore_task_name : Name of the restoredata task</span>
+<span class="sd">            restore_task_args : Set of the parameters for the restoredata task.</span>
+<span class="sd">                                If an order of the parameter matters, it can be</span>
+<span class="sd">                                collections.OrderedDict.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            path of output CASA script file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Generate the file list</span>
+
+        <span class="c1"># Get the output file name</span>
+        <span class="n">ps</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">project_structure</span>
+        <span class="n">script_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="n">script_name</span><span class="p">)</span>
+        <span class="n">out_script_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NameBuilder</span><span class="o">.</span><span class="n">casa_script</span><span class="p">(</span><span class="n">script_name</span><span class="p">,</span>
+                                                       <span class="n">project_structure</span><span class="o">=</span><span class="n">ps</span><span class="p">,</span>
+                                                       <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="n">oussid</span><span class="p">,</span>
+                                                       <span class="n">output_dir</span><span class="o">=</span><span class="n">products_dir</span><span class="p">)</span>
+        <span class="c1"># if ps is None or ps.ousstatus_entity_id == &#39;unknown&#39;:</span>
+        <span class="c1">#     script_file = os.path.join(context.report_dir, script_name)</span>
+        <span class="c1">#     out_script_file = os.path.join(products_dir, script_name)</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     script_file = os.path.join(context.report_dir, script_name)</span>
+        <span class="c1">#     out_script_file = os.path.join(products_dir, oussid + &#39;.&#39; + script_name)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating casa restore script </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">script_file</span><span class="p">)</span>
+
+        <span class="c1"># This is hardcoded.</span>
+        <span class="c1"># tmpvislist = []</span>
+
+        <span class="c1"># ALMA TP default</span>
+        <span class="c1"># ocorr_mode = &#39;ao&#39;</span>
+
+        <span class="c1"># for vis in vislist:</span>
+        <span class="c1">#    filename = os.path.basename(vis)</span>
+        <span class="c1">#    if filename.endswith(&#39;.ms&#39;):</span>
+        <span class="c1">#        filename, filext = os.path.splitext(filename)</span>
+        <span class="c1">#    tmpvislist.append(filename)</span>
+        <span class="c1"># task_string = &quot;    hsd_restoredata(vis=%s, session=%s, ocorr_mode=&#39;%s&#39;)&quot; % (tmpvislist, session_list,</span>
+        <span class="c1">#                                                                             ocorr_mode)</span>
+        <span class="n">args_string</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">=</span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span>
+                                 <span class="ow">in</span> <span class="n">restore_task_args</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="n">task_string</span> <span class="o">=</span> <span class="s2">&quot;    </span><span class="si">{}</span><span class="s2">(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">restore_task_name</span><span class="p">,</span> <span class="n">args_string</span><span class="p">)</span>
+
+        <span class="n">state_commands</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">project_summary</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">project_structure</span><span class="p">,</span>
+                  <span class="n">context</span><span class="o">.</span><span class="n">project_performance_parameters</span><span class="p">):</span>
+            <span class="n">state_commands</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;context.set_state(</span><span class="si">{!r}</span><span class="s1">, </span><span class="si">{!r}</span><span class="s1">, </span><span class="si">{!r}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">project</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">o</span><span class="p">)]</span>
+
+        <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;context = h_init()</span>
+<span class="si">%s</span>
+<span class="s1">try:</span>
+<span class="si">%s</span>
+<span class="s1">finally:</span>
+<span class="s1">    h_save()</span>
+<span class="s1">&#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">state_commands</span><span class="p">),</span> <span class="n">task_string</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">casa_restore_file</span><span class="p">:</span>
+            <span class="n">casa_restore_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Copying casa restore script &#39;</span>
+                 <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">script_file</span><span class="p">,</span> <span class="n">out_script_file</span><span class="p">))</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">script_file</span><span class="p">,</span> <span class="n">out_script_file</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">out_script_file</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

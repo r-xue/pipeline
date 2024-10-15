@@ -1,0 +1,10 @@
+pipeline.hsdn.templates package
+===============================
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hsdn.templates
+   :members:
+   :undoc-members:
+   :show-inheritance:

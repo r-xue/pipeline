@@ -1,0 +1,19 @@
+pipeline.hif.tasks.antpos
+=========================
+
+.. automodule:: pipeline.hif.tasks.antpos
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Antpos
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   antpos

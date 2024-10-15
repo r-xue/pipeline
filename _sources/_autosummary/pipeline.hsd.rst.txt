@@ -1,0 +1,16 @@
+pipeline.hsd
+============
+
+.. automodule:: pipeline.hsd
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   cli
+   heuristics
+   tasks
+   templates

@@ -1,0 +1,890 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.atmcor.atmcor &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.atmcor.atmcor</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.atmcor.atmcor</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Offline ATM correction stage.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.casa_tasks</span> <span class="k">as</span> <span class="nn">casa_tasks</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.casa_tools</span> <span class="k">as</span> <span class="nn">casa_tools</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.extern</span> <span class="kn">import</span> <span class="n">SDcalatmcorr</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">fieldnames</span>
+<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.common.inspection_util</span> <span class="kn">import</span> <span class="n">generate_ms</span><span class="p">,</span> <span class="n">inspect_reduction_group</span><span class="p">,</span> <span class="n">merge_reduction_group</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">relative_path</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">common</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="n">ATMModelParam</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;ATMModelParam&#39;</span><span class="p">,</span> <span class="s1">&#39;atmtype maxalt dtem_dh h0&#39;</span><span class="p">)</span>
+<span class="n">ATMModelParam</span><span class="o">.</span><span class="fm">__str__</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;atmtype </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">atmtype</span><span class="si">}</span><span class="s1">, dtem_dh </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtem_dh</span><span class="si">}</span><span class="s1">K/km, h0 </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">h0</span><span class="si">}</span><span class="s1">km.&#39;</span>
+
+
+<span class="c1"># default atmtype list that is used when atmtype is &#39;auto&#39;</span>
+<span class="n">DEFAULT_ATMTYPE_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="SDATMCorrectionInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.atmcor.html#pipeline.hsd.tasks.atmcor.atmcor.SDATMCorrectionInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">SDATMCorrectionInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for SDATMCorrection task.&quot;&quot;&quot;</span>
+    <span class="c1"># Search order of input vis</span>
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
+
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">()</span>
+
+    <span class="n">atmtype</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+    <span class="n">dtem_dh</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">5.6</span><span class="p">)</span>
+    <span class="n">h0</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">maxalt</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+    <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+
+    <span class="nd">@atmtype</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">atmtype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert atmtype into str or a list of str.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: atmtype value(s)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            atmtype as string type or a list of strings</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check if value is compatible with list</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)))</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">list_value</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">v</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">list_value</span>
+            <span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">__to_float_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]],</span> <span class="n">default_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert input value into float value or list of float values.</span>
+
+<span class="sd">        This method converts any value into float value. If input is a list,</span>
+<span class="sd">        then return value is a list of float values obtained by converting</span>
+<span class="sd">        each element of the input list. Return value(s) are interpreted</span>
+<span class="sd">        as a quantity with default_unit.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: Input value. The value can be a numerical value or</span>
+<span class="sd">                   a quantity in the form of a dictionary (casa quantity)</span>
+<span class="sd">                   or a string. A list of these values is also acceptable.</span>
+<span class="sd">            default_unit: Unit string for conversion</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Float value or list of float values in the unit specified by</span>
+<span class="sd">            default_unit. If the unit for input quantity is incompatible</span>
+<span class="sd">            with default_unit, the method will emit a warning message and</span>
+<span class="sd">            return value will be set to 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check if value is compatible with list</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)))</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">list_value</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__to_float_value</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">default_unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">list_value</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">ret</span>
+
+        <span class="c1"># non-list value</span>
+        <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">qvalue</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">qvalue</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">qvalue</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">qvalue</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">qa</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">qvalue</span><span class="p">,</span> <span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">default_unit</span><span class="p">)):</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qvalue</span><span class="p">,</span> <span class="n">default_unit</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;incompatible unit: input </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> requires unit </span><span class="si">{</span><span class="n">default_unit</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="nd">@h0</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">h0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert any h0 value into float or a list of float.</span>
+
+<span class="sd">        Input value(s) can be numerical value or a quantity in the</span>
+<span class="sd">        form of a dictionary (casa quantity) or a string.</span>
+<span class="sd">        A list of these values is also acceptable.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: h0 value(s)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            h0 value(s) in the unit of km</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__to_float_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span>
+
+    <span class="nd">@dtem_dh</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">dtem_dh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert any dtem_dh value into float or a list of float.</span>
+
+<span class="sd">        Input value(s) can be numerical value or a quantity in the</span>
+<span class="sd">        form of a dictionary (casa quantity) or a string.</span>
+<span class="sd">        A list of these values is also acceptable.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: dtem_dh value(s)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dtem_dh value(s) in the unit of K/km</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__to_float_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;K/km&#39;</span><span class="p">)</span>
+
+    <span class="nd">@maxalt</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">maxalt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert any maxalt value into float or a list of float.</span>
+
+<span class="sd">        Input value(s) can be numerical value or a quantity in the</span>
+<span class="sd">        form of a dictionary (casa quantity) or a string.</span>
+<span class="sd">        A list of these values is also acceptable.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: maxalt value(s)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            maxalt value(s) in the unit of km</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__to_float_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return infiles.</span>
+
+<span class="sd">        infiles is an alias of vis</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            infiles string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span>
+
+    <span class="nd">@infiles</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update infiles and vis consistently.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: new infiles value</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            input value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return antenna selection.</span>
+
+<span class="sd">        By default, empty string (all antennas) is returned.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            antenna selection string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="nd">@antenna</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert antenna selection string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: input antenna selection</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            converted antenna selection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">antennas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="c1"># if all antennas are selected, return &#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">])</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return field selection string.</span>
+
+<span class="sd">        By default, only fields that matches given intent are returned.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            field selection string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># this will give something like &#39;0542+3243,0343+242&#39;</span>
+        <span class="n">field_finder</span> <span class="o">=</span> <span class="n">fieldnames</span><span class="o">.</span><span class="n">IntentFieldnames</span><span class="p">()</span>
+        <span class="n">intent_fields</span> <span class="o">=</span> <span class="n">field_finder</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+
+        <span class="c1"># run the answer through a set, just in case there are duplicates</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="n">intent_fields</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return spw selection string.</span>
+
+<span class="sd">        By default, channelized spws are returned.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            spw selection string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">science_spws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">with_channels</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">])</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">pol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return pol selection string.</span>
+
+<span class="sd">        By default, polarizatons corresponding to selected spws are selected.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pol selecton string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># filters polarization by self.spw</span>
+        <span class="n">selected_spwids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">spwobj</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spwobj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">with_channels</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+        <span class="n">pols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">selected_spwids</span><span class="p">:</span>
+            <span class="n">pols</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">corr_axis</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pols</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
+                 <span class="n">atmtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">dtem_dh</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">h0</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">maxalt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">infiles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">antenna</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">spw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">parallel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs instance for hsd_atmcor.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: pipeline context</span>
+<span class="sd">            atmtype: enumeration for atmospheric transmission model, or &#39;auto&#39;</span>
+<span class="sd">            dtem_dh: temperature gradient [K/km]</span>
+<span class="sd">            h0: scale height for water [km]. Defaults to None.</span>
+<span class="sd">            maxalt: maximum altitude of the model [km]. Defaults to None.</span>
+<span class="sd">            infiles: MS selection. Defaults to None.</span>
+<span class="sd">            antenna: antenna selection. Defaults to None.</span>
+<span class="sd">            field: field selection. Defaults to None.</span>
+<span class="sd">            spw: spw selection. Defaults to None.</span>
+<span class="sd">            pol: polarization selection. Defaults to None.</span>
+<span class="sd">            parallel: Execute using CASA HPC functionality, if available.</span>
+<span class="sd">                      Default is None, which intends to turn on parallel</span>
+<span class="sd">                      processing if possible.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atmtype</span> <span class="o">=</span> <span class="n">atmtype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtem_dh</span> <span class="o">=</span> <span class="n">dtem_dh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h0</span> <span class="o">=</span> <span class="n">h0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxalt</span> <span class="o">=</span> <span class="n">maxalt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span> <span class="o">=</span> <span class="n">infiles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span> <span class="o">=</span> <span class="n">antenna</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pol</span> <span class="o">=</span> <span class="n">pol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
+
+    <span class="k">def</span> <span class="nf">_identify_datacolumn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Identify data column.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vis: MS name</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: no datacolumn exists</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            datacolumn parameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">datacolumn</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">colnames</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">colnames</span><span class="p">()</span>
+
+        <span class="n">names</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;corrected&#39;</span><span class="p">),</span>
+                 <span class="p">(</span><span class="s1">&#39;FLOAT_DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;float_data&#39;</span><span class="p">),</span>
+                 <span class="p">(</span><span class="s1">&#39;DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">colnames</span><span class="p">:</span>
+                <span class="n">datacolumn</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">datacolumn</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;No datacolumn is found.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">datacolumn</span>
+
+<div class="viewcode-block" id="SDATMCorrectionInputs.get_caltable_from_callibrary">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.atmcor.html#pipeline.hsd.tasks.atmcor.atmcor.SDATMCorrectionInputs.get_caltable_from_callibrary">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_caltable_from_callibrary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve k2jycal caltable name from callibrary.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Name of the caltable.</span>
+<span class="sd">            Return empty string if k2jycal caltable is not applied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">applied_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">applied</span>
+        <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">state_for_vis</span> <span class="o">=</span> <span class="n">applied_state</span><span class="o">.</span><span class="n">trimmed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">calto</span><span class="p">)</span>
+        <span class="n">caltables</span> <span class="o">=</span> <span class="n">state_for_vis</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">(</span><span class="n">caltypes</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="s1">&#39;gaincal&#39;</span><span class="p">))</span>
+
+        <span class="n">k2jycal_caltable</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">caltables</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">k2jycal_caltable</span> <span class="o">=</span> <span class="n">caltables</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">k2jycal_caltable</span></div>
+
+
+<div class="viewcode-block" id="SDATMCorrectionInputs.get_gainfactor">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.atmcor.html#pipeline.hsd.tasks.atmcor.atmcor.SDATMCorrectionInputs.get_gainfactor">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_gainfactor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve k2jycal table from callibrary.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            name of the k2jycal table or 1.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">k2jycal_caltable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_caltable_from_callibrary</span><span class="p">()</span>
+        <span class="n">gainfactor</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">k2jycal_caltable</span><span class="p">:</span>
+            <span class="n">gainfactor</span> <span class="o">=</span> <span class="n">k2jycal_caltable</span>
+        <span class="k">return</span> <span class="n">gainfactor</span></div>
+
+
+<div class="viewcode-block" id="SDATMCorrectionInputs.to_casa_args">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.atmcor.html#pipeline.hsd.tasks.atmcor.atmcor.SDATMCorrectionInputs.to_casa_args">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return task arguments for sdatmcor.</span>
+
+<span class="sd">        Note that it might return invalid argument list when</span>
+<span class="sd">        the user intends to run heuristics for ATM parameter.</span>
+<span class="sd">        Please check if require_atm_heuristics method returns</span>
+<span class="sd">        True to make sure the return value is valid.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            task arguments for sdatmcor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+
+        <span class="c1"># infile</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;infiles&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">infile</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;vis&#39;</span><span class="p">)</span>
+        <span class="n">args</span><span class="p">[</span><span class="s1">&#39;infile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">infile</span>
+
+        <span class="c1"># datacolumn</span>
+        <span class="n">args</span><span class="p">[</span><span class="s1">&#39;datacolumn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identify_datacolumn</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+
+        <span class="c1"># atmtype</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;atmtype&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;atmtype&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="n">args</span><span class="p">[</span><span class="s1">&#39;atmtype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;atmtype&#39;</span><span class="p">])</span>
+
+        <span class="c1"># maxalt is not available</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;maxalt&#39;</span><span class="p">)</span>
+
+        <span class="c1"># outfile</span>
+        <span class="k">if</span> <span class="s1">&#39;outfile&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">infile</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">))</span>
+            <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;.atmcor.atmtype</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;atmtype&#39;</span><span class="p">])</span>
+            <span class="n">outfile</span> <span class="o">=</span> <span class="n">basename</span> <span class="o">+</span> <span class="n">suffix</span>
+            <span class="n">args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">relative_path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">outfile</span><span class="p">))</span>
+
+        <span class="c1"># ganfactor</span>
+        <span class="n">args</span><span class="p">[</span><span class="s1">&#39;gainfactor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gainfactor</span><span class="p">()</span>
+
+        <span class="c1"># overwrite is always True</span>
+        <span class="n">args</span><span class="p">[</span><span class="s1">&#39;overwrite&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># spw -&gt; outputspw</span>
+        <span class="n">args</span><span class="p">[</span><span class="s1">&#39;outputspw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;spw&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="c1"># pol -&gt; correlation</span>
+        <span class="n">args</span><span class="p">[</span><span class="s1">&#39;correlation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;pol&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="c1"># correlation selection should be empty</span>
+        <span class="c1"># to avoid strange error in VI/VB2 framework</span>
+        <span class="n">args</span><span class="p">[</span><span class="s1">&#39;correlation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># process ON_SOURCE data only</span>
+        <span class="n">args</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span>
+
+        <span class="c1"># remove parallel</span>
+        <span class="k">del</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">args</span></div>
+
+
+<div class="viewcode-block" id="SDATMCorrectionInputs.require_atm_heuristics">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.atmcor.html#pipeline.hsd.tasks.atmcor.atmcor.SDATMCorrectionInputs.require_atm_heuristics">[docs]</a>
+    <span class="k">def</span> <span class="nf">require_atm_heuristics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if ATM heuristics is required.</span>
+
+<span class="sd">        ATM heuristics is required if any of the following</span>
+<span class="sd">        conditions are met.</span>
+
+<span class="sd">            - atmtype is either &#39;auto&#39; or list of type IDs</span>
+<span class="sd">            - dtem_dh is a list of float values</span>
+<span class="sd">            - h0 is a list of float values</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if ATM heuristics is required. Otherwise, False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_atmtype</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atmtype</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">atmtype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span>
+        <span class="n">check_dtem_dh</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtem_dh</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+        <span class="n">check_h0</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h0</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">check_atmtype</span> <span class="ow">or</span> <span class="n">check_dtem_dh</span> <span class="ow">or</span> <span class="n">check_h0</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SDATMCorrectionResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.atmcor.html#pipeline.hsd.tasks.atmcor.atmcor.SDATMCorrectionResults">[docs]</a>
+<span class="k">class</span> <span class="nc">SDATMCorrectionResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Results instance for hsd_atmcor.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">]</span> <span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">success</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">outcome</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize results instance for hsd_atmcor.</span>
+
+<span class="sd">        The outcome must be a dict that contains:</span>
+
+<span class="sd">            - &#39;task_args&#39;: actual argument list of the sdatmcor</span>
+<span class="sd">                           (The &quot;inputs&quot; dictionary associated with</span>
+<span class="sd">                           the results object holds &quot;nominal&quot;</span>
+<span class="sd">                           argument list)</span>
+<span class="sd">            - &#39;atm_heuristics&#39;: status string of the ATM heuristics</span>
+<span class="sd">            - &#39;model_list&#39;: list of attempted ATM models</span>
+<span class="sd">            - &#39;best_model_index&#39;: index for the best ATM model</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task: task class. Defaults to None.</span>
+<span class="sd">            success: task execution was successful or not. Defaults to None.</span>
+<span class="sd">            outcome: outcome of the task execution. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_args</span> <span class="o">=</span> <span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;task_args&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atmcor_ms_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_atmtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;atmtype&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atm_heuristics</span> <span class="o">=</span> <span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;atm_heuristics&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_model_index</span> <span class="o">=</span> <span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;best_model_index&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_list</span> <span class="o">=</span> <span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;model_list&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_mses</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="SDATMCorrectionResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.atmcor.html#pipeline.hsd.tasks.atmcor.atmcor.SDATMCorrectionResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge execution result of atmcor stage into pipeline context.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pipeline context</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># register output MS domain object and reduction_group to context</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_mses</span><span class="p">:</span>
+            <span class="c1"># remove existing MS in context if the same MS is already in list.</span>
+            <span class="n">oldms_index</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">oldms</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">get_measurement_sets</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">oldms</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                    <span class="n">oldms_index</span> <span class="o">=</span> <span class="n">index</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">oldms_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Replace </span><span class="si">{}</span><span class="s1"> in context&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="k">del</span> <span class="n">target</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">[</span><span class="n">oldms_index</span><span class="p">]</span>
+
+            <span class="c1"># Adding mses to context</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Adding </span><span class="si">{}</span><span class="s1"> to context&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">target</span><span class="o">.</span><span class="n">add_measurement_set</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+            <span class="c1"># Initialize callibrary</span>
+            <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Registering </span><span class="si">{}</span><span class="s1"> with callibrary&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="c1"># register output MS to processing group</span>
+            <span class="n">reduction_group</span> <span class="o">=</span> <span class="n">inspect_reduction_group</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+            <span class="n">merge_reduction_group</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reduction_group</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return representative string for the outcome.</span>
+
+<span class="sd">        Any string that represents outcome is returned.</span>
+<span class="sd">        In case of hsd_atmcor, output MS name is returned.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            output MS name for sdatmcor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atmcor_ms_name</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SerialSDATMCorrection">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.atmcor.html#pipeline.hsd.tasks.atmcor.atmcor.SerialSDATMCorrection">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsd_atmcor&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
+    <span class="s1">&#39;Apply offline correction of atmospheric transmission model.&#39;</span>
+<span class="p">)</span>
+<span class="k">class</span> <span class="nc">SerialSDATMCorrection</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Offline ATM correction task.&quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDATMCorrectionInputs</span>
+
+<div class="viewcode-block" id="SerialSDATMCorrection.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.atmcor.html#pipeline.hsd.tasks.atmcor.atmcor.SerialSDATMCorrection.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDATMCorrectionResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute task and produce results instance.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: execution of sdatmcor was failed</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            results instance for hsd_atmcor stage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># args for sdatmcor</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">require_atm_heuristics</span><span class="p">():</span>
+            <span class="c1"># select best ATM model</span>
+            <span class="n">atm_heuristics</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">best_model_index</span><span class="p">,</span> <span class="n">model_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perform_atm_heuristics</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">atm_heuristics</span> <span class="o">=</span> <span class="s1">&#39;N&#39;</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+            <span class="n">best_model_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">model_list</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">ATMModelParam</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;atmtype&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxalt</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;dtem_dh&#39;</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;h0&#39;</span><span class="p">])</span>
+            <span class="p">]</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Processing parameter for sdatmcor: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">sdatmcor</span><span class="p">(</span><span class="o">**</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">task_exec_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;atmcor: task_exec_status = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">task_exec_status</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Output MS does not exist. It seems sdatmcor failed.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">task_exec_status</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># no news is good news, this is a sign of success</span>
+            <span class="n">is_successful</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">task_exec_status</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="c1"># it indicates any problem</span>
+            <span class="n">is_successful</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># unexpected, mark as failed</span>
+            <span class="n">is_successful</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="n">SDATMCorrectionResults</span><span class="p">(</span>
+            <span class="n">task</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+            <span class="n">success</span><span class="o">=</span><span class="n">is_successful</span><span class="p">,</span>
+            <span class="n">outcome</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">&#39;task_args&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">,</span>
+                <span class="s1">&#39;atm_heuristics&#39;</span><span class="p">:</span> <span class="n">atm_heuristics</span><span class="p">,</span>
+                <span class="s1">&#39;best_model_index&#39;</span><span class="p">:</span> <span class="n">best_model_index</span><span class="p">,</span>
+                <span class="s1">&#39;model_list&#39;</span><span class="p">:</span> <span class="n">model_list</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="SerialSDATMCorrection.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.atmcor.html#pipeline.hsd.tasks.atmcor.atmcor.SerialSDATMCorrection.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SDATMCorrectionResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDATMCorrectionResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyse results produced by prepare method.</span>
+
+<span class="sd">        Generate domain object of MS with offline ATM correction.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: results instance</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            input results instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">in_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">new_ms</span> <span class="o">=</span> <span class="n">generate_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">atmcor_ms_name</span><span class="p">,</span> <span class="n">in_ms</span><span class="p">)</span>
+        <span class="n">new_ms</span><span class="o">.</span><span class="n">set_data_column</span><span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">ATMCORR</span><span class="p">,</span> <span class="s1">&#39;DATA&#39;</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">out_mses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_ms</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_perform_atm_heuristics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform ATM model heuristics.</span>
+
+<span class="sd">        Perform ATM model heuristics, SDcalatmcorr.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Four tuple, status of ATM model heuristics, argument list for sdatmcor,</span>
+<span class="sd">            index of best ATM model, and list of attempted ATM models.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># create weblog directry</span>
+        <span class="n">stage_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span>
+        <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;stage</span><span class="si">{</span><span class="n">stage_number</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># perform atmtype heuristics if atmtype is &#39;auto&#39;</span>
+        <span class="c1"># run Harold&#39;s script here</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Performing atmtype heuristics&#39;</span><span class="p">)</span>
+        <span class="n">atm_heuristics</span> <span class="o">=</span> <span class="s1">&#39;Fallback&#39;</span>
+        <span class="n">default_model</span> <span class="o">=</span> <span class="n">ATMModelParam</span><span class="p">(</span><span class="n">atmtype</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">maxalt</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">dtem_dh</span><span class="o">=-</span><span class="mf">5.6</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+        <span class="c1"># best_model will fall back to default_model if heuristics is failed</span>
+        <span class="n">best_model</span> <span class="o">=</span> <span class="n">default_model</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+        <span class="n">ms_name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;infile&#39;</span><span class="p">]</span>
+        <span class="n">model_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">default_model</span><span class="p">]</span>
+        <span class="n">best_model_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;default_model: </span><span class="si">{</span><span class="n">default_model</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># handle list inputs</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;atmtype&#39;</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">atmtype_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;atmtype&#39;</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># should be &#39;auto&#39;</span>
+            <span class="n">atmtype_list</span> <span class="o">=</span> <span class="n">DEFAULT_ATMTYPE_LIST</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">heuristics_result</span> <span class="o">=</span> <span class="n">SDcalatmcorr</span><span class="o">.</span><span class="n">selectModelParams</span><span class="p">(</span>
+                <span class="n">mslist</span><span class="o">=</span><span class="p">[</span><span class="n">ms_name</span><span class="p">],</span>
+                <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+                <span class="n">decisionmetric</span><span class="o">=</span><span class="s1">&#39;intabsdiff&#39;</span><span class="p">,</span>
+                <span class="n">atmtype</span><span class="o">=</span><span class="n">atmtype_list</span><span class="p">,</span>
+                <span class="n">maxalt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxalt</span><span class="p">,</span>
+                <span class="n">lapserate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">dtem_dh</span><span class="p">,</span>
+                <span class="n">scaleht</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">h0</span><span class="p">,</span>
+                <span class="n">plotsfolder</span><span class="o">=</span><span class="n">stage_dir</span><span class="p">,</span>
+                <span class="n">defatmtype</span><span class="o">=</span><span class="n">default_model</span><span class="o">.</span><span class="n">atmtype</span><span class="p">,</span>
+                <span class="n">defmaxalt</span><span class="o">=</span><span class="n">default_model</span><span class="o">.</span><span class="n">maxalt</span><span class="p">,</span>
+                <span class="n">deflapserate</span><span class="o">=</span><span class="n">default_model</span><span class="o">.</span><span class="n">dtem_dh</span><span class="p">,</span>
+                <span class="n">defscaleht</span><span class="o">=</span><span class="n">default_model</span><span class="o">.</span><span class="n">h0</span>
+            <span class="p">)</span>
+            <span class="n">best_model</span> <span class="o">=</span> <span class="n">ATMModelParam</span><span class="p">(</span><span class="o">*</span><span class="n">heuristics_result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">ms_name</span><span class="p">])</span>
+
+            <span class="n">status</span> <span class="o">=</span> <span class="n">heuristics_result</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="n">ms_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;bestfitmodel&#39;</span><span class="p">:</span>
+                <span class="n">atm_heuristics</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span>
+                <span class="n">model_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ATMModelParam</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">heuristics_result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">ms_name</span><span class="p">]]</span>
+                <span class="n">best_model_index</span> <span class="o">=</span> <span class="n">model_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">best_model</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best ATM model is </span><span class="si">{</span><span class="n">best_model</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ATM heuristics failed. Using default model </span><span class="si">{</span><span class="n">default_model</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                <span class="n">model_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">best_model</span><span class="p">]</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ATM heuristics failed. Falling back to default model </span><span class="si">{</span><span class="n">default_model</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Original error:&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+                <span class="kn">import</span> <span class="nn">traceback</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+
+        <span class="c1"># construct argument list for sdatmcor</span>
+        <span class="n">inputs_local</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">pickle_copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">inputs_local</span><span class="o">.</span><span class="n">atmtype</span> <span class="o">=</span> <span class="n">best_model</span><span class="o">.</span><span class="n">atmtype</span>
+        <span class="n">inputs_local</span><span class="o">.</span><span class="n">maxalt</span> <span class="o">=</span> <span class="n">best_model</span><span class="o">.</span><span class="n">maxalt</span>
+        <span class="n">inputs_local</span><span class="o">.</span><span class="n">dtem_dh</span> <span class="o">=</span> <span class="n">best_model</span><span class="o">.</span><span class="n">dtem_dh</span>
+        <span class="n">inputs_local</span><span class="o">.</span><span class="n">h0</span> <span class="o">=</span> <span class="n">best_model</span><span class="o">.</span><span class="n">h0</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">inputs_local</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">atm_heuristics</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">best_model_index</span><span class="p">,</span> <span class="n">model_list</span></div>
+
+
+
+<div class="viewcode-block" id="HpcSDATMCorrection">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.atmcor.html#pipeline.hsd.tasks.atmcor.atmcor.HpcSDATMCorrection">[docs]</a>
+<span class="k">class</span> <span class="nc">HpcSDATMCorrection</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parallel implementation of offline ATM correction task.&quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDATMCorrectionInputs</span>
+    <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialSDATMCorrection</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

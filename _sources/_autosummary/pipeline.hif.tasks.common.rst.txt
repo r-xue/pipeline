@@ -1,0 +1,13 @@
+pipeline.hif.tasks.common
+=========================
+
+.. automodule:: pipeline.hif.tasks.common
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   commoncalinputs

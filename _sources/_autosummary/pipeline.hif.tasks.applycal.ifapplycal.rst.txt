@@ -1,0 +1,14 @@
+pipeline.hif.tasks.applycal.ifapplycal
+======================================
+
+.. automodule:: pipeline.hif.tasks.applycal.ifapplycal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      IFApplycal
+      IFApplycalInputs
+      SerialIFApplycal
+   

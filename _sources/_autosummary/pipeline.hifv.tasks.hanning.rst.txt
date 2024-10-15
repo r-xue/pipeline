@@ -1,0 +1,21 @@
+pipeline.hifv.tasks.hanning
+===========================
+
+.. automodule:: pipeline.hifv.tasks.hanning
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Hanning
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   hanning
+   qa
+   renderer

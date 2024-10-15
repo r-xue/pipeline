@@ -1,0 +1,15 @@
+pipeline.infrastructure.imageheader
+===================================
+
+.. automodule:: pipeline.infrastructure.imageheader
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      clean_extendable_keys
+      set_miscinfo
+      wrap
+      wrap_key
+   

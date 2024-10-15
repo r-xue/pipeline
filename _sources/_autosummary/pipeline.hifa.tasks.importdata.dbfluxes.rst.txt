@@ -1,0 +1,27 @@
+pipeline.hifa.tasks.importdata.dbfluxes
+=======================================
+
+.. automodule:: pipeline.hifa.tasks.importdata.dbfluxes
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      add_catalogue_fluxes
+      buildparams
+      buildurl
+      flux_nosourcexml
+      fluxservice
+      get_setjy_results
+      log_result
+      query_online_catalogue
+      read_fluxes_db
+      sanitize_string
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      ExpatError
+   

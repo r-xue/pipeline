@@ -1,0 +1,38 @@
+pipeline.infrastructure.basetask
+================================
+
+.. automodule:: pipeline.infrastructure.basetask
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      capture_log
+      matplotlibrc_handler
+      property_with_default
+      result_finaliser
+      timestamp
+      write_pipeline_casa_tasks
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CasaTasks
+      Executor
+      FailedTask
+      FailedTaskResults
+      ModeTask
+      ResultAcceptErrorEvent
+      ResultAcceptedEvent
+      ResultAcceptingEvent
+      Results
+      ResultsList
+      ResultsProxy
+      StandardTaskTemplate
+      TaskAbnormalExitEvent
+      TaskCompleteEvent
+      TaskStartedEvent
+      Timestamps
+   

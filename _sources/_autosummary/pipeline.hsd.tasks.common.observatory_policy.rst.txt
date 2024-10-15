@@ -1,0 +1,22 @@
+pipeline.hsd.tasks.common.observatory\_policy
+=============================================
+
+.. automodule:: pipeline.hsd.tasks.common.observatory_policy
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_imaging_policy
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ALMAImagingPolicy
+      Context
+      MeasurementSet
+      NROImagingPolicy
+      ObservatoryImagingPolicy
+   

@@ -1,0 +1,28 @@
+pipeline.hif.tasks.gaincal
+==========================
+
+.. automodule:: pipeline.hif.tasks.gaincal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GSplineGaincal
+      GTypeGaincal
+      GaincalMode
+      GaincalWorker
+      KTypeGaincal
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   common
+   gaincalmode
+   gaincalworker
+   gsplinegaincal
+   gtypegaincal
+   ktypegaincal

@@ -1,0 +1,22 @@
+pipeline.hifv.tasks.statwt
+==========================
+
+.. automodule:: pipeline.hifv.tasks.statwt
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Statwt
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   qa
+   renderer
+   statwt

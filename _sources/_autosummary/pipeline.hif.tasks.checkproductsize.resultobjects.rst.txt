@@ -1,0 +1,12 @@
+pipeline.hif.tasks.checkproductsize.resultobjects
+=================================================
+
+.. automodule:: pipeline.hif.tasks.checkproductsize.resultobjects
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CheckProductSizeResult
+   

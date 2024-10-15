@@ -1,0 +1,557 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.utils &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.utils</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.infrastructure.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pipeline.infrastructure.utils">
+<span id="pipeline-infrastructure-utils"></span><h1>pipeline.infrastructure.utils<a class="headerlink" href="#module-pipeline.infrastructure.utils" title="Link to this heading"></a></h1>
+<p>The utils package contains a set of utility classes and functions that are
+useful to the pipeline framework and to tasks manipulating pipeline framework
+objects, Python data types, and CASA data types.</p>
+<p>The utils package is intended to be free of any task-specific logic. Code that
+assumes knowledge or logic beyond that of the task-independent framework should
+be housed in the h.common package (or hif.common, hifv.common, hsd.common, etc.
+as appropriate).</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">absolute_path</span></code>(name)</p></td>
+<td><p>Return an absolute path of a given file.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ant_arg_to_id</span></code>(ms_path, ant_arg, all_antennas)</p></td>
+<td><p>Convert a string to the corresponding antenna IDs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">approx_equal</span></code>(x, y[, tol])</p></td>
+<td><p>Return True if two numbers are equal within the given tolerance.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">are_equal</span></code>(a, b)</p></td>
+<td><p>Return True if the contents of the given arrays are equal.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">chan_selection_to_frequencies</span></code>(img, selection)</p></td>
+<td><p>Convert channel selection to frequency tuples for a given CASA cube.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_ppr</span></code>(pprfile)</p></td>
+<td><p>Check PPR to make sure all tasks exist in the CASA task dictionary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">collect_properties</span></code>(instance[, ignore])</p></td>
+<td><p>Return the public properties of an object as a dictionary</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">commafy</span></code>(l[, quotes, multi_prefix, ...])</p></td>
+<td><p>Convert the string list into the textual description.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains_single_dish</span></code>(context)</p></td>
+<td><p>Return True if the context contains single-dish data.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">deduplicate</span></code>(items)</p></td>
+<td><p>Remove duplicate entries from a list, but preserve the order.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dequote</span></code>(s)</p></td>
+<td><p>Remove any kind of quotes from a string to facilitate comparisons.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict_merge</span></code>(a, b)</p></td>
+<td><p>Recursively merge dictionaries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">do_wide_field_pos_cor</span></code>(fitsname[, date_time, ...])</p></td>
+<td><p>Applies mean wide field position correction to FITS WCS in place.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">enable_fd_logs</span></code>([interval_secs])</p></td>
+<td><p>Log file descriptors to the CASA log every n seconds.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">enable_memstats</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensure_products_dir_exists</span></code>(products_dir)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">equal_to_n_digits</span></code>(x, y[, numdigits])</p></td>
+<td><p>Approximate equality check up to a given number of digits.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_weblog_as_tar</span></code>(context, products_dir, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">field_arg_to_id</span></code>(ms_path, field_arg, all_fields)</p></td>
+<td><p>Convert a string to the corresponding field IDs.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fieldname_for_casa</span></code>(field)</p></td>
+<td><p>Prepare field string to be used as CASA argument.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_ranges</span></code>(data)</p></td>
+<td><p>Identify numeric ranges in string or list.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flagged_intervals</span></code>(vec)</p></td>
+<td><p>Idendity isnads of ones in input array or list.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten</span></code>(l)</p></td>
+<td><p>Flatten a list of lists into a single list without pipelineaq.QAScore.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten_dict</span></code>(d[, join, lift])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_datetime</span></code>(dt[, dp])</p></td>
+<td><p>Convert a datetime to a formatted string representation.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_timedelta</span></code>(td[, dp])</p></td>
+<td><p>Convert a timedelta to a formatted string representation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">freq_selection_to_channels</span></code>(img, selection)</p></td>
+<td><p>Convert frequency selection to channel tuples for a given CASA cube.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">frequency_to_velocity</span></code>(frequency, restfreq)</p></td>
+<td><p>Convert frequency to radial velocity using radio convention.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_mjd_to_datetime</span></code>(mjd)</p></td>
+<td><p>Convert a MJD float into a datetime</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">gen_hash</span></code>(o)</p></td>
+<td><p>Makes a hash from a dictionary, list, tuple or set to any level, that contains only other hashable types (including any lists, tuples, sets, and dictionaries).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_calfroms</span></code>(context, vis[, caltypes])</p></td>
+<td><p>Get the CalFroms of the requested type from the callibrary.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_casa_quantity</span></code>(value)</p></td>
+<td><p>Wrapper around quanta.quantity() that handles None input.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_casa_session_details</span></code>()</p></td>
+<td><p>Get the current CASA session details.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_epoch_as_datetime</span></code>(epoch)</p></td>
+<td><p>Convert a CASA epoch measure into a Python datetime.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field_identifiers</span></code>(ms)</p></td>
+<td><p>Maps numeric field IDs to field names.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_file_md5</span></code>(filename)</p></td>
+<td><p>Return a readable hex string of the MD5 hash of a given file</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_filename_info</span></code>(filename)</p></td>
+<td><p>Get a string with information about the modification date and MD5 hash of a file</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_intervals</span></code>(context, calapp[, spw_ids])</p></td>
+<td><p>Get the integration intervals for scans processed by a calibration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_iso_mtime</span></code>(filename)</p></td>
+<td><p>Return the ISO 8601 datetime string corresponding to the modification time of a given file</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_logrecords</span></code>(result, loglevel)</p></td>
+<td><p>Get the logrecords for the result, removing any duplicates</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_num_caltable_polarizations</span></code>(caltable)</p></td>
+<td><p>Obtain number of polarisations from calibration table.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_obj_size</span></code>(obj[, serialize])</p></td>
+<td><p>Estimate the size of a Python object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_object_info_string</span></code>(ss_object[, ss_path])</p></td>
+<td><p>Get the file information (MD5 hash and modification date) for a given Solar System object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_origin_input_arg</span></code>(calapp, attr)</p></td>
+<td><p>Get a single-valued task input argument from a CalApp.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_products_dir</span></code>(context)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_qascores</span></code>(result[, lo, hi])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_receiver_type_for_spws</span></code>(ms, spwids)</p></td>
+<td><p>Return dictionary of receiver types for requested spectral window IDs.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_si_prefix</span></code>(value[, select, lztol])</p></td>
+<td><p>Obtain the best SI unit prefix option for a numeric value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_solar_system_model_files</span></code>(ss_object[, ...])</p></td>
+<td><p>Return the data files corresponding to a Solar System object</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectralspec_to_spwid_map</span></code>(spws)</p></td>
+<td><p>Returns a dictionary of spectral specs mapped to corresponding spectral window IDs for requested list of spectral window objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_stokes</span></code>(imagename)</p></td>
+<td><p>Get the labels of all stokes planes present in a CASA image.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_task_result_count</span></code>(context[, taskname])</p></td>
+<td><p>Count occurrences of a task result in the context.results list.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_taskhistory_fromimage</span></code>(imagename)</p></td>
+<td><p>Retrieve past CASA/tclean() call parameters from the image history.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tracebacks</span></code>(result)</p></td>
+<td><p>Get the tracebacks for the result, from any failures that may have occurred during the task.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vis_from_plots</span></code>(plots)</p></td>
+<td><p>Get the name to be used for the MS from the given plots.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">glob_ordered</span></code>(pattern, *args[, order])</p></td>
+<td><p>Return a sorted list of paths matching a pathname pattern.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ignore_pointing</span></code>(vis)</p></td>
+<td><p>A context manager to ignore pointing tables of MSes during I/O operations.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">import_module</span></code>(name[, package])</p></td>
+<td><p>Import a module.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">imstat_items</span></code>(image[, items, mask])</p></td>
+<td><p>Extract desired stats properties (per Stokes) using ia.statistics().</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersect_ranges</span></code>(ranges)</p></td>
+<td><p>Compute intersection of ranges.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersect_ranges_by_weight</span></code>(ranges, delta, ...)</p></td>
+<td><p>Compute intersection of ranges through weight arrays and a threshold.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_top_level_task</span></code>()</p></td>
+<td><p>Return True if the callee if executing as part of a top-level task.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_to_str</span></code>(value)</p></td>
+<td><p>Convert list or numpy.ndarray into string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_jobs</span></code>(jobs, task[, merge, ignore])</p></td>
+<td><p>Merge jobs that are identical apart from the arguments named in ignore.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_ranges</span></code>(ranges)</p></td>
+<td><p>Merge overlapping and adjacent ranges and yield the merged ranges in order.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_td_columns</span></code>(rows[, num_to_merge, ...])</p></td>
+<td><p>Merge HTML TD columns with identical values using rowspan.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_td_rows</span></code>(table)</p></td>
+<td><p>Merge HTML TD rows with identical values using colspan.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mjd_seconds_to_datetime</span></code>(mjd_secs)</p></td>
+<td><p>Convert list of MJD seconds to a list of equivalent datetime objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mkdir_p</span></code>(path)</p></td>
+<td><p>Emulate mkdir -p functionality.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">natural_sort</span></code>(input_list)</p></td>
+<td><p>Sort a list in natural order, eg.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">natural_sort_key</span></code>(x[, _nsre])</p></td>
+<td><p>Key to order in natural order with the sort function</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">nested_dict</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">numeric_sort</span></code>(input_list)</p></td>
+<td><p>Sort a list numerically, eg.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">numeric_sort_key</span></code>(s[, _nsre])</p></td>
+<td><p>Key to order in numeric order with the sort function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">open_with_lock</span></code>(filename[, mode])</p></td>
+<td><p>Open file with a lock.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickle_copy</span></code>(original)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickle_load</span></code>(fileobj)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">place_repr_source_first</span></code>(itemlist, repr_source)</p></td>
+<td><p>Place representative source first in a list of source names or tuples with source name as first tuple element.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotms_iterate</span></code>(jobs_and_wrappers[, ...])</p></td>
+<td><p>Iterate multiple plotms job requests</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plots_to_html</span></code>(plots[, title, alt, caption, ...])</p></td>
+<td><p>Convert a list of plots to HTML snippets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict_kernel</span></code>(beam, target_beam[, pstol, patol])</p></td>
+<td><p>Predict the required convolution kernel to each a target restoring beam.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">range_to_list</span></code>(arg)</p></td>
+<td><p>Expand a numeric range expressed in CASA syntax to the list of integer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">record_to_quantity</span></code>(record)</p></td>
+<td><p>Convert a CASA record to an Astropy quantity.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">relative_path</span></code>(name[, start])</p></td>
+<td><p>Retun a relative path of a given file with respect a given origin.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_trailing_string</span></code>(s, t)</p></td>
+<td><p>Remove a trailing string if it exists.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">request_omp_threading</span></code>([num_threads])</p></td>
+<td><p>A context manager to override the session-wise OMP threading setting on CASA MPI client.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">round_half_up</span></code>(value[, precision])</p></td>
+<td><p>Provides the &quot;round to nearest integer with ties going away from zero&quot; behaviour that was the default Python2 rounding behavior.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">round_up</span></code>(value[, precision])</p></td>
+<td><p>Round to nearest integer away from zero.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">safe_split</span></code>(fields)</p></td>
+<td><p>Split a string containing field names into a list.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_uv_range</span></code>(ms)</p></td>
+<td><p>Return the UV range that captures the inner half of the data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nested_dict</span></code>(dct, keys, value)</p></td>
+<td><p>Set a hierarchy of dictionaries with given keys and value for the lowest level key.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shutdown_plotms</span></code>()</p></td>
+<td><p>Shutdown the existing plotms process in the current CASA session.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">spw_arg_to_id</span></code>(ms_path, spw_arg, all_spws)</p></td>
+<td><p>Convert a string to spectral window IDs and channels.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">spw_intersect</span></code>(spw_range, line_regions)</p></td>
+<td><p>This utility function takes a frequency range (as numbers with arbitrary but common units) and computes the intersection with a list of frequency ranges defining the regions of spectral lines.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">string_to_val</span></code>(s)</p></td>
+<td><p>Convert a string to a Python data type.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">table_to_html</span></code>(table[, tableclass, rotate])</p></td>
+<td><p>Convert a astropy.table.Table object to an HTML table snippet.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">task_depth</span></code>()</p></td>
+<td><p>Get the number of executing tasks currently on the stack.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_CASA_intent</span></code>(ms, intents)</p></td>
+<td><p>Convert pipeline intents back to the equivalent intents recorded in the measurement set.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_pipeline_intent</span></code>(ms, intents)</p></td>
+<td><p>Convert CASA intents to pipeline intents.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_time_on_source</span></code>(scans)</p></td>
+<td><p>Return the total time on source for the given Scans.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_time_on_target_on_source</span></code>(ms[, ...])</p></td>
+<td><p>Return the nominal total time on target source for the given MeasurementSet excluding OFF-source integrations (REFERENCE).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_beams_dict</span></code>(dct, udct)</p></td>
+<td><p>Update a beams dictionary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_sens_dict</span></code>(dct, udct)</p></td>
+<td><p>Update a sensitivity dictionary.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity_to_frequency</span></code>(velocity, restfreq)</p></td>
+<td><p>Convert radial velocity to frequency using radio convention.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_errorexit_file</span></code>(path, root, extension)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">IERSInfo</span></code>([iers_path, load_on_creation])</p></td>
+<td><p>Class to store, retrieve and process the information from the IERS geodetic tables</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrderedDefaultdict</span></code>(*args, **kwargs)</p></td>
+<td><p>This class behaves as defaultdict from the collections module but maintaining the order of insertion.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Modules</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#module-pipeline.infrastructure.utils.casa_data" title="pipeline.infrastructure.utils.casa_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">casa_data</span></code></a></p></td>
+<td><p>Utilities to work with the CASA data files</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#module-pipeline.infrastructure.utils.compatibility" title="pipeline.infrastructure.utils.compatibility"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compatibility</span></code></a></p></td>
+<td><p>Compatibility management.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#module-pipeline.infrastructure.utils.compatibility_test" title="pipeline.infrastructure.utils.compatibility_test"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compatibility_test</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#module-pipeline.infrastructure.utils.conversion" title="pipeline.infrastructure.utils.conversion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conversion</span></code></a></p></td>
+<td><p>The conversion module contains utility functions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#module-pipeline.infrastructure.utils.debugwrapper" title="pipeline.infrastructure.utils.debugwrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">debugwrapper</span></code></a></p></td>
+<td><p>Debug wrapper decorator class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#module-pipeline.infrastructure.utils.diagnostics" title="pipeline.infrastructure.utils.diagnostics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diagnostics</span></code></a></p></td>
+<td><p>The diagnostics module contains utility functions used to help profile the pipeline.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#module-pipeline.infrastructure.utils.framework" title="pipeline.infrastructure.utils.framework"><code class="xref py py-obj docutils literal notranslate"><span class="pre">framework</span></code></a></p></td>
+<td><p>The framework module contains:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#module-pipeline.infrastructure.utils.imaging" title="pipeline.infrastructure.utils.imaging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imaging</span></code></a></p></td>
+<td><p>The imaging module contains utility functions used by the imaging tasks.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#module-pipeline.infrastructure.utils.math" title="pipeline.infrastructure.utils.math"><code class="xref py py-obj docutils literal notranslate"><span class="pre">math</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#module-pipeline.infrastructure.utils.positioncorrection" title="pipeline.infrastructure.utils.positioncorrection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">positioncorrection</span></code></a></p></td>
+<td><p>Utilities used for correcting image center coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#module-pipeline.infrastructure.utils.ppr" title="pipeline.infrastructure.utils.ppr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ppr</span></code></a></p></td>
+<td><p>The ppr module contains utility functions useful to PPR processing functions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#module-pipeline.infrastructure.utils.sorting" title="pipeline.infrastructure.utils.sorting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sorting</span></code></a></p></td>
+<td><p>The sorting module contains utility functions used to sort pipeline input and output.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#module-pipeline.infrastructure.utils.utils" title="pipeline.infrastructure.utils.utils"><code class="xref py py-obj docutils literal notranslate"><span class="pre">utils</span></code></a></p></td>
+<td><p>The utils module contains general-purpose uncategorised utility functions and classes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#module-pipeline.infrastructure.utils.weblog" title="pipeline.infrastructure.utils.weblog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weblog</span></code></a></p></td>
+<td><p>The sorting module contains utility functions used by the pipeline web log.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

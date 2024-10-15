@@ -1,0 +1,15 @@
+pipeline.hif.tasks.checkproductsize.checkproductsize
+====================================================
+
+.. automodule:: pipeline.hif.tasks.checkproductsize.checkproductsize
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CheckProductSize
+      CheckProductSizeInputs
+      CheckProductSizeResult
+      DataType
+   

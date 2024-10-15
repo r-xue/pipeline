@@ -1,0 +1,716 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.fluxscale.renderer &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.fluxscale.renderer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.fluxscale.renderer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on 23 Oct 2014</span>
+
+<span class="sd">@author: sjw</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">decimal</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.basetemplates</span> <span class="k">as</span> <span class="nn">basetemplates</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.measures</span> <span class="kn">import</span> <span class="n">FluxDensityUnits</span><span class="p">,</span> <span class="n">FrequencyUnits</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">atmutil</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.importdata.fluxes</span> <span class="kn">import</span> <span class="n">ORIGIN_XML</span><span class="p">,</span> <span class="n">ORIGIN_ANALYSIS_UTILS</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.renderer</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">display</span> <span class="k">as</span> <span class="n">gfluxscale</span>
+<span class="kn">from</span> <span class="nn">..importdata.dbfluxes</span> <span class="kn">import</span> <span class="n">ORIGIN_DB</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="n">CATALOGUE_SOURCES</span> <span class="o">=</span> <span class="p">(</span><span class="n">ORIGIN_ANALYSIS_UTILS</span><span class="p">,</span> <span class="n">ORIGIN_DB</span><span class="p">,</span> <span class="n">ORIGIN_XML</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="T2_4MDetailsGFluxscaleRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">T2_4MDetailsGFluxscaleRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;gfluxscale.mako&#39;</span><span class="p">,</span> 
+                 <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Transfer fluxscale from amplitude calibrator&#39;</span><span class="p">,</span>
+                 <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsGFluxscaleRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
+
+<div class="viewcode-block" id="T2_4MDetailsGFluxscaleRenderer.update_mako_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.update_mako_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="c1"># All antenna, sort by baseband</span>
+        <span class="n">ampuv_allant_plots</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">intents</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">]:</span>
+            <span class="n">plots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_plots</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">gfluxscale</span><span class="o">.</span><span class="n">GFluxscaleSummaryChart</span><span class="p">,</span> <span class="n">intents</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sort_plots_by_baseband</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">vis_plots</span> <span class="ow">in</span> <span class="n">plots</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vis_plots</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">ampuv_allant_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">intents</span><span class="p">]</span> <span class="o">=</span> <span class="n">vis_plots</span>
+
+        <span class="c1"># List of antenna for the fluxscale result, sorted by baseband</span>
+        <span class="n">ampuv_ant_plots</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">intents</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">]:</span>
+            <span class="n">plots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_plots_ants</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">gfluxscale</span><span class="o">.</span><span class="n">GFluxscaleSummaryChart</span><span class="p">,</span> <span class="n">intents</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sort_plots_by_baseband</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">vis_plots</span> <span class="ow">in</span> <span class="n">plots</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vis_plots</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">ampuv_ant_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">intents</span><span class="p">]</span> <span class="o">=</span> <span class="n">vis_plots</span>
+
+        <span class="n">flux_comparison_plots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_flux_comparison_plots</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+        <span class="c1"># Generate rows for table of computed flux densities.</span>
+        <span class="n">table_rows</span> <span class="o">=</span> <span class="n">make_flux_table</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+        <span class="c1"># Generate rows for table of adopted flux densities.</span>
+        <span class="n">adopted_rows</span> <span class="o">=</span> <span class="n">make_adopted_table</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+        <span class="c1"># Generate flagging commands summary table (PIPE-2155).</span>
+        <span class="n">flagtable</span> <span class="o">=</span> <span class="n">make_flag_table</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+        <span class="n">mako_context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+            <span class="s1">&#39;adopted_table&#39;</span><span class="p">:</span> <span class="n">adopted_rows</span><span class="p">,</span>
+            <span class="s1">&#39;ampuv_allant_plots&#39;</span><span class="p">:</span> <span class="n">ampuv_allant_plots</span><span class="p">,</span>
+            <span class="s1">&#39;ampuv_ant_plots&#39;</span><span class="p">:</span> <span class="n">ampuv_ant_plots</span><span class="p">,</span>
+            <span class="s1">&#39;flagtable&#39;</span><span class="p">:</span> <span class="n">flagtable</span><span class="p">,</span>
+            <span class="s1">&#39;flux_plots&#39;</span><span class="p">:</span> <span class="n">flux_comparison_plots</span><span class="p">,</span>
+            <span class="s1">&#39;table_rows&#39;</span><span class="p">:</span> <span class="n">table_rows</span>
+        <span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsGFluxscaleRenderer.sort_plots_by_baseband">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.sort_plots_by_baseband">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sort_plots_by_baseband</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">plots</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">plots</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">plot</span><span class="p">:</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;baseband&#39;</span><span class="p">])</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">plots</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsGFluxscaleRenderer.create_flux_comparison_plots">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.create_flux_comparison_plots">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_flux_comparison_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">results</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">create_flux_comparison_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsGFluxscaleRenderer.create_plots">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.create_plots">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create plots and return a dictionary of vis:[Plots].  No antenna or UVrange selection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">plots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plots_for_result</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dict_merge</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">plots</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsGFluxscaleRenderer.create_plots_ants">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.create_plots_ants">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_plots_ants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create plots and return a dictionary of vis:[Plots].</span>
+<span class="sd">        Antenna and UVrange selection determined by heuristics.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="c1"># PIPE-33: when all antennas are selected on the ampcal, suppress the second set of amp(uvdist;model) plot</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">resantenna</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">plots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plots_for_result</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="p">,</span> <span class="n">ant</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">resantenna</span><span class="p">,</span>
+                                          <span class="n">uvrange</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">uvrange</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dict_merge</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">plots</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">d</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsGFluxscaleRenderer.plots_for_result">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.plots_for_result">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">plots_for_result</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ant</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+
+        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+
+        <span class="c1"># create a fake CalTo object so we can use the applycal class</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">]</span>
+        <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">],</span> <span class="n">field</span><span class="o">=</span><span class="n">fields</span><span class="p">)</span>
+
+        <span class="n">plotter</span> <span class="o">=</span> <span class="n">plotter_cls</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">ant</span><span class="o">=</span><span class="n">ant</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="n">uvrange</span><span class="p">)</span>
+        <span class="n">plots</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="n">d</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">plots</span>
+
+        <span class="k">if</span> <span class="n">renderer_cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">renderer</span> <span class="o">=</span> <span class="n">renderer_cls</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+                <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>        
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<span class="n">FluxTR</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;FluxTR&#39;</span><span class="p">,</span> <span class="s1">&#39;vis field spw freqbw i q u v fluxratio spix&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="make_flag_table">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.make_flag_table">[docs]</a>
+<span class="k">def</span> <span class="nf">make_flag_table</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+    <span class="n">weblog_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;stage</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">stage_number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">flagtable</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">flagcmds</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">ampcal_flagcmds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">table_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+            <span class="n">flagcmd_abspath</span> <span class="o">=</span> <span class="n">write_flagcmds_to_disk</span><span class="p">(</span><span class="n">weblog_dir</span><span class="p">,</span> <span class="n">table_basename</span><span class="p">,</span> <span class="n">flagcmds</span><span class="p">)</span>
+            <span class="n">flagcmd_relpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">flagcmd_abspath</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">)</span>
+            <span class="n">flagtable</span><span class="p">[</span><span class="n">table_basename</span><span class="p">]</span> <span class="o">=</span> <span class="n">flagcmd_relpath</span>
+
+    <span class="k">return</span> <span class="n">flagtable</span></div>
+
+
+
+<div class="viewcode-block" id="write_flagcmds_to_disk">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.write_flagcmds_to_disk">[docs]</a>
+<span class="k">def</span> <span class="nf">write_flagcmds_to_disk</span><span class="p">(</span><span class="n">weblog_dir</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">flagcmds</span><span class="p">):</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weblog_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">basename</span><span class="si">}</span><span class="s2">-flag_commands.txt&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flagfile</span><span class="p">:</span>
+        <span class="n">flagfile</span><span class="o">.</span><span class="n">writelines</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;# Flag commands for </span><span class="si">{</span><span class="n">basename</span><span class="si">}</span><span class="se">\n</span><span class="s2">#</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">])</span>
+        <span class="n">flagfile</span><span class="o">.</span><span class="n">writelines</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">flagcmd</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">flagcmd</span> <span class="ow">in</span> <span class="n">flagcmds</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flagcmds</span><span class="p">:</span>
+            <span class="n">flagfile</span><span class="o">.</span><span class="n">writelines</span><span class="p">([</span><span class="s2">&quot;# No flag commands generated</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">filename</span></div>
+
+
+
+<div class="viewcode-block" id="make_flux_table">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.make_flux_table">[docs]</a>
+<span class="k">def</span> <span class="nf">make_flux_table</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+    <span class="c1"># will hold all the flux stat table rows for the results</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">single_result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">ms_for_result</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">vis_cell</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="n">transintent</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;transintent&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+        
+        <span class="c1"># measurements will be empty if calibrated visibility flux derivation failed</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">measurements</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">field_arg</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">measurements</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">ms_for_result</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">f</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">ms_for_result</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_arg</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">intents</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span> <span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">transintent</span><span class="p">)))</span>
+            <span class="n">field_cell</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> (#</span><span class="si">%s</span><span class="s1">) </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">intents</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">measurement</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">measurements</span><span class="p">[</span><span class="n">field_arg</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;spw_id&#39;</span><span class="p">)):</span>
+                <span class="n">spw</span> <span class="o">=</span> <span class="n">ms_for_result</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">measurement</span><span class="o">.</span><span class="n">spw_id</span><span class="p">)</span>
+                <span class="n">freqbw</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">centre_frequency</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="p">))</span>
+                <span class="n">fluxes</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">stokes</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">]:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">flux</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">measurement</span><span class="p">,</span> <span class="n">stokes</span><span class="p">)</span>
+                        <span class="n">unc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">measurement</span><span class="o">.</span><span class="n">uncertainty</span><span class="p">,</span> <span class="n">stokes</span><span class="p">)</span>
+                        <span class="n">flux_jy</span> <span class="o">=</span> <span class="n">flux</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">stokes</span> <span class="o">==</span> <span class="s1">&#39;I&#39;</span><span class="p">:</span>
+                            <span class="n">flux_jy_I</span> <span class="o">=</span> <span class="n">flux_jy</span>
+                        <span class="n">unc_jy</span> <span class="o">=</span> <span class="n">unc</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span>
+                        <span class="n">sp_str</span><span class="p">,</span> <span class="n">sp_scale</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_si_prefix</span><span class="p">(</span><span class="n">flux_jy</span><span class="p">,</span> <span class="n">lztol</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">flux_jy</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">unc_jy</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">unc_ratio</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;100&#39;</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">unc_jy</span><span class="o">/</span><span class="n">flux_jy</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">unc_ratio</span> <span class="o">&gt;=</span> <span class="mf">0.1</span><span class="p">:</span>
+                                <span class="n">unc_ratio_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unc_ratio</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">unc_ratio_str</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">format_float_positional</span><span class="p">(</span>
+                                    <span class="n">unc_ratio</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fractional</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+                            <span class="n">unc_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">unc_jy</span><span class="p">)</span><span class="o">/</span><span class="n">sp_scale</span>
+                            <span class="k">if</span> <span class="n">unc_value</span> <span class="o">&gt;=</span> <span class="mf">0.001</span><span class="p">:</span>
+                                <span class="n">unc_value_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unc_value</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">unc_value_str</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">format_float_positional</span><span class="p">(</span>
+                                    <span class="n">unc_value</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fractional</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+                            <span class="n">fluxes</span><span class="p">[</span><span class="n">stokes</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:.3f}</span><span class="s1"> &amp;#177 </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">%)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="nb">float</span><span class="p">(</span><span class="n">flux_jy</span><span class="p">)</span><span class="o">/</span><span class="n">sp_scale</span><span class="p">,</span> <span class="n">unc_value_str</span><span class="p">,</span> <span class="n">sp_str</span><span class="o">+</span><span class="s1">&#39;Jy&#39;</span><span class="p">,</span> <span class="n">unc_ratio_str</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">fluxes</span><span class="p">[</span><span class="n">stokes</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:.3f}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">flux_jy</span><span class="p">)</span><span class="o">/</span><span class="n">sp_scale</span><span class="p">,</span> <span class="n">sp_str</span><span class="o">+</span><span class="s1">&#39;Jy&#39;</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">fluxes</span><span class="p">[</span><span class="s1">&#39;spix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">measurement</span><span class="p">,</span> <span class="s1">&#39;spix&#39;</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">fluxes</span><span class="p">[</span><span class="s1">&#39;spix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0.0&#39;</span>
+
+                <span class="c1"># Get the corresponding catalog flux</span>
+                <span class="n">catfluxes</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+                <span class="n">flux_ratio</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+
+                <span class="n">cat_measurements</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">flux_densities</span> <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">origin</span> <span class="ow">in</span> <span class="n">CATALOGUE_SOURCES</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">catmeasurement</span> <span class="ow">in</span> <span class="n">cat_measurements</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">catmeasurement</span><span class="o">.</span><span class="n">spw_id</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="n">measurement</span><span class="o">.</span><span class="n">spw_id</span><span class="p">):</span>
+                        <span class="k">continue</span>
+                    <span class="k">for</span> <span class="n">stokes</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">]:</span>
+                        <span class="k">try</span><span class="p">:</span>                        
+                            <span class="n">catflux</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">catmeasurement</span><span class="p">,</span> <span class="n">stokes</span><span class="p">)</span>
+                            <span class="n">catflux_jy</span> <span class="o">=</span> <span class="n">catflux</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">stokes</span> <span class="o">==</span> <span class="s1">&#39;I&#39;</span><span class="p">:</span>
+                                <span class="n">catflux_jy_I</span> <span class="o">=</span> <span class="n">catflux_jy</span>
+                            <span class="n">catfluxes</span><span class="p">[</span><span class="n">stokes</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">catflux</span><span class="p">)</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="k">pass</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">catfluxes</span><span class="p">[</span><span class="s1">&#39;spix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">catmeasurement</span><span class="p">,</span> <span class="s1">&#39;spix&#39;</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">catfluxes</span><span class="p">[</span><span class="s1">&#39;spix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0.0&#39;</span>
+                    <span class="k">if</span> <span class="n">fluxes</span><span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;N/A&#39;</span> <span class="ow">and</span> <span class="n">catfluxes</span><span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;N/A&#39;</span><span class="p">:</span>
+                        <span class="n">flux_ratio</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%0.3f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">flux_jy_I</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">catflux_jy_I</span><span class="p">))</span>
+                    <span class="k">break</span>
+
+                <span class="c1"># Get the corresponding fluxscale derived fluxes.</span>
+                <span class="n">fsfluxes</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+                <span class="n">fs_measurements</span> <span class="o">=</span> <span class="n">single_result</span><span class="o">.</span><span class="n">fluxscale_measurements</span>
+
+                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">fs_measurements</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">fs_measurement</span> <span class="ow">in</span> <span class="n">fs_measurements</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">)]:</span>
+                        <span class="k">if</span> <span class="n">fs_measurement</span><span class="o">.</span><span class="n">spw_id</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="n">measurement</span><span class="o">.</span><span class="n">spw_id</span><span class="p">):</span>
+                            <span class="k">continue</span>
+
+                        <span class="k">for</span> <span class="n">stokes</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">]:</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">fsflux</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fs_measurement</span><span class="p">,</span> <span class="n">stokes</span><span class="p">)</span>
+                                <span class="n">fsunc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fs_measurement</span><span class="o">.</span><span class="n">uncertainty</span><span class="p">,</span> <span class="n">stokes</span><span class="p">)</span>
+                                <span class="n">fsflux_jy</span> <span class="o">=</span> <span class="n">fsflux</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span>
+                                <span class="n">fsunc_jy</span> <span class="o">=</span> <span class="n">fsunc</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span>
+                                <span class="n">sp_str</span><span class="p">,</span> <span class="n">sp_scale</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_si_prefix</span><span class="p">(</span><span class="n">fsflux_jy</span><span class="p">,</span> <span class="n">lztol</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                                <span class="k">if</span> <span class="n">fsflux_jy</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">fsunc_jy</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                                    <span class="n">fsunc_ratio</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;100&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">fsunc_jy</span> <span class="o">/</span> <span class="n">fsflux_jy</span><span class="p">)</span>
+                                    <span class="k">if</span> <span class="n">fsunc_ratio</span> <span class="o">&gt;=</span> <span class="mf">0.1</span><span class="p">:</span>
+                                        <span class="n">fsunc_ratio_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fsunc_ratio</span><span class="p">)</span>
+                                    <span class="k">else</span><span class="p">:</span>
+                                        <span class="n">fsunc_ratio_str</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">format_float_positional</span><span class="p">(</span>
+                                            <span class="n">fsunc_ratio</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fractional</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+                                    <span class="n">fsunc_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fsunc_jy</span><span class="p">)</span><span class="o">/</span><span class="n">sp_scale</span>
+                                    <span class="k">if</span> <span class="n">fsunc_value</span> <span class="o">&gt;=</span> <span class="mf">0.001</span><span class="p">:</span>
+                                        <span class="n">fsunc_value_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fsunc_value</span><span class="p">)</span>
+                                    <span class="k">else</span><span class="p">:</span>
+                                        <span class="n">fsunc_value_str</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">format_float_positional</span><span class="p">(</span>
+                                            <span class="n">fsunc_value</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fractional</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+                                    <span class="n">fsfluxes</span><span class="p">[</span><span class="n">stokes</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:.3f}</span><span class="s1"> &amp;#177 </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">%)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                        <span class="nb">float</span><span class="p">(</span><span class="n">fsflux_jy</span><span class="p">)</span><span class="o">/</span><span class="n">sp_scale</span><span class="p">,</span> <span class="n">fsunc_value_str</span><span class="p">,</span> <span class="n">sp_str</span><span class="o">+</span><span class="s1">&#39;Jy&#39;</span><span class="p">,</span> <span class="n">fsunc_ratio_str</span><span class="p">)</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="n">fsfluxes</span><span class="p">[</span><span class="n">stokes</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:.3f}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">fsflux_jy</span><span class="p">)</span><span class="o">/</span><span class="n">sp_scale</span><span class="p">,</span> <span class="n">sp_str</span><span class="o">+</span><span class="s1">&#39;Jy&#39;</span><span class="p">)</span>
+
+                            <span class="k">except</span><span class="p">:</span>
+                                <span class="k">pass</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">fsfluxes</span><span class="p">[</span><span class="s1">&#39;spix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fs_measurement</span><span class="p">,</span> <span class="s1">&#39;spix&#39;</span><span class="p">)</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">fsfluxes</span><span class="p">[</span><span class="s1">&#39;spix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0.0&#39;</span>
+                        <span class="k">break</span>
+
+                <span class="c1"># Create the table row for current result (vis), field, and spw.</span>
+                <span class="n">tr</span> <span class="o">=</span> <span class="n">FluxTR</span><span class="p">(</span><span class="n">vis_cell</span><span class="p">,</span> <span class="n">field_cell</span><span class="p">,</span> <span class="n">measurement</span><span class="o">.</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">freqbw</span><span class="p">,</span> 
+                            <span class="n">fsfluxes</span><span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">],</span>
+                            <span class="n">fsfluxes</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span>
+                            <span class="n">fsfluxes</span><span class="p">[</span><span class="s1">&#39;U&#39;</span><span class="p">],</span>
+                            <span class="n">fsfluxes</span><span class="p">[</span><span class="s1">&#39;V&#39;</span><span class="p">],</span>
+                            <span class="n">flux_ratio</span><span class="p">,</span>
+                            <span class="n">fluxes</span><span class="p">[</span><span class="s1">&#39;spix&#39;</span><span class="p">])</span>
+                <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+
+                <span class="n">tr</span> <span class="o">=</span> <span class="n">FluxTR</span><span class="p">(</span><span class="n">vis_cell</span><span class="p">,</span> <span class="n">field_cell</span><span class="p">,</span> <span class="n">measurement</span><span class="o">.</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">freqbw</span><span class="p">,</span>
+                            <span class="n">fluxes</span><span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">],</span>
+                            <span class="n">fluxes</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span>
+                            <span class="n">fluxes</span><span class="p">[</span><span class="s1">&#39;U&#39;</span><span class="p">],</span>
+                            <span class="n">fluxes</span><span class="p">[</span><span class="s1">&#39;V&#39;</span><span class="p">],</span>
+                            <span class="n">flux_ratio</span><span class="p">,</span>
+                            <span class="n">fluxes</span><span class="p">[</span><span class="s1">&#39;spix&#39;</span><span class="p">])</span>
+                <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+
+                <span class="n">tr</span> <span class="o">=</span> <span class="n">FluxTR</span><span class="p">(</span><span class="n">vis_cell</span><span class="p">,</span> <span class="n">field_cell</span><span class="p">,</span> <span class="n">measurement</span><span class="o">.</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">freqbw</span><span class="p">,</span>
+                            <span class="n">catfluxes</span><span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">],</span>
+                            <span class="n">catfluxes</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span>
+                            <span class="n">catfluxes</span><span class="p">[</span><span class="s1">&#39;U&#39;</span><span class="p">],</span>
+                            <span class="n">catfluxes</span><span class="p">[</span><span class="s1">&#39;V&#39;</span><span class="p">],</span>
+                            <span class="n">flux_ratio</span><span class="p">,</span>
+                            <span class="n">fluxes</span><span class="p">[</span><span class="s1">&#39;spix&#39;</span><span class="p">])</span>
+                <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span></div>
+
+
+
+<span class="n">AdoptedTR</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;AdoptedTR&#39;</span><span class="p">,</span> <span class="s1">&#39;vis fields&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="make_adopted_table">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.make_adopted_table">[docs]</a>
+<span class="k">def</span> <span class="nf">make_adopted_table</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+    <span class="c1"># will hold all the flux stat table rows for the results</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">adopted_result</span> <span class="ow">in</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">applies_adopted</span><span class="p">]:</span>
+        <span class="n">vis_cell</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">adopted_result</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="n">field_cell</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">adopted_result</span><span class="o">.</span><span class="n">measurements</span><span class="p">)</span>
+
+        <span class="n">tr</span> <span class="o">=</span> <span class="n">AdoptedTR</span><span class="p">(</span><span class="n">vis_cell</span><span class="p">,</span> <span class="n">field_cell</span><span class="p">)</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="create_flux_comparison_plots">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.create_flux_comparison_plots">[docs]</a>
+<span class="k">def</span> <span class="nf">create_flux_comparison_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">showatm</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+    <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">measurements</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">field_id</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Frequency (GHz)&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Flux Density (Jy)&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Avoid offset values (PIPE-644)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">ScalarFormatter</span><span class="p">(</span><span class="n">useOffset</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+        <span class="c1"># PIPE-1550: cycle through different symbols and colours simultaneously</span>
+        <span class="c1"># (diagonally across the 7x10 matrix of unique combinations, rather than row-by-row);</span>
+        <span class="c1"># note that this assumes that the numbers of symbols and colours are coprime</span>
+        <span class="n">symbols_and_colours</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="s1">&#39;osDv^&lt;&gt;&#39;</span><span class="p">),</span>
+                                  <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;tab10&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">colors</span><span class="p">))</span>  <span class="c1"># standard Tableau colormap</span>
+
+        <span class="n">x_min</span> <span class="o">=</span> <span class="mf">1e99</span>
+        <span class="n">x_max</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># Cycle through flux measurements, ordered by SpW ID, to plot the</span>
+        <span class="c1"># calibrated fluxes.</span>
+        <span class="c1"># PIPE-2083: keep a record of which SpW IDs are getting plotted here,</span>
+        <span class="c1"># to restrict which SpWs it needs to overplot catalogue fluxes for.</span>
+        <span class="n">spws_plotted</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">measurements</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;spw_id&#39;</span><span class="p">)):</span>
+            <span class="c1"># cycle colours so that windows centred on the same frequency are distinguishable</span>
+            <span class="n">symbol</span><span class="p">,</span> <span class="n">colour</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">symbols_and_colours</span><span class="p">)</span>
+
+            <span class="n">spws_plotted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">spw_id</span><span class="p">)</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">spw_id</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span>
+            <span class="n">x_unc</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;0.5&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span>
+
+            <span class="c1"># Plot calibrated fluxes. PIPE-566: if both flux and uncertainty</span>
+            <span class="c1"># are zero, then do not plot the value to avoid affecting the</span>
+            <span class="c1"># automatic y-range.</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span>
+            <span class="n">y_unc</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">uncertainty</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">y_unc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;spw </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xerr</span><span class="o">=</span><span class="n">x_unc</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">y_unc</span><span class="p">,</span>
+                    <span class="n">marker</span><span class="o">=</span><span class="n">symbol</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colour</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+
+            <span class="n">x_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x</span> <span class="o">-</span> <span class="n">x_unc</span><span class="p">)</span>
+            <span class="n">x_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">x_unc</span><span class="p">)</span>
+
+        <span class="c1"># Plot fluxes from ASDM, catalog, and/or analysisUtils.</span>
+        <span class="n">catalogue_fluxes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">ORIGIN_XML</span><span class="p">:</span> <span class="s1">&#39;ASDM&#39;</span><span class="p">,</span>
+            <span class="n">ORIGIN_DB</span><span class="p">:</span> <span class="s1">&#39;online catalogue&#39;</span><span class="p">,</span>
+            <span class="n">ORIGIN_ANALYSIS_UTILS</span><span class="p">:</span> <span class="s1">&#39;analysisUtils&#39;</span>
+        <span class="p">}</span>
+
+        <span class="n">ages</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">origin</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">catalogue_fluxes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># PIPE-2083: select which catalog fluxes to plot, based on origin</span>
+            <span class="c1"># and for which SpWs the flux measurements were plotted earlier.</span>
+            <span class="n">fluxes</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">flux_densities</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">origin</span> <span class="o">==</span> <span class="n">origin</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">spw_id</span> <span class="ow">in</span> <span class="n">spws_plotted</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">fluxes</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">ages</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">age</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fluxes</span><span class="p">])</span>
+            <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">spw_id</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fluxes</span><span class="p">]</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fluxes</span><span class="p">]</span>
+            <span class="n">spix</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">spix</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fluxes</span><span class="p">]</span>
+            <span class="c1"># sort by frequency</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">spix</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">spix</span><span class="p">))))</span>
+            <span class="c1"># PIPE-644: always plot catalog fluxes in black.</span>
+            <span class="n">colour</span> <span class="o">=</span> <span class="s2">&quot;k&quot;</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colour</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Data source:</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
+
+            <span class="n">s_xmin</span> <span class="o">=</span> <span class="n">scale_flux</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">spix</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">s_xmax</span> <span class="o">=</span> <span class="n">scale_flux</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">spix</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x_min</span><span class="p">],</span> <span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">s_xmin</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">colour</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Spectral index</span><span class="se">\n</span><span class="s1">extrapolation&#39;</span><span class="p">,</span>
+                    <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">x_max</span><span class="p">],</span> <span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">s_xmax</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">colour</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;_nolegend_&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Check if catalog fluxes share a single age that is not None, and take</span>
+        <span class="c1"># this to represent to catalog flux age; otherwise set age to N/A.</span>
+        <span class="n">uniq_ages</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">age</span> <span class="k">for</span> <span class="n">age</span> <span class="ow">in</span> <span class="n">ages</span> <span class="k">if</span> <span class="n">age</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uniq_ages</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">age</span> <span class="o">=</span> <span class="n">uniq_ages</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">age</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+
+        <span class="c1"># Add plot title.</span>
+        <span class="c1"># PIPE-644: include age of catalog fluxes in title.</span>
+        <span class="n">title_str</span> <span class="o">=</span> <span class="s2">&quot;Flux calibration: </span><span class="si">{}</span><span class="s2"> (age = </span><span class="si">{}</span><span class="s2"> days)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title_str</span><span class="p">)</span>
+
+        <span class="c1"># Plot atmospheric transmission.</span>
+        <span class="k">if</span> <span class="n">showatm</span><span class="p">:</span>
+            <span class="n">atm_color</span> <span class="o">=</span> <span class="s1">&#39;m&#39;</span>
+
+            <span class="c1"># Create 2nd axis for atmospheric transmission.</span>
+            <span class="n">axes_atm</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+            <span class="n">axes_atm</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;ATM Transmission&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">atm_color</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">axes_atm</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">)</span>
+            <span class="n">axes_atm</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">atm_color</span><span class="p">)</span>
+            <span class="n">axes_atm</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">FuncFormatter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">%&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))))</span>
+            <span class="n">axes_atm</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">tick_right</span><span class="p">()</span>
+
+            <span class="c1"># Select antenna to use for determining atmospheric transmission:</span>
+            <span class="c1"># Preferably use highest ranked reference antenna, otherwise</span>
+            <span class="c1"># use antenna ID = 0.</span>
+            <span class="n">ant_id</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="s1">&#39;reference_antenna&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">reference_antenna</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">ant_id</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">search_term</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">reference_antenna</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+
+            <span class="c1"># For each spw in the flux measurements, compute and plot the</span>
+            <span class="c1"># atmospheric transmission vs. frequency.</span>
+            <span class="n">spw_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">m</span><span class="o">.</span><span class="n">spw_id</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">measurements</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="n">spw_ids</span><span class="p">:</span>
+                <span class="n">atm_freq</span><span class="p">,</span> <span class="n">atm_transmission</span> <span class="o">=</span> <span class="n">atmutil</span><span class="o">.</span><span class="n">get_transmission</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">spw_id</span><span class="o">=</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="o">=</span><span class="n">ant_id</span><span class="p">)</span>
+                <span class="n">axes_atm</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">atm_freq</span><span class="p">,</span> <span class="n">atm_transmission</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">atm_color</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Include plot legend.</span>
+        <span class="n">leg</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">numpoints</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">})</span>
+        <span class="n">leg</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">figfile</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">-field</span><span class="si">{}</span><span class="s1">-flux_calibration.png&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">field_id</span><span class="p">)</span>
+
+        <span class="c1"># Save figure to file.</span>
+        <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">figfile</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
+
+        <span class="c1"># Create a wrapper for current plot, and append to list of plots.</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+            <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s1">&#39;field_id&#39;</span><span class="p">:</span> <span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="p">))</span>
+        <span class="p">}</span>
+        <span class="n">wrapper</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">full_path</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;Flux Density&#39;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wrapper</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">plots</span></div>
+
+
+
+<div class="viewcode-block" id="scale_flux">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.scale_flux">[docs]</a>
+<span class="k">def</span> <span class="nf">scale_flux</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">spix</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns flux at a frequency by extrapolating via the spectral index.</span>
+
+<span class="sd">    :param f1: frequency 1</span>
+<span class="sd">    :param s1: flux density at frequency 1</span>
+<span class="sd">    :param f2: frequency 2</span>
+<span class="sd">    :param spix: spectral index</span>
+<span class="sd">    :return: flux density at frequency 2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">spix</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">f2</span><span class="o">/</span><span class="n">f1</span><span class="p">)</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">s1</span><span class="p">))</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

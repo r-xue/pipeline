@@ -1,0 +1,903 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.syspower.syspower &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.syspower.syspower</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.syspower.syspower</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">factorial</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># old</span>
+<span class="c1">#  scipy.signal.savgol_filter(x, window_length, polyorder, deriv=0, delta=1.0, axis=-1, mode=&#39;interp&#39;, cval=0.0)</span>
+
+<span class="c1"># http://scipy-cookbook.readthedocs.io/items/SavitzkyGolay.html</span>
+<div class="viewcode-block" id="savitzky_golay">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.syspower.savitzky_golay">[docs]</a>
+<span class="k">def</span> <span class="nf">savitzky_golay</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Smooth (and optionally differentiate) data with a Savitzky-Golay filter.</span>
+<span class="sd">    The Savitzky-Golay filter removes high frequency noise from data.</span>
+<span class="sd">    It has the advantage of preserving the original shape and</span>
+<span class="sd">    features of the signal better than other types of filtering</span>
+<span class="sd">    approaches, such as moving averages techniques.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : array_like, shape (N,)</span>
+<span class="sd">        the values of the time history of the signal.</span>
+<span class="sd">    window_size : int</span>
+<span class="sd">        the length of the window. Must be an odd integer number.</span>
+<span class="sd">    order : int</span>
+<span class="sd">        the order of the polynomial used in the filtering.</span>
+<span class="sd">        Must be less then `window_size` - 1.</span>
+<span class="sd">    deriv: int</span>
+<span class="sd">        the order of the derivative to compute (default = 0 means only smoothing)</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ys : ndarray, shape (N)</span>
+<span class="sd">        the smoothed signal (or it&#39;s n-th derivative).</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The Savitzky-Golay is a type of low-pass filter, particularly</span>
+<span class="sd">    suited for smoothing noisy data. The main idea behind this</span>
+<span class="sd">    approach is to make for each point a least-square fit with a</span>
+<span class="sd">    polynomial of high order over a odd-sized window centered at</span>
+<span class="sd">    the point.</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    t = np.linspace(-4, 4, 500)</span>
+<span class="sd">    y = np.exp( -t**2 ) + np.random.normal(0, 0.05, t.shape)</span>
+<span class="sd">    ysg = savitzky_golay(y, window_size=31, order=4)</span>
+<span class="sd">    import matplotlib.pyplot as plt</span>
+<span class="sd">    plt.plot(t, y, label=&#39;Noisy signal&#39;)</span>
+<span class="sd">    plt.plot(t, np.exp(-t**2), &#39;k&#39;, lw=1.5, label=&#39;Original signal&#39;)</span>
+<span class="sd">    plt.plot(t, ysg, &#39;r&#39;, label=&#39;Filtered signal&#39;)</span>
+<span class="sd">    plt.legend()</span>
+<span class="sd">    plt.show()</span>
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] A. Savitzky, M. J. E. Golay, Smoothing and Differentiation of</span>
+<span class="sd">       Data by Simplified Least Squares Procedures. Analytical</span>
+<span class="sd">       Chemistry, 1964, 36 (8), pp 1627-1639.</span>
+<span class="sd">    .. [2] Numerical Recipes 3rd Edition: The Art of Scientific Computing</span>
+<span class="sd">       W.H. Press, S.A. Teukolsky, W.T. Vetterling, B.P. Flannery</span>
+<span class="sd">       Cambridge University Press ISBN-13: 9780521880688</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">window_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">window_size</span><span class="p">))</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">order</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;window_size and order have to be of type int&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">window_size</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">window_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;window_size size must be a positive odd number&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">window_size</span> <span class="o">&lt;</span> <span class="n">order</span> <span class="o">+</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;window_size is too small for the polynomials order&quot;</span><span class="p">)</span>
+
+    <span class="n">half_window</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="c1"># precompute coefficients</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asmatrix</span><span class="p">([[</span><span class="n">k</span><span class="o">**</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">half_window</span><span class="p">,</span> <span class="n">half_window</span><span class="o">+</span><span class="mi">1</span><span class="p">)])</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">A</span><span class="p">[</span><span class="n">deriv</span><span class="p">]</span> <span class="o">*</span> <span class="n">rate</span><span class="o">**</span><span class="n">deriv</span> <span class="o">*</span> <span class="n">factorial</span><span class="p">(</span><span class="n">deriv</span><span class="p">)</span>
+    <span class="c1"># pad the signal at the extremes with</span>
+    <span class="c1"># values taken from the signal itself</span>
+    <span class="n">firstvals</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">half_window</span><span class="o">+</span><span class="mi">1</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">lastvals</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="n">half_window</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">firstvals</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">lastvals</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span> <span class="n">m</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;valid&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SyspowerResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.syspower.SyspowerResults">[docs]</a>
+<span class="k">class</span> <span class="nc">SyspowerResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gaintable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spowerdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dat_common</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">clip_sp_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">template_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">band_baseband_spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plotrq</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">gaintable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">gaintable</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">spowerdict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">spowerdict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">dat_common</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dat_common</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        <span class="k">if</span> <span class="n">clip_sp_template</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">clip_sp_template</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">template_table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">template_table</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">band_baseband_spw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">band_baseband_spw</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">plotrq</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plotrq</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SyspowerResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_casa_task</span> <span class="o">=</span> <span class="s1">&#39;Syspower&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gaintable</span> <span class="o">=</span> <span class="n">gaintable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spowerdict</span> <span class="o">=</span> <span class="n">spowerdict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dat_common</span> <span class="o">=</span> <span class="n">dat_common</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clip_sp_template</span> <span class="o">=</span> <span class="n">clip_sp_template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_table</span> <span class="o">=</span> <span class="n">template_table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">band_baseband_spw</span> <span class="o">=</span> <span class="n">band_baseband_spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plotrq</span> <span class="o">=</span> <span class="n">plotrq</span>
+
+<div class="viewcode-block" id="SyspowerResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.syspower.SyspowerResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># return &#39;SyspowerResults:\n\t{0}&#39;.format(</span>
+        <span class="c1">#    &#39;\n\t&#39;.join([ms.name for ms in self.mses]))</span>
+        <span class="k">return</span> <span class="s1">&#39;SyspowerResults:&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="SyspowerInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.syspower.SyspowerInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">SyspowerInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+    <span class="n">antexclude</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">{})</span>
+    <span class="n">apply</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">do_not_apply</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">clip_sp_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">]</span>
+
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clip_sp_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antexclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">apply</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">do_not_apply</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clip_sp_template</span> <span class="o">=</span> <span class="n">clip_sp_template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antexclude</span> <span class="o">=</span> <span class="n">antexclude</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply</span> <span class="o">=</span> <span class="n">apply</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_not_apply</span> <span class="o">=</span> <span class="n">do_not_apply</span></div>
+
+
+
+<div class="viewcode-block" id="Syspower">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.syspower.Syspower">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_syspower&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Sys power fix compression&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Syspower</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SyspowerInputs</span>
+
+<div class="viewcode-block" id="Syspower.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.syspower.Syspower.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># flag normalized p_diff outside this range</span>
+        <span class="n">clip_sp_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">clip_sp_template</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">clip_sp_template</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">clip_sp_template</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">clip_sp_template</span><span class="p">)</span>
+
+        <span class="n">antexclude_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">antexclude</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">antexclude_dict</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">antexclude</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">antexclude</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">antexclude_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">antexclude</span>
+
+        <span class="c1"># Assumes hifv_priorcals was executed as the previous stage</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rq_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rq_result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">rq_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rq_result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+
+        <span class="n">band_baseband_spw</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+
+        <span class="c1"># Look for flux cal</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">)</span>
+
+        <span class="c1"># No amp cal - look for bandpass</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to identify field with intent=&#39;AMPLITUDE&#39;.  Trying BANDPASS calibrator.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Exit if no amp or bp</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No AMPLITUDE or BANDPASS intents found.  Exiting task.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">SyspowerResults</span><span class="p">(</span><span class="n">gaintable</span><span class="o">=</span><span class="n">rq_table</span><span class="p">,</span> <span class="n">spowerdict</span><span class="o">=</span><span class="p">{},</span> <span class="n">dat_common</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">clip_sp_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">template_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">band_baseband_spw</span><span class="o">=</span><span class="n">band_baseband_spw</span><span class="p">)</span>
+
+        <span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">flux_field</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">flux_times</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">time</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using field: </span><span class="si">{0}</span><span class="s2">  (ID: </span><span class="si">{1}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">flux_field</span><span class="p">))</span>
+
+        <span class="n">antenna_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">antennas</span><span class="p">])</span>
+        <span class="n">antenna_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">antennas</span><span class="p">]</span>
+        <span class="c1"># spws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]</span>
+
+        <span class="c1"># Determine if 8-bit or 3-bit</span>
+        <span class="c1"># 8-bit continuum applications (GHz)      3-bit continuum applications (GHz)</span>
+        <span class="c1"># IF pair A0/C0   IF pair B0/D0           IF pair A1C1    IF pair A2C2    IF pair B1D1    IF pair B2D2</span>
+
+        <span class="n">allowedbasebands</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;A0C0&#39;</span><span class="p">,</span> <span class="s1">&#39;B0D0&#39;</span><span class="p">,</span> <span class="s1">&#39;A1C1&#39;</span><span class="p">,</span> <span class="s1">&#39;A2C2&#39;</span><span class="p">,</span> <span class="s1">&#39;B1D1&#39;</span><span class="p">,</span> <span class="s1">&#39;B2D2&#39;</span><span class="p">)</span>
+        <span class="n">allowed_rcvr_bands</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;KU&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;KA&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">]</span>
+
+        <span class="c1"># create a band exclusion list</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">do_not_apply</span><span class="p">:</span>
+            <span class="n">do_not_apply_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">do_not_apply</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">do_not_apply_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">no_band</span> <span class="ow">in</span> <span class="n">do_not_apply_list</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Keyword override - will not apply </span><span class="si">{!s}</span><span class="s2">-band&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">no_band</span><span class="p">))</span>
+
+        <span class="n">banddict</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_baseband_spws</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_select_list</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">warning</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">allprocessedspws</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">do_not_apply_spws</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">banddict</span><span class="p">:</span>
+            <span class="n">baseband2spw</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">baseband</span> <span class="ow">in</span> <span class="n">banddict</span><span class="p">[</span><span class="n">band</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">baseband</span> <span class="ow">in</span> <span class="n">allowedbasebands</span> <span class="ow">and</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">allowed_rcvr_bands</span><span class="p">:</span>
+                    <span class="n">spwsperbaseband</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">spwdict</span> <span class="ow">in</span> <span class="n">banddict</span><span class="p">[</span><span class="n">band</span><span class="p">][</span><span class="n">baseband</span><span class="p">]:</span>
+                        <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">spwdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="n">spwsperbaseband</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+                    <span class="n">allprocessedspws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">spwsperbaseband</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">do_not_apply_list</span><span class="p">:</span>
+                        <span class="n">do_not_apply_spws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">spwsperbaseband</span><span class="p">)</span>
+                    <span class="n">baseband2spw</span><span class="p">[</span><span class="n">baseband</span><span class="p">]</span> <span class="o">=</span> <span class="n">spwsperbaseband</span>
+                    <span class="n">band_baseband_spw</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">baseband2spw</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">band_baseband_spw</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No bands/basebands in these data will be processed for the hifv_syspower task.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">SyspowerResults</span><span class="p">(</span><span class="n">gaintable</span><span class="o">=</span><span class="n">rq_table</span><span class="p">,</span> <span class="n">spowerdict</span><span class="o">=</span><span class="p">{},</span> <span class="n">dat_common</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">clip_sp_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">template_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">band_baseband_spw</span><span class="o">=</span><span class="n">band_baseband_spw</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;----------------------------------&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">band_baseband_spw</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;----------------------------------&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Execute for each band, and then run the code normally for each baseband within a given band.</span>
+        <span class="n">spowerdict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">template_table</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">dat_common_final</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Make a copy of the RQ table and operate on that copy</span>
+        <span class="c1"># We need to apply the changes and create the diff tables for plotting purposes,</span>
+        <span class="c1">#   whether or not apply is True/False</span>
+        <span class="n">temprq</span> <span class="o">=</span> <span class="s1">&#39;rq_temp.tbl&#39;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">temprq</span><span class="p">):</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">temprq</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">rq_table</span><span class="p">,</span> <span class="n">temprq</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">band_baseband_spw</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-----------------------------------&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Processing syspower </span><span class="si">{!s}</span><span class="s1">-band...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">))</span>
+
+<span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            # Example dictionary format of the task keyword antexclude</span>
+<span class="sd">            {&#39;L&#39;: {&#39;ea02&#39;: {&#39;usemedian&#39;: True}, &#39;ea03&#39;: {&#39;usemedian&#39;: False}},</span>
+<span class="sd">             &#39;X&#39;: {&#39;ea02&#39;: {&#39;usemedian&#39;: True}, &#39;ea03&#39;: {&#39;usemedian&#39;: False}},</span>
+<span class="sd">             &#39;S&#39;: {&#39;ea12&#39;: {&#39;usemedian&#39;: False}, &#39;ea22&#39;: {&#39;usemedian&#39;: False}}}</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="n">antexclude</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">usemedian_perant</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">usemedian_perant_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">antexclude</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">antexclude_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">antexclude_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">antexclude_dict</span><span class="p">[</span><span class="n">band</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                    <span class="n">antexclude</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">antexclude_list</span><span class="p">)</span>
+                    <span class="n">usemedian_perant</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;usemedian&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">antexclude_dict</span><span class="p">[</span><span class="n">band</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())]</span>
+                    <span class="c1"># usemedian_perant = antband_exclude[band][&#39;usemedian&#39;]</span>
+                    <span class="n">usemedian_perant_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">antexclude_list</span><span class="p">,</span> <span class="n">usemedian_perant</span><span class="p">))</span>
+
+            <span class="n">spws</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">baseband</span> <span class="ow">in</span> <span class="n">band_baseband_spw</span><span class="p">[</span><span class="n">band</span><span class="p">]:</span>
+                <span class="n">spws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">band_baseband_spw</span><span class="p">[</span><span class="n">band</span><span class="p">][</span><span class="n">baseband</span><span class="p">])</span>
+
+            <span class="n">template_table_band</span> <span class="o">=</span> <span class="s1">&#39;pdiff_</span><span class="si">{!s}</span><span class="s1">.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
+
+            <span class="c1"># get syspower from MS</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/SYSPOWER&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+                <span class="c1"># stb = tb.query(&#39;SPECTRAL_WINDOW_ID &gt; &#39;+str(min(spws)-1))  # VLASS specific for offset of two spws?</span>
+                <span class="n">stb</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID in [</span><span class="si">{!s}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">])))</span>
+                <span class="n">sp_time</span> <span class="o">=</span> <span class="n">stb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+                <span class="n">sp_ant</span> <span class="o">=</span> <span class="n">stb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA_ID&#39;</span><span class="p">)</span>
+                <span class="n">sp_spw</span> <span class="o">=</span> <span class="n">stb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID&#39;</span><span class="p">)</span>
+                <span class="n">p_diff</span> <span class="o">=</span> <span class="n">stb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SWITCHED_DIFF&#39;</span><span class="p">)</span>
+                <span class="n">rq</span> <span class="o">=</span> <span class="n">stb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;REQUANTIZER_GAIN&#39;</span><span class="p">)</span>
+                <span class="n">stb</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+            <span class="c1"># setup arrays</span>
+            <span class="n">sorted_time</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">sp_time</span><span class="p">)</span>
+            <span class="n">dat_raw</span>          <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">spws</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_time</span><span class="p">)))</span>
+            <span class="n">dat_rq</span>           <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">spws</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_time</span><span class="p">)))</span>
+            <span class="n">dat_flux</span>         <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">spws</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="n">dat_scaled</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">spws</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_time</span><span class="p">)))</span>
+            <span class="n">dat_filtered</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">spws</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_time</span><span class="p">)))</span>
+            <span class="c1"># dat_common       = np.ma.zeros((len(antenna_ids), 2, 2, len(sorted_time)))</span>
+            <span class="n">dat_online_flags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_time</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
+            <span class="n">dat_sum</span>          <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">spws</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_time</span><span class="p">)))</span>
+            <span class="n">dat_sum_flux</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">spws</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_time</span><span class="p">)))</span>
+
+            <span class="c1"># get online flags from .flagonline.txt</span>
+            <span class="n">flag_file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;.flagonline.txt&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">flag_file_name</span><span class="p">):</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">flag_file_name</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flag_file</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">flag_file</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;antenna=&#39;ea(\d*)&amp;&amp;\*&#39; timerange=&#39;(.*)&#39; reason&quot;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                            <span class="n">r</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">if</span> <span class="n">r</span><span class="p">:</span>
+                            <span class="n">this_ant</span> <span class="o">=</span> <span class="s1">&#39;ea&#39;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">start_time</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">end_time</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="n">start_time_sec</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">start_time</span><span class="p">),</span> <span class="s1">&#39;s&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+                            <span class="n">end_time_sec</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">end_time</span><span class="p">),</span> <span class="s1">&#39;s&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+                            <span class="n">indices_to_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">sorted_time</span> <span class="o">&gt;=</span> <span class="n">start_time_sec</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">sorted_time</span> <span class="o">&lt;=</span> <span class="n">end_time_sec</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">dat_online_flags</span><span class="p">[</span><span class="n">antenna_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">this_ant</span><span class="p">),</span> <span class="n">indices_to_flag</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># remove requantizer changes from p_diff</span>
+            <span class="n">pdrq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">p_diff</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_equal</span><span class="p">(</span><span class="n">rq</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+            <span class="c1"># read tables into arrays</span>
+            <span class="c1"># dat_filtered dimensions: (n_ant, n_spw, n_pol, n_hits)</span>
+            <span class="n">spw_problems</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">this_ant</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;reading antenna </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">this_ant</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">this_spw</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spws</span><span class="p">):</span>
+                    <span class="n">hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">sp_ant</span> <span class="o">==</span> <span class="n">this_ant</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">sp_spw</span> <span class="o">==</span> <span class="n">this_spw</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">times</span><span class="p">,</span> <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">sp_time</span><span class="p">[</span><span class="n">hits</span><span class="p">],</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">hits2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">sorted_time</span><span class="p">,</span> <span class="n">times</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">flux_hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">times</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">flux_times</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">times</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">flux_times</span><span class="p">)))[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hits</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hits2</span><span class="p">):</span>
+                        <span class="n">spw_problems</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_spw</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">hits2</span><span class="p">):</span>
+                            <span class="n">hits</span> <span class="o">=</span> <span class="n">hits</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+
+                    <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pol</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">hits2</span><span class="p">))</span>
+                        <span class="n">dat_raw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">hits2</span><span class="p">]</span> <span class="o">=</span> <span class="n">p_diff</span><span class="p">[</span><span class="n">pol</span><span class="p">,</span> <span class="n">hits</span><span class="p">]</span>
+                        <span class="n">dat_flux</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">pol</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">pdrq</span><span class="p">[</span><span class="n">pol</span><span class="p">,</span> <span class="n">hits</span><span class="p">][</span><span class="n">flux_hits</span><span class="p">])</span>
+                        <span class="n">dat_rq</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">hits2</span><span class="p">]</span> <span class="o">=</span> <span class="n">rq</span><span class="p">[</span><span class="n">pol</span><span class="p">,</span> <span class="n">hits</span><span class="p">]</span>
+                        <span class="n">dat_scaled</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">hits2</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdrq</span><span class="p">[</span><span class="n">pol</span><span class="p">,</span> <span class="n">hits</span><span class="p">]</span> <span class="o">/</span> <span class="n">dat_flux</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">pol</span><span class="p">]</span>
+                        <span class="n">dat_filtered</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">hits2</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">dat_scaled</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">hits2</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">spw_problems</span><span class="p">:</span>
+                <span class="n">spw_problems</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spw_problems</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Caution - missing or duplicated data - timing issue with the syspower table.  &quot;</span> <span class="o">+</span>
+                            <span class="s2">&quot;Review the data for spw=&#39;</span><span class="si">{!s}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spw_problems</span><span class="p">])))</span>
+
+            <span class="c1"># Determine which spws go with which basebands</span>
+            <span class="c1"># There could be multiple baseband names per band - count them</span>
+            <span class="n">bband_common_indices</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">bbindex</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># for band in band_baseband_spw:</span>
+            <span class="k">for</span> <span class="n">baseband</span> <span class="ow">in</span> <span class="n">band_baseband_spw</span><span class="p">[</span><span class="n">band</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">band_baseband_spw</span><span class="p">[</span><span class="n">band</span><span class="p">][</span><span class="n">baseband</span><span class="p">]:</span>
+                    <span class="n">numspws</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">band_baseband_spw</span><span class="p">[</span><span class="n">band</span><span class="p">][</span><span class="n">baseband</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">bbindex</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">bband_common_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numspws</span><span class="p">)))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">startindex</span> <span class="o">=</span> <span class="n">bband_common_indices</span><span class="p">[</span><span class="n">bbindex</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="n">bband_common_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">startindex</span><span class="p">,</span> <span class="n">startindex</span> <span class="o">+</span> <span class="n">numspws</span><span class="p">)))</span>
+                    <span class="n">bbindex</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;----------------------------------&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">bband_common_indices</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;----------------------------------&#39;</span><span class="p">)</span>
+
+            <span class="c1"># dat_common for this particular receiver band</span>
+            <span class="n">dat_common</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">),</span> <span class="n">bbindex</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_time</span><span class="p">)))</span>
+
+            <span class="c1"># common baseband template</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">this_ant</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating template for antenna </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">antenna_names</span><span class="p">[</span><span class="n">this_ant</span><span class="p">]))</span>
+                <span class="k">for</span> <span class="n">bband</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bbindex</span><span class="p">):</span>
+                    <span class="c1"># common_indices = list(range(0, 8)) if bband == 0 else list(range(8, 16))  # VLASS Specific</span>
+                    <span class="n">common_indices</span> <span class="o">=</span> <span class="n">bband_common_indices</span><span class="p">[</span><span class="n">bband</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  processing band </span><span class="si">{0}</span><span class="s1">, baseband </span><span class="si">{1}</span><span class="s1">,  polarization </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">bband</span><span class="p">,</span> <span class="n">pol</span><span class="p">))</span>
+
+                        <span class="c1"># create initial template</span>
+                        <span class="c1"># sp_data dimmensions: (n_spw, n_hits)</span>
+                        <span class="n">sp_data</span> <span class="o">=</span> <span class="n">dat_filtered</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">common_indices</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="p">:]</span>
+                        <span class="n">sp_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sp_data</span><span class="p">)</span>
+                        <span class="n">sp_data</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">sp_data</span><span class="p">)</span>
+                        <span class="n">sp_data</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">dat_online_flags</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+                        <span class="n">sp_data</span><span class="p">,</span> <span class="n">flag_percent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_with_medfilt</span><span class="p">(</span><span class="n">sp_data</span><span class="p">,</span> <span class="n">sp_data</span><span class="p">,</span> <span class="n">flag_median</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                                       <span class="n">k</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">do_shift</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    total flagged data: </span><span class="si">{0:.2f}% i</span><span class="s1">n first pass&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flag_percent</span><span class="p">))</span>
+
+                        <span class="n">sp_data</span><span class="p">,</span> <span class="n">flag_percent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_with_medfilt</span><span class="p">(</span><span class="n">sp_data</span><span class="p">,</span> <span class="n">sp_data</span><span class="p">,</span> <span class="n">flag_rms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                                       <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">do_shift</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    total flagged data: </span><span class="si">{0:.2f}% i</span><span class="s1">n second pass&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flag_percent</span><span class="p">))</span>
+
+                        <span class="k">if</span> <span class="n">sp_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="c1"># flag residuals and recalculate template</span>
+                            <span class="n">sp_template</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">sp_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                            <span class="n">sp_data</span><span class="p">,</span> <span class="n">flag_percent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_with_medfilt</span><span class="p">(</span><span class="n">sp_data</span><span class="p">,</span> <span class="n">sp_template</span><span class="p">,</span> <span class="n">flag_median</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                                           <span class="n">k</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">do_shift</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    total flagged data: </span><span class="si">{0:.2f}% i</span><span class="s1">n third pass&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flag_percent</span><span class="p">))</span>
+
+                            <span class="n">sp_data</span><span class="p">,</span> <span class="n">flag_percent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_with_medfilt</span><span class="p">(</span><span class="n">sp_data</span><span class="p">,</span> <span class="n">sp_template</span><span class="p">,</span> <span class="n">flag_rms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                                           <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">do_shift</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    total flagged data: </span><span class="si">{0:.2f}% i</span><span class="s1">n fourth pass&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flag_percent</span><span class="p">))</span>
+
+                        <span class="n">sp_median_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">sp_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">sp_median_mask</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">sp_median_data</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+                        <span class="c1"># scipy.signal.savgol_filter(x, window_length, polyorder, deriv=0, delta=1.0,</span>
+                        <span class="c1">#                            axis=-1, mode=&#39;interp&#39;, cval=0.0) # OLD</span>
+                        <span class="c1"># savitzky_golay(y, window_size, order, deriv=0, rate=1):  NEW</span>
+                        <span class="c1"># sp_template = savgol_filter(self.interp_with_medfilt(sp_median_data), 7, 3)</span>
+                        <span class="n">sp_template</span> <span class="o">=</span> <span class="n">savitzky_golay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interp_with_medfilt</span><span class="p">(</span><span class="n">sp_median_data</span><span class="p">),</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                        <span class="n">sp_template</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sp_template</span><span class="p">)</span>
+                        <span class="n">sp_template</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">sp_template</span><span class="p">)</span>
+                        <span class="n">sp_template</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">sp_median_mask</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    restored </span><span class="si">{0:.2f}</span><span class="s1">% template flags after interpolation&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                 <span class="mf">100.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sp_median_mask</span><span class="p">)</span> <span class="o">/</span> <span class="n">sp_median_mask</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+
+                        <span class="c1"># repeat after square root</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sp_data</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                            <span class="n">sp_data</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">sp_data</span><span class="p">)</span>
+                        <span class="n">sp_data</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">sp_data</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">sp_data</span> <span class="o">=</span> <span class="n">sp_data</span> <span class="o">**</span> <span class="mf">.5</span>
+                        <span class="n">sp_template</span> <span class="o">=</span> <span class="n">sp_template</span> <span class="o">**</span> <span class="mf">.5</span>
+                        <span class="n">sp_data</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">sp_data</span> <span class="o">!=</span> <span class="n">sp_data</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">sp_data</span><span class="p">,</span> <span class="n">flag_percent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_with_medfilt</span><span class="p">(</span><span class="n">sp_data</span><span class="p">,</span> <span class="n">sp_template</span><span class="p">,</span> <span class="n">flag_rms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                                       <span class="n">flag_median</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                                       <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">do_shift</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    total flagged data: </span><span class="si">{0:.2f}% i</span><span class="s1">n fifth pass&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flag_percent</span><span class="p">))</span>
+                        <span class="n">sp_median_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">sp_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="c1"># sp_median_mask = deepcopy(sp_median_data.mask)</span>
+                        <span class="n">sp_template</span> <span class="o">=</span> <span class="n">savitzky_golay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interp_with_medfilt</span><span class="p">(</span><span class="n">sp_median_data</span><span class="p">),</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+                        <span class="n">dat_common</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">bband</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">sp_template</span>
+
+            <span class="n">spowerdictband</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">spowerdictband</span><span class="p">[</span><span class="s1">&#39;spower_raw&#39;</span><span class="p">]</span>          <span class="o">=</span> <span class="n">dat_raw</span>
+            <span class="n">spowerdictband</span><span class="p">[</span><span class="s1">&#39;spower_flux_levels&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">dat_flux</span>
+            <span class="n">spowerdictband</span><span class="p">[</span><span class="s1">&#39;spower_rq&#39;</span><span class="p">]</span>           <span class="o">=</span> <span class="n">dat_rq</span>
+            <span class="n">spowerdictband</span><span class="p">[</span><span class="s1">&#39;spower_scaled&#39;</span><span class="p">]</span>       <span class="o">=</span> <span class="n">dat_scaled</span>
+            <span class="n">spowerdictband</span><span class="p">[</span><span class="s1">&#39;spower_filtered&#39;</span><span class="p">]</span>     <span class="o">=</span> <span class="n">dat_filtered</span>
+            <span class="n">spowerdictband</span><span class="p">[</span><span class="s1">&#39;spower_common&#39;</span><span class="p">]</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">dat_common</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">spowerdictband</span><span class="p">[</span><span class="s1">&#39;spower_online_flags&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dat_online_flags</span>
+            <span class="n">spowerdictband</span><span class="p">[</span><span class="s1">&#39;spower_sum&#39;</span><span class="p">]</span>          <span class="o">=</span> <span class="n">dat_sum</span>
+            <span class="n">spowerdictband</span><span class="p">[</span><span class="s1">&#39;spower_sum_flux&#39;</span><span class="p">]</span>     <span class="o">=</span> <span class="n">dat_sum_flux</span>
+
+            <span class="c1"># flag template using clip values</span>
+            <span class="n">final_template</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dat_common</span><span class="p">)</span>
+            <span class="n">final_template</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">final_template</span><span class="p">)</span>
+
+            <span class="n">final_template</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">final_template</span> <span class="o">&lt;</span> <span class="n">clip_sp_template</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">final_template</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">final_template</span> <span class="o">&gt;</span> <span class="n">clip_sp_template</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">antids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">usemedian_perant</span> <span class="ow">and</span> <span class="n">antexclude</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">this_ant</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">):</span>
+                    <span class="n">antindex</span> <span class="o">=</span> <span class="n">antids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="n">antname</span> <span class="o">=</span> <span class="n">antenna_names</span><span class="p">[</span><span class="n">antindex</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">antname</span> <span class="ow">in</span> <span class="n">antexclude</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Antenna &quot;</span> <span class="o">+</span> <span class="n">antname</span> <span class="o">+</span> <span class="s2">&quot; to be excluded.&quot;</span><span class="p">)</span>
+                        <span class="n">final_template</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>  <span class="c1"># Change mask values to True for that antenna</span>
+                <span class="n">median_final_template</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">final_template</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">this_ant</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">):</span>
+                <span class="n">antindex</span> <span class="o">=</span> <span class="n">antids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">antname</span> <span class="o">=</span> <span class="n">antenna_names</span><span class="p">[</span><span class="n">antindex</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">antname</span> <span class="ow">in</span> <span class="n">antexclude</span><span class="p">:</span>
+                    <span class="n">usemedian</span> <span class="o">=</span> <span class="n">usemedian_perant_dict</span><span class="p">[</span><span class="n">antname</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">usemedian</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using median value in template for antenna &quot;</span> <span class="o">+</span> <span class="n">antname</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+                        <span class="n">final_template</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">median_final_template</span><span class="o">.</span><span class="n">data</span>
+                        <span class="n">final_template</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">median_final_template</span><span class="o">.</span><span class="n">mask</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using value of 1.0 in template for antenna &quot;</span> <span class="o">+</span> <span class="n">antname</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+                        <span class="n">final_template</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">1.0</span>
+                        <span class="n">final_template</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">nomask</span>
+
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">temprq</span><span class="p">,</span> <span class="n">nomodify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+                <span class="n">rq_time</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+                <span class="n">rq_spw</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID&#39;</span><span class="p">)</span>
+                <span class="n">rq_par</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FPARAM&#39;</span><span class="p">)</span>
+                <span class="n">rq_ant</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA1&#39;</span><span class="p">)</span>
+                <span class="n">rq_flag</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">)</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting RQ table&#39;</span><span class="p">)</span>
+                <span class="c1"># spw_offset = 2  # This was hardwired for VLASS in the past</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">this_ant</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">):</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  writing RQ table for antenna </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">this_ant</span><span class="p">))</span>
+
+                    <span class="c1"># for j, this_spw in enumerate(range(len(spws))):</span>
+                    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">this_spw</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spws</span><span class="p">):</span>
+                        <span class="c1"># hits = np.where((rq_ant == i) &amp; (rq_spw == j + spw_offset))[0]</span>
+                        <span class="n">hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">rq_ant</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">rq_spw</span> <span class="o">==</span> <span class="n">this_spw</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="c1"># bband = 0 if (j &lt; 8) else 1</span>
+
+                        <span class="k">for</span> <span class="n">subarray</span> <span class="ow">in</span> <span class="n">bband_common_indices</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">subarray</span><span class="p">:</span>
+                                <span class="n">bband</span> <span class="o">=</span> <span class="n">bband_common_indices</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">subarray</span><span class="p">)</span>
+
+                        <span class="n">hits2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">sorted_time</span><span class="p">,</span> <span class="n">rq_time</span><span class="p">[</span><span class="n">hits</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span>
+
+                        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">rq_par</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pol</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">hits</span><span class="p">]</span> <span class="o">*=</span> <span class="n">final_template</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">bband</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">hits2</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+                                <span class="n">rq_flag</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pol</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">hits</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">rq_flag</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pol</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">hits</span><span class="p">],</span>
+                                                                      <span class="n">final_template</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">bband</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">hits2</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+                                <span class="k">if</span> <span class="n">j</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">]:</span>
+                                    <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;  </span><span class="si">{2}% o</span><span class="s1">f solutions flagged in band </span><span class="si">{0}</span><span class="s1">, baseband </span><span class="si">{1}</span><span class="s1">,  polarization </span><span class="si">{2}</span><span class="s1">&#39;</span>
+                                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">bband</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="mf">100.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">rq_flag</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pol</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">hits</span><span class="p">])</span> <span class="o">/</span>
+                                                                                      <span class="n">rq_flag</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pol</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">hits</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+                            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Error preparing final RQ table&#39;</span><span class="p">)</span>
+                                <span class="k">raise</span>  <span class="c1"># SystemExit(&#39;shape mismatch writing final RQ table&#39;)</span>
+
+                <span class="k">try</span><span class="p">:</span>
+
+                    <span class="n">tb</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;FPARAM&#39;</span><span class="p">,</span> <span class="n">rq_par</span><span class="p">)</span>
+                    <span class="n">tb</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">,</span> <span class="n">rq_flag</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Error writing final RQ table - switched power will not be applied&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span>
+
+            <span class="c1"># create new table to plot pdiff template_table per band</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">template_table_band</span><span class="p">):</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">template_table_band</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">temprq</span><span class="p">,</span> <span class="n">template_table_band</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">template_table_band</span><span class="p">,</span> <span class="n">nomodify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">this_ant</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">):</span>
+                    <span class="c1"># for j, this_spw in enumerate(range(len(spws))):</span>
+                    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">this_spw</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spws</span><span class="p">):</span>
+                        <span class="n">hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">rq_ant</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">rq_spw</span> <span class="o">==</span> <span class="n">this_spw</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="c1"># bband = 0 if (j &lt; 8) else 1</span>
+                        <span class="k">for</span> <span class="n">subarray</span> <span class="ow">in</span> <span class="n">bband_common_indices</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">subarray</span><span class="p">:</span>
+                                <span class="n">bband</span> <span class="o">=</span> <span class="n">bband_common_indices</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">subarray</span><span class="p">)</span>
+                        <span class="n">hits2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">sorted_time</span><span class="p">,</span> <span class="n">rq_time</span><span class="p">[</span><span class="n">hits</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span>
+
+                        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">rq_par</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pol</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">hits</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_template</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">bband</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">hits2</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+                                <span class="n">rq_flag</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pol</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">hits</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_template</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">bband</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">hits2</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span>
+                            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Shape mismatch writing final template table&#39;</span><span class="p">)</span>
+
+                <span class="n">tb</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;FPARAM&#39;</span><span class="p">,</span> <span class="n">rq_par</span><span class="p">)</span>
+                <span class="n">tb</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">,</span> <span class="n">rq_flag</span><span class="p">)</span>
+
+            <span class="c1"># Collect dictionaries per band</span>
+            <span class="n">spowerdict</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">spowerdictband</span>
+            <span class="n">dat_common_final</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">dat_common</span>
+            <span class="n">template_table</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">template_table_band</span>
+
+        <span class="c1"># If requested to apply results, copy the now modified temp table over to the original</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">apply</span><span class="p">:</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Results applied to the RQ table.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">rq_table</span><span class="p">):</span>
+                <span class="c1"># make a table backup from the original, and remove original to be replaced by temprq</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">rq_table</span><span class="p">,</span> <span class="n">rq_table</span> <span class="o">+</span> <span class="s1">&#39;.backup&#39;</span><span class="p">)</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">rq_table</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">temprq</span><span class="p">,</span> <span class="n">rq_table</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">do_not_apply_spws</span><span class="p">:</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Adopt the original requantizer gains for spws=</span><span class="si">%r</span><span class="s2"> from the band(s) specified by the &#39;do_not_apply&#39; input parameter.&quot;</span><span class="p">,</span>
+                    <span class="n">do_not_apply_spws</span><span class="p">)</span>
+                <span class="c1"># copy back the do_not_apply_spws rows from the original table, so they don&#39;t get overwritten.</span>
+                <span class="n">original_tb</span> <span class="o">=</span> <span class="n">rq_table</span> <span class="o">+</span> <span class="s1">&#39;.backup&#39;</span>
+                <span class="n">modified_tb</span> <span class="o">=</span> <span class="n">rq_table</span>
+
+                <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">original_tb</span><span class="p">,</span> <span class="n">nomodify</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb_original</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">modified_tb</span><span class="p">,</span> <span class="n">nomodify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb_modified</span><span class="p">:</span>
+
+                        <span class="n">rq_par_original</span> <span class="o">=</span> <span class="n">tb_original</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FPARAM&#39;</span><span class="p">)</span>
+                        <span class="n">rq_par_modified</span> <span class="o">=</span> <span class="n">tb_modified</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FPARAM&#39;</span><span class="p">)</span>
+
+                        <span class="n">rq_flag_original</span> <span class="o">=</span> <span class="n">tb_original</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">)</span>
+                        <span class="n">rq_flag_modified</span> <span class="o">=</span> <span class="n">tb_modified</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">)</span>
+
+                        <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">do_not_apply_spws</span><span class="p">:</span>
+                            <span class="n">subtb</span> <span class="o">=</span> <span class="n">tb_original</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID == &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">spwid</span><span class="p">))</span>
+                            <span class="n">rows_select</span> <span class="o">=</span> <span class="n">subtb</span><span class="o">.</span><span class="n">rownumbers</span><span class="p">()</span>
+                            <span class="n">subtb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;copy FPARM/FLAG values from </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1"> for spw= </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">original_tb</span><span class="p">,</span> <span class="n">modified_tb</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+                            <span class="n">rq_par_modified</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">rows_select</span><span class="p">]</span> <span class="o">=</span> <span class="n">rq_par_original</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">rows_select</span><span class="p">]</span>
+                            <span class="n">rq_flag_modified</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">rows_select</span><span class="p">]</span> <span class="o">=</span> <span class="n">rq_flag_original</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">rows_select</span><span class="p">]</span>
+
+                        <span class="n">tb_modified</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;FPARAM&#39;</span><span class="p">,</span> <span class="n">rq_par_modified</span><span class="p">)</span>
+                        <span class="n">tb_modified</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">,</span> <span class="n">rq_flag_modified</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Results not applied to the RQ table.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Cleanup temporary table that we operated on</span>
+        <span class="c1"># if os.path.isdir(temprq):</span>
+        <span class="c1">#     shutil.rmtree(temprq)</span>
+
+        <span class="k">return</span> <span class="n">SyspowerResults</span><span class="p">(</span><span class="n">gaintable</span><span class="o">=</span><span class="n">rq_table</span><span class="p">,</span> <span class="n">spowerdict</span><span class="o">=</span><span class="n">spowerdict</span><span class="p">,</span> <span class="n">dat_common</span><span class="o">=</span><span class="n">dat_common_final</span><span class="p">,</span>
+                               <span class="n">clip_sp_template</span><span class="o">=</span><span class="n">clip_sp_template</span><span class="p">,</span> <span class="n">template_table</span><span class="o">=</span><span class="n">template_table</span><span class="p">,</span>
+                               <span class="n">band_baseband_spw</span><span class="o">=</span><span class="n">band_baseband_spw</span><span class="p">,</span> <span class="n">plotrq</span><span class="o">=</span><span class="n">temprq</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Syspower.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.syspower.Syspower.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+    <span class="c1"># function for smoothing and statistical flagging</span>
+    <span class="c1"># adapted from https://gist.github.com/bhawkins/3535131</span>
+<div class="viewcode-block" id="Syspower.medfilt">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.syspower.Syspower.medfilt">[docs]</a>
+    <span class="k">def</span> <span class="nf">medfilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">6.0</span><span class="p">,</span> <span class="n">flag_rms</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_median</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_gaps</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="n">k2</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">k</span><span class="p">))</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">k</span><span class="p">))</span>
+        <span class="n">y</span><span class="p">[:,</span> <span class="n">k2</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k2</span><span class="p">):</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">k2</span> <span class="o">-</span> <span class="n">i</span>
+            <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">y</span><span class="p">[:</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">mask</span><span class="p">[:</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">y</span><span class="p">[:</span><span class="o">-</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">:]</span>
+            <span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="n">j</span><span class="p">:,</span> <span class="o">-</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="o">-</span><span class="n">j</span><span class="p">:,</span> <span class="o">-</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">medians</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">medians</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">):</span>
+            <span class="n">medians</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">medians</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">medians</span><span class="o">.</span><span class="n">mask</span><span class="p">):</span> <span class="k">return</span> <span class="n">medians</span>
+
+        <span class="k">if</span> <span class="n">fill_gaps</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">medians</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">x</span>
+
+        <span class="k">if</span> <span class="n">flag_median</span><span class="p">:</span>
+            <span class="n">rms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">dev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">rms</span><span class="p">[</span><span class="n">rms</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="n">medians</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">medians</span><span class="p">)</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">dev</span> <span class="o">*</span> <span class="n">threshold</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">medians</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">rms</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">medians</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">rms</span> <span class="o">!=</span> <span class="n">rms</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">flag_rms</span><span class="p">:</span>
+            <span class="n">rms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">dev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">rms</span><span class="p">[</span><span class="n">rms</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="n">medians</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">rms</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">dev</span> <span class="o">*</span> <span class="n">threshold</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">medians</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">rms</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">medians</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">rms</span> <span class="o">!=</span> <span class="n">rms</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flag_only</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">medians</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">medians</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">x</span></div>
+
+
+    <span class="c1"># combine SPWs and flag based on moving window statistics</span>
+<div class="viewcode-block" id="Syspower.flag_with_medfilt">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.syspower.Syspower.flag_with_medfilt">[docs]</a>
+    <span class="k">def</span> <span class="nf">flag_with_medfilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">do_shift</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">do_shift</span><span class="p">:</span>
+            <span class="n">resid</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">resid</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">temp</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">new_flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">medfilt</span><span class="p">(</span><span class="n">resid</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">flag_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">new_flags</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">newshape</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">flag_percent</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">flag_percent</span></div>
+
+
+    <span class="c1"># use median filter to interpolate flagged values</span>
+<div class="viewcode-block" id="Syspower.interp_with_medfilt">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.syspower.Syspower.interp_with_medfilt">[docs]</a>
+    <span class="k">def</span> <span class="nf">interp_with_medfilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">99</span><span class="p">,</span> <span class="n">max_interp</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">this_interp</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span> <span class="o">==</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="n">flag_percent</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;    will attempt to interpolate </span><span class="si">{0:.2f}% o</span><span class="s1">f data in iteration </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flag_percent</span><span class="p">,</span>
+                                                                                                 <span class="n">this_interp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">this_interp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">medfilt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">fill_gaps</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">this_interp</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">this_interp</span> <span class="o">&gt;</span> <span class="n">max_interp</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="n">flag_percent2</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    finished interpolation with </span><span class="si">{0:.2f}% o</span><span class="s1">f data flagged&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flag_percent2</span><span class="p">))</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

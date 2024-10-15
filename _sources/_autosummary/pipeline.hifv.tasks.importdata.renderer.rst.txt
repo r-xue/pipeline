@@ -1,0 +1,18 @@
+pipeline.hifv.tasks.importdata.renderer
+=======================================
+
+.. automodule:: pipeline.hifv.tasks.importdata.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      reduce
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsVLAImportDataRenderer
+   

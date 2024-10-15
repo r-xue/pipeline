@@ -1,0 +1,21 @@
+pipeline.hifv.tasks.setmodel
+============================
+
+.. automodule:: pipeline.hifv.tasks.setmodel
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      VLASetjy
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   qa
+   renderer
+   vlasetjy

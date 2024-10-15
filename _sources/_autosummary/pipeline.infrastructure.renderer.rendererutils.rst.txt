@@ -1,0 +1,45 @@
+pipeline.infrastructure.renderer.rendererutils
+==============================================
+
+.. automodule:: pipeline.infrastructure.renderer.rendererutils
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      format_notification
+      format_score
+      format_shortmsg
+      get_attentions_badge
+      get_badge_class
+      get_bar_class
+      get_bar_width
+      get_command_markup
+      get_errors_badge
+      get_failures_badge
+      get_notification_trs
+      get_relative_url
+      get_sidebar_style_for_task
+      get_suboptimal_badge
+      get_symbol_badge
+      get_warnings_badge
+      group_plots
+      num_lines
+      percent_flagged
+      plot_type
+      printTsysFlags
+      renderflagcmds
+      sanitize_data_selection_string
+      scores_in_range
+      scores_with_location
+      sort_row_by
+      summarise_fields
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      QAScore
+      WebLogLocation
+   

@@ -1,0 +1,13 @@
+pipeline.hif.tasks.correctedampflag.renderer
+============================================
+
+.. automodule:: pipeline.hif.tasks.correctedampflag.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FlagTotal
+      T2_4MDetailsCorrectedampflagRenderer
+   

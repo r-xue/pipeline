@@ -1,0 +1,25 @@
+pipeline.hif.tasks.makeimages.makeimages
+========================================
+
+.. automodule:: pipeline.hif.tasks.makeimages.makeimages
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      signature
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CleanTaskFactory
+      DataType
+      MakeImages
+      MakeImagesInputs
+      MakeImagesResult
+      Sensitivity
+      Tclean
+      TcleanResult
+   

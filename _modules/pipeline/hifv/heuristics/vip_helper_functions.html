@@ -1,0 +1,677 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.heuristics.vip_helper_functions &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.heuristics.vip_helper_functions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.heuristics.vip_helper_functions</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">VLASS-SE VIP script helper functions.</span>
+
+<span class="sd">Unchanged functions can be found on the New Mexico nmpost cluster:</span>
+<span class="sd">/home/vlass/packages/vip/mask-from-catalog/mask_from_catalog.py</span>
+<span class="sd">/users/jmarvil/scripts/edit_pybdsf_islands.py</span>
+<span class="sd">/users/jmarvil/scripts/run_bdsf.py</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">astropy.io.fits</span> <span class="k">as</span> <span class="nn">apfits</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">ICRS</span><span class="p">,</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">SkyCoord</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">linregress</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="run_bdsf">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vip_helper_functions.run_bdsf">[docs]</a>
+<span class="k">def</span> <span class="nf">run_bdsf</span><span class="p">(</span><span class="n">infile</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Detect bright point sources and blobs on map.</span>
+
+<span class="sd">    :param infile:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># PIPE-1063/1125:</span>
+    <span class="c1">#   - mitigate a side-effect from PyBDSF v1.9.2</span>
+    <span class="c1">#       PyBDSF internally changes the NumPy floating-point (FP) &#39;divide&#39; error handling upon</span>
+    <span class="c1">#       import (`bdsf.gau2srl`), and does not restore FP error settings after changing all of</span>
+    <span class="c1">#       them to &#39;ignore&#39; during its runtime (`bdsf.functions`).</span>
+    <span class="c1">#   - protect against the absence of PyBDSF for non-VLASS projects</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">():</span>
+            <span class="kn">import</span> <span class="nn">bdsf</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">bdsf</span><span class="o">.</span><span class="n">process_image</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">thresh_isl</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">thresh_pix</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">rms_box</span><span class="o">=</span><span class="p">[</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">],</span> <span class="n">thresh</span><span class="o">=</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span>
+                                     <span class="n">adaptive_rms_box</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mean_map</span><span class="o">=</span><span class="s1">&#39;zero&#39;</span><span class="p">,</span> <span class="n">peak_fit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">split_isl</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                     <span class="n">group_by_isl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Import error: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+            <span class="s2">&quot;PyBDSF is not installed, which is required to run hifv_vlassmasking(maskingmode=&#39;vlass-se-tier-2&#39;,..).&quot;</span><span class="p">)</span>
+
+    <span class="n">img</span><span class="o">.</span><span class="n">write_catalog</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;fits&#39;</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="n">infile</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.fits&#39;</span><span class="p">,</span> <span class="s1">&#39;.cat.fits&#39;</span><span class="p">))</span>
+    <span class="n">img</span><span class="o">.</span><span class="n">write_catalog</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ds9&#39;</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="n">infile</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.fits&#39;</span><span class="p">,</span> <span class="s1">&#39;.cat.ds9.reg&#39;</span><span class="p">))</span>
+    <span class="n">img</span><span class="o">.</span><span class="n">export_image</span><span class="p">(</span><span class="n">outfile</span><span class="o">=</span><span class="n">infile</span> <span class="o">+</span> <span class="s1">&#39;.rms&#39;</span><span class="p">,</span> <span class="n">img_type</span><span class="o">=</span><span class="s1">&#39;rms&#39;</span><span class="p">,</span> <span class="n">clobber</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">img</span><span class="o">.</span><span class="n">export_image</span><span class="p">(</span><span class="n">outfile</span><span class="o">=</span><span class="n">infile</span> <span class="o">+</span> <span class="s1">&#39;.island.mask&#39;</span><span class="p">,</span> <span class="n">img_type</span><span class="o">=</span><span class="s1">&#39;island_mask&#39;</span><span class="p">,</span> <span class="n">clobber</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">img</span></div>
+
+
+
+<div class="viewcode-block" id="mask_from_catalog">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vip_helper_functions.mask_from_catalog">[docs]</a>
+<span class="k">def</span> <span class="nf">mask_from_catalog</span><span class="p">(</span><span class="n">inext</span><span class="o">=</span><span class="s1">&#39;iter0.model.tt0&#39;</span><span class="p">,</span> <span class="n">outext</span><span class="o">=</span><span class="s2">&quot;mask_from_cat.mask&quot;</span><span class="p">,</span>
+                      <span class="n">catalog_fits_file</span><span class="o">=</span><span class="s1">&#39;/home/vlass/packages/VLASS1Q.fits&#39;</span><span class="p">,</span>
+                      <span class="n">catalog_search_size</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">mask_shape</span><span class="o">=</span><span class="p">[],</span> <span class="n">frequency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                      <span class="n">cell</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">phasecenter</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">mask_name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">csys_rec</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Construct a clean mask from a sky catalog and reference image.</span>
+
+<span class="sd">    :param inext: A string to select the input image.  *inext should return a single CASA image.</span>
+<span class="sd">    :param outext: A string to replace inext that will determine the filename of the output mask image.</span>
+<span class="sd">    :param catalog_fits_file: Path to a PyBDSF sky catalog in FITS format.</span>
+<span class="sd">    :param catalog_search_size: The half-width (in degrees) of the catalog search centered on the</span>
+<span class="sd">        image&#39;s reference pixel.</span>
+<span class="sd">    :param mask_shape: two element list of the image (mask) size</span>
+<span class="sd">    :param frequency: string element and units &#39;3.0GHz&#39;</span>
+<span class="sd">    :param cell: string cell size &#39;2.0arcsec&#39;</span>
+<span class="sd">    :param phasecenter: Epoch leading string &#39;J2000 13:33:35.814 +16.44.04.255&#39;</span>
+<span class="sd">    :param mask_name: string name of the mask to write out</span>
+<span class="sd">    :param csys_rec: coordinate system record dictionary (optional)</span>
+<span class="sd">    :return: returns nothing</span>
+
+<span class="sd">    Example 1:</span>
+<span class="sd">    sys.path.append(&#39;&lt;path-to-folder-containing-this-file&gt;&#39;)</span>
+<span class="sd">    from mask_from_catalog import mask_from_catalog</span>
+<span class="sd">    mask_from_catalog(...)</span>
+
+<span class="sd">    Example 2:</span>
+<span class="sd">    execfile(&#39;&lt;path-to-folder-containing-this-file&gt;/mask_from_catalog.py&#39;)</span>
+<span class="sd">    mask_from_catalog(...)</span>
+
+<span class="sd">    Unchanged, CASA 5 compatible file is located at</span>
+<span class="sd">    /home/vlass/packages/vip/mask-from-catalog/mask_from_catalog.py</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># myia = casatools.image()</span>
+    <span class="c1"># myim = casatools.imager()</span>
+    <span class="c1"># myrg = casatools.regionmanager()</span>
+    <span class="c1"># myqa = casatools.quanta()</span>
+
+    <span class="c1"># ----------------------------------------------------------------------------------</span>
+    <span class="c1"># the intention is that this finds the model from the &#39;iter0&#39; dirty image</span>
+    <span class="c1"># but it really just needs any image for the shape and csys</span>
+
+    <span class="k">with</span> <span class="n">apfits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">catalog_fits_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdu</span><span class="p">:</span>
+        <span class="n">catalog_dat</span> <span class="o">=</span> <span class="n">hdu</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    model_for_mask = glob(&#39;*&#39; + inext)</span>
+
+<span class="sd">    mask_name1 = model_for_mask[0].replace(inext, outext)</span>
+
+<span class="sd">    if not (len(model_for_mask) == 1):</span>
+<span class="sd">        raise Exception(&#39;Expected an &#39; + inext + &#39; image to use for masking&#39;)</span>
+
+<span class="sd">    with casatools.ImageReader(model_for_mask[0]) as testia:</span>
+<span class="sd">        mask_im1 = testia.newimagefromimage(infile=model_for_mask[0], outfile=&#39;VIPtest.im&#39;, overwrite=True)</span>
+<span class="sd">        LOG.info(&#39;Created new mask image: {0}&#39;.format(&#39;VIPtest.im&#39;))</span>
+<span class="sd">        mask_shape1 = mask_im1.shape()</span>
+<span class="sd">        mask_csys1 = mask_im1.coordsys()</span>
+<span class="sd">        mask_dat1 = mask_im1.getchunk() * 0  # should already equal zero, but let&#39;s just make sure</span>
+<span class="sd">        mask_im1.putchunk(mask_dat1)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># --------------------------------------------------------------------------------------</span>
+    <span class="n">rahr</span> <span class="o">=</span> <span class="n">phasecenter</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">decdeg</span> <span class="o">=</span> <span class="n">phasecenter</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">qt</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+    <span class="n">myia</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">image</span>
+
+    <span class="n">mask_im</span> <span class="o">=</span> <span class="n">myia</span><span class="o">.</span><span class="n">fromshape</span><span class="p">(</span><span class="n">mask_name</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">mask_shape</span><span class="p">),</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">mask_csys</span> <span class="o">=</span> <span class="n">myia</span><span class="o">.</span><span class="n">coordsys</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">csys_rec</span><span class="p">:</span>
+        <span class="n">mask_csys</span><span class="o">.</span><span class="n">fromrecord</span><span class="p">(</span><span class="n">csys_rec</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mask_csys</span><span class="o">.</span><span class="n">setunits</span><span class="p">([</span><span class="s1">&#39;rad&#39;</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">])</span>
+        <span class="n">cell_rad</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qt</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">cell</span><span class="p">),</span> <span class="s2">&quot;rad&quot;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">mask_csys</span><span class="o">.</span><span class="n">setincrement</span><span class="p">([</span><span class="o">-</span><span class="n">cell_rad</span><span class="p">,</span> <span class="n">cell_rad</span><span class="p">],</span> <span class="s1">&#39;direction&#39;</span><span class="p">)</span>
+        <span class="n">mask_csys</span><span class="o">.</span><span class="n">setreferencevalue</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">rahr</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">qt</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">decdeg</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]],</span>
+                                    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;direction&quot;</span><span class="p">)</span>
+    <span class="c1"># Update spectral reference and metadata in any case, csys determined in get_parallel_cont_synthesis_imager_csys()</span>
+    <span class="c1"># heuristic method contains different spectral setup than the VLASS-SE-CONT workflow (in order to speed up</span>
+    <span class="c1"># computation). The frequency axis should not matter for the spectrally collapsed mask, but set for consistency.</span>
+    <span class="n">mask_csys</span><span class="o">.</span><span class="n">setreferencevalue</span><span class="p">(</span><span class="n">frequency</span><span class="p">,</span> <span class="s1">&#39;spectral&#39;</span><span class="p">)</span>
+    <span class="n">mask_csys</span><span class="o">.</span><span class="n">setincrement</span><span class="p">(</span><span class="s1">&#39;1GHz&#39;</span><span class="p">,</span> <span class="s1">&#39;spectral&#39;</span><span class="p">)</span>
+    <span class="n">mask_csys</span><span class="o">.</span><span class="n">setobserver</span><span class="p">(</span><span class="s1">&#39;Dr. Vlass Scientist&#39;</span><span class="p">)</span>
+    <span class="n">mask_csys</span><span class="o">.</span><span class="n">setrestfrequency</span><span class="p">(</span><span class="n">frequency</span><span class="p">)</span>
+    <span class="n">mask_csys</span><span class="o">.</span><span class="n">settelescope</span><span class="p">(</span><span class="s1">&#39;EVLA&#39;</span><span class="p">)</span>
+    <span class="n">myia</span><span class="o">.</span><span class="n">setcoordsys</span><span class="p">(</span><span class="n">mask_csys</span><span class="o">.</span><span class="n">torecord</span><span class="p">())</span>
+
+    <span class="c1">###############################</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    mask_im = myia.newimagefromimage(infile=model_for_mask[0], outfile=mask_name, overwrite=True)</span>
+<span class="sd">    print(&#39;Created new mask image: {0}&#39;.format(mask_name))</span>
+
+<span class="sd">    mask_shape = mask_im.shape()</span>
+<span class="sd">    mask_csys = mask_im.coordsys()</span>
+
+<span class="sd">    mask_dat = mask_im.getchunk() * 0  # should already equal zero, but let&#39;s just make sure</span>
+<span class="sd">    mask_im.putchunk(mask_dat)</span>
+
+<span class="sd">    myia.done()</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1">##############################</span>
+
+    <span class="n">mask_refval_radians</span> <span class="o">=</span> <span class="n">mask_csys</span><span class="o">.</span><span class="n">referencevalue</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;q&#39;</span><span class="p">)[</span><span class="s1">&#39;quantity&#39;</span><span class="p">]</span>
+
+    <span class="n">mask_refval_ra_deg</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">mask_refval_radians</span><span class="p">[</span><span class="s1">&#39;*1&#39;</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="n">mask_refval_dec_deg</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">mask_refval_radians</span><span class="p">[</span><span class="s1">&#39;*2&#39;</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+    <span class="n">catalog_within_dec_range</span> <span class="o">=</span> <span class="n">catalog_dat</span><span class="p">[(</span><span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;DEC&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">mask_refval_dec_deg</span> <span class="o">+</span> <span class="n">catalog_search_size</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span>
+            <span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;DEC&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">mask_refval_dec_deg</span> <span class="o">-</span> <span class="n">catalog_search_size</span><span class="p">)]</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Reduced catalog from </span><span class="si">{0}</span><span class="s1"> rows to </span><span class="si">{1}</span><span class="s1"> rows within +/- </span><span class="si">{2}</span><span class="s1"> degrees declination of image phase center&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">catalog_dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">catalog_within_dec_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">catalog_search_size</span><span class="p">))</span>
+
+    <span class="c1"># *** not tested for images near RA=0 or the NCP except in Josh&#39;s head ***</span>
+    <span class="c1"># Catalog selection will use an RA range in degrees</span>
+    <span class="c1"># after dividing by the most extreme cos(dec)</span>
+    <span class="c1"># Selection will overshoot two image corners</span>
+    <span class="c1"># and these will be rejected later using myia.topixel</span>
+
+    <span class="n">mask_dec_for_ra_search</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">([</span><span class="n">mask_refval_dec_deg</span> <span class="o">-</span> <span class="n">catalog_search_size</span><span class="p">,</span> <span class="n">mask_refval_dec_deg</span> <span class="o">+</span> <span class="n">catalog_search_size</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="n">mask_dec_for_ra_search</span> <span class="o">&lt;</span> <span class="mi">90</span><span class="p">:</span>
+        <span class="n">catalog_ra_search_min</span> <span class="o">=</span> <span class="n">mask_refval_ra_deg</span> <span class="o">-</span> <span class="n">catalog_search_size</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">mask_dec_for_ra_search</span> <span class="o">/</span> <span class="mf">180.</span><span class="p">)</span>
+        <span class="n">catalog_ra_search_max</span> <span class="o">=</span> <span class="n">mask_refval_ra_deg</span> <span class="o">+</span> <span class="n">catalog_search_size</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">mask_dec_for_ra_search</span> <span class="o">/</span> <span class="mf">180.</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">catalog_ra_search_min</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">catalog_ra_search_max</span> <span class="o">=</span> <span class="mi">360</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">catalog_ra_search_min</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">catalog_ra_search_max</span> <span class="o">&lt;</span> <span class="mi">360</span><span class="p">):</span>
+        <span class="n">catalog_within_ra_and_dec_range</span> <span class="o">=</span> <span class="n">catalog_within_dec_range</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">catalog_within_dec_range</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">catalog_ra_search_min</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span>
+                    <span class="n">catalog_within_dec_range</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">catalog_ra_search_max</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="n">catalog_ra_search_min</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">catalog_within_ra_and_dec_range</span> <span class="o">=</span> <span class="n">catalog_within_dec_range</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">catalog_within_dec_range</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">catalog_ra_search_min</span> <span class="o">%</span> <span class="mi">360</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span>
+                    <span class="n">catalog_within_dec_range</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">catalog_ra_search_max</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="n">catalog_ra_search_max</span> <span class="o">&gt;</span> <span class="mi">360</span><span class="p">:</span>
+        <span class="n">catalog_within_ra_and_dec_range</span> <span class="o">=</span> <span class="n">catalog_within_dec_range</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">catalog_within_dec_range</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">catalog_ra_search_min</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span>
+                    <span class="n">catalog_within_dec_range</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">catalog_ra_search_max</span> <span class="o">%</span> <span class="mi">360</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">catalog_within_ra_and_dec_range</span> <span class="o">=</span> <span class="n">catalog_within_dec_range</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Further reduced catalog from </span><span class="si">{0}</span><span class="s1"> rows to </span><span class="si">{1}</span><span class="s1"> rows within +/- </span><span class="si">{2}</span><span class="s1"> degrees RA of image phase center&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">catalog_within_dec_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">catalog_within_ra_and_dec_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">catalog_search_size</span><span class="p">))</span>
+
+    <span class="c1"># catalog rows to region text file</span>
+    <span class="n">parsed_catalog_crtf</span> <span class="o">=</span> <span class="s1">&#39;mask_from_cat.crtf&#39;</span>
+    <span class="n">rejected_rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">parsed_catalog_crtf</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out1</span><span class="p">:</span>
+        <span class="n">out1</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="s1">&#39;#CRTFv0</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">ellipse_region</span> <span class="o">=</span> <span class="s2">&quot;ellipse [[</span><span class="si">{0}</span><span class="s2">deg, </span><span class="si">{1}</span><span class="s2">deg], [</span><span class="si">{2}</span><span class="s2">deg, </span><span class="si">{3}</span><span class="s2">deg], </span><span class="si">{4}</span><span class="s2">deg]</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">catalog_within_ra_and_dec_range</span><span class="p">:</span>
+            <span class="n">numeric_dir</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;numeric&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">180.</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;DEC&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">180.</span><span class="p">]}</span>
+            <span class="n">pixel_dir</span> <span class="o">=</span> <span class="n">myia</span><span class="o">.</span><span class="n">topixel</span><span class="p">(</span><span class="n">numeric_dir</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pixel_dir</span><span class="p">[</span><span class="s1">&#39;numeric&#39;</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pixel_dir</span><span class="p">[</span><span class="s1">&#39;numeric&#39;</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">mask_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">out1</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">ellipse_region</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;DEC&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Maj&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Min&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;PA&#39;</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rejected_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Rejected </span><span class="si">{0}</span><span class="s1"> additional catalog rows outside the image&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rejected_rows</span><span class="p">)))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Wrote reduced catalog to region file: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parsed_catalog_crtf</span><span class="p">))</span>
+
+    <span class="n">myia</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+    <span class="c1"># region text file to mask</span>
+
+    <span class="n">myim</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">imager</span>
+    <span class="n">myrg</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">regionmanager</span>
+
+    <span class="n">myRGN</span> <span class="o">=</span> <span class="n">myrg</span><span class="o">.</span><span class="n">fromtextfile</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">parsed_catalog_crtf</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">mask_shape</span><span class="p">,</span> <span class="n">csys</span><span class="o">=</span><span class="n">mask_csys</span><span class="o">.</span><span class="n">torecord</span><span class="p">())</span>
+    <span class="n">myim</span><span class="o">.</span><span class="n">regiontoimagemask</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">mask_name</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">myRGN</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Used region file to add masks to mask image&#39;</span><span class="p">)</span>
+
+    <span class="n">myim</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+    <span class="n">myrg</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+    <span class="c1"># myqa.done()</span>
+
+    <span class="n">number_islands_found</span> <span class="o">=</span> <span class="n">catalog_within_ra_and_dec_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># -----------------------------------------------------------</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Within one degree...&#39;</span><span class="p">)</span>
+    <span class="n">catalog_search_size</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="n">catalog_within_dec_range</span> <span class="o">=</span> <span class="n">catalog_dat</span><span class="p">[(</span><span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;DEC&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">mask_refval_dec_deg</span> <span class="o">+</span> <span class="n">catalog_search_size</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span>
+        <span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;DEC&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">mask_refval_dec_deg</span> <span class="o">-</span> <span class="n">catalog_search_size</span><span class="p">)]</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s1">&#39;Reduced catalog from </span><span class="si">{0}</span><span class="s1"> rows to </span><span class="si">{1}</span><span class="s1"> rows within +/- </span><span class="si">{2}</span><span class="s1"> degrees declination of image phase center&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">catalog_dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">catalog_within_dec_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">catalog_search_size</span><span class="p">))</span>
+
+    <span class="c1"># *** not tested for images near RA=0 or the NCP except in Josh&#39;s head ***</span>
+    <span class="c1"># Catalog selection will use an RA range in degrees</span>
+    <span class="c1"># after dividing by the most extreme cos(dec)</span>
+    <span class="c1"># Selection will overshoot two image corners</span>
+    <span class="c1"># and these will be rejected later using myia.topixel</span>
+
+    <span class="n">mask_dec_for_ra_search</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">([</span><span class="n">mask_refval_dec_deg</span> <span class="o">-</span> <span class="n">catalog_search_size</span><span class="p">,</span> <span class="n">mask_refval_dec_deg</span> <span class="o">+</span> <span class="n">catalog_search_size</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="n">mask_dec_for_ra_search</span> <span class="o">&lt;</span> <span class="mi">90</span><span class="p">:</span>
+        <span class="n">catalog_ra_search_min</span> <span class="o">=</span> <span class="n">mask_refval_ra_deg</span> <span class="o">-</span> <span class="n">catalog_search_size</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">mask_dec_for_ra_search</span> <span class="o">/</span> <span class="mf">180.</span><span class="p">)</span>
+        <span class="n">catalog_ra_search_max</span> <span class="o">=</span> <span class="n">mask_refval_ra_deg</span> <span class="o">+</span> <span class="n">catalog_search_size</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">mask_dec_for_ra_search</span> <span class="o">/</span> <span class="mf">180.</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">catalog_ra_search_min</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">catalog_ra_search_max</span> <span class="o">=</span> <span class="mi">360</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">catalog_ra_search_min</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">catalog_ra_search_max</span> <span class="o">&lt;</span> <span class="mi">360</span><span class="p">):</span>
+        <span class="n">catalog_within_ra_and_dec_range</span> <span class="o">=</span> <span class="n">catalog_within_dec_range</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">catalog_within_dec_range</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">catalog_ra_search_min</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span>
+                <span class="n">catalog_within_dec_range</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">catalog_ra_search_max</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="n">catalog_ra_search_min</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">catalog_within_ra_and_dec_range</span> <span class="o">=</span> <span class="n">catalog_within_dec_range</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">catalog_within_dec_range</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">catalog_ra_search_min</span> <span class="o">%</span> <span class="mi">360</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span>
+                <span class="n">catalog_within_dec_range</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">catalog_ra_search_max</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="n">catalog_ra_search_max</span> <span class="o">&gt;</span> <span class="mi">360</span><span class="p">:</span>
+        <span class="n">catalog_within_ra_and_dec_range</span> <span class="o">=</span> <span class="n">catalog_within_dec_range</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">catalog_within_dec_range</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">catalog_ra_search_min</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span>
+                <span class="n">catalog_within_dec_range</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">catalog_ra_search_max</span> <span class="o">%</span> <span class="mi">360</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">catalog_within_ra_and_dec_range</span> <span class="o">=</span> <span class="n">catalog_within_dec_range</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Further reduced catalog from </span><span class="si">{0}</span><span class="s1"> rows to </span><span class="si">{1}</span><span class="s1"> rows within +/- </span><span class="si">{2}</span><span class="s1"> degrees RA of image phase center&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">catalog_within_dec_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">catalog_within_ra_and_dec_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">catalog_search_size</span><span class="p">))</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;End one degree...&#39;</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">number_islands_found_onedeg</span> <span class="o">=</span> <span class="n">catalog_within_ra_and_dec_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># -----------------------------------------------------------</span>
+
+    <span class="k">return</span> <span class="n">number_islands_found</span><span class="p">,</span> <span class="n">number_islands_found_onedeg</span></div>
+
+
+
+<div class="viewcode-block" id="edit_pybdsf_islands">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vip_helper_functions.edit_pybdsf_islands">[docs]</a>
+<span class="k">def</span> <span class="nf">edit_pybdsf_islands</span><span class="p">(</span><span class="n">catalog_fits_file</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">r_squared_threshold</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span>
+                        <span class="n">n_gauss_threshold</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">gauss_size_threshold</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                        <span class="n">phasecenter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reject islands from a sky catalog based on simple heuristics.</span>
+<span class="sd">    Writes out a new catalog ending in &#39;.edited.fits&#39;</span>
+<span class="sd">    Also creates ds9 region files for accepted and rejected components.</span>
+
+<span class="sd">    :param catalog_fits_file: Path to a PyBDSF sky catalog in FITS format.</span>
+<span class="sd">    :param r_squared_threshold: Upper limit of correlation coefficient.</span>
+<span class="sd">        Islands having components along a line are rejected.</span>
+<span class="sd">    :param n_gauss_threshold: Maximum number of components per island.</span>
+<span class="sd">        Islands with more than this many components are rejected.</span>
+<span class="sd">    :param gauss_size_threshold: Maximum component size in arcsec.</span>
+<span class="sd">        Islands with one or more component larger than this size are rejected.</span>
+<span class="sd">    :param phasecenter: Phase center string of format: &#39;J2000 13:33:35.814 +16.44.04.255&#39;</span>
+<span class="sd">    :return: returns edited_catalog_fits_file, num_rejected_islands, num_rejected_islands_onedeg</span>
+
+<span class="sd">    Example 1:</span>
+<span class="sd">    sys.path.append(&#39;&lt;path-to-folder-containing-this-file&gt;&#39;)</span>
+<span class="sd">    from edit_pybdsf_islands import edit_pybdsf_islands</span>
+<span class="sd">    edit_pybdsf_islands(...)</span>
+
+<span class="sd">    Example 2:</span>
+<span class="sd">    execfile(&#39;&lt;path-to-folder-containing-this-file&gt;/edit_pybdsf_islands.py&#39;)</span>
+<span class="sd">    edit_pybdsf_islands(...)</span>
+
+<span class="sd">    Copy of script located at:</span>
+<span class="sd">    /users/jmarvil/scripts/edit_pybdsf_islands.py</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">hdu</span> <span class="o">=</span> <span class="n">apfits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">catalog_fits_file</span><span class="p">)</span>
+    <span class="n">catalog_dat</span> <span class="o">=</span> <span class="n">hdu</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="n">islands</span><span class="p">,</span> <span class="n">island_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;Isl_id&#39;</span><span class="p">],</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># flag islands based on Gaussians with large b_maj</span>
+    <span class="c1"># LAS of B-config at S-band is 58&quot; for full synthesis, 29&quot; for snapshot</span>
+    <span class="c1"># https://science.nrao.edu/facilities/vla/docs/manuals/oss/performance/resolution</span>
+    <span class="n">large_islands</span><span class="p">,</span> <span class="n">large_island_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+        <span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;Isl_id&#39;</span><span class="p">][</span><span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;Maj&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3600</span> <span class="o">&gt;</span> <span class="n">gauss_size_threshold</span><span class="p">],</span>
+        <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># flag islands with too many Gaussians</span>
+    <span class="n">numerous_islands</span> <span class="o">=</span> <span class="n">islands</span><span class="p">[</span><span class="n">island_counts</span> <span class="o">&gt;</span> <span class="n">n_gauss_threshold</span><span class="p">]</span>
+
+    <span class="c1"># for islands with more than 3 components</span>
+    <span class="c1"># check if components are all on a line</span>
+    <span class="n">linear_islands</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">island_counts</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">island</span> <span class="ow">in</span> <span class="n">islands</span><span class="p">[</span><span class="n">hits</span><span class="p">]:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">catalog_dat</span><span class="p">[</span><span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;Isl_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">island</span><span class="p">][</span><span class="s1">&#39;Xposn&#39;</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">catalog_dat</span><span class="p">[</span><span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;Isl_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">island</span><span class="p">][</span><span class="s1">&#39;Yposn&#39;</span><span class="p">]</span>
+        <span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">,</span> <span class="n">r_value</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">std_err</span> <span class="o">=</span> <span class="n">linregress</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">r_value</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">&gt;</span> <span class="n">r_squared_threshold</span><span class="p">:</span>
+            <span class="n">linear_islands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">island</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;large islands: [</span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">large_islands</span><span class="p">))))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;linear_islands: [</span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">linear_islands</span><span class="p">))))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;numerous_islands: [</span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">numerous_islands</span><span class="p">))))</span>
+
+    <span class="n">rejected_islands</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">large_islands</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="n">linear_islands</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="n">numerous_islands</span><span class="p">)))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;rejected_islands: [</span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">rejected_islands</span><span class="p">))))</span>
+    <span class="n">num_rejected_islands</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">rejected_islands</span><span class="p">))</span>
+
+    <span class="n">rahrstr</span> <span class="o">=</span> <span class="n">phasecenter</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; hours&#39;</span>
+    <span class="n">declist</span> <span class="o">=</span> <span class="n">phasecenter</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="n">decdegstr</span> <span class="o">=</span> <span class="n">declist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="n">declist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="n">declist</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">declist</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; degrees&#39;</span>
+    <span class="n">phasecentcoord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="n">rahrstr</span><span class="p">),</span> <span class="n">dec</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="n">decdegstr</span><span class="p">),</span> <span class="n">frame</span><span class="o">=</span><span class="n">ICRS</span><span class="p">)</span>
+    <span class="n">racat</span> <span class="o">=</span> <span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;RA&#39;</span><span class="p">]</span>   <span class="c1"># degrees from FITS file column</span>
+    <span class="n">deccat</span> <span class="o">=</span> <span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;DEC&#39;</span><span class="p">]</span>  <span class="c1"># degrees from FITS file column</span>
+    <span class="n">catalog</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="n">racat</span><span class="p">,</span> <span class="n">dec</span><span class="o">=</span><span class="n">deccat</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">),</span> <span class="n">frame</span><span class="o">=</span><span class="n">ICRS</span><span class="p">)</span>
+
+    <span class="c1"># ### If searching within 1 degree radius (fast for scalars - one phase center coordinate)</span>
+    <span class="c1"># d2d = phasecentcoord.separation(catalog)</span>
+    <span class="c1"># catalogmsk = d2d &lt; 1 * u.deg</span>
+    <span class="c1"># ### Searching two catalogs (better for vectors)</span>
+    <span class="c1"># idxscalarc, idxcatalog, d2d, d3d = catalog.search_around_sky(phasecentcoord, 1 * u.deg)</span>
+
+    <span class="c1"># ### Searching within a 1 degree box centered around the phase center</span>
+    <span class="n">catalogmsk</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">boxwidth</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="s1">&#39;0.5d&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">catentry</span> <span class="ow">in</span> <span class="n">catalog</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">catentry</span><span class="o">.</span><span class="n">ra</span><span class="o">.</span><span class="n">is_within_bounds</span><span class="p">(</span><span class="n">lower</span><span class="o">=</span><span class="n">phasecentcoord</span><span class="o">.</span><span class="n">ra</span><span class="o">-</span><span class="n">boxwidth</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="n">phasecentcoord</span><span class="o">.</span><span class="n">ra</span><span class="o">+</span><span class="n">boxwidth</span><span class="p">)</span> \
+            <span class="ow">and</span> <span class="n">catentry</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">is_within_bounds</span><span class="p">(</span><span class="n">lower</span><span class="o">=</span><span class="n">phasecentcoord</span><span class="o">.</span><span class="n">dec</span><span class="o">-</span><span class="n">boxwidth</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="n">phasecentcoord</span><span class="o">.</span><span class="n">dec</span><span class="o">+</span><span class="n">boxwidth</span><span class="p">):</span>
+            <span class="n">catalogmsk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">catalogmsk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Determine if any of the rejected islands (via index in the catalog) are in the inner square degree</span>
+    <span class="n">rejected_islands_onedeg</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">catidx</span><span class="p">,</span> <span class="n">boolvalue</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">catalogmsk</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;Isl_id&#39;</span><span class="p">][</span><span class="n">catidx</span><span class="p">]</span> <span class="ow">in</span> <span class="n">rejected_islands</span> <span class="ow">and</span> <span class="n">boolvalue</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">rejected_islands_onedeg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;Isl_id&#39;</span><span class="p">][</span><span class="n">catidx</span><span class="p">])</span>
+
+    <span class="n">num_rejected_islands_onedeg</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">rejected_islands_onedeg</span><span class="p">))</span>
+
+    <span class="c1"># Dump information for debug analysis if needed</span>
+    <span class="c1"># import pickle</span>
+    <span class="c1"># pickle.dump(catalog_dat, open(&quot;catalog_dat.p&quot;, &quot;wb&quot;))</span>
+    <span class="c1"># pickle.dump(catalogmsk, open(&quot;catalogmsk.p&quot;, &quot;wb&quot;))</span>
+    <span class="c1"># pickle.dump(rejected_islands, open(&quot;rejected_islands.p&quot;, &quot;wb&quot;))</span>
+
+    <span class="n">cat_to_ds9_rgn</span><span class="p">(</span><span class="n">catalog_dat</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;Isl_id&#39;</span><span class="p">],</span> <span class="n">rejected_islands</span><span class="p">)],</span>
+                   <span class="n">outfile</span><span class="o">=</span><span class="n">catalog_fits_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.fits&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.rejected.ds9.reg&#39;</span><span class="p">,</span>
+                   <span class="n">region_color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;wrote region file of rejected islands to: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">catalog_fits_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.fits&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                                                                    <span class="o">+</span> <span class="s1">&#39;.rejected.ds9.reg&#39;</span><span class="p">))</span>
+
+    <span class="n">cat_to_ds9_rgn</span><span class="p">(</span><span class="n">catalog_dat</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;Isl_id&#39;</span><span class="p">],</span> <span class="n">linear_islands</span><span class="p">)],</span>
+                   <span class="n">outfile</span><span class="o">=</span><span class="n">catalog_fits_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.fits&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.accepted.ds9.reg&#39;</span><span class="p">,</span>
+                   <span class="n">region_color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;wrote region file of accepted islands to: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">catalog_fits_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.fits&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                                                                    <span class="o">+</span> <span class="s1">&#39;.accepted.ds9.reg&#39;</span><span class="p">))</span>
+
+    <span class="n">hdu</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">catalog_dat</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">catalog_dat</span><span class="p">[</span><span class="s1">&#39;Isl_id&#39;</span><span class="p">],</span> <span class="n">linear_islands</span><span class="p">)]</span>
+
+    <span class="n">edited_catalog_fits_file</span> <span class="o">=</span> <span class="n">catalog_fits_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.fits&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.edited.fits&#39;</span>
+    <span class="n">hdu</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="n">edited_catalog_fits_file</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">hdu</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;wrote catalog of accepted islands to: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">edited_catalog_fits_file</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">edited_catalog_fits_file</span><span class="p">,</span> <span class="n">num_rejected_islands</span><span class="p">,</span> <span class="n">num_rejected_islands_onedeg</span></div>
+
+
+
+<div class="viewcode-block" id="cat_to_ds9_rgn">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vip_helper_functions.cat_to_ds9_rgn">[docs]</a>
+<span class="k">def</span> <span class="nf">cat_to_ds9_rgn</span><span class="p">(</span><span class="n">catalog_fits_file</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="s1">&#39;ds9.reg&#39;</span><span class="p">,</span> <span class="n">region_color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write each component to a ds9 region</span>
+
+<span class="sd">    Copy of script located at:</span>
+<span class="sd">    /users/jmarvil/scripts/edit_pybdsf_islands.py</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">region</span> <span class="o">=</span> <span class="s1">&#39;ellipse(</span><span class="si">{0}</span><span class="s1">,</span><span class="si">{1}</span><span class="s1">,</span><span class="si">{2}</span><span class="s1">&quot;,</span><span class="si">{3}</span><span class="s1">&quot;,</span><span class="si">{4}</span><span class="s1">) # text={{i</span><span class="si">{5}</span><span class="s1">_g</span><span class="si">{6}</span><span class="s1">}}</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out1</span><span class="p">:</span>
+        <span class="n">out1</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;# Region file format: DS9 version 4.0</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">out1</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="s1">&#39;global color=</span><span class="si">{0}</span><span class="s1"> font=&quot;helvetica 10 normal&quot; select=1 highlite=1 edit=1 move=1 delete=1 include=1 fixed=0 source</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">region_color</span><span class="p">))</span>
+        <span class="n">out1</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;fk5</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">catalog_fits_file</span><span class="p">:</span>
+            <span class="n">out1</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">region</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;RA&#39;</span><span class="p">),</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;DEC&#39;</span><span class="p">),</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;Maj&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="mf">3600.</span><span class="p">,</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;Min&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="mf">3600.</span><span class="p">,</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;PA&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mf">90.</span><span class="p">,</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;Isl_id&#39;</span><span class="p">),</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;Gaus_id&#39;</span><span class="p">)</span>
+            <span class="p">))</span>
+    <span class="k">return</span></div>
+
+
+
+<div class="viewcode-block" id="Timer">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vip_helper_functions.Timer">[docs]</a>
+<span class="k">class</span> <span class="nc">Timer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Contextualisable class for simple runtime measurement.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Run for </span><span class="si">{:.4f}</span><span class="s2"> seconds&quot;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="nb">print</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Timer.start">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vip_helper_functions.Timer.start">[docs]</a>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start timer.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Timer is already running! Stop it with .stop() method.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Timer.stop">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vip_helper_functions.Timer.stop">[docs]</a>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop timer and return elapsed time.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Timer is not running! Start it with .start() method.&quot;</span><span class="p">)</span>
+        <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elapsed_time</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">elapsed_time</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise context timer.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Finalise context timer and print elapsed time.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.imageprecheck.renderer
+==========================================
+
+.. automodule:: pipeline.hifa.tasks.imageprecheck.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsCheckProductSizeRenderer
+      TR
+   

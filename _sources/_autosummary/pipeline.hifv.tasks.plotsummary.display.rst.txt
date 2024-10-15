@@ -1,0 +1,12 @@
+pipeline.hifv.tasks.plotsummary.display
+=======================================
+
+.. automodule:: pipeline.hifv.tasks.plotsummary.display
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      plotsummarySummaryChart
+   

@@ -1,0 +1,12 @@
+pipeline.domain.polarization
+============================
+
+.. automodule:: pipeline.domain.polarization
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Polarization
+   

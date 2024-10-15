@@ -1,0 +1,555 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.tasks.common.ozone &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.h.tasks.common.ozone</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.h.tasks.common.ozone</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">decimal</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># Ozone line frequency ranges, used to skip flagging for sharps/birdies that</span>
+<span class="c1"># are likely ozone lines (CAS-12242).</span>
+<span class="c1"># freqStart(GHz) freqStop(GHz)  created by au.ozoneLineLineFinder(threshold=0.0024)</span>
+<span class="n">OZONE_RANGES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mf">67.327500</span><span class="p">,</span> <span class="mf">67.392500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">76.392500</span><span class="p">,</span> <span class="mf">76.392500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">76.512500</span><span class="p">,</span> <span class="mf">76.562500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">93.832500</span><span class="p">,</span> <span class="mf">93.852500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">93.942500</span><span class="p">,</span> <span class="mf">93.977500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">96.187500</span><span class="p">,</span> <span class="mf">96.277500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">101.662500</span><span class="p">,</span> <span class="mf">101.802500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">101.842500</span><span class="p">,</span> <span class="mf">101.847500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">103.862500</span><span class="p">,</span> <span class="mf">103.902500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">109.537500</span><span class="p">,</span> <span class="mf">109.582500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">110.742500</span><span class="p">,</span> <span class="mf">110.932500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">114.972500</span><span class="p">,</span> <span class="mf">114.992500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">125.307500</span><span class="p">,</span> <span class="mf">125.487500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">128.302500</span><span class="p">,</span> <span class="mf">128.327500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">136.842500</span><span class="p">,</span> <span class="mf">136.882500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">142.057500</span><span class="p">,</span> <span class="mf">142.302500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">144.862500</span><span class="p">,</span> <span class="mf">144.977500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">148.717500</span><span class="p">,</span> <span class="mf">148.777500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">153.942500</span><span class="p">,</span> <span class="mf">153.952500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">154.022500</span><span class="p">,</span> <span class="mf">154.082500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">164.892500</span><span class="p">,</span> <span class="mf">165.012500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">165.657500</span><span class="p">,</span> <span class="mf">165.917500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">167.567500</span><span class="p">,</span> <span class="mf">167.582500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">175.177500</span><span class="p">,</span> <span class="mf">175.197500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">175.417500</span><span class="p">,</span> <span class="mf">175.477500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">184.262500</span><span class="p">,</span> <span class="mf">184.492500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">184.717500</span><span class="p">,</span> <span class="mf">184.792500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">193.317500</span><span class="p">,</span> <span class="mf">193.387500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">195.297500</span><span class="p">,</span> <span class="mf">195.557500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">195.692500</span><span class="p">,</span> <span class="mf">195.772500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">199.377500</span><span class="p">,</span> <span class="mf">199.397500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">206.117500</span><span class="p">,</span> <span class="mf">206.152500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">208.547500</span><span class="p">,</span> <span class="mf">208.742500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">210.752500</span><span class="p">,</span> <span class="mf">210.762500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">210.777500</span><span class="p">,</span> <span class="mf">210.847500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">214.877500</span><span class="p">,</span> <span class="mf">215.042500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">226.012500</span><span class="p">,</span> <span class="mf">226.097500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">229.552500</span><span class="p">,</span> <span class="mf">229.602500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">231.152500</span><span class="p">,</span> <span class="mf">231.417500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">235.547500</span><span class="p">,</span> <span class="mf">235.872500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">236.987500</span><span class="p">,</span> <span class="mf">237.312500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">238.937500</span><span class="p">,</span> <span class="mf">239.252500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">242.162500</span><span class="p">,</span> <span class="mf">242.477500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">243.307500</span><span class="p">,</span> <span class="mf">243.607500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">244.117500</span><span class="p">,</span> <span class="mf">244.202500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">247.712500</span><span class="p">,</span> <span class="mf">247.802500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">248.037500</span><span class="p">,</span> <span class="mf">248.337500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">249.642500</span><span class="p">,</span> <span class="mf">249.852500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">249.887500</span><span class="p">,</span> <span class="mf">250.132500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">258.172500</span><span class="p">,</span> <span class="mf">258.232500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">258.582500</span><span class="p">,</span> <span class="mf">258.857500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">262.807500</span><span class="p">,</span> <span class="mf">262.907500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">263.552500</span><span class="p">,</span> <span class="mf">263.822500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">263.892500</span><span class="p">,</span> <span class="mf">263.912500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">264.892500</span><span class="p">,</span> <span class="mf">264.962500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">267.152500</span><span class="p">,</span> <span class="mf">267.387500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">272.922500</span><span class="p">,</span> <span class="mf">273.182500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">274.392500</span><span class="p">,</span> <span class="mf">274.572500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">276.877500</span><span class="p">,</span> <span class="mf">276.977500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">279.442500</span><span class="p">,</span> <span class="mf">279.532500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">279.882500</span><span class="p">,</span> <span class="mf">279.907500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">282.802500</span><span class="p">,</span> <span class="mf">282.877500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">285.942500</span><span class="p">,</span> <span class="mf">286.242500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">286.272500</span><span class="p">,</span> <span class="mf">286.402500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">288.802500</span><span class="p">,</span> <span class="mf">289.117500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">290.967500</span><span class="p">,</span> <span class="mf">290.987500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">293.072500</span><span class="p">,</span> <span class="mf">293.272500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">293.522500</span><span class="p">,</span> <span class="mf">293.587500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">300.632500</span><span class="p">,</span> <span class="mf">300.737500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">301.632500</span><span class="p">,</span> <span class="mf">301.997500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">303.047500</span><span class="p">,</span> <span class="mf">303.292500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">310.027500</span><span class="p">,</span> <span class="mf">310.107500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">315.757500</span><span class="p">,</span> <span class="mf">315.982500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">316.202500</span><span class="p">,</span> <span class="mf">316.467500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">316.672500</span><span class="p">,</span> <span class="mf">316.707500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">317.177500</span><span class="p">,</span> <span class="mf">317.222500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">319.877500</span><span class="p">,</span> <span class="mf">320.122500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">326.722500</span><span class="p">,</span> <span class="mf">327.082500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">327.792500</span><span class="p">,</span> <span class="mf">327.902500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">332.552500</span><span class="p">,</span> <span class="mf">332.797500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">332.842500</span><span class="p">,</span> <span class="mf">332.987500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">335.227500</span><span class="p">,</span> <span class="mf">335.317500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">343.142500</span><span class="p">,</span> <span class="mf">343.182500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">343.207500</span><span class="p">,</span> <span class="mf">343.302500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">343.502500</span><span class="p">,</span> <span class="mf">343.522500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">352.172500</span><span class="p">,</span> <span class="mf">352.452500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">352.552500</span><span class="p">,</span> <span class="mf">352.642500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">352.737500</span><span class="p">,</span> <span class="mf">352.927500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">354.927500</span><span class="p">,</span> <span class="mf">355.112500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">357.512500</span><span class="p">,</span> <span class="mf">357.747500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">358.107500</span><span class="p">,</span> <span class="mf">358.292500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">358.657500</span><span class="p">,</span> <span class="mf">359.057500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">359.542500</span><span class="p">,</span> <span class="mf">359.767500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">361.622500</span><span class="p">,</span> <span class="mf">361.722500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">363.387500</span><span class="p">,</span> <span class="mf">363.552500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">364.242500</span><span class="p">,</span> <span class="mf">364.657500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">366.652500</span><span class="p">,</span> <span class="mf">366.907500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">368.927500</span><span class="p">,</span> <span class="mf">368.977500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">370.907500</span><span class="p">,</span> <span class="mf">371.142500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">387.037500</span><span class="p">,</span> <span class="mf">387.137500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">387.212500</span><span class="p">,</span> <span class="mf">387.397500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">392.502500</span><span class="p">,</span> <span class="mf">392.812500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">395.032500</span><span class="p">,</span> <span class="mf">395.097500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">396.442500</span><span class="p">,</span> <span class="mf">396.622500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">396.977500</span><span class="p">,</span> <span class="mf">397.082500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">399.962500</span><span class="p">,</span> <span class="mf">400.192500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">401.077500</span><span class="p">,</span> <span class="mf">401.362500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">401.927500</span><span class="p">,</span> <span class="mf">401.937500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">402.182500</span><span class="p">,</span> <span class="mf">402.617500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">403.792500</span><span class="p">,</span> <span class="mf">403.892500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">408.127500</span><span class="p">,</span> <span class="mf">408.462500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">412.957500</span><span class="p">,</span> <span class="mf">413.067500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">414.037500</span><span class="p">,</span> <span class="mf">414.477500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">420.762500</span><span class="p">,</span> <span class="mf">420.832500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">423.497500</span><span class="p">,</span> <span class="mf">423.847500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">424.742500</span><span class="p">,</span> <span class="mf">424.947500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">425.107500</span><span class="p">,</span> <span class="mf">425.227500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">426.032500</span><span class="p">,</span> <span class="mf">426.112500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">427.937500</span><span class="p">,</span> <span class="mf">427.952500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">428.662500</span><span class="p">,</span> <span class="mf">428.922500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">429.377500</span><span class="p">,</span> <span class="mf">429.467500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">430.197500</span><span class="p">,</span> <span class="mf">430.477500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">437.312500</span><span class="p">,</span> <span class="mf">437.677500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">438.427500</span><span class="p">,</span> <span class="mf">438.542500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">441.112500</span><span class="p">,</span> <span class="mf">441.567500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">441.992500</span><span class="p">,</span> <span class="mf">442.257500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">445.342500</span><span class="p">,</span> <span class="mf">445.577500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">446.072500</span><span class="p">,</span> <span class="mf">446.222500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">446.612500</span><span class="p">,</span> <span class="mf">446.692500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">448.692500</span><span class="p">,</span> <span class="mf">449.062500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">452.227500</span><span class="p">,</span> <span class="mf">452.252500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">453.777500</span><span class="p">,</span> <span class="mf">453.807500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">454.632500</span><span class="p">,</span> <span class="mf">454.707500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">457.232500</span><span class="p">,</span> <span class="mf">457.602500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">462.237500</span><span class="p">,</span> <span class="mf">462.492500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">463.012500</span><span class="p">,</span> <span class="mf">463.382500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">464.052500</span><span class="p">,</span> <span class="mf">464.172500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">466.477500</span><span class="p">,</span> <span class="mf">466.807500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">467.742500</span><span class="p">,</span> <span class="mf">468.157500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">468.292500</span><span class="p">,</span> <span class="mf">468.547500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">469.002500</span><span class="p">,</span> <span class="mf">469.182500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">469.267500</span><span class="p">,</span> <span class="mf">469.362500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">469.407500</span><span class="p">,</span> <span class="mf">469.602500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">469.817500</span><span class="p">,</span> <span class="mf">470.112500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">470.822500</span><span class="p">,</span> <span class="mf">471.167500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">472.257500</span><span class="p">,</span> <span class="mf">472.342500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">472.722500</span><span class="p">,</span> <span class="mf">473.037500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">473.072500</span><span class="p">,</span> <span class="mf">473.132500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">474.157500</span><span class="p">,</span> <span class="mf">474.177500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">475.832500</span><span class="p">,</span> <span class="mf">476.212500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">479.367500</span><span class="p">,</span> <span class="mf">479.427500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">479.617500</span><span class="p">,</span> <span class="mf">479.652500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">479.977500</span><span class="p">,</span> <span class="mf">480.027500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">480.102500</span><span class="p">,</span> <span class="mf">480.272500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">480.537500</span><span class="p">,</span> <span class="mf">480.882500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">481.062500</span><span class="p">,</span> <span class="mf">481.317500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">481.437500</span><span class="p">,</span> <span class="mf">481.867500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">483.542500</span><span class="p">,</span> <span class="mf">483.552500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">487.167500</span><span class="p">,</span> <span class="mf">487.532500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">489.477500</span><span class="p">,</span> <span class="mf">489.597500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">491.907500</span><span class="p">,</span> <span class="mf">491.997500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">496.077500</span><span class="p">,</span> <span class="mf">496.427500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">496.982500</span><span class="p">,</span> <span class="mf">497.222500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">497.927500</span><span class="p">,</span> <span class="mf">498.022500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">498.612500</span><span class="p">,</span> <span class="mf">498.887500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">607.812500</span><span class="p">,</span> <span class="mf">607.887500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">609.587500</span><span class="p">,</span> <span class="mf">609.857500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">610.107500</span><span class="p">,</span> <span class="mf">610.597500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">611.102500</span><span class="p">,</span> <span class="mf">611.467500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">614.682500</span><span class="p">,</span> <span class="mf">614.872500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">616.237500</span><span class="p">,</span> <span class="mf">616.332500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">617.267500</span><span class="p">,</span> <span class="mf">617.347500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">620.472500</span><span class="p">,</span> <span class="mf">621.067500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">623.532500</span><span class="p">,</span> <span class="mf">623.847500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">625.317500</span><span class="p">,</span> <span class="mf">625.432500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">632.042500</span><span class="p">,</span> <span class="mf">632.317500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">633.312500</span><span class="p">,</span> <span class="mf">633.397500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">634.287500</span><span class="p">,</span> <span class="mf">634.642500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">638.722500</span><span class="p">,</span> <span class="mf">639.092500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">640.017500</span><span class="p">,</span> <span class="mf">640.167500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">640.307500</span><span class="p">,</span> <span class="mf">640.332500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">641.507500</span><span class="p">,</span> <span class="mf">641.562500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">642.167500</span><span class="p">,</span> <span class="mf">642.537500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">644.627500</span><span class="p">,</span> <span class="mf">644.987500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">645.612500</span><span class="p">,</span> <span class="mf">645.732500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">647.647500</span><span class="p">,</span> <span class="mf">648.037500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">650.672500</span><span class="p">,</span> <span class="mf">650.787500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">651.247500</span><span class="p">,</span> <span class="mf">651.762500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">653.552500</span><span class="p">,</span> <span class="mf">653.957500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">654.452500</span><span class="p">,</span> <span class="mf">654.922500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">654.937500</span><span class="p">,</span> <span class="mf">655.447500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">655.492500</span><span class="p">,</span> <span class="mf">655.712500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">655.747500</span><span class="p">,</span> <span class="mf">656.102500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">656.127500</span><span class="p">,</span> <span class="mf">656.777500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">657.447500</span><span class="p">,</span> <span class="mf">657.587500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">657.897500</span><span class="p">,</span> <span class="mf">658.197500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">658.777500</span><span class="p">,</span> <span class="mf">658.862500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">661.327500</span><span class="p">,</span> <span class="mf">661.597500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">664.487500</span><span class="p">,</span> <span class="mf">664.487500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">665.497500</span><span class="p">,</span> <span class="mf">665.817500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">665.857500</span><span class="p">,</span> <span class="mf">665.907500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">666.517500</span><span class="p">,</span> <span class="mf">666.727500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">666.772500</span><span class="p">,</span> <span class="mf">666.807500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">669.657500</span><span class="p">,</span> <span class="mf">670.062500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">671.482500</span><span class="p">,</span> <span class="mf">671.767500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">671.792500</span><span class="p">,</span> <span class="mf">671.902500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">671.942500</span><span class="p">,</span> <span class="mf">671.957500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">672.737500</span><span class="p">,</span> <span class="mf">672.862500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">673.817500</span><span class="p">,</span> <span class="mf">674.017500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">676.007500</span><span class="p">,</span> <span class="mf">676.122500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">677.117500</span><span class="p">,</span> <span class="mf">677.177500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">683.557500</span><span class="p">,</span> <span class="mf">683.722500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">684.202500</span><span class="p">,</span> <span class="mf">684.292500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">691.337500</span><span class="p">,</span> <span class="mf">691.382500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">691.657500</span><span class="p">,</span> <span class="mf">691.677500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">692.192500</span><span class="p">,</span> <span class="mf">692.547500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">693.287500</span><span class="p">,</span> <span class="mf">693.667500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">694.632500</span><span class="p">,</span> <span class="mf">694.897500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">696.022500</span><span class="p">,</span> <span class="mf">696.162500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">698.932500</span><span class="p">,</span> <span class="mf">699.032500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">700.657500</span><span class="p">,</span> <span class="mf">701.042500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">701.312500</span><span class="p">,</span> <span class="mf">701.407500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">701.472500</span><span class="p">,</span> <span class="mf">701.577500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">708.097500</span><span class="p">,</span> <span class="mf">708.192500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">709.592500</span><span class="p">,</span> <span class="mf">709.692500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">711.442500</span><span class="p">,</span> <span class="mf">711.552500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">716.807500</span><span class="p">,</span> <span class="mf">716.857500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">718.107500</span><span class="p">,</span> <span class="mf">718.492500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">719.622500</span><span class="p">,</span> <span class="mf">719.967500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">792.232500</span><span class="p">,</span> <span class="mf">792.302500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">792.997500</span><span class="p">,</span> <span class="mf">793.072500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">793.107500</span><span class="p">,</span> <span class="mf">793.377500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">794.657500</span><span class="p">,</span> <span class="mf">794.677500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">798.687500</span><span class="p">,</span> <span class="mf">798.842500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">799.382500</span><span class="p">,</span> <span class="mf">799.397500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">802.317500</span><span class="p">,</span> <span class="mf">802.422500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">804.652500</span><span class="p">,</span> <span class="mf">804.672500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">807.412500</span><span class="p">,</span> <span class="mf">807.842500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">810.552500</span><span class="p">,</span> <span class="mf">810.737500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">810.907500</span><span class="p">,</span> <span class="mf">811.007500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">811.357500</span><span class="p">,</span> <span class="mf">811.577500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">813.002500</span><span class="p">,</span> <span class="mf">813.277500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">813.847500</span><span class="p">,</span> <span class="mf">814.142500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">818.382500</span><span class="p">,</span> <span class="mf">818.457500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">819.262500</span><span class="p">,</span> <span class="mf">819.262500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">819.637500</span><span class="p">,</span> <span class="mf">819.862500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">824.787500</span><span class="p">,</span> <span class="mf">824.807500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">825.502500</span><span class="p">,</span> <span class="mf">825.797500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">825.812500</span><span class="p">,</span> <span class="mf">826.007500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">826.437500</span><span class="p">,</span> <span class="mf">826.697500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">827.277500</span><span class="p">,</span> <span class="mf">827.307500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">827.587500</span><span class="p">,</span> <span class="mf">827.597500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">827.962500</span><span class="p">,</span> <span class="mf">828.057500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">830.477500</span><span class="p">,</span> <span class="mf">830.612500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">830.742500</span><span class="p">,</span> <span class="mf">831.062500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">831.077500</span><span class="p">,</span> <span class="mf">831.207500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">831.437500</span><span class="p">,</span> <span class="mf">831.722500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">832.022500</span><span class="p">,</span> <span class="mf">832.222500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">832.577500</span><span class="p">,</span> <span class="mf">832.902500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">832.917500</span><span class="p">,</span> <span class="mf">833.037500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">833.492500</span><span class="p">,</span> <span class="mf">833.737500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">835.007500</span><span class="p">,</span> <span class="mf">835.452500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">835.692500</span><span class="p">,</span> <span class="mf">835.692500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">836.177500</span><span class="p">,</span> <span class="mf">836.272500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">836.417500</span><span class="p">,</span> <span class="mf">836.477500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">836.742500</span><span class="p">,</span> <span class="mf">837.052500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">837.632500</span><span class="p">,</span> <span class="mf">837.982500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">838.237500</span><span class="p">,</span> <span class="mf">838.542500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">838.592500</span><span class="p">,</span> <span class="mf">838.647500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">839.387500</span><span class="p">,</span> <span class="mf">840.002500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">840.537500</span><span class="p">,</span> <span class="mf">840.837500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">840.857500</span><span class="p">,</span> <span class="mf">841.137500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">841.377500</span><span class="p">,</span> <span class="mf">841.682500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">841.712500</span><span class="p">,</span> <span class="mf">841.947500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">841.992500</span><span class="p">,</span> <span class="mf">842.017500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">842.052500</span><span class="p">,</span> <span class="mf">842.277500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">842.297500</span><span class="p">,</span> <span class="mf">842.482500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">842.507500</span><span class="p">,</span> <span class="mf">843.502500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">843.727500</span><span class="p">,</span> <span class="mf">843.812500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">848.927500</span><span class="p">,</span> <span class="mf">849.177500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">849.937500</span><span class="p">,</span> <span class="mf">849.957500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">850.167500</span><span class="p">,</span> <span class="mf">850.192500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">851.357500</span><span class="p">,</span> <span class="mf">851.362500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">852.687500</span><span class="p">,</span> <span class="mf">852.727500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">857.747500</span><span class="p">,</span> <span class="mf">858.192500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">860.547500</span><span class="p">,</span> <span class="mf">860.547500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">861.307500</span><span class="p">,</span> <span class="mf">861.607500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">862.727500</span><span class="p">,</span> <span class="mf">863.112500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">866.032500</span><span class="p">,</span> <span class="mf">866.227500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">869.027500</span><span class="p">,</span> <span class="mf">869.112500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">870.372500</span><span class="p">,</span> <span class="mf">870.387500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">875.522500</span><span class="p">,</span> <span class="mf">875.557500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">882.832500</span><span class="p">,</span> <span class="mf">883.287500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">885.337500</span><span class="p">,</span> <span class="mf">885.367500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">886.327500</span><span class="p">,</span> <span class="mf">886.567500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">886.697500</span><span class="p">,</span> <span class="mf">886.777500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">887.177500</span><span class="p">,</span> <span class="mf">887.397500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">887.967500</span><span class="p">,</span> <span class="mf">888.357500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">894.322500</span><span class="p">,</span> <span class="mf">894.407500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">895.882500</span><span class="p">,</span> <span class="mf">896.252500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">900.857500</span><span class="p">,</span> <span class="mf">900.897500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">901.247500</span><span class="p">,</span> <span class="mf">901.327500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">902.352500</span><span class="p">,</span> <span class="mf">902.372500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">908.027500</span><span class="p">,</span> <span class="mf">908.472500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">908.652500</span><span class="p">,</span> <span class="mf">908.867500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">911.927500</span><span class="p">,</span> <span class="mf">911.997500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">918.762500</span><span class="p">,</span> <span class="mf">918.932500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">919.602500</span><span class="p">,</span> <span class="mf">919.687500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">925.057500</span><span class="p">,</span> <span class="mf">925.407500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">926.167500</span><span class="p">,</span> <span class="mf">926.212500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">926.312500</span><span class="p">,</span> <span class="mf">926.497500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">927.447500</span><span class="p">,</span> <span class="mf">927.637500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">932.382500</span><span class="p">,</span> <span class="mf">932.392500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">932.897500</span><span class="p">,</span> <span class="mf">933.422500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">937.157500</span><span class="p">,</span> <span class="mf">937.212500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">944.867500</span><span class="p">,</span> <span class="mf">944.952500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">948.667500</span><span class="p">,</span> <span class="mf">949.037500</span><span class="p">),</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="get_ozone_channels_for_spw">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.ozone.get_ozone_channels_for_spw">[docs]</a>
+<span class="k">def</span> <span class="nf">get_ozone_channels_for_spw</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwid</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For given spectral window in measurement set, compute an array of booleans</span>
+<span class="sd">    where each element corresponds to a channel in the spectral window and</span>
+<span class="sd">    signifies whether that channel falls inside a known atmospheric ozone line.</span>
+
+<span class="sd">    :param ms: measurement set to inspect</span>
+<span class="sd">    :type ms: :class:`~pipeline.domain.MeasurementSet`</span>
+<span class="sd">    :param spwid: spectral window id to inspect</span>
+<span class="sd">    :type spwid: int</span>
+
+<span class="sd">    :return: Numpy array of booleans, representing mask of channels where</span>
+<span class="sd">     channels corresponding to ozone lines are set to True.</span>
+<span class="sd">    :rtype: numpy.array[boolean]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get spectral window info from MS.</span>
+    <span class="n">spw</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+
+    <span class="c1"># Initialize array of channels where ozone lines appear.</span>
+    <span class="n">oz_chans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span><span class="p">],</span> <span class="nb">bool</span><span class="p">)</span>
+
+    <span class="c1"># For each channel in spw, check if it matches one of the ozone lines.</span>
+    <span class="k">for</span> <span class="n">ichan</span><span class="p">,</span> <span class="n">chan_freq</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">chan_freqs</span><span class="p">):</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="p">[</span><span class="n">oz_range</span> <span class="k">for</span> <span class="n">oz_range</span> <span class="ow">in</span> <span class="n">OZONE_RANGES</span>
+                 <span class="k">if</span> <span class="n">oz_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">chan_freq</span><span class="o">*</span><span class="mf">1.E-9</span> <span class="o">&lt;=</span> <span class="n">oz_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+            <span class="n">oz_chans</span><span class="p">[</span><span class="n">ichan</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># PIPE-131: if the given spectral window came from a double sideband (DSB)</span>
+    <span class="c1"># receiver (e.g. ALMA Band 9 and 10), then check if any of the channels in</span>
+    <span class="c1"># image sideband match the location of ozone lines.</span>
+    <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">receiver</span> <span class="o">==</span> <span class="s2">&quot;DSB&quot;</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;DSB receiver found for </span><span class="si">{}</span><span class="s2">, spw </span><span class="si">{}</span><span class="s2">: extending the atmospheric line check to the image sideband.&quot;</span>
+                 <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">spwid</span><span class="p">))</span>
+
+        <span class="c1"># First derive the frequency range for the image sideband based on the LO1</span>
+        <span class="c1"># frequency and the frequency range of the signal sideband, using:</span>
+        <span class="c1"># image_freq = 2 * LO1 - signal_freq.</span>
+        <span class="n">imsb_chan_freqs</span> <span class="o">=</span> <span class="p">[</span><span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">spw</span><span class="o">.</span><span class="n">freq_lo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">freq</span> <span class="ow">in</span> <span class="n">spw</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">chan_freqs</span><span class="p">]</span>
+
+        <span class="c1"># For each channel in image sideband, check if it matches one of the ozone lines.</span>
+        <span class="k">for</span> <span class="n">ichan</span><span class="p">,</span> <span class="n">chan_freq</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">imsb_chan_freqs</span><span class="p">):</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="p">[</span><span class="n">oz_range</span> <span class="k">for</span> <span class="n">oz_range</span> <span class="ow">in</span> <span class="n">OZONE_RANGES</span>
+                     <span class="k">if</span> <span class="n">oz_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">chan_freq</span> <span class="o">*</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mf">1.0E-9</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">oz_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                <span class="n">oz_chans</span><span class="p">[</span><span class="n">ichan</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">oz_chans</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+pipeline.hifv.tasks.restorepims.restorepims
+===========================================
+
+.. automodule:: pipeline.hifv.tasks.restorepims.restorepims
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      fnmatch
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MakeImages
+      Restorepims
+      RestorepimsInputs
+      RestorepimsResults
+   

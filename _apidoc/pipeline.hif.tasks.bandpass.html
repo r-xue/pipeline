@@ -1,0 +1,1013 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.tasks.bandpass package &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.hif.tasks.bandpass package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/pipeline.hif.tasks.bandpass.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hif-tasks-bandpass-package">
+<h1>pipeline.hif.tasks.bandpass package<a class="headerlink" href="#pipeline-hif-tasks-bandpass-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pipeline.hif.tasks.bandpass.adapters">
+<span id="pipeline-hif-tasks-bandpass-adapters-module"></span><h2>pipeline.hif.tasks.bandpass.adapters module<a class="headerlink" href="#module-pipeline.hif.tasks.bandpass.adapters" title="Link to this heading"></a></h2>
+<p>The adapters module contains classes that adapt Heuristics in the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pipeline.heuristics</span></code> package, allowing them to be called directly with
+low-level objects from the pipeline domain.</p>
+<p>Heuristics in the pipeline.heuristics package have simple interfaces; to
+maximize their ease of use, their interfaces accept only Python and NumPy
+primitives.</p>
+<p>As the pipeline deals with complex lower-level objects and structures, we need
+a way to convert from these structures to the simple primitives demanded by
+the Heuristics. The classes in this module encapsulate that logic, converting
+objects or reading calibration tables as necessary and extracting the
+information needed by the wrapped Heuristic.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.adapters.DegAmpAdapter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DegAmpAdapter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heuristic</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/adapters.html#DegAmpAdapter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.adapters.DegAmpAdapter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.hif.tasks.bandpass.adapters.PolynomialHeuristicAdapter" title="pipeline.hif.tasks.bandpass.adapters.PolynomialHeuristicAdapter"><code class="xref py py-class docutils literal notranslate"><span class="pre">PolynomialHeuristicAdapter</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.adapters.DegPhaseAdapter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DegPhaseAdapter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heuristic</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/adapters.html#DegPhaseAdapter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.adapters.DegPhaseAdapter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.hif.tasks.bandpass.adapters.PolynomialHeuristicAdapter" title="pipeline.hif.tasks.bandpass.adapters.PolynomialHeuristicAdapter"><code class="xref py py-class docutils literal notranslate"><span class="pre">PolynomialHeuristicAdapter</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.adapters.PhaseUpSolIntAdapter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PhaseUpSolIntAdapter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heuristic</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/adapters.html#PhaseUpSolIntAdapter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.adapters.PhaseUpSolIntAdapter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.adapters.Adapter" title="pipeline.infrastructure.adapters.Adapter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Adapter</span></code></a></p>
+<p>PhaseUpSolIntAdapter adapts the
+<a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.solint.PhaseUpSolInt" title="pipeline.hif.heuristics.solint.PhaseUpSolInt"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhaseUpSolInt</span></code></a> heuristic, taking in a
+MeasurementSet and intent and passing the median integration time for
+observations with that intent through to the science heuristic.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.adapters.PhaseUpSolIntAdapter.calculate">
+<span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/adapters.html#PhaseUpSolIntAdapter.calculate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.adapters.PhaseUpSolIntAdapter.calculate" title="Link to this definition"></a></dt>
+<dd><p>Extract the integration time for observations with the given intent
+from the measurement set and pass it to the wrapped heuristic,
+returning the result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ms</strong> (<a class="reference internal" href="pipeline.domain.html#pipeline.domain.measurementset.MeasurementSet" title="pipeline.domain.measurementset.MeasurementSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a>) – the MeasurementSet to examine</p></li>
+<li><p><strong>intent</strong> (<em>string</em>) – the intent for which to find the integration time</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.adapters.PolynomialHeuristicAdapter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PolynomialHeuristicAdapter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heuristic</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/adapters.html#PolynomialHeuristicAdapter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.adapters.PolynomialHeuristicAdapter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.adapters.Adapter" title="pipeline.infrastructure.adapters.Adapter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Adapter</span></code></a></p>
+<p>PolynomialHeuristicAdapter converts from the pipeline interface for a
+polynomial order heuristic, the string name of a caltable, to the data
+types needed by the heuristic itself, which are numerical data arrays.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.adapters.PolynomialHeuristicAdapter.calculate">
+<span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/adapters.html#PolynomialHeuristicAdapter.calculate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.adapters.PolynomialHeuristicAdapter.calculate" title="Link to this definition"></a></dt>
+<dd><p>Make a calculation based on the given parameters.</p>
+<p>This is an abstract method and must be implemented by all Heuristic
+subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The signature and return types of <code class="xref py py-meth docutils literal notranslate"><span class="pre">calculate()</span></code>
+are intended to be implementation specific. Refer to the
+documentation of the implementing class for the appropriate
+signature.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.adapters.PolynomialHeuristicAdapter.read_caltable">
+<span class="sig-name descname"><span class="pre">read_caltable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/adapters.html#PolynomialHeuristicAdapter.read_caltable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.adapters.PolynomialHeuristicAdapter.read_caltable" title="Link to this definition"></a></dt>
+<dd><p>Method to read channel calibration table and return it as a Python
+array.</p>
+<p>Keyword arguments:
+table  – The name of the calibration table
+spw    – The SpW of interest.
+msobject – MeasurementSet domain object from which the calibration</p>
+<blockquote>
+<div><p>was calculated.</p>
+</div></blockquote>
+<p>Returns:
+data - ‘view’ of calibration gains in numpy complex array[antenna,channel]
+flag - flags associated with data array bool[antenna,channel]</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hif.tasks.bandpass.bandpassmode">
+<span id="pipeline-hif-tasks-bandpass-bandpassmode-module"></span><h2>pipeline.hif.tasks.bandpass.bandpassmode module<a class="headerlink" href="#module-pipeline.hif.tasks.bandpass.bandpassmode" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.bandpassmode.BandpassMode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BandpassMode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/bandpassmode.html#BandpassMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.bandpassmode.BandpassMode" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.ModeTask" title="pipeline.infrastructure.basetask.ModeTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModeTask</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.bandpassmode.BandpassMode.Inputs">
+<span class="sig-name descname"><span class="pre">Inputs</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.bandpassmode.BandpassMode.Inputs" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hif.tasks.bandpass.bandpassmode.BandpassModeInputs" title="pipeline.hif.tasks.bandpass.bandpassmode.BandpassModeInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">BandpassModeInputs</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.bandpassmode.BandpassModeInputs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BandpassModeInputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/bandpassmode.html#BandpassModeInputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.bandpassmode.BandpassModeInputs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.vdp.ModeInputs" title="pipeline.infrastructure.vdp.ModeInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModeInputs</span></code></a></p>
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hif.tasks.bandpass.bandpassworker">
+<span id="pipeline-hif-tasks-bandpass-bandpassworker-module"></span><h2>pipeline.hif.tasks.bandpass.bandpassworker module<a class="headerlink" href="#module-pipeline.hif.tasks.bandpass.bandpassworker" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BandpassWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/bandpassworker.html#BandpassWorker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.StandardTaskTemplate" title="pipeline.infrastructure.basetask.StandardTaskTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">StandardTaskTemplate</span></code></a></p>
+<p>BandpassWorker performs a simple bandpass calibration exactly as specified
+by the inputs, with no analysis or parameter refinement.</p>
+<p>As this task has no analysis, it is not expected to be used in an
+interactive session. The expected use-case for this task is as a worker
+task for higher-level tasks.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorker.Inputs">
+<span class="sig-name descname"><span class="pre">Inputs</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorker.Inputs" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorkerInputs" title="pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorkerInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">BandpassWorkerInputs</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorker.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/bandpassworker.html#BandpassWorker.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorker.analyse" title="Link to this definition"></a></dt>
+<dd><p>Analyze the result from the task preparing operation.</p>
+<p>This method analyzes the result object returned by the Pipeline task.prepare method
+and returns it with optional modifications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>result</strong> – the task result object generated by <code class="xref py py-func docutils literal notranslate"><span class="pre">prepare()</span></code></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Result</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorker.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/bandpassworker.html#BandpassWorker.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorker.prepare" title="Link to this definition"></a></dt>
+<dd><p>Prepare job requests for execution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parameters</strong> – the parameters to pass through to the subclass.
+Refer to the implementing subclass for specific information on
+what these parameters are.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>a class implementing <code class="xref py py-class docutils literal notranslate"><span class="pre">Result</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorkerInputs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BandpassWorkerInputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minblperant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solnorm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillgaps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degphase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visnorm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskcenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskedge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">append</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opacity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/bandpassworker.html#BandpassWorkerInputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorkerInputs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs" title="pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">VdpCommonBandpassInputs</span></code></a></p>
+<p>BandpassInputs defines the inputs required by the <code class="xref py py-class docutils literal notranslate"><span class="pre">Bandpass</span></code>
+task.</p>
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hif.tasks.bandpass.channelbandpass">
+<span id="pipeline-hif-tasks-bandpass-channelbandpass-module"></span><h2>pipeline.hif.tasks.bandpass.channelbandpass module<a class="headerlink" href="#module-pipeline.hif.tasks.bandpass.channelbandpass" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.channelbandpass.ChannelBandpass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ChannelBandpass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/channelbandpass.html#ChannelBandpass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.channelbandpass.ChannelBandpass" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorker" title="pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">BandpassWorker</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.channelbandpass.ChannelBandpass.Inputs">
+<span class="sig-name descname"><span class="pre">Inputs</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.channelbandpass.ChannelBandpass.Inputs" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hif.tasks.bandpass.channelbandpass.ChannelBandpassInputs" title="pipeline.hif.tasks.bandpass.channelbandpass.ChannelBandpassInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChannelBandpassInputs</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.channelbandpass.ChannelBandpassInputs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ChannelBandpassInputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minblperant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solnorm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillgaps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">append</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opacity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/channelbandpass.html#ChannelBandpassInputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.channelbandpass.ChannelBandpassInputs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs" title="pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">VdpCommonBandpassInputs</span></code></a></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.channelbandpass.ChannelBandpassInputs.bandtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bandtype</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.channelbandpass.ChannelBandpassInputs.bandtype" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.channelbandpass.ChannelBandpassInputs.minsnr">
+<span class="sig-name descname"><span class="pre">minsnr</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.channelbandpass.ChannelBandpassInputs.minsnr" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hif.tasks.bandpass.common">
+<span id="pipeline-hif-tasks-bandpass-common-module"></span><h2>pipeline.hif.tasks.bandpass.common module<a class="headerlink" href="#module-pipeline.hif.tasks.bandpass.common" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.common.BandpassResults">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BandpassResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">final</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.callibrary.CalApplication" title="pipeline.infrastructure.callibrary.CalApplication"><span class="pre">CalApplication</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pool</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.callibrary.CalApplication" title="pipeline.infrastructure.callibrary.CalApplication"><span class="pre">CalApplication</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preceding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.Results" title="pipeline.infrastructure.basetask.Results"><span class="pre">Results</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">applies_adopted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unregister_existing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/common.html#BandpassResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.common.BandpassResults" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.Results" title="pipeline.infrastructure.basetask.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
+<p>BandpassResults is the results class common to all pipeline bandpass
+calibration tasks.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.common.BandpassResults.merge_with_context">
+<span class="sig-name descname"><span class="pre">merge_with_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><span class="pre">Context</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/common.html#BandpassResults.merge_with_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.common.BandpassResults.merge_with_context" title="Link to this definition"></a></dt>
+<dd><p>See <a href="#id1"><span class="problematic" id="id2">:method:`~pipeline.api.Results.merge_with_context`</span></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VdpCommonBandpassInputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minblperant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opacity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selectdata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/common.html#VdpCommonBandpassInputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.hif.tasks.common.html#pipeline.hif.tasks.common.commoncalinputs.VdpCommonCalibrationInputs" title="pipeline.hif.tasks.common.commoncalinputs.VdpCommonCalibrationInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">VdpCommonCalibrationInputs</span></code></a></p>
+<p>CommonBandpassInputs is the base class for defines inputs that are common
+to all pipeline bandpass calibration tasks.</p>
+<p>CommonBandpassInputs should be considered an abstract class. Refer to the
+specializations that inherit from CommonBandpassInputs for concrete
+implementations.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs.caltable">
+<span class="sig-name descname"><span class="pre">caltable</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs.caltable" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs.combine">
+<span class="sig-name descname"><span class="pre">combine</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs.combine" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs.intent">
+<span class="sig-name descname"><span class="pre">intent</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs.intent" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs.solint">
+<span class="sig-name descname"><span class="pre">solint</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs.solint" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs.solnorm">
+<span class="sig-name descname"><span class="pre">solnorm</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs.solnorm" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hif.tasks.bandpass.phcorbandpass">
+<span id="pipeline-hif-tasks-bandpass-phcorbandpass-module"></span><h2>pipeline.hif.tasks.bandpass.phcorbandpass module<a class="headerlink" href="#module-pipeline.hif.tasks.bandpass.phcorbandpass" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PhcorBandpass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/phcorbandpass.html#PhcorBandpass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpass" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorker" title="pipeline.hif.tasks.bandpass.bandpassworker.BandpassWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">BandpassWorker</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpass.Inputs">
+<span class="sig-name descname"><span class="pre">Inputs</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpass.Inputs" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpassInputs" title="pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpassInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhcorBandpassInputs</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpass.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/phcorbandpass.html#PhcorBandpass.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpass.prepare" title="Link to this definition"></a></dt>
+<dd><p>Prepare job requests for execution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parameters</strong> – the parameters to pass through to the subclass.
+Refer to the implementing subclass for specific information on
+what these parameters are.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>a class implementing <code class="xref py py-class docutils literal notranslate"><span class="pre">Result</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpassInputs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PhcorBandpassInputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseupbw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseupsolint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/phcorbandpass.html#PhcorBandpassInputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpassInputs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.hif.tasks.bandpass.bandpassmode.BandpassModeInputs" title="pipeline.hif.tasks.bandpass.bandpassmode.BandpassModeInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">BandpassModeInputs</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpassInputs.phaseup">
+<span class="sig-name descname"><span class="pre">phaseup</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpassInputs.phaseup" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpassInputs.phaseupbw">
+<span class="sig-name descname"><span class="pre">phaseupbw</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpassInputs.phaseupbw" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpassInputs.phaseupsolint">
+<span class="sig-name descname"><span class="pre">phaseupsolint</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpassInputs.phaseupsolint" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpassInputs.solint">
+<span class="sig-name descname"><span class="pre">solint</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpassInputs.solint" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hif.tasks.bandpass.qa">
+<span id="pipeline-hif-tasks-bandpass-qa-module"></span><h2>pipeline.hif.tasks.bandpass.qa module<a class="headerlink" href="#module-pipeline.hif.tasks.bandpass.qa" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.qa.BandpassListQAHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BandpassListQAHandler</span></span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/qa.html#BandpassListQAHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.qa.BandpassListQAHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin" title="pipeline.infrastructure.pipelineqa.QAPlugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">QAPlugin</span></code></a></p>
+<p>QA handler for a list containing BandpassResults.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.qa.BandpassListQAHandler.child_cls">
+<span class="sig-name descname"><span class="pre">child_cls</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.qa.BandpassListQAHandler.child_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hif.tasks.bandpass.common.BandpassResults" title="pipeline.hif.tasks.bandpass.common.BandpassResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">BandpassResults</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.qa.BandpassListQAHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/qa.html#BandpassListQAHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.qa.BandpassListQAHandler.handle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.qa.BandpassListQAHandler.result_cls">
+<span class="sig-name descname"><span class="pre">result_cls</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.qa.BandpassListQAHandler.result_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.qa.BandpassQAHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BandpassQAHandler</span></span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/qa.html#BandpassQAHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.qa.BandpassQAHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin" title="pipeline.infrastructure.pipelineqa.QAPlugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">QAPlugin</span></code></a></p>
+<p>QA handler for an uncontained BandpassResult.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.qa.BandpassQAHandler.child_cls">
+<span class="sig-name descname"><span class="pre">child_cls</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pipeline.hif.tasks.bandpass.qa.BandpassQAHandler.child_cls" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.qa.BandpassQAHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/qa.html#BandpassQAHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.qa.BandpassQAHandler.handle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.qa.BandpassQAHandler.result_cls">
+<span class="sig-name descname"><span class="pre">result_cls</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.qa.BandpassQAHandler.result_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.hif.tasks.bandpass.common.BandpassResults" title="pipeline.hif.tasks.bandpass.common.BandpassResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">BandpassResults</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.qa.BandpassQAPool">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BandpassQAPool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rawdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/qa.html#BandpassQAPool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.qa.BandpassQAPool" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScorePool" title="pipeline.infrastructure.pipelineqa.QAScorePool"><code class="xref py py-class docutils literal notranslate"><span class="pre">QAScorePool</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.qa.BandpassQAPool.score_types">
+<span class="sig-name descname"><span class="pre">score_types</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'AMPLITUDE_SCORE_SNR':</span> <span class="pre">'amplitude</span> <span class="pre">SNR',</span> <span class="pre">'PHASE_SCORE_DD':</span> <span class="pre">'phase</span> <span class="pre">derivative'}</span></em><a class="headerlink" href="#pipeline.hif.tasks.bandpass.qa.BandpassQAPool.score_types" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.qa.BandpassQAPool.short_msg">
+<span class="sig-name descname"><span class="pre">short_msg</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'AMPLITUDE_SCORE_SNR':</span> <span class="pre">'Amp</span> <span class="pre">SNR',</span> <span class="pre">'PHASE_SCORE_DD':</span> <span class="pre">'Phase</span> <span class="pre">derivative'}</span></em><a class="headerlink" href="#pipeline.hif.tasks.bandpass.qa.BandpassQAPool.short_msg" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.qa.BandpassQAPool.update_scores">
+<span class="sig-name descname"><span class="pre">update_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/qa.html#BandpassQAPool.update_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.qa.BandpassQAPool.update_scores" title="Link to this definition"></a></dt>
+<dd><p>MeasurementSet is needed to convert from integer identifier stored in
+QA dictionary to the antenna, spw and pol it represents.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hif.tasks.bandpass.renderer">
+<span id="pipeline-hif-tasks-bandpass-renderer-module"></span><h2>pipeline.hif.tasks.bandpass.renderer module<a class="headerlink" href="#module-pipeline.hif.tasks.bandpass.renderer" title="Link to this heading"></a></h2>
+<p>Created on 11 Sep 2014</p>
+<p>&#64;author: sjw</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.AdoptedTR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AdoptedTR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaintable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.AdoptedTR" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.AdoptedTR.gaintable">
+<span class="sig-name descname"><span class="pre">gaintable</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.AdoptedTR.gaintable" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.AdoptedTR.vis">
+<span class="sig-name descname"><span class="pre">vis</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.AdoptedTR.vis" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.BandpassAmpVsFreqPlotRenderer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BandpassAmpVsFreqPlotRenderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plots</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/renderer.html#BandpassAmpVsFreqPlotRenderer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.BandpassAmpVsFreqPlotRenderer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer" title="pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseBandpassPlotRenderer</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.BandpassApplication">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BandpassApplication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaintable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.BandpassApplication" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.BandpassApplication.bandtype">
+<span class="sig-name descname"><span class="pre">bandtype</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.BandpassApplication.bandtype" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.BandpassApplication.gaintable">
+<span class="sig-name descname"><span class="pre">gaintable</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.BandpassApplication.gaintable" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.BandpassApplication.intent">
+<span class="sig-name descname"><span class="pre">intent</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.BandpassApplication.intent" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.BandpassApplication.ms">
+<span class="sig-name descname"><span class="pre">ms</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.BandpassApplication.ms" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.BandpassApplication.solint">
+<span class="sig-name descname"><span class="pre">solint</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.BandpassApplication.solint" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.BandpassApplication.spw">
+<span class="sig-name descname"><span class="pre">spw</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.BandpassApplication.spw" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.BandpassPhaseVsFreqPlotRenderer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BandpassPhaseVsFreqPlotRenderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plots</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/renderer.html#BandpassPhaseVsFreqPlotRenderer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.BandpassPhaseVsFreqPlotRenderer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer" title="pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseBandpassPlotRenderer</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BaseBandpassPlotRenderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plots</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/renderer.html#BaseBandpassPlotRenderer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.JsonPlotRenderer" title="pipeline.infrastructure.renderer.basetemplates.JsonPlotRenderer"><code class="xref py py-class docutils literal notranslate"><span class="pre">JsonPlotRenderer</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer.update_json_dict">
+<span class="sig-name descname"><span class="pre">update_json_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/renderer.html#BaseBandpassPlotRenderer.update_json_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer.update_json_dict" title="Link to this definition"></a></dt>
+<dd><p>Hook function that can be used by extending classes to extract extra
+parameters from the plot object and insert them into the JSON
+dictionary for that plot.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.PhaseupApplication">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PhaseupApplication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calmode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minblperant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsnr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagged</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseupbw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.PhaseupApplication" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.PhaseupApplication.calmode">
+<span class="sig-name descname"><span class="pre">calmode</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.PhaseupApplication.calmode" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.PhaseupApplication.flagged">
+<span class="sig-name descname"><span class="pre">flagged</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.PhaseupApplication.flagged" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.PhaseupApplication.minblperant">
+<span class="sig-name descname"><span class="pre">minblperant</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.PhaseupApplication.minblperant" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.PhaseupApplication.minsnr">
+<span class="sig-name descname"><span class="pre">minsnr</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.PhaseupApplication.minsnr" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.PhaseupApplication.ms">
+<span class="sig-name descname"><span class="pre">ms</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.PhaseupApplication.ms" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.PhaseupApplication.phaseupbw">
+<span class="sig-name descname"><span class="pre">phaseupbw</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.PhaseupApplication.phaseupbw" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 6</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.PhaseupApplication.solint">
+<span class="sig-name descname"><span class="pre">solint</span></span><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.PhaseupApplication.solint" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">T2_4MDetailsBandpassRenderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bandpass.mako'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Bandpass</span> <span class="pre">calibration'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_rerender</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/renderer.html#T2_4MDetailsBandpassRenderer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer" title="pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer"><code class="xref py py-class docutils literal notranslate"><span class="pre">T2_4MDetailsDefaultRenderer</span></code></a></p>
+<p>T2_4MDetailsBandpassRenderer generates the detailed T2_4M-level plots and
+output specific to the bandpass calibration task.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer.get_bandpass_table">
+<span class="sig-name descname"><span class="pre">get_bandpass_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/renderer.html#T2_4MDetailsBandpassRenderer.get_bandpass_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer.get_bandpass_table" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer.get_phaseup_applications">
+<span class="sig-name descname"><span class="pre">get_phaseup_applications</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/renderer.html#T2_4MDetailsBandpassRenderer.get_phaseup_applications"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer.get_phaseup_applications" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer.update_mako_context">
+<span class="sig-name descname"><span class="pre">update_mako_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/renderer.html#T2_4MDetailsBandpassRenderer.update_mako_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer.update_mako_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.bandpass.renderer.make_adopted_table">
+<span class="sig-name descname"><span class="pre">make_adopted_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/tasks/bandpass/renderer.html#make_adopted_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.bandpass.renderer.make_adopted_table" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pipeline.hif.tasks.bandpass">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline.hif.tasks.bandpass" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+pipeline.hsd.tasks.tsysflag package
+===================================
+
+Submodules
+----------
+
+pipeline.hsd.tasks.tsysflag.tsysflag module
+-------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.tsysflag.tsysflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hsd.tasks.tsysflag
+   :members:
+   :undoc-members:
+   :show-inheritance:

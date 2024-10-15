@@ -1,0 +1,591 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.renderer.logger &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.renderer.logger</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.renderer.logger</h1><div class="highlight"><pre>
+<span></span><span class="c1"># *****************************************************************************</span>
+<span class="c1"># ALMA - Atacama Large Millimeter Array</span>
+<span class="c1"># Copyright (c) ATC - Astronomy Technology Center - Royal Observatory Edinburgh, 2011</span>
+<span class="c1"># (in the framework of the ALMA collaboration).</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1"># </span>
+<span class="c1"># This library is free software; you can redistribute it and/or</span>
+<span class="c1"># modify it under the terms of the GNU Lesser General Public</span>
+<span class="c1"># License as published by the Free Software Foundation; either</span>
+<span class="c1"># version 2.1 of the License, or (at your option) any later version.</span>
+<span class="c1"># </span>
+<span class="c1"># This library is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU</span>
+<span class="c1"># Lesser General Public License for more details.</span>
+<span class="c1"># </span>
+<span class="c1"># You should have received a copy of the GNU Lesser General Public</span>
+<span class="c1"># License along with this library; if not, write to the Free Software</span>
+<span class="c1"># Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA</span>
+<span class="c1"># *****************************************************************************</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">distutils.spawn</span> <span class="k">as</span> <span class="nn">spawn</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">logging</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Set the command used to shrink plots down to thumbnails. If set to None, no</span>
+<span class="c1"># thumbnails will be generated </span>
+<span class="n">THUMBNAIL_CMD</span> <span class="o">=</span> <span class="kc">None</span> 
+
+
+<span class="c1"># first try to find ImageMagick&#39;s &#39;mogrify&#39; command. We assume that</span>
+<span class="c1"># ImageMagick&#39;s &#39;convert&#39; commnand can be found in the same directory. We</span>
+<span class="c1"># do not search for &#39;convert&#39; directly as some utilities also provide a</span>
+<span class="c1"># &#39;convert&#39; command which may come earlier on the PATH. </span>
+<span class="n">mogrify_path</span> <span class="o">=</span> <span class="n">spawn</span><span class="o">.</span><span class="n">find_executable</span><span class="p">(</span><span class="s1">&#39;mogrify&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">mogrify_path</span><span class="p">:</span>
+    <span class="n">bin_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">mogrify_path</span><span class="p">)</span>
+    <span class="n">convert_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bin_dir</span><span class="p">,</span> <span class="s1">&#39;convert&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">convert_path</span><span class="p">):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Using convert executable at </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> to generate &#39;</span>
+                  <span class="s1">&#39;thumbnails&#39;</span> <span class="o">%</span> <span class="n">convert_path</span><span class="p">)</span>
+        <span class="n">THUMBNAIL_CMD</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">full</span><span class="p">,</span> <span class="n">thumb</span> <span class="p">:</span> <span class="p">(</span><span class="n">convert_path</span><span class="p">,</span> <span class="n">full</span><span class="p">,</span> <span class="s1">&#39;-thumbnail&#39;</span><span class="p">,</span> <span class="s1">&#39;250x188&#39;</span><span class="p">,</span> <span class="n">thumb</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">THUMBNAIL_CMD</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
+    <span class="c1"># macOS only: fallback to sips if ImageMagick, e.g. from MacPorts or Homebrew is not found on macOS. sips is a system</span>
+    <span class="c1"># executable that should be available on all macOS systems.</span>
+    <span class="n">sips_path</span> <span class="o">=</span> <span class="n">spawn</span><span class="o">.</span><span class="n">find_executable</span><span class="p">(</span><span class="s1">&#39;sips&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sips_path</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Using sips executable at </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> to generate thumbnails&#39;</span>
+                  <span class="o">%</span> <span class="n">sips_path</span><span class="p">)</span>
+        <span class="n">THUMBNAIL_CMD</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">full</span><span class="p">,</span> <span class="n">thumb</span> <span class="p">:</span> <span class="p">(</span><span class="n">sips_path</span><span class="p">,</span> <span class="s1">&#39;-Z&#39;</span><span class="p">,</span> <span class="s1">&#39;250&#39;</span><span class="p">,</span> <span class="s1">&#39;--out&#39;</span><span class="p">,</span> <span class="n">thumb</span><span class="p">,</span> <span class="n">full</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">THUMBNAIL_CMD</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Could not find the ImageMagick </span><span class="se">\&#39;</span><span class="s1">convert</span><span class="se">\&#39;</span><span class="s1"> or macOS </span><span class="se">\&#39;</span><span class="s1">sips</span><span class="se">\&#39;</span><span class="s1"> command. &#39;</span>
+                <span class="s1">&#39;Thumbnails will not be generated, leading to slower web logs.&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="getPath">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.logger.getPath">[docs]</a>
+<span class="k">def</span> <span class="nf">getPath</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span></div>
+
+
+
+<div class="viewcode-block" id="Parameters">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.logger.Parameters">[docs]</a>
+<span class="k">class</span> <span class="nc">Parameters</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provides a set of utility functions that describe how the plot parameters</span>
+<span class="sd">    given as keys of the optional parameters dictionary given to Plot() should</span>
+<span class="sd">    be interpreted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">css_ids</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="s1">&#39;Unhandled&#39;</span><span class="p">)</span><span class="o">.</span><span class="fm">__next__</span><span class="p">,</span>
+                                      <span class="p">{</span> <span class="s1">&#39;ant&#39;</span>    <span class="p">:</span> <span class="s1">&#39;ant&#39;</span><span class="p">,</span>
+                                        <span class="s1">&#39;pol&#39;</span>    <span class="p">:</span> <span class="s1">&#39;pol&#39;</span><span class="p">,</span>
+                                        <span class="s1">&#39;spw&#39;</span>    <span class="p">:</span> <span class="s1">&#39;spw&#39;</span><span class="p">,</span>
+                                        <span class="s1">&#39;map&#39;</span>    <span class="p">:</span> <span class="s1">&#39;map&#39;</span><span class="p">,</span>
+                                        <span class="s1">&#39;intent&#39;</span> <span class="p">:</span> <span class="s1">&#39;intent&#39;</span><span class="p">,</span>
+                                        <span class="s1">&#39;field&#39;</span>  <span class="p">:</span> <span class="s1">&#39;field&#39;</span><span class="p">,</span>
+                                        <span class="s1">&#39;type&#39;</span>   <span class="p">:</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span>
+                                        <span class="s1">&#39;chnl&#39;</span>   <span class="p">:</span> <span class="s1">&#39;chnl&#39;</span><span class="p">,</span>
+                                        <span class="s1">&#39;solint&#39;</span> <span class="p">:</span> <span class="s1">&#39;solint&#39;</span><span class="p">,</span>
+                                        <span class="s1">&#39;vis&#39;</span>    <span class="p">:</span> <span class="s1">&#39;vis&#39;</span><span class="p">,</span>
+                                        <span class="s1">&#39;file&#39;</span>   <span class="p">:</span> <span class="s1">&#39;file&#39;</span>    <span class="p">})</span>
+
+    <span class="n">descriptions</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="s1">&#39;Unknown&#39;</span><span class="p">)</span><span class="o">.</span><span class="fm">__next__</span><span class="p">,</span>
+                                           <span class="p">{</span> <span class="s1">&#39;ant&#39;</span>    <span class="p">:</span> <span class="s1">&#39;Antenna&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;spw&#39;</span>    <span class="p">:</span> <span class="s1">&#39;Spectral Window&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;pol&#39;</span>    <span class="p">:</span> <span class="s1">&#39;Polarisation&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;map&#39;</span>    <span class="p">:</span> <span class="s1">&#39;Map&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;intent&#39;</span> <span class="p">:</span> <span class="s1">&#39;Intent&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;field&#39;</span>  <span class="p">:</span> <span class="s1">&#39;Field&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;type&#39;</span>   <span class="p">:</span> <span class="s1">&#39;Type&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;chnl&#39;</span>   <span class="p">:</span> <span class="s1">&#39;Channels&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;solint&#39;</span> <span class="p">:</span> <span class="s1">&#39;Solution Interval&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;vis&#39;</span>    <span class="p">:</span> <span class="s1">&#39;Measurement Set&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;file&#39;</span>   <span class="p">:</span> <span class="s1">&#39;File&#39;</span>   <span class="p">})</span>
+
+<div class="viewcode-block" id="Parameters.getCssId">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.logger.Parameters.getCssId">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">getCssId</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        getCssId(s) -&gt; string</span>
+
+<span class="sd">        Get the CSS class associated with this parameter in HTML output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">css_ids</span><span class="p">[</span><span class="n">parameter</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Parameters.getDescription">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.logger.Parameters.getDescription">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">getDescription</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        getCssId(s) -&gt; string</span>
+
+<span class="sd">        Get the plain English description of this parameter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">descriptions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; (unknown parameter)&#39;</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">t</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PlotGroup">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.logger.PlotGroup">[docs]</a>
+<span class="k">class</span> <span class="nc">PlotGroup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="c1"># the full template for the selectors in this series of plots</span>
+    <span class="n">full_template</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="s1">&#39;&lt;li class=&quot;selectorHeading&quot;&gt;$description&#39;</span>
+        <span class="o">+</span> <span class="s1">&#39;:&lt;ul class=&quot;selector&quot;&gt;</span><span class="se">\n</span><span class="s1">$selectors&lt;/ul&gt;</span><span class="se">\n</span><span class="s1">&lt;/li&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># the template used to create a parameter selector</span>
+    <span class="n">selector_template</span> <span class="o">=</span> \
+        <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="s1">&#39;&lt;li id=&quot;$prefix$css_class&quot;&gt;&#39;</span>
+                        <span class="s1">&#39;&lt;a class=&quot;button small pill&quot; href=&quot;#&quot;&gt;$val&lt;/a&gt;&lt;/li&gt;&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PlotGroup.create_plot_groups">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.logger.PlotGroup.create_plot_groups">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_plot_groups</span><span class="p">(</span><span class="n">plots</span><span class="o">=</span><span class="p">[]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of PlotGroups, each containing a series of plots with</span>
+<span class="sd">        the same axes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># defaultdict requires a callable constructor argument; we pass a</span>
+        <span class="c1"># lambda function that returns another defaultdict</span>
+        <span class="n">grouped</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">plots</span><span class="p">):</span>
+            <span class="n">grouped</span><span class="p">[</span><span class="n">plot</span><span class="o">.</span><span class="n">x_axis</span><span class="p">][</span><span class="n">plot</span><span class="o">.</span><span class="n">y_axis</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plot</span><span class="p">)</span>
+
+        <span class="n">plot_groups</span> <span class="o">=</span> <span class="p">[]</span>        
+        <span class="c1"># create a dictonary like groups{&quot;phase&quot;}{&quot;time&quot;}=[plot1,plot2,plot3]</span>
+        <span class="k">for</span> <span class="n">y_axes</span> <span class="ow">in</span> <span class="n">grouped</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">plots_with_common_axes</span> <span class="ow">in</span> <span class="n">y_axes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">plot_groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PlotGroup</span><span class="p">(</span><span class="n">plots_with_common_axes</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">plot_groups</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span> <span class="o">=</span> <span class="n">plots</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">x_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x_axis</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;Unknown&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">y_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y_axis</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;Unknown&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> vs </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">capwords</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_axis</span><span class="p">),</span> <span class="n">string</span><span class="o">.</span><span class="n">capwords</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_axis</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">title</span> <span class="o">==</span> <span class="s1">&#39;Dec Offset vs Ra Offset&#39;</span><span class="p">:</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Image Maps (Dec Offset vs RA Offset)&#39;</span>
+
+        <span class="k">return</span> <span class="n">title</span>
+
+<div class="viewcode-block" id="PlotGroup.numericalSort">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.logger.PlotGroup.numericalSort">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">numericalSort</span><span class="p">(</span><span class="n">selector</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sorts strings numerically, eg. [b13, a2, a10] -&gt; [a2, a10, b13]</span>
+
+<span class="sd">        Based on Recipe 5.5 from Python Cookbook 2nd Edition.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">re_digits</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(\d+)&#39;</span><span class="p">)</span>
+        <span class="c1"># split into digits/non-digits</span>
+        <span class="n">pieces</span> <span class="o">=</span> <span class="n">re_digits</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">selector</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> 
+        <span class="n">pieces</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">pieces</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]))</span>  <span class="c1"># turn digits into numbers</span>
+        <span class="k">return</span> <span class="n">pieces</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_selectors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_parameter_values</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+        <span class="n">selectors</span> <span class="o">=</span> <span class="p">[</span><span class="n">Selector</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+        <span class="n">selectors</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">PlotGroup</span><span class="o">.</span><span class="n">numericalSort</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">selectors</span>
+
+    <span class="k">def</span> <span class="nf">_get_parameter_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the unique set of values for the given parameter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># create a list of all the values for the given parameter</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">parameter</span><span class="p">))</span> <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">]</span>
+        <span class="c1"># remove duplicate values by returning a set</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">selectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">parameter_names</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="c1"># determine unique parameter names for our plots</span>
+        <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+                <span class="n">parameter_names</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># get a list of selectors for each unique parameter</span>
+        <span class="n">selectors</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_selectors</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parameter_names</span><span class="p">]</span>
+        <span class="c1"># remove any redundant selectors</span>
+        <span class="n">selectors</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">selectors</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># numerically sort selectors by value</span>
+<span class="c1">#        selectors.sort(key=PlotGroup.numericalSort)</span>
+        <span class="k">return</span> <span class="n">selectors</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">thumbnails</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="p">[</span><span class="n">plot</span><span class="o">.</span><span class="n">getThumbnailHtml</span><span class="p">()</span> <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">]</span>
+        <span class="n">html</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">PlotGroup</span><span class="o">.</span><span class="n">numericalSort</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">buttons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># the button HTML used if we have filters added </span>
+        <span class="n">clearFilterButton</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;input type=&quot;button&quot; name=&quot;clear&quot; id=&quot;clearbutton&quot; &#39;</span>
+                            <span class="s1">&#39;value=&quot;Clear All Filters&quot;&gt;&#39;</span><span class="p">)</span>
+        <span class="n">backButton</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;input type=&quot;button&quot; name=&quot;back&quot; value=&quot;Back&quot; &#39;</span>
+                      <span class="s1">&#39;onClick=&quot;javascript:history.back();&quot;&gt;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">backButton</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">clearFilterButton</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">backButton</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">toHtml</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Selector">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.logger.Selector">[docs]</a>
+<span class="k">class</span> <span class="nc">Selector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="c1"># CSS classes have a restricted character sets, so we use a regex to </span>
+    <span class="c1"># remove them</span>
+    <span class="n">_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\W&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">capwords</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">getCssId</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">getDescription</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">css_class</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span>
+                                   <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_regex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Selector(css_class=</span><span class="si">%s</span><span class="s1">, prefix=</span><span class="si">%s</span><span class="s1">, description=</span><span class="si">%s</span><span class="s1">, value=</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">css_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Plot">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.logger.Plot">[docs]</a>
+<span class="k">class</span> <span class="nc">Plot</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;Unknown&#39;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;Unknown&#39;</span><span class="p">,</span> 
+                 <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_score</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">captionmessage</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot(filename, x_axis, y_axis, field, parameters)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: the filename of the plot.</span>
+<span class="sd">            x_axis: what the X axis of this plot measures.</span>
+<span class="sd">            y_axis: what the Y axis of this plot measures.</span>
+<span class="sd">            field: the name of the source or field which this data corresponds to.</span>
+<span class="sd">            parameters: a dictionary of parameters, eg. { &#39;ant&#39; : 1, &#39;spw&#39; : 2 }.</span>
+<span class="sd">                These parameters should be known to the logging.Parameters class.</span>
+<span class="sd">            qa_score: additional property of the plot.</span>
+<span class="sd">            command: plotting command.</span>
+<span class="sd">            captionmessage: additional text in caption (its appearance is</span>
+<span class="sd">                determined by the mako template in which this plot appears).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_axis</span> <span class="o">=</span> <span class="n">x_axis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_axis</span> <span class="o">=</span> <span class="n">y_axis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qa_score</span> <span class="o">=</span> <span class="n">qa_score</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="n">command</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">captionmessage</span> <span class="o">=</span> <span class="n">captionmessage</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">css_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The CSS class to be used for this plot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\W&#39;</span><span class="p">)</span>
+        <span class="n">css_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Parameters</span><span class="o">.</span><span class="n">getCssId</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">regex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)))</span>
+                       <span class="k">for</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">css_classes</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;title -&gt; string</span>
+
+<span class="sd">        Construct and return a meaningful plot title using the internal state (axis</span>
+<span class="sd">        names, parameter names etc.) of this plot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># eg. &#39;M31: &#39;</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">Parameters</span><span class="o">.</span><span class="n">getDescription</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)))</span>
+                      <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;field&quot;</span><span class="p">]</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+            <span class="c1"># eg. &#39; for antenna 1, spectral window 2&#39;</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="s1">&#39; for &#39;</span> <span class="o">+</span> <span class="n">params</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">title_template</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+            <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span>
+            <span class="n">x_axis</span><span class="o">=</span><span class="n">string</span><span class="o">.</span><span class="n">capwords</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_axis</span><span class="p">)),</span>
+            <span class="n">y_axis</span><span class="o">=</span><span class="n">string</span><span class="o">.</span><span class="n">capwords</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_axis</span><span class="p">)),</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="c1"># eg. &#39;M31: Phase vs Time for Antenna 1, Spectral Window 2&#39;</span>
+        <span class="k">return</span> <span class="n">title</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">thumbnail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">thumb_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">),</span> <span class="s1">&#39;thumbs&#39;</span><span class="p">)</span>
+        <span class="n">thumb_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">thumb_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">thumb_file</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">thumb_file</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_thumbnail</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_create_thumbnail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a scaled-down copy of the plot, returning the filename to be</span>
+<span class="sd">        used as a thumbnail.</span>
+
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">THUMBNAIL_CMD</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span>
+
+        <span class="n">thumb_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">),</span> <span class="s1">&#39;thumbs&#39;</span><span class="p">)</span>
+        <span class="n">thumb_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">thumb_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">thumb_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">thumb_dir</span><span class="p">)</span> 
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Cannot create thumbnail. Original image not found: &#39;</span>
+                        <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span>
+
+        <span class="c1"># Set the command to perform. The module defines whether to use sips</span>
+        <span class="c1"># or ImageMagick; all that remains is to append, in order, the output</span>
+        <span class="c1"># and input files</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Creating thumbnail with </span><span class="si">%s</span><span class="s1">(</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span>
+                  <span class="n">THUMBNAIL_CMD</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">,</span> <span class="n">thumb_file</span><span class="p">)</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="n">THUMBNAIL_CMD</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">,</span> <span class="n">thumb_file</span><span class="p">)</span>
+
+        <span class="n">env_no_ld_library_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">env_no_ld_library_path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;LD_LIBRARY_PATH&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dev_null</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">dev_null</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">dev_null</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env_no_ld_library_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ret</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># return code is 0: thumbnail file successfully created</span>
+                <span class="k">return</span> <span class="n">thumb_file</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Error creating thumbnail for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">))</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># command not available. Return the full-sized image filename</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Error creating thumbnail for </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">),</span> <span class="n">e</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;Plot(</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">)&gt;&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span> </div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

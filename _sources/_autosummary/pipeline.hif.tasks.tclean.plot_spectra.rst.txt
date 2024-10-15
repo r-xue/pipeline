@@ -1,0 +1,27 @@
+pipeline.hif.tasks.tclean.plot\_spectra
+=======================================
+
+.. automodule:: pipeline.hif.tasks.tclean.plot_spectra
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      CalcAtmTransmissionForImage
+      RescaleTrans
+      addFrequencyAxisAbove
+      casaRestToTopo
+      cubeFrameToTopo
+      degrees
+      frames
+      imheadlist
+      lsrkToRest
+      lsrkToTopo
+      numberOfChannelsInCube
+      parseFrequencyArgument
+      parseFrequencyArgumentToGHz
+      plot_spectra
+      rad2radec
+      restToTopo
+   

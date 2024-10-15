@@ -1,0 +1,418 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.cli.hifa_wvrgcalflag &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.cli.hifa_wvrgcalflag</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.cli.hifa_wvrgcalflag</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.h.cli.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+
+
+<div class="viewcode-block" id="hifa_wvrgcalflag">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_wvrgcalflag.hifa_wvrgcalflag">[docs]</a>
+<span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
+<span class="k">def</span> <span class="nf">hifa_wvrgcalflag</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetstable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_toffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">toffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">segsource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">sourceflag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nsol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disperse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wvrflag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxdistm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minnumants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mingoodfrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">flag_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_bandpass_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">accept_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_hi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">fhi_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fhi_minsample</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ants_with_wvr_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    hifa_wvrgcalflag ----</span>
+<span class="sd">    Generate a gain table based on Water Vapor Radiometer data, interpolating over</span>
+<span class="sd">    antennas with bad radiometers.</span>
+
+
+<span class="sd">    This task will first identify for each vis whether it includes at least 3</span>
+<span class="sd">    antennas with Water Vapor Radiometer (WVR) data, and that the fraction of</span>
+<span class="sd">    WVR antennas / all antennas exceeds the minimum threshold</span>
+<span class="sd">    (ants_with_wvr_thresh).</span>
+
+<span class="sd">    If there are not enough WVR antennas by number and/or fraction, then no WVR</span>
+<span class="sd">    caltable is created and no WVR calibration will be applied to the corresponding</span>
+<span class="sd">    vis. If there are enough WVR antennas, then the task proceeds as follows for</span>
+<span class="sd">    each valid vis:</span>
+
+<span class="sd">    First, generate a gain table based on the Water Vapor Radiometer data for</span>
+<span class="sd">    each vis.</span>
+
+<span class="sd">    Second, apply the WVR calibration to the data specified by &#39;flag_intent&#39;,</span>
+<span class="sd">    calculate flagging &#39;views&#39; showing the ratio</span>
+<span class="sd">    &#39;phase-rms with WVR / phase-rms without WVR&#39; for each scan. A ratio &lt; 1</span>
+<span class="sd">    implies that the phase noise is improved, a ratio &gt; 1 implies that it</span>
+<span class="sd">    is made worse.</span>
+
+<span class="sd">    Third, search the flagging views for antennas with anomalous high values.</span>
+<span class="sd">    If any are found then recalculate the WVR calibration with the &#39;wvrflag&#39;</span>
+<span class="sd">    parameter set to ignore their data and interpolate results from other</span>
+<span class="sd">    antennas according to &#39;maxdistm&#39; and &#39;minnumants&#39;.</span>
+
+<span class="sd">    Fourth, after flagging, if the remaining unflagged antennas with WVR number</span>
+<span class="sd">    fewer than 3, or represent a smaller fraction of antennas than the minimum</span>
+<span class="sd">    threshold (ants_with_wvr_thresh), then the WVR calibration file is rejected</span>
+<span class="sd">    and will not be merged into the context, i.e. not be used in subsequent</span>
+<span class="sd">    calibration.</span>
+
+<span class="sd">    Fifth, if the overall QA score for the final WVR correction of a vis file</span>
+<span class="sd">    is greater than the value in &#39;accept_threshold&#39; then make available the</span>
+<span class="sd">    wvr calibration file for merging into the context and use in the</span>
+<span class="sd">    subsequent reduction.</span>
+
+<span class="sd">    Output:</span>
+
+<span class="sd">        results -- The results object for the pipeline task is returned.</span>
+
+<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+
+<span class="sd">    vis</span>
+<span class="sd">                         List of input visibility files.</span>
+
+<span class="sd">                         Default: none, in which case the vis files to be used</span>
+<span class="sd">                         will be read from the context.</span>
+
+<span class="sd">                         Example: vis=[&#39;ngc5921.ms&#39;]</span>
+<span class="sd">    caltable</span>
+<span class="sd">                         List of output gain calibration tables.</span>
+
+<span class="sd">                         Default: none, in which case the names of the caltables</span>
+<span class="sd">                         will be generated automatically.</span>
+
+<span class="sd">                         Example: caltable=&#39;ngc5921.wvr&#39;</span>
+<span class="sd">    offsetstable</span>
+<span class="sd">                         List of input temperature offsets table files to</span>
+<span class="sd">                         subtract from WVR measurements before calculating phase</span>
+<span class="sd">                         corrections.</span>
+
+<span class="sd">                         Default: none, in which case no offsets are applied.</span>
+
+<span class="sd">                         Example: offsetstable=[&#39;ngc5921.cloud_offsets&#39;]</span>
+<span class="sd">    hm_toffset</span>
+<span class="sd">                         If &#39;manual&#39;, set the &#39;toffset&#39; parameter to the user-specified</span>
+<span class="sd">                         value. If &#39;automatic&#39;, set the &#39;toffset&#39; parameter according to the</span>
+<span class="sd">                         date of the MeasurementSet; toffset=-1 if before 2013-01-21T00:00:00</span>
+<span class="sd">                         toffset=0 otherwise.</span>
+<span class="sd">    toffset</span>
+<span class="sd">                         Time offset (sec) between interferometric and WVR data.</span>
+<span class="sd">    segsource</span>
+<span class="sd">                         If True calculate new atmospheric phase correction</span>
+<span class="sd">                         coefficients for each source, subject to the</span>
+<span class="sd">                         constraints of the ``tie`` parameter. ``segsource`` is</span>
+<span class="sd">                         forced to be True if the ``tie`` parameter is set to a</span>
+<span class="sd">                         non-empty value by the user or by the automatic</span>
+<span class="sd">                         heuristic.</span>
+<span class="sd">    sourceflag</span>
+<span class="sd">                         Flag the WVR data for these source(s) as bad and do not</span>
+<span class="sd">                         produce corrections for it. Requires</span>
+<span class="sd">                         ``segsource`` = True.</span>
+
+<span class="sd">                         Example: sourceflag=[&#39;3C273&#39;]</span>
+<span class="sd">    hm_tie</span>
+<span class="sd">                         If &#39;manual&#39;, set the ``tie`` parameter to the</span>
+<span class="sd">                         user-specified value. If &#39;automatic&#39;, set the ``tie``</span>
+<span class="sd">                         parameter to include with the target all calibrators</span>
+<span class="sd">                         that are within 15 degrees of it: if no calibrators are</span>
+<span class="sd">                         that close then ``tie`` is left empty.</span>
+<span class="sd">    tie</span>
+<span class="sd">                         Use the same atmospheric phase correction coefficients</span>
+<span class="sd">                         when calculating the WVR correction for all sources in</span>
+<span class="sd">                         the ``tie``. If ``tie`` is not empty then ``segsource``</span>
+<span class="sd">                         is forced to be True. Ignored unless ``hm_tie`` = &#39;manual&#39;.</span>
+
+<span class="sd">                         Example: tie=[&#39;3C273,NGC253&#39;, &#39;IC433,3C279&#39;]</span>
+<span class="sd">    nsol</span>
+<span class="sd">                         Number of solutions for phase correction coefficients during this</span>
+<span class="sd">                         observation, evenly distributed in time throughout the observation. It</span>
+<span class="sd">                         is used only if segsource=False because if segsource=True then the</span>
+<span class="sd">                         coefficients are recomputed whenever the telescope moves to a new</span>
+<span class="sd">                         source (within the limits imposed by &#39;tie&#39;).</span>
+<span class="sd">    disperse</span>
+<span class="sd">                         Apply correction for dispersion.</span>
+<span class="sd">                         (Deprecated; will be removed)</span>
+<span class="sd">    wvrflag</span>
+<span class="sd">                         Flag the WVR data for these antenna(s) as bad and replace its data</span>
+<span class="sd">                         with interpolated values.</span>
+
+<span class="sd">                         Example: wvrflag=[&#39;DV03&#39;,&#39;DA05&#39;,&#39;PM02&#39;]</span>
+<span class="sd">    hm_smooth</span>
+<span class="sd">                         If &#39;manual&#39; set the &#39;smooth&#39; parameter to the user-specified value.</span>
+<span class="sd">                         If &#39;automatic&#39;, run the wvrgcal task with the range of &#39;smooth&#39; parameters</span>
+<span class="sd">                         required to match the integration time of the WVR data to that of the</span>
+<span class="sd">                         interferometric data in each spectral window.</span>
+<span class="sd">    smooth</span>
+<span class="sd">                         Smooth WVR data on this timescale before calculating the correction.</span>
+<span class="sd">                         Ignored unless hm_smooth=&#39;manual&#39;.</span>
+<span class="sd">    scale</span>
+<span class="sd">                         Scale the entire phase correction by this factor.</span>
+<span class="sd">    maxdistm</span>
+<span class="sd">                         Distance in meters of an antenna used for interpolation</span>
+<span class="sd">                         from a flagged antenna.</span>
+
+<span class="sd">                         Default: -1 (automatically set to 100m if &gt;50% of</span>
+<span class="sd">                         antennas are 7m antennas without WVR and otherwise set</span>
+<span class="sd">                         to 500m).</span>
+
+<span class="sd">                         Example: maxdistm=550</span>
+<span class="sd">    minnumants</span>
+<span class="sd">                         Minimum number of nearby antennas (up to 3) used for</span>
+<span class="sd">                         interpolation from a flagged antenna.</span>
+
+<span class="sd">                         Example: minnumants=3</span>
+<span class="sd">    mingoodfrac</span>
+<span class="sd">                         Minimum fraction of good data per antenna.</span>
+
+<span class="sd">                         Example: mingoodfrac=0.7</span>
+<span class="sd">    refant</span>
+<span class="sd">                         Ranked comma delimited list of reference antennas.</span>
+
+<span class="sd">                         Example: refant=&#39;DV02,DV06&#39;</span>
+<span class="sd">    flag_intent</span>
+<span class="sd">                         The data intent(s) on whose WVR correction results the</span>
+<span class="sd">                         search for bad WVR antennas is to be based.</span>
+
+<span class="sd">                         A &#39;flagging view&#39; will be calculated for each specified</span>
+<span class="sd">                         intent, in each spectral window in each vis file.</span>
+
+<span class="sd">                         Each &#39;flagging view&#39; will consist of a 2-d image with dimensions</span>
+<span class="sd">                         [&#39;ANTENNA&#39;, &#39;TIME&#39;], showing the phase noise after the WVR</span>
+<span class="sd">                         correction has been applied.</span>
+
+<span class="sd">                         If flag_intent is left blank, the default, the flagging views will be</span>
+<span class="sd">                         derived from data with the default bandpass calibration intent i.e.</span>
+<span class="sd">                         the first in the list BANDPASS, PHASE, AMPLITUDE for which the</span>
+<span class="sd">                         MeasurementSet has data.</span>
+<span class="sd">    qa_intent</span>
+<span class="sd">                         The list of data intents on which the WVR correction is to be</span>
+<span class="sd">                         tried as a means of estimating its effectiveness.</span>
+
+<span class="sd">                         A QA &#39;view&#39; will be calculated for each specified intent, in each spectral</span>
+<span class="sd">                         window in each vis file.</span>
+
+<span class="sd">                         Each QA &#39;view&#39; will consist of a pair of 2-d images with dimensions</span>
+<span class="sd">                         [&#39;ANTENNA&#39;, &#39;TIME&#39;], one showing the data phase-noise before the</span>
+<span class="sd">                         WVR application, the second showing the phase noise after (both &#39;before&#39;</span>
+<span class="sd">                         and &#39;after&#39; images have a bandpass calibration applied as well).</span>
+
+<span class="sd">                         An overall QA score is calculated for each vis file, by dividing the</span>
+<span class="sd">                         &#39;before&#39; images by the &#39;after&#39; and taking the median of the result. An</span>
+<span class="sd">                         overall score of 1 would correspond to no change in the phase noise,</span>
+<span class="sd">                         a score &gt; 1 implies an improvement.</span>
+
+<span class="sd">                         If the overall score for a vis file is less than the value in</span>
+<span class="sd">                         &#39;accept_threshold&#39; then the WVR calibration file is not made available for</span>
+<span class="sd">                         merging into the context for use in the subsequent reduction.</span>
+<span class="sd">    qa_bandpass_intent</span>
+<span class="sd">                         The data intent to use for the bandpass calibration in</span>
+<span class="sd">                         the qa calculation. The default is blank to allow the underlying bandpass</span>
+<span class="sd">                         task to select a sensible intent if the dataset lacks BANDPASS data.</span>
+<span class="sd">    accept_threshold</span>
+<span class="sd">                         The phase-rms improvement ratio</span>
+<span class="sd">                         (rms without WVR / rms with WVR) above which the wrvg file will be</span>
+<span class="sd">                         accepted into the context for subsequent application.</span>
+<span class="sd">    flag_hi</span>
+<span class="sd">                         True to flag high figure of merit outliers.</span>
+<span class="sd">    fhi_limit</span>
+<span class="sd">                         Flag figure of merit values higher than limit * MAD.</span>
+<span class="sd">    fhi_minsample</span>
+<span class="sd">                         Minimum number of samples for valid MAD estimate.</span>
+<span class="sd">    ants_with_wvr_thresh</span>
+<span class="sd">                         This threshold sets the minimum fraction of antennas</span>
+<span class="sd">                         that should have WVR data for WVR calibration and flagging to proceed; the</span>
+<span class="sd">                         same threshold is used to determine, after flagging, whether there remain</span>
+<span class="sd">                         enough unflagged antennas with WVR data for the WVR calibration to be</span>
+<span class="sd">                         applied.</span>
+
+<span class="sd">                         Example: ants_with_wvr_thresh=0.5</span>
+
+<span class="sd">    --------- examples -----------------------------------------------------------</span>
+
+<span class="sd">    1. Compute the WVR calibration for all the MeasurementSets:</span>
+
+<span class="sd">    &gt;&gt;&gt; hifa_wvrgcalflag(hm_tie=&#39;automatic&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">##########################################################################</span>
+    <span class="c1">#                                                                        #</span>
+    <span class="c1">#  CASA task interface boilerplate code starts here. No edits should be  #</span>
+    <span class="c1">#  needed beyond this point.                                             #</span>
+    <span class="c1">#                                                                        #</span>
+    <span class="c1">##########################################################################</span>
+
+    <span class="c1"># create a dictionary containing all the arguments given in the</span>
+    <span class="c1"># constructor</span>
+    <span class="n">all_inputs</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">()</span>
+
+    <span class="c1"># get the name of this function for the weblog, eg. &#39;hif_flagdata&#39;</span>
+    <span class="n">task_name</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_name</span>
+
+    <span class="c1"># get the context on which this task operates</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_context</span><span class="p">()</span>
+
+    <span class="c1"># execute the task</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">execute_task</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">all_inputs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

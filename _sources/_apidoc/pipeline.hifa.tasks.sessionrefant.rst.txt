@@ -1,0 +1,45 @@
+pipeline.hifa.tasks.sessionrefant package
+=========================================
+
+Submodules
+----------
+
+pipeline.hifa.tasks.sessionrefant.qa module
+-------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.sessionrefant.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.sessionrefant.renderer module
+-------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.sessionrefant.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.sessionrefant.resultobjects module
+------------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.sessionrefant.resultobjects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.sessionrefant.sessionrefant module
+------------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.sessionrefant.sessionrefant
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifa.tasks.sessionrefant
+   :members:
+   :undoc-members:
+   :show-inheritance:

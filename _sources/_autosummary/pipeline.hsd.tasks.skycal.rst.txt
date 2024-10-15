@@ -1,0 +1,23 @@
+pipeline.hsd.tasks.skycal
+=========================
+
+.. automodule:: pipeline.hsd.tasks.skycal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SDSkyCal
+      SerialSDSkyCal
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   qa
+   renderer
+   skycal

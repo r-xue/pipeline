@@ -1,0 +1,19 @@
+pipeline.hifv.tasks.statwt.renderer
+===================================
+
+.. automodule:: pipeline.hifv.tasks.statwt.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      dev2shade
+      format_wt
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsstatwtRenderer
+   

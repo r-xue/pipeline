@@ -1,0 +1,346 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VLASS Selfcal &amp; Restore workflows &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pipeline testing" href="pipeline_tests.html" />
+    <link rel="prev" title="VLASS-SE-CUBE imaging workflow" href="VLASS-SE-CUBE-Imaging-Workflow.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">VLASS Selfcal &amp; Restore workflows</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#auto-selfcal-prototype">auto_selfcal prototype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pipelinetask-hif-selfcal">PipelineTask: <code class="docutils literal notranslate"><span class="pre">hif_selfcal</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ms-caltable-image-naming-convention-tentative">MS/Caltable/Image naming convention (tentative):</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ms-names">MS names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#caltable-names">Caltable Names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#image-names">Image Names</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">VLASS Selfcal &amp; Restore workflows</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/develdocmd/selfcal_workflow.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="vlass-selfcal-restore-workflows">
+<h1>VLASS Selfcal &amp; Restore workflows<a class="headerlink" href="#vlass-selfcal-restore-workflows" title="Link to this heading"></a></h1>
+<ul>
+<li><p>VLASS selfcal workflow</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hif_makeimages</span> <span class="p">(</span><span class="n">tclean</span><span class="p">:</span><span class="n">savemodel</span><span class="p">)</span>
+<span class="n">hifv_selfcal</span> <span class="p">(</span><span class="n">gaincal</span><span class="p">,</span><span class="n">applycal</span><span class="p">)</span>
+<span class="n">hif_makeimages</span> <span class="p">(</span><span class="n">tclean</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>VLASS selfcal/restore workflow</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hifv_restorpims</span>
+    <span class="n">MakeImages</span>
+    <span class="n">applycal</span>
+    <span class="n">statwt</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<section id="auto-selfcal-prototype">
+<h2>auto_selfcal prototype<a class="headerlink" href="#auto-selfcal-prototype" title="Link to this heading"></a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">per target per band</span>
+<span class="go">    tclean(data,dirty)</span>
+<span class="go">    tclean(data,initial)</span>
+<span class="go">per target per band per spw (optional)</span>
+<span class="go">    tclean(data,dirty)</span>
+<span class="go">    tclean(data,initial)        </span>
+
+<span class="go">per target per band</span>
+<span class="go">    solint1-&gt;solint2-&gt;solint3-&gt;...solintX</span>
+<span class="go">        tclean:savemodel(data,priorcal)</span>
+<span class="go">        per MS</span>
+<span class="go">            gaincal</span>
+<span class="go">        per MS</span>
+<span class="go">            applycal</span>
+<span class="go">        tclean(corrected,resume-model,postcal)</span>
+<span class="go">    solintX-1 (&quot;step back&quot; when X is worse than X-1)</span>
+<span class="go">        per MS</span>
+<span class="go">            appplycal</span>
+
+<span class="go">per target per band</span>
+<span class="go">    tclean(corrected,final)</span>
+<span class="go">per target per band per spw (optional)</span>
+<span class="go">    tclean(corrected,final)</span>
+
+<span class="go">per target </span>
+<span class="go">    per band </span>
+<span class="go">        per MS</span>
+<span class="go">            applycal(to originMS): write to a script / or apply on-the-fly</span>
+</pre></div>
+</div>
+</section>
+<section id="pipelinetask-hif-selfcal">
+<h2>PipelineTask: <code class="docutils literal notranslate"><span class="pre">hif_selfcal</span></code><a class="headerlink" href="#pipelinetask-hif-selfcal" title="Link to this heading"></a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">MakeImList:cont: derive clean_target_list</span>
+
+<span class="go">per clean_target (i.e. a target/band combination)</span>
+<span class="go">    ms_transform()</span>
+<span class="go">        * ms per clean_target</span>
+<span class="go">        * pointing table hardlinked to the original MS</span>
+<span class="go">        </span>
+<span class="go">Create copies of temporary context and start using per_clean_target MSs</span>
+
+<span class="go">MakeImList+MakeImages (per clean_target per spw, data, dirty/initial, tier0, optional)</span>
+
+<span class="go">MakeImList:cont+MakeImages (per clean_target, tier0)</span>
+
+<span class="go">    Tclean (per clean_target,tier0) &lt;- selfcal-specific imaging sequence</span>
+<span class="go">        CleanBase(&quot;iter0&quot;,&quot;dirty&quot;,data)</span>
+<span class="go">        CleanBase(&quot;iter1&quot;,&quot;initial&quot;,data)</span>
+
+<span class="go">        solint1-&gt;solint2-&gt;solint3-&gt;...solintX (&quot;iter2&quot;)</span>
+<span class="go">            CleanBase:savemodel(priorcal)</span>
+<span class="go">            per MS</span>
+<span class="go">                gaincal/applycal</span>
+<span class="go">            CleanBase(postcal)</span>
+<span class="go">        solintX-1 (&quot;step back&quot; when X is worse than X-1)</span>
+<span class="go">            per MS</span>
+<span class="go">                appplycal</span>
+<span class="go">        </span>
+<span class="go">        CleanBase(corrected,&quot;final&quot;,&#39;iter3&#39;)</span>
+
+<span class="go">MakeImList+MakeImages (per clean_target per spw, corrected, final, tier0, optional)</span>
+
+<span class="go">per clean_target </span>
+<span class="go">    per MS</span>
+<span class="go">        applycal(to originMS)</span>
+
+<span class="go">register the datatype per clean_target per MS</span>
+</pre></div>
+</div>
+<p>Note that the model/corrected columns and flagging states of per_clean_target MSes are actively modified during the selfcal operations (notably, the “iter2” step).</p>
+</section>
+<section id="ms-caltable-image-naming-convention-tentative">
+<h2>MS/Caltable/Image naming convention (tentative):<a class="headerlink" href="#ms-caltable-image-naming-convention-tentative" title="Link to this heading"></a></h2>
+<section id="ms-names">
+<h3>MS names<a class="headerlink" href="#ms-names" title="Link to this heading"></a></h3>
+<p>Assuming that original per-EB input MSes are,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">eb1_targets.ms</span>
+<span class="go">eb2_targets.ms</span>
+<span class="go">eb3_targets.ms</span>
+</pre></div>
+</div>
+<p>the “rebinned MS working copies” generated and used by <code class="docutils literal notranslate"><span class="pre">hifv_selfcal</span></code> will be</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">eb1_targets.04287+1801.spw16_18_20_22_24_26_28_30.selfcal.ms</span>
+<span class="go">eb2_targets.04287+1801.spw16_18_20_22_24_26_28_30.selfcal.ms</span>
+<span class="go">eb3_targets.04287+1801.spw16_18_20_22_24_26_28_30.selfcal.ms</span>
+<span class="go">eb1_targets.04288_1802.spw16_18_20_22_24_26_28_30.selfcal.ms</span>
+<span class="go">eb2_targets.04288_1802.spw16_18_20_22_24_26_28_30.selfcal.ms</span>
+<span class="go">eb3_targets.04288_1802.spw16_18_20_22_24_26_28_30.selfcal.ms</span>
+<span class="go">....</span>
+</pre></div>
+</div>
+<p>Note that the original per-EB MSes are split and rebinned into smaller MS quanta, i.e. per-”clean_target” MSes
+“clean_target” here is equivalent to a “target/band” combination in the prototype.
+Each of them is a uvdata container that the selfcal “ImageSolver-CalSolver” loop can operate on.
+The MS split policy is largely decided due to a CASA limitation that <code class="docutils literal notranslate"><span class="pre">casatools</span></code> doesn’t support parallel-write in MS tables (even though <code class="docutils literal notranslate"><span class="pre">casacore</span></code> does via the parallel storage manager <code class="docutils literal notranslate"><span class="pre">Adios</span></code>):
+if the uvdata of different “clean_targets” are stored in separate MSes, their selfcal operations, notably the modelcolumn prediction/write, can proceed simultaneously/independently without locking tables; therefore they become tier0-parallelizable.</p>
+<p>For the selfcal logic described in the prototype, splitting the per-EB MSes into per_clean_target MSes generally doesn’t produce duplications of bulky visibility records (time, uvw, data, etc.).
+This is in contrast to the situation of splitting by spws of the same source, where certain columns (e.g. uvw, time) get duplicated for each spw.
+However, a plain mstransform() call will still lead to the duplication of the pointing table from input MS, which can degrade the I/O performance and take unnecessary storage space.
+We manage this issue through an I/O-efficient mstransform wrapper function named <code class="docutils literal notranslate"><span class="pre">ms_transform</span></code>:
+by default, the pointing table content of each output MS is hardlinked to the table inside the input MS (see <code class="docutils literal notranslate"><span class="pre">ms_transform</span></code> for details).</p>
+</section>
+<section id="caltable-names">
+<h3>Caltable Names<a class="headerlink" href="#caltable-names" title="Link to this heading"></a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">eb1_targets.04287+1801.spw16_18_20_22_24_26_28_30.selfcal.ms.hif_selfcal.{stage_label}.{solin}.{caltype}.tbl</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+</section>
+<section id="image-names">
+<h3>Image Names<a class="headerlink" href="#image-names" title="Link to this heading"></a></h3>
+<p>For the selfcal image names, we follow a schema loosely based on the traditional <code class="docutils literal notranslate"><span class="pre">hif_makeimlist</span></code> naming pattern.</p>
+<p>Generally, hif_selfcal will produce the following image types:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">iter0</span><span class="p">:</span> <span class="n">dirty</span> <span class="n">image</span> <span class="n">generated</span> <span class="kn">from</span> <span class="nn">data</span>
+<span class="n">iter1</span><span class="p">:</span> <span class="s2">&quot;properly-cleaned&quot;</span> <span class="n">image</span> <span class="n">generated</span> <span class="kn">from</span> <span class="nn">DATA</span> <span class="n">before</span> <span class="n">selfcal</span> <span class="p">(</span><span class="ow">in</span> <span class="n">prototype</span> <span class="n">this</span> <span class="ow">is</span> <span class="n">called</span> <span class="s1">&#39;initial&#39;</span><span class="p">)</span>
+<span class="n">iter2</span><span class="p">:</span> 
+    <span class="n">iter2_solint1_prior</span><span class="o">.</span><span class="n">image</span><span class="p">:</span> <span class="n">moderately</span><span class="o">-</span><span class="n">cleaned</span> <span class="n">image</span> <span class="k">for</span> <span class="n">create</span> <span class="n">selfcal</span> <span class="n">model</span>
+    <span class="n">iter2_solint1_post</span><span class="o">.</span><span class="n">image</span><span class="p">:</span> <span class="s2">&quot;properly-cleaned&quot;</span> <span class="n">image</span> <span class="k">for</span> <span class="n">selfcal</span> <span class="n">assessment</span>
+    <span class="n">iter2_solint2_prior</span><span class="o">.</span><span class="n">image</span><span class="p">:</span> <span class="o">...</span>
+    <span class="n">iter2_solint2_post</span><span class="o">.</span><span class="n">image</span><span class="p">:</span> <span class="o">...</span>
+    <span class="o">....</span>
+<span class="n">iter3</span><span class="p">:</span> <span class="n">final</span> <span class="n">image</span> <span class="n">generated</span> <span class="kn">from</span> <span class="nn">corrected</span> <span class="n">data</span> 
+</pre></div>
+</div>
+<p>Here is a practical example of their names:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">oussid</span><span class="o">.</span><span class="n">s2_2</span><span class="mf">.04287</span><span class="o">+</span><span class="mi">1801</span><span class="n">_sci</span><span class="o">.</span><span class="n">spw16_18_20_22_24_26_28_30</span><span class="o">.</span><span class="n">cont</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">iter1</span><span class="o">.</span><span class="n">image</span>
+<span class="n">oussid</span><span class="o">.</span><span class="n">s2_2</span><span class="mf">.04287</span><span class="o">+</span><span class="mi">1801</span><span class="n">_sci</span><span class="o">.</span><span class="n">spw16_18_20_22_24_26_28_30</span><span class="o">.</span><span class="n">cont</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">iter2</span><span class="o">.</span><span class="n">image</span>
+<span class="n">oussid</span><span class="o">.</span><span class="n">s2_2</span><span class="mf">.04287</span><span class="o">+</span><span class="mi">1801</span><span class="n">_sci</span><span class="o">.</span><span class="n">spw16_18_20_22_24_26_28_30</span><span class="o">.</span><span class="n">cont</span><span class="o">.</span><span class="n">solint1_prior</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">iter2</span><span class="o">.</span><span class="n">image</span>
+<span class="n">oussid</span><span class="o">.</span><span class="n">s2_2</span><span class="mf">.04287</span><span class="o">+</span><span class="mi">1801</span><span class="n">_sci</span><span class="o">.</span><span class="n">spw16_18_20_22_24_26_28_30</span><span class="o">.</span><span class="n">cont</span><span class="o">.</span><span class="n">solint1_post</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">iter2</span><span class="o">.</span><span class="n">image</span>
+<span class="n">oussid</span><span class="o">.</span><span class="n">s2_2</span><span class="mf">.04287</span><span class="o">+</span><span class="mi">1801</span><span class="n">_sci</span><span class="o">.</span><span class="n">spw16_18_20_22_24_26_28_30</span><span class="o">.</span><span class="n">cont</span><span class="o">.</span><span class="n">solint2_prior</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">iter2</span><span class="o">.</span><span class="n">image</span>
+<span class="n">oussid</span><span class="o">.</span><span class="n">s2_2</span><span class="mf">.04287</span><span class="o">+</span><span class="mi">1801</span><span class="n">_sci</span><span class="o">.</span><span class="n">spw16_18_20_22_24_26_28_30</span><span class="o">.</span><span class="n">cont</span><span class="o">.</span><span class="n">solint2_post</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">iter2</span><span class="o">.</span><span class="n">image</span>
+<span class="n">oussid</span><span class="o">.</span><span class="n">s2_2</span><span class="mf">.04287</span><span class="o">+</span><span class="mi">1801</span><span class="n">_sci</span><span class="o">.</span><span class="n">spw16_18_20_22_24_26_28_30</span><span class="o">.</span><span class="n">cont</span><span class="o">.</span><span class="n">solint3_prior</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">iter2</span><span class="o">.</span><span class="n">image</span>
+<span class="n">oussid</span><span class="o">.</span><span class="n">s2_2</span><span class="mf">.04287</span><span class="o">+</span><span class="mi">1801</span><span class="n">_sci</span><span class="o">.</span><span class="n">spw16_18_20_22_24_26_28_30</span><span class="o">.</span><span class="n">cont</span><span class="o">.</span><span class="n">solint3_post</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">iter2</span><span class="o">.</span><span class="n">image</span>
+<span class="n">oussid</span><span class="o">.</span><span class="n">s2_2</span><span class="mf">.04287</span><span class="o">+</span><span class="mi">1801</span><span class="n">_sci</span><span class="o">.</span><span class="n">spw16_18_20_22_24_26_28_30</span><span class="o">.</span><span class="n">cont</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">iter3</span><span class="o">.</span><span class="n">image</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="VLASS-SE-CUBE-Imaging-Workflow.html" class="btn btn-neutral float-left" title="VLASS-SE-CUBE imaging workflow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline_tests.html" class="btn btn-neutral float-right" title="Pipeline testing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+pipeline.h.tasks.tsyscal package
+================================
+
+Submodules
+----------
+
+pipeline.h.tasks.tsyscal.qa module
+----------------------------------
+
+.. automodule:: pipeline.h.tasks.tsyscal.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.tasks.tsyscal.renderer module
+----------------------------------------
+
+.. automodule:: pipeline.h.tasks.tsyscal.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.tasks.tsyscal.resultobjects module
+---------------------------------------------
+
+.. automodule:: pipeline.h.tasks.tsyscal.resultobjects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.tasks.tsyscal.tsyscal module
+---------------------------------------
+
+.. automodule:: pipeline.h.tasks.tsyscal.tsyscal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.h.tasks.tsyscal
+   :members:
+   :undoc-members:
+   :show-inheritance:

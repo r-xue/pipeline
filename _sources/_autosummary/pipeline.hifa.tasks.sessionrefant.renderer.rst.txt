@@ -1,0 +1,12 @@
+pipeline.hifa.tasks.sessionrefant.renderer
+==========================================
+
+.. automodule:: pipeline.hifa.tasks.sessionrefant.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsSessionRefAntRenderer
+   

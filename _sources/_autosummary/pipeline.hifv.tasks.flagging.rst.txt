@@ -1,0 +1,31 @@
+pipeline.hifv.tasks.flagging
+============================
+
+.. automodule:: pipeline.hifv.tasks.flagging
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Checkflag
+      FlagDeterVLA
+      Flagcal
+      Flagtargetsdata
+      Targetflag
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   checkflag
+   displaycheckflag
+   flagcal
+   flagdetervla
+   flagtargetsdata
+   qa
+   renderer
+   targetflag
+   targetflagdisplay

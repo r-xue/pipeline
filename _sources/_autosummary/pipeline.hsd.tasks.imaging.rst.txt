@@ -1,0 +1,30 @@
+pipeline.hsd.tasks.imaging
+==========================
+
+.. automodule:: pipeline.hsd.tasks.imaging
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SDImaging
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   accumulator
+   detectcontamination
+   display
+   gridding
+   imaging
+   imaging_params
+   qa
+   renderer
+   resultobjects
+   sdcombine
+   weighting
+   worker

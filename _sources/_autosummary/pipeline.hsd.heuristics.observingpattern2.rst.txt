@@ -1,0 +1,12 @@
+pipeline.hsd.heuristics.observingpattern2
+=========================================
+
+.. automodule:: pipeline.hsd.heuristics.observingpattern2
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ObservingPattern2
+   

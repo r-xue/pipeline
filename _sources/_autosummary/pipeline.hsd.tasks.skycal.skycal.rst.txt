@@ -1,0 +1,23 @@
+pipeline.hsd.tasks.skycal.skycal
+================================
+
+.. automodule:: pipeline.hsd.tasks.skycal.skycal
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      compute_elevation_difference
+      relative_path
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SDSkyCal
+      SDSkyCalInputs
+      SDSkyCalResults
+      SerialSDSkyCal
+      SingleDishResults
+   

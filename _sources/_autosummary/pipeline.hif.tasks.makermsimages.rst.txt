@@ -1,0 +1,21 @@
+pipeline.hif.tasks.makermsimages
+================================
+
+.. automodule:: pipeline.hif.tasks.makermsimages
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Makermsimages
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   makermsimages
+   renderer

@@ -1,0 +1,22 @@
+pipeline.hifa.tasks.renorm
+==========================
+
+.. automodule:: pipeline.hifa.tasks.renorm
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Renorm
+      SerialRenorm
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   qa
+   renderer
+   renorm

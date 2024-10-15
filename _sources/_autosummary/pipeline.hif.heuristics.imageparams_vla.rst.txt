@@ -1,0 +1,19 @@
+pipeline.hif.heuristics.imageparams\_vla
+========================================
+
+.. automodule:: pipeline.hif.heuristics.imageparams_vla
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      find_EVLA_band
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ImageParamsHeuristics
+      ImageParamsHeuristicsVLA
+   

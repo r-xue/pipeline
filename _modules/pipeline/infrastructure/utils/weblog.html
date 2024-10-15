@@ -1,0 +1,626 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.utils.weblog &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.utils.weblog</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.utils.weblog</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The sorting module contains utility functions used by the pipeline web log.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">html</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">QTable</span>
+
+<span class="kn">from</span> <span class="nn">.conversion</span> <span class="kn">import</span> <span class="n">flatten</span><span class="p">,</span> <span class="n">spw_arg_to_id</span><span class="p">,</span> <span class="n">to_pipeline_intent</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">list_to_str</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">logging</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;OrderedDefaultdict&#39;</span><span class="p">,</span> <span class="s1">&#39;merge_td_columns&#39;</span><span class="p">,</span> <span class="s1">&#39;merge_td_rows&#39;</span><span class="p">,</span> <span class="s1">&#39;get_vis_from_plots&#39;</span><span class="p">,</span> <span class="s1">&#39;total_time_on_source&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;total_time_on_target_on_source&#39;</span><span class="p">,</span> <span class="s1">&#39;get_logrecords&#39;</span><span class="p">,</span> <span class="s1">&#39;get_intervals&#39;</span><span class="p">,</span> <span class="s1">&#39;table_to_html&#39;</span><span class="p">,</span> <span class="s1">&#39;plots_to_html&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;scale_uv_range&#39;</span><span class="p">]</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="OrderedDefaultdict">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.weblog.OrderedDefaultdict">[docs]</a>
+<span class="k">class</span> <span class="nc">OrderedDefaultdict</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class behaves as defaultdict from the collections module but maintaining the order of insertion.</span>
+
+<span class="sd">    It is usually called in our codebase using the following structure: my_list = utils.OrderedDefaultdict(list)</span>
+<span class="sd">    The dict can then be filled straight away: my_list[2] = [1, 2, 3]</span>
+
+<span class="sd">    For example,</span>
+<span class="sd">    &gt;&gt;&gt; my_list = OrderedDefaultdict(list)</span>
+<span class="sd">    &gt;&gt;&gt; my_list[2] = [1, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; my_list[1]</span>
+<span class="sd">    []</span>
+<span class="sd">    &gt;&gt;&gt; my_list[2]</span>
+<span class="sd">    [1, 2, 3]</span>
+
+<span class="sd">    Note that from Python 3.8 this class should probably work as collections.defaultdict given that dicts now preserve</span>
+<span class="sd">    the insertion order as a feature and the __reverse__ method is implemented in dicts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">callable</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;first argument must be callable or None&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">OrderedDefaultdict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__missing__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">default</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">default</span>
+
+    <span class="k">def</span> <span class="nf">__reduce__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># optional, for pickle support</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span><span class="p">,)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span> <span class="k">else</span> <span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="merge_td_columns">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.weblog.merge_td_columns">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">num_to_merge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vertical_align</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Merge HTML TD columns with identical values using rowspan.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">    rows -- a list of tuples, one tuple per row, containing n elements for the</span>
+<span class="sd">            n columns.</span>
+<span class="sd">    num_to_merge -- the number of columns to merge, starting from the left</span>
+<span class="sd">                    hand column. Leave as None to merge all columns.</span>
+<span class="sd">    vertical_align -- Set to True to vertically centre any merged cells.</span>
+
+<span class="sd">    Output:</span>
+<span class="sd">    A list of strings, one string per row, containing TD elements.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transposed</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">rows</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">num_to_merge</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">num_to_merge</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">transposed</span><span class="p">)</span>
+    <span class="n">valign</span> <span class="o">=</span> <span class="s1">&#39; style=&quot;vertical-align:middle;&quot;&#39;</span> <span class="k">if</span> <span class="n">vertical_align</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="n">new_cols</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">col_idx</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">transposed</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">col_idx</span> <span class="o">&gt;</span> <span class="n">num_to_merge</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">new_cols</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s1">&#39;&lt;td&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&#39;</span> <span class="o">%</span> <span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">col</span><span class="p">])</span>
+            <span class="k">continue</span>
+
+        <span class="n">merged</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">col</span><span class="p">[</span><span class="n">start</span><span class="p">:]</span>
+            <span class="n">same_vals</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">takewhile</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">==</span> <span class="n">col</span><span class="p">[</span><span class="n">start</span><span class="p">],</span> <span class="n">l</span><span class="p">))</span>
+            <span class="n">rowspan</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">same_vals</span><span class="p">)</span>
+            <span class="n">start</span> <span class="o">+=</span> <span class="n">rowspan</span>
+
+            <span class="k">if</span> <span class="n">rowspan</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">new_td</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&lt;td rowspan=&quot;</span><span class="si">%s</span><span class="s1">&quot;</span><span class="si">%s</span><span class="s1">&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rowspan</span><span class="p">,</span>
+                                                          <span class="n">valign</span><span class="p">,</span>
+                                                          <span class="n">same_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+                <span class="n">blanks</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">rowspan</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">merged</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_td</span> <span class="o">+</span> <span class="n">blanks</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">td</span> <span class="o">=</span> <span class="s1">&#39;&lt;td&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">same_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">merged</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
+
+        <span class="n">new_cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">merged</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">new_cols</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="merge_td_rows">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.weblog.merge_td_rows">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_td_rows</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Merge HTML TD rows with identical values using colspan.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">    table -- a list of tuples, one tuple per row, containing n elements for the n columns.</span>
+
+<span class="sd">    Output:</span>
+<span class="sd">    A list of tuples with adjusted idential values merged with colspan.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">new_table</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">table</span><span class="p">:</span>
+        <span class="n">row_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+            <span class="n">start_cell</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">start</span><span class="p">]</span>
+            <span class="n">merge_count</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">start</span><span class="o">+</span><span class="mi">1</span>
+
+            <span class="k">while</span> <span class="n">end</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">start_cell</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="n">end</span><span class="p">]:</span>
+                    <span class="n">row_list</span><span class="p">[</span><span class="n">end</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">merge_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">end</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">merge_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">row_list</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">=</span> <span class="n">row_list</span><span class="p">[</span><span class="n">start</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;td&#39;</span><span class="p">,</span> <span class="sa">fr</span><span class="s1">&#39;&lt;td colspan=&quot;</span><span class="si">{</span><span class="n">merge_count</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+            <span class="n">start</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">new_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">row_list</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">new_table</span></div>
+
+
+
+<div class="viewcode-block" id="get_vis_from_plots">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.weblog.get_vis_from_plots">[docs]</a>
+<span class="k">def</span> <span class="nf">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the name to be used for the MS from the given plots.</span>
+
+<span class="sd">    :param plots:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vis</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">}</span>
+    <span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;all data&#39;</span>
+    <span class="k">return</span> <span class="n">vis</span></div>
+
+
+
+<div class="viewcode-block" id="total_time_on_target_on_source">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.weblog.total_time_on_target_on_source">[docs]</a>
+<span class="k">def</span> <span class="nf">total_time_on_target_on_source</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">autocorr_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the nominal total time on target source for the given MeasurementSet</span>
+<span class="sd">    excluding OFF-source integrations (REFERENCE). The flag is not taken into account.</span>
+
+<span class="sd">    Background of development: ALMA-TP observations have integrations of both TARGET</span>
+<span class="sd">    and REFERENCE intents in one scan. Scan.time_on_source does not return appropriate</span>
+<span class="sd">    exposure time in the case.</span>
+
+<span class="sd">    :param ms: MeasurementSet domain object to examine</span>
+<span class="sd">    :param autocorr_only:</span>
+<span class="sd">    :return: a datetime.timedelta object set to the total time on source</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">science_spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">state_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">states</span> <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
+    <span class="n">max_time</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">ant_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">]</span>
+    <span class="n">dds</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">]</span>
+    <span class="n">science_dds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">([</span><span class="n">dd</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">dd</span> <span class="ow">in</span> <span class="n">dds</span><span class="p">])</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">dd</span> <span class="ow">in</span> <span class="n">science_dds</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">a1</span> <span class="ow">in</span> <span class="n">ant_ids</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">a2</span> <span class="ow">in</span> <span class="n">ant_ids</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">autocorr_only</span> <span class="ow">and</span> <span class="n">a1</span> <span class="o">!=</span> <span class="n">a2</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">seltb</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;DATA_DESC_ID == </span><span class="si">%d</span><span class="s1"> AND ANTENNA1 == </span><span class="si">%d</span><span class="s1"> AND ANTENNA2 == </span><span class="si">%d</span><span class="s1"> AND STATE_ID IN </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="n">dd</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">list_to_str</span><span class="p">(</span><span class="n">state_ids</span><span class="p">)))</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">seltb</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="n">target_exposures</span> <span class="o">=</span> <span class="n">seltb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;EXPOSURE&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                            <span class="s2">&quot;Selected </span><span class="si">%d</span><span class="s2"> ON-source rows for DD=</span><span class="si">%d</span><span class="s2">, Ant1=</span><span class="si">%d</span><span class="s2">, Ant2=</span><span class="si">%d</span><span class="s2">: total exposure time = </span><span class="si">%f</span><span class="s2"> sec&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                                <span class="n">seltb</span><span class="o">.</span><span class="n">nrows</span><span class="p">(),</span> <span class="n">dd</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">target_exposures</span><span class="p">))</span>
+                        <span class="n">max_time</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_time</span><span class="p">,</span> <span class="n">target_exposures</span><span class="p">)</span>
+                    <span class="k">finally</span><span class="p">:</span>
+                        <span class="n">seltb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Max ON-source exposure time = </span><span class="si">%f</span><span class="s2"> sec&quot;</span> <span class="o">%</span> <span class="n">max_time</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">max_time</span> <span class="o">/</span> <span class="mi">86400</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_time</span> <span class="o">%</span> <span class="mi">86400</span><span class="p">),</span> <span class="nb">int</span><span class="p">((</span><span class="n">max_time</span> <span class="o">%</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e6</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="total_time_on_source">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.weblog.total_time_on_source">[docs]</a>
+<span class="k">def</span> <span class="nf">total_time_on_source</span><span class="p">(</span><span class="n">scans</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the total time on source for the given Scans.</span>
+
+<span class="sd">    :param scans: collection of Scan domain objects</span>
+<span class="sd">    :return: a datetime.timedelta object set to the total time on source</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">times_on_source</span> <span class="o">=</span> <span class="p">[</span><span class="n">scan</span><span class="o">.</span><span class="n">time_on_source</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">times_on_source</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">times_on_source</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># could potentially be zero matching scans, such as when the</span>
+        <span class="c1"># measurement set is missing scans with science intent</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_logrecords">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.weblog.get_logrecords">[docs]</a>
+<span class="k">def</span> <span class="nf">get_logrecords</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the logrecords for the result, removing any duplicates</span>
+
+<span class="sd">    :param result: a result containing logrecords</span>
+<span class="sd">    :param loglevel: the loglevel to match</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># WeakProxy is registered as an Iterable (and a Container, Hashable, etc.)</span>
+        <span class="c1"># so we can&#39;t check for isinstance(result, collections.abc.Iterable)</span>
+        <span class="c1"># see https://bugs.python.org/issue24067</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;logrecords&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">records</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">logrecords</span> <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">levelno</span> <span class="ow">is</span> <span class="n">loglevel</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># note that flatten returns a generator, which empties after</span>
+        <span class="c1"># traversal. we convert to a list to allow multiple traversals</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">([</span><span class="n">get_logrecords</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">])</span>
+        <span class="n">records</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+
+    <span class="c1"># append the message target to the LogRecord so we can link to the</span>
+    <span class="c1"># matching page in the web log</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">target</span><span class="p">}</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">dset</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="c1"># relies on the fact that dset.add() always returns None.</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">records</span> <span class="k">if</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">msg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dset</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">dset</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">msg</span><span class="p">)]</span></div>
+
+
+
+<div class="viewcode-block" id="get_intervals">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.weblog.get_intervals">[docs]</a>
+<span class="k">def</span> <span class="nf">get_intervals</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">calapp</span><span class="p">,</span> <span class="n">spw_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the integration intervals for scans processed by a calibration.</span>
+
+<span class="sd">    The scan and spw selection is formed through inspection of the</span>
+<span class="sd">    CalApplication representing the calibration.</span>
+
+<span class="sd">    :param context: the pipeline context</span>
+<span class="sd">    :param calapp: the CalApplication representing the calibration</span>
+<span class="sd">    :param spw_ids: a set of spw IDs to get intervals for. Leave as None to</span>
+<span class="sd">        use all spws specified in the CalApplication.</span>
+<span class="sd">    :return: a list of datetime objects representing the unique scan intervals</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># With the advent of session calibrations, the target MS for the</span>
+    <span class="c1"># calibration may be different from the MS used to calculate the</span>
+    <span class="c1"># calibration. Therefore, we must look to the calapp.origin, which</span>
+    <span class="c1"># refers to the originating calls, to calculate the true values.</span>
+    <span class="n">vis</span> <span class="o">=</span> <span class="p">{</span><span class="n">o</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">calapp</span><span class="o">.</span><span class="n">origin</span><span class="p">}</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+
+    <span class="n">from_intent</span> <span class="o">=</span> <span class="p">{</span><span class="n">o</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">calapp</span><span class="o">.</span><span class="n">origin</span><span class="p">}</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">from_intent</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">from_intent</span> <span class="o">=</span> <span class="n">from_intent</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+    <span class="c1"># let CASA parse spw arg in case it contains channel spec</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">spw_ids</span><span class="p">:</span>
+        <span class="n">task_spw_args</span> <span class="o">=</span> <span class="p">{</span><span class="n">o</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">calapp</span><span class="o">.</span><span class="n">origin</span><span class="p">}</span>
+        <span class="n">spw_arg</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">task_spw_args</span><span class="p">)</span>
+        <span class="n">spw_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">spw_id</span> <span class="k">for</span> <span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">spw_arg_to_id</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">spw_arg</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">)}</span>
+
+    <span class="c1"># from_intent is given in CASA intents, ie. *AMPLI*, *PHASE*</span>
+    <span class="c1"># etc. We need this in pipeline intents.</span>
+    <span class="n">pipeline_intent</span> <span class="o">=</span> <span class="n">to_pipeline_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">from_intent</span><span class="p">)</span>
+    <span class="n">scans</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">pipeline_intent</span><span class="p">)</span>
+
+    <span class="c1"># scan with intent may not have data for the spws used in the</span>
+    <span class="c1"># gaincal call, eg. X20fb. Only get the solint for spws in the call</span>
+    <span class="c1"># by using the intersection.</span>
+    <span class="n">all_solints</span> <span class="o">=</span> <span class="p">{</span><span class="n">scan</span><span class="o">.</span><span class="n">mean_interval</span><span class="p">(</span><span class="n">spw_id</span><span class="p">)</span>
+                   <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span>
+                   <span class="k">for</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="n">spw_ids</span><span class="o">.</span><span class="n">intersection</span><span class="p">({</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">spws</span><span class="p">})}</span>
+
+    <span class="k">return</span> <span class="n">all_solints</span></div>
+
+
+    <span class="c1"># ms = context.observing_run.get_ms(calapp.vis)</span>
+    <span class="c1">#</span>
+    <span class="c1"># from_intent = calapp.origin.inputs[&#39;intent&#39;]</span>
+    <span class="c1"># # from_intent is given in CASA intents, ie. *AMPLI*, *PHASE*</span>
+    <span class="c1"># # etc. We need this in pipeline intents.</span>
+    <span class="c1"># pipeline_intent = to_pipeline_intent(ms, from_intent)</span>
+    <span class="c1"># scans = ms.get_scans(scan_intent=pipeline_intent)</span>
+    <span class="c1">#</span>
+    <span class="c1"># # let CASA parse spw arg in case it contains channel spec</span>
+    <span class="c1"># if not spw_ids:</span>
+    <span class="c1">#     spw_ids = set([spw_id for (spw_id, _, _, _)</span>
+    <span class="c1">#                    in spw_arg_to_id(calapp.vis, calapp.spw)])</span>
+    <span class="c1">#</span>
+    <span class="c1"># all_solints = set()</span>
+    <span class="c1"># for scan in scans:</span>
+    <span class="c1">#     scan_spw_ids = set([spw.id for spw in scan.spws])</span>
+    <span class="c1">#     # scan with intent may not have data for the spws used in</span>
+    <span class="c1">#     # the gaincal call, eg. X20fb, so only get the solint for</span>
+    <span class="c1">#     # the intersection</span>
+    <span class="c1">#     solints = [scan.mean_interval(spw_id)</span>
+    <span class="c1">#                for spw_id in spw_ids.intersection(scan_spw_ids)]</span>
+    <span class="c1">#     all_solints.update(set(solints))</span>
+    <span class="c1">#</span>
+    <span class="c1"># return all_solints</span>
+
+
+<div class="viewcode-block" id="table_to_html">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.weblog.table_to_html">[docs]</a>
+<span class="k">def</span> <span class="nf">table_to_html</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">tableclass</span><span class="o">=</span><span class="s1">&#39;table table-bordered table-striped table-condensed&#39;</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a astropy.table.Table object to an HTML table snippet.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">rotate</span><span class="p">:</span>
+        <span class="n">table_rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">table</span><span class="o">.</span><span class="n">colnames</span><span class="p">]</span><span class="o">+</span><span class="nb">list</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">as_array</span><span class="p">())</span>
+        <span class="n">table_rotate</span> <span class="o">=</span> <span class="n">QTable</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">table_rows</span><span class="p">)))</span>
+        <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_rotate</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">html</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">tableclass</span><span class="o">=</span><span class="n">tableclass</span><span class="p">,</span> <span class="n">show_name</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">table_html</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">html</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">tableclass</span><span class="o">=</span><span class="n">tableclass</span><span class="p">,</span> <span class="n">show_name</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">table_html</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">html</span><span class="o">.</span><span class="n">unescape</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">table_html</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">table_html</span></div>
+
+
+
+<div class="viewcode-block" id="plots_to_html">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.weblog.plots_to_html">[docs]</a>
+<span class="k">def</span> <span class="nf">plots_to_html</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">align</span><span class="o">=</span><span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">report_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a list of plots to HTML snippets.</span>
+<span class="sd">    </span>
+<span class="sd">    examples:</span>
+<span class="sd">        plots_to_html(plots, caption=None, width=&#39;400px&#39;, height=&#39;300px&#39;)</span>
+
+<span class="sd">    notes:</span>
+<span class="sd">        the generated snippet requires lazyload.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">desc_lookup</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a plot description value from the plot object attribute or parameters dictionary.</span>
+<span class="sd">        </span>
+<span class="sd">        The order of precedence: </span>
+<span class="sd">            non-None input &gt; </span>
+<span class="sd">            matching plot parameters dict key &gt; </span>
+<span class="sd">            attribute with the same name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret_value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+            <span class="n">ret_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s1">&#39;parameters&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+            <span class="n">ret_value</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ret_value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">ret_value</span>
+
+    <span class="n">plots_html</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">:</span>
+        <span class="n">fullsize_relpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">plot</span><span class="o">.</span><span class="n">abspath</span><span class="p">,</span> <span class="n">report_dir</span><span class="p">)</span>
+        <span class="n">thumbnail_relpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">plot</span><span class="o">.</span><span class="n">thumbnail</span><span class="p">,</span> <span class="n">report_dir</span><span class="p">)</span>
+
+        <span class="n">html_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;fullsize&#39;</span><span class="p">:</span> <span class="n">fullsize_relpath</span><span class="p">,</span>
+            <span class="s1">&#39;thumbnail&#39;</span><span class="p">:</span> <span class="n">thumbnail_relpath</span><span class="p">,</span>
+            <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">desc_lookup</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="n">title</span><span class="p">),</span>
+            <span class="s1">&#39;caption&#39;</span><span class="p">:</span> <span class="n">desc_lookup</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s1">&#39;caption&#39;</span><span class="p">,</span> <span class="n">caption</span><span class="p">),</span>
+            <span class="s1">&#39;alt&#39;</span><span class="p">:</span> <span class="n">desc_lookup</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s1">&#39;alt&#39;</span><span class="p">,</span> <span class="n">alt</span><span class="p">),</span>
+            <span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="n">desc_lookup</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">group</span><span class="p">),</span>
+            <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="n">width</span><span class="p">,</span>
+            <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="n">height</span><span class="p">,</span>
+            <span class="s1">&#39;align&#39;</span><span class="p">:</span> <span class="n">align</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;a href=&quot;</span><span class="si">{fullsize}</span><span class="s1">&quot;&#39;</span>
+                <span class="s1">&#39;   title=&quot;</span><span class="si">{title}</span><span class="s1">&quot;&#39;</span>
+                <span class="s1">&#39;   data-fancybox=&quot;</span><span class="si">{group}</span><span class="s1">&quot;&#39;</span>
+                <span class="s1">&#39;   data-caption=&quot;</span><span class="si">{caption}</span><span class="s1">&quot;&gt;&#39;</span>
+                <span class="s1">&#39;    &lt;img data-src=&quot;</span><span class="si">{thumbnail}</span><span class="s1">&quot;&#39;</span>
+                <span class="s1">&#39;         style=&quot;width:</span><span class="si">{width}</span><span class="s1">;height:</span><span class="si">{height}</span><span class="s1">&quot;&#39;</span>
+                <span class="s1">&#39;         title=&quot;</span><span class="si">{title}</span><span class="s1">&quot;&#39;</span>
+                <span class="s1">&#39;         alt=&quot;</span><span class="si">{alt}</span><span class="s1">&quot;&#39;</span>
+                <span class="s1">&#39;         align=&quot;</span><span class="si">{align}</span><span class="s1">&quot;&#39;</span>
+                <span class="s1">&#39;         class=&quot;lazyload img-responsive&quot;&gt;&#39;</span>
+                <span class="s1">&#39;&lt;/a&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">html_args</span><span class="p">))</span>
+        <span class="n">plots_html</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">plots_html</span></div>
+
+
+
+<div class="viewcode-block" id="scale_uv_range">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.weblog.scale_uv_range">[docs]</a>
+<span class="k">def</span> <span class="nf">scale_uv_range</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="s1">&#39;MeasurementSet&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;Distance&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the UV range that captures the inner half of the data.</span>
+
+<span class="sd">    This function returns a 2-tuple with first value set to the UV range</span>
+<span class="sd">    as a domain object, and the second value set to a uvrange constraint</span>
+<span class="sd">    suitable for use in plotms calls.</span>
+
+<span class="sd">    :param ms: measurement set to analyse</span>
+<span class="sd">    :return: tuple of (UV range, plotms constraint)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># method=higher is preferred over method=nearest to ensure that the upper</span>
+    <span class="c1"># limit data point is included in the selection</span>
+    <span class="n">uv_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">baselines_m</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;higher&#39;</span><span class="p">)</span>
+    <span class="n">uv_range</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="n">uv_max</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="c1"># domain.measures classes must be imported at runtime to avoid a circular</span>
+    <span class="c1"># dependency</span>
+    <span class="kn">from</span> <span class="nn">pipeline.domain.measures</span> <span class="kn">import</span> <span class="n">Distance</span>
+    <span class="kn">from</span> <span class="nn">pipeline.domain.measures</span> <span class="kn">import</span> <span class="n">DistanceUnits</span>
+    <span class="k">return</span> <span class="n">Distance</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">uv_max</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">),</span> <span class="n">uv_range</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

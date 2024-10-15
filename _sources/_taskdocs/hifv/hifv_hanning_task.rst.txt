@@ -1,0 +1,33 @@
+hifv_hanning
+============
+
+Task description
+-----------------
+The hifv_hanning task will hanning smooth a VLA dataset
+
+
+
+Output:
+
+results -- The results object for the pipeline task is returned.
+
+Parameter List 
+--------------
+.. list-table::
+    :widths: 25 50
+    :header-rows: 1
+    :class: longtable
+
+    * - parameter name
+      - description
+    * - vis
+      - | The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+    * - maser_detection
+      - | Run maser detect algorithm on spectral line windows. Defaults to True.
+
+
+Examples 
+--------
+1. Run the task to execute hanning smoothing on a VLA CASA pipeline loaded MeasurementSet.
+
+>>> hifv_hanning()

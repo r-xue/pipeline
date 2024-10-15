@@ -1,0 +1,22 @@
+pipeline.hifa.tasks.bpsolint
+============================
+
+.. automodule:: pipeline.hifa.tasks.bpsolint
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BpSolint
+      BpSolintResults
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   bpsolint
+   qa
+   renderer

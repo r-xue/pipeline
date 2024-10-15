@@ -1,0 +1,618 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd package &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.hsd package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/pipeline.hsd.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hsd-package">
+<h1>pipeline.hsd package<a class="headerlink" href="#pipeline-hsd-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html#module-pipeline.hsd.cli.hsd_applycal">pipeline.hsd.cli.hsd_applycal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_applycal.hsd_applycal"><code class="docutils literal notranslate"><span class="pre">hsd_applycal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html#module-pipeline.hsd.cli.hsd_atmcor">pipeline.hsd.cli.hsd_atmcor module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_atmcor.hsd_atmcor"><code class="docutils literal notranslate"><span class="pre">hsd_atmcor()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html#module-pipeline.hsd.cli.hsd_baseline">pipeline.hsd.cli.hsd_baseline module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_baseline.hsd_baseline"><code class="docutils literal notranslate"><span class="pre">hsd_baseline()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html#module-pipeline.hsd.cli.hsd_blflag">pipeline.hsd.cli.hsd_blflag module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_blflag.hsd_blflag"><code class="docutils literal notranslate"><span class="pre">hsd_blflag()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html#module-pipeline.hsd.cli.hsd_exportdata">pipeline.hsd.cli.hsd_exportdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_exportdata.hsd_exportdata"><code class="docutils literal notranslate"><span class="pre">hsd_exportdata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html#module-pipeline.hsd.cli.hsd_flagdata">pipeline.hsd.cli.hsd_flagdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_flagdata.hsd_flagdata"><code class="docutils literal notranslate"><span class="pre">hsd_flagdata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html#module-pipeline.hsd.cli.hsd_imaging">pipeline.hsd.cli.hsd_imaging module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_imaging.hsd_imaging"><code class="docutils literal notranslate"><span class="pre">hsd_imaging()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html#module-pipeline.hsd.cli.hsd_importdata">pipeline.hsd.cli.hsd_importdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_importdata.hsd_importdata"><code class="docutils literal notranslate"><span class="pre">hsd_importdata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html#module-pipeline.hsd.cli.hsd_k2jycal">pipeline.hsd.cli.hsd_k2jycal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_k2jycal.hsd_k2jycal"><code class="docutils literal notranslate"><span class="pre">hsd_k2jycal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html#module-pipeline.hsd.cli.hsd_restoredata">pipeline.hsd.cli.hsd_restoredata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_restoredata.hsd_restoredata"><code class="docutils literal notranslate"><span class="pre">hsd_restoredata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html#module-pipeline.hsd.cli.hsd_skycal">pipeline.hsd.cli.hsd_skycal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_skycal.hsd_skycal"><code class="docutils literal notranslate"><span class="pre">hsd_skycal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html#module-pipeline.hsd.cli.hsd_tsysflag">pipeline.hsd.cli.hsd_tsysflag module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_tsysflag.hsd_tsysflag"><code class="docutils literal notranslate"><span class="pre">hsd_tsysflag()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html#module-pipeline.hsd.cli">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_applycal"><code class="docutils literal notranslate"><span class="pre">hsd_applycal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_atmcor"><code class="docutils literal notranslate"><span class="pre">hsd_atmcor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_baseline"><code class="docutils literal notranslate"><span class="pre">hsd_baseline()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_blflag"><code class="docutils literal notranslate"><span class="pre">hsd_blflag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_exportdata"><code class="docutils literal notranslate"><span class="pre">hsd_exportdata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_flagdata"><code class="docutils literal notranslate"><span class="pre">hsd_flagdata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_imaging"><code class="docutils literal notranslate"><span class="pre">hsd_imaging()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_importdata"><code class="docutils literal notranslate"><span class="pre">hsd_importdata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_k2jycal"><code class="docutils literal notranslate"><span class="pre">hsd_k2jycal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_restoredata"><code class="docutils literal notranslate"><span class="pre">hsd_restoredata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_skycal"><code class="docutils literal notranslate"><span class="pre">hsd_skycal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.cli.html#pipeline.hsd.cli.hsd_tsysflag"><code class="docutils literal notranslate"><span class="pre">hsd_tsysflag()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.heuristics.html">pipeline.hsd.heuristics package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#module-pipeline.hsd.heuristics.MaskDeviation">pipeline.hsd.heuristics.MaskDeviation module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviation"><code class="docutils literal notranslate"><span class="pre">MaskDeviation</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.CalcRange"><code class="docutils literal notranslate"><span class="pre">MaskDeviation.CalcRange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.CalcStdSpectrum"><code class="docutils literal notranslate"><span class="pre">MaskDeviation.CalcStdSpectrum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.ExtendMask"><code class="docutils literal notranslate"><span class="pre">MaskDeviation.ExtendMask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.ReadData"><code class="docutils literal notranslate"><span class="pre">MaskDeviation.ReadData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.SubtractMedian"><code class="docutils literal notranslate"><span class="pre">MaskDeviation.SubtractMedian()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviationHeuristic"><code class="docutils literal notranslate"><span class="pre">MaskDeviationHeuristic</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviationHeuristic.calculate"><code class="docutils literal notranslate"><span class="pre">MaskDeviationHeuristic.calculate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#module-pipeline.hsd.heuristics.baselineparamconfig">pipeline.hsd.heuristics.baselineparamconfig module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BLP"><code class="docutils literal notranslate"><span class="pre">BLP</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineFitParamConfig"><code class="docutils literal notranslate"><span class="pre">BaselineFitParamConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineFitParamConfig.ApplicableDuration"><code class="docutils literal notranslate"><span class="pre">BaselineFitParamConfig.ApplicableDuration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineFitParamConfig.ClipCycle"><code class="docutils literal notranslate"><span class="pre">BaselineFitParamConfig.ClipCycle</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineFitParamConfig.MaxPolynomialOrder"><code class="docutils literal notranslate"><span class="pre">BaselineFitParamConfig.MaxPolynomialOrder</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineFitParamConfig.PolynomialOrder"><code class="docutils literal notranslate"><span class="pre">BaselineFitParamConfig.PolynomialOrder</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineFitParamConfig.calculate"><code class="docutils literal notranslate"><span class="pre">BaselineFitParamConfig.calculate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineFitParamConfig.is_multi_vis_task"><code class="docutils literal notranslate"><span class="pre">BaselineFitParamConfig.is_multi_vis_task</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.AVG_LIMIT"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys.AVG_LIMIT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.CLIPNITER"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys.CLIPNITER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.CLIPTHRESH"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys.CLIPTHRESH</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.FUNC"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys.FUNC</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.LEDGE"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys.LEDGE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.LFTHRESH"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys.LFTHRESH</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.MASK"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys.MASK</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.NPIECE"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys.NPIECE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.NWAVE"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys.NWAVE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.ORDER"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys.ORDER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.POL"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys.POL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.REDGE"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys.REDGE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.ROW"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys.ROW</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.USELF"><code class="docutils literal notranslate"><span class="pre">BaselineParamKeys.USELF</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.DEBUG"><code class="docutils literal notranslate"><span class="pre">DEBUG()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.TRACE"><code class="docutils literal notranslate"><span class="pre">TRACE()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.as_maskstring"><code class="docutils literal notranslate"><span class="pre">as_maskstring()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.do_switching"><code class="docutils literal notranslate"><span class="pre">do_switching()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.no_switching"><code class="docutils literal notranslate"><span class="pre">no_switching()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.baselineparamconfig.write_blparam"><code class="docutils literal notranslate"><span class="pre">write_blparam()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#module-pipeline.hsd.heuristics.fitorder">pipeline.hsd.heuristics.fitorder module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.EdgeChannels"><code class="docutils literal notranslate"><span class="pre">EdgeChannels</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.EdgeChannels.left"><code class="docutils literal notranslate"><span class="pre">EdgeChannels.left</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.EdgeChannels.right"><code class="docutils literal notranslate"><span class="pre">EdgeChannels.right</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.FitOrderHeuristics"><code class="docutils literal notranslate"><span class="pre">FitOrderHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.FitOrderHeuristics.MaxDominantFreq"><code class="docutils literal notranslate"><span class="pre">FitOrderHeuristics.MaxDominantFreq</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.FitOrderHeuristics.calculate"><code class="docutils literal notranslate"><span class="pre">FitOrderHeuristics.calculate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.FittingFunction"><code class="docutils literal notranslate"><span class="pre">FittingFunction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.FittingFunction.CSPLINE"><code class="docutils literal notranslate"><span class="pre">FittingFunction.CSPLINE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.FittingFunction.POLY"><code class="docutils literal notranslate"><span class="pre">FittingFunction.POLY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.FittingFunction.POLYNOMIAL"><code class="docutils literal notranslate"><span class="pre">FittingFunction.POLYNOMIAL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.FittingFunction.SPLINE"><code class="docutils literal notranslate"><span class="pre">FittingFunction.SPLINE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.MaskMaker"><code class="docutils literal notranslate"><span class="pre">MaskMaker</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.MaskMaker.get_mask"><code class="docutils literal notranslate"><span class="pre">MaskMaker.get_mask()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.MaskMakerNoLine"><code class="docutils literal notranslate"><span class="pre">MaskMakerNoLine</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.MaskMakerNoLine.get_mask"><code class="docutils literal notranslate"><span class="pre">MaskMakerNoLine.get_mask()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic"><code class="docutils literal notranslate"><span class="pre">SwitchPolynomialWhenLargeMaskAtEdgeHeuristic</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic.calculate"><code class="docutils literal notranslate"><span class="pre">SwitchPolynomialWhenLargeMaskAtEdgeHeuristic.calculate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.get_fitting_function"><code class="docutils literal notranslate"><span class="pre">get_fitting_function()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.is_cubic_spline_fit"><code class="docutils literal notranslate"><span class="pre">is_cubic_spline_fit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fitorder.is_polynomial_fit"><code class="docutils literal notranslate"><span class="pre">is_polynomial_fit()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#module-pipeline.hsd.heuristics.fragmentation">pipeline.hsd.heuristics.fragmentation module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fragmentation.FragmentationHeuristics"><code class="docutils literal notranslate"><span class="pre">FragmentationHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fragmentation.FragmentationHeuristics.MaxFragmentation"><code class="docutils literal notranslate"><span class="pre">FragmentationHeuristics.MaxFragmentation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fragmentation.FragmentationHeuristics.MaxOrder"><code class="docutils literal notranslate"><span class="pre">FragmentationHeuristics.MaxOrder</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fragmentation.FragmentationHeuristics.MinChannels"><code class="docutils literal notranslate"><span class="pre">FragmentationHeuristics.MinChannels</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.fragmentation.FragmentationHeuristics.calculate"><code class="docutils literal notranslate"><span class="pre">FragmentationHeuristics.calculate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#module-pipeline.hsd.heuristics.grouping2">pipeline.hsd.heuristics.grouping2 module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.GroupByPosition2"><code class="docutils literal notranslate"><span class="pre">GroupByPosition2</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.GroupByPosition2.calculate"><code class="docutils literal notranslate"><span class="pre">GroupByPosition2.calculate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.GroupByTime2"><code class="docutils literal notranslate"><span class="pre">GroupByTime2</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.GroupByTime2.calculate"><code class="docutils literal notranslate"><span class="pre">GroupByTime2.calculate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.MergeGapTables2"><code class="docutils literal notranslate"><span class="pre">MergeGapTables2</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.MergeGapTables2.calculate"><code class="docutils literal notranslate"><span class="pre">MergeGapTables2.calculate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.ThresholdForGroupByTime"><code class="docutils literal notranslate"><span class="pre">ThresholdForGroupByTime</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.grouping2.ThresholdForGroupByTime.calculate"><code class="docutils literal notranslate"><span class="pre">ThresholdForGroupByTime.calculate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline-hsd-heuristics-grouping2-test-module">pipeline.hsd.heuristics.grouping2_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#module-pipeline.hsd.heuristics.observingpattern2">pipeline.hsd.heuristics.observingpattern2 module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.observingpattern2.ObservingPattern2"><code class="docutils literal notranslate"><span class="pre">ObservingPattern2</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.observingpattern2.ObservingPattern2.calculate"><code class="docutils literal notranslate"><span class="pre">ObservingPattern2.calculate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#module-pipeline.hsd.heuristics.rasterscan">pipeline.hsd.heuristics.rasterscan module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.HeuristicsParameter"><code class="docutils literal notranslate"><span class="pre">HeuristicsParameter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.HeuristicsParameter.AngleHistogramBinWidth"><code class="docutils literal notranslate"><span class="pre">HeuristicsParameter.AngleHistogramBinWidth</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.HeuristicsParameter.AngleHistogramSparseness"><code class="docutils literal notranslate"><span class="pre">HeuristicsParameter.AngleHistogramSparseness</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.HeuristicsParameter.AngleHistogramThreshold"><code class="docutils literal notranslate"><span class="pre">HeuristicsParameter.AngleHistogramThreshold</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.HeuristicsParameter.AngleThreshold"><code class="docutils literal notranslate"><span class="pre">HeuristicsParameter.AngleThreshold</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.HeuristicsParameter.DistanceThresholdFactor"><code class="docutils literal notranslate"><span class="pre">HeuristicsParameter.DistanceThresholdFactor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.HeuristicsParameter.RasterGapThresholdFactor"><code class="docutils literal notranslate"><span class="pre">HeuristicsParameter.RasterGapThresholdFactor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.HeuristicsParameter.RoundTripRasterScanThresholdFactor"><code class="docutils literal notranslate"><span class="pre">HeuristicsParameter.RoundTripRasterScanThresholdFactor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.HeuristicsParameter.TurnaroundAngleTolerance"><code class="docutils literal notranslate"><span class="pre">HeuristicsParameter.TurnaroundAngleTolerance</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristic"><code class="docutils literal notranslate"><span class="pre">RasterScanHeuristic</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristic.calculate"><code class="docutils literal notranslate"><span class="pre">RasterScanHeuristic.calculate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsFailure"><code class="docutils literal notranslate"><span class="pre">RasterScanHeuristicsFailure</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult"><code class="docutils literal notranslate"><span class="pre">RasterScanHeuristicsResult</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult.antenna"><code class="docutils literal notranslate"><span class="pre">RasterScanHeuristicsResult.antenna</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult.get_antennas_rasterscan_failed"><code class="docutils literal notranslate"><span class="pre">RasterScanHeuristicsResult.get_antennas_rasterscan_failed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult.ms"><code class="docutils literal notranslate"><span class="pre">RasterScanHeuristicsResult.ms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult.set_result_fail"><code class="docutils literal notranslate"><span class="pre">RasterScanHeuristicsResult.set_result_fail()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.create_range"><code class="docutils literal notranslate"><span class="pre">create_range()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.detect_peak"><code class="docutils literal notranslate"><span class="pre">detect_peak()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.distance"><code class="docutils literal notranslate"><span class="pre">distance()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_angle_gap"><code class="docutils literal notranslate"><span class="pre">find_angle_gap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_angle_gap_by_range"><code class="docutils literal notranslate"><span class="pre">find_angle_gap_by_range()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_distance_gap"><code class="docutils literal notranslate"><span class="pre">find_distance_gap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_histogram_peak"><code class="docutils literal notranslate"><span class="pre">find_histogram_peak()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_most_frequent"><code class="docutils literal notranslate"><span class="pre">find_most_frequent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_raster_gap"><code class="docutils literal notranslate"><span class="pre">find_raster_gap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_raster_row"><code class="docutils literal notranslate"><span class="pre">find_raster_row()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.generate_histogram"><code class="docutils literal notranslate"><span class="pre">generate_histogram()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.get_raster_distance"><code class="docutils literal notranslate"><span class="pre">get_raster_distance()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.refine_gaps"><code class="docutils literal notranslate"><span class="pre">refine_gaps()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.shift_angle"><code class="docutils literal notranslate"><span class="pre">shift_angle()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline-hsd-heuristics-rasterscan-test-module">pipeline.hsd.heuristics.rasterscan_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#module-pipeline.hsd.heuristics.sdbeamsize">pipeline.hsd.heuristics.sdbeamsize module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdbeamsize.AntennaDiameter"><code class="docutils literal notranslate"><span class="pre">AntennaDiameter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdbeamsize.AntennaDiameter.calculate"><code class="docutils literal notranslate"><span class="pre">AntennaDiameter.calculate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdbeamsize.SingleDishBeamSize"><code class="docutils literal notranslate"><span class="pre">SingleDishBeamSize</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdbeamsize.SingleDishBeamSize.calculate"><code class="docutils literal notranslate"><span class="pre">SingleDishBeamSize.calculate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdbeamsize.SingleDishBeamSizeFromName"><code class="docutils literal notranslate"><span class="pre">SingleDishBeamSizeFromName</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdbeamsize.SingleDishBeamSizeFromName.calculate"><code class="docutils literal notranslate"><span class="pre">SingleDishBeamSizeFromName.calculate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#module-pipeline.hsd.heuristics.sdcaltype">pipeline.hsd.heuristics.sdcaltype module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.AsdmCalibrationTypeHeuristics"><code class="docutils literal notranslate"><span class="pre">AsdmCalibrationTypeHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.AsdmCalibrationTypeHeuristics.calculate"><code class="docutils literal notranslate"><span class="pre">AsdmCalibrationTypeHeuristics.calculate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.CalibrationTypeHeuristics"><code class="docutils literal notranslate"><span class="pre">CalibrationTypeHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.CalibrationTypeHeuristics.calculate"><code class="docutils literal notranslate"><span class="pre">CalibrationTypeHeuristics.calculate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.DefaultCalibrationTypeHeuristics"><code class="docutils literal notranslate"><span class="pre">DefaultCalibrationTypeHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.DefaultCalibrationTypeHeuristics.calculate"><code class="docutils literal notranslate"><span class="pre">DefaultCalibrationTypeHeuristics.calculate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.MsCalibrationTypeHeuristics"><code class="docutils literal notranslate"><span class="pre">MsCalibrationTypeHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.MsCalibrationTypeHeuristics.calculate"><code class="docutils literal notranslate"><span class="pre">MsCalibrationTypeHeuristics.calculate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#module-pipeline.hsd.heuristics.sddatatype">pipeline.hsd.heuristics.sddatatype module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sddatatype.DataTypeHeuristics"><code class="docutils literal notranslate"><span class="pre">DataTypeHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sddatatype.DataTypeHeuristics.calculate"><code class="docutils literal notranslate"><span class="pre">DataTypeHeuristics.calculate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sddatatype.is_ms"><code class="docutils literal notranslate"><span class="pre">is_ms()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#module-pipeline.hsd.heuristics.tsysspwmap">pipeline.hsd.heuristics.tsysspwmap module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics"><code class="docutils literal notranslate"><span class="pre">TsysSpwMapHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics.calculate"><code class="docutils literal notranslate"><span class="pre">TsysSpwMapHeuristics.calculate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.tsysspwmap.best_spwmap"><code class="docutils literal notranslate"><span class="pre">best_spwmap()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.heuristics.html#module-pipeline.hsd.heuristics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.tasks.html">pipeline.hsd.tasks package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.tasks.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.tasks.applycal.html">pipeline.hsd.tasks.applycal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.applycal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.applycal.html#module-pipeline.hsd.tasks.applycal.applycal">pipeline.hsd.tasks.applycal.applycal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.applycal.html#module-pipeline.hsd.tasks.applycal.renderer">pipeline.hsd.tasks.applycal.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.applycal.html#module-pipeline.hsd.tasks.applycal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.tasks.atmcor.html">pipeline.hsd.tasks.atmcor package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.atmcor.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.atmcor.html#module-pipeline.hsd.tasks.atmcor.atmcor">pipeline.hsd.tasks.atmcor.atmcor module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.atmcor.html#pipeline-hsd-tasks-atmcor-atmcor-test-module">pipeline.hsd.tasks.atmcor.atmcor_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.atmcor.html#module-pipeline.hsd.tasks.atmcor.display">pipeline.hsd.tasks.atmcor.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.atmcor.html#module-pipeline.hsd.tasks.atmcor.qa">pipeline.hsd.tasks.atmcor.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.atmcor.html#module-pipeline.hsd.tasks.atmcor.renderer">pipeline.hsd.tasks.atmcor.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.atmcor.html#module-pipeline.hsd.tasks.atmcor">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html">pipeline.hsd.tasks.baseline package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#module-pipeline.hsd.tasks.baseline.baseline">pipeline.hsd.tasks.baseline.baseline module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#module-pipeline.hsd.tasks.baseline.detection">pipeline.hsd.tasks.baseline.detection module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#pipeline-hsd-tasks-baseline-detection-test-module">pipeline.hsd.tasks.baseline.detection_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#module-pipeline.hsd.tasks.baseline.display">pipeline.hsd.tasks.baseline.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#module-pipeline.hsd.tasks.baseline.maskline">pipeline.hsd.tasks.baseline.maskline module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#module-pipeline.hsd.tasks.baseline.plotter">pipeline.hsd.tasks.baseline.plotter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#module-pipeline.hsd.tasks.baseline.qa">pipeline.hsd.tasks.baseline.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#module-pipeline.hsd.tasks.baseline.renderer">pipeline.hsd.tasks.baseline.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#module-pipeline.hsd.tasks.baseline.rules">pipeline.hsd.tasks.baseline.rules module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#module-pipeline.hsd.tasks.baseline.simplegrid">pipeline.hsd.tasks.baseline.simplegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#module-pipeline.hsd.tasks.baseline.typing">pipeline.hsd.tasks.baseline.typing module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#module-pipeline.hsd.tasks.baseline.validation">pipeline.hsd.tasks.baseline.validation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#module-pipeline.hsd.tasks.baseline.worker">pipeline.hsd.tasks.baseline.worker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baseline.html#module-pipeline.hsd.tasks.baseline">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.tasks.baselineflag.html">pipeline.hsd.tasks.baselineflag package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baselineflag.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baselineflag.html#module-pipeline.hsd.tasks.baselineflag.SDFlagPlotter">pipeline.hsd.tasks.baselineflag.SDFlagPlotter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baselineflag.html#module-pipeline.hsd.tasks.baselineflag.SDFlagRule">pipeline.hsd.tasks.baselineflag.SDFlagRule module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baselineflag.html#module-pipeline.hsd.tasks.baselineflag.baselineflag">pipeline.hsd.tasks.baselineflag.baselineflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baselineflag.html#module-pipeline.hsd.tasks.baselineflag.flagsummary">pipeline.hsd.tasks.baselineflag.flagsummary module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baselineflag.html#module-pipeline.hsd.tasks.baselineflag.qa">pipeline.hsd.tasks.baselineflag.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baselineflag.html#module-pipeline.hsd.tasks.baselineflag.renderer">pipeline.hsd.tasks.baselineflag.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baselineflag.html#module-pipeline.hsd.tasks.baselineflag.worker">pipeline.hsd.tasks.baselineflag.worker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.baselineflag.html#module-pipeline.hsd.tasks.baselineflag">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.tasks.common.html">pipeline.hsd.tasks.common package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#module-pipeline.hsd.tasks.common.common">pipeline.hsd.tasks.common.common module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#module-pipeline.hsd.tasks.common.compress">pipeline.hsd.tasks.common.compress module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#module-pipeline.hsd.tasks.common.direction_utils">pipeline.hsd.tasks.common.direction_utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#pipeline-hsd-tasks-common-direction-utils-test-module">pipeline.hsd.tasks.common.direction_utils_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#module-pipeline.hsd.tasks.common.display">pipeline.hsd.tasks.common.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#pipeline-hsd-tasks-common-display-test-module">pipeline.hsd.tasks.common.display_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#module-pipeline.hsd.tasks.common.inspection_util">pipeline.hsd.tasks.common.inspection_util module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#module-pipeline.hsd.tasks.common.observatory_policy">pipeline.hsd.tasks.common.observatory_policy module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#pipeline-hsd-tasks-common-observatory-policy-test-module">pipeline.hsd.tasks.common.observatory_policy_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#module-pipeline.hsd.tasks.common.rasterutil">pipeline.hsd.tasks.common.rasterutil module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#module-pipeline.hsd.tasks.common.sdtyping">pipeline.hsd.tasks.common.sdtyping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#module-pipeline.hsd.tasks.common.utils">pipeline.hsd.tasks.common.utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#pipeline-hsd-tasks-common-utils-test-module">pipeline.hsd.tasks.common.utils_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.common.html#module-pipeline.hsd.tasks.common">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.tasks.exportdata.html">pipeline.hsd.tasks.exportdata package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.exportdata.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.exportdata.html#module-pipeline.hsd.tasks.exportdata.almasdaqua">pipeline.hsd.tasks.exportdata.almasdaqua module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.exportdata.html#module-pipeline.hsd.tasks.exportdata.exportdata">pipeline.hsd.tasks.exportdata.exportdata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.exportdata.html#module-pipeline.hsd.tasks.exportdata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.tasks.flagging.html">pipeline.hsd.tasks.flagging package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.flagging.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.flagging.html#module-pipeline.hsd.tasks.flagging.flagdeteralmasd">pipeline.hsd.tasks.flagging.flagdeteralmasd module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.flagging.html#module-pipeline.hsd.tasks.flagging.renderer">pipeline.hsd.tasks.flagging.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.flagging.html#module-pipeline.hsd.tasks.flagging">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html">pipeline.hsd.tasks.imaging package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html#module-pipeline.hsd.tasks.imaging.accumulator">pipeline.hsd.tasks.imaging.accumulator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html#module-pipeline.hsd.tasks.imaging.detectcontamination">pipeline.hsd.tasks.imaging.detectcontamination module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html#module-pipeline.hsd.tasks.imaging.display">pipeline.hsd.tasks.imaging.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html#module-pipeline.hsd.tasks.imaging.gridding">pipeline.hsd.tasks.imaging.gridding module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html#module-pipeline.hsd.tasks.imaging.imaging">pipeline.hsd.tasks.imaging.imaging module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html#module-pipeline.hsd.tasks.imaging.imaging_params">pipeline.hsd.tasks.imaging.imaging_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html#module-pipeline.hsd.tasks.imaging.qa">pipeline.hsd.tasks.imaging.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html#module-pipeline.hsd.tasks.imaging.renderer">pipeline.hsd.tasks.imaging.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html#module-pipeline.hsd.tasks.imaging.resultobjects">pipeline.hsd.tasks.imaging.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html#module-pipeline.hsd.tasks.imaging.sdcombine">pipeline.hsd.tasks.imaging.sdcombine module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html#module-pipeline.hsd.tasks.imaging.weighting">pipeline.hsd.tasks.imaging.weighting module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html#module-pipeline.hsd.tasks.imaging.worker">pipeline.hsd.tasks.imaging.worker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.imaging.html#module-pipeline.hsd.tasks.imaging">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.tasks.importdata.html">pipeline.hsd.tasks.importdata package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.importdata.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.importdata.html#module-pipeline.hsd.tasks.importdata.importdata">pipeline.hsd.tasks.importdata.importdata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.importdata.html#module-pipeline.hsd.tasks.importdata.inspection">pipeline.hsd.tasks.importdata.inspection module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.importdata.html#module-pipeline.hsd.tasks.importdata.qa">pipeline.hsd.tasks.importdata.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.importdata.html#module-pipeline.hsd.tasks.importdata.reader">pipeline.hsd.tasks.importdata.reader module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.importdata.html#pipeline-hsd-tasks-importdata-reader-test-module">pipeline.hsd.tasks.importdata.reader_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.importdata.html#module-pipeline.hsd.tasks.importdata.renderer">pipeline.hsd.tasks.importdata.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.importdata.html#module-pipeline.hsd.tasks.importdata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.tasks.k2jycal.html">pipeline.hsd.tasks.k2jycal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.k2jycal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.k2jycal.html#module-pipeline.hsd.tasks.k2jycal.display">pipeline.hsd.tasks.k2jycal.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.k2jycal.html#module-pipeline.hsd.tasks.k2jycal.jyperkreader">pipeline.hsd.tasks.k2jycal.jyperkreader module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.k2jycal.html#module-pipeline.hsd.tasks.k2jycal.k2jycal">pipeline.hsd.tasks.k2jycal.k2jycal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.k2jycal.html#module-pipeline.hsd.tasks.k2jycal.qa">pipeline.hsd.tasks.k2jycal.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.k2jycal.html#module-pipeline.hsd.tasks.k2jycal.renderer">pipeline.hsd.tasks.k2jycal.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.k2jycal.html#module-pipeline.hsd.tasks.k2jycal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.tasks.restoredata.html">pipeline.hsd.tasks.restoredata package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.restoredata.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.restoredata.html#module-pipeline.hsd.tasks.restoredata.restoredata">pipeline.hsd.tasks.restoredata.restoredata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.restoredata.html#module-pipeline.hsd.tasks.restoredata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.tasks.skycal.html">pipeline.hsd.tasks.skycal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.skycal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.skycal.html#module-pipeline.hsd.tasks.skycal.display">pipeline.hsd.tasks.skycal.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.skycal.html#module-pipeline.hsd.tasks.skycal.qa">pipeline.hsd.tasks.skycal.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.skycal.html#module-pipeline.hsd.tasks.skycal.renderer">pipeline.hsd.tasks.skycal.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.skycal.html#module-pipeline.hsd.tasks.skycal.skycal">pipeline.hsd.tasks.skycal.skycal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.skycal.html#module-pipeline.hsd.tasks.skycal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.tasks.tsysflag.html">pipeline.hsd.tasks.tsysflag package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.tsysflag.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.tsysflag.html#module-pipeline.hsd.tasks.tsysflag.tsysflag">pipeline.hsd.tasks.tsysflag.tsysflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.tasks.tsysflag.html#module-pipeline.hsd.tasks.tsysflag">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.tasks.html#module-pipeline.hsd.tasks">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.templates.html">pipeline.hsd.templates package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.templates.html#module-pipeline.hsd.templates">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-pipeline.hsd">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline.hsd" title="Link to this heading"></a></h2>
+<p>Single Dish ALMA</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+pipeline.h.tasks.common.displays.slice
+======================================
+
+.. automodule:: pipeline.h.tasks.common.displays.slice
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      sanitize
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SliceDisplay
+   

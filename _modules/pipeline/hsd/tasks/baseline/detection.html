@@ -1,0 +1,1163 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.baseline.detection &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.baseline.detection</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.baseline.detection</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Spectral line detection task.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numbers</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">import</span> <span class="nn">pipeline.h.heuristics</span> <span class="k">as</span> <span class="nn">heuristics</span>
+<span class="c1"># import pipeline.domain.measures as measures</span>
+<span class="c1"># from pipeline.domain.datatable import DataTableImpl as DataTable</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">rules</span>
+
+<span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">LineWindow</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+    <span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+
+<span class="n">NoData</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">NoData</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DetectLineInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLineInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">DetectLineInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs for spectral line detection task.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Search order of input vis</span>
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">ATMCORR</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
+
+    <span class="n">edge</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">broadline</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">windowmode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return windowmode value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Windowmode string. Default is &#39;replace&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_windowmode&#39;</span><span class="p">,</span> <span class="s1">&#39;replace&#39;</span><span class="p">)</span>
+
+    <span class="nd">@windowmode</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">windowmode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set windowmode.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: windowmode value. Should be either &#39;replace&#39; or &#39;merge&#39;.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Invalid windowmode value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="s1">&#39;merge&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linewindowmode must be either &#39;replace&#39; or &#39;merge&#39;.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_windowmode</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
+                 <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">window</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LineWindow</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">windowmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">broadline</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct DetectLineInputs instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context</span>
+<span class="sd">            group_id: Reduction group id.</span>
+<span class="sd">            window: Manual line window. Defaults to None, which means that no user-defined</span>
+<span class="sd">                        line window is given.</span>
+<span class="sd">            windowmode: Line window handling mode. &#39;replace&#39; exclusively uses manual line window</span>
+<span class="sd">                        while &#39;merge&#39; merges manual line window into automatic line detection</span>
+<span class="sd">                        and validation result. Defaults to &#39;replace&#39; if None is given.</span>
+<span class="sd">            edge: Edge channels to exclude. Defaults to None, which means that all channels</span>
+<span class="sd">                  are processed.</span>
+<span class="sd">            broadline: Detect broadline component or not. Defaults to True if None is given.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DetectLineInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_id</span> <span class="o">=</span> <span class="n">group_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">windowmode</span> <span class="o">=</span> <span class="n">windowmode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span> <span class="o">=</span> <span class="n">edge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broadline</span> <span class="o">=</span> <span class="n">broadline</span></div>
+
+
+
+<div class="viewcode-block" id="DetectLineResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLineResults">[docs]</a>
+<span class="k">class</span> <span class="nc">DetectLineResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class to hold the result of spectral line detection task.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">success</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">outcome</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct DetectLineResults instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task: Task class that produced the result.</span>
+<span class="sd">            success: Whether task execution is successful or not.</span>
+<span class="sd">            outcome: Outcome of the task execution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DetectLineResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DetectLineResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLineResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge result instance into context.</span>
+
+<span class="sd">        No specific merge operation is done.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DetectLineResults.merge_with_context&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DetectLineResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">signals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return detected spectral lines and associated spatial coordinates.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Detected lines associated with spatial coordinates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_outcome</span><span class="p">(</span><span class="s1">&#39;signals&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representing the outcome.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Empty string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="DetectLine">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLine">[docs]</a>
+<span class="k">class</span> <span class="nc">DetectLine</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Spectral line detection task.&quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">DetectLineInputs</span>
+    <span class="n">LineFinder</span> <span class="o">=</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">HeuristicsLineFinder</span>
+    <span class="n">ThresholdFactor</span> <span class="o">=</span> <span class="mf">3.0</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">DetectLineInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct DetectLine instance.</span>
+
+<span class="sd">        In addition to the construction process of superclass,</span>
+<span class="sd">        it initializes LineFinder heuristics instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inputs: DetectLineInputs instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DetectLine</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_finder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LineFinder</span><span class="p">()</span>
+
+<div class="viewcode-block" id="DetectLine.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLine.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">datatable_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+                <span class="n">grid_table</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]],</span>
+                <span class="n">spectral_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DetectLineResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find spectral line feature.</span>
+
+<span class="sd">        The process finds emission lines and determines protection regions for baselinefit</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            datatable_dict: Dictionary holding datatable instance per MS.</span>
+<span class="sd">            grid_table: Metadata for gridding. See simplegrid.py for detail.</span>
+<span class="sd">            spectral_data: Gridded spectral data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DetectLineResults instance</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: Too large edge masks</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">spectra</span> <span class="o">=</span> <span class="n">spectral_data</span>
+        <span class="n">masks</span> <span class="o">=</span> <span class="p">(</span><span class="n">spectra</span> <span class="o">!=</span> <span class="n">NoData</span><span class="p">)</span>
+        <span class="n">window</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">window</span>
+        <span class="n">windowmode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">windowmode</span>
+        <span class="n">edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">edge</span>
+<span class="c1">#         broadline = self.inputs.broadline #Not used anymore</span>
+
+        <span class="n">detect_signal</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="c1"># Pre-Defined Spectrum Window</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: window=</span><span class="si">{}</span><span class="s1">, windowmode=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="n">windowmode</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">windowmode</span> <span class="o">==</span> <span class="s1">&#39;replace&#39;</span> <span class="ow">and</span> <span class="p">(</span><span class="n">window</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">window</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Skip line detection: windowmode=&quot;</span><span class="si">{</span><span class="n">windowmode</span><span class="si">}</span><span class="s1">&quot;, window=&quot;</span><span class="si">{</span><span class="n">window</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+            <span class="n">nrow</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid_table</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">nrow</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="c1"># predefined_window should be derived at the upper task (MaskLine)</span>
+            <span class="c1"># and should be passed to inputs.window</span>
+            <span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">window</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">group_id</span>
+            <span class="n">group_desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_reduction_group</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;predefined_window=</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">window</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrow</span><span class="p">):</span>
+                <span class="n">grid_info</span> <span class="o">=</span> <span class="n">grid_table</span><span class="p">[</span><span class="n">row</span><span class="p">]</span>
+                <span class="n">ra</span> <span class="o">=</span> <span class="n">grid_info</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+                <span class="n">dec</span> <span class="o">=</span> <span class="n">grid_info</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+                <span class="n">detect_signal</span><span class="p">[</span><span class="n">row</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">window</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">group_desc</span><span class="p">:</span>
+                <span class="n">ms</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ms</span>
+                <span class="n">spw_id</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">spw_id</span>
+                <span class="n">field_id</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">field_id</span>
+                <span class="n">antenna_id</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">antenna_id</span>
+                <span class="n">origin_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">origin_basename</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">datatable_dict</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">datatable</span> <span class="o">=</span> <span class="n">datatable_dict</span><span class="p">[</span><span class="n">origin_basename</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">dt_row</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_index_list_for_ms</span><span class="p">(</span><span class="n">datatable</span><span class="p">,</span> <span class="p">[</span><span class="n">origin_basename</span><span class="p">],</span> <span class="p">[</span><span class="n">antenna_id</span><span class="p">],</span>
+                                                     <span class="p">[</span><span class="n">field_id</span><span class="p">],</span> <span class="p">[</span><span class="n">spw_id</span><span class="p">]):</span>
+                    <span class="n">datatable</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="s1">&#39;MASKLIST&#39;</span><span class="p">,</span> <span class="n">dt_row</span><span class="p">,</span> <span class="n">window</span><span class="p">)</span>
+
+            <span class="n">result</span> <span class="o">=</span> <span class="n">DetectLineResults</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+                                       <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">outcome</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;signals&#39;</span><span class="p">:</span> <span class="n">detect_signal</span><span class="p">})</span>
+
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># move assertion for spectral_data here since spectral_data is</span>
+        <span class="c1"># not necessary when line window is specified</span>
+        <span class="k">assert</span> <span class="n">spectral_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="p">(</span><span class="n">nrow</span><span class="p">,</span> <span class="n">nchan</span><span class="p">)</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Search regions for protection against the background subtraction...&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;DetectLine: Processing </span><span class="si">%s</span><span class="s1"> spectra...&#39;</span><span class="p">,</span> <span class="n">nrow</span><span class="p">)</span>
+
+        <span class="c1"># Set edge mask region</span>
+        <span class="p">(</span><span class="n">EdgeL</span><span class="p">,</span> <span class="n">EdgeR</span><span class="p">)</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parseEdge</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+        <span class="n">Nedge</span> <span class="o">=</span> <span class="n">EdgeR</span> <span class="o">+</span> <span class="n">EdgeL</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;edge=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">edge</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;EdgeL, EdgeR=</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">EdgeL</span><span class="p">,</span> <span class="n">EdgeR</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Nedge=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">Nedge</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Nedge</span> <span class="o">&gt;=</span> <span class="n">nchan</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Error: Edge masked region too large...&#39;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+        <span class="c1">#2019/08/16 MaxFWHM &lt; nchan/2.0 Need wider line detection (NGC1097)</span>
+        <span class="n">MaxFWHM</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">nchan</span> <span class="o">-</span> <span class="n">Nedge</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+        <span class="n">Threshold</span> <span class="o">=</span> <span class="n">rules</span><span class="o">.</span><span class="n">LineFinderRule</span><span class="p">[</span><span class="s1">&#39;Threshold&#39;</span><span class="p">]</span>
+
+        <span class="c1"># 2011/05/17 TN</span>
+        <span class="c1"># Switch to use either ASAP linefinder or John&#39;s linefinder</span>
+        <span class="c1">### Only &#39;Thre&#39; is effective for Heuristics Linefinder. BoxSize, AvgLimit, and MinFWHM are ignored</span>
+        <span class="n">Thre</span> <span class="o">=</span> <span class="n">Threshold</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ThresholdFactor</span>
+
+        <span class="c1"># Create progress timer</span>
+        <span class="n">Timer</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">ProgressTimer</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="n">nrow</span><span class="p">,</span> <span class="n">LOG</span><span class="o">.</span><span class="n">level</span><span class="p">)</span>
+        <span class="c1"># 100.0: minimum number of channels for binned spectrum to detect lines</span>
+        <span class="n">MinChanBinSp</span> <span class="o">=</span> <span class="mf">50.0</span>
+        <span class="n">TmpRange</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="o">**</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spectra</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="n">MinChanBinSp</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">4</span><span class="p">))))]</span>
+        <span class="n">BinningRange</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">TmpRange</span><span class="p">:</span>
+            <span class="n">BinningRange</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">BinningRange</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">//</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrow</span><span class="p">):</span>
+            <span class="c1"># Countup progress timer</span>
+            <span class="n">Timer</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+
+            <span class="n">ProcStartTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">Protected</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid_table</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">6</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Row </span><span class="si">%s</span><span class="s1">: No spectrum&#39;</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+                <span class="c1"># No spectrum</span>
+                <span class="n">Protected</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Start Row </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+                <span class="k">for</span> <span class="p">[</span><span class="n">BINN</span><span class="p">,</span> <span class="n">offset</span><span class="p">]</span> <span class="ow">in</span> <span class="n">BinningRange</span><span class="p">:</span>
+                    <span class="n">SP</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpBinning</span><span class="p">(</span><span class="n">spectra</span><span class="p">[</span><span class="n">row</span><span class="p">],</span> <span class="n">BINN</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+                    <span class="n">MSK</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaskBinning</span><span class="p">(</span><span class="n">masks</span><span class="p">[</span><span class="n">row</span><span class="p">],</span> <span class="n">BINN</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+
+                    <span class="n">protected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detect</span><span class="p">(</span><span class="n">spectrum</span><span class="o">=</span><span class="n">SP</span><span class="p">,</span>
+                                             <span class="n">mask</span><span class="o">=</span><span class="n">MSK</span><span class="p">,</span>
+                                             <span class="n">threshold</span><span class="o">=</span><span class="n">Thre</span><span class="o">+</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">BINN</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                                             <span class="n">tweak</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                             <span class="n">edge</span><span class="o">=</span><span class="p">(</span><span class="n">EdgeL</span><span class="p">,</span> <span class="n">EdgeR</span><span class="p">))</span>
+                    <span class="c1"># 2019/8/16 Threshold gets too high when Binning gets large</span>
+                    <span class="c1">#protected = self._detect(spectrum=SP,</span>
+                    <span class="c1">#                         mask=MSK,</span>
+                    <span class="c1">#                         threshold=Thre+math.log(BINN)/math.log(4),</span>
+                    <span class="c1">#                         tweak=True,</span>
+                    <span class="c1">#                         edge=(EdgeL, EdgeR))</span>
+
+                    <span class="n">MaxLineWidth</span> <span class="o">=</span> <span class="n">MaxFWHM</span>
+                    <span class="n">MinLineWidth</span> <span class="o">=</span> <span class="n">rules</span><span class="o">.</span><span class="n">LineFinderRule</span><span class="p">[</span><span class="s1">&#39;MinFWHM&#39;</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">protected</span><span class="p">)):</span>
+                        <span class="k">if</span> <span class="n">protected</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                            <span class="n">Chan0</span> <span class="o">=</span> <span class="n">protected</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">BINN</span><span class="o">+</span><span class="n">offset</span>
+                            <span class="n">Chan1</span> <span class="o">=</span> <span class="n">protected</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">BINN</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">offset</span>
+                            <span class="n">ChanW</span> <span class="o">=</span> <span class="n">Chan1</span> <span class="o">-</span> <span class="n">Chan0</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">MinLineWidth</span> <span class="o">&lt;=</span> <span class="n">ChanW</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ChanW</span> <span class="o">&lt;=</span> <span class="n">MaxLineWidth</span><span class="p">):</span>
+                                <span class="n">Protected</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">Chan0</span><span class="p">,</span> <span class="n">Chan1</span><span class="p">,</span> <span class="n">BINN</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">Protected</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">BINN</span><span class="p">])</span>
+
+                <span class="c1"># plot to check detected lines</span>
+                <span class="c1">#self.plot_detectrange(spectra[row], Protected, &#39;SpPlot0%04d.png&#39; % row)</span>
+
+            <span class="n">detect_signal</span><span class="p">[</span><span class="n">row</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">grid_table</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">4</span><span class="p">],</span>  <span class="c1"># RA</span>
+                                  <span class="n">grid_table</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">5</span><span class="p">],</span>  <span class="c1"># DEC</span>
+                                  <span class="n">Protected</span><span class="p">]</span>           <span class="c1"># Protected Region</span>
+            <span class="n">ProcEndTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Channel ranges of detected lines for Row </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">detect_signal</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;End Row </span><span class="si">%s</span><span class="s1">: Elapsed Time=</span><span class="si">%.1f</span><span class="s1"> sec&#39;</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="p">(</span><span class="n">ProcEndTime</span> <span class="o">-</span> <span class="n">ProcStartTime</span><span class="p">))</span>
+        <span class="k">del</span> <span class="n">Timer</span>
+
+        <span class="c1">#LOG.debug(&#39;DetectSignal = %s&#39;%(detect_signal))</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">DetectLineResults</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+                                   <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                   <span class="n">outcome</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;signals&#39;</span><span class="p">:</span> <span class="n">detect_signal</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="DetectLine.plot_detectrange">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLine.plot_detectrange">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_detectrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                         <span class="n">sp</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                         <span class="n">protected</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                         <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot detected line range for testing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sp: Spectrald data</span>
+<span class="sd">            protected: Detected line ranges in channels. One-dimensional</span>
+<span class="sd">                       list containing start and end channels for detected</span>
+<span class="sd">                       lines alternatively.</span>
+<span class="sd">            fname: File name for output PNG file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">protected</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span>
+        <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">protected</span><span class="p">)):</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">ymin</span> <span class="o">+</span> <span class="p">(</span><span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span><span class="p">)</span><span class="o">/</span><span class="mf">30.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">protected</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DetectLine.MaskBinning">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLine.MaskBinning">[docs]</a>
+    <span class="k">def</span> <span class="nf">MaskBinning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                    <span class="n">data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                    <span class="n">Bin</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform Binning for mask array.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: boolean mask array</span>
+<span class="sd">            Bin: Binning width</span>
+<span class="sd">            offset: Offset channel to start binning. Defaults to 0.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Mask array after binning</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Bin</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">Bin</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">-</span><span class="n">Bin</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">Bin</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DetectLine.SpBinning">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLine.SpBinning">[docs]</a>
+    <span class="k">def</span> <span class="nf">SpBinning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                  <span class="n">data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                  <span class="n">Bin</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                  <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform Binning for spectral data array.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: float mask array</span>
+<span class="sd">            Bin: Binning width</span>
+<span class="sd">            offset: Offset channel to start binning. Defaults to 0.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Spectral data array after binning</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Bin</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">Bin</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">-</span><span class="n">Bin</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">Bin</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DetectLine.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLine.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">DetectLineResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DetectLineResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyse result.</span>
+
+<span class="sd">        Do nothing.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DetectLineResults instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_detect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">spectrum</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                <span class="n">mask</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                <span class="n">tweak</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                <span class="n">edge</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform spectral line detection on given spectral data with mask.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spectrum: Spectral data</span>
+<span class="sd">            mask: Channel mask</span>
+<span class="sd">            threshold: Threshold for linedetection</span>
+<span class="sd">            tweak: if True, spectral line ranges are extended to cover line edges.</span>
+<span class="sd">            edge: Edge channels to exclude</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of [start, end] index lists of spectral lines, more explicitly,</span>
+<span class="sd">            [[start0, end0], [start1, end1]..., [startN, endN]].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nchan</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">EdgeL</span><span class="p">,</span> <span class="n">EdgeR</span><span class="p">)</span> <span class="o">=</span> <span class="n">edge</span>
+        <span class="n">Nedge</span> <span class="o">=</span> <span class="n">EdgeR</span> <span class="o">+</span> <span class="n">EdgeL</span>
+        <span class="c1">#2015/04/23 0.5 -&gt; 1/3.0</span>
+        <span class="c1">#MaxFWHM = int(min(rules.LineFinderRule[&#39;MaxFWHM&#39;], (nchan - Nedge)/3.0))</span>
+        <span class="c1">#2019/08/16 MaxFWHM &lt; nchan/2.0 Need wider line detection (NGC1097)</span>
+        <span class="n">MaxFWHM</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">nchan</span> <span class="o">-</span> <span class="n">Nedge</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+        <span class="n">MinFWHM</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rules</span><span class="o">.</span><span class="n">LineFinderRule</span><span class="p">[</span><span class="s1">&#39;MinFWHM&#39;</span><span class="p">])</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;line detection parameters: &#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;threshold (S/N per channel)=</span><span class="si">%s</span><span class="s1">, channels, edges to be dropped=[</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">]&#39;</span><span class="p">,</span>
+                  <span class="n">threshold</span><span class="p">,</span> <span class="n">EdgeL</span><span class="p">,</span> <span class="n">EdgeR</span><span class="p">)</span>
+        <span class="n">line_ranges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_finder</span><span class="p">(</span><span class="n">spectrum</span><span class="o">=</span><span class="n">spectrum</span><span class="p">,</span>
+                                       <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span>
+                                       <span class="n">tweak</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span>
+                                       <span class="n">edge</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">EdgeL</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">EdgeR</span><span class="p">)))</span>
+        <span class="c1"># line_ranges = [line0L, line0R, line1L, line1R, ...]</span>
+        <span class="n">nlines</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">line_ranges</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+
+        <span class="c1">### Debug TT</span>
+        <span class="c1">#LOG.info(&#39;NLINES=%s, EdgeL=%s, EdgeR=%s&#39; % (nlines, EdgeL, EdgeR))</span>
+        <span class="c1">#LOG.debug(&#39;ranges=%s&#39;%(line_ranges))</span>
+
+        <span class="n">protected</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nlines</span><span class="p">):</span>
+            <span class="n">Width</span> <span class="o">=</span> <span class="n">line_ranges</span><span class="p">[</span><span class="n">y</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">line_ranges</span><span class="p">[</span><span class="n">y</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="c1">### 2011/05/16 allowance was moved to clustering analysis</span>
+            <span class="c1">#allowance = int(Width/5)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Ranges=</span><span class="si">%s</span><span class="s1">, Width=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">line_ranges</span><span class="p">[</span><span class="n">y</span><span class="o">*</span><span class="mi">2</span><span class="p">:</span><span class="n">y</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">2</span><span class="p">],</span> <span class="n">Width</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">Width</span> <span class="o">&gt;=</span> <span class="n">MinFWHM</span> <span class="ow">and</span> <span class="n">Width</span> <span class="o">&lt;=</span> <span class="n">MaxFWHM</span> <span class="ow">and</span> <span class="n">line_ranges</span><span class="p">[</span><span class="n">y</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">EdgeL</span> <span class="ow">and</span>
+                    <span class="n">line_ranges</span><span class="p">[</span><span class="n">y</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">nchan</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">EdgeR</span><span class="p">)):</span>
+                <span class="n">protected</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">line_ranges</span><span class="p">[</span><span class="n">y</span><span class="o">*</span><span class="mi">2</span><span class="p">],</span> <span class="n">line_ranges</span><span class="p">[</span><span class="n">y</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">protected</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">protected</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">protected</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># 2007/09/01 add merged lines to the list if two lines are close enough</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">protected</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">curr0</span><span class="p">,</span> <span class="n">curr1</span> <span class="o">=</span> <span class="n">protected</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">protected</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">next0</span><span class="p">,</span> <span class="n">next1</span> <span class="o">=</span> <span class="n">protected</span><span class="p">[</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">protected</span><span class="p">[</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">next0</span> <span class="o">-</span> <span class="n">curr1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mf">0.25</span><span class="o">*</span><span class="nb">min</span><span class="p">((</span><span class="n">curr1</span><span class="o">-</span><span class="n">curr0</span><span class="p">),</span> <span class="p">(</span><span class="n">next1</span><span class="o">-</span><span class="n">next0</span><span class="p">))):</span>
+                    <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">curr1</span> <span class="o">&lt;</span> <span class="n">next1</span> <span class="ow">and</span> <span class="n">curr0</span> <span class="o">&lt;</span> <span class="n">next0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">next1</span> <span class="o">-</span> <span class="n">curr0</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">MaxFWHM</span><span class="p">:</span>
+                            <span class="n">protected</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">curr0</span><span class="p">,</span> <span class="n">next1</span><span class="p">])</span>
+                            <span class="n">Line0</span> <span class="o">=</span> <span class="n">curr0</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">next1</span> <span class="o">-</span> <span class="n">Line0</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">MaxFWHM</span><span class="p">:</span>
+                            <span class="n">protected</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                            <span class="n">protected</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">Line0</span><span class="p">,</span> <span class="n">next1</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="k">continue</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">protected</span></div>
+
+
+
+<div class="viewcode-block" id="LineWindowParser">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.LineWindowParser">[docs]</a>
+<span class="k">class</span> <span class="nc">LineWindowParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;LineWindowParser is a parser for line window parameter.</span>
+
+<span class="sd">    Supported format is as follows:</span>
+
+<span class="sd">    [Single window list] -- apply to all spectral windows</span>
+<span class="sd">      - integer list [chmin, chmax]</span>
+<span class="sd">      - float list [fmin, fmax]</span>
+<span class="sd">      - string list [&#39;XGHz&#39;, &#39;YGHz&#39;]</span>
+
+<span class="sd">    [Multiple window list] -- apply to all spectral windows</span>
+<span class="sd">      - nested integer list [[chmin, chmax], [chmin, chmax], ...]</span>
+<span class="sd">      - nested float list [[fmin, fmax], [fmin, fmax], ...]</span>
+<span class="sd">      - nested string list [[&#39;XGHz&#39;, &#39;YGHz&#39;], [&#39;aMHz&#39;, &#39;bMHz&#39;], ...]</span>
+
+<span class="sd">    [Dictionary] -- apply to selected spectral windows</span>
+<span class="sd">      - {&lt;spwid&gt;: &lt;window list&gt;} style dictionary</span>
+<span class="sd">      - spwid should be an integer specifying spectral window id</span>
+<span class="sd">      - window list should be in one of the above list-type window formats</span>
+
+<span class="sd">    [MS channel selection syntax] -- apply to selected spectral windows</span>
+<span class="sd">      - channel selection string &#39;A:chmin~chmax;chmin~chmax,B:fmin~fmax,...&#39;</span>
+
+<span class="sd">    Note that frequencies are interpreted as the value in LSRK frame except</span>
+<span class="sd">    for the MS selection syntax format.</span>
+<span class="sd">    Note also that frequencies given as a floating point number is interpreted</span>
+<span class="sd">    as the value in Hz.</span>
+
+<span class="sd">    Usage:</span>
+<span class="sd">        parser = LineWindowParser(ms, window)</span>
+<span class="sd">        parser.parse(field_id)</span>
+<span class="sd">        for spwid in spwids:</span>
+<span class="sd">            parsed = parser.get_result(spwid)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">ms</span><span class="p">:</span> <span class="s1">&#39;MeasurementSet&#39;</span><span class="p">,</span>
+                 <span class="n">window</span><span class="p">:</span> <span class="n">LineWindow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct LineWindowParser instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ms: ms domain object</span>
+<span class="sd">            window: line window parameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">ms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parsed</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># science spectral windows</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">science_spw</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+
+        <span class="c1"># measure tool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+
+<div class="viewcode-block" id="LineWindowParser.parse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.LineWindowParser.parse">[docs]</a>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse given parameter into dictionary.</span>
+
+<span class="sd">        Result is cached as parsed attribute.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            field_id: Field id to use</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># convert self.window into dictionary</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;{&#39;</span><span class="p">):</span>
+                <span class="c1"># should be a dictionary as a string (PPR execution)</span>
+                <span class="c1"># convert string into dictionary</span>
+                <span class="n">processed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_non_science_spws</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_dict2dict</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">))</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">):</span>
+                <span class="c1"># should be a list as a string (PPR execution)</span>
+                <span class="c1"># convert string into list</span>
+                <span class="n">processed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list2dict</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># should be MS channel selection syntax</span>
+                <span class="c1"># convert string into dictionary</span>
+                <span class="c1"># then, filter out non-science spectral windows</span>
+                <span class="n">processed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_non_science_spws</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_string2dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">)</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="c1"># convert string into dictionary</span>
+            <span class="c1"># keys are all science spectral window ids</span>
+            <span class="n">processed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list2dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="c1"># filter out non-science spectral windows</span>
+            <span class="n">processed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_non_science_spws</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dict2dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># unsupported format or None</span>
+            <span class="n">processed</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">spw</span><span class="p">,</span> <span class="p">[])</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_spw</span><span class="p">)</span>
+
+        <span class="c1"># convert frequency selection into channel selection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parsed</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_measure_init</span><span class="p">(</span><span class="n">field_id</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">_window</span> <span class="ow">in</span> <span class="n">processed</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;_window=</span><span class="si">%s</span><span class="s1"> type </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">_window</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">_window</span><span class="p">))</span>
+                <span class="n">new_window</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_freq2chan</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">_window</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+                    <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_window</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> \
+                        <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_window</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">new_window</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_window</span><span class="p">]</span>
+<span class="c1">#                 if len(new_window) &gt; 0:</span>
+<span class="c1">#                     tmp = []</span>
+<span class="c1">#                     for w in new_window:</span>
+<span class="c1">#                         if len(w) == 2:</span>
+<span class="c1">#                             tmp.append(w)</span>
+<span class="c1">#                     new_window = tmp</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parsed</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_window</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_measure_done</span><span class="p">()</span>
+
+        <span class="c1"># consistency check</span>
+        <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_spw</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsed</span></div>
+
+
+<div class="viewcode-block" id="LineWindowParser.get_result">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.LineWindowParser.get_result">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return parsed line windows for given spw id.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spw_id: spw id</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Line windows as one-dimensional list that provides start/end channels</span>
+<span class="sd">            of line windows alternatively.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">spw_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_spw</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Non-science spectral window was specified. Returning default window [].&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;You need to run parse method first. Returning default window [].&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">spw_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsed</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Unexpected behavior. Returning default window [].&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsed</span><span class="p">[</span><span class="n">spw_id</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_string2dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert line window string into dict.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            window: Line window in the form of channel selection string</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: String is not compatible with channel selection syntax</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary containing line window list per spw</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># utilize ms tool to convert selection string into lists</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">ms</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ms</span><span class="o">.</span><span class="n">msselect</span><span class="p">({</span><span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">window</span><span class="p">})</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">msselectedindices</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;No valid SPW&#39;</span><span class="p">):</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;channel&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">e</span>
+
+        <span class="n">new_window</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">channel_selection</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="s1">&#39;channel&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">sel</span> <span class="ow">in</span> <span class="n">channel_selection</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span>
+
+            <span class="n">spwid</span> <span class="o">=</span> <span class="n">sel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">chansel</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sel</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">spwid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_window</span><span class="p">:</span>
+                <span class="n">new_window</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="n">new_window</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chansel</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_spw</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">spwid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_window</span><span class="p">:</span>
+                <span class="n">new_window</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">return</span> <span class="n">new_window</span>
+
+    <span class="k">def</span> <span class="nf">_list2dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert line window list into dict.</span>
+
+<span class="sd">        Simply applies the given line window list to all spws.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            window: Line window in the form of channel list</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary containing line window list per spw</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># apply given window to all science windows</span>
+
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">((</span><span class="n">spwid</span><span class="p">,</span> <span class="n">window</span><span class="p">)</span> <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_spw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_dict2dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert line window dict into another dict.</span>
+
+<span class="sd">        Simply converts dict key to integer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            window: Line window list in the form of dict</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary containing line window list per spw</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># key should be an integer</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_exclude_non_science_spws</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter line windows only for science spws.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            window: Line window list per spw</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Filtered dict of line window list per spw</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># filter non-science windows</span>
+        <span class="c1"># set default window to science windows if not specified</span>
+        <span class="n">new_window</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_spw</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">window</span><span class="p">:</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="n">window</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">new_window</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_window</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_window</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">return</span> <span class="n">new_window</span>
+
+    <span class="k">def</span> <span class="nf">_freq2chan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                   <span class="n">spwid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                   <span class="n">window</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert frequency selection into channel selection.</span>
+
+<span class="sd">        If float values are given, they are interpreted as the value in Hz.</span>
+<span class="sd">        Input frequency values should be in LSRK frame. LSRK frequencies are</span>
+<span class="sd">        converted to the frame in which spw is defined.</span>
+
+<span class="sd">        If int values are given, input window list is simply sorted and</span>
+<span class="sd">        returned as it is.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spwid: spw id to process</span>
+<span class="sd">            window: Line window list in frequency domain</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Line window list in channel domain</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">window</span>
+
+        <span class="c1"># window must be a list</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="nb">list</span><span class="p">),</span> <span class="s2">&quot;Unexpected value for &#39;window&#39;, must be a list.&quot;</span>
+
+        <span class="c1"># return without conversion if empty list</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">window</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">window</span>
+
+        <span class="n">item_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># process recursively if item is a list</span>
+        <span class="k">if</span> <span class="n">item_type</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">converted</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">window</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;_freq2chan: w=</span><span class="si">%s</span><span class="s1"> type </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
+                <span class="n">_w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_freq2chan</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;_freq2chan: _w=</span><span class="si">%s</span><span class="s1"> type </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">_w</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">_w</span><span class="p">))</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_w</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">converted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_w</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">converted</span>
+
+        <span class="c1"># return without conversion if item is an integer</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">item_type</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
+            <span class="n">window</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">window</span>
+
+        <span class="c1"># convert floating-point value to quantity string</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">item_type</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_freq2chan</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">Hz&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">window</span><span class="p">])</span>
+
+        <span class="c1"># now list item should be a quantity string</span>
+        <span class="k">assert</span> <span class="n">item_type</span> <span class="o">==</span> <span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;unexpected item type </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item_type</span><span class="p">)</span>
+
+        <span class="c1"># also, length of the window should be 2</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">window</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+
+        <span class="c1"># frequency conversion from LSRK to TOPO</span>
+        <span class="n">new_window</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lsrk2topo</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">window</span><span class="p">)</span>
+
+        <span class="c1"># construct ms channel selection syntax</span>
+        <span class="n">spwsel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_msselection</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">new_window</span><span class="p">)</span>
+
+        <span class="c1"># channel mapping using ms tool</span>
+        <span class="n">processed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_string2dict</span><span class="p">(</span><span class="n">spwsel</span><span class="p">)</span>
+
+        <span class="c1"># target spwid should exist</span>
+        <span class="k">assert</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">processed</span>
+
+        <span class="n">new_window</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">processed</span><span class="p">[</span><span class="n">spwid</span><span class="p">])</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;_freq2chan: new_window=</span><span class="si">%s</span><span class="s1"> type </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">new_window</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">new_window</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_window</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_window</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">new_window</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_lsrk2topo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">window</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply frame conversion to line window frequencies in LSRK as needed.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spwid: spw id</span>
+<span class="sd">            window: Line window list in LSRK frequency</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Line window list in the frame that spw is defined. In the case</span>
+<span class="sd">            of ALMA data, spw is defined in TOPO frame so the returned</span>
+<span class="sd">            frequency values are the ones in TOPO.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if frequency frame for target spw is LSRK, just return input window</span>
+        <span class="n">spw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">frame</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="o">==</span> <span class="s1">&#39;LSRK&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">window</span>
+
+        <span class="c1"># assuming that measure tool is properly initialized</span>
+        <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="n">qfreq</span> <span class="o">=</span> <span class="p">[</span><span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">window</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">qa</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">qfreq</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">qfreq</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">qfreq</span> <span class="o">=</span> <span class="p">[</span><span class="n">qfreq</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">qfreq</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">mfreq</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">me</span><span class="o">.</span><span class="n">frequency</span><span class="p">(</span><span class="n">rf</span><span class="o">=</span><span class="s1">&#39;LSRK&#39;</span><span class="p">,</span> <span class="n">v0</span><span class="o">=</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">qfreq</span><span class="p">]</span>
+        <span class="n">new_mfreq</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">me</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">rf</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">mfreq</span><span class="p">]</span>
+        <span class="n">new_window</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{value}{unit}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">new_mfreq</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">new_window</span>
+
+    <span class="k">def</span> <span class="nf">_construct_msselection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">window</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct channel selection string for given spw.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spwid: spw id to apply selection</span>
+<span class="sd">            window: line window list in the form of string quantity list</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            channel selection string for the spw</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">:</span><span class="si">{1}</span><span class="s1">~</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">window</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_measure_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize measure tool.</span>
+
+<span class="sd">        Initialize measure tool from scratch. Set required measures</span>
+<span class="sd">        for frequency conversion extracted from the MS domain object.</span>
+
+<span class="sd">          - time measure from observation start time</span>
+<span class="sd">          - position measure from antenna array position</span>
+<span class="sd">          - direction measure from the field specified by field_id</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            field_id: Reference field id for direction measure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_measure_done</span><span class="p">()</span>
+        <span class="c1"># position is an observatory position</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">position</span>
+
+        <span class="c1"># direction is a field reference direction</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">)</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mdirection</span>
+
+        <span class="c1"># epoch is an observing start time</span>
+        <span class="n">epoch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">start_time</span>
+
+        <span class="c1"># initialize the measure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_measure_done</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close meaure tool.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">me</span><span class="o">.</span><span class="n">done</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># TODO: move this to detection_test.py when appropriate MS data is available</span>
+<span class="c1">#       or testable ms domain object can be created</span>
+<div class="viewcode-block" id="test_parser">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.test_parser">[docs]</a>
+<span class="k">def</span> <span class="nf">test_parser</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="s1">&#39;MeasurementSet&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test LineWindowParser.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ms: MeasurementSet domain object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">target_fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+    <span class="n">field_id</span> <span class="o">=</span> <span class="n">target_fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+    <span class="n">science_spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">science_spw_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">]</span>
+    <span class="c1"># alias for science_spw_ids</span>
+    <span class="n">spwids</span> <span class="o">=</span> <span class="n">science_spw_ids</span>
+    <span class="n">chan_freq0</span> <span class="o">=</span> <span class="n">science_spws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">chan_freqs</span><span class="o">.</span><span class="n">start</span>
+    <span class="n">increment0</span> <span class="o">=</span> <span class="n">science_spws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">chan_freqs</span><span class="o">.</span><span class="n">delta</span>
+    <span class="n">get_chan_freq0</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">chan_freq0</span> <span class="o">+</span> <span class="n">increment0</span> <span class="o">*</span> <span class="n">x</span>
+    <span class="n">get_chan_qfreq0</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">Hz&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_chan_freq0</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">chan_freq1</span> <span class="o">=</span> <span class="n">science_spws</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">chan_freqs</span><span class="o">.</span><span class="n">start</span>
+    <span class="n">increment1</span> <span class="o">=</span> <span class="n">science_spws</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">chan_freqs</span><span class="o">.</span><span class="n">delta</span>
+    <span class="n">get_chan_freq1</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">chan_freq1</span> <span class="o">+</span> <span class="n">increment1</span> <span class="o">*</span> <span class="n">x</span>
+    <span class="n">get_chan_qfreq1</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">Hz&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_chan_freq1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">increment0</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">f0</span> <span class="o">=</span> <span class="n">get_chan_qfreq0</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">f1</span> <span class="o">=</span> <span class="n">get_chan_qfreq0</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">f0</span> <span class="o">=</span> <span class="n">get_chan_qfreq0</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+        <span class="n">f1</span> <span class="o">=</span> <span class="n">get_chan_qfreq0</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">increment1</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">f2</span> <span class="o">=</span> <span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">f3</span> <span class="o">=</span> <span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+        <span class="n">f4</span> <span class="o">=</span> <span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
+        <span class="n">f5</span> <span class="o">=</span> <span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">700</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">f2</span> <span class="o">=</span> <span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+        <span class="n">f3</span> <span class="o">=</span> <span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">f4</span> <span class="o">=</span> <span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">700</span><span class="p">)</span>
+        <span class="n">f5</span> <span class="o">=</span> <span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
+
+    <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="c1"># single global window (channel)</span>
+        <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span>
+        <span class="c1"># multiple global window (channel)</span>
+        <span class="p">[[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">700</span><span class="p">]],</span>
+        <span class="c1"># per spw windows (channel)</span>
+        <span class="p">{</span><span class="n">spwids</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span> <span class="n">spwids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="p">[[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">700</span><span class="p">]]},</span>
+        <span class="c1"># single global window (frequency value)</span>
+        <span class="p">[</span><span class="n">get_chan_freq0</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">get_chan_freq0</span><span class="p">(</span><span class="mi">200</span><span class="p">)],</span>
+        <span class="c1"># multiple global window (frequency value)</span>
+        <span class="p">[[</span><span class="n">get_chan_freq0</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">get_chan_freq0</span><span class="p">(</span><span class="mi">200</span><span class="p">)],</span> <span class="p">[</span><span class="n">get_chan_freq0</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span> <span class="n">get_chan_freq0</span><span class="p">(</span><span class="mi">700</span><span class="p">)]],</span>
+        <span class="c1"># per spw windows (frequency vaule)</span>
+        <span class="p">{</span><span class="n">spwids</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="p">[</span><span class="n">get_chan_freq0</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">get_chan_freq0</span><span class="p">(</span><span class="mi">200</span><span class="p">)],</span>
+         <span class="n">spwids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="p">[[</span><span class="n">get_chan_freq1</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">get_chan_freq1</span><span class="p">(</span><span class="mi">200</span><span class="p">)],</span> <span class="p">[</span><span class="n">get_chan_freq1</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span> <span class="n">get_chan_freq1</span><span class="p">(</span><span class="mi">700</span><span class="p">)]]},</span>
+        <span class="c1"># single global window (frequency quantity)</span>
+        <span class="p">[</span><span class="n">get_chan_qfreq0</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">get_chan_qfreq0</span><span class="p">(</span><span class="mi">200</span><span class="p">)],</span>
+        <span class="c1"># multiple global window (frequency quantity)</span>
+        <span class="p">[[</span><span class="n">get_chan_qfreq0</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">get_chan_qfreq0</span><span class="p">(</span><span class="mi">200</span><span class="p">)],</span> <span class="p">[</span><span class="n">get_chan_qfreq0</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span> <span class="n">get_chan_qfreq0</span><span class="p">(</span><span class="mi">700</span><span class="p">)]],</span>
+        <span class="c1"># per spw windows (frequency quantity)</span>
+        <span class="p">{</span><span class="n">spwids</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="p">[</span><span class="n">get_chan_qfreq0</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">get_chan_qfreq0</span><span class="p">(</span><span class="mi">200</span><span class="p">)],</span>
+         <span class="n">spwids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="p">[[</span><span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">200</span><span class="p">)],</span> <span class="p">[</span><span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span> <span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">700</span><span class="p">)]]},</span>
+        <span class="c1"># per spw windows (string key)</span>
+        <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">spwids</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span> <span class="p">[</span><span class="n">get_chan_qfreq0</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">get_chan_qfreq0</span><span class="p">(</span><span class="mi">200</span><span class="p">)],</span>
+         <span class="nb">str</span><span class="p">(</span><span class="n">spwids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span> <span class="p">[[</span><span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">200</span><span class="p">)],</span> <span class="p">[</span><span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span> <span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">700</span><span class="p">)]]},</span>
+        <span class="c1"># per spw windows (mixed)</span>
+        <span class="p">{</span><span class="n">spwids</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span>
+         <span class="n">spwids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="p">[[</span><span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">200</span><span class="p">)],</span> <span class="p">[</span><span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span> <span class="n">get_chan_qfreq1</span><span class="p">(</span><span class="mi">700</span><span class="p">)]]},</span>
+        <span class="c1"># MS channel selection string (channel)</span>
+        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">:</span><span class="si">{1}</span><span class="s1">~</span><span class="si">{2}</span><span class="s1">,</span><span class="si">{3}</span><span class="s1">:</span><span class="si">{4}</span><span class="s1">~</span><span class="si">{5}</span><span class="s1">;</span><span class="si">{6}</span><span class="s1">~</span><span class="si">{7}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spwids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">spwids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">700</span><span class="p">),</span>
+        <span class="c1"># MS channel selection string (frequency)</span>
+        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">:</span><span class="si">{1}</span><span class="s1">~</span><span class="si">{2}</span><span class="s1">,</span><span class="si">{3}</span><span class="s1">:</span><span class="si">{4}</span><span class="s1">~</span><span class="si">{5}</span><span class="s1">;</span><span class="si">{6}</span><span class="s1">~</span><span class="si">{7}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spwids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f0</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span>
+                                                 <span class="n">spwids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">f2</span><span class="p">,</span> <span class="n">f3</span><span class="p">,</span> <span class="n">f4</span><span class="p">,</span> <span class="n">f5</span><span class="p">)</span>
+        <span class="p">]</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;INPUT WINDOW: </span><span class="si">{0}</span><span class="s1"> (type </span><span class="si">{1}</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">window</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">LineWindowParser</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">window</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">field_id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">spwids</span><span class="p">:</span>
+            <span class="n">parsed</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_result</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">SPW </span><span class="si">{0}</span><span class="s1">: PARSED WINDOW = </span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">parsed</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=== TEST RESULTS ===&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

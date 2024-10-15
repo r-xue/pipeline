@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.gfluxscaleflag.qa
+=====================================
+
+.. automodule:: pipeline.hifa.tasks.gfluxscaleflag.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GfluxscaleflagListQAHandler
+      GfluxscaleflagQAHandler
+   

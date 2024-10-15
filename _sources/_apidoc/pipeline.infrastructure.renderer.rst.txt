@@ -1,0 +1,93 @@
+pipeline.infrastructure.renderer package
+========================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pipeline.infrastructure.renderer.templates
+
+Submodules
+----------
+
+pipeline.infrastructure.renderer.basetemplates module
+-----------------------------------------------------
+
+.. automodule:: pipeline.infrastructure.renderer.basetemplates
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.infrastructure.renderer.htmlrenderer module
+----------------------------------------------------
+
+.. automodule:: pipeline.infrastructure.renderer.htmlrenderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.infrastructure.renderer.logger module
+----------------------------------------------
+
+.. automodule:: pipeline.infrastructure.renderer.logger
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.infrastructure.renderer.qaadapter module
+-------------------------------------------------
+
+.. automodule:: pipeline.infrastructure.renderer.qaadapter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.infrastructure.renderer.registry module
+------------------------------------------------
+
+.. automodule:: pipeline.infrastructure.renderer.registry
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.infrastructure.renderer.regression module
+--------------------------------------------------
+
+.. automodule:: pipeline.infrastructure.renderer.regression
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.infrastructure.renderer.rendererutils module
+-----------------------------------------------------
+
+.. automodule:: pipeline.infrastructure.renderer.rendererutils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.infrastructure.renderer.stats\_extractor module
+--------------------------------------------------------
+
+.. automodule:: pipeline.infrastructure.renderer.stats_extractor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.infrastructure.renderer.weblog module
+----------------------------------------------
+
+.. automodule:: pipeline.infrastructure.renderer.weblog
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.infrastructure.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:

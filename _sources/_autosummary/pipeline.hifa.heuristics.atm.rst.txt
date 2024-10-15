@@ -1,0 +1,20 @@
+pipeline.hifa.heuristics.atm
+============================
+
+.. automodule:: pipeline.hifa.heuristics.atm
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      tsysspwmap
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AtmHeuristics
+      Context
+      SpectralWindow
+   

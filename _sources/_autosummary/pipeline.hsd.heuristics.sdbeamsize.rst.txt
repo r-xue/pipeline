@@ -1,0 +1,44 @@
+pipeline.hsd.heuristics.sdbeamsize
+==================================
+
+.. automodule:: pipeline.hsd.heuristics.sdbeamsize
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      getcontext
+      localcontext
+      setcontext
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AntennaDiameter
+      Context
+      Decimal
+      DecimalTuple
+      SingleDishBeamSize
+      SingleDishBeamSizeFromName
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      Clamped
+      ConversionSyntax
+      DecimalException
+      DivisionByZero
+      DivisionImpossible
+      DivisionUndefined
+      FloatOperation
+      Inexact
+      InvalidContext
+      InvalidOperation
+      Overflow
+      Rounded
+      Subnormal
+      Underflow
+   

@@ -1,0 +1,445 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.displays.plotpwv &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.displays.plotpwv</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.displays.plotpwv</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">splev</span><span class="p">,</span> <span class="n">splrep</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils.conversion</span> <span class="kn">import</span> <span class="n">mjd_seconds_to_datetime</span>
+
+<span class="kn">from</span> <span class="nn">.plotstyle</span> <span class="kn">import</span> <span class="n">RescaleXAxisTimeTicks</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># A useful sequence of 18 unique matplotlib colors to cycle through</span>
+<span class="n">overlayColors</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="p">[</span><span class="mf">0.00</span><span class="p">,</span>  <span class="mf">0.00</span><span class="p">,</span>  <span class="mf">1.00</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">0.00</span><span class="p">,</span>  <span class="mf">0.50</span><span class="p">,</span>  <span class="mf">0.00</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">1.00</span><span class="p">,</span>  <span class="mf">0.00</span><span class="p">,</span>  <span class="mf">0.00</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">0.00</span><span class="p">,</span>  <span class="mf">0.75</span><span class="p">,</span>  <span class="mf">0.75</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">0.75</span><span class="p">,</span>  <span class="mf">0.00</span><span class="p">,</span>  <span class="mf">0.75</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span>  <span class="mf">0.25</span><span class="p">,</span>  <span class="mf">0.25</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">0.75</span><span class="p">,</span>  <span class="mf">0.25</span><span class="p">,</span>  <span class="mf">0.25</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span>  <span class="mf">0.25</span><span class="p">,</span>  <span class="mf">0.75</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">1.00</span><span class="p">,</span>  <span class="mf">0.75</span><span class="p">,</span>  <span class="mf">0.75</span><span class="p">],</span>  <span class="c1"># [0.75, 0.75, 0.75] is invisible on gray border</span>
+      <span class="p">[</span><span class="mf">0.00</span><span class="p">,</span>  <span class="mf">1.00</span><span class="p">,</span>  <span class="mf">0.00</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">0.76</span><span class="p">,</span>  <span class="mf">0.57</span><span class="p">,</span>  <span class="mf">0.17</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">0.54</span><span class="p">,</span>  <span class="mf">0.63</span><span class="p">,</span>  <span class="mf">0.22</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">0.34</span><span class="p">,</span>  <span class="mf">0.57</span><span class="p">,</span>  <span class="mf">0.92</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">1.00</span><span class="p">,</span>  <span class="mf">0.10</span><span class="p">,</span>  <span class="mf">0.60</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">0.70</span><span class="p">,</span>  <span class="mf">1.00</span><span class="p">,</span>  <span class="mf">0.70</span><span class="p">],</span>  <span class="c1"># [0.88,  0.75,  0.73], hard to see on gray</span>
+      <span class="p">[</span><span class="mf">0.10</span><span class="p">,</span>  <span class="mf">0.49</span><span class="p">,</span>  <span class="mf">0.47</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">0.66</span><span class="p">,</span>  <span class="mf">0.34</span><span class="p">,</span>  <span class="mf">0.65</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">0.99</span><span class="p">,</span>  <span class="mf">0.41</span><span class="p">,</span>  <span class="mf">0.23</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="plotPWV">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotpwv.plotPWV">[docs]</a>
+<span class="k">def</span> <span class="nf">plotPWV</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">figfile</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">plotrange</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">clip</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read and plot the PWV values from the ms via the ASDM_CALWVR table.</span>
+<span class="sd">    If that table is not found, read them from the ASDM_CALATMOSPHERE table.</span>
+<span class="sd">    Different antennas are shown in different colored points.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">           ms: The measurement set</span>
+<span class="sd">      figfile: True, False, or a string</span>
+<span class="sd">    plotrange: The ranges for the X and Y axes (default=[0,0,0,0] which is autorange)</span>
+<span class="sd">         clip: True = do not plot outliers beyond 5 * MAD from the median.</span>
+
+<span class="sd">    If figfile is not a string, the file created will be &lt;ms&gt;.pwv.png.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not find  ms: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ms</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">ms</span><span class="o">+</span><span class="s1">&#39;/ASDM_CALWVR&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">ms</span><span class="o">+</span><span class="s1">&#39;/ASDM_CALATMOSPHERE&#39;</span><span class="p">):</span>
+        <span class="c1"># Confirm that it is ALMA data</span>
+        <span class="n">observatory</span> <span class="o">=</span> <span class="n">getObservatoryName</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">observatory</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ALMA&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">observatory</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ACA&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;This is not ALMA data.  No PWV plot made.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not find either </span><span class="si">%s</span><span class="s2">/ASDM_CALWVR or ASDM_CALATMOSPHERE&quot;</span> <span class="o">%</span> <span class="n">ms</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="p">[</span><span class="n">watertime</span><span class="p">,</span> <span class="n">water</span><span class="p">,</span> <span class="n">antennaName</span><span class="p">]</span> <span class="o">=</span> <span class="n">readPWVFromMS</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">observatory</span> <span class="o">=</span> <span class="n">getObservatoryName</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">observatory</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ALMA&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">observatory</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ACA&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;This is not ALMA data.  No ASDM_CALWVR or ASDM_CALATMOSPHERE&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not open </span><span class="si">%s</span><span class="s2">/ASDM_CALWVR nor ASDM_CALATMOSPHERE&quot;</span> <span class="o">%</span> <span class="n">ms</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Initialize plotting</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+    <span class="n">adesc</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+    <span class="n">ms</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Clip the PWV values</span>
+    <span class="n">water</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">water</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+    <span class="k">if</span> <span class="n">clip</span><span class="p">:</span>
+        <span class="n">mad</span> <span class="o">=</span> <span class="n">MAD</span><span class="p">(</span><span class="n">water</span><span class="p">)</span>
+        <span class="n">median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">water</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mad</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">matches</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">water</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">matches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">water</span> <span class="o">-</span> <span class="n">median</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">mad</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">nonmatches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">water</span> <span class="o">-</span> <span class="n">median</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">mad</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nonmatches</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">mymedian</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">water</span><span class="p">[</span><span class="n">nonmatches</span><span class="p">])</span>
+        <span class="n">water</span> <span class="o">=</span> <span class="n">water</span><span class="p">[</span><span class="n">matches</span><span class="p">]</span>
+        <span class="n">watertime</span> <span class="o">=</span> <span class="n">watertime</span><span class="p">[</span><span class="n">matches</span><span class="p">]</span>
+        <span class="n">antennaName</span> <span class="o">=</span> <span class="n">antennaName</span><span class="p">[</span><span class="n">matches</span><span class="p">]</span>
+
+    <span class="n">unique_antennas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">antennaName</span><span class="p">)</span>
+    <span class="n">list_of_date_times</span> <span class="o">=</span> <span class="n">mjd_seconds_to_datetime</span><span class="p">(</span><span class="n">watertime</span><span class="p">)</span>
+    <span class="n">timeplot</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">dates</span><span class="o">.</span><span class="n">date2num</span><span class="p">(</span><span class="n">list_of_date_times</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_antennas</span><span class="p">)):</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">unique_antennas</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">antennaName</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">timeplot</span><span class="p">[</span><span class="n">matches</span><span class="p">],</span> <span class="n">water</span><span class="p">[</span><span class="n">matches</span><span class="p">],</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">overlayColors</span><span class="p">[</span><span class="n">a</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">overlayColors</span><span class="p">)])</span>
+
+    <span class="c1"># Now sort to average duplicate timestamps to one value, then fit spline</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">watertime</span><span class="p">)</span>
+    <span class="n">watertime</span> <span class="o">=</span> <span class="n">watertime</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+    <span class="n">water</span> <span class="o">=</span> <span class="n">water</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+    <span class="n">newwater</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">newtime</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">water</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">watertime</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">newtime</span><span class="p">:</span>
+            <span class="n">matches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">watertime</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">==</span> <span class="n">watertime</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">newwater</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">water</span><span class="p">[</span><span class="n">matches</span><span class="p">]))</span>
+            <span class="n">newtime</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">watertime</span><span class="p">[</span><span class="n">w</span><span class="p">])</span>
+    <span class="n">watertime</span> <span class="o">=</span> <span class="n">newtime</span>
+    <span class="n">water</span> <span class="o">=</span> <span class="n">newwater</span>
+    <span class="n">regular_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">watertime</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">watertime</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">watertime</span><span class="p">))</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">water</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">water</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">ius</span> <span class="o">=</span> <span class="n">splrep</span><span class="p">(</span><span class="n">watertime</span><span class="p">,</span> <span class="n">water</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">watertime</span><span class="p">)</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">watertime</span><span class="p">)),</span> <span class="n">k</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
+        <span class="n">water</span> <span class="o">=</span> <span class="n">splev</span><span class="p">(</span><span class="n">regular_time</span><span class="p">,</span> <span class="n">ius</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">list_of_date_times</span> <span class="o">=</span> <span class="n">mjd_seconds_to_datetime</span><span class="p">(</span><span class="n">regular_time</span><span class="p">)</span>
+    <span class="n">timeplot</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">dates</span><span class="o">.</span><span class="n">date2num</span><span class="p">(</span><span class="n">list_of_date_times</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">timeplot</span><span class="p">,</span> <span class="n">water</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Plot limits and ranges</span>
+    <span class="k">if</span> <span class="n">plotrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">plotrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="n">plotrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">plotrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="k">if</span> <span class="n">plotrange</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">plotrange</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="n">plotrange</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">plotrange</span><span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+    <span class="n">xlim</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">()</span>
+    <span class="n">ylim</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">()</span>
+    <span class="n">xrange</span> <span class="o">=</span> <span class="n">xlim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">xlim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">yrange</span> <span class="o">=</span> <span class="n">ylim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">ylim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_antennas</span><span class="p">)):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xlim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mf">0.01</span><span class="o">*</span><span class="n">xrange</span><span class="o">+</span><span class="mf">0.055</span><span class="o">*</span><span class="n">xrange</span><span class="o">*</span><span class="p">(</span><span class="n">a</span> <span class="o">//</span> <span class="mi">48</span><span class="p">),</span> <span class="n">ylim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mf">0.024</span><span class="o">*</span><span class="n">yrange</span><span class="o">*</span><span class="p">(</span><span class="n">a</span> <span class="o">%</span> <span class="mi">48</span> <span class="o">-</span> <span class="mi">2</span><span class="p">),</span>
+                 <span class="n">unique_antennas</span><span class="p">[</span><span class="n">a</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">overlayColors</span><span class="p">[</span><span class="n">a</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">overlayColors</span><span class="p">)],</span> <span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">date_string</span> <span class="o">=</span> <span class="n">mjd_seconds_to_datetime</span><span class="p">(</span><span class="n">watertime</span><span class="p">[</span><span class="mi">0</span><span class="p">:])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Universal Time (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">date_string</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;PWV (mm)&#39;</span><span class="p">)</span>
+    <span class="n">adesc</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">)</span>
+    <span class="n">adesc</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">water</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">adesc</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">dates</span><span class="o">.</span><span class="n">MinuteLocator</span><span class="p">(</span><span class="n">byminute</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">30</span><span class="p">))))</span>
+        <span class="n">adesc</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">dates</span><span class="o">.</span><span class="n">MinuteLocator</span><span class="p">(</span><span class="n">byminute</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">10</span><span class="p">))))</span>
+        <span class="n">adesc</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">dates</span><span class="o">.</span><span class="n">DateFormatter</span><span class="p">(</span><span class="s1">&#39;%H:%M&#39;</span><span class="p">))</span>
+        <span class="n">adesc</span><span class="o">.</span><span class="n">fmt_xdata</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">dates</span><span class="o">.</span><span class="n">DateFormatter</span><span class="p">(</span><span class="s1">&#39;%H:%M&#39;</span><span class="p">)</span>
+        <span class="n">RescaleXAxisTimeTicks</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(),</span> <span class="n">adesc</span><span class="p">)</span>
+    <span class="n">auto_figure_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.pwv.png&quot;</span> <span class="o">%</span> <span class="n">ms</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+
+    <span class="c1"># Save plot</span>
+    <span class="k">if</span> <span class="n">figfile</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">auto_figure_name</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Failed to create PWV plot&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="readPWVFromMS">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotpwv.readPWVFromMS">[docs]</a>
+<span class="k">def</span> <span class="nf">readPWVFromMS</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads all the PWV values from a measurement set, returning a list</span>
+<span class="sd">    of lists:   [[mjdsec], [pwv], [antennaName]]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/ASDM_CALWVR&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">vis</span><span class="o">+</span><span class="s2">&quot;/ASDM_CALWVR&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;startValidTime&#39;</span><span class="p">)</span>  <span class="c1"># mjdsec</span>
+            <span class="n">antenna</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;antennaName&#39;</span><span class="p">)</span>
+            <span class="n">pwv</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;water&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The ASDM_CALWVR table is empty, switching to ASDM_CALATMOSPHERE&quot;</span><span class="p">)</span>
+            <span class="n">time</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">pwv</span> <span class="o">=</span> <span class="n">readPWVFromASDM_CALATMOSPHERE</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/ASDM_CALATMOSPHERE&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">):</span>
+        <span class="n">time</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">pwv</span> <span class="o">=</span> <span class="n">readPWVFromASDM_CALATMOSPHERE</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Did not find ASDM_CALWVR nor ASDM_CALATMOSPHERE&quot;</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">[[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">time</span><span class="p">,</span> <span class="n">pwv</span><span class="p">,</span> <span class="n">antenna</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="readPWVFromASDM_CALATMOSPHERE">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotpwv.readPWVFromASDM_CALATMOSPHERE">[docs]</a>
+<span class="k">def</span> <span class="nf">readPWVFromASDM_CALATMOSPHERE</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads the PWV via the water column of the ASDM_CALATMOSPHERE table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis</span><span class="o">+</span><span class="s1">&#39;/ASDM_CALATMOSPHERE&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">vis</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.ms&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">+=</span> <span class="s1">&#39;.ms&#39;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not find measurement set&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis</span><span class="o">+</span><span class="s1">&#39;/ASDM_CALATMOSPHERE&#39;</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not find ASDM_CALATMOSPHERE in the measurement set&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not find measurement set&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">vis</span> <span class="o">+</span> <span class="s2">&quot;/ASDM_CALATMOSPHERE&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+        <span class="n">pwvtime</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;startValidTime&#39;</span><span class="p">)</span>  <span class="c1"># mjdsec</span>
+        <span class="n">antenna</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;antennaName&#39;</span><span class="p">)</span>
+        <span class="n">pwv</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;water&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># There seem to be 2 identical entries per row, so take first one.</span>
+
+    <span class="k">return</span> <span class="n">pwvtime</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">pwv</span></div>
+
+
+
+<span class="c1"># The following routines are general purpose and may eventually</span>
+<span class="c1"># be useful elsewhere.</span>
+
+<div class="viewcode-block" id="getObservatoryName">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotpwv.getObservatoryName">[docs]</a>
+<span class="k">def</span> <span class="nf">getObservatoryName</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the observatory name in the specified ms.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">obsTable</span> <span class="o">=</span> <span class="n">ms</span> <span class="o">+</span> <span class="s1">&#39;/OBSERVATION&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">obsTable</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">myName</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;TELESCOPE_NAME&#39;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not open OBSERVATION table to get the telescope name: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">obsTable</span><span class="p">)</span>
+        <span class="n">myName</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">myName</span></div>
+
+
+
+<div class="viewcode-block" id="MAD">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotpwv.MAD">[docs]</a>
+<span class="k">def</span> <span class="nf">MAD</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.6745</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Median Absolute Deviation along given axis of an array:</span>
+
+<span class="sd">    median(abs(a - median(a))) / c</span>
+
+<span class="sd">    c = 0.6745 is the constant to convert from MAD to std; it is used by</span>
+<span class="sd">    default</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">good</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">a</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">good</span><span class="p">])</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">good</span><span class="p">]</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">c</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">good</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="c1"># I don&#39;t want the array to change so I have to copy it?</span>
+        <span class="k">if</span> <span class="n">axis</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">aswp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">good</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">aswp</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">good</span><span class="p">]</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">aswp</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">c</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">m</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

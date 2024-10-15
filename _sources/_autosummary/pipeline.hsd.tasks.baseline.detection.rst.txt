@@ -1,0 +1,22 @@
+pipeline.hsd.tasks.baseline.detection
+=====================================
+
+.. automodule:: pipeline.hsd.tasks.baseline.detection
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      test_parser
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      DetectLine
+      DetectLineInputs
+      DetectLineResults
+      LineWindowParser
+   

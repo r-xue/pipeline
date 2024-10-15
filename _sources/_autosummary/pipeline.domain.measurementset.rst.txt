@@ -1,0 +1,14 @@
+pipeline.domain.measurementset
+==============================
+
+.. automodule:: pipeline.domain.measurementset
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AntennaArray
+      DataType
+      MeasurementSet
+   

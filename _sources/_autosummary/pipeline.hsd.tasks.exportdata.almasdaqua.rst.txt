@@ -1,0 +1,17 @@
+pipeline.hsd.tasks.exportdata.almasdaqua
+========================================
+
+.. automodule:: pipeline.hsd.tasks.exportdata.almasdaqua
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AlmaAquaXmlGenerator
+      Context
+      Element
+      Results
+      ResultsList
+      Sensitivity
+   

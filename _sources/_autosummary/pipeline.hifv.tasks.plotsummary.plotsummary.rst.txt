@@ -1,0 +1,15 @@
+pipeline.hifv.tasks.plotsummary.plotsummary
+===========================================
+
+.. automodule:: pipeline.hifv.tasks.plotsummary.plotsummary
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      PlotSummary
+      PlotSummaryInputs
+      PlotSummaryResults
+   

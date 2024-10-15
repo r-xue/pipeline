@@ -1,0 +1,19 @@
+pipeline.hsd.tasks.baselineflag.qa
+==================================
+
+.. automodule:: pipeline.hsd.tasks.baselineflag.qa
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      accumulate_flag_per_source_spw
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SDBLFlagListQAHandler
+      SDBLFlagQAHandler
+   

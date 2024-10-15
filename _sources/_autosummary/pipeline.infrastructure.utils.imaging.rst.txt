@@ -1,0 +1,24 @@
+pipeline.infrastructure.utils.imaging
+=====================================
+
+.. automodule:: pipeline.infrastructure.utils.imaging
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      chan_selection_to_frequencies
+      equal_to_n_digits
+      freq_selection_to_channels
+      frequency_to_velocity
+      intersect_ranges
+      intersect_ranges_by_weight
+      merge_ranges
+      predict_kernel
+      set_nested_dict
+      spw_intersect
+      update_beams_dict
+      update_sens_dict
+      velocity_to_frequency
+   

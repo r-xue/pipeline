@@ -1,0 +1,18 @@
+pipeline.hsd.tasks.k2jycal.display
+==================================
+
+.. automodule:: pipeline.hsd.tasks.k2jycal.display
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      collect_dict_values
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      K2JyHistDisplay
+   

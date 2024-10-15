@@ -1,0 +1,13 @@
+pipeline.hsdn.tasks.exportdata.manifest
+=======================================
+
+.. automodule:: pipeline.hsdn.tasks.exportdata.manifest
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Element
+      NROPipelineManifest
+   

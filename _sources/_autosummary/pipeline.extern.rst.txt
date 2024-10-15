@@ -1,0 +1,21 @@
+pipeline.extern
+===============
+
+.. automodule:: pipeline.extern
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   SDcalatmcorr
+   TsysDataClassFile
+   XmlObjectifier
+   adopted
+   almahelpers
+   almarenorm
+   almarenorm_pl2023
+   findContinuum
+   tsys_contamination

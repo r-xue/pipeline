@@ -1,0 +1,13 @@
+pipeline.hif.tasks.setmodel.setmodel
+====================================
+
+.. automodule:: pipeline.hif.tasks.setmodel.setmodel
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SetModels
+      SetModelsInputs
+   

@@ -1,0 +1,564 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.statwt.display &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.statwt.display</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.statwt.display</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.cbook</span> <span class="k">as</span> <span class="nn">cbook</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.casa_tools</span> <span class="k">as</span> <span class="nn">casa_tools</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.logger</span> <span class="k">as</span> <span class="nn">logger</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="weightboxChart">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.statwt.html#pipeline.hifv.tasks.statwt.display.weightboxChart">[docs]</a>
+<span class="k">class</span> <span class="nc">weightboxChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">whis</span> <span class="o">=</span> <span class="mf">3.944</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">weight_stats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">band2spw</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_weight_from_wtable</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="n">this_ant</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">this_spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">this_scan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw_list</span><span class="o">=</span><span class="p">[]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the weights from the weights table with the specificed ant, spw, and scan. </span>
+<span class="sd">        The spw_list parameter only works with only the this_ant specified, and restricts</span>
+<span class="sd">        the selection of entries in the weights table to those with spws in the spw_list.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">this_ant</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">this_spw</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">this_scan</span><span class="o">!=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">query_str</span> <span class="o">=</span> <span class="s1">&#39;SPECTRAL_WINDOW_ID==</span><span class="si">{0}</span><span class="s1"> &amp;&amp; ANTENNA1==</span><span class="si">{1}</span><span class="s1"> &amp;&amp; SCAN_NUMBER==</span><span class="si">{2}</span><span class="s1"> ntrue(FLAG)==0&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">this_spw</span><span class="p">,</span> <span class="n">this_ant</span><span class="p">,</span> <span class="n">this_scan</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">this_ant</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">this_spw</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">query_str</span> <span class="o">=</span> <span class="s1">&#39;SPECTRAL_WINDOW_ID==</span><span class="si">{0}</span><span class="s1"> &amp;&amp; ANTENNA1==</span><span class="si">{1}</span><span class="s1"> &amp;&amp; ntrue(FLAG)==0&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">this_spw</span><span class="p">,</span> <span class="n">this_ant</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">this_ant</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">this_scan</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">query_str</span> <span class="o">=</span> <span class="s1">&#39;SCAN_NUMBER==</span><span class="si">{0}</span><span class="s1"> &amp;&amp; ANTENNA1==</span><span class="si">{1}</span><span class="s1"> &amp;&amp; ntrue(FLAG)==0&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">this_scan</span><span class="p">,</span> <span class="n">this_ant</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">this_scan</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">this_spw</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">query_str</span> <span class="o">=</span> <span class="s1">&#39;SPECTRAL_WINDOW_ID==</span><span class="si">{0}</span><span class="s1"> &amp;&amp; SCAN_NUMBER==</span><span class="si">{1}</span><span class="s1"> &amp;&amp; ntrue(FLAG)==0&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">this_spw</span><span class="p">,</span> <span class="n">this_scan</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">this_ant</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spw_list</span><span class="p">:</span> 
+            <span class="n">query_str</span> <span class="o">=</span> <span class="s1">&#39;ANTENNA1==</span><span class="si">{0}</span><span class="s1"> &amp;&amp; ntrue(FLAG)==0 &amp;&amp; SPECTRAL_WINDOW_ID IN </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">this_ant</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">spw_list</span><span class="p">)))</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">this_ant</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">query_str</span> <span class="o">=</span> <span class="s1">&#39;ANTENNA1==</span><span class="si">{0}</span><span class="s1"> &amp;&amp; ntrue(FLAG)==0&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">this_ant</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">this_spw</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">query_str</span> <span class="o">=</span> <span class="s1">&#39;SPECTRAL_WINDOW_ID==</span><span class="si">{0}</span><span class="s1"> &amp;&amp; ntrue(FLAG)==0&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">this_spw</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">this_scan</span> <span class="o">!=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">query_str</span> <span class="o">=</span> <span class="s1">&#39;SCAN_NUMBER==</span><span class="si">{0}</span><span class="s1"> &amp;&amp; ntrue(FLAG)==0&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">this_scan</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">query_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">tbl</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">stb</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query_str</span><span class="p">)</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">stb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+            <span class="n">stb</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">weights</span><span class="o">.</span><span class="n">real</span>
+
+    <span class="c1"># This is used to get the scans for a band by passing in the appropriate list of spws</span>
+    <span class="c1"># and is only used for the VLA-PI code </span>
+    <span class="k">def</span> <span class="nf">_get_scans_with_spws</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tbl</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spws</span><span class="p">:</span> <span class="n">List</span><span class="o">=</span><span class="p">[]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the scans from the weights table with the spws in the input list&quot;&quot;&quot;</span>
+
+        <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;ntrue(FLAG)==0 &amp;&amp; SPECTRAL_WINDOW_ID IN </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">spws</span><span class="p">)))</span>
+        <span class="n">scans</span> <span class="o">=</span> <span class="kc">None</span>        
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">tbl</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">stb</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+            <span class="n">scans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">stb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SCAN_NUMBER&#39;</span><span class="p">)))</span>
+            <span class="n">stb</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">scans</span>
+
+<div class="viewcode-block" id="weightboxChart.plot">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.statwt.html#pipeline.hifv.tasks.statwt.display.weightboxChart.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">wtables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">plots</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_wrapper</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="n">k</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_split</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">]:</span> 
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Utility function to divide the input list to_split into sublists of size n and return </span>
+<span class="sd">        a tuple of these lists&quot;&quot;&quot;</span>
+        <span class="n">quotient</span><span class="p">,</span> <span class="n">remainder</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">to_split</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">to_split</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">quotient</span><span class="o">+</span><span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">remainder</span><span class="p">):(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">quotient</span><span class="o">+</span><span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">remainder</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="vlaWeightboxChart">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.statwt.html#pipeline.hifv.tasks.statwt.display.vlaWeightboxChart">[docs]</a>
+<span class="k">class</span> <span class="nc">vlaWeightboxChart</span><span class="p">(</span><span class="n">weightboxChart</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="c1"># A dict where the keys are the band names and the values are lists of the spws for that band</span>
+        <span class="c1"># ex: {&#39;C&#39;:[1,2,3], &#39;K&#39;:[4,5,6]}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">band2spw</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">)</span>
+        <span class="n">fig_basename</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;statwt&#39;</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="n">suffix</span><span class="p">])))</span><span class="o">+</span><span class="s1">&#39;.png&#39;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">fig_basename</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">]:</span>
+        <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figfile</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span> <span class="n">band</span><span class="p">)</span>
+        <span class="n">wrappers</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">figfile</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Statwt summary plot not found. Creating new plot.&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_plot_from_wtable</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">:</span>
+                    <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figfile</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span> <span class="n">band</span><span class="p">)</span>
+                    <span class="n">wrapper</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">figfile</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;antenna or spectral window&#39;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;antenna-based weight&#39;</span><span class="p">,</span>
+                              <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                                          <span class="s1">&#39;x_axis&#39;</span><span class="p">:</span> <span class="s1">&#39;ant/spw/scan&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;y_axis&#39;</span><span class="p">:</span> <span class="s1">&#39;weight&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">suffix</span><span class="p">,</span> 
+                                          <span class="s1">&#39;band&#39;</span><span class="p">:</span> <span class="n">band</span><span class="p">})</span>
+                    <span class="n">wrappers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wrapper</span><span class="p">)</span>
+                
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not create &#39;</span> <span class="o">+</span> <span class="n">suffix</span> <span class="o">+</span> <span class="s1">&#39; plot.&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">wrappers</span>
+
+    <span class="k">def</span> <span class="nf">_create_plot_from_wtable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create plots for each band&quot;&quot;&quot;</span>
+        <span class="n">tbl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">wtables</span><span class="p">[</span><span class="n">suffix</span><span class="p">]</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">tbl</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">spws</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID&#39;</span><span class="p">)))</span>
+            <span class="n">scans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SCAN_NUMBER&#39;</span><span class="p">)))</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">tbl</span><span class="o">+</span><span class="s1">&#39;/ANTENNA&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">ant_names</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;NAME&#39;</span><span class="p">)</span>
+            <span class="n">ant_idxs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ant_names</span><span class="p">))</span>
+
+        <span class="c1"># VLA PI plots are separated out by band, so determine the spws </span>
+        <span class="c1"># for each band.  </span>
+        <span class="n">spw2band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_vla_spw2band</span><span class="p">()</span> <span class="c1"># Format: {&#39;1&#39;:&#39;C&#39;, &#39;2&#39;:&#39;K&#39; }</span>
+        <span class="n">band2spw</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">listspws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">spw2band</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">listspws</span><span class="p">:</span>
+                <span class="n">band2spw</span><span class="p">[</span><span class="n">band</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">band2spw</span> <span class="o">=</span> <span class="n">band2spw</span>  <span class="c1"># Format: {&#39;C&#39;:[1,2,3], &#39;K&#39;:[4,5,6]}</span>
+
+        <span class="n">bands_return</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">band2spw</span><span class="p">:</span> 
+            <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figfile</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span> <span class="n">band</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Making antenna-based weight plot: </span><span class="si">{0}</span><span class="s1"> for band: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">figfile</span><span class="p">,</span> <span class="n">band</span><span class="p">))</span>
+            <span class="n">bxpstats_per_ant</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">this_ant</span> <span class="ow">in</span> <span class="n">ant_idxs</span><span class="p">:</span>
+                <span class="n">dat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_weight_from_wtable</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="n">this_ant</span><span class="o">=</span><span class="n">this_ant</span><span class="p">,</span> <span class="n">spw_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">band2spw</span><span class="p">[</span><span class="n">band</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">dat</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">dat</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[</span><span class="n">dat</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+                    <span class="n">bxpstats</span> <span class="o">=</span> <span class="n">cbook</span><span class="o">.</span><span class="n">boxplot_stats</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">whis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">whis</span><span class="p">)</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;quartiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;stdev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dat</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;min&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+                    <span class="n">bxpstats_per_ant</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bxpstats</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">bxpstats</span> <span class="o">=</span> <span class="n">cbook</span><span class="o">.</span><span class="n">boxplot_stats</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">whis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">whis</span><span class="p">)</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;quartiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;stdev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;min&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">bxpstats_per_ant</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bxpstats</span><span class="p">)</span>
+                <span class="n">bxpstats_per_ant</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;ant&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ant_names</span><span class="p">[</span><span class="n">this_ant</span><span class="p">]</span>
+
+            <span class="n">bxpstats_per_spw</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">this_spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">band2spw</span><span class="p">[</span><span class="n">band</span><span class="p">]:</span>
+                <span class="n">dat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_weight_from_wtable</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="n">this_spw</span><span class="o">=</span><span class="n">this_spw</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dat</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">dat</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[</span><span class="n">dat</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+                    <span class="n">bxpstats</span> <span class="o">=</span> <span class="n">cbook</span><span class="o">.</span><span class="n">boxplot_stats</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">whis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">whis</span><span class="p">)</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;quartiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;stdev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dat</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;min&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+                    <span class="n">bxpstats_per_spw</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bxpstats</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">bxpstats</span> <span class="o">=</span> <span class="n">cbook</span><span class="o">.</span><span class="n">boxplot_stats</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">whis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">whis</span><span class="p">)</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;quartiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;stdev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;min&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">bxpstats_per_spw</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bxpstats</span><span class="p">)</span>
+                <span class="n">bxpstats_per_spw</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_spw</span>
+           
+            <span class="n">scans</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scans_with_spws</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">band2spw</span><span class="p">[</span><span class="n">band</span><span class="p">])</span>
+
+            <span class="n">bxpstats_per_scan</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">this_scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">:</span> 
+                <span class="n">dat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_weight_from_wtable</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="n">this_scan</span><span class="o">=</span><span class="n">this_scan</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dat</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">dat</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[</span><span class="n">dat</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+                    <span class="n">bxpstats</span> <span class="o">=</span> <span class="n">cbook</span><span class="o">.</span><span class="n">boxplot_stats</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">whis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">whis</span><span class="p">)</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;quartiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;stdev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dat</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;min&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+                    <span class="n">bxpstats_per_scan</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bxpstats</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">bxpstats</span> <span class="o">=</span> <span class="n">cbook</span><span class="o">.</span><span class="n">boxplot_stats</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">whis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">whis</span><span class="p">)</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;quartiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;stdev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;min&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">bxpstats_per_scan</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bxpstats</span><span class="p">)</span>
+                <span class="n">bxpstats_per_scan</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;scan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_scan</span>
+
+            <span class="c1"># Setup plot sizes and number of plots</span>
+
+            <span class="c1"># Scan plots are split into subplots every 75 scans for readability</span>
+            <span class="n">max_scans_per_plot</span> <span class="o">=</span> <span class="mi">75</span> 
+            <span class="n">number_of_scan_plots</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span><span class="o">/</span><span class="n">max_scans_per_plot</span><span class="p">)</span>
+            <span class="n">number_of_plots</span> <span class="o">=</span> <span class="n">number_of_scan_plots</span> <span class="o">+</span> <span class="mi">2</span> <span class="c1"># There is always one spw plot and one antenna plot.</span>
+            <span class="n">plot_len</span> <span class="o">=</span> <span class="mi">15</span>
+            <span class="n">plot_height</span> <span class="o">=</span> <span class="n">number_of_plots</span> <span class="o">*</span> <span class="mi">2</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">subplots</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">number_of_plots</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">plot_len</span><span class="p">,</span> <span class="n">plot_height</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">number_of_scan_plots</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> <span class="n">ax3</span> <span class="o">=</span> <span class="n">subplots</span>
+            <span class="k">else</span><span class="p">:</span> 
+                <span class="n">ax1</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">ax2</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">ax_scans</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+
+            <span class="n">flierprops</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;royalblue&#39;</span><span class="p">,</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;royalblue&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Create per-antenna plots</span>
+            <span class="n">ax1</span><span class="o">.</span><span class="n">bxp</span><span class="p">(</span><span class="n">bxpstats_per_ant</span><span class="p">,</span> <span class="n">flierprops</span><span class="o">=</span><span class="n">flierprops</span><span class="p">)</span>
+            <span class="n">ax1</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">ant_names</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+            <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$Wt_</span><span class="si">{i}</span><span class="s1">$&#39;</span><span class="p">)</span>
+            <span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Antenna-based weights, </span><span class="si">{}</span><span class="s1">-band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">))</span>
+            <span class="n">ax1</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">get_major_formatter</span><span class="p">()</span><span class="o">.</span><span class="n">set_useOffset</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="c1"># Create per-spw plots</span>
+            <span class="n">ax2</span><span class="o">.</span><span class="n">bxp</span><span class="p">(</span><span class="n">bxpstats_per_spw</span><span class="p">,</span> <span class="n">flierprops</span><span class="o">=</span><span class="n">flierprops</span><span class="p">)</span>
+            <span class="n">ax2</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band2spw</span><span class="p">[</span><span class="n">band</span><span class="p">],</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+            <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;SPW ID&#39;</span><span class="p">)</span>
+            <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$Wt_</span><span class="si">{i}</span><span class="s1">$&#39;</span><span class="p">)</span>
+            <span class="n">ax2</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">get_major_formatter</span><span class="p">()</span><span class="o">.</span><span class="n">set_useOffset</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            
+            <span class="c1"># Save-off y-axis limits so they can be re-used for the scans plots. </span>
+            <span class="c1"># Since the scan plost can be split up if there are more than max_scans_per_plot scans, </span>
+            <span class="c1"># this is used to keep the y-axes consistent.</span>
+            <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">ax2</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+
+            <span class="c1"># Create per-scan sub-plots</span>
+            <span class="k">if</span> <span class="n">number_of_scan_plots</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> 
+                <span class="n">ax3</span><span class="o">.</span><span class="n">bxp</span><span class="p">(</span><span class="n">bxpstats_per_scan</span><span class="p">,</span> <span class="n">flierprops</span><span class="o">=</span><span class="n">flierprops</span><span class="p">)</span>
+                <span class="n">ax3</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">scans</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+                <span class="n">ax3</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Scan Number&#39;</span><span class="p">)</span>
+                <span class="n">ax3</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$Wt_</span><span class="si">{i}</span><span class="s1">$&#39;</span><span class="p">)</span>
+                <span class="n">ax3</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">get_major_formatter</span><span class="p">()</span><span class="o">.</span><span class="n">set_useOffset</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span> 
+                <span class="n">bxpstats_per_scan_split</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">bxpstats_per_scan</span><span class="p">,</span> <span class="n">number_of_scan_plots</span><span class="p">))</span>
+                <span class="n">scans_split</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">scans</span><span class="p">,</span> <span class="n">number_of_scan_plots</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">axis</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ax_scans</span><span class="p">):</span> 
+                    <span class="n">axis</span><span class="o">.</span><span class="n">bxp</span><span class="p">(</span><span class="n">bxpstats_per_scan_split</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">flierprops</span><span class="o">=</span><span class="n">flierprops</span><span class="p">)</span>
+                    <span class="n">axis</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">scans_split</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+                    <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Scan Number&#39;</span><span class="p">)</span>
+                    <span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$Wt_</span><span class="si">{i}</span><span class="s1">$&#39;</span><span class="p">)</span>
+                    <span class="n">axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">])</span>
+                    <span class="n">axis</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">get_major_formatter</span><span class="p">()</span><span class="o">.</span><span class="n">set_useOffset</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span> 
+
+            <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">weight_stats</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">weight_stats</span><span class="p">[</span><span class="n">suffix</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">weight_stats</span><span class="p">[</span><span class="n">suffix</span><span class="p">][</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span>  <span class="p">{</span><span class="s1">&#39;per_spw&#39;</span><span class="p">:</span> <span class="n">bxpstats_per_spw</span><span class="p">,</span>
+                                                       <span class="s1">&#39;per_ant&#39;</span><span class="p">:</span> <span class="n">bxpstats_per_ant</span><span class="p">,</span>
+                                                       <span class="s1">&#39;per_scan&#39;</span><span class="p">:</span> <span class="n">bxpstats_per_scan</span><span class="p">}</span>
+            <span class="n">bands_return</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
+                                                    
+        <span class="k">return</span> <span class="n">bands_return</span></div>
+
+
+
+<div class="viewcode-block" id="vlassWeightboxChart">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.statwt.html#pipeline.hifv.tasks.statwt.display.vlassWeightboxChart">[docs]</a>
+<span class="k">class</span> <span class="nc">vlassWeightboxChart</span><span class="p">(</span><span class="n">weightboxChart</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+        <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">)</span>
+        <span class="n">fig_basename</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;statwt&#39;</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="p">])))</span><span class="o">+</span><span class="s1">&#39;.png&#39;</span>
+        
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">fig_basename</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">]:</span>
+        <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figfile</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span>
+        <span class="n">wrappers</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;statwtmode&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;VLASS-SE&quot;</span><span class="p">:</span> 
+            <span class="n">wrapper</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">figfile</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;antenna or spectral window&#39;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;antenna-based weight&#39;</span><span class="p">,</span>
+                    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                                <span class="s1">&#39;x_axis&#39;</span><span class="p">:</span> <span class="s1">&#39;ant/spw&#39;</span><span class="p">,</span>
+                                <span class="s1">&#39;y_axis&#39;</span><span class="p">:</span> <span class="s1">&#39;weight&#39;</span><span class="p">,</span>
+                                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">suffix</span><span class="p">})</span>
+            <span class="n">wrappers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wrapper</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">figfile</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Statwt summary plot not found. Creating new plot.&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_create_plot_from_wtable</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not create &#39;</span> <span class="o">+</span> <span class="n">suffix</span> <span class="o">+</span> <span class="s1">&#39; plot.&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">wrappers</span>
+
+    <span class="k">def</span>  <span class="nf">_create_plot_from_wtable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+        <span class="n">tbl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">wtables</span><span class="p">[</span><span class="n">suffix</span><span class="p">]</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">tbl</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">spws</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID&#39;</span><span class="p">)))</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">tbl</span><span class="o">+</span><span class="s1">&#39;/ANTENNA&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">ant_names</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;NAME&#39;</span><span class="p">)</span>
+            <span class="n">ant_idxs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ant_names</span><span class="p">))</span>
+
+        <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figfile</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span>
+
+        <span class="n">bxpstats_per_ant</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">this_ant</span> <span class="ow">in</span> <span class="n">ant_idxs</span><span class="p">:</span>
+            <span class="n">dat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_weight_from_wtable</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="n">this_ant</span><span class="o">=</span><span class="n">this_ant</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dat</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">dat</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[</span><span class="n">dat</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="n">bxpstats</span> <span class="o">=</span> <span class="n">cbook</span><span class="o">.</span><span class="n">boxplot_stats</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">whis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">whis</span><span class="p">)</span>
+                <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;quartiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+                <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;stdev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dat</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+                <span class="n">bxpstats_per_ant</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bxpstats</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bxpstats</span> <span class="o">=</span> <span class="n">cbook</span><span class="o">.</span><span class="n">boxplot_stats</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">whis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">whis</span><span class="p">)</span>
+                <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;quartiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;stdev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">bxpstats_per_ant</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bxpstats</span><span class="p">)</span>
+            <span class="n">bxpstats_per_ant</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;ant&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ant_names</span><span class="p">[</span><span class="n">this_ant</span><span class="p">]</span>
+
+        <span class="n">bxpstats_per_spw</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">this_spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
+            <span class="n">dat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_weight_from_wtable</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="n">this_spw</span><span class="o">=</span><span class="n">this_spw</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dat</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">dat</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[</span><span class="n">dat</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="n">bxpstats</span> <span class="o">=</span> <span class="n">cbook</span><span class="o">.</span><span class="n">boxplot_stats</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">whis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">whis</span><span class="p">)</span>
+                <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;quartiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+                <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;stdev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dat</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+                <span class="n">bxpstats_per_spw</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bxpstats</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bxpstats</span> <span class="o">=</span> <span class="n">cbook</span><span class="o">.</span><span class="n">boxplot_stats</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">whis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">whis</span><span class="p">)</span>
+                <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;quartiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">bxpstats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;stdev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">bxpstats_per_spw</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bxpstats</span><span class="p">)</span>
+            <span class="n">bxpstats_per_spw</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_spw</span>
+
+        <span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        <span class="n">flierprops</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;royalblue&#39;</span><span class="p">,</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;royalblue&#39;</span><span class="p">)</span>
+
+        <span class="n">ax1</span><span class="o">.</span><span class="n">bxp</span><span class="p">(</span><span class="n">bxpstats_per_ant</span><span class="p">,</span> <span class="n">flierprops</span><span class="o">=</span><span class="n">flierprops</span><span class="p">)</span>
+        <span class="n">ax1</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">ant_names</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+        <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$Wt_</span><span class="si">{i}</span><span class="s1">$&#39;</span><span class="p">)</span>
+        <span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Antenna-based weights&#39;</span><span class="p">)</span>
+        <span class="n">ax1</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">get_major_formatter</span><span class="p">()</span><span class="o">.</span><span class="n">set_useOffset</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">ax2</span><span class="o">.</span><span class="n">bxp</span><span class="p">(</span><span class="n">bxpstats_per_spw</span><span class="p">,</span> <span class="n">flierprops</span><span class="o">=</span><span class="n">flierprops</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">spws</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;SPW ID&#39;</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$Wt_</span><span class="si">{i}</span><span class="s1">$&#39;</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">get_major_formatter</span><span class="p">()</span><span class="o">.</span><span class="n">set_useOffset</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">weight_stats</span><span class="p">[</span><span class="n">suffix</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;per_spw&#39;</span><span class="p">:</span> <span class="n">bxpstats_per_spw</span><span class="p">,</span>
+                                            <span class="s1">&#39;per_ant&#39;</span><span class="p">:</span> <span class="n">bxpstats_per_ant</span><span class="p">}</span>
+        <span class="k">return</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

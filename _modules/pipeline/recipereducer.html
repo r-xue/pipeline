@@ -1,0 +1,465 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.recipereducer &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.recipereducer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.recipereducer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">recipereducer is a utility to reduce data using a standard pipeline procedure.</span>
+<span class="sd">It parses a XML reduction recipe, converts it to pipeline tasks, and executes</span>
+<span class="sd">the tasks for the given data. It was written to give pipeline developers</span>
+<span class="sd">without access to PPRs and/or a PPR generator a way to reduce data using the</span>
+<span class="sd">latest standard recipe.</span>
+
+<span class="sd">Note: multiple input datasets can be specified. Doing so will reduce the data</span>
+<span class="sd">      as part of the same session.</span>
+
+<span class="sd">Example #1: process uid123.tar.gz using the standard recipe.</span>
+
+<span class="sd">    import pipeline.recipereducer</span>
+<span class="sd">    pipeline.recipereducer.reduce(vis=[&#39;uid123.tar.gz&#39;])</span>
+
+<span class="sd">Example #2: process uid123.tar.gz using a named recipe.</span>
+
+<span class="sd">    import pipeline.recipereducer</span>
+<span class="sd">    pipeline.recipereducer.reduce(vis=[&#39;uid123.tar.gz&#39;],</span>
+<span class="sd">                                  procedure=&#39;procedure_hif.xml&#39;)</span>
+
+<span class="sd">Example #3: process uid123.tar.gz and uid124.tar.gz using the standard recipe.</span>
+
+<span class="sd">    import pipeline.recipereducer</span>
+<span class="sd">    pipeline.recipereducer.reduce(vis=[&#39;uid123.tar.gz&#39;, &#39;uid124.tar.gz&#39;])</span>
+
+<span class="sd">Example #4: process uid123.tar.gz, naming the context &#39;testrun&#39;, thus</span>
+<span class="sd">            directing all weblog output to a directory called &#39;testrun&#39;.</span>
+
+<span class="sd">    import pipeline.recipereducer</span>
+<span class="sd">    pipeline.recipereducer.reduce(vis=[&#39;uid123.tar.gz&#39;], name=&#39;testrun&#39;)</span>
+
+<span class="sd">Example #5: process uid123.tar.gz with a log level of TRACE</span>
+
+<span class="sd">    import pipeline.recipereducer</span>
+<span class="sd">    pipeline.recipereducer.reduce(vis=[&#39;uid123.tar.gz&#39;], loglevel=&#39;trace&#39;)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">ElementTree</span>
+
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.cli</span> <span class="k">as</span> <span class="nn">cli</span>
+<span class="kn">import</span> <span class="nn">pipeline.h.cli.cli</span> <span class="k">as</span> <span class="nn">h_cli</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="k">as</span> <span class="nn">launcher</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">exceptions</span><span class="p">,</span> <span class="n">utils</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">RECIPES_DIR</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;recipes&#39;</span><span class="p">)</span>
+
+<span class="n">TaskArgs</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;TaskArgs&#39;</span><span class="p">,</span> <span class="s1">&#39;vis infiles session&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_create_context</span><span class="p">(</span><span class="n">loglevel</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plotlevel</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Context</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create Pipeline context.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        loglevel: Logging level</span>
+<span class="sd">        plotlevel: Plot level</span>
+<span class="sd">        name: Name of the context</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Pipeline context object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">loglevel</span><span class="o">=</span><span class="n">loglevel</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="n">plotlevel</span><span class="p">,</span>
+                                 <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">context</span>
+
+
+<span class="k">def</span> <span class="nf">_register_context</span><span class="p">(</span><span class="n">loglevel</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plotlevel</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register given context to global scope.</span>
+
+<span class="sd">    If pipeline context already exists in global scope, it is saved on</span>
+<span class="sd">    disk to avoid being overwritten.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        loglevel: Logging level</span>
+<span class="sd">        plotlevel: Plot level</span>
+<span class="sd">        context: Pipeline context object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check if global context exists</span>
+    <span class="n">pipeline_instance</span> <span class="o">=</span> <span class="n">h_cli</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">h_cli</span><span class="o">.</span><span class="n">PIPELINE_NAME</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pipeline_instance</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pipeline_instance</span><span class="p">,</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">):</span>
+        <span class="c1"># if global context exists, check identity with given context</span>
+        <span class="n">global_context</span> <span class="o">=</span> <span class="n">pipeline_instance</span><span class="o">.</span><span class="n">context</span>
+        <span class="k">if</span> <span class="n">global_context</span> <span class="o">==</span> <span class="n">context</span><span class="p">:</span>
+            <span class="c1"># context is already registered</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="n">global_context</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">context</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="c1"># global context is different from given context</span>
+            <span class="c1"># save global context with intrinsic name</span>
+            <span class="n">global_context</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">context_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">global_context</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.context&#39;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Global context exists. Saved it </span><span class="si">{</span><span class="n">context_file</span><span class="si">}</span><span class="s1"> to disk.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># global context is different from given context but</span>
+            <span class="c1"># they accidentally have the same name</span>
+            <span class="c1"># save global context with different name to avoid</span>
+            <span class="c1"># name conflict with new one</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+                <span class="n">context_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">global_context</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">.context&#39;</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">context_file</span><span class="p">):</span>
+                    <span class="n">global_context</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">context_file</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Global context exists. Saved it </span><span class="si">{</span><span class="n">context_file</span><span class="si">}</span><span class="s1"> to disk.&#39;</span><span class="p">)</span>
+                    <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># failed attempt to find appropriate context name</span>
+                <span class="c1"># it should rarely happen, but overwrite existing context</span>
+                <span class="c1"># if it happened</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Existing Pipeline context will be overridden by the current pipeline processing.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># register given context to global scope</span>
+    <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">temp_dir</span><span class="p">:</span>
+        <span class="n">context_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># to disable some log messages during registration</span>
+            <span class="n">temp_loglevel</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">set_logging_level</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">temp_loglevel</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">context_name</span><span class="p">)</span>
+            <span class="c1"># create pipeline instance using temporary context</span>
+            <span class="n">pipeline_instance</span> <span class="o">=</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span>
+                <span class="n">loglevel</span><span class="o">=</span><span class="n">temp_loglevel</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="n">plotlevel</span><span class="p">,</span>
+                <span class="n">context</span><span class="o">=</span><span class="n">context_name</span>
+            <span class="p">)</span>
+            <span class="c1"># then, replace context</span>
+            <span class="n">pipeline_instance</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+            <span class="n">h_cli</span><span class="o">.</span><span class="n">stack</span><span class="p">[</span><span class="n">h_cli</span><span class="o">.</span><span class="n">PIPELINE_NAME</span><span class="p">]</span> <span class="o">=</span> <span class="n">pipeline_instance</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># set user-specified loglevel</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">set_logging_level</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">loglevel</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_get_context_name</span><span class="p">(</span><span class="n">procedure</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">root</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">procedure</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s1">&#39;pipeline-</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">root</span>
+
+
+<span class="k">def</span> <span class="nf">_get_processing_procedure</span><span class="p">(</span><span class="n">procedure</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ElementTree</span><span class="p">:</span>
+    <span class="c1"># find the procedure file on disk, then fall back to the standard recipes</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">procedure</span><span class="p">):</span>
+        <span class="n">procedure_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">procedure</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">procedure_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">RECIPES_DIR</span><span class="p">,</span> <span class="n">procedure</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">procedure_file</span><span class="p">):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using procedure file: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">procedure_file</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Procedure not found:: </span><span class="si">{</span><span class="n">procedure</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="n">procedure_xml</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">procedure_file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">procedure_xml</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Could not parse procedure file at </span><span class="si">{</span><span class="n">procedure_file</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">procedure_xml</span>
+
+
+<span class="k">def</span> <span class="nf">_get_procedure_title</span><span class="p">(</span><span class="n">procedure</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">procedure_xml</span> <span class="o">=</span> <span class="n">_get_processing_procedure</span><span class="p">(</span><span class="n">procedure</span><span class="p">)</span>
+    <span class="n">procedure_title</span> <span class="o">=</span> <span class="n">procedure_xml</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s1">&#39;ProcedureTitle&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Undefined&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">procedure_title</span>
+
+
+<span class="k">def</span> <span class="nf">_get_tasks</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">TaskArgs</span><span class="p">,</span> <span class="n">procedure</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">procedure_xml</span> <span class="o">=</span> <span class="n">_get_processing_procedure</span><span class="p">(</span><span class="n">procedure</span><span class="p">)</span>
+
+    <span class="n">commands_seen</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">processingcommand</span> <span class="ow">in</span> <span class="n">procedure_xml</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;ProcessingCommand&#39;</span><span class="p">):</span>
+        <span class="n">cli_command</span> <span class="o">=</span> <span class="n">processingcommand</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s1">&#39;Command&#39;</span><span class="p">)</span>
+        <span class="n">commands_seen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cli_command</span><span class="p">)</span>
+
+        <span class="c1"># ignore breakpoints</span>
+        <span class="k">if</span> <span class="n">cli_command</span> <span class="o">==</span> <span class="s1">&#39;breakpoint&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># skip exportdata when preceded by a breakpoint</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">commands_seen</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">commands_seen</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;breakpoint&#39;</span><span class="p">]</span> \
+                <span class="ow">and</span> <span class="n">cli_command</span> <span class="o">==</span> <span class="s1">&#39;hif_exportdata&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">cli_command</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;h_importdata&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;hif_importdata&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;hifa_importdata&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;hifv_importdata&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;hsd_importdata&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;hsdn_importdata&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;h_restoredata&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;hif_restoredata&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;hifa_restoredata&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;hifv_restoredata&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;hsd_restoredata&#39;</span><span class="p">]:</span>
+            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">vis</span>
+            <span class="c1"># we might override this later with the procedure definition</span>
+            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;session&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">session</span>
+
+        <span class="k">elif</span> <span class="n">cli_command</span> <span class="ow">in</span> <span class="p">[</span> <span class="s1">&#39;hsdn_restoredata&#39;</span> <span class="p">]:</span>
+            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">vis</span>
+
+        <span class="k">for</span> <span class="n">parameterset</span> <span class="ow">in</span> <span class="n">processingcommand</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;ParameterSet&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameterset</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;Parameter&#39;</span><span class="p">):</span>
+                <span class="n">argname</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s1">&#39;Keyword&#39;</span><span class="p">)</span>
+                <span class="n">argval</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s1">&#39;Value&#39;</span><span class="p">)</span>
+                <span class="n">task_args</span><span class="p">[</span><span class="n">argname</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">string_to_val</span><span class="p">(</span><span class="n">argval</span><span class="p">)</span>
+
+        <span class="c1"># we yield rather than return so that the context can be updated</span>
+        <span class="c1"># between task executions</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">cli</span><span class="o">.</span><span class="n">get_pipeline_task_with_name</span><span class="p">(</span><span class="n">cli_command</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">task</span><span class="p">,</span> <span class="n">task_args</span>
+
+
+<span class="k">def</span> <span class="nf">_format_arg_value</span><span class="p">(</span><span class="n">arg_val</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">arg</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">arg_val</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">=</span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_as_task_call</span><span class="p">(</span><span class="n">task_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">task_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">kw_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_format_arg_value</span><span class="p">,</span> <span class="n">task_args</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">task_func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kw_args</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="reduce">
+<a class="viewcode-back" href="../../_apidoc/pipeline.html#pipeline.recipereducer.reduce">[docs]</a>
+<span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="n">vis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">infiles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+           <span class="n">procedure</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;procedure_hifa_calimage.xml&#39;</span><span class="p">,</span>
+           <span class="n">context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">launcher</span><span class="o">.</span><span class="n">Context</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+           <span class="n">loglevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
+           <span class="n">session</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">exitstage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+           <span class="n">startstage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Context</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">vis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="n">infiles</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">infiles</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="n">_get_context_name</span><span class="p">(</span><span class="n">procedure</span><span class="p">)</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">_create_context</span><span class="p">(</span><span class="n">loglevel</span><span class="p">,</span> <span class="n">plotlevel</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">procedure_title</span> <span class="o">=</span> <span class="n">_get_procedure_title</span><span class="p">(</span><span class="n">procedure</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="s1">&#39;ProjectStructure&#39;</span><span class="p">,</span> <span class="s1">&#39;recipe_name&#39;</span><span class="p">,</span> <span class="n">procedure_title</span><span class="p">)</span>
+
+    <span class="n">_register_context</span><span class="p">(</span><span class="n">loglevel</span><span class="p">,</span> <span class="n">plotlevel</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">startstage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">startstage</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">task_args</span> <span class="o">=</span> <span class="n">TaskArgs</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">infiles</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+    <span class="n">task_generator</span> <span class="o">=</span> <span class="n">_get_tasks</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">procedure</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">procedure_stage_nr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">task</span><span class="p">,</span> <span class="n">task_args</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">task_generator</span><span class="p">)</span>
+            <span class="n">procedure_stage_nr</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">procedure_stage_nr</span> <span class="o">&lt;</span> <span class="n">startstage</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Executing pipeline task </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">_as_task_call</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">task_args</span><span class="p">))</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">task</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="c1"># Log message if an exception occurred that was not handled by</span>
+                <span class="c1"># standardtask template (not turned into failed task result).</span>
+                <span class="n">_hif_call</span> <span class="o">=</span> <span class="n">_as_task_call</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">task_args</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unhandled error in recipereducer while running pipeline task </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">_hif_call</span><span class="p">)</span>
+                <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">context</span>
+
+            <span class="n">tracebacks</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_tracebacks</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tracebacks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">previous_tracebacks_as_string</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">tb</span> <span class="k">for</span> <span class="n">tb</span> <span class="ow">in</span> <span class="n">tracebacks</span><span class="p">]))</span>
+                <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">PipelineException</span><span class="p">(</span><span class="n">previous_tracebacks_as_string</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span> <span class="ow">is</span> <span class="n">exitstage</span><span class="p">:</span>
+                <span class="k">break</span>
+
+    <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Saving context...&#39;</span><span class="p">)</span>
+        <span class="n">cli</span><span class="o">.</span><span class="n">h_save</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">context</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

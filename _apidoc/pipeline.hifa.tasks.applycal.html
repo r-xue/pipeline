@@ -1,0 +1,1058 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.applycal package &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.applycal package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/pipeline.hifa.tasks.applycal.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hifa-tasks-applycal-package">
+<h1>pipeline.hifa.tasks.applycal package<a class="headerlink" href="#pipeline-hifa-tasks-applycal-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa">
+<span id="pipeline-hifa-tasks-applycal-ampphase-vs-freq-qa-module"></span><h2>pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa module<a class="headerlink" href="#module-pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.AntennaFit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AntennaFit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.AntennaFit" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.AntennaFit.amp">
+<span class="sig-name descname"><span class="pre">amp</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.AntennaFit.amp" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.AntennaFit.ant">
+<span class="sig-name descname"><span class="pre">ant</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.AntennaFit.ant" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.AntennaFit.phase">
+<span class="sig-name descname"><span class="pre">phase</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.AntennaFit.phase" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.AntennaFit.pol">
+<span class="sig-name descname"><span class="pre">pol</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.AntennaFit.pol" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.LinearFitParameters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LinearFitParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intercept</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.LinearFitParameters" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.LinearFitParameters.intercept">
+<span class="sig-name descname"><span class="pre">intercept</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.LinearFitParameters.intercept" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.LinearFitParameters.slope">
+<span class="sig-name descname"><span class="pre">slope</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.LinearFitParameters.slope" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Outlier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase_offset_gt90deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reason</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.ant">
+<span class="sig-name descname"><span class="pre">ant</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.ant" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.intent">
+<span class="sig-name descname"><span class="pre">intent</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.intent" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.num_sigma">
+<span class="sig-name descname"><span class="pre">num_sigma</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.num_sigma" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 6</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.phase_offset_gt90deg">
+<span class="sig-name descname"><span class="pre">phase_offset_gt90deg</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.phase_offset_gt90deg" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 7</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.pol">
+<span class="sig-name descname"><span class="pre">pol</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.pol" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.reason">
+<span class="sig-name descname"><span class="pre">reason</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.reason" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 8</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.scan">
+<span class="sig-name descname"><span class="pre">scan</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.scan" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.spw">
+<span class="sig-name descname"><span class="pre">spw</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.spw" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.vis">
+<span class="sig-name descname"><span class="pre">vis</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier.vis" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.PHASE_REF_FN">
+<span class="sig-name descname"><span class="pre">PHASE_REF_FN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">__</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.PHASE_REF_FN" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.ValueAndUncertainty">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ValueAndUncertainty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.ValueAndUncertainty" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.ValueAndUncertainty.unc">
+<span class="sig-name descname"><span class="pre">unc</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.ValueAndUncertainty.unc" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.ValueAndUncertainty.value">
+<span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.ValueAndUncertainty.value" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.consolidate_data_selections">
+<span class="sig-name descname"><span class="pre">consolidate_data_selections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outliers</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#consolidate_data_selections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.consolidate_data_selections" title="Link to this definition"></a></dt>
+<dd><p>Consolidate a list of Outliers into a smaller set of equivalent Outliers
+by consolidating their data selection arguments.</p>
+<p>This function works by merging Outliers that have the same list of
+reasons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>outliers</strong> – an iterable of Outliers</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>an equivalent consolidated list of Outliers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.data_selection_contains">
+<span class="sig-name descname"><span class="pre">data_selection_contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proposed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#data_selection_contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.data_selection_contains" title="Link to this definition"></a></dt>
+<dd><p>Return True if one data selection is contained within another.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>proposed</strong> – data selection 1</p></li>
+<li><p><strong>ds_args</strong> – data selection 2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if data selection 2 is contained within data selection 1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.fit_angular_model">
+<span class="sig-name descname"><span class="pre">fit_angular_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angular_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angsigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#fit_angular_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.fit_angular_model" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_amp_fit">
+<span class="sig-name descname"><span class="pre">get_amp_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amp_model_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequencies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visibilities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#get_amp_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_amp_fit" title="Link to this definition"></a></dt>
+<dd><p>Fit a linear amplitude vs frequency model to a set of time-averaged
+visibilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>amp_model_fn</strong> – the amplitude linear model to optimise</p></li>
+<li><p><strong>frequencies</strong> – numpy array of channel frequencies</p></li>
+<li><p><strong>visibilities</strong> – numpy array of time-averaged visibilities</p></li>
+<li><p><strong>sigma</strong> – numpy array of uncertainies in time-averaged visibilities</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple of best fit params, uncertainty tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_angular_linear_function">
+<span class="sig-name descname"><span class="pre">get_angular_linear_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">midpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_scale</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#get_angular_linear_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_angular_linear_function" title="Link to this definition"></a></dt>
+<dd><p>Angular linear model to fit phases only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>midpoint</strong></p></li>
+<li><p><strong>x_scale</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_best_fits_per_ant">
+<span class="sig-name descname"><span class="pre">get_best_fits_per_ant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#get_best_fits_per_ant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_best_fits_per_ant" title="Link to this definition"></a></dt>
+<dd><p>Calculate and return the best amp/phase vs freq fits for data in the input
+MSWrapper.</p>
+<p>This function calculates an independent best fit per polarisation per
+antenna, returning a list of AntennaFit objects that characterise the fit
+parameters and fit uncertainties per fit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>wrapper</strong> – MSWrapper to process</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a list of AntennaFit objects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_chi2_ang_model">
+<span class="sig-name descname"><span class="pre">get_chi2_ang_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angular_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angsigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#get_chi2_ang_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_chi2_ang_model" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_linear_function">
+<span class="sig-name descname"><span class="pre">get_linear_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">midpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_scale</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#get_linear_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_linear_function" title="Link to this definition"></a></dt>
+<dd><p>Return a scaled linear function (a function of slope and intercept).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>midpoint</strong></p></li>
+<li><p><strong>x_scale</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_median_fit">
+<span class="sig-name descname"><span class="pre">get_median_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_fits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accessor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#get_median_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_median_fit" title="Link to this definition"></a></dt>
+<dd><p>Get the median best fit from a list of best fits.</p>
+<p>The accessor argument should be a function that, when given the list of
+all fits, returns fits of the desired type (amp.slope, phase.intercept,
+etc.)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>all_fits</strong> – mixed list of best fits</p></li>
+<li><p><strong>accessor</strong> – function to filter best fits</p></li>
+</ul>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of AntennaFit instances</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>median value and uncertainty of fits of selected type</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_phase_fit">
+<span class="sig-name descname"><span class="pre">get_phase_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amp_model_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ang_model_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequencies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visibilities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#get_phase_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_phase_fit" title="Link to this definition"></a></dt>
+<dd><p>Fit a linear model for phase vs frequency to a set of time-averaged
+visibilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>amp_model_fn</strong> – model function for amplitude</p></li>
+<li><p><strong>ang_model_fn</strong> – model function for phase angle</p></li>
+<li><p><strong>frequencies</strong> – numpy array of channel frequencies</p></li>
+<li><p><strong>visibilities</strong> – numpy array of time-averaged visibilities</p></li>
+<li><p><strong>sigma</strong> – numpy array of uncertainies in time-averaged visibilities</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple of best fit params, uncertainty tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.robust_stats">
+<span class="sig-name descname"><span class="pre">robust_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#robust_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.robust_stats" title="Link to this definition"></a></dt>
+<dd><p>Return median and estimate standard deviation
+of numpy array A using median statistics</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>a</strong></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_X_vs_freq_fits">
+<span class="sig-name descname"><span class="pre">score_X_vs_freq_fits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_fits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_value_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outlier_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_threshold</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#score_X_vs_freq_fits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_X_vs_freq_fits" title="Link to this definition"></a></dt>
+<dd><p>Score a set of best fits, comparing the fits identified by the ‘attr’
+attribute against a reference value calculated by the ref_value_fn,
+marking outliers that deviate by more than sigma_threshold from this
+reference value as outliers, to be returned as Outlier objects created by
+the outlier_fn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>all_fits</strong> – a list of fit parameters</p></li>
+<li><p><strong>attr</strong> – identifier of the fits to consider, e.g., ‘amp.slope’</p></li>
+<li><p><strong>ref_value_fn</strong> – a function that takes a list of fits and returns a
+value to be used as a reference value in fit comparisons</p></li>
+<li><p><strong>outlier_fn</strong> – a function returning Outlier objects</p></li>
+<li><p><strong>sigma_threshold</strong> – the nsigma threshold to be considered an outlier</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of Outlier objects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_all">
+<span class="sig-name descname"><span class="pre">score_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_fits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outlier_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_all</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#score_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_all" title="Link to this definition"></a></dt>
+<dd><p>Compare and score the calculated best fits based on how they deviate from
+a reference value.</p>
+<p>For all amplitude or slope vs frequency fits, score the slope or intercept
+of the fit against the slope or intercept of the median best fit or a value
+of 0, marking fits that deviate by sigma_threshold from the median dispersion
+as outliers. Identified outliers are returned as a list of Outlier object
+returned by the outlier_fn.</p>
+<p>The outlier_fn argument should be a function that returns Outlier objects.
+In practice, this function should be a partially-applied Outlier
+constructor that requires a more required arguments to be
+supplied for an Outlier instance to be created.</p>
+<p>Setting the test argument flag_all to True sets all fits as outliers. This
+is useful for testing the QA score roll-up and summary functions in the QA
+plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>all_fits</strong> – list of all AntennaFit best fit parameters for all metrics</p></li>
+<li><p><strong>outlier_fn</strong> – a function returning Outlier objects</p></li>
+<li><p><strong>flag_all</strong> – True if all fits should be classed as outliers</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of Outlier objects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_all_scans">
+<span class="sig-name descname"><span class="pre">score_all_scans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_all</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_gb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier" title="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier"><span class="pre">Outlier</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#score_all_scans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_all_scans" title="Link to this definition"></a></dt>
+<dd><p>Calculate best fits for amplitude vs frequency and phase vs frequency
+for time-averaged visibilities, score each fit by comparison against a
+reference value, and return outliers.</p>
+<p>Outliers are returned as a list of Outlier objects.</p>
+<p>By default, outliers are measured against a PWG-defined threshold for
+each fit type. Set flag_all to True to make classify all fits as outliers.
+This is useful when testing QA plugin score roll-up functionality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ms</strong> – MeasurementSet to process</p></li>
+<li><p><strong>intent</strong> – data intent to process</p></li>
+<li><p><strong>memory_gb</strong> – maximum chunk size (in GB) used when loading the MeasurementSet</p></li>
+<li><p><strong>flag_all</strong> – (optional) True if all fits should be classified as
+outliers</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>outliers that deviate from a reference fit</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_fits">
+<span class="sig-name descname"><span class="pre">score_fits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_fits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_value_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accessor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outlier_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_threshold</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#score_fits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_fits" title="Link to this definition"></a></dt>
+<dd><p>Score a list of best fit parameters against a reference value, identifying
+outliers as fits that deviate by more than sigma_threshold * std dev from
+the reference value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>all_fits</strong> – list of AntennaFits</p></li>
+<li><p><strong>reference_value_fn</strong> – function that returns a reference
+ValueAndUncertainty from a list of these objects</p></li>
+<li><p><strong>accessor</strong> – function that returns one LinearFitParameters from an
+AntennaFit</p></li>
+<li><p><strong>outlier_fn</strong> – function that returns an Outlier instance</p></li>
+<li><p><strong>sigma_threshold</strong> – threshold nsigma deviation for comparisons</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of Outliers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.to_linear_fit_parameters">
+<span class="sig-name descname"><span class="pre">to_linear_fit_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/ampphase_vs_freq_qa.html#to_linear_fit_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.to_linear_fit_parameters" title="Link to this definition"></a></dt>
+<dd><p>Convert tuples from the best fit evaluation into a LinearFitParameters
+namedtuple.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fit</strong> – 2-tuple of (slope, intercept) best-fit parameters</p></li>
+<li><p><strong>err</strong> – 2-tuple of uncertainty in (slope, intercept) parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="pipeline-hifa-tasks-applycal-ampphase-vs-freq-qa-test-module">
+<h2>pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa_test module<a class="headerlink" href="#pipeline-hifa-tasks-applycal-ampphase-vs-freq-qa-test-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pipeline.hifa.tasks.applycal.mswrapper">
+<span id="pipeline-hifa-tasks-applycal-mswrapper-module"></span><h2>pipeline.hifa.tasks.applycal.mswrapper module<a class="headerlink" href="#module-pipeline.hifa.tasks.applycal.mswrapper" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.mswrapper.MSWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MSWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corr_axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/mswrapper.html#MSWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>MSWrapper is a wrapper around a NumPy array populated with measurement set
+data for a specified scan and spectral window. The MSWrapper can be
+filtered on various criteria, e.g, spw, scan, antenna, etc., to narrow the
+data to a particular data selection.</p>
+<p>The static method MSWrapper.create_from_ms should be used to instantiate
+MSWrapper objects.</p>
+<p>The static methods MSWrapper.create_averages_from_ms and
+MSWrapper.create_averages_from_combination can also be used to create a new
+instance of a MSWrapper object.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_averages_from_combination">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_averages_from_combination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mswlist</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/mswrapper.html#MSWrapper.create_averages_from_combination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_averages_from_combination" title="Link to this definition"></a></dt>
+<dd><p>Calculate and return the average MSWrapper of the list of MSWrapper objects given as input.
+The ‘sigma’ column get filled with the standard error of the mean, by adding inverse squared variances
+of each of the objects in the list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mswlist<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Python List of MSWrapper objects to combine. All of them must be from the same
+dataset and SPW, otherwise a dummy object is returned.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>MSWrapper object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_averages_from_ms">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_averages_from_ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memlim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perantave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/mswrapper.html#MSWrapper.create_averages_from_ms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_averages_from_ms" title="Link to this definition"></a></dt>
+<dd><p>Create a new MSWrapper for the specified scan and spw.</p>
+<p>Reading in raw measurement set data can be a very memory-intensive
+process, so data selection is deliberately limited to one scan and one
+spw at a time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – measurement set filename</p></li>
+<li><p><strong>scan</strong> – integer scan ID</p></li>
+<li><p><strong>spw</strong> – integer spw ID</p></li>
+<li><p><strong>memlim</strong> – Limit for memory for data buffer use, given in Gigabytes</p></li>
+<li><p><strong>perantave</strong> (<em>bool</em>) – Compute per antenna average (default True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>MSWrapper instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_from_ms">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_from_ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/mswrapper.html#MSWrapper.create_from_ms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_from_ms" title="Link to this definition"></a></dt>
+<dd><p>Create a new MSWrapper for the specified scan and spw.</p>
+<p>Reading in raw measurement set data can be a very memory-intensive
+process, so data selection is deliberately limited to one scan and one
+spw at a time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – measurement set filename</p></li>
+<li><p><strong>scan</strong> – integer scan ID</p></li>
+<li><p><strong>spw</strong> – integer spw ID</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">antenna1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/mswrapper.html#MSWrapper.filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.filter" title="Link to this definition"></a></dt>
+<dd><p>Return a new MSWrapper containing rows matching the column selection
+criteria.</p>
+<p>Data for rows meeting all the column criteria will be funnelled into
+the new MSWrapper return object. A boolean AND is effectively
+performed: e.g., antenna1=3 AND antenna2=5 will only return rows for
+one baseline.</p>
+<p>Data can be filtered on any column listed in the wrapper.data.dtype.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.xor_filter">
+<span class="sig-name descname"><span class="pre">xor_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">antenna1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/mswrapper.html#MSWrapper.xor_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.xor_filter" title="Link to this definition"></a></dt>
+<dd><p>Return a new MSWrapper containing rows matching the column selection
+criteria.</p>
+<p>Data for rows meeting any column criteria will be funnelled into
+the new MSWrapper return object. A boolean AND is effectively
+performed: e.g., antenna1=3 AND antenna2=5 will only return rows for
+one baseline.</p>
+<p>Data can be filtered on any column listed in the wrapper.data.dtype.</p>
+<p>DANGER! DANGER! DANGER!</p>
+<p>NOTE! This class has only been tested for baseline selection! Using
+this method for other use cases could be dangerous. Use at your own
+risk!</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.mswrapper.calc_vk">
+<span class="sig-name descname"><span class="pre">calc_vk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/mswrapper.html#calc_vk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.mswrapper.calc_vk" title="Link to this definition"></a></dt>
+<dd><p>Return a NumPy array containing time-averaged visibilities for each
+baseline in the input MSWrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>wrapper</strong> – MSWrapper to process</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.mswrapper.create_V_array">
+<span class="sig-name descname"><span class="pre">create_V_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_pol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_chan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/mswrapper.html#create_V_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.mswrapper.create_V_array" title="Link to this definition"></a></dt>
+<dd><p>Create an empty array to hold the time averaged visibilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_pol</strong> – int
+Number of polarizations.</p></li>
+<li><p><strong>n_chan</strong> – int
+Number of channels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>numpy.ma</dt><dd><p>Empty numpy masked array</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.mswrapper.get_dtype">
+<span class="sig-name descname"><span class="pre">get_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/mswrapper.html#get_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.mswrapper.get_dtype" title="Link to this definition"></a></dt>
+<dd><p>Get the numpy data type for a CASA caltable column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – CASA table tool with caltable open.</p></li>
+<li><p><strong>column_name</strong> – name of column to process</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>3-tuple of column name, NumPy dtype, column shape</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="pipeline-hifa-tasks-applycal-mswrapper-test-module">
+<h2>pipeline.hifa.tasks.applycal.mswrapper_test module<a class="headerlink" href="#pipeline-hifa-tasks-applycal-mswrapper-test-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pipeline.hifa.tasks.applycal.qa">
+<span id="pipeline-hifa-tasks-applycal-qa-module"></span><h2>pipeline.hifa.tasks.applycal.qa module<a class="headerlink" href="#module-pipeline.hifa.tasks.applycal.qa" title="Link to this heading"></a></h2>
+<p>QA plugins for the ALMA applycal task.</p>
+<p>This module demonstrates how to target QAScore messages at particular sections
+of the web log.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ALMAApplycalListQAHandler</span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#ALMAApplycalListQAHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin" title="pipeline.infrastructure.pipelineqa.QAPlugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">QAPlugin</span></code></a></p>
+<p>QA plugin to process lists of ALMA applycal results.</p>
+<p>This plugin is required to overwrite how representative is set. We want
+the representative score to be a headline banner score pulled from the
+per-EB representative scores, not a lower priority score pulled from the
+general score pool. The latter would be done by default, hence we
+overwrite the handle() implementation.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler.child_cls">
+<span class="sig-name descname"><span class="pre">child_cls</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler.child_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalResults" title="pipeline.h.tasks.applycal.applycal.ApplycalResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApplycalResults</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler.generating_task">
+<span class="sig-name descname"><span class="pre">generating_task</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler.generating_task" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="pipeline.hif.tasks.applycal.html#pipeline.hif.tasks.applycal.ifapplycal.SerialIFApplycal" title="pipeline.hif.tasks.applycal.ifapplycal.SerialIFApplycal"><code class="xref py py-class docutils literal notranslate"><span class="pre">SerialIFApplycal</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#ALMAApplycalListQAHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler.handle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler.result_cls">
+<span class="sig-name descname"><span class="pre">result_cls</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler.result_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ALMAApplycalQAHandler</span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#ALMAApplycalQAHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin" title="pipeline.infrastructure.pipelineqa.QAPlugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">QAPlugin</span></code></a></p>
+<p>QA plugin to handle an applycal result for a single ALMA EB.</p>
+<p>This plugin does outlier detection and QA score reprocessing to generate
+messages targeted at different sections of the web log.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler.child_cls">
+<span class="sig-name descname"><span class="pre">child_cls</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler.child_cls" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler.generating_task">
+<span class="sig-name descname"><span class="pre">generating_task</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler.generating_task" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="pipeline.hif.tasks.applycal.html#pipeline.hif.tasks.applycal.ifapplycal.SerialIFApplycal" title="pipeline.hif.tasks.applycal.ifapplycal.SerialIFApplycal"><code class="xref py py-class docutils literal notranslate"><span class="pre">SerialIFApplycal</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalResults" title="pipeline.h.tasks.applycal.applycal.ApplycalResults"><span class="pre">ApplycalResults</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#ALMAApplycalQAHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler.handle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler.result_cls">
+<span class="sig-name descname"><span class="pre">result_cls</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler.result_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalResults" title="pipeline.h.tasks.applycal.applycal.ApplycalResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApplycalResults</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.DataSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DataSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.DataSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.DataSelection.ant">
+<span class="sig-name descname"><span class="pre">ant</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.DataSelection.ant" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.DataSelection.intent">
+<span class="sig-name descname"><span class="pre">intent</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.DataSelection.intent" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.DataSelection.pol">
+<span class="sig-name descname"><span class="pre">pol</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.DataSelection.pol" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.DataSelection.scan">
+<span class="sig-name descname"><span class="pre">scan</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.DataSelection.scan" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.DataSelection.spw">
+<span class="sig-name descname"><span class="pre">spw</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.DataSelection.spw" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.DataSelection.vis">
+<span class="sig-name descname"><span class="pre">vis</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.DataSelection.vis" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.PIPE356Switches">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PIPE356Switches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calculate_metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_outliers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_messages</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outlier_score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_all</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.PIPE356Switches" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.PIPE356Switches.calculate_metrics">
+<span class="sig-name descname"><span class="pre">calculate_metrics</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.PIPE356Switches.calculate_metrics" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.PIPE356Switches.export_messages">
+<span class="sig-name descname"><span class="pre">export_messages</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.PIPE356Switches.export_messages" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.PIPE356Switches.export_outliers">
+<span class="sig-name descname"><span class="pre">export_outliers</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.PIPE356Switches.export_outliers" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.PIPE356Switches.flag_all">
+<span class="sig-name descname"><span class="pre">flag_all</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.PIPE356Switches.flag_all" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.PIPE356Switches.include_scores">
+<span class="sig-name descname"><span class="pre">include_scores</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.PIPE356Switches.include_scores" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.PIPE356Switches.outlier_score">
+<span class="sig-name descname"><span class="pre">outlier_score</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.PIPE356Switches.outlier_score" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.QAMessage">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QAMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outlier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reason</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#QAMessage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.QAMessage" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>QAMessage constructs a user-friendly QA message for an Outlier.</p>
+<p>The QAMessage instance has two attributes, full_message and short_message,
+that are of interest. full_message holds the text to be used when the
+message is the first to be printed. short_message holds the text to be
+used when this message is to be appended to the text of other QAMessages.
+Naturally, this assumes the the calling code only concatenates messages
+that originate from the same reason.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.combine_scores">
+<span class="sig-name descname"><span class="pre">combine_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hierarchy_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discard</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.html#pipeline.domain.measurementset.MeasurementSet" title="pipeline.domain.measurementset.MeasurementSet"><span class="pre">MeasurementSet</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.WebLogLocation" title="pipeline.infrastructure.pipelineqa.WebLogLocation"><span class="pre">WebLogLocation</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#combine_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.combine_scores" title="Link to this definition"></a></dt>
+<dd><p>Combine and summarise a list of QA scores.</p>
+<p>QA scores that share a base metric type and/or differ only in the data
+selection dimensions given in discard are aggregated and summarised
+together.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.compress_data_selections">
+<span class="sig-name descname"><span class="pre">compress_data_selections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_merge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.DataSelection" title="pipeline.hifa.tasks.applycal.qa.DataSelection"><span class="pre">DataSelection</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs_to_merge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Reversible</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.DataSelection" title="pipeline.hifa.tasks.applycal.qa.DataSelection"><span class="pre">DataSelection</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#compress_data_selections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.compress_data_selections" title="Link to this definition"></a></dt>
+<dd><p>Combine adjacent data selections to give a new data structure that
+expresses the same data selection but in a more compressed form.</p>
+<p>A data selection applies over various dimensions: spw, field, pol, etc..
+This function merges data selections hierarchically, identifying adjacent
+data selections per data selection dimension given in attrs_to_merge, and
+concatenating those adjacent dimension indices together.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.discard_dimension">
+<span class="sig-name descname"><span class="pre">discard_dimension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_merge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.DataSelection" title="pipeline.hifa.tasks.applycal.qa.DataSelection"><span class="pre">DataSelection</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.DataSelection" title="pipeline.hifa.tasks.applycal.qa.DataSelection"><span class="pre">DataSelection</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#discard_dimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.discard_dimension" title="Link to this definition"></a></dt>
+<dd><p>Aggregate QA scores held in one or more DataSelection dimensions,
+discarding data selection indices for those dimensions.</p>
+<p>This function discards DataSelection dimensions. Say four QA scores were
+registered, one each to spws 16, 18, 20, and 22. Calling this function
+with attrs=[‘spw’] would combine those scores into a single DataSelection
+with spw=’’, i.e., spw data selection is left unspecified.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.get_qa_scores">
+<span class="sig-name descname"><span class="pre">get_qa_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.html#pipeline.domain.measurementset.MeasurementSet" title="pipeline.domain.measurementset.MeasurementSet"><span class="pre">MeasurementSet</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_outliers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outlier_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_all</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#get_qa_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.get_qa_scores" title="Link to this definition"></a></dt>
+<dd><p>Calculate amp/phase vs freq outliers for an EB and convert to QA scores.</p>
+<p>This is the key entry point for applycal QA metric calculation. It
+delegates to the detailed metric implementation in ampphase_vs_freq_qa.py
+to detect outliers, converting the outlier descriptions to normalised QA
+scores.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.in_casa_format">
+<span class="sig-name descname"><span class="pre">in_casa_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_selections</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.DataSelection" title="pipeline.hifa.tasks.applycal.qa.DataSelection"><span class="pre">DataSelection</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.DataSelection" title="pipeline.hifa.tasks.applycal.qa.DataSelection"><span class="pre">DataSelection</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#in_casa_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.in_casa_format" title="Link to this definition"></a></dt>
+<dd><p>Restate data selections in concise CASA format.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.map_data_selection_to_scores">
+<span class="sig-name descname"><span class="pre">map_data_selection_to_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.DataSelection" title="pipeline.hifa.tasks.applycal.qa.DataSelection"><span class="pre">DataSelection</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#map_data_selection_to_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.map_data_selection_to_scores" title="Link to this definition"></a></dt>
+<dd><p>Expand QAScores to a dict-based data structure that maps data selections
+to the QA scores applicable to that selection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scores</strong> – scores to decompose</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.outliers_to_qa_scores">
+<span class="sig-name descname"><span class="pre">outliers_to_qa_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.html#pipeline.domain.measurementset.MeasurementSet" title="pipeline.domain.measurementset.MeasurementSet"><span class="pre">MeasurementSet</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">outliers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier" title="pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.Outlier"><span class="pre">Outlier</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outlier_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#outliers_to_qa_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.outliers_to_qa_scores" title="Link to this definition"></a></dt>
+<dd><p>Convert a list of consolidated Outliers into a list of equivalent
+QAScores.</p>
+<p>The MeasurementSet argument is required to convert antenna IDs to antenna
+names.</p>
+<p>All generated QAScores will be assigned the numeric score given in
+outlier_score.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ms</strong> – MeasurementSet domain object for the DataSelections</p></li>
+<li><p><strong>outliers</strong> – list of Outliers</p></li>
+<li><p><strong>outlier_score</strong> – score to assign to generated QAScores</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.summarise_scores">
+<span class="sig-name descname"><span class="pre">summarise_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.html#pipeline.domain.measurementset.MeasurementSet" title="pipeline.domain.measurementset.MeasurementSet"><span class="pre">MeasurementSet</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.WebLogLocation" title="pipeline.infrastructure.pipelineqa.WebLogLocation"><span class="pre">WebLogLocation</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#summarise_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.summarise_scores" title="Link to this definition"></a></dt>
+<dd><p>Process a list of QAscores, replacing the detailed and highly specific
+input scores with compressed representations intended for display in the
+web log accordion, and even more generalised summaries intended for
+display as warning banners.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.take_min_as_representative">
+<span class="sig-name descname"><span class="pre">take_min_as_representative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_merge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.DataSelection" title="pipeline.hifa.tasks.applycal.qa.DataSelection"><span class="pre">DataSelection</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.DataSelection" title="pipeline.hifa.tasks.applycal.qa.DataSelection"><span class="pre">DataSelection</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#take_min_as_representative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.take_min_as_representative" title="Link to this definition"></a></dt>
+<dd><p>Filter out all but the worst score per data selection.</p>
+<p>Note that this function also rewrites QAScore.applies_to to match the data
+selection the QA score applies to.</p>
+<p>This function operates on a dict that maps DataSelections to list of QA
+scores. For each list, it discards all but the worst score as determined
+by the metric. The selection will be biased towards metrics whose value
+distribution tends higher than other metrics, but it seem the best we can
+do.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.to_data_selection">
+<span class="sig-name descname"><span class="pre">to_data_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.TargetDataSelection" title="pipeline.infrastructure.pipelineqa.TargetDataSelection"><span class="pre">TargetDataSelection</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.DataSelection" title="pipeline.hifa.tasks.applycal.qa.DataSelection"><span class="pre">DataSelection</span></a></span></span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/applycal/qa.html#to_data_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.to_data_selection" title="Link to this definition"></a></dt>
+<dd><p>Convert a pipeline QA TargetDataSelection object to a DataSelection tuple.</p>
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hifa.tasks.applycal">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline.hifa.tasks.applycal" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

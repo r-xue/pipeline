@@ -1,0 +1,29 @@
+Makecutoutimages
+================
+
+.. currentmodule:: pipeline.hif.tasks
+
+.. autoclass:: Makecutoutimages
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~Makecutoutimages.is_multi_vis_task
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~Makecutoutimages.analyse
+      ~Makecutoutimages.prepare
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: analyse
+   .. automethod:: prepare

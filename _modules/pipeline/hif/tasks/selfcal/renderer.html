@@ -1,0 +1,796 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.tasks.selfcal.renderer &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.tasks.selfcal.renderer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.tasks.selfcal.renderer</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">string</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.filenamer</span> <span class="k">as</span> <span class="nn">filenamer</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.basetemplates</span> <span class="k">as</span> <span class="nn">basetemplates</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">display</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SelfCalQARenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.SelfCalQARenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">SelfCalQARenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">CommonRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">cleantarget</span><span class="p">,</span> <span class="n">solint</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;selfcalqa.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+        <span class="n">slib</span> <span class="o">=</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">]</span>
+        <span class="n">target</span><span class="p">,</span> <span class="n">band</span> <span class="o">=</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;field_name&#39;</span><span class="p">],</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_band&#39;</span><span class="p">]</span>
+
+        <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">results</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">solint</span><span class="si">}</span><span class="s1">.html&#39;</span>
+        <span class="n">valid_chars</span> <span class="o">=</span> <span class="s2">&quot;_.-</span><span class="si">%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span><span class="p">,</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">valid_chars</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rel_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">)</span>
+
+        <span class="n">image_plots</span><span class="p">,</span> <span class="n">antpos_plots</span><span class="p">,</span> <span class="n">phasefreq_plots</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">SelfcalSummary</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">cleantarget</span><span class="p">)</span><span class="o">.</span><span class="n">plot_qa</span><span class="p">(</span><span class="n">solint</span><span class="p">)</span>
+        <span class="n">summary_tab</span><span class="p">,</span> <span class="n">nsol_tab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_summary_table</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">cleantarget</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">image_plots</span><span class="p">,</span> <span class="n">antpos_plots</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">extra_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;summary_tab&#39;</span><span class="p">:</span> <span class="n">summary_tab</span><span class="p">,</span>
+            <span class="s1">&#39;nsol_tab&#39;</span><span class="p">:</span> <span class="n">nsol_tab</span><span class="p">,</span>
+            <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">target</span><span class="p">,</span>
+            <span class="s1">&#39;band&#39;</span><span class="p">:</span> <span class="n">band</span><span class="p">,</span>
+            <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="n">solint</span><span class="p">,</span>
+            <span class="s1">&#39;antpos_plots&#39;</span><span class="p">:</span> <span class="n">antpos_plots</span><span class="p">,</span>
+            <span class="s1">&#39;phasefreq_plots&#39;</span><span class="p">:</span> <span class="n">phasefreq_plots</span><span class="p">,</span>
+            <span class="s1">&#39;slib&#39;</span><span class="p">:</span> <span class="n">slib</span><span class="p">}</span>
+
+<div class="viewcode-block" id="SelfCalQARenderer.update_mako_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.SelfCalQARenderer.update_mako_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">):</span>
+        <span class="n">mako_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extra_data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SelfCalQARenderer.make_summary_table">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.SelfCalQARenderer.make_summary_table">[docs]</a>
+    <span class="k">def</span> <span class="nf">make_summary_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">cleantarget</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">image_plots</span><span class="p">,</span> <span class="n">antpos_plots</span><span class="p">):</span>
+
+        <span class="n">slib</span> <span class="o">=</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">]</span>
+
+        <span class="c1"># the prior vs. post image comparison table</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">row_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Data Type&#39;</span><span class="p">,</span> <span class="s1">&#39;Image&#39;</span><span class="p">,</span> <span class="s1">&#39;SNR&#39;</span><span class="p">,</span> <span class="s1">&#39;RMS&#39;</span><span class="p">,</span> <span class="s1">&#39;Beam&#39;</span><span class="p">]</span>
+        <span class="n">vislist</span> <span class="o">=</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span>
+        <span class="n">slib_solint</span> <span class="o">=</span> <span class="n">slib</span><span class="p">[</span><span class="n">vislist</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">solint</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">row_name</span> <span class="ow">in</span> <span class="n">row_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Data Type&#39;</span><span class="p">:</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Prior&#39;</span><span class="p">,</span> <span class="s1">&#39;Post&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Image&#39;</span><span class="p">:</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">plots_to_html</span><span class="p">(</span><span class="n">image_plots</span><span class="p">,</span> <span class="n">report_dir</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
+                                                 <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prior/Post Image Comparison&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;SNR&#39;</span><span class="p">:</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;SNR_pre&#39;</span><span class="p">]),</span>
+                              <span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;SNR_post&#39;</span><span class="p">])]</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;RMS&#39;</span><span class="p">:</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> mJy/bm&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;RMS_pre&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e3</span><span class="p">),</span>
+                              <span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> mJy/bm&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;RMS_post&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e3</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Beam&#39;</span><span class="p">:</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&quot;x</span><span class="si">{:0.3f}</span><span class="s1">&quot; </span><span class="si">{:0.3f}</span><span class="s1"> deg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Beam_major_pre&#39;</span><span class="p">],</span>
+                    <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Beam_minor_pre&#39;</span><span class="p">],</span>
+                    <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Beam_PA_pre&#39;</span><span class="p">]),</span>
+                    <span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&quot;x</span><span class="si">{:0.3f}</span><span class="s1">&quot; </span><span class="si">{:0.3f}</span><span class="s1"> deg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Beam_major_post&#39;</span><span class="p">],</span>
+                    <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Beam_minor_post&#39;</span><span class="p">],</span>
+                    <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Beam_PA_post&#39;</span><span class="p">])]</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">row_name</span><span class="p">]</span><span class="o">+</span><span class="n">row_values</span><span class="p">)</span>
+
+        <span class="c1"># per-vis solution summary table</span>
+
+        <span class="n">nsol_rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">vis_row_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;N Sol.&#39;</span><span class="p">,</span> <span class="s1">&#39;N Flagged Sol.&#39;</span><span class="p">,</span> <span class="s1">&#39;Frac. Flagged Sol.&#39;</span><span class="p">,</span> <span class="s1">&#39;Fallback Mode&#39;</span><span class="p">,</span> <span class="s1">&#39;Spwmap&#39;</span><span class="p">]</span>
+        <span class="n">vislist</span> <span class="o">=</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="n">nsol_stats</span> <span class="o">=</span> <span class="n">antpos_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">parameters</span>
+
+            <span class="n">antpos_html</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">plots_to_html</span><span class="p">([</span><span class="n">antpos_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]],</span> <span class="n">report_dir</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">vis_desc</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;a class=&quot;anchor&quot; id=&quot;</span><span class="si">{0}</span><span class="s1">_summary&quot;&gt;&lt;/a&gt;&#39;</span>
+                        <span class="s1">&#39;&lt;a href=&quot;#</span><span class="si">{0}</span><span class="s1">_byant&quot;&gt;&#39;</span>
+                        <span class="s1">&#39;   </span><span class="si">{0}</span><span class="s1">&#39;</span>
+                        <span class="s1">&#39;&lt;/a&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vis</span><span class="p">))</span>
+
+            <span class="n">vis_desc</span> <span class="o">=</span> <span class="n">vis_desc</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="n">antpos_html</span>
+
+            <span class="k">for</span> <span class="n">row_name</span> <span class="ow">in</span> <span class="n">vis_row_names</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;N Sol.&#39;</span><span class="p">:</span>
+                    <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">nsol_stats</span><span class="p">[</span><span class="s1">&#39;nsols&#39;</span><span class="p">]]</span>
+                <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;N Flagged Sol.&#39;</span><span class="p">:</span>
+                    <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">nsol_stats</span><span class="p">[</span><span class="s1">&#39;nflagged_sols&#39;</span><span class="p">]]</span>
+                <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Frac. Flagged Sol.&#39;</span><span class="p">:</span>
+                    <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> &amp;#37;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nsol_stats</span><span class="p">[</span><span class="s1">&#39;nflagged_sols&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">nsol_stats</span><span class="p">[</span><span class="s1">&#39;nsols&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">100.</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Fallback Mode&#39;</span><span class="p">:</span>
+                    <span class="n">row_value</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+                    <span class="k">if</span> <span class="n">solint</span> <span class="o">==</span> <span class="s1">&#39;inf_EB&#39;</span> <span class="ow">and</span> <span class="s1">&#39;fallback&#39;</span> <span class="ow">in</span> <span class="n">slib</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">solint</span><span class="p">]:</span>
+                        <span class="n">fallback_mode</span> <span class="o">=</span> <span class="n">slib</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">solint</span><span class="p">][</span><span class="s1">&#39;fallback&#39;</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">fallback_mode</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                            <span class="n">row_value</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+                        <span class="k">if</span> <span class="n">fallback_mode</span> <span class="o">==</span> <span class="s1">&#39;combinespw&#39;</span><span class="p">:</span>
+                            <span class="n">row_value</span> <span class="o">=</span> <span class="s1">&#39;Combine SPW&#39;</span>
+                        <span class="k">if</span> <span class="n">fallback_mode</span> <span class="o">==</span> <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span>
+                            <span class="n">row_value</span> <span class="o">=</span> <span class="s1">&#39;SPWMAP&#39;</span>
+                    <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">row_value</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Spwmap&#39;</span><span class="p">:</span>
+                    <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">slib</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">solint</span><span class="p">][</span><span class="s1">&#39;spwmap&#39;</span><span class="p">]]</span>
+                <span class="n">nsol_rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">vis_desc</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="n">row_name</span><span class="p">]</span><span class="o">+</span><span class="n">row_values</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">vertical_align</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">nsol_rows</span><span class="p">,</span> <span class="n">vertical_align</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="T2_4MDetailsSelfcalRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">T2_4MDetailsSelfcalRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;selfcal.mako&#39;</span><span class="p">,</span>
+                 <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Produce rms images&#39;</span><span class="p">,</span>
+                 <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span>
+                         <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
+
+<div class="viewcode-block" id="T2_4MDetailsSelfcalRenderer.make_targets_summary_table">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.make_targets_summary_table">[docs]</a>
+    <span class="k">def</span> <span class="nf">make_targets_summary_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make the selfcal targets summary list table.&quot;&quot;&quot;</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">def</span> <span class="nf">bool2icon</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;&lt;span class=&quot;glyphicon glyphicon-ok&quot;&gt;&lt;/span&gt;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;&lt;span class=&quot;glyphicon glyphicon-remove&quot;&gt;&lt;/span&gt;&#39;</span>
+
+        <span class="k">def</span> <span class="nf">format_solints</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Formats the solution intervals (solints) for a given target by adding HTML tags to highlight</span>
+<span class="sd">            the final and attempted solints.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                target (dict): A dictionary containing the following keys:</span>
+<span class="sd">                    - &#39;sc_lib&#39; (dict): A dictionary representing the solution library.</span>
+<span class="sd">                        - &#39;vislist&#39; (list): A list of visibility keys.</span>
+<span class="sd">                        - &#39;final_solint&#39; (str, optional): The final solution interval, if successful.</span>
+<span class="sd">                        - &#39;final_phase_solint&#39; (str, optional): The final phase solution interval, if successful.</span>
+<span class="sd">                        - &#39;SC_success&#39; (bool): Indicates if the solution was successful.</span>
+<span class="sd">                    - &#39;sc_solints&#39; (list): A list of solution intervals to be formatted.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                list: A list of formatted solution intervals as strings with HTML tags applied to</span>
+<span class="sd">                the final and attempted solints.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">slib</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">]</span>
+            <span class="n">solints</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_solints&#39;</span><span class="p">]</span>
+            <span class="n">vislist</span> <span class="o">=</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span>
+            <span class="n">vis_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="n">vislist</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+
+            <span class="c1"># A final solint here presents one successful/applied solint gain solution</span>
+            <span class="n">final_solints</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">slib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SC_success&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s1">&#39;inf_EB&#39;</span> <span class="ow">in</span> <span class="n">solints</span><span class="p">:</span>
+                    <span class="n">final_solints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;inf_EB&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">slib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;final_solint&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">):</span>
+                    <span class="n">final_solints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;final_solint&#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">slib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;final_phase_solint&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">):</span>
+                    <span class="n">final_solints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;final_phase_solint&#39;</span><span class="p">))</span>
+            <span class="n">final_solints</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">final_solints</span><span class="p">)</span>
+
+            <span class="c1"># Aggregate the actually attempted solints</span>
+            <span class="n">attempted_solints</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">solint</span> <span class="k">for</span> <span class="n">solint</span> <span class="ow">in</span> <span class="n">solints</span> <span class="k">if</span> <span class="n">solint</span> <span class="ow">in</span> <span class="n">vis_keys</span><span class="p">)</span>
+
+            <span class="n">formated_solints</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">solint</span> <span class="ow">in</span> <span class="n">solints</span><span class="p">:</span>
+                <span class="n">formated_solint</span> <span class="o">=</span> <span class="n">solint</span>
+                <span class="k">if</span> <span class="n">solint</span> <span class="ow">in</span> <span class="n">final_solints</span><span class="p">:</span>
+                    <span class="n">formated_solint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;a style=&#39;color:blue&#39;&gt;</span><span class="si">{</span><span class="n">formated_solint</span><span class="si">}</span><span class="s2">&lt;/a&gt;&quot;</span>
+                <span class="k">if</span> <span class="n">solint</span> <span class="ow">in</span> <span class="n">attempted_solints</span><span class="p">:</span>
+                    <span class="n">formated_solint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;strong&gt;</span><span class="si">{</span><span class="n">formated_solint</span><span class="si">}</span><span class="s2">&lt;/strong&gt;&quot;</span>
+                <span class="n">formated_solints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">formated_solint</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">formated_solints</span>
+
+        <span class="k">def</span> <span class="nf">format_band</span><span class="p">(</span><span class="n">band_str</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Format the band string from selfcal libraries.</span>
+
+<span class="sd">            The band strings from selfcal libraries are in the following formats:</span>
+<span class="sd">                * VLA: EVLA_KU, etc.</span>
+<span class="sd">                * ALMA: Band_6, etc.</span>
+<span class="sd">            </span>
+<span class="sd">            This function converts the band string into a more readable form by:</span>
+<span class="sd">                1. Stripping any leading/trailing whitespace.</span>
+<span class="sd">                2. Removing the &#39;EVLA_&#39; prefix.</span>
+<span class="sd">                3. Replacing underscores with spaces.</span>
+<span class="sd">                4. Capitalizing the resulting string.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                band_str (str): The band string to format.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                str: The formatted band string.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">band_str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;EVLA_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">valid_chars</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span><span class="p">,</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span>
+            <span class="n">id_name</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;field_name&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_band&#39;</span><span class="p">],</span> <span class="n">valid_chars</span><span class="p">)</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; &lt;a href=&quot;#</span><span class="si">{</span><span class="n">id_name</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">fm_target</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/a&gt; &#39;</span><span class="p">)</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">format_band</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_band&#39;</span><span class="p">]))</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]))</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">])</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">])</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;imsize&#39;</span><span class="p">])</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">format_solints</span><span class="p">(</span><span class="n">target</span><span class="p">)))</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bool2icon</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">][</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]))</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bool2icon</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">][</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">applycal_result_contline</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">))</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bool2icon</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">][</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">applycal_result_line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">))</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">vertical_align</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsSelfcalRenderer.update_mako_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.update_mako_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+
+        <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">results</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cleantargets</span> <span class="o">=</span> <span class="p">[</span><span class="n">cleantarget</span> <span class="k">for</span> <span class="n">cleantarget</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">targets</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_exception&#39;</span><span class="p">]]</span>
+        <span class="n">is_restore</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">is_restore</span>
+
+        <span class="k">if</span> <span class="n">cleantargets</span><span class="p">:</span>
+            <span class="n">targets_summary_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_targets_summary_table</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">cleantargets</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">targets_summary_table</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">summary_tabs</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">solint_tabs</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">spw_tabs</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">spw_tabs_msg</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">cleantargets</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_restore</span><span class="p">:</span>
+                <span class="c1"># only do this when not restoring from a previous run (selfcal_resourcs avaibility is not warranted)</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;field_name&#39;</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_band&#39;</span><span class="p">])</span>
+                <span class="n">slib</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">]</span>
+                <span class="n">summary_tabs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_summary_table</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+                <span class="n">solint_tabs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_solint_summary_table</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+                <span class="n">spw_tabs</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">spw_tabs_msg</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_spw_summary_table</span><span class="p">(</span><span class="n">slib</span><span class="p">)</span>
+
+        <span class="n">ctx</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;targets_summary_table&#39;</span><span class="p">:</span> <span class="n">targets_summary_table</span><span class="p">,</span>
+                    <span class="s1">&#39;is_restore&#39;</span><span class="p">:</span> <span class="n">is_restore</span><span class="p">,</span>
+                    <span class="s1">&#39;solint_tabs&#39;</span><span class="p">:</span> <span class="n">solint_tabs</span><span class="p">,</span>
+                    <span class="s1">&#39;summary_tabs&#39;</span><span class="p">:</span> <span class="n">summary_tabs</span><span class="p">,</span>
+                    <span class="s1">&#39;spw_tabs&#39;</span><span class="p">:</span> <span class="n">spw_tabs</span><span class="p">,</span>
+                    <span class="s1">&#39;cleantargets&#39;</span><span class="p">:</span> <span class="n">cleantargets</span><span class="p">,</span> <span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsSelfcalRenderer.make_solint_summary_table">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.make_solint_summary_table">[docs]</a>
+    <span class="k">def</span> <span class="nf">make_solint_summary_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cleantarget</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+
+        <span class="n">solints</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">band</span> <span class="o">=</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_solints&#39;</span><span class="p">],</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;field_name&#39;</span><span class="p">],</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_band&#39;</span><span class="p">]</span>
+        <span class="n">slib</span> <span class="o">=</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">]</span>
+        <span class="n">check_solint</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">vislist</span> <span class="o">=</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span>
+        <span class="n">vis_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="n">vislist</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">row_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;intflux_final&#39;</span><span class="p">,</span> <span class="s1">&#39;intflux_improvement&#39;</span><span class="p">,</span> <span class="s1">&#39;SNR_final&#39;</span><span class="p">,</span> <span class="s1">&#39;SNR_Improvement&#39;</span><span class="p">,</span> <span class="s1">&#39;SNR_NF_final&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;SNR_NF_Improvement&#39;</span><span class="p">,</span> <span class="s1">&#39;RMS_final&#39;</span><span class="p">,</span> <span class="s1">&#39;RMS_Improvement&#39;</span><span class="p">,</span> <span class="s1">&#39;RMS_NF_final&#39;</span><span class="p">,</span> <span class="s1">&#39;RMS_NF_Improvement&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Beam_pre&#39;</span><span class="p">,</span> <span class="s1">&#39;Beam_post&#39;</span><span class="p">,</span> <span class="s1">&#39;Beam_Ratio&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;clean_threshold&#39;</span><span class="p">]</span>
+        <span class="n">qa_extra_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">row_name</span> <span class="ow">in</span> <span class="n">row_names</span><span class="p">:</span>
+
+            <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Pass&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Result&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;intflux_final&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Integrated Flux&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;intflux_improvement&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Integrated Flux Change&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;SNR_final&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Dynamic Range&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;SNR_Improvement&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;DR Improvement&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;SNR_NF_final&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Dynamic Range (N.F.)&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;SNR_NF_Improvement&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;DR Improvement (N.F.)&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;RMS_final&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;RMS&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;RMS_Improvement&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;RMS Improvement&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;RMS_NF_final&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;RMS (N.F.)&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;RMS_NF_Improvement&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;RMS Improvement (N.F.)&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Beam_pre&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Beam Pre&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Beam_post&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Beam post&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Beam_Ratio&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text_with_tooltip</span><span class="p">(</span><span class="s1">&#39;Ratio of Beam Area&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;The ratio of the beam area before and after self-calibration.&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;clean_threshold&#39;</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Clean Threshold&#39;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">solint</span> <span class="ow">in</span> <span class="n">solints</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">solint</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vis_keys</span><span class="p">:</span>
+                    <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">check_solint</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">slib_solint</span> <span class="o">=</span> <span class="n">slib</span><span class="p">[</span><span class="n">vislist</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]][</span><span class="n">solint</span><span class="p">]</span>
+                    <span class="n">vis_solint_keys</span> <span class="o">=</span> <span class="n">slib_solint</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Pass&#39;</span><span class="p">:</span>
+                        <span class="n">result_desc</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Pass&#39;</span><span class="p">]:</span>
+                            <span class="n">result_desc</span> <span class="o">=</span> <span class="s1">&#39;&lt;font color=&quot;red&quot;&gt;</span><span class="si">{}</span><span class="s1">&lt;/font&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Fail&#39;</span><span class="p">,</span> <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Fail_Reason&#39;</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">result_desc</span> <span class="o">=</span> <span class="s1">&#39;&lt;font color=&quot;blue&quot;&gt;</span><span class="si">{}</span><span class="s1">&lt;/font&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Pass&#39;</span><span class="p">)</span>
+
+                        <span class="n">qa_renderer</span> <span class="o">=</span> <span class="n">SelfCalQARenderer</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">cleantarget</span><span class="p">,</span> <span class="n">solint</span><span class="p">)</span>
+                        <span class="n">qa_extra_data</span><span class="p">[</span><span class="n">solint</span><span class="p">]</span> <span class="o">=</span> <span class="n">qa_renderer</span><span class="o">.</span><span class="n">extra_data</span>
+                        <span class="k">with</span> <span class="n">qa_renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+                            <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">qa_renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+                        <span class="n">result_desc</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">result_desc</span><span class="si">}</span><span class="s1">&lt;br&gt;&lt;a class=&quot;replace&quot; href=&quot;</span><span class="si">{</span><span class="n">qa_renderer</span><span class="o">.</span><span class="n">rel_path</span><span class="si">}</span><span class="s1">&quot;&gt;QA Plots&lt;/a&gt;&#39;</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result_desc</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;intflux_final&#39;</span><span class="p">:</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> &amp;#177 </span><span class="si">{:0.3f}</span><span class="s1"> mJy&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;intflux_post&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">,</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;e_intflux_post&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;intflux_improvement&#39;</span><span class="p">:</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;intflux_post&#39;</span><span class="p">]</span> <span class="o">/</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;intflux_pre&#39;</span><span class="p">]))</span>
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;SNR_final&#39;</span><span class="p">:</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;SNR_post&#39;</span><span class="p">]))</span>
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;SNR_Improvement&#39;</span><span class="p">:</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;SNR_post&#39;</span><span class="p">]</span> <span class="o">/</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;SNR_pre&#39;</span><span class="p">]))</span>
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;SNR_NF_final&#39;</span><span class="p">:</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;SNR_NF_post&#39;</span><span class="p">]))</span>
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;SNR_NF_Improvement&#39;</span><span class="p">:</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;SNR_NF_post&#39;</span><span class="p">]</span> <span class="o">/</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;SNR_NF_pre&#39;</span><span class="p">]))</span>
+
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;RMS_final&#39;</span><span class="p">:</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> mJy/bm&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;RMS_post&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e3</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;RMS_Improvement&#39;</span><span class="p">:</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;RMS_pre&#39;</span><span class="p">]</span> <span class="o">/</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;RMS_post&#39;</span><span class="p">]))</span>
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;RMS_NF_final&#39;</span><span class="p">:</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> mJy/bm&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;RMS_NF_post&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e3</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;RMS_NF_Improvement&#39;</span><span class="p">:</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;RMS_NF_pre&#39;</span><span class="p">]</span> <span class="o">/</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;RMS_NF_post&#39;</span><span class="p">]))</span>
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Beam_pre&#39;</span><span class="p">:</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&quot;x</span><span class="si">{:0.3f}</span><span class="s1">&quot; </span><span class="si">{:0.3f}</span><span class="s1"> deg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Beam_major_pre&#39;</span><span class="p">],</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Beam_minor_pre&#39;</span><span class="p">],</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Beam_PA_pre&#39;</span><span class="p">]))</span>
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Beam_post&#39;</span><span class="p">:</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&quot;x</span><span class="si">{:0.3f}</span><span class="s1">&quot; </span><span class="si">{:0.3f}</span><span class="s1"> deg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Beam_major_post&#39;</span><span class="p">],</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Beam_minor_post&#39;</span><span class="p">],</span>
+                            <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Beam_PA_post&#39;</span><span class="p">]))</span>
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Beam_Ratio&#39;</span><span class="p">:</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="p">(</span><span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Beam_major_post&#39;</span><span class="p">]</span> <span class="o">*</span>
+                             <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;Beam_minor_post&#39;</span><span class="p">])</span> <span class="o">/</span>
+                            <span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;Beam_major_orig&#39;</span><span class="p">]</span> <span class="o">*</span>
+                             <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;Beam_minor_orig&#39;</span><span class="p">])))</span>
+                    <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;clean_threshold&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">row_name</span> <span class="ow">in</span> <span class="n">vis_solint_keys</span><span class="p">:</span>
+                            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> mJy/bm&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">slib_solint</span><span class="p">[</span><span class="s1">&#39;clean_threshold&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e3</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Not Available&#39;</span><span class="p">)</span>
+
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s1">&#39;Measurement Set&#39;</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">solints</span><span class="p">))</span>
+
+            <span class="k">for</span> <span class="n">row_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Flagged Frac.&lt;br&gt;by antenna&#39;</span><span class="p">,</span> <span class="s1">&#39;N.Sols&#39;</span><span class="p">,</span> <span class="s1">&#39;N.Sols Flagged&#39;</span><span class="p">,</span> <span class="s1">&#39;Flagged Frac.&#39;</span><span class="p">]:</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="n">row_name</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">solint</span> <span class="ow">in</span> <span class="n">solints</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">solint</span> <span class="ow">in</span> <span class="n">vis_keys</span><span class="p">:</span>
+                        <span class="n">nsol_stats</span> <span class="o">=</span> <span class="n">qa_extra_data</span><span class="p">[</span><span class="n">solint</span><span class="p">][</span><span class="s1">&#39;antpos_plots&#39;</span><span class="p">][</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">parameters</span>
+                        <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;N.Sols&#39;</span><span class="p">:</span>
+                            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nsol_stats</span><span class="p">[</span><span class="s1">&#39;nsols&#39;</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;N.Sols Flagged&#39;</span><span class="p">:</span>
+                            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nsol_stats</span><span class="p">[</span><span class="s1">&#39;nflagged_sols&#39;</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Flagged Frac.&#39;</span><span class="p">:</span>
+                            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> &amp;#37;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nsol_stats</span><span class="p">[</span><span class="s1">&#39;nflagged_sols&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">nsol_stats</span><span class="p">[</span><span class="s1">&#39;nsols&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">100.</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Flagged Frac.&lt;br&gt;by antenna&#39;</span><span class="p">:</span>
+                            <span class="n">antpos_html</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">plots_to_html</span><span class="p">(</span>
+                                <span class="p">[</span><span class="n">qa_extra_data</span><span class="p">[</span><span class="n">solint</span><span class="p">][</span><span class="s1">&#39;antpos_plots&#39;</span><span class="p">][</span><span class="n">vis</span><span class="p">]],</span>
+                                <span class="n">report_dir</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Frac. Flagged Sol. Per Antenna&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">antpos_html</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+                <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">check_solint</span><span class="p">:</span>
+            <span class="n">new_rows</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_rows</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">vertical_align</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_rows</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">new_rows</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsSelfcalRenderer.make_spw_summary_table">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.make_spw_summary_table">[docs]</a>
+    <span class="k">def</span> <span class="nf">make_spw_summary_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slib</span><span class="p">):</span>
+
+        <span class="n">spwlist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;per_spw_stats&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">check_all_spws</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">spwlist</span><span class="p">)</span>
+        <span class="n">quantities</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bandwidth&#39;</span><span class="p">,</span> <span class="s1">&#39;effective_bandwidth&#39;</span><span class="p">,</span> <span class="s1">&#39;SNR_orig&#39;</span><span class="p">,</span> <span class="s1">&#39;SNR_final&#39;</span><span class="p">,</span> <span class="s1">&#39;RMS_orig&#39;</span><span class="p">,</span> <span class="s1">&#39;RMS_final&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">quantities</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwlist</span><span class="p">:</span>
+                <span class="n">spwkeys</span> <span class="o">=</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;per_spw_stats&#39;</span><span class="p">][</span><span class="n">spw</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s1">&#39;SNR&#39;</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">spwkeys</span><span class="p">:</span>
+                    <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;per_spw_stats&#39;</span><span class="p">][</span><span class="n">spw</span><span class="p">][</span><span class="n">key</span><span class="p">]))</span>
+                    <span class="n">check_all_spws</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="s1">&#39;RMS&#39;</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">spwkeys</span><span class="p">:</span>
+                    <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> mJy/bm&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;per_spw_stats&#39;</span><span class="p">][</span><span class="n">spw</span><span class="p">][</span><span class="n">key</span><span class="p">]</span><span class="o">*</span><span class="mf">1e3</span><span class="p">))</span>
+                    <span class="n">check_all_spws</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="s1">&#39;bandwidth&#39;</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">spwkeys</span><span class="p">:</span>
+                    <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.4f}</span><span class="s1"> GHz&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;per_spw_stats&#39;</span><span class="p">][</span><span class="n">spw</span><span class="p">][</span><span class="n">key</span><span class="p">]))</span>
+                    <span class="k">continue</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">warning_msg</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># for spw in spwlist:</span>
+        <span class="c1">#     spwkeys = slib[&#39;per_spw_stats&#39;][spw].keys()</span>
+        <span class="c1">#     if &#39;delta_SNR&#39; in spwkeys or &#39;delta_RMS&#39; in spwkeys or &#39;delta_beamarea&#39; in spwkeys:</span>
+        <span class="c1">#         if slib[&#39;per_spw_stats&#39;][spw][&#39;delta_SNR&#39;] &lt; 0.0:</span>
+        <span class="c1">#             htmlOut.writelines(&#39;WARNING SPW &#39;+spw+&#39; HAS LOWER SNR POST SELFCAL&#39;)</span>
+        <span class="c1">#         if slib[&#39;per_spw_stats&#39;][spw][&#39;delta_RMS&#39;] &gt; 0.0:</span>
+        <span class="c1">#             htmlOut.writelines(&#39;WARNING SPW &#39;+spw+&#39; HAS HIGHER RMS POST SELFCAL&#39;)</span>
+        <span class="c1">#         if slib[&#39;per_spw_stats&#39;][spw][&#39;delta_beamarea&#39;] &gt; 0.05:</span>
+        <span class="c1">#             htmlOut.writelines(&#39;WARNING SPW &#39;+spw+&#39; HAS A &gt;0.05 CHANGE IN BEAM AREA POST SELFCAL&#39;)</span>
+        <span class="k">if</span> <span class="n">check_all_spws</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">vertical_align</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">warning_msg</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">warning_msg</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsSelfcalRenderer.make_summary_table">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.make_summary_table">[docs]</a>
+    <span class="k">def</span> <span class="nf">make_summary_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">cleantarget</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make a per-target summary table.&quot;&quot;&quot;</span>
+
+        <span class="n">slib</span> <span class="o">=</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">]</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">row_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Data Type&#39;</span><span class="p">,</span> <span class="s1">&#39;Image&#39;</span><span class="p">,</span> <span class="s1">&#39;Integrated Flux&#39;</span><span class="p">,</span> <span class="s1">&#39;SNR&#39;</span><span class="p">,</span> <span class="s1">&#39;SNR (N.F.)&#39;</span><span class="p">,</span> <span class="s1">&#39;RMS&#39;</span><span class="p">,</span> <span class="s1">&#39;RMS (N.F.)&#39;</span><span class="p">,</span> <span class="s1">&#39;Beam&#39;</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">fm_sc_success</span><span class="p">(</span><span class="n">success</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;&lt;a style=&quot;color:blue&quot;&gt;Yes&lt;/a&gt;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;&lt;a style=&quot;color:red&quot;&gt;No&lt;/a&gt;&#39;</span>
+
+        <span class="k">def</span> <span class="nf">fm_reason</span><span class="p">(</span><span class="n">slib</span><span class="p">):</span>
+            <span class="n">rkey</span> <span class="o">=</span> <span class="s1">&#39;Stop_Reason&#39;</span>
+            <span class="k">if</span> <span class="n">rkey</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">slib</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;Estimated Selfcal S/N too low for solint&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">slib</span><span class="p">[</span><span class="n">rkey</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">fm_solint</span><span class="p">(</span><span class="n">slib</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;final_solint&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="s1">&#39;-&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;final_solint&#39;</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">fm_values</span><span class="p">(</span><span class="n">row_values</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">v1</span> <span class="o">==</span> <span class="o">-</span><span class="mf">99.</span><span class="p">:</span>
+                <span class="n">row_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+                <span class="n">row_values</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+            <span class="k">if</span> <span class="n">v2</span> <span class="o">==</span> <span class="o">-</span><span class="mf">99.</span><span class="p">:</span>
+                <span class="n">row_values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+                <span class="n">row_values</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+            <span class="k">return</span> <span class="n">row_values</span>
+
+        <span class="n">desc_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="n">fm_sc_success</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]),</span>
+                     <span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="n">fm_reason</span><span class="p">(</span><span class="n">slib</span><span class="p">),</span>
+                     <span class="s1">&#39;finalsolint&#39;</span><span class="p">:</span> <span class="n">fm_solint</span><span class="p">(</span><span class="n">slib</span><span class="p">)}</span>
+        <span class="n">summary_desc</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;ul style=&quot;list-style-type:none;&quot;&gt;&#39;</span>
+                        <span class="s1">&#39;&lt;li&gt;Selfcal Success: </span><span class="si">{success}</span><span class="s1">&lt;/li&gt;&#39;</span>
+                        <span class="s1">&#39;&lt;li&gt;Stop Reason: </span><span class="si">{reason}</span><span class="s1">&lt;/li&gt;&#39;</span>
+                        <span class="s1">&#39;&lt;li&gt;Final Successful solint: </span><span class="si">{finalsolint}</span><span class="s1">&lt;/li&gt;&#39;</span>
+                        <span class="s1">&#39;&lt;/ul&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">desc_args</span><span class="p">))</span>
+        <span class="n">summary_desc</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;div style=&quot;text-align:left&quot;&gt;</span><span class="si">{</span><span class="n">summary_desc</span><span class="si">}</span><span class="s1">&lt;/div&gt;&#39;</span>
+
+        <span class="k">for</span> <span class="n">row_name</span> <span class="ow">in</span> <span class="n">row_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Data Type&#39;</span><span class="p">:</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Initial&#39;</span><span class="p">,</span> <span class="s1">&#39;Final&#39;</span><span class="p">,</span> <span class="s1">&#39;Brightness Dist. / Ratio&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]:</span>
+                    <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Initial/Final&#39;</span><span class="p">,</span> <span class="s1">&#39;Initial/Final&#39;</span><span class="p">,</span> <span class="s1">&#39;Brightness Dist.&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Image&#39;</span><span class="p">:</span>
+                <span class="n">summary_plots</span><span class="p">,</span> <span class="n">noisehist_plot</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">SelfcalSummary</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">cleantarget</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">plots_to_html</span><span class="p">(</span>
+                    <span class="n">summary_plots</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">noisehist_plot</span><span class="p">],</span>
+                    <span class="n">report_dir</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Initial/Final Image Comparison&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]:</span>
+                    <span class="n">row_values</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">plots_to_html</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">summary_plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="p">[</span><span class="n">noisehist_plot</span><span class="p">],</span>
+                        <span class="n">report_dir</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Initial/Final Image Comparison&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Integrated Flux&#39;</span><span class="p">:</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> &amp;#177 </span><span class="si">{:0.3f}</span><span class="s1"> mJy&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;intflux_orig&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">,</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;e_intflux_orig&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">),</span>
+                    <span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> &amp;#177 </span><span class="si">{:0.3f}</span><span class="s1"> mJy&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;intflux_final&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">,</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;e_intflux_final&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">)]</span> <span class="o">+</span> \
+                    <span class="p">[</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;intflux_final&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;intflux_orig&#39;</span><span class="p">])]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]:</span>
+                    <span class="n">row_values</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">row_values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="n">fm_values</span><span class="p">(</span><span class="n">row_values</span><span class="p">,</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;intflux_orig&#39;</span><span class="p">],</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;intflux_final&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;SNR&#39;</span><span class="p">:</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SNR_orig&#39;</span><span class="p">]),</span>
+                              <span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SNR_final&#39;</span><span class="p">])]</span> <span class="o">+</span>\
+                    <span class="p">[</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SNR_final&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SNR_orig&#39;</span><span class="p">])]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]:</span>
+                    <span class="n">row_values</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">row_values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="n">fm_values</span><span class="p">(</span><span class="n">row_values</span><span class="p">,</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SNR_orig&#39;</span><span class="p">],</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SNR_final&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;SNR (N.F.)&#39;</span><span class="p">:</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SNR_NF_orig&#39;</span><span class="p">]),</span>
+                              <span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SNR_NF_final&#39;</span><span class="p">])]</span> <span class="o">+</span>\
+                    <span class="p">[</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SNR_NF_final&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SNR_NF_orig&#39;</span><span class="p">])]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]:</span>
+                    <span class="n">row_values</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">row_values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="n">fm_values</span><span class="p">(</span><span class="n">row_values</span><span class="p">,</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SNR_NF_orig&#39;</span><span class="p">],</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SNR_NF_final&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;RMS&#39;</span><span class="p">:</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> mJy/bm&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;RMS_orig&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e3</span><span class="p">),</span>
+                              <span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> mJy/bm&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;RMS_final&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e3</span><span class="p">)]</span> <span class="o">+</span>\
+                    <span class="p">[</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;RMS_final&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;RMS_orig&#39;</span><span class="p">])]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]:</span>
+                    <span class="n">row_values</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">row_values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="n">fm_values</span><span class="p">(</span><span class="n">row_values</span><span class="p">,</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;RMS_orig&#39;</span><span class="p">],</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;RMS_final&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;RMS (N.F.)&#39;</span><span class="p">:</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> mJy/bm&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;RMS_NF_orig&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e3</span><span class="p">),</span>
+                              <span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1"> mJy/bm&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;RMS_NF_final&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e3</span><span class="p">)]</span> <span class="o">+</span>\
+                    <span class="p">[</span><span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;RMS_NF_final&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;RMS_NF_orig&#39;</span><span class="p">])]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]:</span>
+                    <span class="n">row_values</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">row_values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="n">fm_values</span><span class="p">(</span><span class="n">row_values</span><span class="p">,</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;RMS_NF_orig&#39;</span><span class="p">],</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;RMS_NF_final&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">row_name</span> <span class="o">==</span> <span class="s1">&#39;Beam&#39;</span><span class="p">:</span>
+                <span class="n">row_values</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&quot;x</span><span class="si">{:0.3f}</span><span class="s1">&quot; </span><span class="si">{:0.3f}</span><span class="s1"> deg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;Beam_major_orig&#39;</span><span class="p">],</span>
+                        <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;Beam_minor_orig&#39;</span><span class="p">],</span>
+                        <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;Beam_PA_orig&#39;</span><span class="p">]),</span>
+                    <span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&quot;x</span><span class="si">{:0.3f}</span><span class="s1">&quot; </span><span class="si">{:0.3f}</span><span class="s1"> deg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;Beam_major_final&#39;</span><span class="p">],</span>
+                        <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;Beam_minor_final&#39;</span><span class="p">],</span>
+                        <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;Beam_PA_final&#39;</span><span class="p">])]</span> <span class="o">+</span> <span class="p">[</span>
+                    <span class="s1">&#39;</span><span class="si">{:0.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;Beam_major_final&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;Beam_minor_final&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;Beam_major_orig&#39;</span><span class="p">]</span> <span class="o">/</span>
+                        <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;Beam_minor_orig&#39;</span><span class="p">])]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">slib</span><span class="p">[</span><span class="s1">&#39;SC_success&#39;</span><span class="p">]:</span>
+                    <span class="n">row_values</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">row_values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">row_name</span><span class="p">]</span><span class="o">+</span><span class="n">row_values</span><span class="p">)</span>
+
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s1">&#39;Success / Final Solint&#39;</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="n">desc_args</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; / &#39;</span><span class="o">+</span><span class="n">desc_args</span><span class="p">[</span><span class="s1">&#39;finalsolint&#39;</span><span class="p">]]</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s1">&#39;Stop Reason&#39;</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="n">desc_args</span><span class="p">[</span><span class="s1">&#39;reason&#39;</span><span class="p">]]</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_rows</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">vertical_align</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="text_with_tooltip">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.text_with_tooltip">[docs]</a>
+<span class="k">def</span> <span class="nf">text_with_tooltip</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">tooltip</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;div data-toggle=&quot;tooltip&quot; data-placement=&quot;bottom&quot; title=&quot;</span><span class="si">{</span><span class="n">tooltip</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s1">&lt;/div&gt;&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="fm_target">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.fm_target">[docs]</a>
+<span class="k">def</span> <span class="nf">fm_target</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
+    <span class="n">target_str</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;is_repr_target&#39;</span><span class="p">]:</span>
+        <span class="n">target_str</span> <span class="o">+=</span> <span class="s1">&#39;&lt;br&gt; (rep.source)&#39;</span>
+    <span class="k">return</span> <span class="n">target_str</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

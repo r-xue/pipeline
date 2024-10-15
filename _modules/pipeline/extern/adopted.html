@@ -1,0 +1,499 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.extern.adopted &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.extern.adopted</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.extern.adopted</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">xml.dom.minidom</span> <span class="k">as</span> <span class="nn">minidom</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+
+<div class="viewcode-block" id="getMedianPWV">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.adopted.getMedianPWV">[docs]</a>
+<span class="k">def</span> <span class="nf">getMedianPWV</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">myTimes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">999999999999</span><span class="p">],</span> <span class="n">asdm</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts the PWV measurements from the WVR on all antennas for the</span>
+<span class="sd">    specified time range.  The time range is input as a two-element list of</span>
+<span class="sd">    MJD seconds (default = all times).  First, it tries to find the ASDM_CALWVR</span>
+<span class="sd">    table in the ms.  If that fails, it then tries to find the</span>
+<span class="sd">    ASDM_CALATMOSPHERE table in the ms.  If that fails, it then tried to find</span>
+<span class="sd">    the CalWVR.xml in the specified ASDM, or failing that, an ASDM of the</span>
+<span class="sd">    same name (-.ms).  If neither of these exist, then it tries to find</span>
+<span class="sd">    CalWVR.xml in the present working directory. If it still fails, it looks</span>
+<span class="sd">    for CalWVR.xml in the .ms directory.  Thus, you only need to copy this</span>
+<span class="sd">    xml file from the ASDM into your ms, rather than the entire ASDM. Returns</span>
+<span class="sd">    the median and standard deviation in millimeters.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">    The median PWV, and the median absolute deviation (scaled to match rms)</span>
+<span class="sd">    For further help and examples, see https://safe.nrao.edu/wiki/bin/view/ALMA/GetMedianPWV</span>
+<span class="sd">    -- Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tb</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">table</span>
+
+    <span class="n">pwvmean</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;in getMedianPWV with myTimes = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">myTimes</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/ASDM_CALWVR&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">):</span>
+            <span class="n">tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/ASDM_CALWVR&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+            <span class="n">pwvtime</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;startValidTime&#39;</span><span class="p">)</span>  <span class="c1"># mjdsec</span>
+            <span class="n">antenna</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;antennaName&#39;</span><span class="p">)</span>
+            <span class="n">pwv</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;water&#39;</span><span class="p">)</span>
+            <span class="n">tb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/ASDM_CALATMOSPHERE&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">):</span>
+                    <span class="n">pwvtime</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">pwv</span> <span class="o">=</span> <span class="n">readPWVFromASDM_CALATMOSPHERE</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+                    <span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Found no data in ASDM_CALWVR nor ASDM_CALATMOSPHERE table&quot;</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Did not find ASDM_CALATMOSPHERE in the ms&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Opened ASDM_CALWVR table, len(pwvtime)=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pwvtime</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Did not find ASDM_CALWVR table in the ms. Will look for ASDM_CALATMOSPHERE next.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/ASDM_CALATMOSPHERE&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">):</span>
+                <span class="n">pwvtime</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">pwv</span> <span class="o">=</span> <span class="n">readPWVFromASDM_CALATMOSPHERE</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+                <span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Found no data in ASDM_CALATMOSPHERE table&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Did not find ASDM_CALATMOSPHERE in the ms&quot;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not open ASDM_CALWVR table in the ms&quot;</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="c1"># try to find the ASDM table</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">asdm</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">asdm</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not open ASDM = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">asdm</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="p">[</span><span class="n">pwvtime</span><span class="p">,</span> <span class="n">pwv</span><span class="p">,</span> <span class="n">antenna</span><span class="p">]</span> <span class="o">=</span> <span class="n">readpwv</span><span class="p">(</span><span class="n">asdm</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not open ASDM = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">asdm</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="n">pwvmean</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">tryasdm</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.ms&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No ASDM name provided, so I will try this name = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tryasdm</span><span class="p">))</span>
+                    <span class="p">[</span><span class="n">pwvtime</span><span class="p">,</span> <span class="n">pwv</span><span class="p">,</span> <span class="n">antenna</span><span class="p">]</span> <span class="o">=</span> <span class="n">readpwv</span><span class="p">(</span><span class="n">tryasdm</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Still did not find it.  Will look for CalWVR.xml in current directory.&quot;</span><span class="p">)</span>
+                        <span class="p">[</span><span class="n">pwvtime</span><span class="p">,</span> <span class="n">pwv</span><span class="p">,</span> <span class="n">antenna</span><span class="p">]</span> <span class="o">=</span> <span class="n">readpwv</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Still did not find it.  Will look for CalWVR.xml in the .ms directory.&quot;</span><span class="p">)</span>
+                            <span class="p">[</span><span class="n">pwvtime</span><span class="p">,</span> <span class="n">pwv</span><span class="p">,</span> <span class="n">antenna</span><span class="p">]</span> <span class="o">=</span> <span class="n">readpwv</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No CalWVR.xml file found, so no PWV retrieved. Copy it to this directory and try&quot;</span>
+                                      <span class="s2">&quot; again.&quot;</span><span class="p">)</span>
+                            <span class="k">return</span> <span class="n">pwvmean</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pwvtime</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">myTimes</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Found no times &gt; </span><span class="si">{:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">myTimes</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Found no PWV data&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:d}</span><span class="s2"> matches = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">matches</span><span class="p">),</span> <span class="n">matches</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:d}</span><span class="s2"> pwv = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pwv</span><span class="p">),</span> <span class="n">pwv</span><span class="p">))</span>
+    <span class="n">ptime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pwvtime</span><span class="p">)[</span><span class="n">matches</span><span class="p">]</span>
+    <span class="n">matchedpwv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pwv</span><span class="p">)[</span><span class="n">matches</span><span class="p">]</span>
+    <span class="n">matches2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ptime</span> <span class="o">&lt;=</span> <span class="n">myTimes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;matchedpwv = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">matchedpwv</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pwv = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pwv</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matches2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># look for the value with the closest start time</span>
+        <span class="n">mindiff</span> <span class="o">=</span> <span class="mf">1e12</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pwvtime</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">myTimes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">pwvtime</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">mindiff</span><span class="p">:</span>
+                <span class="n">mindiff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">myTimes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">pwvtime</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">matchedpwv</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pwvtime</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">myTimes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">pwvtime</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">mindiff</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+                <span class="n">matchedpwv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pwv</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">pwvmean</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">matchedpwv</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Taking the median of </span><span class="si">{:d}</span><span class="s2"> pwv measurements from all antennas = </span><span class="si">{:.3f}</span><span class="s2"> mm&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">matchedpwv</span><span class="p">),</span>
+                                                                                                    <span class="n">pwvmean</span><span class="p">))</span>
+        <span class="n">pwvstd</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">MAD</span><span class="p">(</span><span class="n">matchedpwv</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pwvmean</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">matchedpwv</span><span class="p">[</span><span class="n">matches2</span><span class="p">])</span>
+        <span class="n">pwvstd</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">MAD</span><span class="p">(</span><span class="n">matchedpwv</span><span class="p">[</span><span class="n">matches2</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Taking the median of </span><span class="si">{:d}</span><span class="s2"> pwv measurements from all antennas = </span><span class="si">{:.3f}</span><span class="s2"> mm&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">matches2</span><span class="p">),</span>
+                                                                                                    <span class="n">pwvmean</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">pwvmean</span><span class="p">,</span> <span class="n">pwvstd</span></div>
+
+
+
+<div class="viewcode-block" id="readPWVFromASDM_CALATMOSPHERE">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.adopted.readPWVFromASDM_CALATMOSPHERE">[docs]</a>
+<span class="k">def</span> <span class="nf">readPWVFromASDM_CALATMOSPHERE</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads the PWV via the water column of the ASDM_CALATMOSPHERE table.</span>
+<span class="sd">    - Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/ASDM_CALATMOSPHERE&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">vis</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.ms&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">vis</span> <span class="o">+=</span> <span class="s1">&#39;.ms&#39;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not find measurement set = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vis</span><span class="p">))</span>
+                <span class="k">return</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/ASDM_CALATMOSPHERE&#39;</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not find ASDM_CALATMOSPHERE in the measurement set&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not find measurement set&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+    <span class="n">mytb</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">table</span>
+    <span class="n">mytb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/ASDM_CALATMOSPHERE&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+    <span class="n">pwvtime</span> <span class="o">=</span> <span class="n">mytb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;startValidTime&#39;</span><span class="p">)</span>  <span class="c1"># mjdsec</span>
+    <span class="n">antenna</span> <span class="o">=</span> <span class="n">mytb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;antennaName&#39;</span><span class="p">)</span>
+    <span class="n">pwv</span> <span class="o">=</span> <span class="n">mytb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;water&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># There seem to be 2 identical entries per row, so take first one.</span>
+    <span class="n">mytb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">pwvtime</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">pwv</span></div>
+
+
+
+<div class="viewcode-block" id="readpwv">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.adopted.readpwv">[docs]</a>
+<span class="k">def</span> <span class="nf">readpwv</span><span class="p">(</span><span class="n">asdm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function assembles the dictionary returned by readwvr() into arrays</span>
+<span class="sd">    containing the PWV measurements written by TelCal into the ASDM.</span>
+<span class="sd">    Units are in meters.</span>
+<span class="sd">    -- Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">wvrdict</span> <span class="o">=</span> <span class="n">readwvr</span><span class="p">(</span><span class="n">asdm</span><span class="p">)</span>
+    <span class="n">bigantlist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">wvrdict</span><span class="p">:</span>
+        <span class="n">bigantlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wvrdict</span><span class="p">[</span><span class="n">entry</span><span class="p">][</span><span class="s1">&#39;antenna&#39;</span><span class="p">])</span>
+    <span class="n">watertime</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">water</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">antenna</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">wvrdict</span><span class="p">:</span>
+        <span class="n">measurements</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">measurements</span><span class="p">):</span>
+            <span class="n">watertime</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wvrdict</span><span class="p">[</span><span class="n">entry</span><span class="p">][</span><span class="s1">&#39;startmjdsec&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">measurements</span><span class="p">)</span> <span class="o">*</span> <span class="n">wvrdict</span><span class="p">[</span><span class="n">entry</span><span class="p">][</span><span class="s1">&#39;duration&#39;</span><span class="p">])</span>
+            <span class="n">water</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wvrdict</span><span class="p">[</span><span class="n">entry</span><span class="p">][</span><span class="s1">&#39;water&#39;</span><span class="p">])</span>
+            <span class="n">antenna</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wvrdict</span><span class="p">[</span><span class="n">entry</span><span class="p">][</span><span class="s1">&#39;antenna&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">watertime</span><span class="p">,</span> <span class="n">water</span><span class="p">,</span> <span class="n">antenna</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="readwvr">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.adopted.readwvr">[docs]</a>
+<span class="k">def</span> <span class="nf">readwvr</span><span class="p">(</span><span class="n">sdmfile</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function reads the CalWVR.xml table from the ASDM and returns a</span>
+<span class="sd">    dictionary containing: &#39;start&#39;, &#39;end&#39;, &#39;startmjd&#39;, &#39;endmjd&#39;,</span>
+<span class="sd">    &#39;startmjdsec&#39;, &#39;endmjdsec&#39;,</span>
+<span class="sd">    &#39;timerange&#39;, &#39;antenna&#39;, &#39;water&#39;, &#39;duration&#39;.</span>
+<span class="sd">    &#39;water&#39; is the zenith PWV in meters.</span>
+<span class="sd">    This function is called by readpwv(). -- Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">sdmfile</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;readwvr(): Could not find file = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sdmfile</span><span class="p">))</span>
+        <span class="k">return</span>
+    <span class="n">xmlscans</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sdmfile</span> <span class="o">+</span> <span class="s1">&#39;/CalWVR.xml&#39;</span><span class="p">)</span>
+    <span class="n">scandict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">rowlist</span> <span class="o">=</span> <span class="n">xmlscans</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;row&quot;</span><span class="p">)</span>
+    <span class="n">fid</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">rownode</span> <span class="ow">in</span> <span class="n">rowlist</span><span class="p">:</span>
+        <span class="n">rowpwv</span> <span class="o">=</span> <span class="n">rownode</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;water&quot;</span><span class="p">)</span>
+        <span class="n">pwv</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rowpwv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span><span class="p">)</span>
+        <span class="n">water</span> <span class="o">=</span> <span class="n">pwv</span>
+        <span class="n">scandict</span><span class="p">[</span><span class="n">fid</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># start and end times in mjd ns</span>
+        <span class="n">rowstart</span> <span class="o">=</span> <span class="n">rownode</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;startValidTime&quot;</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rowstart</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span><span class="p">)</span>
+        <span class="n">startmjd</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.0E-9</span> <span class="o">/</span> <span class="mf">86400.0</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">startmjd</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">)</span>
+        <span class="n">starttime</span> <span class="o">=</span> <span class="n">call_qa_time</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s2">&quot;ymd&quot;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">rowend</span> <span class="o">=</span> <span class="n">rownode</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;endValidTime&quot;</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rowend</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span><span class="p">)</span>
+        <span class="n">endmjd</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">end</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.0E-9</span> <span class="o">/</span> <span class="mf">86400.0</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">endmjd</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">)</span>
+        <span class="n">endtime</span> <span class="o">=</span> <span class="n">call_qa_time</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s2">&quot;ymd&quot;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="c1"># antenna</span>
+        <span class="n">rowantenna</span> <span class="o">=</span> <span class="n">rownode</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;antennaName&quot;</span><span class="p">)</span>
+        <span class="n">antenna</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">rowantenna</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span><span class="p">)</span>
+
+        <span class="n">scandict</span><span class="p">[</span><span class="n">fid</span><span class="p">][</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">starttime</span>
+        <span class="n">scandict</span><span class="p">[</span><span class="n">fid</span><span class="p">][</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">endtime</span>
+        <span class="n">scandict</span><span class="p">[</span><span class="n">fid</span><span class="p">][</span><span class="s1">&#39;startmjd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">startmjd</span>
+        <span class="n">scandict</span><span class="p">[</span><span class="n">fid</span><span class="p">][</span><span class="s1">&#39;endmjd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">endmjd</span>
+        <span class="n">scandict</span><span class="p">[</span><span class="n">fid</span><span class="p">][</span><span class="s1">&#39;startmjdsec&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">startmjd</span> <span class="o">*</span> <span class="mi">86400</span>
+        <span class="n">scandict</span><span class="p">[</span><span class="n">fid</span><span class="p">][</span><span class="s1">&#39;endmjdsec&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">endmjd</span> <span class="o">*</span> <span class="mi">86400</span>
+        <span class="n">timestr</span> <span class="o">=</span> <span class="n">starttime</span> <span class="o">+</span> <span class="s1">&#39;~&#39;</span> <span class="o">+</span> <span class="n">endtime</span>
+        <span class="n">scandict</span><span class="p">[</span><span class="n">fid</span><span class="p">][</span><span class="s1">&#39;timerange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timestr</span>
+        <span class="n">scandict</span><span class="p">[</span><span class="n">fid</span><span class="p">][</span><span class="s1">&#39;antenna&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">antenna</span>
+        <span class="n">scandict</span><span class="p">[</span><span class="n">fid</span><span class="p">][</span><span class="s1">&#39;water&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">water</span>
+        <span class="n">scandict</span><span class="p">[</span><span class="n">fid</span><span class="p">][</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">endmjd</span> <span class="o">-</span> <span class="n">startmjd</span><span class="p">)</span> <span class="o">*</span> <span class="mi">86400</span>
+        <span class="n">fid</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  Found </span><span class="si">{}</span><span class="s1"> rows in CalWVR.xml&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rowlist</span><span class="o">.</span><span class="n">length</span><span class="p">))</span>
+
+    <span class="c1"># return the dictionary for later use</span>
+    <span class="k">return</span> <span class="n">scandict</span></div>
+
+
+
+<div class="viewcode-block" id="call_qa_time">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.adopted.call_qa_time">[docs]</a>
+<span class="k">def</span> <span class="nf">call_qa_time</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">showform</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is a wrapper for qa.time(), which in casa 4.0.0 returns a list</span>
+<span class="sd">    of strings instead of just a scalar string.</span>
+<span class="sd">    - Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;qa_time() received a dictionary containing a list&#39;</span>
+                    <span class="s1">&#39;of length=</span><span class="si">%d</span><span class="s1"> rather than a scalar. Using first &#39;</span>
+                    <span class="s1">&#39;value.&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]))</span>
+        <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="n">prec</span><span class="p">,</span> <span class="n">showform</span><span class="o">=</span><span class="n">showform</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="MAD">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.adopted.MAD">[docs]</a>
+<span class="k">def</span> <span class="nf">MAD</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.6745</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Median Absolute Deviation along given axis of an array:</span>
+
+<span class="sd">    median(abs(a - median(a))) / c</span>
+
+<span class="sd">    c = 0.6745 is the constant to convert from MAD to std; it is used by</span>
+<span class="sd">    default</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">good</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">a</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">good</span><span class="p">])</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">good</span><span class="p">]</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">c</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">good</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="c1"># I don&#39;t want the array to change so I have to copy it?</span>
+        <span class="k">if</span> <span class="n">axis</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">aswp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">good</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">aswp</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">good</span><span class="p">]</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">aswp</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">c</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">m</span></div>
+
+
+
+<div class="viewcode-block" id="getMJD">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.adopted.getMJD">[docs]</a>
+<span class="k">def</span> <span class="nf">getMJD</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the current MJD.  See also getCurrentMJDSec().</span>
+<span class="sd">    -Todd</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">myme</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+    <span class="n">mjd</span> <span class="o">=</span> <span class="n">myme</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="s1">&#39;utc&#39;</span><span class="p">,</span> <span class="s1">&#39;today&#39;</span><span class="p">)[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="n">myme</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">mjd</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

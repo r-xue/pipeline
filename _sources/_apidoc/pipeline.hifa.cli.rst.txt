@@ -1,0 +1,237 @@
+pipeline.hifa.cli package
+=========================
+
+Submodules
+----------
+
+pipeline.hifa.cli.hifa\_antpos module
+-------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_antpos
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_bandpass module
+---------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_bandpass
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_bandpassflag module
+-------------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_bandpassflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_bpsolint module
+---------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_bpsolint
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_diffgaincal module
+------------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_diffgaincal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_exportdata module
+-----------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_exportdata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_flagdata module
+---------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_flagdata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_flagtargets module
+------------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_flagtargets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_fluxcalflag module
+------------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_fluxcalflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_gaincalsnr module
+-----------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_gaincalsnr
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_gfluxscale module
+-----------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_gfluxscale
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_gfluxscaleflag module
+---------------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_gfluxscaleflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_imageprecheck module
+--------------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_imageprecheck
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_importdata module
+-----------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_importdata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_lock\_refant module
+-------------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_lock_refant
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_polcal module
+-------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_polcal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_polcalflag module
+-----------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_polcalflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_renorm module
+-------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_renorm
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_restoredata module
+------------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_restoredata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_session\_refant module
+----------------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_session_refant
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_spwphaseup module
+-----------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_spwphaseup
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_targetflag module
+-----------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_targetflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_timegaincal module
+------------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_timegaincal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_tsysflag module
+---------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_tsysflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_tsysflagcontamination module
+----------------------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_tsysflagcontamination
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_unlock\_refant module
+---------------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_unlock_refant
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_wvrgcal module
+--------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_wvrgcal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.cli.hifa\_wvrgcalflag module
+------------------------------------------
+
+.. automodule:: pipeline.hifa.cli.hifa_wvrgcalflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifa.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:

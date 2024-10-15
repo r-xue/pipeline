@@ -1,0 +1,21 @@
+pipeline.domain.datatype
+========================
+
+.. automodule:: pipeline.domain.datatype
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      unique
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      Enum
+      attrgetter
+      auto
+   

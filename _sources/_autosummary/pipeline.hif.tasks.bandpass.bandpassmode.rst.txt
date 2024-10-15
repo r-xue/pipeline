@@ -1,0 +1,13 @@
+pipeline.hif.tasks.bandpass.bandpassmode
+========================================
+
+.. automodule:: pipeline.hif.tasks.bandpass.bandpassmode
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BandpassMode
+      BandpassModeInputs
+   

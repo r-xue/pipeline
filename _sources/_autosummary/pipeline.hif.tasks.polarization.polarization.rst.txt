@@ -1,0 +1,14 @@
+pipeline.hif.tasks.polarization.polarization
+============================================
+
+.. automodule:: pipeline.hif.tasks.polarization.polarization
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Polarization
+      PolarizationInputs
+      PolarizationResults
+   

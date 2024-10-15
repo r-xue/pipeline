@@ -1,0 +1,23 @@
+pipeline.hif.tasks.refant
+=========================
+
+.. automodule:: pipeline.hif.tasks.refant
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      RefAnt
+      SerialRefAnt
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   qa
+   referenceantenna
+   renderer
+   session_refant

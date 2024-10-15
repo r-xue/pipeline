@@ -1,0 +1,42 @@
+pipeline.h.heuristics
+=====================
+
+.. automodule:: pipeline.h.heuristics
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      tsysspwmap
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AntposCaltable
+      BandpassCaltable
+      EchoHeuristic
+      FluxCaltable
+      GainCurvestable
+      GaincalCaltable
+      HeuristicsLineFinder
+      IntentFieldnames
+      OpCaltable
+      RqCaltable
+      SwpowCaltable
+      TsysCaltable
+      WvrgCaltable
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   caltable
+   echoheuristic
+   fieldnames
+   linefinder
+   linefinder_test
+   tsysnormalize

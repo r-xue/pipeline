@@ -1,0 +1,13 @@
+pipeline.infrastructure.renderer.templates
+==========================================
+
+.. automodule:: pipeline.infrastructure.renderer.templates
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   resources

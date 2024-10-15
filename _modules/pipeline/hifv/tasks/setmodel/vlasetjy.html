@@ -1,0 +1,633 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.setmodel.vlasetjy &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.setmodel.vlasetjy</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.setmodel.vlasetjy</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain</span> <span class="k">as</span> <span class="nn">domain</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">commonfluxresults</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.tablereader</span> <span class="kn">import</span> <span class="n">find_EVLA_band</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics</span> <span class="kn">import</span> <span class="n">standard</span> <span class="k">as</span> <span class="n">standard</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+
+<span class="c1"># Paper</span>
+<span class="c1"># http://iopscience.iop.org/article/10.1088/0067-0049/204/2/19/pdf</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">ORIGIN</span> <span class="o">=</span> <span class="s1">&#39;hifa_vlasetjy&#39;</span>
+
+
+<div class="viewcode-block" id="find_standards">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.setmodel.html#pipeline.hifv.tasks.setmodel.qa.find_standards">[docs]</a>
+<span class="k">def</span> <span class="nf">find_standards</span><span class="p">(</span><span class="n">positions</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function for finding standards from the original scripted EVLA pipeline</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># set the max separation as ~1&#39;</span>
+    <span class="n">MAX_SEPARATION</span> <span class="o">=</span> <span class="mi">60</span><span class="o">*</span><span class="mf">2.0e-5</span>
+    <span class="n">position_3C48</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="s1">&#39;j2000&#39;</span><span class="p">,</span> <span class="s1">&#39;1h37m41.299&#39;</span><span class="p">,</span> <span class="s1">&#39;33d9m35.133&#39;</span><span class="p">)</span>
+    <span class="n">fields_3C48</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">position_3C138</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="s1">&#39;j2000&#39;</span><span class="p">,</span> <span class="s1">&#39;5h21m9.886&#39;</span><span class="p">,</span> <span class="s1">&#39;16d38m22.051&#39;</span><span class="p">)</span>
+    <span class="n">fields_3C138</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">position_3C147</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="s1">&#39;j2000&#39;</span><span class="p">,</span> <span class="s1">&#39;5h42m36.138&#39;</span><span class="p">,</span> <span class="s1">&#39;49d51m7.234&#39;</span><span class="p">)</span>
+    <span class="n">fields_3C147</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">position_3C286</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="s1">&#39;j2000&#39;</span><span class="p">,</span> <span class="s1">&#39;13h31m8.288&#39;</span><span class="p">,</span> <span class="s1">&#39;30d30m32.959&#39;</span><span class="p">)</span>
+    <span class="n">fields_3C286</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">)):</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="s1">&#39;j2000&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;rad&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;rad&#39;</span><span class="p">)</span>
+        <span class="n">separation</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">position_3C48</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">separation</span> <span class="o">&lt;</span> <span class="n">MAX_SEPARATION</span><span class="p">):</span>
+            <span class="n">fields_3C48</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">separation</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">position_3C138</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">separation</span> <span class="o">&lt;</span> <span class="n">MAX_SEPARATION</span><span class="p">):</span>
+                <span class="n">fields_3C138</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">separation</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">position_3C147</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">separation</span> <span class="o">&lt;</span> <span class="n">MAX_SEPARATION</span><span class="p">):</span>
+                    <span class="n">fields_3C147</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">separation</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">position_3C286</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">separation</span> <span class="o">&lt;</span> <span class="n">MAX_SEPARATION</span><span class="p">):</span>
+                        <span class="n">fields_3C286</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span>
+
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">fields_3C48</span><span class="p">,</span> <span class="n">fields_3C138</span><span class="p">,</span> <span class="n">fields_3C147</span><span class="p">,</span> <span class="n">fields_3C286</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">fields</span></div>
+
+
+
+<div class="viewcode-block" id="standard_sources">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.setmodel.html#pipeline.hifv.tasks.setmodel.qa.standard_sources">[docs]</a>
+<span class="k">def</span> <span class="nf">standard_sources</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get standard source names, fields, and positions - convenience function from</span>
+<span class="sd">       the original EVLA scripted pipeline</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/FIELD&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+        <span class="n">field_positions</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;PHASE_DIR&#39;</span><span class="p">)</span>
+
+    <span class="n">positions</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_positions</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])):</span>
+        <span class="n">positions</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">field_positions</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">ii</span><span class="p">],</span> <span class="n">field_positions</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">ii</span><span class="p">]])</span>
+
+    <span class="n">standard_source_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;3C48&#39;</span><span class="p">,</span> <span class="s1">&#39;3C138&#39;</span><span class="p">,</span> <span class="s1">&#39;3C147&#39;</span><span class="p">,</span> <span class="s1">&#39;3C286&#39;</span><span class="p">]</span>
+    <span class="n">standard_source_fields</span> <span class="o">=</span> <span class="n">find_standards</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+
+    <span class="n">standard_source_found</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">standard_source_field</span> <span class="ow">in</span> <span class="n">standard_source_fields</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">standard_source_field</span><span class="p">:</span>
+            <span class="n">standard_source_found</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">standard_source_found</span><span class="p">:</span>
+        <span class="n">standard_source_found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ERROR: No standard flux density calibrator observed, flux density scale will be arbitrary&quot;</span><span class="p">)</span>
+        <span class="n">QA_calprep</span><span class="o">=</span><span class="s1">&#39;Fail&#39;</span>
+
+    <span class="k">return</span> <span class="n">standard_source_names</span><span class="p">,</span> <span class="n">standard_source_fields</span></div>
+
+
+
+<div class="viewcode-block" id="VLASetjyInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.setmodel.html#pipeline.hifv.tasks.setmodel.qa.VLASetjyInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">VLASetjyInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># Get field ids in the current ms that have been observed</span>
+        <span class="c1"># with the desired intent</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+        <span class="n">unique_field_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
+        <span class="n">field_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
+
+        <span class="c1"># Fields with different intents may have the same name. Check for this</span>
+        <span class="c1"># and return the field ids rather than the names to resolve any</span>
+        <span class="c1"># ambiguities.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_field_names</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_ids</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unique_field_names</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">field_ids</span><span class="p">])</span>
+
+    <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">refspectra</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># If flux density was explicitly set and is not equal to -1, which is</span>
+        <span class="c1"># hard-coded as the default value in the task interface return the</span>
+        <span class="c1"># default tuple which is composed of the reference frequency, the</span>
+        <span class="c1"># Stokes fluxdensity and the spectral index</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxdensity</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reffreq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxdensity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spix</span><span class="p">)</span>
+
+        <span class="c1"># There is no ms object.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># The fluxdensity parameter is set to -1 which indicates that we must do a</span>
+        <span class="c1"># flux lookup. The # lookup order is:</span>
+        <span class="c1">#     1) from file, unless it&#39;s a solar system object</span>
+        <span class="c1">#     2) from CASA</span>
+
+        <span class="c1"># TODO: Replace with reading directly from the context</span>
+
+        <span class="c1"># Read the reference flux values from a file</span>
+        <span class="n">ref_flux</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reffile</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reffile</span><span class="p">,</span> <span class="s1">&#39;rt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+
+                <span class="c1"># First row is header row</span>
+                <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="nb">next</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+
+                <span class="c1"># Loop over rows trying the new CSV format first</span>
+                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="p">(</span><span class="n">ms_name</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">spix</span><span class="p">,</span> <span class="n">uvmin</span><span class="p">,</span> <span class="n">uvmax</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span> <span class="o">=</span> <span class="n">row</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="p">(</span><span class="n">ms_name</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span> <span class="o">=</span> <span class="n">row</span>
+                            <span class="n">spix</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spix</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Invalid flux statement in </span><span class="si">%s</span><span class="s1">: </span><span class="se">\&#39;</span><span class="si">%s</span><span class="s1">&#39;</span>
+                                    <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reffile</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># Check that the entry is for the correct MS</span>
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms_name</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># Add the value</span>
+                    <span class="n">spw_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">spw_id</span><span class="p">)</span>
+                    <span class="n">ref_flux</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">I</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">Q</span><span class="p">),</span>
+                                     <span class="nb">float</span><span class="p">(</span><span class="n">U</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">V</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">spix</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">uvmin</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">uvmax</span><span class="p">)))</span>
+
+                    <span class="c1"># TODO sort the flux values in spw order?</span>
+
+        <span class="c1"># Issue warning if the reference file was specified but not found.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reffile</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">reffile</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Flux reference file not found: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reffile</span><span class="p">))</span>
+
+        <span class="c1"># Get the spectral window ids for the spws specified by the inputs</span>
+        <span class="n">spws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+        <span class="n">spw_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">)</span>
+
+        <span class="c1"># In order to print flux densities in the same order as the fields, we</span>
+        <span class="c1"># must retrieve the flux density for each field in turn</span>
+        <span class="n">field_flux</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">field_arg</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">):</span>
+
+            <span class="c1"># Field names may resolve to multiple field IDs</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">field_arg</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+            <span class="n">field_ids</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
+            <span class="n">field_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
+
+            <span class="c1"># Find fluxes</span>
+            <span class="n">flux_by_spw</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="n">spw_ids</span><span class="p">:</span>
+                <span class="n">reffreq</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spw_id</span><span class="p">)</span><span class="o">.</span><span class="n">centre_frequency</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normfluxes</span><span class="p">:</span>
+                    <span class="n">flux</span> <span class="o">=</span> <span class="p">[(</span><span class="n">reffreq</span><span class="p">,</span> <span class="p">[</span><span class="n">I</span> <span class="o">/</span> <span class="n">I</span><span class="p">,</span> <span class="n">Q</span> <span class="o">/</span> <span class="n">I</span><span class="p">,</span> <span class="n">U</span> <span class="o">/</span> <span class="n">I</span><span class="p">,</span> <span class="n">V</span> <span class="o">/</span> <span class="n">I</span><span class="p">],</span> <span class="n">spix</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="p">(</span><span class="n">ref_field_id</span><span class="p">,</span> <span class="n">ref_spw_id</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">spix</span><span class="p">,</span> <span class="n">uvmin</span><span class="p">,</span> <span class="n">uvmax</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ref_flux</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">ref_field_id</span> <span class="ow">in</span> <span class="n">field_ids</span>
+                                <span class="ow">or</span> <span class="n">ref_field_id</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">)</span>
+                            <span class="ow">and</span> <span class="n">ref_spw_id</span> <span class="o">==</span> <span class="n">spw_id</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">flux</span> <span class="o">=</span> <span class="p">[(</span><span class="n">reffreq</span><span class="p">,</span> <span class="p">[</span><span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">],</span> <span class="n">spix</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="p">(</span><span class="n">ref_field_id</span><span class="p">,</span> <span class="n">ref_spw_id</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">spix</span><span class="p">,</span> <span class="n">uvmin</span><span class="p">,</span> <span class="n">uvmax</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ref_flux</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">ref_field_id</span> <span class="ow">in</span> <span class="n">field_ids</span>
+                                <span class="ow">or</span> <span class="n">ref_field_id</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">)</span>
+                            <span class="ow">and</span> <span class="n">ref_spw_id</span> <span class="o">==</span> <span class="n">spw_id</span><span class="p">]</span>
+
+                <span class="c1"># No flux measurements found for the requested field/spws, so do</span>
+                <span class="c1"># either a CASA model look-up (-1) or reset the flux to 1.</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">flux</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="s1">&#39;AMPLITUDE&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">intents</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">):</span>
+                        <span class="n">flux</span> <span class="o">=</span> <span class="p">(</span><span class="n">reffreq</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spix</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">flux</span> <span class="o">=</span> <span class="p">(</span><span class="n">reffreq</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">spix</span><span class="p">)</span>
+
+                <span class="c1"># If this is a solar system calibrator, ignore any catalogue</span>
+                <span class="c1"># flux and request a CASA model lookup</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">field_names</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">standard</span><span class="o">.</span><span class="n">Standard</span><span class="o">.</span><span class="n">ephemeris_fields</span><span class="p">):</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Ignoring records from file for solar system &#39;</span>
+                              <span class="s1">&#39;calibrator&#39;</span><span class="p">)</span>
+                    <span class="n">flux</span> <span class="o">=</span> <span class="p">(</span><span class="n">reffreq</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+                <span class="n">flux_by_spw</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flux</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flux</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">flux</span><span class="p">)</span>
+
+            <span class="n">field_flux</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flux_by_spw</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flux_by_spw</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">flux_by_spw</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">field_flux</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_flux</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">field_flux</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">reffile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;flux.csv&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="n">normfluxes</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">reffreq</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;1GHz&#39;</span><span class="p">)</span>
+    <span class="n">fluxdensity</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">spix</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">scalebychan</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">standard</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># Get the standard heuristics function.</span>
+        <span class="n">heu_standard</span> <span class="o">=</span> <span class="n">standard</span><span class="o">.</span><span class="n">Standard</span><span class="p">()</span>
+
+        <span class="c1"># The field may be an integer, but the standard heuristic operates on</span>
+        <span class="c1"># strings so determine the corresponding name of the fields</span>
+        <span class="n">field_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+                <span class="n">matching_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">matching_fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+                <span class="n">field_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">matching_fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">field_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="n">standards</span> <span class="o">=</span> <span class="p">[</span><span class="n">heu_standard</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">standards</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">standards</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">standards</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">scalebychan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxdensity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reffreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">standard</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">refspectra</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normfluxes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">VLASetjyInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scalebychan</span> <span class="o">=</span> <span class="n">scalebychan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fluxdensity</span> <span class="o">=</span> <span class="n">fluxdensity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spix</span> <span class="o">=</span> <span class="n">spix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reffreq</span> <span class="o">=</span> <span class="n">reffreq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">standard</span> <span class="o">=</span> <span class="n">standard</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refspectra</span> <span class="o">=</span> <span class="n">refspectra</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reffile</span> <span class="o">=</span> <span class="n">reffile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normfluxes</span> <span class="o">=</span> <span class="n">normfluxes</span>
+
+<div class="viewcode-block" id="VLASetjyInputs.to_casa_args">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.setmodel.html#pipeline.hifv.tasks.setmodel.qa.VLASetjyInputs.to_casa_args">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">VLASetjyInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;fluxdensity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;refspectra&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;refspectra&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;TOPO &#39;</span> <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;refspectra&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;spix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;refspectra&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="c1"># Filter out reffile. Note that the , is required</span>
+        <span class="k">for</span> <span class="n">ignore</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;reffile&#39;</span><span class="p">,</span> <span class="s1">&#39;refspectra&#39;</span><span class="p">,</span> <span class="s1">&#39;normfluxes&#39;</span><span class="p">,):</span>
+            <span class="k">if</span> <span class="n">ignore</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="n">ignore</span><span class="p">]</span>
+
+        <span class="c1"># Enable intent selection in CASA.</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;selectdata&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Force usescratch to True for now</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;usescratch&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="VLASetjy">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.setmodel.html#pipeline.hifv.tasks.setmodel.qa.VLASetjy">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_vlasetjy&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">VLASetjy</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">VLASetjyInputs</span>
+
+<div class="viewcode-block" id="VLASetjy.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.setmodel.html#pipeline.hifv.tasks.setmodel.qa.VLASetjy.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">commonfluxresults</span><span class="o">.</span><span class="n">FluxCalibrationResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> 
+
+        <span class="c1"># Return early if the field has no data of the required intent. This</span>
+        <span class="c1"># could be the case when given multiple MSes, one of which could be</span>
+        <span class="c1"># without an amplitude calibrator for instance.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Field(s) </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> in </span><span class="si">%s</span><span class="s1"> have no data with intent </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> 
+                        <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># get the spectral windows for the spw inputs argument</span>
+        <span class="c1"># This is done later in the loop for the VLA, just keeping here for history memory</span>
+        <span class="c1"># print &quot;Type of inputs.spw: &quot;, inputs.spw, type(inputs.spw)</span>
+        <span class="c1"># spws = [spw for spw in inputs.ms.get_spectral_windows(inputs.spw)]</span>
+
+        <span class="c1"># Multiple spectral windows spawn multiple setjy jobs. Set a unique</span>
+        <span class="c1"># marker in the CASA log so that we can identify log entries from this</span>
+        <span class="c1"># particular task</span>
+        <span class="c1"># start_marker = self._add_marker_to_casa_log()</span>
+
+        <span class="c1"># loop over fields so that we can use Setjy for sources with different</span>
+        <span class="c1"># standards</span>
+
+        <span class="n">setjy_dicts</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">standard_source_names</span><span class="p">,</span> <span class="n">standard_source_fields</span> <span class="o">=</span> <span class="n">standard_sources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">field_spws</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_field_spws</span><span class="p">()</span>
+        <span class="n">spw2band</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_spw2band</span><span class="p">()</span>
+        <span class="c1"># bands = spw2band.values()</span>
+
+        <span class="c1"># Look in spectral window domain object as this information already exists!</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/SPECTRAL_WINDOW&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">channels</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;NUM_CHAN&#39;</span><span class="p">)</span>
+            <span class="n">originalBBClist</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;BBC_NO&#39;</span><span class="p">)</span>
+            <span class="n">spw_bandwidths</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TOTAL_BANDWIDTH&#39;</span><span class="p">)</span>
+            <span class="n">reference_frequencies</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;REF_FREQUENCY&#39;</span><span class="p">)</span>
+
+        <span class="n">center_frequencies</span> <span class="o">=</span> <span class="p">[</span><span class="n">rf</span> <span class="o">+</span> <span class="n">spwbw</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">rf</span><span class="p">,</span> <span class="n">spwbw</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">reference_frequencies</span><span class="p">,</span> <span class="n">spw_bandwidths</span><span class="p">)]</span>
+
+        <span class="c1"># LOG.info(&quot;STANDARD SOURCE FIELDS:&quot;)</span>
+        <span class="c1"># print standard_source_fields</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">fields</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">standard_source_fields</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">myfield</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                <span class="n">domainfield</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">myfield</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;AMPLITUDE&#39;</span> <span class="ow">in</span> <span class="n">domainfield</span><span class="o">.</span><span class="n">intents</span><span class="p">:</span>
+                    <span class="n">inputs</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">myfield</span>
+                    <span class="c1"># Use the domain object to get the actual field id, ***NOT*** the index</span>
+                    <span class="c1"># setjyfield = m.get_fields()[myfield].id</span>
+
+                    <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">VLAspws</span> <span class="o">=</span> <span class="n">field_spws</span><span class="p">[</span><span class="n">myfield</span><span class="p">]</span>
+                    <span class="n">strlistVLAspws</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">VLAspws</span><span class="p">)</span>
+                    <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">strlistVLAspws</span><span class="p">)]</span>
+
+                    <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
+                        <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
+                        <span class="n">reference_frequency</span> <span class="o">=</span> <span class="n">center_frequencies</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">EVLA_band</span> <span class="o">=</span> <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Unable to get band from spw id - using reference frequency instead&#39;</span><span class="p">)</span>
+                            <span class="n">EVLA_band</span> <span class="o">=</span> <span class="n">find_EVLA_band</span><span class="p">(</span><span class="n">reference_frequency</span><span class="p">)</span>
+
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Center freq for spw &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; = &quot;</span>
+                                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">reference_frequency</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;, observing band = &quot;</span> <span class="o">+</span> <span class="n">EVLA_band</span><span class="p">)</span>
+
+                        <span class="n">model_image</span> <span class="o">=</span> <span class="n">standard_source_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">EVLA_band</span> <span class="o">+</span> <span class="s1">&#39;.im&#39;</span>
+
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting model for field &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get_fields</span><span class="p">()[</span><span class="n">myfield</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                                 <span class="o">+</span> <span class="s2">&quot; spw &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; using &quot;</span> <span class="o">+</span> <span class="n">model_image</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">model</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Model override input.  Using </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">model</span><span class="p">))</span>
+                            <span class="n">model_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">model</span>
+
+                        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span>            <span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                                     <span class="s1">&#39;field&#39;</span>          <span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">myfield</span><span class="p">),</span>
+                                     <span class="s1">&#39;spw&#39;</span>            <span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+                                     <span class="s1">&#39;selectdata&#39;</span>     <span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                     <span class="s1">&#39;model&#39;</span>          <span class="p">:</span> <span class="n">model_image</span><span class="p">,</span>
+                                     <span class="s1">&#39;intent&#39;</span>         <span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;listmodels&#39;</span>     <span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                     <span class="s1">&#39;scalebychan&#39;</span>    <span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">scalebychan</span><span class="p">,</span>
+                                     <span class="s1">&#39;fluxdensity&#39;</span>    <span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fluxdensity</span><span class="p">,</span>
+                                     <span class="s1">&#39;standard&#39;</span>       <span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">standard</span><span class="p">,</span>
+                                     <span class="s1">&#39;usescratch&#39;</span>     <span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+                        <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">casa_tasks</span><span class="o">.</span><span class="n">setjy</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">))</span>
+
+                        <span class="c1"># Flux densities coming from a non-lookup are added to the</span>
+                        <span class="c1"># results so that user-provided calibrator fluxes are</span>
+                        <span class="c1"># committed back to the domain objects</span>
+
+                        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refspectra</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refspectra</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                                <span class="n">flux</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">FluxMeasurement</span><span class="p">(</span><span class="n">spw_id</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">I</span><span class="o">=</span><span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="o">=</span><span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="o">=</span><span class="n">V</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">ORIGIN</span><span class="p">)</span>
+                            <span class="k">except</span><span class="p">:</span>
+                                <span class="n">I</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refspectra</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                                <span class="n">flux</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">FluxMeasurement</span><span class="p">(</span><span class="n">spw_id</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">I</span><span class="o">=</span><span class="n">I</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">ORIGIN</span><span class="p">)</span>
+                            <span class="n">result</span><span class="o">.</span><span class="n">measurements</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">myfield</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flux</span><span class="p">)</span>
+
+                    <span class="c1"># merge identical jobs into one job with a multi-spw argument</span>
+                    <span class="n">jobs_and_components</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_jobs</span><span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">setjy</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;spw&#39;</span><span class="p">,))</span>
+                    <span class="k">for</span> <span class="n">job</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">jobs_and_components</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">setjy_dicts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">))</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;SetJy issue with field id=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">kw</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">])</span>
+                                        <span class="o">+</span> <span class="s2">&quot; and spw=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">kw</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]))</span>
+
+        <span class="n">spw_seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">setjy_dict</span> <span class="ow">in</span> <span class="n">setjy_dicts</span><span class="p">:</span>
+            <span class="n">setjy_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">field_id</span> <span class="ow">in</span> <span class="n">setjy_dict</span><span class="p">:</span>
+                <span class="n">setjy_dict</span><span class="p">[</span><span class="n">field_id</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fieldName&#39;</span><span class="p">)</span>
+                <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refspectra</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="n">setjy_dict</span><span class="p">[</span><span class="n">field_id</span><span class="p">]:</span>
+                        <span class="n">I</span> <span class="o">=</span> <span class="n">setjy_dict</span><span class="p">[</span><span class="n">field_id</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="s1">&#39;fluxd&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">Q</span> <span class="o">=</span> <span class="n">setjy_dict</span><span class="p">[</span><span class="n">field_id</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="s1">&#39;fluxd&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">U</span> <span class="o">=</span> <span class="n">setjy_dict</span><span class="p">[</span><span class="n">field_id</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="s1">&#39;fluxd&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="n">V</span> <span class="o">=</span> <span class="n">setjy_dict</span><span class="p">[</span><span class="n">field_id</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="s1">&#39;fluxd&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+                        <span class="n">flux</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">FluxMeasurement</span><span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="o">=</span><span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="o">=</span><span class="n">V</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">ORIGIN</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">spw_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spw_seen</span><span class="p">:</span>
+                            <span class="n">result</span><span class="o">.</span><span class="n">measurements</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flux</span><span class="p">)</span>
+                            <span class="n">spw_seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">spw_id</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="VLASetjy.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.setmodel.html#pipeline.hifv.tasks.setmodel.qa.VLASetjy.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

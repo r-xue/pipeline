@@ -1,0 +1,15 @@
+pipeline.hif.tasks.bandpass.adapters
+====================================
+
+.. automodule:: pipeline.hif.tasks.bandpass.adapters
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DegAmpAdapter
+      DegPhaseAdapter
+      PhaseUpSolIntAdapter
+      PolynomialHeuristicAdapter
+   

@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.gaincalsnr.qa
+=================================
+
+.. automodule:: pipeline.hifa.tasks.gaincalsnr.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GaincalSnrListQAHandler
+      GaincalSnrQAHandler
+   

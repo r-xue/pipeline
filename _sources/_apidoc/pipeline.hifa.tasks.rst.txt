@@ -1,0 +1,46 @@
+pipeline.hifa.tasks package
+===========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pipeline.hifa.tasks.antpos
+   pipeline.hifa.tasks.applycal
+   pipeline.hifa.tasks.bandpass
+   pipeline.hifa.tasks.bandpassflag
+   pipeline.hifa.tasks.bpsolint
+   pipeline.hifa.tasks.common
+   pipeline.hifa.tasks.diffgaincal
+   pipeline.hifa.tasks.exportdata
+   pipeline.hifa.tasks.flagging
+   pipeline.hifa.tasks.fluxcalflag
+   pipeline.hifa.tasks.fluxscale
+   pipeline.hifa.tasks.gaincal
+   pipeline.hifa.tasks.gaincalsnr
+   pipeline.hifa.tasks.gfluxscaleflag
+   pipeline.hifa.tasks.imageprecheck
+   pipeline.hifa.tasks.importdata
+   pipeline.hifa.tasks.lock_refant
+   pipeline.hifa.tasks.polcal
+   pipeline.hifa.tasks.polcalflag
+   pipeline.hifa.tasks.renorm
+   pipeline.hifa.tasks.restoredata
+   pipeline.hifa.tasks.sessionrefant
+   pipeline.hifa.tasks.spwphaseup
+   pipeline.hifa.tasks.targetflag
+   pipeline.hifa.tasks.tsysflag
+   pipeline.hifa.tasks.tsysflag_contamination
+   pipeline.hifa.tasks.unlock_refant
+   pipeline.hifa.tasks.wvrgcal
+   pipeline.hifa.tasks.wvrgcalflag
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifa.tasks
+   :members:
+   :undoc-members:
+   :show-inheritance:

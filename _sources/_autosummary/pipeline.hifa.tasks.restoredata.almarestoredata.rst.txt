@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.restoredata.almarestoredata
+===============================================
+
+.. automodule:: pipeline.hifa.tasks.restoredata.almarestoredata
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ALMARestoreData
+      ALMARestoreDataInputs
+   

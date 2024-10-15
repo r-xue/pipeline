@@ -1,0 +1,996 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.tasks.editimlist.editimlist &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.tasks.editimlist.editimlist</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.tasks.editimlist.editimlist</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;A pipeline task to add to a list of images to be made by hif_makeimages()</span>
+
+<span class="sd">The hif_editimlist() task typically uses a parameter file as input.  Depending</span>
+<span class="sd">on the use case, there will usually be a minimal set of input parameters</span>
+<span class="sd">defined in this file.  Each set of image parameters gets stored in the global</span>
+<span class="sd">context in the clean_list_pending attribute.</span>
+
+<span class="sd">Example:</span>
+<span class="sd">    A common case is providing a list of VLASS image parameters via a file::</span>
+
+<span class="sd">        CASA &lt;1&gt;: hif_editimlist(parameter_file=&#39;vlass_QLIP_parameters.list&#39;)</span>
+
+<span class="sd">    The ``vlass_QLIP_parameters.list`` file might contain something like the</span>
+<span class="sd">    following::</span>
+
+<span class="sd">        phasecenter=&#39;J2000 12:16:04.600 +059.24.50.300&#39;</span>
+<span class="sd">        imagename=&#39;QLIP_image&#39;</span>
+
+<span class="sd">    An equivalent way to invoke the above example would be::</span>
+
+<span class="sd">        CASA &lt;2&gt;: hif_editimlist(phasecenter=&#39;J2000 12:16:04.600 +059.24.50.300&#39;,</span>
+<span class="sd">                                 imagename=&#39;QLIP_image&#39;)</span>
+
+<span class="sd">Any imaging parameters that are not specified when hif_editimlist() is called,</span>
+<span class="sd">either as a task parameter or via a parameter file, will have a default value</span>
+<span class="sd">or heuristic applied.</span>
+
+<span class="sd">Todo:</span>
+<span class="sd">    * In the future this task will be modified to allow editing the parameters</span>
+<span class="sd">    of an existing context.clean_list_pending entry.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.heuristics</span> <span class="kn">import</span> <span class="n">imageparams_factory</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.makeimlist.cleantarget</span> <span class="kn">import</span> <span class="n">CleanTarget</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">utils</span>
+
+<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">EditimlistResult</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="EditimlistInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.editimlist.html#pipeline.hif.tasks.editimlist.editimlist.EditimlistInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">EditimlistInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+    <span class="c1"># Search order of input vis</span>
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_LINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
+
+    <span class="n">search_radius_arcsec</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">)</span>
+    <span class="n">conjbeams</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">cfcache</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">cfcache_nowb</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">cyclefactor</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.</span><span class="p">)</span>
+    <span class="n">cycleniter</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">999</span><span class="p">)</span>
+    <span class="n">nmajor</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">datatype</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">datacolumn</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">deconvolver</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">editmode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">imaging_mode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">imagename</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">gridder</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">pbmask</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">nchan</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">niter</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">nterms</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">parameter_file</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">pblimit</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.</span><span class="p">)</span>
+    <span class="n">phasecenter</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">reffreq</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">restfreq</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">robust</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.</span><span class="p">)</span>
+    <span class="n">scales</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">specmode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">stokes</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">threshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">nsigma</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.</span><span class="p">)</span>
+    <span class="n">uvtaper</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">uvrange</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="c1"># VLASS-SE-CONT specific option: if True then perform final clean iteration without mask for selfcal image</span>
+    <span class="n">clean_no_mask_selfcal_image</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># VLASS-SE-CONT specific option: user settable cycleniter in cleaning without mask in final imaging stage</span>
+    <span class="n">cycleniter_final_image_nomask</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="c1"># VLASS-SE-CUBE plane rejection parameters</span>
+    <span class="n">vlass_plane_reject_ms</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">cell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># mutable object, so should not use VisDependentProperty(default=[])</span>
+        <span class="k">if</span> <span class="s1">&#39;hm_cell&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="nd">@cell</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s1">&#39;ppb&#39;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">item</span>
+        <span class="k">return</span> <span class="n">val</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># mutable object, so should not use VisDependentProperty(default=[])</span>
+        <span class="k">if</span> <span class="s1">&#39;hm_imsize&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_imsize&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="nd">@imsize</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s1">&#39;pb&#39;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">item</span>
+        <span class="k">return</span> <span class="n">val</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># mutable object, so should not use VisDependentProperty(default=[])</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="nd">@field</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>
+            <span class="c1"># PIPE-1881: allow field names that mistakenly get casted into non-string datatype by</span>
+            <span class="c1"># recipereducer (utils.string_to_val) and executeppr (XmlObjectifier.castType)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The field selection input </span><span class="si">%r</span><span class="s1"> is not a string and will be converted.&#39;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">val</span>
+
+    <span class="nd">@vlass_plane_reject_ms</span><span class="o">.</span><span class="n">postprocess</span>
+    <span class="k">def</span> <span class="nf">vlass_plane_reject_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unprocessed</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the allowed argument input datatype to the dictionary form used by the task.&quot;&quot;&quot;</span>
+        <span class="n">vlass_plane_reject_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;apply&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;exclude_spw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;flagpct_thresh&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;nfield_thresh&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unprocessed</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">vlass_plane_reject_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">unprocessed</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unprocessed</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="n">vlass_plane_reject_dict</span><span class="p">[</span><span class="s1">&#39;apply&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unprocessed</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;convert the task input of vlass_plane_reject_ms from </span><span class="si">%r</span><span class="s2"> to </span><span class="si">%r</span><span class="s2">.&quot;</span><span class="p">,</span>
+                  <span class="n">unprocessed</span><span class="p">,</span> <span class="n">vlass_plane_reject_dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">vlass_plane_reject_dict</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">nbin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;nbins&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;nbins&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="nd">@spw</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="c1"># Use str() method to catch single spwid case via PPR which maps to int.</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">search_radius_arcsec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cfcache</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conjbeams</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">cyclefactor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cycleniter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nmajor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">deconvolver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">editmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imaging_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">imagename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gridder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nbin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nterms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">parameter_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pblimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phasecenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reffreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">restfreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">robust</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scales</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nsigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">uvtaper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clean_no_mask_selfcal_image</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">vlass_plane_reject_ms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">cycleniter_final_image_nomask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">EditimlistInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">search_radius_arcsec</span> <span class="o">=</span> <span class="n">search_radius_arcsec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfcache</span> <span class="o">=</span> <span class="n">cfcache</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conjbeams</span> <span class="o">=</span> <span class="n">conjbeams</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cyclefactor</span> <span class="o">=</span> <span class="n">cyclefactor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycleniter</span> <span class="o">=</span> <span class="n">cycleniter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nmajor</span> <span class="o">=</span> <span class="n">nmajor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span> <span class="o">=</span> <span class="n">datatype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacolumn</span> <span class="o">=</span> <span class="n">datacolumn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deconvolver</span> <span class="o">=</span> <span class="n">deconvolver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">editmode</span> <span class="o">=</span> <span class="n">editmode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">=</span> <span class="n">imaging_mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imagename</span> <span class="o">=</span> <span class="n">imagename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imsize</span> <span class="o">=</span> <span class="n">imsize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gridder</span> <span class="o">=</span> <span class="n">gridder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pbmask</span> <span class="o">=</span> <span class="n">pbmask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nbin</span> <span class="o">=</span> <span class="n">nbin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nchan</span> <span class="o">=</span> <span class="n">nchan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">niter</span> <span class="o">=</span> <span class="n">niter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nterms</span> <span class="o">=</span> <span class="n">nterms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameter_file</span> <span class="o">=</span> <span class="n">parameter_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pblimit</span> <span class="o">=</span> <span class="n">pblimit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phasecenter</span> <span class="o">=</span> <span class="n">phasecenter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reffreq</span> <span class="o">=</span> <span class="n">reffreq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restfreq</span> <span class="o">=</span> <span class="n">restfreq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">robust</span> <span class="o">=</span> <span class="n">robust</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scales</span> <span class="o">=</span> <span class="n">scales</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">specmode</span> <span class="o">=</span> <span class="n">specmode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stokes</span> <span class="o">=</span> <span class="n">stokes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nsigma</span> <span class="o">=</span> <span class="n">nsigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uvtaper</span> <span class="o">=</span> <span class="n">uvtaper</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uvrange</span> <span class="o">=</span> <span class="n">uvrange</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sensitivity</span> <span class="o">=</span> <span class="n">sensitivity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clean_no_mask_selfcal_image</span> <span class="o">=</span> <span class="n">clean_no_mask_selfcal_image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycleniter_final_image_nomask</span> <span class="o">=</span> <span class="n">cycleniter_final_image_nomask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vlass_plane_reject_ms</span> <span class="o">=</span> <span class="n">vlass_plane_reject_ms</span></div>
+
+
+<span class="c1"># tell the infrastructure to give us mstransformed data when possible by</span>
+<span class="c1"># registering our preference for imaging measurement sets</span>
+<span class="c1">#api.ImagingMeasurementSetsPreferred.register(EditimlistInputs)</span>
+
+
+<div class="viewcode-block" id="Editimlist">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.editimlist.html#pipeline.hif.tasks.editimlist.editimlist.Editimlist">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_editimlist&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Editimlist</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="c1"># &#39;Inputs&#39; will be used later in execute_task().</span>
+    <span class="c1">#   See h/cli/utils.py and infrastructure/argmagger.py</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">EditimlistInputs</span>
+
+    <span class="c1"># TODO:  check to see if I should set this to False</span>
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="Editimlist.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.editimlist.html#pipeline.hif.tasks.editimlist.editimlist.Editimlist.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># get the class inputs as a dictionary</span>
+        <span class="n">inpdict</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span>
+
+        <span class="c1"># if a file is given, read whatever parameters are defined in the file.</span>
+        <span class="c1"># note: inputs from the parameter file take precedence over individual task arguements.</span>
+        <span class="k">if</span> <span class="n">inp</span><span class="o">.</span><span class="n">parameter_file</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">parameter_file</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">):</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">parameter_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">parfile</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">parfile</span><span class="p">:</span>
+                        <span class="c1"># ignore comment lines or lines that don&#39;t contain &#39;=&#39;</span>
+                        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;=&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="c1"># split key=value into a key, value components</span>
+                        <span class="n">parameter</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)[::</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="c1"># strip whitespace</span>
+                        <span class="n">parameter</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="c1"># all params come in as strings.  evaluate it to set it to the proper type</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                        <span class="c1"># use this information to change the values in inputs</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting inputdict[&#39;</span><span class="si">{k}</span><span class="s2">&#39;] to </span><span class="si">{v}</span><span class="s2"> </span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">parameter</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
+                        <span class="n">inpdict</span><span class="p">[</span><span class="n">parameter</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Input parameter file is not readable: </span><span class="si">{fname}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="n">inp</span><span class="o">.</span><span class="n">parameter_file</span><span class="p">))</span>
+
+        <span class="c1"># now construct the list of imaging command parameter lists that must</span>
+        <span class="c1"># be run to obtain the required images</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">EditimlistResult</span><span class="p">()</span>
+
+        <span class="c1"># will default to adding a new image list entry</span>
+        <span class="n">inpdict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;editmode&#39;</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Use the ms object from the context to change field ids to fieldnames, if needed</span>
+        <span class="c1"># TODO think about how to handle multiple MSs</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">vis</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]:</span>
+            <span class="c1"># assume field entries are either all integers or all strings, but not a mix</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">fieldobj</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">fieldname</span> <span class="ow">in</span> <span class="n">fieldobj</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                    <span class="n">fieldnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fieldname</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">fieldname</span> <span class="ow">in</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]:</span>
+                    <span class="n">fieldnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fieldname</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fieldnames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fieldnames</span><span class="p">)]</span>
+        <span class="c1"># fieldnames is now a list of fieldnames: [&#39;fieldA&#39;, &#39;fieldB&#39;, ...]</span>
+        <span class="c1"># add quotes to any fieldnames with disallowed characters</span>
+        <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">fieldname_for_casa</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fieldnames</span><span class="p">]</span>
+
+        <span class="n">imlist_entry</span> <span class="o">=</span> <span class="n">CleanTarget</span><span class="p">()</span>  <span class="c1"># initialize a target structure for clean_list_pending</span>
+
+        <span class="n">img_mode</span> <span class="o">=</span> <span class="s1">&#39;VLASS-QL&#39;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;imaging_mode&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;imaging_mode&#39;</span><span class="p">]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">img_mode</span> <span class="o">=</span> <span class="n">img_mode</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">editmode</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;editmode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="c1"># The default spw range for VLASS is 2~17. hif_makeimages() needs a csv list.</span>
+        <span class="c1"># We set the imlist_entry spw before the heuristics object because the heursitics class</span>
+        <span class="c1"># uses it in initialization.</span>
+        <span class="k">if</span> <span class="n">img_mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;VLASS-QL&#39;</span><span class="p">,</span> <span class="s1">&#39;VLASS-SE-CONT&#39;</span><span class="p">,</span> <span class="s1">&#39;VLASS-SE-CONT-AWP-P001&#39;</span><span class="p">,</span> <span class="s1">&#39;VLASS-SE-CONT-AWP-P032&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;VLASS-SE-CONT-MOSAIC&#39;</span><span class="p">,</span> <span class="s1">&#39;VLASS-SE-CUBE&#39;</span><span class="p">,</span> <span class="s1">&#39;VLASS-SE-TAPER&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]:</span>
+                <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">18</span><span class="p">)])</span>
+                <span class="k">if</span> <span class="n">img_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;VLASS-SE-CUBE&#39;</span><span class="p">):</span>
+                    <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">18</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;MHz&#39;</span> <span class="ow">in</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]:</span>
+                    <span class="c1"># map the center frequencies (MHz) to spw ids</span>
+                    <span class="n">cfreq_spw</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">spw_ii</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
+                        <span class="n">centre_freq</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">spw_ii</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">MEGAHERTZ</span><span class="p">))</span>
+                        <span class="n">spwid</span> <span class="o">=</span> <span class="n">spw_ii</span><span class="o">.</span><span class="n">id</span>
+                        <span class="n">cfreq_spw</span><span class="p">[</span><span class="n">centre_freq</span><span class="p">]</span> <span class="o">=</span> <span class="n">spwid</span>
+
+                    <span class="n">user_freqs</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                    <span class="n">spws</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">uf</span> <span class="ow">in</span> <span class="n">user_freqs</span><span class="p">:</span>
+                        <span class="n">uf_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">uf</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;MHz&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+                        <span class="n">spws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cfreq_spw</span><span class="p">[</span><span class="n">uf_int</span><span class="p">])</span>
+                    <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>  <span class="c1"># with spaces and commas removed</span>
+                <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># if these are spw names, translate them to spw ids</span>
+                <span class="n">spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">tmpspw_str</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">spw_ii</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">spw_ii</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using spwd id </span><span class="si">{id}</span><span class="s1"> for spw name </span><span class="si">{name}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">spw_ii</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">spw_ii</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                        <span class="n">tmpspw_str</span> <span class="o">=</span> <span class="n">tmpspw_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">spw_ii</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">spw_ii</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">spw_jj</span> <span class="ow">in</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">spw_jj</span> <span class="ow">in</span> <span class="n">tmpspw_str</span><span class="p">:</span>  <span class="c1"># if spwname hasn&#39;t been replaced with an id, then warn</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;spw name </span><span class="se">\&#39;</span><span class="si">{name}</span><span class="se">\&#39;</span><span class="s1"> was not found in </span><span class="si">{ms}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">spw_jj</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="n">inp</span><span class="o">.</span><span class="n">vis</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmpspw_str</span>
+
+        <span class="c1"># phasecenter is required user input (not determined by heuristics)</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]</span>
+
+        <span class="n">iph</span> <span class="o">=</span> <span class="n">imageparams_factory</span><span class="o">.</span><span class="n">ImageParamsHeuristicsFactory</span><span class="p">()</span>
+
+        <span class="c1"># note: heuristics.imageparams_base expects &#39;spw&#39; to be a selection string.</span>
+        <span class="c1"># For VLASS-SE-CUBE, &#39;spw&#39; is the representational string of spw group list, e.g. spw=&quot;[&#39;1,2&#39;,&#39;3,4,5&#39;]&quot;</span>
+        <span class="n">th</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;heuristics&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">iph</span><span class="o">.</span><span class="n">getHeuristics</span><span class="p">(</span><span class="n">vislist</span><span class="o">=</span><span class="n">inp</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]),</span>
+                                                            <span class="n">observing_run</span><span class="o">=</span><span class="n">inp</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="p">,</span>
+                                                            <span class="n">imagename_prefix</span><span class="o">=</span><span class="n">inp</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">project_structure</span><span class="o">.</span><span class="n">ousstatus_entity_id</span><span class="p">,</span>
+                                                            <span class="n">proj_params</span><span class="o">=</span><span class="n">inp</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">project_performance_parameters</span><span class="p">,</span>
+                                                            <span class="n">imaging_params</span><span class="o">=</span><span class="n">inp</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span><span class="p">,</span>
+                                                            <span class="n">imaging_mode</span><span class="o">=</span><span class="n">img_mode</span><span class="p">)</span>
+
+        <span class="c1"># Determine current VLASS-SE-CONT imaging stage (used in heuristics to make decisions)</span>
+        <span class="c1"># Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032 modes as of 01.03.2021</span>
+        <span class="k">if</span> <span class="n">img_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;VLASS-SE-CONT&#39;</span><span class="p">):</span>
+            <span class="c1"># If 0 hif_makeimlist results are found, then we are in stage 1</span>
+            <span class="n">th</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_task_result_count</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="s1">&#39;hif_makeimages&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="c1"># Below method only exists for ImageParamsHeuristicsVlassSeCont and ImageParamsHeuristicsVlassSeContAWPP001</span>
+            <span class="n">th</span><span class="o">.</span><span class="n">set_user_cycleniter_final_image_nomask</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;cycleniter_final_image_nomask&#39;</span><span class="p">])</span>
+
+        <span class="c1"># For VLASS-SE-CUBE, we only run hif_makeimages once and reuse most imaging heuristics</span>
+        <span class="c1"># from SE-CONT-MOSAIC/vlass_stage=3. Therefore, ImageParamsHeuristicsVlassSeCube is constructed</span>
+        <span class="c1"># as a subclass of ImageParamsHeuristicsVlassSeContMosaic with vlass_stage=3 at its initialization.</span>
+        <span class="c1"># vlass_stage=3 stays once the workflow starts to create the imaging target list.</span>
+        <span class="k">if</span> <span class="n">img_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;VLASS-SE-CUBE&#39;</span><span class="p">):</span>
+            <span class="n">th</span><span class="o">.</span><span class="n">set_user_cycleniter_final_image_nomask</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;cycleniter_final_image_nomask&#39;</span><span class="p">])</span>
+            <span class="c1"># the below statement is redundant and only serves as a reminder that vlass_stage=3 for all VLASS-SE-CUBE heuristics.</span>
+            <span class="n">th</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">=</span> <span class="mi">3</span>
+
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;hm_nsigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;nsigma&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mf">999.0</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;nsigma&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;hm_nsigma&#39;</span><span class="p">]:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Both &#39;threshold&#39; and &#39;nsigma&#39; were specified.&quot;</span><span class="p">)</span>
+
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;pblimit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;pblimit&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mf">999.0</span><span class="p">)</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;pblimit&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">stokes</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;conjbeams&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">conjbeams</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;conjbeams&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;conjbeams&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">reffreq</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span>
+        
+        <span class="c1"># niter_correction is run again in tclean.py</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;niter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">niter</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;niter&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;niter&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cyclefactor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;cyclefactor&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cycleniter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;cycleniter&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;nmajor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;nmajor&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cfcache&#39;</span><span class="p">],</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cfcache_nowb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">get_cfcaches</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;cfcache&#39;</span><span class="p">])</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;scales&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">scales</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;scales&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;scales&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;uvtaper&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">uvtaper</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;uvtaper&#39;</span> <span class="ow">in</span> <span class="n">inp</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span>
+                                   <span class="k">else</span> <span class="n">inp</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span><span class="p">[</span><span class="s1">&#39;uvtaper&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;uvtaper&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;uvtaper&#39;</span><span class="p">]</span>
+
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;deconvolver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">deconvolver</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;deconvolver&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;deconvolver&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">mask</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;pbmask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;pbmask&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;pbmask&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">specmode</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;robust&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">robust</span><span class="p">(</span><span class="n">specmode</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;robust&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mf">999.0</span><span class="p">)</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;robust&#39;</span><span class="p">]</span>
+
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">],</span> <span class="n">_</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">uvrange</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">fieldnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">fieldnames</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                                                <span class="n">spwspec</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span>
+                                                <span class="n">specmode</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;RADIUS&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;search_radius_arcsec&#39;</span><span class="p">]))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;default=</span><span class="si">{d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;search_radius_arcsec&#39;</span><span class="p">]</span>
+                                      <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;search_radius_arcsec&#39;</span><span class="p">],</span> <span class="nb">float</span><span class="p">)</span>
+                                      <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;search_radius_arcsec&#39;</span><span class="p">],</span> <span class="nb">int</span><span class="p">)))</span>
+        <span class="n">buffer_arcsec</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">buffer_radius</span><span class="p">()</span> \
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;search_radius_arcsec&#39;</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;search_radius_arcsec&#39;</span><span class="p">],</span> <span class="nb">float</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;search_radius_arcsec&#39;</span><span class="p">],</span> <span class="nb">int</span><span class="p">))</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;search_radius_arcsec&#39;</span><span class="p">]</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{k}</span><span class="s2"> = </span><span class="si">{v}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="s1">&#39;search_radius&#39;</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">buffer_arcsec</span><span class="p">))</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">capture_buffer_size</span><span class="p">(</span><span class="n">buffer_arcsec</span><span class="p">)</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">intent</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span>
+
+        <span class="c1"># imlist_entry[&#39;datacolumn&#39;] is either None or an non-empty string here based on the current heuristics implementation.</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;datacolumn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">datacolumn</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;datacolumn&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;datacolumn&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;nterms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">nterms</span><span class="p">(</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;nterms&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;nterms&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Specify the sensitivity value to be used in TcleanInputs</span>
+        <span class="k">if</span> <span class="s1">&#39;VLASS&#39;</span> <span class="ow">in</span> <span class="n">img_mode</span><span class="p">:</span>
+            <span class="c1"># Force sensitivity = 0.0 to disable sensitivity calculation inside hif_tclean()</span>
+            <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;sensitivity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Assign user input if not None or 0.0; otherwise, set to None for in-flight calculation by hif_tclean()</span>
+            <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;sensitivity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;sensitivity&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;sensitivity&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="c1"># ---------------------------------------------------------------------------------- set cell (SRDP ALMA)</span>
+        <span class="n">ppb</span> <span class="o">=</span> <span class="mf">5.0</span>  <span class="c1"># pixels per beam</span>
+        <span class="k">if</span> <span class="n">fieldnames</span><span class="p">:</span>
+            <span class="n">synthesized_beam</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">synthesized_beam</span><span class="p">(</span><span class="n">field_intent_list</span><span class="o">=</span><span class="p">[[</span><span class="n">fieldnames</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">]],</span>
+                                                        <span class="n">spwspec</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span>
+                                                        <span class="n">robust</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;robust&#39;</span><span class="p">],</span>
+                                                        <span class="n">uvtaper</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;uvtaper&#39;</span><span class="p">],</span>
+                                                        <span class="n">pixperbeam</span><span class="o">=</span><span class="n">ppb</span><span class="p">,</span>
+                                                        <span class="n">known_beams</span><span class="o">=</span><span class="n">inp</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">synthesized_beams</span><span class="p">,</span>
+                                                        <span class="n">force_calc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">synthesized_beam</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># inpdict[&#39;cell&#39;] can have input of the form [&#39;0.5arcsec&#39;, &#39;0.5arcsec&#39;] or &#39;3ppb&#39;</span>
+        <span class="c1"># It is only a string if the pixel-per-beam value is provided.</span>
+        <span class="c1"># With pixel-per-beam input, the cell size needs to be calculated using</span>
+        <span class="c1"># th.cell(), so set inpdict[&#39;cell&#39;] to the empty list here to trigger this calculation.</span>
+        <span class="k">if</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">ppb</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;ppb&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">beam</span><span class="o">=</span><span class="n">synthesized_beam</span><span class="p">,</span>
+                                       <span class="n">pixperbeam</span><span class="o">=</span><span class="n">ppb</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span>
+        <span class="c1"># ----------------------------------------------------------------------------------  set imsize (SRDP ALMA)</span>
+        <span class="n">largest_primary_beam</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">largest_primary_beam_size</span><span class="p">(</span><span class="n">spwspec</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+        <span class="n">fieldids</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">fieldnames</span><span class="p">)</span>
+
+        <span class="c1"># Fail if there is no field to image. This could occur if a field is requested that is not in the MS.</span>
+        <span class="c1"># th.field will return [&#39;&#39;] if no fields were found in the MS that match any input fields and intents</span>
+        <span class="c1"># PIPE-2189: fieldnames is an empty list in the case of VLASS imaging.</span>
+        <span class="k">if</span> <span class="n">fieldnames</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">fieldids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">fieldids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Field(s): </span><span class="si">{}</span><span class="s2"> not present in MS: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fieldnames</span><span class="p">),</span> <span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;imsize&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">sfpblimit</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;pb&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sfpblimit</span> <span class="o">=</span> <span class="mf">0.2</span>
+
+        <span class="k">if</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;imsize&#39;</span><span class="p">]:</span>
+            <span class="c1"># PIPE-2189: take the manually specfied imsize; commonly used by VLASS.</span>
+            <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">img_mode</span> <span class="o">==</span> <span class="s1">&#39;VLA&#39;</span> <span class="ow">and</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span><span class="p">:</span>
+                <span class="c1"># PIPE-675: VLA imsize heuristic update; band dependent FOV in &#39;cont&#39; specmode.</span>
+                <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">imsize</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="n">fieldids</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">],</span>
+                                                   <span class="n">primary_beam</span><span class="o">=</span><span class="n">largest_primary_beam</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span>
+                                                   <span class="n">intent</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">],</span> <span class="n">specmode</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">imsize</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="n">fieldids</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">],</span>
+                                                   <span class="n">primary_beam</span><span class="o">=</span><span class="n">largest_primary_beam</span><span class="p">,</span>
+                                                   <span class="n">sfpblimit</span><span class="o">=</span><span class="n">sfpblimit</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">],</span>
+                                                   <span class="n">specmode</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">])</span>
+
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;nchan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;nchan&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span>
+
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;restfreq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">restfreq</span><span class="p">(</span>
+            <span class="n">specmode</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">],</span>
+            <span class="n">nchan</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;nchan&#39;</span><span class="p">],</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">],</span>
+            <span class="n">width</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;restfreq&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;restfreq&#39;</span><span class="p">]</span>
+
+        <span class="c1"># for VLASS phasecenter is required user input (not determined by heuristics)</span>
+        <span class="k">if</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]:</span>
+            <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]</span>
+            <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;psf_phasecenter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">phasecenter</span><span class="p">,</span> <span class="n">psf_phasecenter</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">phasecenter</span><span class="p">(</span><span class="n">fieldids</span><span class="p">)</span>
+            <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phasecenter</span>
+            <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;psf_phasecenter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">psf_phasecenter</span>
+
+        <span class="c1"># set the field name list in the image list target</span>
+        <span class="k">if</span> <span class="n">fieldnames</span><span class="p">:</span>
+            <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+                <span class="c1"># TODO: remove the dependency on cell size being in arcsec</span>
+
+                <span class="c1"># remove brackets and begin/end string characters</span>
+                <span class="c1"># if cell is a list, get the first string element</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">],</span> <span class="nb">type</span><span class="p">([])):</span>
+                    <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">)</span>
+                <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="c1"># We always search for fields in 1sq degree with a surrounding buffer</span>
+                <span class="n">mosaic_side_arcsec</span> <span class="o">=</span> <span class="mi">3600</span>  <span class="c1"># 1 degree</span>
+                <span class="n">dist</span> <span class="o">=</span> <span class="p">(</span><span class="n">mosaic_side_arcsec</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">buffer_arcsec</span><span class="p">)</span>
+                <span class="n">dist_arcsec</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;arcsec&#39;</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{k}</span><span class="s2"> = </span><span class="si">{v}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="s1">&#39;dist_arcsec&#39;</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">dist_arcsec</span><span class="p">))</span>
+
+                <span class="c1"># PIPE-1948/PIPE-2004: we updated the field select algorithm for VLASS-PL2023.</span>
+                <span class="c1"># * restrict field intents to &#39;TARGET&#39;</span>
+                <span class="c1"># * restrict field names to beginning with &#39;0&#39;, &#39;1&#39;, &#39;2&#39;, or &#39;T&#39; (e.g. the NCP field &#39;T32t02.NCP&#39;)</span>
+                <span class="c1">#   note: we also consider rge double quote possibility because field names might be protected in</span>
+                <span class="c1">#   the name strings of Field domain objects.</span>
+                <span class="c1"># * use spherical sky offsets to select fields based on positions.</span>
+                <span class="n">found_fields</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">select_fields</span><span class="p">(</span><span class="n">offsets</span><span class="o">=</span><span class="n">dist_arcsec</span><span class="p">,</span>
+                                                <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+                                                <span class="n">phasecenter</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">],</span>
+                                                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;0*,&quot;0*,1*,&quot;1*,2*,&quot;2*,T*,&quot;T*&#39;</span><span class="p">)</span>
+                <span class="c1"># for the existing VLASS workflow, only one MS is used, though this might change in the future.</span>
+                <span class="n">found_fields</span> <span class="o">=</span> <span class="n">found_fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">found_fields</span><span class="p">:</span>
+                    <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">found_fields</span><span class="p">)</span>  <span class="c1"># field ids, not names</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]:</span>   <span class="c1"># could be None or an empty string</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;spw is not specified&#39;</span><span class="p">)</span>   <span class="c1"># probably should raise an error rather than warning? - will likely fail later anyway</span>
+            <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;field is not specified&#39;</span><span class="p">)</span>   <span class="c1"># again, should probably raise an error, as it will eventually fail anyway</span>
+            <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># validate specmode</span>
+        <span class="k">if</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;mfs&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">,</span> <span class="s1">&#39;cube&#39;</span><span class="p">,</span> <span class="s1">&#39;repBW&#39;</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;specmode must be one of &quot;mfs&quot;, &quot;cont&quot;, &quot;cube&quot;, or &quot;repBW&quot;&#39;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">error_msg</span> <span class="o">=</span> <span class="n">msg</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">img_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;VLASS&#39;</span><span class="p">):</span>
+            <span class="c1"># this block is only executed for non-VLASS data</span>
+            <span class="k">if</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;datacolumn&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                <span class="c1"># if datacolumn is not specified by the user input or heuristics, we need to determine the datacolumn</span>
+                <span class="c1"># from the list of datatypes to consider in the order of preference.</span>
+                <span class="n">specmode_datatypes</span> <span class="o">=</span> <span class="n">DataType</span><span class="o">.</span><span class="n">get_specmode_datatypes</span><span class="p">(</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">],</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">])</span>
+                <span class="c1"># PIPE-1798: filter the list to only include the one(s) starting with the user supplied restriction str, i.e., inputs.datatype.</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">specmode_datatypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">dt</span> <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">specmode_datatypes</span> <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">())]</span>
+                <span class="c1"># loop over the datatype candidate list find the first one that appears in the given (source,spw) combinations.</span>
+                <span class="k">for</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">specmode_datatypes</span><span class="p">:</span>
+                    <span class="n">datacolumn_name</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_data_column</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">datacolumn_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">):</span>
+                        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;datatype_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtype</span><span class="o">.</span><span class="n">name</span>
+                        <span class="k">if</span> <span class="n">datacolumn_name</span> <span class="o">==</span> <span class="s1">&#39;DATA&#39;</span><span class="p">:</span>
+                            <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;datacolumn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span>
+                        <span class="k">if</span> <span class="n">datacolumn_name</span> <span class="o">==</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">:</span>
+                            <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;datacolumn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;corrected&#39;</span>
+                        <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No valid datacolumn is associated with the  data selection: &#39;</span>
+                                  <span class="sa">f</span><span class="s2">&quot;datatype=</span><span class="si">{</span><span class="n">dtype</span><span class="si">!r}</span><span class="s2">, field=</span><span class="si">{</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span><span class="si">!r}</span><span class="s2">, spw=</span><span class="si">{</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">specmode_datatypes_str</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dt</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">specmode_datatypes</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;No data from field=</span><span class="si">{</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span><span class="si">!r}</span><span class="s2"> / spw=</span><span class="si">{</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="si">!r}</span><span class="s2"> is &quot;</span>
+                        <span class="sa">f</span><span class="s1">&#39;in the allowed datatype(s): </span><span class="si">{</span><span class="n">specmode_datatypes_str</span><span class="si">}</span><span class="s1">.&#39;</span>
+                        <span class="s1">&#39; No clean target will be added.&#39;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">result</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># if datacolumn is specified, pick it and label cleantarget with the corresponding datatype (when available).</span>
+                <span class="n">ms_datacolumn</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;datacolumn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">ms_datacolumn</span> <span class="o">==</span> <span class="s1">&#39;CORRECTED&#39;</span><span class="p">:</span>
+                    <span class="n">ms_datacolumn</span> <span class="o">=</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_data_type</span><span class="p">(</span><span class="n">ms_datacolumn</span><span class="p">,</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;datacolumn=</span><span class="si">{</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s2">&quot;datacolumn&quot;</span><span class="p">]</span><span class="si">!r}</span><span class="s1"> is selected based on user or heuristic input, which overrides the datatype-based selection.&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No valid datatype is associated with the data selection: &#39;</span>
+                                <span class="sa">f</span><span class="s2">&quot;datacolumn=</span><span class="si">{</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;datacolumn&#39;</span><span class="p">]</span><span class="si">!r}</span><span class="s2">, field=</span><span class="si">{</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span><span class="si">!r}</span><span class="s2">, spw=</span><span class="si">{</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;datatype_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtype</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="c1"># PIPE-1710/PIPE-1474: append a corresponding suffix to the image file name according to the datatype of selected visibilities.</span>
+        <span class="n">datatype_suffix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;selfcal&#39;</span><span class="p">):</span>
+                <span class="n">datatype_suffix</span> <span class="o">=</span> <span class="s1">&#39;selfcal&#39;</span>
+            <span class="k">if</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;regcal&#39;</span><span class="p">):</span>
+                <span class="n">datatype_suffix</span> <span class="o">=</span> <span class="s1">&#39;regcal&#39;</span>
+
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;gridder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">gridder</span><span class="p">(</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">],</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span>
+                                             <span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;gridder&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;gridder&#39;</span><span class="p">]</span>
+        <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">imagename</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">],</span> <span class="n">field</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span>
+                                                 <span class="n">spwspec</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span> <span class="n">specmode</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">],</span>
+                                                 <span class="n">band</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">datatype_suffix</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span>
+
+        <span class="c1"># In this case field and spwspec is not needed in the filename, furthermore, imaging is done in multiple stages</span>
+        <span class="c1"># prepend the STAGENUMBER string in order to differentiate them. In TcleanInputs class this is replaced by the</span>
+        <span class="c1"># actual stage number string.</span>
+        <span class="c1"># Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032,</span>
+        <span class="c1"># VLASS-SE-CONT-MOSAIC, and VLASS-SE-CUBE as of 05/03/2022</span>
+        <span class="k">if</span> <span class="n">img_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;VLASS-SE-CONT&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">img_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;VLASS-SE-CUBE&#39;</span><span class="p">):</span>
+            <span class="n">imagename</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">imagename</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">],</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                     <span class="n">specmode</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">],</span>
+                                     <span class="n">band</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span>
+            <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;s</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;STAGENUMBER&#39;</span><span class="p">,</span> <span class="n">imagename</span><span class="p">)</span>
+            <span class="c1"># Try to obtain previously computed mask name</span>
+            <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">mask</span><span class="p">(</span><span class="n">results_list</span><span class="o">=</span><span class="n">inp</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">,</span>
+                                           <span class="n">clean_no_mask</span><span class="o">=</span><span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;clean_no_mask_selfcal_image&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span> \
+                <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">imlist_entry</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> = </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">img_mode</span> <span class="o">==</span> <span class="s1">&#39;VLASS-SE-CUBE&#39;</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_vlasscube_targets</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">imlist_entry</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">add_target</span><span class="p">(</span><span class="n">imlist_entry</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No fields to image.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># check for required user inputs</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No imagename provided.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No phasecenter provided.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="Editimlist.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.editimlist.html#pipeline.hif.tasks.editimlist.editimlist.Editimlist.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_add_vlasscube_targets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">imlist_entry</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add multiple clean targets for the VLASS-SE-CUBE mode.</span>
+<span class="sd">        </span>
+<span class="sd">        For the &quot;coarse cube&quot; mode, we perform the following operations:</span>
+<span class="sd">            - loop over individual spw groups</span>
+<span class="sd">            - generate corresponding clean target using a modified copy of the base CleanTarget object template</span>
+<span class="sd">            - aggregate clean targets list after the VLASS-SE-CUBE plane rejection criteria is applied.</span>
+<span class="sd">        note: the initial &#39;spw&#39; from the base CleanTarget object template, i.e., imlist_entry[&#39;spw&#39;], is expected to be a list here.</span>
+<span class="sd">        For VLASS-SE-CUBE, we add additional attributes so the template can render the target-specific parameters properly.        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">vlass_plane_reject_keys_allowed</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;apply&#39;</span><span class="p">,</span> <span class="s1">&#39;exclude_spw&#39;</span><span class="p">,</span> <span class="s1">&#39;flagpct_thresh&#39;</span><span class="p">,</span> <span class="s1">&#39;nfield_thresh&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vlass_plane_reject_ms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vlass_plane_reject_keys_allowed</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;The key </span><span class="si">%r</span><span class="s2"> in the &#39;vlass_plane_reject_ms&#39; task input dictionary is not expected and will be ignored.&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="n">targets_reffreq</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">targets_spw</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">targets_imagename</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">th</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;heuristics&#39;</span><span class="p">]</span>
+
+        <span class="n">vlass_flag_stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vlass_plane_rejection</span><span class="p">(</span><span class="n">imlist_entry</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">vlass_flag_stats</span> <span class="o">=</span> <span class="n">vlass_flag_stats</span>
+
+        <span class="n">spwgroup_reject_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">spw</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]):</span>
+
+            <span class="n">imlist_entry_per_spwgroup</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">imlist_entry</span><span class="p">)</span>
+            <span class="n">imlist_entry_per_spwgroup</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw</span>
+            <span class="n">imlist_entry_per_spwgroup</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span> <span class="o">+</span> \
+                <span class="s1">&#39;.spw&#39;</span> <span class="o">+</span> <span class="n">spw</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="n">imlist_entry_per_spwgroup</span><span class="p">[</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">meanfreq_spwgroup</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+            <span class="c1"># flagpct within the 1de^2 box</span>
+            <span class="n">imlist_entry_per_spwgroup</span><span class="p">[</span><span class="s1">&#39;flagpct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vlass_flag_stats</span><span class="p">[</span><span class="s1">&#39;flagpct_spwgroup&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
+            <span class="c1"># flagpct over the entire mosaic</span>
+            <span class="n">flagpct</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">flagpct_spwgroup</span><span class="p">(</span><span class="n">results_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">spw_selection</span><span class="o">=</span><span class="n">spw</span><span class="p">)</span>
+            <span class="c1"># PIPE-1800: flagpct_threshold here is the flag percent rejection threshold across the entire mosaic.</span>
+            <span class="c1"># We hardcode the value to 1.0 which means we reject any spw that is completely flagged.</span>
+            <span class="c1"># Note that this is different from vlass_plane_reject_ms[&#39;flagpct_thresh&#39;] which is a per-field flagging threshold to </span>
+            <span class="c1"># define &quot;bad&quot; fields.</span>
+            <span class="n">flagpct_threshold</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+            <span class="k">if</span> <span class="n">flagpct</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s1">&#39;Can not find previous flagging summary for spw=</span><span class="si">%r</span><span class="s1">, but we will still add it as an imaging target.&#39;</span><span class="p">,</span>
+                    <span class="n">spw</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">flagpct</span> <span class="o">&gt;=</span> <span class="n">flagpct_threshold</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s1">&#39;VLASS Data for spw=</span><span class="si">%r</span><span class="s1"> is </span><span class="si">%.2f%%</span><span class="s1"> flagged, and we will skip it as an imaging target.&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span>
+                        <span class="n">flagpct</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">vlass_flag_stats</span><span class="p">[</span><span class="s1">&#39;spwgroup_reject&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">]:</span>
+                <span class="n">spwgroup_reject_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">result</span><span class="o">.</span><span class="n">targets_reffreq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imlist_entry_per_spwgroup</span><span class="p">[</span><span class="s1">&#39;reffreq&#39;</span><span class="p">])</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">targets_spw</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imlist_entry_per_spwgroup</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">targets_imagename</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">imlist_entry_per_spwgroup</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]))</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">add_target</span><span class="p">(</span><span class="n">imlist_entry_per_spwgroup</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">spwgroup_reject_list</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s1">&#39;VLASS Data for spw=</span><span class="si">%r</span><span class="s1"> meets the plane rejection criteria: nfield&gt;=</span><span class="si">%i</span><span class="s1"> with flagpct&gt;=</span><span class="si">%.2f%%</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="n">spwgroup_reject_list</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vlass_plane_reject_ms</span><span class="p">[</span><span class="s1">&#39;nfield_thresh&#39;</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vlass_plane_reject_ms</span><span class="p">[</span><span class="s1">&#39;flagpct_thresh&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_vlass_plane_rejection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imlist_entry</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decide whether to reject a spw group based on the number of high-flagging-percentage fields.&quot;&quot;&quot;</span>
+
+        <span class="n">vis_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">msobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis_name</span><span class="p">)</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis_name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="n">fieldcnt</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">flag_stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-1800: for plane-rejection, we restrict the flagging stats evaluation within the</span>
+        <span class="c1"># 1deg^2 box based on the cutout layout.</span>
+        <span class="n">mosaic_side_arcsec</span> <span class="o">=</span> <span class="mi">3600</span>  <span class="c1"># 1 degree</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="p">(</span><span class="n">mosaic_side_arcsec</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+        <span class="n">dist_arcsec</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;arcsec&#39;</span>
+
+        <span class="n">fid_list</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;heuristics&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">select_fields</span><span class="p">(</span><span class="n">offsets</span><span class="o">=</span><span class="n">dist_arcsec</span><span class="p">,</span>
+                                                            <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+                                                            <span class="n">phasecenter</span><span class="o">=</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">],</span>
+                                                            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;0*,&quot;0*,1*,&quot;1*,2*,&quot;2*,T*,&quot;T*&#39;</span><span class="p">)</span>
+        <span class="c1"># for the existing VLASS workflow, only one MS is used, though this might change in the future.</span>
+        <span class="n">fid_list</span> <span class="o">=</span> <span class="n">fid_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">field_objs</span> <span class="o">=</span> <span class="n">msobj</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">fid_list</span><span class="p">)</span>
+        <span class="n">n_spwgroup</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span>
+        <span class="n">n_flagged_field_spwgroup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">field_objs</span><span class="p">),</span> <span class="n">n_spwgroup</span><span class="p">))</span>
+        <span class="n">n_total_field_spwgroup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">field_objs</span><span class="p">),</span> <span class="n">n_spwgroup</span><span class="p">))</span>
+        <span class="n">scan_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">field_objs</span><span class="p">))</span>
+        <span class="n">fname_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">field_idx</span><span class="p">,</span> <span class="n">field_obj</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">field_objs</span><span class="p">):</span>
+            <span class="n">fname_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field_obj</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">spwgroup_idx</span><span class="p">,</span> <span class="n">spwgroup_sel</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]):</span>
+                <span class="n">n_flagged</span> <span class="o">=</span> <span class="n">n_total</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">spw_list</span> <span class="o">=</span> <span class="n">spwgroup_sel</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">spw_str</span> <span class="ow">in</span> <span class="n">spw_list</span><span class="p">:</span>
+                    <span class="n">n_flagged</span> <span class="o">+=</span> <span class="n">flag_stats</span><span class="p">[</span><span class="n">field_obj</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;spw&#39;</span><span class="p">][</span><span class="n">spw_str</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">]</span>
+                    <span class="n">n_total</span> <span class="o">+=</span> <span class="n">flag_stats</span><span class="p">[</span><span class="n">field_obj</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;spw&#39;</span><span class="p">][</span><span class="n">spw_str</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">]</span>
+                <span class="n">n_flagged_field_spwgroup</span><span class="p">[</span><span class="n">field_idx</span><span class="p">,</span> <span class="n">spwgroup_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_flagged</span>
+                <span class="n">n_total_field_spwgroup</span><span class="p">[</span><span class="n">field_idx</span><span class="p">,</span> <span class="n">spwgroup_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_total</span>
+                <span class="n">scan_list</span><span class="p">[</span><span class="n">field_idx</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">flag_stats</span><span class="p">[</span><span class="n">field_obj</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;scan&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">nfield_above_flagpct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n_flagged_field_spwgroup</span><span class="o">/</span><span class="n">n_total_field_spwgroup</span> <span class="o">&gt;</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vlass_plane_reject_ms</span><span class="p">[</span><span class="s1">&#39;flagpct_thresh&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">spwgroup_reject</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="n">n_spwgroup</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">nfield</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nfield_above_flagpct</span><span class="p">):</span>
+            <span class="n">is_spwgroup_excluded</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vlass_plane_reject_ms</span><span class="p">[</span><span class="s1">&#39;exclude_spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vlass_plane_reject_ms</span><span class="p">[</span><span class="s1">&#39;apply&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">nfield</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vlass_plane_reject_ms</span><span class="p">[</span><span class="s1">&#39;nfield_thresh&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_spwgroup_excluded</span><span class="p">:</span>
+                <span class="n">spwgroup_reject</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">vlass_flag_stats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">vlass_flag_stats</span><span class="p">[</span><span class="s1">&#39;spwgroup_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span>
+        <span class="n">vlass_flag_stats</span><span class="p">[</span><span class="s1">&#39;scan_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scan_list</span>
+        <span class="n">vlass_flag_stats</span><span class="p">[</span><span class="s1">&#39;fname_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fname_list</span>
+        <span class="n">vlass_flag_stats</span><span class="p">[</span><span class="s1">&#39;flagpct_field_spwgroup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_flagged_field_spwgroup</span> <span class="o">/</span> \
+            <span class="n">n_total_field_spwgroup</span>
+        <span class="n">vlass_flag_stats</span><span class="p">[</span><span class="s1">&#39;flagpct_spwgroup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="n">n_flagged_field_spwgroup</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n_total_field_spwgroup</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">vlass_flag_stats</span><span class="p">[</span><span class="s1">&#39;nfield_above_flagpct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nfield_above_flagpct</span>
+        <span class="n">vlass_flag_stats</span><span class="p">[</span><span class="s1">&#39;flagpct_thresh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vlass_plane_reject_ms</span><span class="p">[</span><span class="s1">&#39;flagpct_thresh&#39;</span><span class="p">]</span>
+        <span class="n">vlass_flag_stats</span><span class="p">[</span><span class="s1">&#39;nfield_thresh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vlass_plane_reject_ms</span><span class="p">[</span><span class="s1">&#39;nfield_thresh&#39;</span><span class="p">]</span>
+        <span class="n">vlass_flag_stats</span><span class="p">[</span><span class="s1">&#39;spwgroup_reject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spwgroup_reject</span>
+
+        <span class="k">return</span> <span class="n">vlass_flag_stats</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

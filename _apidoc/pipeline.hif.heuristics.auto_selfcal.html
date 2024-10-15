@@ -1,0 +1,508 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.heuristics.auto_selfcal package &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.hif.heuristics.auto_selfcal package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/pipeline.hif.heuristics.auto_selfcal.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hif-heuristics-auto-selfcal-package">
+<h1>pipeline.hif.heuristics.auto_selfcal package<a class="headerlink" href="#pipeline-hif-heuristics-auto-selfcal-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pipeline.hif.heuristics.auto_selfcal.auto_selfcal">
+<span id="pipeline-hif-heuristics-auto-selfcal-auto-selfcal-module"></span><h2>pipeline.hif.heuristics.auto_selfcal.auto_selfcal module<a class="headerlink" href="#module-pipeline.hif.heuristics.auto_selfcal.auto_selfcal" title="Link to this heading"></a></h2>
+<p>This module is an adaptation from the original auto_selfcal prototype.</p>
+<p>see: <a class="reference external" href="https://github.com/jjtobin/auto_selfcal">https://github.com/jjtobin/auto_selfcal</a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SelfcalHeuristics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scal_target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaincal_minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsnr_to_proceed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_beam_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_cal_mode_default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calflag'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_thresh_scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'log10'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dividing_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_all_spws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_solints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_amp_selfcal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inf_EB_gaincal_combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scan'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">executor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/auto_selfcal.html#SelfcalHeuristics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to hold the heuristics for selfcal.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics.copy_dir">
+<span class="sig-name descname"><span class="pre">copy_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_dirname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_dirname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/auto_selfcal.html#SelfcalHeuristics.copy_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics.copy_dir" title="Link to this definition"></a></dt>
+<dd><p>Copy a directory to a new location.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics.get_dr_correction">
+<span class="sig-name descname"><span class="pre">get_dr_correction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/auto_selfcal.html#SelfcalHeuristics.get_dr_correction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics.get_dr_correction" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics.get_observing_run">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_observing_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms_files</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/auto_selfcal.html#SelfcalHeuristics.get_observing_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics.get_observing_run" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics.get_sensitivity">
+<span class="sig-name descname"><span class="pre">get_sensitivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/auto_selfcal.html#SelfcalHeuristics.get_sensitivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics.get_sensitivity" title="Link to this definition"></a></dt>
+<dd><p>Calculate sensitivty from the Pipeline standard imaging heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics.move_dir">
+<span class="sig-name descname"><span class="pre">move_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_dirname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_dirname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/auto_selfcal.html#SelfcalHeuristics.move_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics.move_dir" title="Link to this definition"></a></dt>
+<dd><p>Move a directory to a new location.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics.remove_dirs">
+<span class="sig-name descname"><span class="pre">remove_dirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/auto_selfcal.html#SelfcalHeuristics.remove_dirs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics.remove_dirs" title="Link to this definition"></a></dt>
+<dd><p>Remove dirs based on a list of glob pattern.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics.tclean_wrapper">
+<span class="sig-name descname"><span class="pre">tclean_wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imagename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_properties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">telescope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'undefined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scales</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smallscalebias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cellsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robust</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cycleniter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvtaper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savemodel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sidelobethreshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoothfactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noisethreshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lownoisethreshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nterms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cyclefactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0.0Jy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startmodel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pblimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbmask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obstype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'single-point'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfrms_multiplier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savemodel_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/auto_selfcal.html#SelfcalHeuristics.tclean_wrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.SelfcalHeuristics.tclean_wrapper" title="Link to this definition"></a></dt>
+<dd><p>Wrapper for tclean with keywords set to values desired for the Large Program imaging
+See the CASA 6.1.1 documentation for tclean to get the definitions of all the parameters</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.hif.heuristics.auto_selfcal.selfcal_helpers">
+<span id="pipeline-hif-heuristics-auto-selfcal-selfcal-helpers-module"></span><h2>pipeline.hif.heuristics.auto_selfcal.selfcal_helpers module<a class="headerlink" href="#module-pipeline.hif.heuristics.auto_selfcal.selfcal_helpers" title="Link to this heading"></a></h2>
+<p>This module is an adaptation from the original auto_selfcal prototype.</p>
+<p>see: <a class="reference external" href="https://github.com/jjtobin/auto_selfcal">https://github.com/jjtobin/auto_selfcal</a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.analyze_inf_EB_flagging">
+<span class="sig-name descname"><span class="pre">analyze_inf_EB_flagging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selfcal_library</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwlist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaintable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw_combine_test_gaintable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectral_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">telescope</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#analyze_inf_EB_flagging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.analyze_inf_EB_flagging" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.checkmask">
+<span class="sig-name descname"><span class="pre">checkmask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imagename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#checkmask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.checkmask" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.compare_beams">
+<span class="sig-name descname"><span class="pre">compare_beams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#compare_beams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.compare_beams" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.copy_products">
+<span class="sig-name descname"><span class="pre">copy_products</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imagename_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imagename_dst</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#copy_products"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.copy_products" title="Link to this definition"></a></dt>
+<dd><p>Link the tclean products.</p>
+<p>This function is used to link the tclean products.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.estimate_SNR">
+<span class="sig-name descname"><span class="pre">estimate_SNR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imagename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#estimate_SNR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.estimate_SNR" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.estimate_near_field_SNR">
+<span class="sig-name descname"><span class="pre">estimate_near_field_SNR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imagename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">las</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#estimate_near_field_SNR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.estimate_near_field_SNR" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.fetch_scan_times">
+<span class="sig-name descname"><span class="pre">fetch_scan_times</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#fetch_scan_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.fetch_scan_times" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.fetch_scan_times_band_aware">
+<span class="sig-name descname"><span class="pre">fetch_scan_times_band_aware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_properties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#fetch_scan_times_band_aware"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.fetch_scan_times_band_aware" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.fetch_targets">
+<span class="sig-name descname"><span class="pre">fetch_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#fetch_targets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.fetch_targets" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.gaussian_norm">
+<span class="sig-name descname"><span class="pre">gaussian_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#gaussian_norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.gaussian_norm" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_ALMA_bands">
+<span class="sig-name descname"><span class="pre">get_ALMA_bands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwstring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_ALMA_bands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_ALMA_bands" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_SNR_self">
+<span class="sig-name descname"><span class="pre">get_SNR_self</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_targets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bands</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selfcal_library</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_ant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inf_EB_gaincal_combine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inf_EB_gaintype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_SNR_self"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_SNR_self" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_SNR_self_update">
+<span class="sig-name descname"><span class="pre">get_SNR_self_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_targets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selfcal_library</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_ant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint_curr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint_next</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint_snr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_SNR_self_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_SNR_self_update" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_VLA_bands">
+<span class="sig-name descname"><span class="pre">get_VLA_bands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_VLA_bands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_VLA_bands" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_ant_list">
+<span class="sig-name descname"><span class="pre">get_ant_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_ant_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_ant_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_baseline_dist">
+<span class="sig-name descname"><span class="pre">get_baseline_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_baseline_dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_baseline_dist" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_desired_width">
+<span class="sig-name descname"><span class="pre">get_desired_width</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meanfreq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_desired_width"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_desired_width" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_dr_correction">
+<span class="sig-name descname"><span class="pre">get_dr_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">telescope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dirty_peak</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theoretical_sens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_dr_correction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_dr_correction" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_flagged_solns_per_spw">
+<span class="sig-name descname"><span class="pre">get_flagged_solns_per_spw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spwlist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaintable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_flagged_solns_per_spw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_flagged_solns_per_spw" title="Link to this definition"></a></dt>
+<dd><p>Calculate the number of flagged and unflagged solutions per spectral window (spw).</p>
+<p>This function examines a gain table and calculates the number of flagged and unflagged
+solutions for each spectral window (spw) provided in the spwlist. It also calculates
+the fraction of flagged solutions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spwlist</strong> (<em>list</em>) – List of spectral window IDs to examine.</p></li>
+<li><p><strong>gaintable</strong> (<em>str</em>) – Path to the gain table directory.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A tuple containing three elements:</dt><dd><ul class="simple">
+<li><p>nflags (list): Number of flagged solutions per spw.</p></li>
+<li><p>nunflagged (list): Number of unflagged solutions per spw.</p></li>
+<li><p>fracflagged (numpy.ndarray): Fraction of flagged solutions per spw.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>FileNotFoundError</strong> – If the specified gain table directory does not exist.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_image_parameters">
+<span class="sig-name descname"><span class="pre">get_image_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">telescope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_properties</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_image_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_image_parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_intflux">
+<span class="sig-name descname"><span class="pre">get_intflux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imagename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_intflux"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_intflux" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_max_uvdist">
+<span class="sig-name descname"><span class="pre">get_max_uvdist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bands</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_properties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">telescope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'VLA'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_max_uvdist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_max_uvdist" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_mean_freq">
+<span class="sig-name descname"><span class="pre">get_mean_freq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwsarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_mean_freq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_mean_freq" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_n_ants">
+<span class="sig-name descname"><span class="pre">get_n_ants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_n_ants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_n_ants" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_nterms">
+<span class="sig-name descname"><span class="pre">get_nterms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fracbw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nt1snr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_nterms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_nterms" title="Link to this definition"></a></dt>
+<dd><p>Get nterm based on fracbw and nt1snr.</p>
+<p>see PIPE-1772.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_selfcal_logger">
+<span class="sig-name descname"><span class="pre">get_selfcal_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loggername</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto_selfcal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loglevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'DEBUG'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_selfcal_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_selfcal_logger" title="Link to this definition"></a></dt>
+<dd><p>Get a named logger for auto_selfcal.</p>
+<p>When auto_selfcal runs outside of Pipeline, this function is a custom Python logger object
+as constructed below.
+When auto_selfcal runs as a Pipeline “extern” module, this function directly wraps around
+pipeline.infrastructure.get_logger</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_sensitivity">
+<span class="sig-name descname"><span class="pre">get_sensitivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selfcal_library</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mfs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">virtual_spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cellsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0.025arcsec'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robust</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvtaper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_sensitivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_sensitivity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_solints_simple">
+<span class="sig-name descname"><span class="pre">get_solints_simple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scantimesdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scanstartsdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scanendsdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integrationtimes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inf_EB_gaincal_combine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwcombine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint_decrement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fixed'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint_divider</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_solints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_amp_selfcal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mosaic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_solints_simple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_solints_simple" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_spw_bandwidth">
+<span class="sig-name descname"><span class="pre">get_spw_bandwidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwsarray_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_spw_bandwidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_spw_bandwidth" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_spw_chanavg">
+<span class="sig-name descname"><span class="pre">get_spw_chanavg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widtharray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bwarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chanarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desiredWidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15625000.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_spw_chanavg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_spw_chanavg" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_spw_chanbin">
+<span class="sig-name descname"><span class="pre">get_spw_chanbin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bwarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chanarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desiredWidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15625000.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_spw_chanbin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_spw_chanbin" title="Link to this definition"></a></dt>
+<dd><p>Calculate the number of channels to average over for each spw.</p>
+<p>note: mstransform only accept chanbin as integer.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_spw_chanwidths">
+<span class="sig-name descname"><span class="pre">get_spw_chanwidths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_spw_chanwidths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_spw_chanwidths" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_spw_eff_bandwidth">
+<span class="sig-name descname"><span class="pre">get_spw_eff_bandwidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwsarray_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_spw_eff_bandwidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_spw_eff_bandwidth" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_spw_map">
+<span class="sig-name descname"><span class="pre">get_spw_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selfcal_library</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">telescope</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_spw_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_spw_map" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_uv_range">
+<span class="sig-name descname"><span class="pre">get_uv_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">band</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_properties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#get_uv_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_uv_range" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.importdata">
+<span class="sig-name descname"><span class="pre">importdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_targets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">telescope</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#importdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.importdata" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.parse_contdotdat">
+<span class="sig-name descname"><span class="pre">parse_contdotdat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contdotdat_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#parse_contdotdat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.parse_contdotdat" title="Link to this definition"></a></dt>
+<dd><p>Parse the continuum frequency range specified in cont.dat.</p>
+<p>This function mimics the output of the “parse_contdot_dat” helper function
+from GH:auto_selfcal.selfcal_helpers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>contdotdat_file</strong> (<em>str</em>) – Path to the cont.dat file.</p></li>
+<li><p><strong>target</strong> (<em>str</em>) – The target field to parse from the cont.dat file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary where keys are virtual spw ids (integers) and values are
+numpy arrays of frequency ranges.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
+CASA &lt;30&gt;: from pipeline.hif.heuristics.auto_selfcal.selfcal_helpers import parse_contdotdat</p>
+<blockquote>
+<div><p>…: contfile=’cont.dat’
+…: contdotdat=parse_contdotdat(contfile,’helms30’)
+…: pprint(contdotdat)</p>
+</div></blockquote>
+<dl>
+<dt>{16: array([[214.48924823, 215.08298911],</dt><dd><blockquote>
+<div><p>[215.28611099, 216.19234708]]),</p>
+</div></blockquote>
+<p>18: array([[216.36433767, 218.0986862 ]]),
+20: array([[232.48638245, 234.22073239]]),
+22: array([[230.61129118, 232.34564096]])}</p>
+</dd>
+</dl>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.rank_refants">
+<span class="sig-name descname"><span class="pre">rank_refants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#rank_refants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.rank_refants" title="Link to this definition"></a></dt>
+<dd><p>Rank the reference antenna for a measurement set.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.test_truncated_scans">
+<span class="sig-name descname"><span class="pre">test_truncated_scans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ints_per_solint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allscantimes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration_time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/auto_selfcal/selfcal_helpers.html#test_truncated_scans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.test_truncated_scans" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pipeline.hif.heuristics.auto_selfcal">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline.hif.heuristics.auto_selfcal" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

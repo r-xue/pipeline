@@ -1,0 +1,306 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pipeline testing &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="DataType Testing" href="DataType_Testing.html" />
+    <link rel="prev" title="VLASS Selfcal &amp; Restore workflows" href="selfcal_workflow.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pipeline testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#unit-tests">Unit tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#regression-tests">Regression tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-pytest-options">Custom pytest options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-markers">Custom markers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Pipeline testing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/develdocmd/pipeline_tests.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-testing">
+<h1>Pipeline testing<a class="headerlink" href="#pipeline-testing" title="Link to this heading"></a></h1>
+<section id="unit-tests">
+<h2>Unit tests<a class="headerlink" href="#unit-tests" title="Link to this heading"></a></h2>
+<p>The instruction of writing/running pipeline unit tests is described in <a class="reference external" href="https://open-jira.nrao.edu/browse/PIPE-862">PIPE-862</a>. Some tips for running local tests are below:</p>
+<p>To invoke unit tests within the pipeline repo directory,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">PYTHONNOUSERSITE=1 ${casa_dir}/bin/python3 -m pytest -v --pyclean .</span>
+</pre></div>
+</div>
+<p>Alternatively, use</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span><span class="o">{</span>casa_dir<span class="o">}</span>/bin/casa<span class="w"> </span>--nogui<span class="w"> </span>--nologger<span class="w"> </span>--agg<span class="w"> </span>--nologfile<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import pytest; pytest.main([&#39;-v&#39;, &#39;--pyclean&#39;, &#39;.&#39;])&quot;</span>
+</pre></div>
+</div>
+<p>The CASA call version will use <code class="docutils literal notranslate"><span class="pre">casashell</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">casashell</span></code>), which might show slightly different results.
+The <code class="docutils literal notranslate"><span class="pre">--nologfile</span></code> (equivalent to <code class="docutils literal notranslate"><span class="pre">--logfile</span> <span class="pre">/dev/null</span></code>) here can prevent generating CASA log files in your pipeline repository directory.</p>
+<p>If <a class="reference external" href="https://pytest-xdist.readthedocs.io/en/latest"><code class="docutils literal notranslate"><span class="pre">pytest-xdist</span></code></a> and <a class="reference external" href="https://pytest-cov.readthedocs.io/en/latest/config.html"><code class="docutils literal notranslate"><span class="pre">pytest-cov</span></code></a> are avilable, you can also try:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">PYTHONNOUSERSITE=1 ${casa_dir}/bin/python3 -m pytest -n 4 -v --cov=pipeline --cov-report=html .</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span><span class="o">{</span>casa_dir<span class="o">}</span>/bin/casa<span class="w"> </span>--nogui<span class="w"> </span>--nologger<span class="w"> </span>--agg<span class="w"> </span>--nologfile<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import pytest; pytest.main([&#39;-v&#39;, &#39;.&#39;, &#39;-n&#39;, &#39;4&#39;])&quot;</span>
+</pre></div>
+</div>
+<p>On a multi-core system, <code class="docutils literal notranslate"><span class="pre">pytest-xdist</span></code> can speed things up significantly, when the parallelization doesn’t create a memory/io-bound situation. This is usually true for a light-weight test collection (e.g. unit tests), e.g.,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">walltime</span>   <span class="mi">0</span><span class="n">m21</span><span class="mf">.744</span><span class="n">s</span> <span class="c1"># with pytest-xdist</span>
+<span class="n">walltime</span>   <span class="mi">2</span><span class="n">m13</span><span class="mf">.076</span><span class="n">s</span> <span class="c1"># without pytest-xdist</span>
+</pre></div>
+</div>
+<p>A summary of various test frameworks and tools is available in <a class="reference external" href="https://open-jira.nrao.edu/browse/PIPE-806">PIPE-806</a>.</p>
+</section>
+<section id="regression-tests">
+<h2>Regression tests<a class="headerlink" href="#regression-tests" title="Link to this heading"></a></h2>
+<p>See https://open-confluence.nrao.edu/display/PL/Regression+Testing for details</p>
+<p>To add the <em>xdist</em> flavor to your local regression run, one can try:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xvfb-run -d ${casa_dir}/bin/casa --nogui --nologger --agg -c \</span>
+<span class="go">    &quot;import pytest; pytest.main([&#39;-vv&#39;, &#39;--junitxml=regression-results.xml&#39;, &#39;-n&#39;, &#39;4&#39;, &#39;&lt;pipeline_dir&gt;/pipeline/infrastructure/utils/regression_tester.py&#39;])&quot;</span>
+</pre></div>
+</div>
+<p>Here are some additional examples to run selected tests using their <a class="reference external" href="https://docs.pytest.org/en/latest/example/markers.html">node IDs or custom makers</a>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span><span class="k">select</span><span class="w"> </span>a<span class="w"> </span>single<span class="w"> </span><span class="nb">test</span><span class="w"> </span>using<span class="w"> </span>its<span class="w"> </span>node<span class="w"> </span>ID
+<span class="go">xvfb-run -d ${casa_dir}/bin/casa --nogui --nologger --agg -c \</span>
+<span class="go">    &quot;import pytest; pytest.main([&#39;-vv&#39;, &#39;--junitxml=regression-results.xml&#39;, &#39;&lt;pipeline_dir&gt;/pipeline/infrastructure/utils/regression_tester.py::test_uid___A002_X85c183_X36f_SPW15_23__PPR__regression&#39;])&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span><span class="k">select</span><span class="w"> </span>a<span class="w"> </span>group<span class="w"> </span>of<span class="w"> </span>tests<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span><span class="nb">test</span><span class="w"> </span>marker<span class="w"> </span><span class="sb">`</span>hifa<span class="sb">`</span>
+<span class="go">xvfb-run -d ${casa_dir}/bin/casa --nogui --nologger --agg -c \</span>
+<span class="go">    &quot;import pytest; pytest.main([&#39;-vv&#39;, &#39;--junitxml=regression-results.xml&#39;, &#39;-m&#39;, &#39;hifa&#39;, &#39;&lt;pipeline_dir&gt;/pipeline/infrastructure/utils/regression_tester.py&#39;])&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span><span class="k">select</span><span class="w"> </span>all<span class="w"> </span>tests<span class="w"> </span>with<span class="w"> </span><span class="sb">`</span>mg2_20170525142607_180419<span class="sb">`</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span><span class="nb">test</span><span class="w"> </span><span class="k">function</span><span class="w"> </span>names
+<span class="go">xvfb-run -d ${casa_dir}/bin/casa --nogui --nologger --agg -c \</span>
+<span class="go">    &quot;import pytest; pytest.main([&#39;-vv&#39;, &#39;--junitxml=regression-results.xml&#39;, &#39;-k&#39;, &#39;mg2_20170525142607_180419&#39;, &#39;&lt;pipeline_dir&gt;/pipeline/infrastructure/utils/regression_tester.py&#39;])&quot;</span>
+</pre></div>
+</div>
+<p>Alternatively, if you want to figure out the coverage of a single regression test and also prefer to directly call CASA’s python interpreter (therefore skip the <code class="docutils literal notranslate"><span class="pre">casashell</span></code> layer and .casa/startup.py):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">PYTHONNOUSERSITE=1 xvfb-run -d ${casa_dir}/bin/python3 -m pytest -v --pyclean --cov=pipeline --cov-report=html \</span>
+<span class="gp">    $</span><span class="o">{</span>pipeline_dir<span class="o">}</span>/pipeline/infrastructure/utils/regression_tester.py::test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__procedure_hifa_calimage__regression
+</pre></div>
+</div>
+<p>The coverage report will be saved as <code class="docutils literal notranslate"><span class="pre">htmlcov/index.html</span></code>. A similar call can be issued to report the test coverage of the entire regression test suite, although such run will take much longer.</p>
+</section>
+<section id="custom-pytest-options">
+<h2>Custom pytest options<a class="headerlink" href="#custom-pytest-options" title="Link to this heading"></a></h2>
+<p>Pipeline has several pytest custom options, which can be found by invoking <code class="docutils literal notranslate"><span class="pre">--help</span></code> inside a repository directory.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">casa_python -m pytest --help</span>
+<span class="go">...</span>
+<span class="go">custom options:</span>
+<span class="go">  --collect-tests       collect tests and export test node ids to a plain text file `collected_tests.txt`</span>
+<span class="go">  --nologfile           do not create CASA log files, equivalent to &#39;casa --nologfile&#39;</span>
+<span class="go">  --pyclean             clean up .pyc to reproduce certain warnings only issued when the bytecode is compiled.</span>
+<span class="go">  --compare-only        do the comparison between the results in a working area from a previously-run test and the saved reference values (do not re-run the pipeline recipe)</span>
+<span class="go">  --longtests           run longer-running tests which are excluded by default</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">casa_python</span></code> is an alias to <code class="docutils literal notranslate"><span class="pre">PYTHONNOUSERSITE=1</span> <span class="pre">${casa_dir}/bin/python3</span></code>.</p>
+<p>For example, if you only want to generate a list of test node ids for existing regression tests, try</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">casa_python -m pytest -v --collect-tests pipeline/infrastructure/utils/regression_tester.py</span>
+</pre></div>
+</div>
+<p>On the other hand, one can use the <code class="docutils literal notranslate"><span class="pre">--nologfile</span></code> option (built in <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code>), to avoid <code class="docutils literal notranslate"><span class="pre">casa-*log</span></code> files spamming your repo working directory.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">casa_python -m pytest -n 4 -v --pyclean --nologfile .</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--compare-only</span></code> option is used to generate new pytest results from a previous test run without re-running the pipeline recipe. It uses the existing working directories to
+extract values for comparison with the reference values. For example, the following will use the existing working directories for the previously run fast alma tests to compare
+these results to the reference values. This should be run in a directory which contains the test output results for each test.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xvfb-run casa --nogui --nologger --log2term --agg -c \</span>
+<span class="go">    &quot;import pytest; pytest.main([&#39;-vv&#39;, &#39;-m alma and fast&#39;, &#39;--compare-only&#39;, &#39;&lt;pipeline_dir&gt;/pipeline/infrastructure/utils/regression_tester.py&#39;])&quot;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--longtests</span></code> option enables the longer tests to be run. When this option is not specified, only the quicker set of tests will be run.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--data-directory</span></code> option allows the specification of the directory where the larger input data files are stored. If not specified, this defaults to
+<code class="docutils literal notranslate"><span class="pre">/lustre/cv/projects/pipeline-test-data/regression-test-data/</span></code> which requires the tests to be run somewhere with access to lustre.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xvfb-run casa --nogui --nologger --log2term --agg -c \</span>
+<span class="go">    &quot;import pytest; pytest.main([&#39;-vv&#39;, &#39;-m alma and slow&#39;, &#39;--data-directory=/users/kberry/big_data_directory/&#39;, &#39;&lt;pipeline_dir&gt;/pipeline/infrastructure/utils/regression_tester.py&#39;])&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-markers">
+<h2>Custom markers<a class="headerlink" href="#custom-markers" title="Link to this heading"></a></h2>
+<p>There are several custom markers used for the pipeline regression tests. These are specified in pytest.ini and also listed below:</p>
+<ul class="simple">
+<li><p>alma: alma test</p></li>
+<li><p>vla: vla test (does not include vlass)</p></li>
+<li><p>vlass: vlass test</p></li>
+<li><p>fast: shorter-running test</p></li>
+<li><p>slow: longer-running test</p></li>
+<li><p>twelve: 12m ALMA</p></li>
+<li><p>seven: 7m ALMA</p></li>
+<li><p>sd: single dish</p></li>
+</ul>
+<p>These markers can be used to select the tests to run using the -m option to pytest. For example, if you want to only run vlass tests, try:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xvfb-run casa --nogui --nologger --log2term --agg -c&quot;import pytest; pytest.main([&#39;-vv&#39;, &#39;-m vlass&#39;, &#39;--longtests&#39;, &#39;&lt;pipeline_dir&gt;/pipeline/infrastructure/utils/regression_tester.py&#39;])&quot;</span>
+</pre></div>
+</div>
+<p>Markers can also be combined using ‘and’, ‘or’, or ‘not’. The following example demonstrates how to run only fast vla tests:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go"> xvfb-run casa --nogui --nologger --log2term --agg -c&quot;import pytest; pytest.main([&#39;-vv&#39;, &#39;-m vla and fast&#39;, &#39;pipeline/pipeline/infrastructure/utils/regression_tester.py&#39;])&quot;</span>
+</pre></div>
+</div>
+<p>And to run everything besides the vlass tests, run the following:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go"> xvfb-run casa --nogui --nologger --log2term --agg -c&quot;import pytest; pytest.main([&#39;-vv&#39;, &#39;-m not vlass&#39;, &#39;pipeline/pipeline/infrastructure/utils/regression_tester.py&#39;])&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="selfcal_workflow.html" class="btn btn-neutral float-left" title="VLASS Selfcal &amp; Restore workflows" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="DataType_Testing.html" class="btn btn-neutral float-right" title="DataType Testing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

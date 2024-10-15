@@ -1,0 +1,38 @@
+pipeline.environment
+====================
+
+.. automodule:: pipeline.environment
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      cluster_details
+      compare_casa_version
+      find_spec
+      get_version_string_from_git
+      version
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CGroupController
+      CGroupControllerParser
+      CGroupLimit
+      CommonEnvironment
+      Environment
+      EnvironmentFactory
+      LinuxEnvironment
+      MPIEnvironment
+      MacOSEnvironment
+      Path
+      StringIO
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      PackageNotFoundError
+   

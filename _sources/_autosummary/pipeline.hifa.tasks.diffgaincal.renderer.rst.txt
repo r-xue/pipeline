@@ -1,0 +1,23 @@
+pipeline.hifa.tasks.diffgaincal.renderer
+========================================
+
+.. automodule:: pipeline.hifa.tasks.diffgaincal.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      generate_detail_plots
+      get_diffgain_applications
+      get_plots
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Context
+      DiffGainApplication
+      ResultsList
+      T2_4MDetailsDiffgaincalRenderer
+   

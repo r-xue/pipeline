@@ -1,0 +1,37 @@
+pipeline.hif.tasks.uvcontsub package
+====================================
+
+Submodules
+----------
+
+pipeline.hif.tasks.uvcontsub.qa module
+--------------------------------------
+
+.. automodule:: pipeline.hif.tasks.uvcontsub.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.uvcontsub.renderer module
+--------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.uvcontsub.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.uvcontsub.uvcontsub module
+---------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.uvcontsub.uvcontsub
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hif.tasks.uvcontsub
+   :members:
+   :undoc-members:
+   :show-inheritance:

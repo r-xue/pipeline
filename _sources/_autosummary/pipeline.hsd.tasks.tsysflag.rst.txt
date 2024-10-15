@@ -1,0 +1,19 @@
+pipeline.hsd.tasks.tsysflag
+===========================
+
+.. automodule:: pipeline.hsd.tasks.tsysflag
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SerialTsysflag
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   tsysflag

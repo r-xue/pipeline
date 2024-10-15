@@ -1,0 +1,19 @@
+pipeline.hifv.heuristics.vlascanheuristics
+==========================================
+
+.. automodule:: pipeline.hifv.heuristics.vlascanheuristics
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      buildscans
+      testCalibratorIntents
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      VLAScanHeuristics
+   

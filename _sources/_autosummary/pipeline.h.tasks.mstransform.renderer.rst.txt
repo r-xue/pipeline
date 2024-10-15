@@ -1,0 +1,19 @@
+pipeline.h.tasks.mstransform.renderer
+=====================================
+
+.. automodule:: pipeline.h.tasks.mstransform.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      make_split_table
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MsSplitTR
+      T2_4MDetailsMsSplitRenderer
+   

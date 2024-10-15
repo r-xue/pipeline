@@ -1,0 +1,21 @@
+pipeline.hifa.tasks.fluxcalflag
+===============================
+
+.. automodule:: pipeline.hifa.tasks.fluxcalflag
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FluxcalFlag
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fluxcalflag
+   qa
+   solsyslinesdict

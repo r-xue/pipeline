@@ -1,0 +1,14 @@
+pipeline.hsd.tasks.applycal.renderer
+====================================
+
+.. automodule:: pipeline.hsd.tasks.applycal.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Context
+      ResultsList
+      T2_4MDetailsSDApplycalRenderer
+   

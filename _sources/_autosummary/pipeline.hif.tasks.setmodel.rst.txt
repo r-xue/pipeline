@@ -1,0 +1,24 @@
+pipeline.hif.tasks.setmodel
+===========================
+
+.. automodule:: pipeline.hif.tasks.setmodel
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SetModels
+      Setjy
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   qa
+   renderer
+   setjy
+   setmodel

@@ -1,0 +1,1080 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.gaincal.timegaincal &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.gaincal.timegaincal</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.gaincal.timegaincal</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.gaincal</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.gaincal</span> <span class="kn">import</span> <span class="n">gtypegaincal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics</span> <span class="kn">import</span> <span class="n">exptimes</span> <span class="k">as</span> <span class="n">gexptimes</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics.phasespwmap</span> <span class="kn">import</span> <span class="n">combine_spwmap</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;TimeGaincalInputs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;TimeGaincal&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="TimeGaincalInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.timegaincal.TimeGaincalInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">TimeGaincalInputs</span><span class="p">(</span><span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincalInputs</span><span class="p">):</span>
+
+    <span class="c1"># Amplitude caltable that is to be registered in callibrary as</span>
+    <span class="c1"># applicable to TARGET/CHECK, and to AMPLITUDE,POL*,BANDPASS intents.</span>
+    <span class="n">amptable</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Amplitude caltable used for diagnostic amplitude plots in weblog.</span>
+    <span class="n">calamptable</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">calminsnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+
+    <span class="c1"># Phase caltable to be registered for the non-PHASE calibrators.</span>
+    <span class="c1"># This is also used for diagnostic phase vs. time plots in weblog.</span>
+    <span class="n">calphasetable</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Default solint used for calibrators.</span>
+    <span class="n">calsolint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Override default base class intents for ALMA.</span>
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;PHASE,AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE,DIFFGAINREF,DIFFGAINSRC&#39;</span>
+
+    <span class="c1"># Used for diagnostic phase offsets plots in weblog.</span>
+    <span class="n">offsetstable</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">targetminsnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+
+    <span class="c1"># Used for phase caltable that is to be registered in callibrary as</span>
+    <span class="c1"># applicable to TARGET/CHECK, and to PHASE calibrator.</span>
+    <span class="n">targetphasetable</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">targetsolint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calamptable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calphasetable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetstable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">amptable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">targetphasetable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">targetsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calminsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">targetminsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>  <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">amptable</span> <span class="o">=</span> <span class="n">amptable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calamptable</span> <span class="o">=</span> <span class="n">calamptable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calminsnr</span> <span class="o">=</span> <span class="n">calminsnr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calphasetable</span> <span class="o">=</span> <span class="n">calphasetable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calsolint</span> <span class="o">=</span> <span class="n">calsolint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offsetstable</span> <span class="o">=</span> <span class="n">offsetstable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">targetminsnr</span> <span class="o">=</span> <span class="n">targetminsnr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">targetphasetable</span> <span class="o">=</span> <span class="n">targetphasetable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">targetsolint</span> <span class="o">=</span> <span class="n">targetsolint</span></div>
+
+
+
+<div class="viewcode-block" id="TimeGaincal">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.timegaincal.TimeGaincal">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_timegaincal&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Time dependent gain calibrations are computed.&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">TimeGaincal</span><span class="p">(</span><span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">TimeGaincalInputs</span>
+
+<div class="viewcode-block" id="TimeGaincal.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.timegaincal.TimeGaincal.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Create a results object.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">phasecal_for_phase_plot</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Compute the phase solutions for the science target, check source,</span>
+        <span class="c1"># and phase calibrator. This caltable will be registered as applicable</span>
+        <span class="c1"># to the target, check source, and phase calibrator when the result for</span>
+        <span class="c1"># this task is accepted.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Computing phase gain table(s) for target(s), check source(s), and phase calibrator(s).&#39;</span><span class="p">)</span>
+        <span class="n">target_phasecal_calapps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_phasecal_for_target</span><span class="p">()</span>
+        <span class="c1"># Add the solutions to final task result, for adopting into context</span>
+        <span class="c1"># callibrary, but do not merge them into local task context, so they</span>
+        <span class="c1"># are not used in pre-apply of subsequent gaincal calls.</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">target_phasecal_calapps</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">target_phasecal_calapps</span><span class="p">)</span>
+
+        <span class="c1"># Compute the phase solutions for all calibrators in inputs.intents.</span>
+        <span class="c1"># These phase cal results include solutions for the PHASE calibrator</span>
+        <span class="c1"># field(s), and will be temporarily accepted into the local context to</span>
+        <span class="c1"># have these available as pre-apply in subsequent gaincals (both for</span>
+        <span class="c1"># amplitude solves and for computing residual phase offsets). But for</span>
+        <span class="c1"># the final task result, these phase solutions will only be registered</span>
+        <span class="c1"># as applicable to the bandpass, flux, differential gain, and</span>
+        <span class="c1"># polarization calibrators.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Computing phase gain table(s) for bandpass, flux, diffgain, and polarization calibrator(s).&#39;</span><span class="p">)</span>
+        <span class="n">cal_phase_results</span><span class="p">,</span> <span class="n">max_phase_solint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_phasecal_for_calibrators</span><span class="p">()</span>
+
+        <span class="c1"># Merge the phase solutions for the calibrators into the local task</span>
+        <span class="c1"># context so that it is marked for inclusion in pre-apply (gaintable)</span>
+        <span class="c1"># in subsequent gaincal calls during this task.</span>
+        <span class="k">for</span> <span class="n">cpres</span> <span class="ow">in</span> <span class="n">cal_phase_results</span><span class="p">:</span>
+            <span class="n">cpres</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># Look through calibrator phasecal results for any CalApplications for</span>
+        <span class="c1"># caltables that are applicable to non-PHASE calibrators (i.e.</span>
+        <span class="c1"># AMPLITUDE, BANDPASS, POL*, and DIFFGAIN*). Add these CalApps to the</span>
+        <span class="c1"># final task result, to be merged into the final context / callibrary.</span>
+        <span class="k">for</span> <span class="n">cpres</span> <span class="ow">in</span> <span class="n">cal_phase_results</span><span class="p">:</span>
+            <span class="n">cp_calapp</span> <span class="o">=</span> <span class="n">cpres</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">cp_calapp</span><span class="o">.</span><span class="n">intent</span> <span class="o">!=</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cp_calapp</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cp_calapp</span><span class="p">)</span>
+
+            <span class="c1"># PIPE-1377: add all results to the list to be plotted in the</span>
+            <span class="c1"># phase vs. time diagnostic plots in the renderer.</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">phasecal_for_phase_plot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cp_calapp</span><span class="p">)</span>
+
+        <span class="c1"># Compute the amplitude calibration.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Computing the final amplitude gain table.&#39;</span><span class="p">)</span>
+        <span class="n">amplitude_calapps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_target_ampcal</span><span class="p">()</span>
+
+        <span class="c1"># Accept the amplitude calibration into the final results.</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">amplitude_calapps</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">amplitude_calapps</span><span class="p">)</span>
+
+        <span class="c1"># Produce the diagnostic table for displaying amplitude vs time plots.</span>
+        <span class="c1"># For the solint, use the maximum SpW-mapping-mode-based solint that</span>
+        <span class="c1"># was used earlier for phase solutions for the PHASE calibrator(s).</span>
+        <span class="c1"># This table is not applied to the data, and no special mapping is</span>
+        <span class="c1"># required here.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Computing diagnostic amplitude gain table for displaying amplitude vs time plots.&#39;</span><span class="p">)</span>
+        <span class="n">amp_diagnostic_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_caltarget_ampcal</span><span class="p">(</span><span class="n">solint</span><span class="o">=</span><span class="n">max_phase_solint</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">calampresult</span> <span class="o">=</span> <span class="n">amp_diagnostic_result</span>
+
+        <span class="c1"># To ensure that a diagnostic phase offsets caltable (to be created in</span>
+        <span class="c1"># an upcoming step) will be sensitive to residual phase offsets, it is</span>
+        <span class="c1"># necessary to enforce that the phase caltable for PHASE calibrator</span>
+        <span class="c1"># fields used in pre-apply was solved with combine=&#39;spw&#39;. But the</span>
+        <span class="c1"># caltables for PHASE calibrator fields that earlier got solved and</span>
+        <span class="c1"># merged into local context (for pre-apply in amplitude solves) may not</span>
+        <span class="c1"># always have used combine=&#39;spw&#39; (since it used optimal parameters</span>
+        <span class="c1"># based on SpW mapping). Hence, first unregister any phase caltable for</span>
+        <span class="c1"># PHASE calibrator fields where the SpW mapping recommended combine=&#39;&#39;.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Prior to computing diagnostic residual phase offsets, unregistering any phase gain table(s) for&quot;</span>
+                 <span class="s2">&quot; phase calibrator(s) that were derived with combine=&#39;&#39;, earlier in this stage.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unregister_phasecal_with_no_combine</span><span class="p">()</span>
+
+        <span class="c1"># Next, compute a new phase solutions solve for those PHASE calibrator</span>
+        <span class="c1"># fields where the recommended combine was &#39;&#39;, while this time</span>
+        <span class="c1"># enforcing combine=&#39;spw&#39;.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Prior to computing diagnostic residual phase offsets, where necessary (caltable was unregistered)&quot;</span>
+                 <span class="s2">&quot; re-computing phase gain table(s) for phase calibrator(s) while enforcing combine=&#39;spw&#39;.&quot;</span><span class="p">)</span>
+        <span class="n">phasecal_phase_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_phasecal_for_phase_calibrators_forcing_combine</span><span class="p">()</span>
+
+        <span class="c1"># Merge the new phase solutions for PHASE calibrator fields into the</span>
+        <span class="c1"># local task context, so they are marked for inclusion in pre-apply in</span>
+        <span class="c1"># subsequent diagnostic phase offsets solve.</span>
+        <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">phasecal_phase_results</span><span class="p">:</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># Now compute a new phase solutions caltable while using previous phase</span>
+        <span class="c1"># caltables in pre-apply. Assuming that inputs.intent included &#39;PHASE&#39;</span>
+        <span class="c1"># (true by default, but can be overridden by user), then the merger of</span>
+        <span class="c1"># the previous phase solutions result into the local task context will</span>
+        <span class="c1"># mean that the initial phase corrections will be included in pre-apply</span>
+        <span class="c1"># during this gaincal, and thus this new caltable will represent the</span>
+        <span class="c1"># residual phase offsets.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Computing diagnostic residual phase offsets gain table.&#39;</span><span class="p">)</span>
+        <span class="n">phase_offsets_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_offsets_phasecal</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">phaseoffsetresult</span> <span class="o">=</span> <span class="n">phase_offsets_result</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="TimeGaincal.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.timegaincal.TimeGaincal.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">:</span>
+        <span class="c1"># Double-check that the caltables were actually generated.</span>
+        <span class="n">on_disk</span> <span class="o">=</span> <span class="p">[</span><span class="n">table</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">on_disk</span>
+
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">table</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">table</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">on_disk</span><span class="p">]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_spw_groupings</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Group selected SpWs by SpectralSpec.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ms: MeasurementSet to query for spectral specs.</span>
+<span class="sd">            spw: A comma separated string of SpW IDs to group together</span>
+<span class="sd">            spwmap: List representing spectral window mapping</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of tuples representing SpW groupings, containing:</span>
+<span class="sd">              * Reference Spw ID</span>
+<span class="sd">              * Spectral Spec ID</span>
+<span class="sd">              * SpW IDs associated to that SpW grouping (value)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">grouped_spw</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spwmap</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># No SpW combination</span>
+            <span class="k">return</span> <span class="n">grouped_spw</span>
+
+        <span class="n">request_spws</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">spw</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">sspec</span><span class="p">,</span> <span class="n">spws</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_spectralspec_to_spwid_map</span><span class="p">(</span><span class="n">request_spws</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ref_spw</span> <span class="o">=</span> <span class="p">{</span><span class="n">spwmap</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">}</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ref_spw</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;A SpectralSpec is mapped to more than one SpWs&#39;</span>
+            <span class="n">grouped_spw</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ref_spw</span><span class="o">.</span><span class="n">pop</span><span class="p">(),</span> <span class="n">sspec</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">spws</span><span class="p">))))</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Spectral window grouping: </span><span class="si">{</span><span class="n">grouped_spw</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">grouped_spw</span>
+
+    <span class="k">def</span> <span class="nf">_do_phasecal_for_target</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method is responsible for creating phase gain caltable(s) that</span>
+<span class="sd">        will be applicable to the TARGET, the CHECK source, and the PHASE</span>
+<span class="sd">        calibrator.</span>
+
+<span class="sd">        Separate phase solutions are created for each PHASE field, and for each</span>
+<span class="sd">        SpectralSpec where not using &quot;combine&quot; SpW mapping.</span>
+
+<span class="sd">        The resulting caltable(s) will be part of the final task result, with</span>
+<span class="sd">        separate CalApplications to register the caltable(s) to be applicable</span>
+<span class="sd">        to PHASE, as well as to TARGET/CHECK.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">p_intent</span> <span class="o">=</span> <span class="s1">&#39;PHASE&#39;</span>
+
+        <span class="c1"># Initialize output list of CalApplications.</span>
+        <span class="n">calapp_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Determine non-phase calibrator fields, to be added to gaincal solve</span>
+        <span class="c1"># for plotting purposes.</span>
+        <span class="n">np_intents</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span> <span class="o">-</span> <span class="p">{</span><span class="n">p_intent</span><span class="p">})</span>
+        <span class="n">np_fields</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">np_intents</span><span class="p">)])</span>
+
+        <span class="c1"># Determine which SpWs to solve for, which SpWs the solutions should</span>
+        <span class="c1"># apply to, and whether to override refantmode. By default, use all</span>
+        <span class="c1"># input SpW, do not restrict what SpWs the solutions apply to, and do</span>
+        <span class="c1"># not override the refantmode.</span>
+        <span class="n">spw_to_solve</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span>
+        <span class="n">refantmode</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">apply_to_spw</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">is_band_to_band</span><span class="p">:</span>
+            <span class="c1"># PIPE-2087: for BandToBand, restrict the solve to the diffgain</span>
+            <span class="c1"># reference SpWs, use refantmode strict for the solve, and register</span>
+            <span class="c1"># the solutions to be applied to the diffgain on-source SpWs.</span>
+            <span class="n">dg_refspws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">)</span>
+            <span class="n">dg_srcspws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">)</span>
+            <span class="n">spw_to_solve</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">dg_refspws</span><span class="p">)</span>
+            <span class="n">refantmode</span> <span class="o">=</span> <span class="s1">&#39;strict&#39;</span>
+            <span class="n">apply_to_spw</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">dg_srcspws</span><span class="p">)</span>
+
+        <span class="c1"># Create separate phase solutions for each PHASE field.</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">p_intent</span><span class="p">):</span>
+            <span class="c1"># Retrieve from MS which TARGET/CHECK fields the gain solutions for</span>
+            <span class="c1"># the current PHASE field should be applied to.</span>
+            <span class="n">tc_fields</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">phasecal_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="p">{}))</span>
+
+            <span class="c1"># If the user specified a filename, then add the field name, to</span>
+            <span class="c1"># ensure the filenames remain unique in case of multiple fields.</span>
+            <span class="n">caltable</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">targetphasetable</span><span class="p">:</span>
+                <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">targetphasetable</span><span class="p">)</span>
+                <span class="n">caltable</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">root</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="si">}{</span><span class="n">ext</span><span class="si">}</span><span class="s1">&#39;</span>
+
+            <span class="c1"># Get optimal phase solution parameters for current PHASE field,</span>
+            <span class="c1"># based on spw mapping info in MS.</span>
+            <span class="c1"># No need to catch the values for optimal solint or &quot;low SNR SpWs&quot;,</span>
+            <span class="c1"># as the solint will be fixed to inputs.targetsolint.</span>
+            <span class="n">combine</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">spwmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_phasecal_params</span><span class="p">(</span><span class="n">p_intent</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="c1"># PIPE-2087: for BandToBand override interp, for these phase</span>
+            <span class="c1"># solutions that will apply to the science target.</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">is_band_to_band</span><span class="p">:</span>
+                <span class="n">interp</span> <span class="o">=</span> <span class="s1">&#39;linearPD,linear&#39;</span>
+
+            <span class="c1"># PIPE-390: if not combining across spw, then no need to deal with</span>
+            <span class="c1"># SpectralSpec, so create a gaincal solution for all SpWs, using</span>
+            <span class="c1"># provided gaintype, spwmap, and interp.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">combine</span><span class="p">:</span>
+                <span class="n">calapp_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_target_phasecal</span><span class="p">(</span><span class="n">caltable</span><span class="o">=</span><span class="n">caltable</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw_to_solve</span><span class="p">,</span>
+                                                            <span class="n">gaintype</span><span class="o">=</span><span class="n">gaintype</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmap</span><span class="p">,</span>
+                                                            <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">,</span> <span class="n">apply_to_field</span><span class="o">=</span><span class="n">tc_fields</span><span class="p">,</span>
+                                                            <span class="n">apply_to_spw</span><span class="o">=</span><span class="n">apply_to_spw</span><span class="p">,</span> <span class="n">include_field</span><span class="o">=</span><span class="n">np_fields</span><span class="p">,</span>
+                                                            <span class="n">refantmode</span><span class="o">=</span><span class="n">refantmode</span><span class="p">))</span>
+
+            <span class="c1"># Otherwise, a combined SpW solution is expected, and we need to</span>
+            <span class="c1"># create separate solutions for each SpectralSpec grouping of Spws.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Group the input SpWs by SpectralSpec.</span>
+                <span class="n">spw_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_spw_groupings</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">spw_to_solve</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">spw_groups</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid SpW grouping input.&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Loop through each grouping of spws.</span>
+                <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">sspec</span><span class="p">,</span> <span class="n">spw_sel</span> <span class="ow">in</span> <span class="n">spw_groups</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processing spectral spec </span><span class="si">{</span><span class="n">sspec</span><span class="si">}</span><span class="s1"> with spws </span><span class="si">{</span><span class="n">spw_sel</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                    <span class="c1"># Check if there are scans for current intent and SpWs.</span>
+                    <span class="n">selected_scans</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">p_intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw_sel</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_scans</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Skipping table generation for empty selection: spw=</span><span class="si">{</span><span class="n">spw_sel</span><span class="si">}</span><span class="s1">, intent=</span><span class="si">{</span><span class="n">p_intent</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># If an explicit output filename is defined, then add the</span>
+                    <span class="c1"># spw selection to ensure the filenames remain unique.</span>
+                    <span class="k">if</span> <span class="n">caltable</span><span class="p">:</span>
+                        <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span>
+                        <span class="n">caltable</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">root</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">spw_sel</span><span class="si">}{</span><span class="n">ext</span><span class="si">}</span><span class="s1">&#39;</span>
+
+                    <span class="c1"># Run phase calibration.</span>
+                    <span class="n">calapp_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_target_phasecal</span><span class="p">(</span><span class="n">caltable</span><span class="o">=</span><span class="n">caltable</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw_sel</span><span class="p">,</span>
+                                                                <span class="n">gaintype</span><span class="o">=</span><span class="n">gaintype</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmap</span><span class="p">,</span>
+                                                                <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">,</span> <span class="n">apply_to_field</span><span class="o">=</span><span class="n">tc_fields</span><span class="p">,</span>
+                                                                <span class="n">apply_to_spw</span><span class="o">=</span><span class="n">apply_to_spw</span><span class="p">,</span> <span class="n">include_field</span><span class="o">=</span><span class="n">np_fields</span><span class="p">,</span>
+                                                                <span class="n">refantmode</span><span class="o">=</span><span class="n">refantmode</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">calapp_list</span>
+
+    <span class="k">def</span> <span class="nf">_do_target_phasecal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">combine</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">interp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">apply_to_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">apply_to_spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">include_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">refantmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+            <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This runs the gaincal for creating phase solutions intended for TARGET,</span>
+<span class="sd">        CHECK, and PHASE. The result contains two CalApplications, one for</span>
+<span class="sd">        how to apply the caltable to the PHASE calibrator, and a second one for</span>
+<span class="sd">        how to apply the caltable to the TARGET and CHECK source(s).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># If provided, add additional fields to gaincal.</span>
+        <span class="n">gc_fields</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="k">if</span> <span class="n">include_field</span><span class="p">:</span>
+            <span class="n">gc_fields</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">include_field</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="c1"># PIPE-1154: for phase solutions of target, check, phase, always use</span>
+        <span class="c1"># solint=inputs.targetsolint.</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+            <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">gc_fields</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+            <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+            <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">targetsolint</span><span class="p">,</span>
+            <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="n">gaintype</span><span class="p">,</span>
+            <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">targetminsnr</span><span class="p">,</span>
+            <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="n">combine</span><span class="p">,</span>
+            <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span>
+            <span class="s1">&#39;refantmode&#39;</span><span class="p">:</span> <span class="n">refantmode</span><span class="p">,</span>
+            <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">minblperant</span><span class="p">,</span>
+            <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">solnorm</span>
+        <span class="p">}</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">do_gtype_gaincal</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">,</span> <span class="n">task_args</span><span class="p">)</span>
+
+        <span class="c1"># Create new CalApplications to correctly register caltable.</span>
+        <span class="n">new_calapps</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Define what overrides should be included in the cal application.</span>
+        <span class="c1"># Phase solution caltables should always be registered with</span>
+        <span class="c1"># calwt=False (PIPE-1154). Adjust the interpolation and SpW mapping if</span>
+        <span class="c1"># provided.</span>
+        <span class="n">calapp_overrides</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;calwt&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">interp</span><span class="p">:</span>
+            <span class="n">calapp_overrides</span><span class="p">[</span><span class="s1">&#39;interp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interp</span>
+        <span class="k">if</span> <span class="n">spwmap</span><span class="p">:</span>
+            <span class="n">calapp_overrides</span><span class="p">[</span><span class="s1">&#39;spwmap&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spwmap</span>
+
+        <span class="c1"># Create a modified CalApplication to register this caltable against</span>
+        <span class="c1"># the PHASE calibrator field itself.</span>
+        <span class="n">new_calapps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span>
+                                                          <span class="n">gainfield</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="o">**</span><span class="n">calapp_overrides</span><span class="p">))</span>
+
+        <span class="c1"># If the current PHASE field was mapped to TARGET/CHECK field(s), then</span>
+        <span class="c1"># create a modified CalApplication to register this caltable against</span>
+        <span class="c1"># those TARGET/CHECK fields.</span>
+        <span class="k">if</span> <span class="n">apply_to_field</span><span class="p">:</span>
+            <span class="c1"># Adjust what SpWs to apply to, if provided.</span>
+            <span class="k">if</span> <span class="n">apply_to_spw</span><span class="p">:</span>
+                <span class="n">calapp_overrides</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">apply_to_spw</span>
+            <span class="n">new_calapps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET,CHECK&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">apply_to_field</span><span class="p">,</span> <span class="n">gainfield</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="o">**</span><span class="n">calapp_overrides</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">new_calapps</span>
+
+    <span class="k">def</span> <span class="nf">_do_phasecal_for_calibrators</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method is responsible for creating phase gain caltable(s) that</span>
+<span class="sd">        are applicable to all calibrators.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Initialize output list of phase gaincal results.</span>
+        <span class="n">phasecal_results</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Split intents by PHASE and non-PHASE calibrators.</span>
+        <span class="n">p_intent</span> <span class="o">=</span> <span class="s1">&#39;PHASE&#39;</span>
+        <span class="n">np_intents</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span> <span class="o">-</span> <span class="p">{</span><span class="n">p_intent</span><span class="p">})</span>
+
+        <span class="c1"># PIPE-1154: first create a phase caltable for the non-PHASE</span>
+        <span class="c1"># calibrators.</span>
+        <span class="k">if</span> <span class="n">np_intents</span><span class="p">:</span>
+            <span class="n">np_phasecal_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_phasecal_for_non_phase_calibrators</span><span class="p">(</span><span class="n">np_intents</span><span class="p">)</span>
+            <span class="n">phasecal_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np_phasecal_result</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-1154: next, compute the phase gain solutions for the PHASE</span>
+        <span class="c1"># calibrator fields. These solutions for the PHASE fields are not</span>
+        <span class="c1"># intended for the final result, but will be merged into the local task</span>
+        <span class="c1"># context, so that they are used in pre-apply when computing the</span>
+        <span class="c1"># residual phase offsets. Track the maximum phase solint that gets</span>
+        <span class="c1"># used, so the same value can be when computing the diagnostic</span>
+        <span class="c1"># amplitude caltable.</span>
+        <span class="n">max_phase_solint</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">p_intent</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">:</span>
+            <span class="n">pcal_results</span><span class="p">,</span> <span class="n">max_phase_solint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_phasecal_for_phase_calibrators</span><span class="p">(</span><span class="n">p_intent</span><span class="p">)</span>
+            <span class="n">phasecal_results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">pcal_results</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">phasecal_results</span><span class="p">,</span> <span class="n">max_phase_solint</span>
+
+    <span class="k">def</span> <span class="nf">_do_phasecal_for_non_phase_calibrators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method is responsible for creating phase gain caltable(s) for the</span>
+<span class="sd">        non-PHASE calibrators.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Identify fields covered by non-phase calibrators.</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)])</span>
+
+        <span class="c1"># PIPE-645: for bandpass, amplitude, diffgain, and polarisation intents,</span>
+        <span class="c1"># always use minsnr set to 3.</span>
+        <span class="c1"># PIPE-1154: for bandpass, amplitude, diffgain, and polarisation</span>
+        <span class="c1"># intents, always use combine=&#39;&#39;, solint=inputs.calsolint, no spwmap,</span>
+        <span class="c1"># and no interp.</span>
+        <span class="n">phasecal_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_calibrator_phasecal</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">fields</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">,</span>
+                                                       <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">calsolint</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                       <span class="n">spwmap</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">phasecal_result</span>
+
+    <span class="k">def</span> <span class="nf">_do_phasecal_for_phase_calibrators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">],</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method is responsible for creating phase gain caltable(s) for the</span>
+<span class="sd">        each field that covers a PHASE calibrator, using optimal gaincal</span>
+<span class="sd">        parameters based on the SpW mapping registered in the measurement set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Initialize list of phase gaincal results and solints used.</span>
+        <span class="n">phasecal_results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">solints</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Determine which SpWs to solve for. By default, use all input SpWs.</span>
+        <span class="n">spw_to_solve</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">is_band_to_band</span><span class="p">:</span>
+            <span class="c1"># PIPE-2087: for BandToBand, restrict the solve to the diffgain</span>
+            <span class="c1"># reference SpWs.</span>
+            <span class="n">dg_refspws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">)</span>
+            <span class="n">spw_to_solve</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">dg_refspws</span><span class="p">)</span>
+
+        <span class="c1"># Create separate phase solutions for each PHASE field. These solutions</span>
+        <span class="c1"># are intended to be used as a temporary pre-apply when generating the</span>
+        <span class="c1"># final amplitude caltable and the phase offsets caltable.</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">):</span>
+            <span class="c1"># Get optimal phase solution parameters for current PHASE field,</span>
+            <span class="c1"># based on spw mapping info in MS.</span>
+            <span class="n">combine</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">lowsnr_spws</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">spwmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_phasecal_params</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="c1"># PIPE-390: if not combining across spw, then no need to deal with</span>
+            <span class="c1"># SpectralSpec for solint considerations, so create a gaincal</span>
+            <span class="c1"># solution for all SpWs, using provided solint, gaintype, and</span>
+            <span class="c1"># interp.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">combine</span><span class="p">:</span>
+                <span class="n">phasecal_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_calibrator_phasecal</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw_to_solve</span><span class="p">,</span>
+                                                                     <span class="n">gaintype</span><span class="o">=</span><span class="n">gaintype</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span>
+                                                                     <span class="n">minsnr</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">calminsnr</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">,</span>
+                                                                     <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmap</span><span class="p">))</span>
+                <span class="n">solints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solint</span><span class="p">)</span>
+
+            <span class="c1"># Otherwise, a combined SpW solution is expected, and we need to</span>
+            <span class="c1"># create separate solutions for each SpectralSpec grouping of SpWs.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Group the input SpWs by SpectralSpec.</span>
+                <span class="n">spw_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_spw_groupings</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">spw_to_solve</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">spw_groups</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid SpW grouping input.&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Loop through each grouping of SpWs.</span>
+                <span class="k">for</span> <span class="n">ref_spw</span><span class="p">,</span> <span class="n">sspec</span><span class="p">,</span> <span class="n">spw_sel</span> <span class="ow">in</span> <span class="n">spw_groups</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processing spectral spec </span><span class="si">{</span><span class="n">sspec</span><span class="si">}</span><span class="s1"> with SpWs </span><span class="si">{</span><span class="n">spw_sel</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                    <span class="c1"># PIPE-163: low/high SNR heuristic choice for the other</span>
+                    <span class="c1"># calibrators, typically PHASE.</span>
+                    <span class="c1"># Check if the reference SpW appears on the list of low SNR SpWs</span>
+                    <span class="c1"># registered in the MS for current field and intent.</span>
+                    <span class="c1">#  * if so, then as per low-SNR heuristics request, keep using the</span>
+                    <span class="c1">#  provided solint (which is normally based on SpW mapping mode).</span>
+                    <span class="c1">#  * if not, then override the provided solint to instead use</span>
+                    <span class="c1">#  inputs.calsolint, just like for the other calibrator intents.</span>
+                    <span class="k">if</span> <span class="n">ref_spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lowsnr_spws</span><span class="p">:</span>
+                        <span class="n">solint</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">calsolint</span>
+
+                    <span class="n">phasecal_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_calibrator_phasecal</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw_sel</span><span class="p">,</span>
+                                                                         <span class="n">gaintype</span><span class="o">=</span><span class="n">gaintype</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span>
+                                                                         <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">calminsnr</span><span class="p">,</span>
+                                                                         <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmap</span><span class="p">))</span>
+                    <span class="n">solints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solint</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-1154: determine which was the longest solint used for any of the</span>
+        <span class="c1"># PHASE fields; this will be re-used for the diagnostic amplitude</span>
+        <span class="c1"># caltable.</span>
+        <span class="n">max_solint</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">solints</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">phasecal_results</span><span class="p">,</span> <span class="n">max_solint</span>
+
+    <span class="k">def</span> <span class="nf">_do_phasecal_for_phase_calibrators_forcing_combine</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method will create phase gain caltable(s) for each field that</span>
+<span class="sd">        both a.) covers a PHASE calibrator, and b.) for which the SpW mapping</span>
+<span class="sd">        registered in the measurement set recommended to use combine=&#39;&#39; in the</span>
+<span class="sd">        gaincal solve. For these fields, an appropriate &quot;combine&quot; SpW map is</span>
+<span class="sd">        generated locally, then a new gaincal solve is performed using this SpW</span>
+<span class="sd">        map and enforcing combine=&#39;spw&#39;.</span>
+
+<span class="sd">        The resulting caltable is used later during this task for computing the</span>
+<span class="sd">        residual phase offsets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">intent</span> <span class="o">=</span> <span class="s2">&quot;PHASE&quot;</span>
+
+        <span class="c1"># Initialize list of phase gaincal results.</span>
+        <span class="n">phasecal_results</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Determine which SpWs to solve for. By default, use all input SpWs.</span>
+        <span class="n">spw_to_solve</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">is_band_to_band</span><span class="p">:</span>
+            <span class="c1"># PIPE-2087: for BandToBand, restrict the solve to the diffgain</span>
+            <span class="c1"># reference SpWs.</span>
+            <span class="n">dg_refspws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">)</span>
+            <span class="n">spw_to_solve</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">dg_refspws</span><span class="p">)</span>
+
+        <span class="c1"># Create separate phase solutions for each PHASE field.</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s2">&quot;PHASE&quot;</span><span class="p">):</span>
+            <span class="c1"># Get optimal phase solution parameters for current PHASE field,</span>
+            <span class="c1"># based on spw mapping info in MS.</span>
+            <span class="n">combine</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">lowsnr_spws</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">spwmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_phasecal_params</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="c1"># Skip any field where the recommended combine was already &#39;spw&#39;.</span>
+            <span class="k">if</span> <span class="n">combine</span> <span class="o">==</span> <span class="s1">&#39;spw&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># For PHASE calibrator fields where the SpW mapping recommended to</span>
+            <span class="c1"># use combine=&#39;&#39;, continue with creating a new caltable while</span>
+            <span class="c1"># forcing the combination of SpWs, and generate a corresponding</span>
+            <span class="c1"># combine spwmap with which this caltable should be registered.</span>
+            <span class="c1"># This is done to ensure that the subsequent phase offsets</span>
+            <span class="c1"># caltable is always sensitive to residual offsets on the PHASE</span>
+            <span class="c1"># calibrator and the corresponding plots would display</span>
+            <span class="c1"># meaningful information.</span>
+
+            <span class="c1"># Create a &quot;combine&quot; spwmap for input SpWs.</span>
+            <span class="n">spws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+            <span class="n">spwmap</span> <span class="o">=</span> <span class="n">combine_spwmap</span><span class="p">(</span><span class="n">spws</span><span class="p">)</span>
+
+            <span class="c1"># Run the phase calibration, forcing combination of SpWs.</span>
+            <span class="n">phasecal_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_calibrator_phasecal</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw_to_solve</span><span class="p">,</span>
+                                                                 <span class="n">gaintype</span><span class="o">=</span><span class="n">gaintype</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;spw&#39;</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span>
+                                                                 <span class="n">minsnr</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">calminsnr</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">,</span>
+                                                                 <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmap</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">phasecal_results</span>
+
+    <span class="c1"># Used to calibrate &quot;selfcaled&quot; targets</span>
+    <span class="k">def</span> <span class="nf">_do_calibrator_phasecal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span>
+                                <span class="n">combine</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">minsnr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                <span class="n">interp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This runs the gaincal for creating phase solutions intended for the</span>
+<span class="sd">        calibrators (amplitude, bandpass, polarization, phase).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Construct filename of output caltable:</span>
+        <span class="c1"># If provided, use the &quot;calphasetable&quot; parameter from top-level task</span>
+        <span class="c1"># inputs as a basename, but modify to ensure the filename is unique.</span>
+        <span class="n">caltable</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">calphasetable</span><span class="p">:</span>
+            <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">calphasetable</span><span class="p">)</span>
+            <span class="c1"># Always add intent, and if the intent is PHASE then also add field</span>
+            <span class="c1"># name.</span>
+            <span class="n">field_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;.</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;PHASE&#39;</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">caltable</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">root</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">intent</span><span class="si">}{</span><span class="n">field_str</span><span class="si">}{</span><span class="n">ext</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+            <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">,</span>
+            <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+            <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="n">solint</span><span class="p">,</span>
+            <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="n">gaintype</span><span class="p">,</span>
+            <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="n">minsnr</span><span class="p">,</span>
+            <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="n">combine</span><span class="p">,</span>
+            <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span>
+            <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">minblperant</span><span class="p">,</span>
+            <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">solnorm</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">do_gtype_gaincal</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">,</span> <span class="n">task_args</span><span class="p">)</span>
+
+        <span class="c1"># Modify the cal application for this caltable based on overrides.</span>
+        <span class="c1"># Phase solution caltables should always be registered to be applied</span>
+        <span class="c1"># with calwt=False (PIPE-1154). Register the caltable to be applied</span>
+        <span class="c1"># only to the calibrator intent(s). Adjust the interpolation and SpW</span>
+        <span class="c1"># mapping if provided.</span>
+        <span class="n">calapp_overrides</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;calwt&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">interp</span><span class="p">:</span>
+            <span class="n">calapp_overrides</span><span class="p">[</span><span class="s1">&#39;interp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interp</span>
+        <span class="k">if</span> <span class="n">spwmap</span><span class="p">:</span>
+            <span class="n">calapp_overrides</span><span class="p">[</span><span class="s1">&#39;spwmap&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spwmap</span>
+
+        <span class="c1"># PIPE-1154: if adding solutions for a field with PHASE intent, then</span>
+        <span class="c1"># modify the CalApplication to ensure that solutions from this PHASE</span>
+        <span class="c1"># field are only applied to itself.</span>
+        <span class="k">if</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">:</span>
+            <span class="n">calapp_overrides</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+            <span class="n">calapp_overrides</span><span class="p">[</span><span class="s1">&#39;gainfield&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+
+        <span class="c1"># Create a modified CalApplication and replace CalApp in result with</span>
+        <span class="c1"># this new one.</span>
+        <span class="n">modified_calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">calapp_overrides</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="p">[</span><span class="n">modified_calapp</span><span class="p">]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="p">[</span><span class="n">modified_calapp</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_do_offsets_phasecal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method computes a diagnostic phase caltable where the previously</span>
+<span class="sd">        derived phase caltable is pre-applied, to be used for diagnostic plots</span>
+<span class="sd">        of the residual phase offsets. Resulting caltable will not be</span>
+<span class="sd">        registered in the context callibrary, i.e. will not be applied to data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># PIPE-1154: for the residual phase offset table, always use</span>
+        <span class="c1"># gaintype = &#39;G&#39;.</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">offsetstable</span><span class="p">,</span>
+            <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+            <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+            <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;inf&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">calminsnr</span><span class="p">,</span>
+            <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span>
+            <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">minblperant</span><span class="p">,</span>
+            <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">solnorm</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Create a unique table name. The component filenames depend on task arguments (solint, calmode, gaintype,</span>
+        <span class="c1"># etc.), hence we create a task to calculate the arguments, then modify the resulting filename</span>
+        <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincalInputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+        <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">task_inputs</span><span class="o">.</span><span class="n">caltable</span><span class="p">)</span>
+        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;caltable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;offsets&#39;</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">do_gtype_gaincal</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">,</span> <span class="n">task_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_do_caltarget_ampcal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create amplitude caltable used for diagnostic plots. Resulting</span>
+<span class="sd">        caltable will not be registered in the context callibrary, i.e.</span>
+<span class="sd">        will not be applied to data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">calamptable</span><span class="p">,</span>
+            <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+            <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+            <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="n">solint</span><span class="p">,</span>
+            <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">calminsnr</span><span class="p">,</span>
+            <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">combine</span><span class="p">,</span>
+            <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span>
+            <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">minblperant</span><span class="p">,</span>
+            <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">solnorm</span>
+        <span class="p">}</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">do_gtype_gaincal</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">,</span> <span class="n">task_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_do_target_ampcal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method computes the amplitude caltable intended for TARGET,</span>
+<span class="sd">        CHECK, and all calibrators. It returns a list of two CalApplications,</span>
+<span class="sd">        one for how to apply the caltable to all the calibrators, and a second</span>
+<span class="sd">        one for how to apply the caltable to the TARGET and CHECK source(s).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">amptable</span><span class="p">,</span>
+            <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+            <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+            <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;inf&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">targetminsnr</span><span class="p">,</span>
+            <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">combine</span><span class="p">,</span>
+            <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span>
+            <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">minblperant</span><span class="p">,</span>
+            <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">solnorm</span>
+        <span class="p">}</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">do_gtype_gaincal</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">,</span> <span class="n">task_args</span><span class="p">)</span>
+
+        <span class="c1"># Create modified CalApplications for registering this amplitude</span>
+        <span class="c1"># caltable in the callibrary/context, once for TARGET,CHECK, and once</span>
+        <span class="c1"># for the calibrators.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Spec for gainfield application from CAS-12214:</span>
+        <span class="c1">#</span>
+        <span class="c1"># 1) When applying phase and/or amp gain tables to calibrators,</span>
+        <span class="c1">#   continue to use gainfield=&#39;nearest&#39;. This will ensure that time</span>
+        <span class="c1">#   interpolations from one group&#39;s complex gain calibrator&#39;s</span>
+        <span class="c1">#   solutions to the next group&#39;s complex gain calibrator solutions</span>
+        <span class="c1">#   will never influence how either calibrator gets calibrated.</span>
+        <span class="c1">#</span>
+        <span class="c1"># 2) When applying phase and/or amp gain tables to science targets,</span>
+        <span class="c1">#    leave gainfield blank (instead of &#39;nearest&#39;), so that time</span>
+        <span class="c1">#    interpolation across all gain calibrators will be used to</span>
+        <span class="c1">#    calibrate science targets. This will automagically take care of</span>
+        <span class="c1">#    the multiple science groups case. Specifically, since it is</span>
+        <span class="c1">#    assumed that all science target groups are bracketed on both</span>
+        <span class="c1">#    sides by &quot;their&quot; complex gain calibrator, there will never be a</span>
+        <span class="c1">#    case where the interpolated solution between two complex gain</span>
+        <span class="c1">#    calibrators needs to be used.</span>
+        <span class="n">result_calapp</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Create CalApplication for the calibrators.</span>
+        <span class="n">cal_calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span>
+            <span class="n">result_calapp</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;AMPLITUDE,BANDPASS,PHASE,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,POLLEAKAGE&#39;</span><span class="p">,</span>
+            <span class="n">gainfield</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;nearest,linear&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Create CalApplication for the TARGET/CHECK sources.</span>
+        <span class="n">calapp_overrides</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;TARGET,CHECK&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;gainfield&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+
+        <span class="c1"># PIPE-2087: for BandToBand, register the solutions to be applied to the</span>
+        <span class="c1"># diffgain on-source SpWs, and use the amplitude solutions from the</span>
+        <span class="c1"># BANDPASS intent.</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">is_band_to_band</span><span class="p">:</span>
+            <span class="n">dg_srcspws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">)</span>
+            <span class="n">calapp_overrides</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">dg_srcspws</span><span class="p">)</span>
+            <span class="n">calapp_overrides</span><span class="p">[</span><span class="s1">&#39;gainfield&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">))</span>
+
+        <span class="n">target_calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">result_calapp</span><span class="p">,</span> <span class="o">**</span><span class="n">calapp_overrides</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">cal_calapp</span><span class="p">,</span> <span class="n">target_calapp</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get_phasecal_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span>\
+            <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># By default, no spw mapping or combining, no interp, gaintype=&#39;G&#39;,</span>
+        <span class="c1"># and use solint set by &quot;calsolint&quot; input parameter.</span>
+        <span class="n">combine</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">gaintype</span> <span class="o">=</span> <span class="s1">&#39;G&#39;</span>
+        <span class="n">interp</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">solint</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">calsolint</span>
+        <span class="n">spwmap</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Define a placeholder list of low snr SpWs, that needs to be returned</span>
+        <span class="c1"># if a spwmap needs to be used.</span>
+        <span class="n">lowsnr_spws</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Try to fetch spwmapping info from MS for requested intent and field.</span>
+        <span class="n">spwmapping</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">spwmaps</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># If a mapping was found, use the spwmap, and update further parameters</span>
+        <span class="c1"># depending on whether it is a combine spw mapping.</span>
+        <span class="k">if</span> <span class="n">spwmapping</span><span class="p">:</span>
+            <span class="n">spwmap</span> <span class="o">=</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">spwmap</span>
+
+            <span class="c1"># If the spwmap is for combining spws, then override combine,</span>
+            <span class="c1"># interp, and gaintype accordingly, and compute an optimal solint.</span>
+            <span class="k">if</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">combine</span><span class="p">:</span>
+                <span class="n">combine</span> <span class="o">=</span> <span class="s1">&#39;spw&#39;</span>
+                <span class="n">gaintype</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
+                <span class="n">interp</span> <span class="o">=</span> <span class="s1">&#39;linearPD,linear&#39;</span>
+                <span class="n">lowsnr_spws</span> <span class="o">=</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">low_combinedsnr_spws</span>
+
+                <span class="c1"># Compute optimal solint.</span>
+                <span class="n">spwidlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+                <span class="n">exptimes</span> <span class="o">=</span> <span class="n">gexptimes</span><span class="o">.</span><span class="n">get_scan_exptimes</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="p">[</span><span class="n">field</span><span class="p">],</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">)</span>
+                <span class="n">solint</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%0.3f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">min</span><span class="p">([</span><span class="n">exptime</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">exptime</span> <span class="ow">in</span> <span class="n">exptimes</span><span class="p">])</span> <span class="o">/</span> <span class="mf">4.0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># PIPE-1154: when using a phase up spw mapping, ensure that</span>
+                <span class="c1"># interp = &#39;linear,linear&#39;; though this may need to be changed</span>
+                <span class="c1"># in the future, see PIPEREQ-85.</span>
+                <span class="n">interp</span> <span class="o">=</span> <span class="s1">&#39;linear,linear&#39;</span>
+
+        <span class="k">return</span> <span class="n">combine</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">lowsnr_spws</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">spwmap</span>
+
+    <span class="k">def</span> <span class="nf">_unregister_phasecal_with_no_combine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method will unregister from the callibrary in the local context</span>
+<span class="sd">        (stored in inputs) any CalApplication that is registered for a PHASE</span>
+<span class="sd">        calibrator field for which the SpW mapping recommends solving with</span>
+<span class="sd">        combine=&#39;&#39;, or for which no SpW mapping exists (assumed the PHASE field</span>
+<span class="sd">        will in that case have been solved with default combine=&#39;&#39;).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Identify the MS to process.</span>
+        <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span>
+
+        <span class="c1"># Identify which PHASE calibrator fields to process.</span>
+        <span class="c1"># First identify all PHASE fields.</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s2">&quot;PHASE&quot;</span><span class="p">)}</span>
+        <span class="c1"># Next, if a SpW mapping was registered for this PHASE field, check if</span>
+        <span class="c1"># it already recommended solving with SpW combination, in which case</span>
+        <span class="c1"># there is no reason to unregister. If no SpW mapping was registered,</span>
+        <span class="c1"># then the PHASE field is expected to have been solved with the default</span>
+        <span class="c1"># combine=&#39;&#39;, and so it&#39;s kept for unregistering.</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">),</span> <span class="n">spwmapping</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">spwmaps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">intent</span> <span class="o">==</span> <span class="s2">&quot;PHASE&quot;</span> <span class="ow">and</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">combine</span><span class="p">:</span>
+                <span class="n">fields</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="c1"># If there were no PHASE calibrator fields with combine=&#39;&#39;, then there</span>
+        <span class="c1"># are no CalApplications to unregister.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Define predicate function that matches the kind of caltable that</span>
+        <span class="c1"># needs to be removed from the CalLibrary.</span>
+        <span class="k">def</span> <span class="nf">phase_no_combine_matcher</span><span class="p">(</span><span class="n">calto</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalToArgs</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="n">calto_vis</span> <span class="o">=</span> <span class="p">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">calto</span><span class="o">.</span><span class="n">vis</span><span class="p">}</span>
+            <span class="c1"># Find caltables generated by hifa_timegaincal, for current vis,</span>
+            <span class="c1"># that are to be applied to PHASE calibrator intent, and that were</span>
+            <span class="c1"># derived from a field that is on the list of fields to re-compute.</span>
+            <span class="c1"># Use calfrom.gainfield rather than calto.field since the latter</span>
+            <span class="c1"># may have been translated to field ID rather than name.</span>
+            <span class="n">do_delete</span> <span class="o">=</span> <span class="s1">&#39;hifa_timegaincal&#39;</span> <span class="ow">in</span> <span class="n">calfrom</span><span class="o">.</span><span class="n">gaintable</span> <span class="ow">and</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">calto_vis</span> <span class="ow">and</span> <span class="s2">&quot;PHASE&quot;</span> <span class="ow">in</span> <span class="n">calto</span><span class="o">.</span><span class="n">intent</span> \
+                        <span class="ow">and</span> <span class="n">calfrom</span><span class="o">.</span><span class="n">gainfield</span> <span class="ow">in</span> <span class="n">fields</span>
+            <span class="k">if</span> <span class="n">do_delete</span><span class="p">:</span>
+                <span class="c1"># This message may appear multiple times for same caltable if</span>
+                <span class="c1"># that table was registered through multiple CalApplications,</span>
+                <span class="c1"># e.g. for different SpWs.</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unregistering phase caltable </span><span class="si">{</span><span class="n">calfrom</span><span class="o">.</span><span class="n">gaintable</span><span class="si">}</span><span class="s1"> from task-specific context.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">do_delete</span>
+
+        <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">unregister_calibrations</span><span class="p">(</span><span class="n">phase_no_combine_matcher</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">do_gtype_gaincal</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">executor</span><span class="p">,</span> <span class="n">task_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">:</span>
+    <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincalInputs</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">task_inputs</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+    <span class="c1"># sanity checks in case gaincal starts returning additional caltable applications</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&gt;1 caltable application registered by gaincal&#39;</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+pipeline.h.tasks.tsyscal.tsyscal
+================================
+
+.. automodule:: pipeline.h.tasks.tsyscal.tsyscal
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_calapplications
+      get_gainfield_map
+      get_solution_map
+      get_tsys_fields_for_intent
+      tsysspwmap
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GainfieldMapping
+      MeasurementSet
+      Tsyscal
+      TsyscalInputs
+      attrgetter
+      itemgetter
+   

@@ -1,0 +1,16 @@
+pipeline.hifa
+=============
+
+.. automodule:: pipeline.hifa
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   cli
+   heuristics
+   tasks
+   templates

@@ -1,0 +1,17 @@
+pipeline.hifv.tasks.flagging.qa
+===============================
+
+.. automodule:: pipeline.hifv.tasks.flagging.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CheckflagListQAHandler
+      CheckflagQAHandler
+      FlagdataListQAHandler
+      FlagdataQAHandler
+      TargetflagListQAHandler
+      TargetflagQAHandler
+   

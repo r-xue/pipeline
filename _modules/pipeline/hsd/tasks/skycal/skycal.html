@@ -1,0 +1,692 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.skycal.skycal &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.skycal.skycal</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.skycal.skycal</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The skycal task module to calibrate sky background.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">relative_path</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">caltable_heuristic</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">SingleDishResults</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SDSkyCalInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SDSkyCalInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">SDSkyCalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for SDSkyCal task.&quot;&quot;&quot;</span>
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">()</span>
+
+    <span class="n">calmode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+    <span class="n">elongated</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">fraction</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;10%&#39;</span><span class="p">)</span>
+    <span class="n">noff</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">outfile</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">scan</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">spw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return name of MS. Alias for &quot;vis&quot; attribute.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span>
+
+    <span class="nd">@infiles</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert value into expected type.</span>
+
+<span class="sd">        Currently, no conversion is performed.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: Name of MS, or the list of names.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Converted value. Currently return input value as is.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
+            <span class="n">calmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">fraction</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">noff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">elongated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">infiles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">outfile</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">spw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">scan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">parallel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize SDK2JyCalInputs instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            calmode: Calibration mode.</span>
+<span class="sd">            fraction: Value of fraction of OFF scan data against total data number.</span>
+<span class="sd">            noff: Number of OFF scan data.</span>
+<span class="sd">            width: Value of pixel width, e.g., a median spatial separation between</span>
+<span class="sd">            neighboring two data in time.</span>
+<span class="sd">            elongated: Whether observed area is elongated in one direction (True)</span>
+<span class="sd">            or not (False).</span>
+<span class="sd">            output_dir: Name of output directory.</span>
+<span class="sd">            infiles: Name of MS or list of names.</span>
+<span class="sd">            outfile: Name of the output file.</span>
+<span class="sd">            field: Field selection.</span>
+<span class="sd">            spw: Spectral window (spw) selection.</span>
+<span class="sd">            scan: Scan selection.</span>
+<span class="sd">            parallel: Execute using CASA HPC functionality, if available.</span>
+<span class="sd">                      Default is None, which intends to turn on parallel</span>
+<span class="sd">                      processing if possible.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDSkyCalInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># context and vis must be set first so that properties that require</span>
+        <span class="c1"># domain objects can be function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span> <span class="o">=</span> <span class="n">infiles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span> <span class="o">=</span> <span class="n">outfile</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">calmode</span> <span class="o">=</span> <span class="n">calmode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">=</span> <span class="n">fraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noff</span> <span class="o">=</span> <span class="n">noff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elongated</span> <span class="o">=</span> <span class="n">elongated</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scan</span> <span class="o">=</span> <span class="n">scan</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
+
+<div class="viewcode-block" id="SDSkyCalInputs.to_casa_args">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SDSkyCalInputs.to_casa_args">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Inputs instance to the list of keyword arguments for sdcal.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Keyword arguments for sdcal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+
+        <span class="c1"># overwrite is always True</span>
+        <span class="n">args</span><span class="p">[</span><span class="s1">&#39;overwrite&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># parameter name for input data is &#39;infile&#39;</span>
+        <span class="n">args</span><span class="p">[</span><span class="s1">&#39;infile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;infiles&#39;</span><span class="p">)</span>
+
+        <span class="c1"># vis and parallel are not necessary</span>
+        <span class="k">del</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">args</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SDSkyCalResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SDSkyCalResults">[docs]</a>
+<span class="k">class</span> <span class="nc">SDSkyCalResults</span><span class="p">(</span><span class="n">SingleDishResults</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to hold processing result of SDSkyCal task.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">success</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">outcome</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize SDSkyCalResults instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task: Name of task.</span>
+<span class="sd">            success: A boolean to indicate if the task execution was successful</span>
+<span class="sd">            (True) or not (False).</span>
+<span class="sd">            outcome: Outcome of the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDSkyCalResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcome</span>
+
+<div class="viewcode-block" id="SDSkyCalResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SDSkyCalResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge result instance into context.</span>
+
+<span class="sd">        The CalApplication instance updated by the skycal task is added to</span>
+<span class="sd">        the pipeline context.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDSkyCalResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcome</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">:</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representing the outcome.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            string of outcome.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SerialSDSkyCal">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SerialSDSkyCal">[docs]</a>
+<span class="k">class</span> <span class="nc">SerialSDSkyCal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate sky calibration table.&quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDSkyCalInputs</span>
+    <span class="n">ElevationDifferenceThreshold</span> <span class="o">=</span> <span class="mf">3.0</span>  <span class="c1"># deg</span>
+
+<div class="viewcode-block" id="SerialSDSkyCal.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SerialSDSkyCal.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDSkyCalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare arguments for CASA job and execute it.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">           SDSkyCalResults object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;args: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+
+        <span class="c1"># retrieve ms domain object</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">calibration_strategy</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">calibration_strategy</span>
+        <span class="n">default_field_strategy</span> <span class="o">=</span> <span class="n">calibration_strategy</span><span class="p">[</span><span class="s1">&#39;field_strategy&#39;</span><span class="p">]</span>
+
+        <span class="c1"># take calmode from calibration strategy if it is set to &#39;auto&#39;</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;calmode&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;calmode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="p">[</span><span class="s1">&#39;calmode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calibration_strategy</span><span class="p">[</span><span class="s1">&#39;calmode&#39;</span><span class="p">]</span>
+
+        <span class="k">assert</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;calmode&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="s1">&#39;otfraster&#39;</span><span class="p">,</span> <span class="s1">&#39;otf&#39;</span><span class="p">]</span>
+
+        <span class="c1"># spw selection ---&gt; task.prepare</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">spw_list</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">args</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spw_list</span><span class="p">]))</span>
+
+        <span class="c1"># field selection ---&gt; task.prepare</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">field_strategy</span> <span class="o">=</span> <span class="n">default_field_strategy</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">field_strategy</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">field_ids</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">msseltoindex</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">field_id</span> <span class="ow">in</span> <span class="n">field_ids</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">target_id</span><span class="p">,</span> <span class="n">reference_id</span> <span class="ow">in</span> <span class="n">default_field_strategy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">field_id</span> <span class="o">==</span> <span class="n">target_id</span><span class="p">:</span>
+                        <span class="n">field_strategy</span><span class="p">[</span><span class="n">field_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_field_strategy</span><span class="p">[</span><span class="n">field_id</span><span class="p">]</span>
+                        <span class="k">continue</span>
+                    <span class="k">elif</span> <span class="n">field_id</span> <span class="o">==</span> <span class="n">reference_id</span><span class="p">:</span>
+                        <span class="n">field_strategy</span><span class="p">[</span><span class="n">target_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_id</span>
+                        <span class="k">continue</span>
+
+        <span class="c1"># scan selection</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;scan&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">args</span><span class="p">[</span><span class="s1">&#39;scan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># intent</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;calmode&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;otf&#39;</span><span class="p">,</span> <span class="s1">&#39;otfraster&#39;</span><span class="p">]:</span>
+            <span class="n">args</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span>
+
+        <span class="n">calapps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">target_id</span><span class="p">,</span> <span class="n">reference_id</span> <span class="ow">in</span> <span class="n">field_strategy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">myargs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+            <span class="c1"># output file</span>
+            <span class="n">reference_field_name</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">reference_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">clean_name</span>
+            <span class="k">if</span> <span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">namer</span> <span class="o">=</span> <span class="n">caltable_heuristic</span><span class="o">.</span><span class="n">SDSkyCaltable</span><span class="p">()</span>
+                <span class="c1"># filenamer requires field name instead of id</span>
+                <span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reference_field_name</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># we temporarily need &#39;vis&#39;</span>
+                    <span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;infile&#39;</span><span class="p">]</span>
+                    <span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">relative_path</span><span class="p">(</span><span class="n">namer</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                                                                      <span class="n">stage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stage</span><span class="p">,</span>
+                                                                      <span class="o">**</span><span class="n">myargs</span><span class="p">))</span>
+                <span class="k">finally</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reference_field_name</span><span class="p">)</span>
+
+            <span class="c1"># field</span>
+            <span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">reference_id</span><span class="p">)</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;args for sdcal: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">myargs</span><span class="p">))</span>
+
+            <span class="c1"># create job</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">sdcal</span><span class="p">(</span><span class="o">**</span><span class="n">myargs</span><span class="p">)</span>
+
+            <span class="c1"># execute job</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Table cache before sdcal: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">showcache</span><span class="p">()))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Table cache after sdcal: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">showcache</span><span class="p">()))</span>
+
+            <span class="c1"># check if caltable is empty</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">])</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+                <span class="n">is_caltable_empty</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">is_caltable_empty</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># make a note of the current inputs state before we start fiddling</span>
+            <span class="c1"># with it. This origin will be attached to the final CalApplication.</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalAppOrigin</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="n">SerialSDSkyCal</span><span class="p">,</span>
+                                             <span class="n">inputs</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+
+            <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;infile&#39;</span><span class="p">],</span>
+                                     <span class="n">spw</span><span class="o">=</span><span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span>
+                                     <span class="n">field</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">target_id</span><span class="p">),</span>
+                                     <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+
+            <span class="c1"># create SDCalFrom object</span>
+            <span class="n">calfrom</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">(</span><span class="n">gaintable</span><span class="o">=</span><span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">],</span>
+                                         <span class="n">gainfield</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">reference_id</span><span class="p">),</span>
+                                         <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;linear,linear&#39;</span><span class="p">,</span>
+                                         <span class="n">caltype</span><span class="o">=</span><span class="n">myargs</span><span class="p">[</span><span class="s1">&#39;calmode&#39;</span><span class="p">])</span>
+
+            <span class="c1"># create CalApplication object</span>
+            <span class="n">calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
+            <span class="n">calapps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="n">SDSkyCalResults</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+                                  <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                  <span class="n">outcome</span><span class="o">=</span><span class="n">calapps</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="SerialSDSkyCal.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SerialSDSkyCal.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SDSkyCalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDSkyCalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyse SDSkyCalResults instance produced by prepare.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: SDSkyCalResults instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Updated SDSkyCalResults instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># compute elevation difference between ON and OFF and</span>
+        <span class="c1"># warn if it exceeds elevation threshold</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ElevationDifferenceThreshold</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+        <span class="n">resultdict</span> <span class="o">=</span> <span class="n">compute_elevation_difference</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
+
+        <span class="n">spectralspecs</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_specs</span><span class="p">()</span>
+        <span class="n">spectralspecs_spwids</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">ss</span> <span class="ow">in</span> <span class="n">spectralspecs</span><span class="p">:</span>
+            <span class="n">spw_ss</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">spectralspecs</span> <span class="o">=</span> <span class="p">[</span><span class="n">ss</span><span class="p">])</span>
+            <span class="n">list_spwids</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">spw_ss</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_spwids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">spectralspecs_spwids</span><span class="p">[</span><span class="n">ss</span><span class="p">]</span> <span class="o">=</span> <span class="n">list_spwids</span>
+
+        <span class="k">for</span> <span class="n">list_spwids</span> <span class="ow">in</span> <span class="n">spectralspecs_spwids</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">spwid0</span> <span class="o">=</span> <span class="n">list_spwids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">eldfield</span> <span class="ow">in</span> <span class="n">resultdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">eldant</span> <span class="ow">in</span> <span class="n">eldfield</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">assert</span> <span class="n">spwid0</span> <span class="ow">in</span> <span class="n">eldant</span>
+                    <span class="n">eldiff0</span> <span class="o">=</span> <span class="n">eldant</span><span class="p">[</span><span class="n">spwid0</span><span class="p">]</span><span class="o">.</span><span class="n">eldiff0</span>
+                    <span class="n">eldiff1</span> <span class="o">=</span> <span class="n">eldant</span><span class="p">[</span><span class="n">spwid0</span><span class="p">]</span><span class="o">.</span><span class="n">eldiff1</span>
+                    <span class="n">eldiff</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eldiff0</span><span class="p">,</span> <span class="n">eldiff1</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">eldiff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">eldmax</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eldiff</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="n">eldmax</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+                            <span class="n">field_name</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_id</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+                            <span class="n">antenna_name</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">[</span><span class="n">antenna_id</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Elevation difference between ON and OFF for </span><span class="si">{}</span><span class="s1"> field </span><span class="si">{}</span><span class="s1"> antenna </span><span class="si">{}</span><span class="s1"> spw </span><span class="si">{}</span><span class="s1"> was </span><span class="si">{}</span><span class="s1">deg&#39;</span>
+                                        <span class="s1">&#39; exceeding the threshold of </span><span class="si">{}</span><span class="s1">deg&#39;</span>
+                                        <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">antenna_name</span><span class="p">,</span> <span class="n">list_spwids</span><span class="p">,</span> <span class="n">eldmax</span><span class="p">,</span> <span class="n">threshold</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SDSkyCal">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SDSkyCal">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsd_skycal&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Generates sky calibration table according to calibration strategy.&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">SDSkyCal</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to generate sky calibration table.&quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDSkyCalInputs</span>
+    <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialSDSkyCal</span></div>
+
+
+
+<div class="viewcode-block" id="compute_elevation_difference">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.compute_elevation_difference">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_elevation_difference</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">SDSkyCalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute elevation difference.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context: Pipeline context.</span>
+<span class="sd">        results: SDSkyCalResults instance.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dictionary[field_id][antenna_id][spw_id]</span>
+<span class="sd">            Value of the dictionary should be ElevationDifference and the value should</span>
+<span class="sd">            contain the result from one MS (given that SDSkyCal is per-MS task).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ElevationDifference</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;ElevationDifference&#39;</span><span class="p">,</span>
+                                                 <span class="p">[</span><span class="s1">&#39;timeon&#39;</span><span class="p">,</span> <span class="s1">&#39;elon&#39;</span><span class="p">,</span> <span class="s1">&#39;timecal&#39;</span><span class="p">,</span> <span class="s1">&#39;elcal&#39;</span><span class="p">,</span>
+                                                  <span class="s1">&#39;time0&#39;</span><span class="p">,</span> <span class="s1">&#39;eldiff0&#39;</span><span class="p">,</span> <span class="s1">&#39;time1&#39;</span><span class="p">,</span> <span class="s1">&#39;eldiff1&#39;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">SDSkyCalResults</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Results type should be SDSkyCalResults&#39;</span><span class="p">)</span>
+
+    <span class="n">calapps</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">outcome</span>
+
+    <span class="n">resultdict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">calapps</span><span class="p">:</span>
+        <span class="n">calto</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calto</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">calto</span><span class="o">.</span><span class="n">vis</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">target_field</span> <span class="o">=</span> <span class="n">calto</span><span class="o">.</span><span class="n">field</span>
+        <span class="k">if</span> <span class="n">target_field</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="n">field_id_on</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">target_field</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">target_field</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="n">field_id_on</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="c1">#if ms.basename not in resultdict:</span>
+        <span class="c1">#    resultdict[ms.basename] = {}</span>
+
+        <span class="n">antenna_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">ant</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">]</span>
+
+        <span class="c1"># representative spw</span>
+        <span class="n">science_spw</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1">#         # choose representative spw based on representative frequency if it is available</span>
+<span class="c1">#         if hasattr(ms, &#39;representative_target&#39;) and ms.representative_target[1] is not None:</span>
+<span class="c1">#             qa = casa_tools.quanta</span>
+<span class="c1">#             rep_freq = ms.representative_target[1]</span>
+<span class="c1">#             centre_freqs = [qa.quantity(spw.centre_frequency.str_to_precision(16)) for spw in science_spw]</span>
+<span class="c1">#             freq_diffs = [abs(qa.sub(cf, rep_freq).convert(&#39;Hz&#39;)[&#39;value&#39;]) for cf in centre_freqs]</span>
+<span class="c1">#             spw_id = science_spw[numpy.argmin(freq_diffs)].id</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             spw_id = science_spw[0].id</span>
+
+        <span class="n">calfroms</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span>
+
+        <span class="k">for</span> <span class="n">calfrom</span> <span class="ow">in</span> <span class="n">calfroms</span><span class="p">:</span>
+            <span class="n">caltable</span> <span class="o">=</span> <span class="n">calfrom</span><span class="o">.</span><span class="n">gaintable</span>
+
+            <span class="c1"># FIELD_ID</span>
+            <span class="n">gainfield</span> <span class="o">=</span> <span class="n">calfrom</span><span class="o">.</span><span class="n">gainfield</span>
+            <span class="k">if</span> <span class="n">gainfield</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+                <span class="n">field_id_off</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">gainfield</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">gainfield</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                <span class="n">field_id_off</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Computing elevation difference for &quot;</span><span class="si">{}</span><span class="s1">&quot; Field ID </span><span class="si">{}</span><span class="s1"> (ON) and </span><span class="si">{}</span><span class="s1"> (OFF)&#39;</span>
+                     <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">field_id_on</span><span class="p">,</span> <span class="n">field_id_off</span><span class="p">))</span>
+
+            <span class="n">resultfield</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">for</span> <span class="n">antenna_id</span> <span class="ow">in</span> <span class="n">antenna_ids</span><span class="p">:</span>
+
+                <span class="n">resultant</span> <span class="o">=</span> <span class="p">{}</span>
+
+                <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spw</span><span class="p">:</span>
+                    <span class="n">spw_id</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
+
+                    <span class="c1"># get timestamp from caltable</span>
+                    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+                        <span class="n">selected</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;SPECTRAL_WINDOW_ID==</span><span class="si">{}</span><span class="s1">&amp;&amp;ANTENNA1==</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">))</span>
+                        <span class="n">timecal</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="mf">86400.0</span>  <span class="c1"># sec -&gt; day</span>
+                        <span class="n">selected</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+                    <span class="c1"># access DataTable to get elevation</span>
+                    <span class="n">ro_datatable_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_datatable_name</span><span class="p">,</span>
+                                                     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">),</span> <span class="s1">&#39;RO&#39;</span><span class="p">)</span>
+                    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">ro_datatable_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+                        <span class="n">selected</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;IF==</span><span class="si">{}</span><span class="s1">&amp;&amp;ANTENNA==</span><span class="si">{}</span><span class="s1">&amp;&amp;FIELD_ID==</span><span class="si">{}</span><span class="s1">&amp;&amp;SRCTYPE==0&#39;</span>
+                                            <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">field_id_on</span><span class="p">))</span>
+                        <span class="n">timeon</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+                        <span class="n">elon</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;EL&#39;</span><span class="p">)</span>
+                        <span class="n">selected</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                        <span class="n">selected</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;IF==</span><span class="si">{}</span><span class="s1">&amp;&amp;ANTENNA==</span><span class="si">{}</span><span class="s1">&amp;&amp;FIELD_ID==</span><span class="si">{}</span><span class="s1">&amp;&amp;SRCTYPE!=0&#39;</span>
+                                            <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">field_id_off</span><span class="p">))</span>
+                        <span class="n">timeoff</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+                        <span class="n">eloff</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;EL&#39;</span><span class="p">)</span>
+                        <span class="n">selected</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+                    <span class="n">elcal</span> <span class="o">=</span> <span class="n">eloff</span><span class="p">[[</span><span class="n">numpy</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">timeoff</span> <span class="o">-</span> <span class="n">t</span><span class="p">))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">timecal</span><span class="p">]]</span>
+
+                    <span class="k">del</span> <span class="n">timeoff</span><span class="p">,</span> <span class="n">eloff</span>
+
+                    <span class="n">eldiff0</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">eldiff1</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">time0</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">time1</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">timeon</span><span class="p">,</span> <span class="n">elon</span><span class="p">):</span>
+                        <span class="n">dt</span> <span class="o">=</span> <span class="n">timecal</span> <span class="o">-</span> <span class="n">t</span>
+                        <span class="n">idx0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dt</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">i</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">timecal</span><span class="p">[</span><span class="n">idx0</span><span class="p">])</span>
+                            <span class="n">time0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+                            <span class="n">eldiff0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span> <span class="o">-</span> <span class="n">elcal</span><span class="p">[</span><span class="n">idx0</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                        <span class="n">idx1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dt</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">i</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">timecal</span><span class="p">[</span><span class="n">idx1</span><span class="p">])</span>
+                            <span class="n">time1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+                            <span class="n">eldiff1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span> <span class="o">-</span> <span class="n">elcal</span><span class="p">[</span><span class="n">idx1</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                    <span class="n">eldiff0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">eldiff0</span><span class="p">)</span>
+                    <span class="n">eldiff1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">eldiff1</span><span class="p">)</span>
+                    <span class="n">time0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">time0</span><span class="p">)</span>
+                    <span class="n">time1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">time1</span><span class="p">)</span>
+
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">ElevationDifference</span><span class="p">(</span><span class="n">timeon</span><span class="o">=</span><span class="n">timeon</span><span class="p">,</span> <span class="n">elon</span><span class="o">=</span><span class="n">elon</span><span class="p">,</span>
+                                                 <span class="n">timecal</span><span class="o">=</span><span class="n">timecal</span><span class="p">,</span> <span class="n">elcal</span><span class="o">=</span><span class="n">elcal</span><span class="p">,</span>
+                                                 <span class="n">time0</span><span class="o">=</span><span class="n">time0</span><span class="p">,</span> <span class="n">eldiff0</span><span class="o">=</span><span class="n">eldiff0</span><span class="p">,</span>
+                                                 <span class="n">time1</span><span class="o">=</span><span class="n">time1</span><span class="p">,</span> <span class="n">eldiff1</span><span class="o">=</span><span class="n">eldiff1</span><span class="p">)</span>
+
+                    <span class="n">resultant</span><span class="p">[</span><span class="n">spw_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+
+                <span class="n">resultfield</span><span class="p">[</span><span class="n">antenna_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">resultant</span>
+
+            <span class="n">resultdict</span><span class="p">[</span><span class="n">field_id_on</span><span class="p">]</span> <span class="o">=</span> <span class="n">resultfield</span>
+
+    <span class="k">return</span> <span class="n">resultdict</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

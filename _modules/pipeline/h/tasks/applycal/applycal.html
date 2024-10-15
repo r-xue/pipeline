@@ -1,0 +1,621 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.tasks.applycal.applycal &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.h.tasks.applycal.applycal</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.h.tasks.applycal.applycal</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="kn">import</span> <span class="n">IntervalCalState</span>
+
+<span class="kn">from</span> <span class="nn">...heuristics.fieldnames</span> <span class="kn">import</span> <span class="n">IntentFieldnames</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Applycal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SerialApplycal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ApplycalInputs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ApplycalResults&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ApplycalInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">ApplycalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ApplycalInputs defines the inputs for the Applycal pipeline task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># PIPE-1691: hif_applycal is now implicitly a parallel task, but by default</span>
+    <span class="c1"># running with parallel=False.</span>
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="nd">@antenna</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">antennas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="c1"># if all antennas are selected, return &#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">])</span>
+
+    <span class="n">applymode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;calflagstrict&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># this will give something like &#39;0542+3243,0343+242&#39;</span>
+        <span class="n">field_finder</span> <span class="o">=</span> <span class="n">IntentFieldnames</span><span class="p">()</span>
+        <span class="n">intent_fields</span> <span class="o">=</span> <span class="n">field_finder</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+
+        <span class="c1"># run the answer through a set, just in case there are duplicates</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="n">intent_fields</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+
+    <span class="n">flagbackup</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">flagdetailedsum</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">flagsum</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;TARGET,PHASE,BANDPASS,AMPLITUDE,CHECK&#39;</span><span class="p">)</span>
+    <span class="n">parang</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">science_spws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">with_channels</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">parang</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">applymode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flagsum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flagdetailedsum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># pipeline inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="c1"># vis must be set first, as other properties may depend on it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+
+        <span class="c1"># data selection arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span> <span class="o">=</span> <span class="n">antenna</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+
+        <span class="c1"># solution parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parang</span> <span class="o">=</span> <span class="n">parang</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">applymode</span> <span class="o">=</span> <span class="n">applymode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flagbackup</span> <span class="o">=</span> <span class="n">flagbackup</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flagsum</span> <span class="o">=</span> <span class="n">flagsum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flagdetailedsum</span> <span class="o">=</span> <span class="n">flagdetailedsum</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
+
+<div class="viewcode-block" id="ApplycalInputs.to_casa_args">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalInputs.to_casa_args">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">casa_args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+        <span class="k">del</span> <span class="n">casa_args</span><span class="p">[</span><span class="s1">&#39;flagsum&#39;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">casa_args</span><span class="p">[</span><span class="s1">&#39;flagdetailedsum&#39;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">casa_args</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">casa_args</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ApplycalResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalResults">[docs]</a>
+<span class="k">class</span> <span class="nc">ApplycalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ApplycalResults is the results class for the pipeline Applycal task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">applied</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">callib_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">data_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataType</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct and return a new ApplycalResults.</span>
+
+<span class="sd">        The resulting object should be initialized with a list of</span>
+<span class="sd">        CalibrationTables corresponding to the caltables applied by this task.</span>
+
+<span class="sd">        :param applied: caltables applied by this task</span>
+<span class="sd">        :type applied: list of :class:`~pipeline.domain.caltable.CalibrationTable`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">applied</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">applied</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">callib_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">callib_map</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">applied</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">applied</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">applied</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callib_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">callib_map</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">=</span> <span class="n">data_type</span>
+
+<div class="viewcode-block" id="ApplycalResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Merges these results with the given context by examining the context</span>
+<span class="sd">        and marking any applied caltables, so removing them from subsequent</span>
+<span class="sd">        on-the-fly calibration calculations.</span>
+
+<span class="sd">        See :method:`~pipeline.Results.merge_with_context`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">applied</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No results to merge&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">applied</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as applied&#39;</span> <span class="o">%</span> <span class="n">calapp</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">mark_as_applied</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
+
+        <span class="c1"># Update data_column</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msobj</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+            <span class="n">colname</span> <span class="o">=</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span>
+            <span class="c1"># Temporal workaround: restoredata merges context twice</span>
+            <span class="k">if</span> <span class="n">msobj</span><span class="o">.</span><span class="n">get_data_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">)</span> <span class="o">!=</span> <span class="n">colname</span><span class="p">:</span>
+                <span class="n">msobj</span><span class="o">.</span><span class="n">set_data_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span> <span class="n">colname</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;ApplycalResults:</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">for</span> <span class="n">caltable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">applied</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">caltable</span><span class="o">.</span><span class="n">gaintable</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">basenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">caltable</span><span class="o">.</span><span class="n">gaintable</span><span class="p">]</span>
+                <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="si">{name}</span><span class="s1"> applied to </span><span class="si">{vis}</span><span class="s1"> spw #</span><span class="si">{spw}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">spw</span><span class="o">=</span><span class="n">caltable</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">caltable</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">basenames</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="si">{name}</span><span class="s1"> applied to </span><span class="si">{vis}</span><span class="s1"> spw #</span><span class="si">{spw}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">caltable</span><span class="o">.</span><span class="n">gaintable</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">caltable</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+                    <span class="n">vis</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">caltable</span><span class="o">.</span><span class="n">vis</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+
+<div class="viewcode-block" id="SerialApplycal">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.SerialApplycal">[docs]</a>
+<span class="k">class</span> <span class="nc">SerialApplycal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Applycal executes CASA applycal tasks for the current active context</span>
+<span class="sd">    state, applying calibrations registered with the pipeline context to the</span>
+<span class="sd">    target measurement set.</span>
+
+<span class="sd">    Applying the results from this task to the context marks the referred</span>
+<span class="sd">    tables as applied. As a result, they will not be included in future</span>
+<span class="sd">    on-the-fly calibration arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">ApplycalInputs</span>
+    <span class="c1"># DataType to be set for a new column</span>
+    <span class="n">applied_data_type</span> <span class="o">=</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SerialApplycal.modify_task_args">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.SerialApplycal.modify_task_args">[docs]</a>
+    <span class="k">def</span> <span class="nf">modify_task_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_args</span><span class="p">):</span>
+        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;*&amp;*&#39;</span>
+        <span class="k">return</span> <span class="n">task_args</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_flagsum_arg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">args</span>
+
+    <span class="k">def</span> <span class="nf">_tweak_flagkwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">template</span>
+
+<div class="viewcode-block" id="SerialApplycal.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.SerialApplycal.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Get the target data selection for this task as a CalTo object</span>
+        <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">get_calto_from_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+        <span class="c1"># Now get the calibration state for that CalTo data selection. The</span>
+        <span class="c1"># returned dictionary of CalTo:CalFroms specifies the calibrations to</span>
+        <span class="c1"># be applied and the data selection to apply them to. While the CASA</span>
+        <span class="c1"># callibrary could use the full, untrimmed calibration state for the</span>
+        <span class="c1"># whole MS, we need the trimmed version for 1) the web log, where it</span>
+        <span class="c1"># is used to state what specific calibrations were applied, and 2),</span>
+        <span class="c1"># the pipeline callibrary, where we mark the target data selection as</span>
+        <span class="c1"># having calibration applied.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Note that no &#39;ignore&#39; argument is given to get_calstate</span>
+        <span class="c1"># (specifically, we don&#39;t say ignore=[&#39;calwt&#39;] like many other tasks)</span>
+        <span class="c1"># as applycal is a task that can handle calwt and so different values</span>
+        <span class="c1"># of calwt should in this case result in different tasks.</span>
+        <span class="n">calstate</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">get_calstate</span><span class="p">(</span><span class="n">calto</span><span class="p">)</span>
+        <span class="n">calstate</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">fix_cycle0_data_selection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">calstate</span><span class="p">)</span>
+
+        <span class="c1"># The &#39;hide_empty=True&#39; is important here. The working calstate</span>
+        <span class="c1"># contains empty state for MSes outside the scope of this task, i.e.,</span>
+        <span class="c1"># MSes in the context that are not specified in inputs.vis for this</span>
+        <span class="c1"># task. These extra MSes cause problems in weblog code downstream,</span>
+        <span class="c1"># which expects results.applied to refer to just the MSes specified in</span>
+        <span class="c1"># the inputs. Using hide_empty gives the data the expected shape.</span>
+        <span class="n">merged</span> <span class="o">=</span> <span class="n">calstate</span><span class="o">.</span><span class="n">merged</span><span class="p">(</span><span class="n">hide_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DISABLE_CASA_CALLIBRARY&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;CASA callibrary disabled: reverting to non-callibrary applycal call&#39;</span><span class="p">)</span>
+            <span class="n">jobs</span> <span class="o">=</span> <span class="n">jobs_without_calapply</span><span class="p">(</span><span class="n">merged</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modify_task_args</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">contains_uvcont_table</span><span class="p">(</span><span class="n">merged</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Calibration state contains uvcont tables: reverting to non-callibrary applycal call&#39;</span><span class="p">)</span>
+            <span class="n">jobs</span> <span class="o">=</span> <span class="n">jobs_without_calapply</span><span class="p">(</span><span class="n">merged</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modify_task_args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No uvcont tables in calibration state: using CASA callibrary applycal.&#39;</span><span class="p">)</span>
+            <span class="n">jobs</span> <span class="o">=</span> <span class="n">jobs_with_calapply</span><span class="p">(</span><span class="n">calstate</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modify_task_args</span><span class="p">)</span>
+
+        <span class="c1"># if requested, schedule additional flagging tasks to determine</span>
+        <span class="c1"># statistics</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">flagsum</span><span class="p">:</span>
+            <span class="n">summary_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span>
+            <span class="c1"># give subclasses a chance to tweak flag summary arguments</span>
+            <span class="n">summary_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_flagsum_arg</span><span class="p">(</span><span class="n">summary_args</span><span class="p">)</span>
+            <span class="c1"># schedule a flagdata summary jobs either side of the applycal jobs</span>
+            <span class="n">jobs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;before&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">summary_args</span><span class="p">))</span>
+            <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;applycal&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">summary_args</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">flagdetailedsum</span><span class="p">:</span>
+                <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+                <span class="c1"># Schedule a flagdata job to determine flagging stats per spw</span>
+                <span class="c1"># and per field</span>
+                <span class="n">flagkwargs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;spw=&#39;</span><span class="si">{!s}</span><span class="s2">&#39; fieldcnt=True mode=&#39;summary&#39; name=&#39;AntSpw</span><span class="si">{:0&gt;3}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                              <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">()]</span>
+
+                <span class="c1"># give subclasses a change to tweak flag arguments</span>
+                <span class="n">flagkwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tweak_flagkwargs</span><span class="p">(</span><span class="n">flagkwargs</span><span class="p">)</span>
+
+                <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="n">inpfile</span><span class="o">=</span><span class="n">flagkwargs</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+        <span class="c1"># execute the jobs and capture the output</span>
+        <span class="n">job_results</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span> <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">]</span>
+        <span class="n">flagdata_results</span> <span class="o">=</span> <span class="p">[</span><span class="n">job_result</span> <span class="k">for</span> <span class="n">job</span><span class="p">,</span> <span class="n">job_result</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="n">job_results</span><span class="p">)</span> <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">fn_name</span> <span class="o">==</span> <span class="s1">&#39;flagdata&#39;</span><span class="p">]</span>
+
+        <span class="n">applied_calapps</span> <span class="o">=</span> <span class="p">[</span><span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span><span class="p">)</span> <span class="k">for</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span> <span class="ow">in</span> <span class="n">merged</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+
+        <span class="c1"># give a dict like {&#39;abc123.ms&#39;: &#39;path/to/callibrary&#39;}. The use of</span>
+        <span class="c1"># dict assumes that there is only one jobrequest per MS, which is true</span>
+        <span class="c1"># when the CASA callibrary is used.</span>
+        <span class="n">vis_to_callib</span> <span class="o">=</span> <span class="p">{</span><span class="n">job</span><span class="o">.</span><span class="n">kw</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]:</span> <span class="n">job</span><span class="o">.</span><span class="n">kw</span><span class="p">[</span><span class="s1">&#39;callib&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span>
+                         <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">fn_name</span> <span class="o">==</span> <span class="s1">&#39;applycal&#39;</span> <span class="ow">and</span> <span class="s1">&#39;callib&#39;</span> <span class="ow">in</span> <span class="n">job</span><span class="o">.</span><span class="n">kw</span><span class="p">}</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">ApplycalResults</span><span class="p">(</span><span class="n">applied_calapps</span><span class="p">,</span> <span class="n">callib_map</span><span class="o">=</span><span class="n">vis_to_callib</span><span class="p">,</span>
+                                 <span class="n">data_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">applied_data_type</span><span class="p">)</span>
+
+        <span class="c1"># add and reshape the flagdata results if required</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">flagsum</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">summaries</span> <span class="o">=</span> <span class="p">[</span><span class="n">flagdata_results</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">flagdata_results</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">flagdetailedsum</span><span class="p">:</span>
+                <span class="n">reshaped_flagsummary</span> <span class="o">=</span> <span class="n">reshape_flagdata_summary</span><span class="p">(</span><span class="n">flagdata_results</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="n">processed_flagsummary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_flagsummary</span><span class="p">(</span><span class="n">reshaped_flagsummary</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">flagsummary</span> <span class="o">=</span> <span class="n">processed_flagsummary</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SerialApplycal.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.SerialApplycal.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SerialApplycal.process_flagsummary">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.SerialApplycal.process_flagsummary">[docs]</a>
+    <span class="k">def</span> <span class="nf">process_flagsummary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flagsummary</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Template entry point for processing flagdata summary dicts. Override</span>
+<span class="sd">        this function to filter or otherwise process the flagdata summary</span>
+<span class="sd">        results.</span>
+
+<span class="sd">        :param flagsummary: the unfiltered, unprocessed flagsummary dict</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">flagsummary</span></div>
+</div>
+
+
+
+<span class="k">def</span> <span class="nf">reshape_flagdata_summary</span><span class="p">(</span><span class="n">flagdata_result</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reshape a flagdata result so that results are grouped by field.</span>
+
+<span class="sd">    :param flagdata_result:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set into single dictionary report (single spw) if only one dict returned</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;report&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">flagdata_result</span><span class="p">]):</span>
+        <span class="n">flagdata_result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;report0&#39;</span><span class="p">:</span> <span class="n">flagdata_result</span><span class="p">}</span>
+
+    <span class="n">flagsummary</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">report_level</span><span class="p">,</span> <span class="n">report</span> <span class="ow">in</span> <span class="n">flagdata_result</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">report_name</span> <span class="o">=</span> <span class="n">report</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">report_type</span> <span class="o">=</span> <span class="n">report</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+        <span class="c1"># report keys are all fieldnames with the exception of &#39;name&#39; and</span>
+        <span class="c1"># &#39;type&#39;, which are in there too.</span>
+        <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">report</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">)]:</span>
+            <span class="c1"># deepcopy to avoid modifying the results dict</span>
+            <span class="n">flagsummary</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="n">report_level</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="n">field_name</span><span class="p">])</span>
+            <span class="n">flagsummary</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="n">report_level</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{!s}</span><span class="s1">Field_</span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">report_name</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+            <span class="n">flagsummary</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="n">report_level</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">report_type</span>
+
+    <span class="k">return</span> <span class="n">flagsummary</span>
+
+
+<span class="c1"># def limit_fields(flagsummary, ms):</span>
+<span class="c1">#     calibrator_fields = ms.get_fields(intent=&#39;AMPLITUDE,PHASE,BANDPASS&#39;)</span>
+<span class="c1">#</span>
+<span class="c1">#     target_fields = ms.get_fields(intent=&#39;TARGET&#39;)</span>
+<span class="c1">#     plot_stride = len(target_fields) / 30 + 1</span>
+<span class="c1">#     targetfields = target_fields[::plot_stride]</span>
+<span class="c1">#</span>
+<span class="c1">#     fields_to_plot = calibrator_fields + targetfields</span>
+<span class="c1">#</span>
+<span class="c1">#     return {k: v for k, v in flagsummary.items() if k in fields_to_plot}</span>
+
+
+<div class="viewcode-block" id="Applycal">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.Applycal">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;h_applycal&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Calibrations are applied to the data. Final flagging summaries are computed&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Applycal</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">ApplycalInputs</span>
+    <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialApplycal</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">jobs_without_calapply</span><span class="p">(</span><span class="n">merged</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">mod_fn</span><span class="p">):</span>
+    <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># sort for a stable applycal order, to make diffs easier to parse</span>
+    <span class="k">for</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">merged</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="c1"># if there&#39;s nothing to apply for this data selection, continue. This</span>
+        <span class="c1"># should never be seen as merged is called with hide_empty=True</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">calfroms</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;There is no calibration information for field </span><span class="si">%s</span><span class="s1"> intent </span><span class="si">%s</span><span class="s1"> spw </span><span class="si">%s</span><span class="s1"> in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                     <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">calto</span><span class="o">.</span><span class="n">field</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">calto</span><span class="o">.</span><span class="n">intent</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">calto</span><span class="o">.</span><span class="n">spw</span><span class="p">),</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># arrange a calibration job for the unique data selection</span>
+        <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">calto</span><span class="o">.</span><span class="n">spw</span>
+        <span class="n">inputs</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">calto</span><span class="o">.</span><span class="n">field</span>
+        <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">calto</span><span class="o">.</span><span class="n">intent</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+
+        <span class="c1"># set the on-the-fly calibration state for the data selection.</span>
+        <span class="n">calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span><span class="p">)</span>
+        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;gaintable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span>
+        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;gainfield&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">gainfield</span>
+        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;spwmap&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">spwmap</span>
+        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;interp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">interp</span>
+        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;calwt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calwt</span>
+        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;applymode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">applymode</span>
+
+        <span class="c1"># give subclasses a chance to modify the task arguments</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="n">mod_fn</span><span class="p">(</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">casa_tasks</span><span class="o">.</span><span class="n">applycal</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">jobs</span>
+
+
+<span class="k">def</span> <span class="nf">jobs_with_calapply</span><span class="p">(</span><span class="n">calstate</span><span class="p">:</span> <span class="n">IntervalCalState</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">ApplycalInputs</span><span class="p">,</span> <span class="n">mod_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+    <span class="n">callibrary_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.s</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">.callibrary&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                                                    <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span><span class="p">,</span>
+                                                    <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">subtask_counter</span><span class="p">)</span>
+    <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+    <span class="n">calstate</span><span class="o">.</span><span class="n">export_to_casa_callibrary</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">callibrary_file</span><span class="p">)</span>
+
+    <span class="c1"># No callibrary file will be created when the merged calstate does not</span>
+    <span class="c1"># require the application of calibrations.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">callibrary_file</span><span class="p">):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No applycal job required for CASA callibrary: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">callibrary_file</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">calstate_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.s</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">.calstate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                                                <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span><span class="p">,</span>
+                                                <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">subtask_counter</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">calstate_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">applyfile</span><span class="p">:</span>
+        <span class="n">applyfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;# Apply file for </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)))</span>
+        <span class="n">applyfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">calstate</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span>
+
+    <span class="n">task_args</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+
+    <span class="c1"># Don&#39;t delete spw, field, or intents as the inputs may request</span>
+    <span class="c1"># calibration of a subset of the total MS. The CASA callibrary can</span>
+    <span class="c1"># still define calibration for the whole MS, that&#39;s not a problem.</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;gaintable&#39;</span><span class="p">,</span> <span class="s1">&#39;gainfield&#39;</span><span class="p">,</span> <span class="s1">&#39;spwmap&#39;</span><span class="p">,</span> <span class="s1">&#39;interp&#39;</span><span class="p">,</span> <span class="s1">&#39;calwt&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">task_args</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">task_args</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+
+    <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;applymode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">applymode</span>
+    <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;docallib&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;callib&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">callibrary_file</span>
+
+    <span class="n">mod_fn</span><span class="p">(</span><span class="n">task_args</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">casa_tasks</span><span class="o">.</span><span class="n">applycal</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)]</span>
+
+
+<span class="k">def</span> <span class="nf">contains_uvcont_table</span><span class="p">(</span><span class="n">merged</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">&#39;uvcont&#39;</span> <span class="ow">in</span> <span class="p">[</span><span class="n">calfrom</span><span class="o">.</span><span class="n">caltype</span> <span class="k">for</span> <span class="n">calfroms</span> <span class="ow">in</span> <span class="n">merged</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">calfrom</span> <span class="ow">in</span> <span class="n">calfroms</span><span class="p">]</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

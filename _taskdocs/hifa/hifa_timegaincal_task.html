@@ -1,0 +1,360 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hifa_timegaincal &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">hifa_timegaincal</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/_taskdocs/hifa/hifa_timegaincal_task.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="hifa-timegaincal">
+<h1>hifa_timegaincal<a class="headerlink" href="#hifa-timegaincal" title="Link to this heading"></a></h1>
+<section id="task-description">
+<h2>Task description<a class="headerlink" href="#task-description" title="Link to this heading"></a></h2>
+<p>The time-dependent complex gains for each antenna/spwid are determined from
+the raw data (DATA column) divided by the model (MODEL column), for the
+specified fields. The gains are computed according to the spw-combination
+model determined in hifa_spwphaseup.</p>
+<p>Previous calibrations are applied on the fly.</p>
+<p>The complex gains are derived from the data column (raw data) divided by the
+model column (usually set with hif_setjy). The gains are obtained for the
+specified solution intervals, spw combination and field combination. One
+gain solution is computed for the science targets and one for the calibrator
+targets.</p>
+<p>Good candidate reference antennas can be determined using the hif_refant
+task.</p>
+<p>Previous calibrations that have been stored in the pipeline context are
+applied on the fly. Users can interact with these calibrations via the
+h_export_calstate and h_import_calstate tasks.</p>
+<p>Output:</p>
+<blockquote>
+<div><p>results – The results object for the pipeline task is returned.</p>
+</div></blockquote>
+</section>
+<section id="parameter-list">
+<h2>Parameter List<a class="headerlink" href="#parameter-list" title="Link to this heading"></a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 66.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>parameter name</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>vis</p></td>
+<td><div class="line-block">
+<div class="line">The list of input MeasurementSets. Defaults to the list of</div>
+<div class="line">MeasurementSets specified in the pipeline context.</div>
+<div class="line">Example: vis=[‘M82A.ms’, ‘M82B.ms’]</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>calamptable</p></td>
+<td><div class="line-block">
+<div class="line">The list of output diagnostic calibration amplitude tables for</div>
+<div class="line">the calibration targets. Defaults to the standard pipeline naming</div>
+<div class="line">convention.</div>
+<div class="line">Example: calamptable=[‘M82.gacal’, ‘M82B.gacal’]</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>offsetstable</p></td>
+<td><div class="line-block">
+<div class="line">The list of output diagnostic phase offset tables for the</div>
+<div class="line">calibration targets. Defaults to the standard pipeline naming convention.</div>
+<div class="line">Example: offsetstable=[‘M82.offsets.gacal’, ‘M82B.offsets.gacal’]</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>calphasetable</p></td>
+<td><div class="line-block">
+<div class="line">The list of output calibration phase tables for the</div>
+<div class="line">calibration targets. Defaults to the standard pipeline naming convention.</div>
+<div class="line">Example: calphasetable=[‘M82.gpcal’, ‘M82B.gpcal’]</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>targetphasetable</p></td>
+<td><div class="line-block">
+<div class="line">The list of output phase calibration tables for the science</div>
+<div class="line">targets. Defaults to the standard pipeline naming convention.</div>
+<div class="line">Example: targetphasetable=[‘M82.gpcal’, ‘M82B.gpcal’]</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>amptable</p></td>
+<td><div class="line-block">
+<div class="line">The list of output calibration amplitude tables for the</div>
+<div class="line">calibration and science targets.</div>
+<div class="line">Defaults to the standard pipeline naming convention.</div>
+<div class="line">Example: amptable=[‘M82.gacal’, ‘M82B.gacal’]</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>field</p></td>
+<td><div class="line-block">
+<div class="line">The list of field names or field ids for which gain solutions are to</div>
+<div class="line">be computed. Defaults to all fields with the standard intent.</div>
+<div class="line">Example: field=’3C279’, field=’3C279, M82’</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>spw</p></td>
+<td><div class="line-block">
+<div class="line">The list of spectral windows and channels for which gain solutions are</div>
+<div class="line">computed. Defaults to all science spectral windows.</div>
+<div class="line">Example: spw=’11’, spw=’11, 13’</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>antenna</p></td>
+<td><div class="line-block">
+<div class="line">The selection of antennas for which gains are computed. Defaults to all.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>calsolint</p></td>
+<td><div class="line-block">
+<div class="line">Time solution interval in CASA syntax for calibrator source</div>
+<div class="line">solutions.</div>
+<div class="line">Example: calsolint=’inf’, calsolint=’int’, calsolint=’100sec’</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>targetsolint</p></td>
+<td><div class="line-block">
+<div class="line">Time solution interval in CASA syntax for target source</div>
+<div class="line">solutions.</div>
+<div class="line">Example: targetsolint=’inf’, targetsolint=’int’, targetsolint=’100sec’</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>refant</p></td>
+<td><div class="line-block">
+<div class="line">Reference antenna name(s) in priority order. Defaults to most recent</div>
+<div class="line">values set in the pipeline context. If no reference antenna is defined in</div>
+<div class="line">the pipeline context use the CASA defaults.</div>
+<div class="line">example: refant=’DV01’, refant=’DV05,DV07’</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>refantmode</p></td>
+<td><div class="line-block">
+<div class="line">Controls how the refant is applied. Currently available</div>
+<div class="line">choices are ‘flex’, ‘strict’, and the default value of ‘’.</div>
+<div class="line">Setting to ‘’ allows the pipeline to select the appropriate</div>
+<div class="line">mode based on the state of the reference antenna list.</div>
+<div class="line">Examples: refantmode=’strict’, refantmode=’’</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>solnorm</p></td>
+<td><div class="line-block">
+<div class="line">Normalise the gain solutions.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>minblperant</p></td>
+<td><div class="line-block">
+<div class="line">Minimum number of baselines required per antenna for each solve.</div>
+<div class="line">Antennas with fewer baselines are excluded from solutions.</div>
+<div class="line">Example: minblperant=2</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>calminsnr</p></td>
+<td><div class="line-block">
+<div class="line">Solutions below this SNR are rejected for calibrator solutions.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>targetminsnr</p></td>
+<td><div class="line-block">
+<div class="line">Solutions below this SNR are rejected for science target</div>
+<div class="line">solutions.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>smodel</p></td>
+<td><div class="line-block">
+<div class="line">Point source Stokes parameters for source model (experimental)</div>
+<div class="line">Defaults to using standard MODEL_DATA column data.</div>
+<div class="line">Example: smodel=[1,0,0,0]  - (I=1, unpolarized)</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>1. Compute standard per scan gain solutions that will be used to calibrate
+the target:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_timegaincal</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

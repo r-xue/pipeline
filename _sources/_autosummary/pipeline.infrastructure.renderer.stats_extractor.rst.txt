@@ -1,0 +1,27 @@
+pipeline.infrastructure.renderer.stats\_extractor
+=================================================
+
+.. automodule:: pipeline.infrastructure.renderer.stats_extractor
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      generate_stats
+      get_stats_from_results
+      union
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Context
+      FlagDeterALMAResults
+      FlagDeterALMAResultsExtractor
+      OrderedDict
+      Results
+      ResultsList
+      StatsExtractor
+      StatsExtractorRegistry
+   

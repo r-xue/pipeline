@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.diffgaincal.qa
+==================================
+
+.. automodule:: pipeline.hifa.tasks.diffgaincal.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DiffgaincalListQAHandler
+      DiffgaincalQAHandler
+   

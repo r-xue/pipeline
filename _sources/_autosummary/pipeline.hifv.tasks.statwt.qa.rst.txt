@@ -1,0 +1,13 @@
+pipeline.hifv.tasks.statwt.qa
+=============================
+
+.. automodule:: pipeline.hifv.tasks.statwt.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      StatwtListQAHandler
+      StatwtQAHandler
+   

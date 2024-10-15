@@ -1,0 +1,13 @@
+pipeline.hif.tasks.bandpass.phcorbandpass
+=========================================
+
+.. automodule:: pipeline.hif.tasks.bandpass.phcorbandpass
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PhcorBandpass
+      PhcorBandpassInputs
+   

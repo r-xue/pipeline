@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.tsysflag.tsysflag
+=====================================
+
+.. automodule:: pipeline.hifa.tasks.tsysflag.tsysflag
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Tsysflag
+      TsysflagInputs
+   

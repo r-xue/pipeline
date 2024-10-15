@@ -1,0 +1,1137 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.extern.TsysDataClassFile &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.extern.TsysDataClassFile</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.extern.TsysDataClassFile</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">bz2</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">atmosphere</span> <span class="k">as</span> <span class="n">attool</span>
+<span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">measures</span> <span class="k">as</span> <span class="n">metool</span>
+<span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">ms</span> <span class="k">as</span> <span class="n">mstool</span>
+<span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">msmetadata</span> <span class="k">as</span> <span class="n">msmdtool</span>
+<span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">quanta</span> <span class="k">as</span> <span class="n">qatool</span>
+<span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">table</span> <span class="k">as</span> <span class="n">tbtool</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span>
+<span class="kn">from</span> <span class="nn">pipeline.extern.almahelpers</span> <span class="kn">import</span> <span class="n">tsysspwmap</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">infrastructure</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="n">ms</span> <span class="o">=</span> <span class="n">mstool</span><span class="p">()</span>
+<span class="n">msmd</span> <span class="o">=</span> <span class="n">msmdtool</span><span class="p">()</span>
+<span class="n">tb</span> <span class="o">=</span> <span class="n">tbtool</span><span class="p">()</span>
+
+<span class="c1"># ALMA Bands  0       1     2    3    4     5     6     7     8    9    10</span>
+<span class="n">usePWV</span> <span class="o">=</span> <span class="p">[</span><span class="mf">99.0</span><span class="p">,</span> <span class="mf">5.186</span><span class="p">,</span> <span class="mf">5.186</span><span class="p">,</span> <span class="mf">2.748</span><span class="p">,</span> <span class="mf">2.748</span><span class="p">,</span> <span class="mf">1.796</span><span class="p">,</span> <span class="mf">1.262</span><span class="p">,</span> <span class="mf">0.913</span><span class="p">,</span> <span class="mf">0.658</span><span class="p">,</span> <span class="mf">0.472</span><span class="p">,</span> <span class="mf">0.472</span><span class="p">]</span>
+<span class="n">WEATHER_DATA_GROUPING</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># 5 s grouping</span>
+
+<span class="n">VERSION</span> <span class="o">=</span> <span class="mf">3.4</span>
+
+
+<div class="viewcode-block" id="getband">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.getband">[docs]</a>
+<span class="k">def</span> <span class="nf">getband</span><span class="p">(</span><span class="n">freq</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Identify the Band for specific frequency (in GHz)&quot;&quot;&quot;</span>
+    <span class="n">lo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">35</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">157</span><span class="p">,</span> <span class="mi">211</span><span class="p">,</span> <span class="mi">275</span><span class="p">,</span> <span class="mi">385</span><span class="p">,</span> <span class="mi">602</span><span class="p">,</span> <span class="mi">787</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1e9</span>
+    <span class="n">hi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">50</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">116</span><span class="p">,</span> <span class="mi">163</span><span class="p">,</span> <span class="mi">212</span><span class="p">,</span> <span class="mi">275</span><span class="p">,</span> <span class="mi">373</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">720</span><span class="p">,</span> <span class="mi">950</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1e9</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lo</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)[(</span><span class="n">freq</span> <span class="o">&gt;</span> <span class="n">lo</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">freq</span> <span class="o">&lt;</span> <span class="n">hi</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="ATMtrans">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.ATMtrans">[docs]</a>
+<span class="k">def</span> <span class="nf">ATMtrans</span><span class="p">(</span><span class="n">msfile</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">spws</span><span class="p">,</span> <span class="n">ifld</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">ms</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msfile</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Could not open ms file </span><span class="si">{</span><span class="n">msfile</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">assert</span> <span class="n">msmd</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msfile</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Could not open metadata from </span><span class="si">{</span><span class="n">msfile</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="c1"># print(msmd.phasecenter(0))</span>
+    <span class="c1"># return None</span>
+    <span class="c1"># results = dict()</span>
+    <span class="c1"># pwvf = pwv_function(msfile)</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">iscan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">:</span>
+        <span class="c1"># Find the field if none supplied</span>
+        <span class="c1"># print(f&#39;iscan={iscan}&#39;)</span>
+        <span class="k">if</span> <span class="n">ifld</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Find all fields associated with this scan</span>
+            <span class="n">fld</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">fieldsforscan</span><span class="p">(</span><span class="n">iscan</span><span class="p">)</span>
+            <span class="c1"># print(f&#39;### {ifld}&#39;)</span>
+            <span class="c1"># If there is more than 1 field, it is a mosaic. Take the central field value, hoping</span>
+            <span class="c1"># that it is near the center...</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fld</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">fld</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">fld</span><span class="p">)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fld</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fld</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fld</span><span class="p">)</span>
+
+    <span class="n">fields_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+    <span class="n">mydirections_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">fld</span><span class="p">,</span> <span class="n">msmd</span><span class="o">.</span><span class="n">phasecenter</span><span class="p">(</span><span class="n">fld</span><span class="p">))</span> <span class="k">for</span> <span class="n">fld</span> <span class="ow">in</span> <span class="n">fields_set</span><span class="p">)</span>
+    <span class="n">mydirections_ra</span> <span class="o">=</span> <span class="p">[</span><span class="n">mydirections_dict</span><span class="p">[</span><span class="n">ifld</span><span class="p">][</span><span class="s2">&quot;m0&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">ifld</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">]</span>
+    <span class="n">mydirections_dec</span> <span class="o">=</span> <span class="p">[</span><span class="n">mydirections_dict</span><span class="p">[</span><span class="n">ifld</span><span class="p">][</span><span class="s2">&quot;m1&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">ifld</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">]</span>
+    <span class="n">myscantimes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">msmd</span><span class="o">.</span><span class="n">timesforscan</span><span class="p">(</span><span class="n">iscan</span><span class="p">))</span> <span class="k">for</span> <span class="n">iscan</span> <span class="ow">in</span> <span class="n">scans</span>
+    <span class="p">]</span>  <span class="c1"># MJD in seconds</span>
+
+    <span class="n">myme</span> <span class="o">=</span> <span class="n">metool</span><span class="p">()</span>
+    <span class="n">observatory</span> <span class="o">=</span> <span class="s2">&quot;ALMA&quot;</span>
+    <span class="n">myme</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span>
+        <span class="n">myme</span><span class="o">.</span><span class="n">observatory</span><span class="p">(</span><span class="n">observatory</span><span class="p">)</span>
+    <span class="p">)</span>  <span class="c1"># will not throw an exception if observatory not recognized</span>
+    <span class="n">myqa</span> <span class="o">=</span> <span class="n">qatool</span><span class="p">()</span>
+    <span class="c1"># mydirections_q = []</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="s2">&quot;AZEL&quot;</span>
+    <span class="n">myazels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">mjd</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">mydirections_ra</span><span class="p">,</span> <span class="n">mydirections_dec</span><span class="p">,</span> <span class="n">myscantimes</span><span class="p">):</span>
+        <span class="n">raQuantity</span> <span class="o">=</span> <span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">ra</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">],</span> <span class="n">ra</span><span class="p">[</span><span class="s2">&quot;unit&quot;</span><span class="p">])</span>
+        <span class="n">decQuantity</span> <span class="o">=</span> <span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">dec</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">],</span> <span class="n">dec</span><span class="p">[</span><span class="s2">&quot;unit&quot;</span><span class="p">])</span>
+        <span class="n">mydir</span> <span class="o">=</span> <span class="n">myme</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="s2">&quot;ICRS&quot;</span><span class="p">,</span> <span class="n">raQuantity</span><span class="p">,</span> <span class="n">decQuantity</span><span class="p">)</span>
+        <span class="n">myme</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">myme</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="s2">&quot;mjd&quot;</span><span class="p">,</span> <span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">mjd</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">)))</span>
+        <span class="n">myazel</span> <span class="o">=</span> <span class="n">myme</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">mydir</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+        <span class="n">myaz</span> <span class="o">=</span> <span class="n">myazel</span><span class="p">[</span><span class="s2">&quot;m0&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>  <span class="c1"># *180/np.pi</span>
+        <span class="n">myel</span> <span class="o">=</span> <span class="n">myazel</span><span class="p">[</span><span class="s2">&quot;m1&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>  <span class="c1"># *180/np.pi</span>
+        <span class="n">myazels</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">myaz</span><span class="p">,</span> <span class="n">myel</span><span class="p">])</span>
+
+    <span class="n">myme</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+    <span class="c1"># myqa.done()</span>
+    <span class="n">airmasses</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">azel</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">azel</span> <span class="ow">in</span> <span class="n">myazels</span><span class="p">]</span>
+
+    <span class="c1"># Fixed parameters adopted from Todd&#39;s aU and plotbandpass3 code</span>
+    <span class="c1"># - could make options later but probably not required for what we need this function to do</span>
+    <span class="n">dP</span> <span class="o">=</span> <span class="mf">5.0</span>
+    <span class="n">dPm</span> <span class="o">=</span> <span class="mf">1.1</span>
+    <span class="n">maxAltitude</span> <span class="o">=</span> <span class="mf">60.0</span>
+    <span class="n">h0</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">atmType</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">nbands</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">telescopeName</span> <span class="o">=</span> <span class="s2">&quot;ALMA&quot;</span>
+
+    <span class="n">_st</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">myscantimes</span><span class="p">)</span>
+    <span class="n">wf</span><span class="p">,</span> <span class="n">_wfdata</span> <span class="o">=</span> <span class="n">weather_function</span><span class="p">(</span><span class="n">msfile</span><span class="p">)</span>
+    <span class="c1"># myqa = qatool()</span>
+    <span class="n">myat</span> <span class="o">=</span> <span class="n">attool</span><span class="p">()</span>
+    <span class="n">spwInfo</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">getspectralwindowinfo</span><span class="p">()</span>
+    <span class="n">bandFreq</span> <span class="o">=</span> <span class="n">spwInfo</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">spws</span><span class="p">)))][</span><span class="s2">&quot;Chan1Freq&quot;</span><span class="p">]</span>  <span class="c1"># v2.5</span>
+    <span class="n">band</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">getband</span><span class="p">(</span><span class="n">bandFreq</span><span class="p">))</span>
+    <span class="c1"># assert False, f&#39;{band} {bandFreq}&#39;</span>
+
+    <span class="k">for</span> <span class="n">iscan</span><span class="p">,</span> <span class="n">pwv</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">airmass</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="n">scans</span><span class="p">,</span>
+        <span class="n">wf</span><span class="p">[</span><span class="s2">&quot;pwv&quot;</span><span class="p">](</span><span class="n">_st</span><span class="p">),</span>
+        <span class="n">wf</span><span class="p">[</span><span class="s2">&quot;pressure&quot;</span><span class="p">](</span><span class="n">_st</span><span class="p">),</span>
+        <span class="n">wf</span><span class="p">[</span><span class="s2">&quot;humidity&quot;</span><span class="p">](</span><span class="n">_st</span><span class="p">),</span>
+        <span class="n">wf</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">](</span><span class="n">_st</span><span class="p">),</span>
+        <span class="n">airmasses</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">T</span> <span class="o">+=</span> <span class="mf">273.15</span>  <span class="c1"># Kelvin</span>
+        <span class="c1"># Sometimes weather values passed are zeros, even if going through the full weather code.</span>
+        <span class="c1"># In those cases, set to the default values.</span>
+        <span class="n">pwv</span> <span class="o">=</span> <span class="n">pwv</span> <span class="k">if</span> <span class="n">pwv</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">usePWV</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">P</span> <span class="k">if</span> <span class="n">P</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">563.0</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">T</span> <span class="k">if</span> <span class="n">T</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">273.15</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">H</span> <span class="k">if</span> <span class="n">H</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">20</span>
+
+        <span class="c1"># if P == 0:</span>
+        <span class="c1">#     P = 563.0</span>
+        <span class="c1"># if H == 0:</span>
+        <span class="c1">#     H = 20.0</span>
+        <span class="c1"># if T == 0:</span>
+        <span class="c1">#     T = 273.15</span>
+        <span class="c1"># if iscan!= 15: continue</span>
+        <span class="c1"># print(pwv, P, H, T, airmass)</span>
+
+        <span class="n">ATMresult</span> <span class="o">=</span> <span class="n">myat</span><span class="o">.</span><span class="n">initAtmProfile</span><span class="p">(</span>
+            <span class="n">humidity</span><span class="o">=</span><span class="n">H</span><span class="p">,</span>
+            <span class="n">temperature</span><span class="o">=</span><span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">),</span>
+            <span class="n">altitude</span><span class="o">=</span><span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mi">5059</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span>
+            <span class="n">pressure</span><span class="o">=</span><span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">),</span>
+            <span class="n">atmType</span><span class="o">=</span><span class="n">atmType</span><span class="p">,</span>
+            <span class="n">h0</span><span class="o">=</span><span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">h0</span><span class="p">,</span> <span class="s2">&quot;km&quot;</span><span class="p">),</span>
+            <span class="n">maxAltitude</span><span class="o">=</span><span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">maxAltitude</span><span class="p">,</span> <span class="s2">&quot;km&quot;</span><span class="p">),</span>
+            <span class="n">dP</span><span class="o">=</span><span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">dP</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">),</span>
+            <span class="n">dPm</span><span class="o">=</span><span class="n">dPm</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># CASA 5 vs 6 check</span>
+        <span class="n">ATMresult</span> <span class="o">=</span> <span class="n">ATMresult</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ATMresult</span><span class="p">)</span> <span class="o">==</span> <span class="nb">tuple</span> <span class="k">else</span> <span class="n">ATMresult</span>
+
+        <span class="k">for</span> <span class="n">ispw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
+            <span class="n">freqs</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">chanfreqs</span><span class="p">(</span><span class="n">ispw</span><span class="p">,</span> <span class="s2">&quot;GHz&quot;</span><span class="p">)</span>
+            <span class="n">numchan</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">nchan</span><span class="p">(</span><span class="n">ispw</span><span class="p">)</span>
+            <span class="n">reffreq</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">numchan</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">freqs</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">numchan</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)])</span>
+
+            <span class="c1"># Gather frequency information into the form we&#39;ll need to make the model.</span>
+            <span class="c1"># For Bands 9 and 10, the spectral window also has atmospheric contributions from the</span>
+            <span class="c1"># image sideband which we must also calculate.</span>
+            <span class="k">if</span> <span class="n">band</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]:</span>
+                <span class="n">nbands</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">freqs_SB</span><span class="p">,</span> <span class="n">chansep_SB</span><span class="p">,</span> <span class="n">center_SB</span><span class="p">,</span> <span class="n">width_SB</span> <span class="o">=</span> <span class="n">getImageSBFreqs</span><span class="p">(</span>
+                    <span class="n">msfile</span><span class="p">,</span> <span class="n">ispw</span>
+                <span class="p">)</span>
+                <span class="n">fCenter</span> <span class="o">=</span> <span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">([</span><span class="n">reffreq</span><span class="p">,</span> <span class="n">center_SB</span><span class="p">],</span> <span class="s2">&quot;GHz&quot;</span><span class="p">)</span>
+                <span class="n">chansep</span> <span class="o">=</span> <span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">numchan</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">fResolution</span> <span class="o">=</span> <span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">([</span><span class="n">chansep</span><span class="p">,</span> <span class="o">-</span><span class="n">chansep</span><span class="p">],</span> <span class="s2">&quot;GHz&quot;</span><span class="p">)</span>
+                <span class="n">fWidth</span> <span class="o">=</span> <span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">([</span><span class="n">numchan</span> <span class="o">*</span> <span class="n">chansep</span><span class="p">,</span> <span class="n">numchan</span> <span class="o">*</span> <span class="o">-</span><span class="n">chansep</span><span class="p">],</span> <span class="s2">&quot;GHz&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fCenter</span> <span class="o">=</span> <span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">reffreq</span><span class="p">,</span> <span class="s2">&quot;GHz&quot;</span><span class="p">)</span>
+                <span class="n">chansep</span> <span class="o">=</span> <span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">numchan</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">fResolution</span> <span class="o">=</span> <span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">chansep</span><span class="p">,</span> <span class="s2">&quot;GHz&quot;</span><span class="p">)</span>
+                <span class="n">fWidth</span> <span class="o">=</span> <span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">numchan</span> <span class="o">*</span> <span class="n">chansep</span><span class="p">,</span> <span class="s2">&quot;GHz&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Setup the CASA atmosphere tool and generate the model.</span>
+            <span class="c1"># Note this is more or less from inside Todd&#39;s aU of CalcAtmTransmission</span>
+            <span class="c1"># from Plotbandpass3.py code</span>
+
+            <span class="c1"># This sets the frequency information and the PWV measurement</span>
+            <span class="n">myat</span><span class="o">.</span><span class="n">initSpectralWindow</span><span class="p">(</span><span class="n">nbands</span><span class="p">,</span> <span class="n">fCenter</span><span class="p">,</span> <span class="n">fWidth</span><span class="p">,</span> <span class="n">fResolution</span><span class="p">)</span>
+            <span class="n">myat</span><span class="o">.</span><span class="n">setUserWH2O</span><span class="p">(</span><span class="n">myqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">pwv</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">))</span>  <span class="c1"># in meters yet</span>
+            <span class="c1"># Now calculate the model based on inputs provided above and get the transmission out</span>
+            <span class="n">dry</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">myat</span><span class="o">.</span><span class="n">getDryOpacitySpec</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># O3, etc.</span>
+            <span class="n">wet</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">myat</span><span class="o">.</span><span class="n">getWetOpacitySpec</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">])</span>  <span class="c1"># water absorption</span>
+            <span class="c1"># assert False, dry[100]</span>
+            <span class="n">transmission</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">airmass</span> <span class="o">*</span> <span class="p">(</span><span class="n">wet</span> <span class="o">+</span> <span class="n">dry</span><span class="p">))</span>  <span class="c1"># e^-tau;</span>
+            <span class="k">if</span> <span class="n">band</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]:</span>
+                <span class="n">dry_SB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">myat</span><span class="o">.</span><span class="n">getDryOpacitySpec</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">wet_SB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">myat</span><span class="o">.</span><span class="n">getWetOpacitySpec</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">])</span>
+                <span class="n">transmission_SB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">airmass</span> <span class="o">*</span> <span class="p">(</span><span class="n">wet_SB</span> <span class="o">+</span> <span class="n">dry_SB</span><span class="p">))</span>
+
+            <span class="c1"># Close the tools</span>
+
+            <span class="k">if</span> <span class="n">band</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]:</span>
+                <span class="c1"># results[f&#39;{ispw}_{iscan}&#39;] = np.c_[np.array(transmission), np.array(transmission_SB)]</span>
+                <span class="n">results</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ispw</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">iscan</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">transmission</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">transmission_SB</span><span class="p">)</span>
+                <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># v2.5</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">results</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ispw</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">iscan</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">transmission</span><span class="p">)</span>
+        <span class="c1"># break</span>
+
+    <span class="n">myat</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">myqa</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+    <span class="n">ms</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">msmd</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">results</span></div>
+
+
+
+<div class="viewcode-block" id="weather_function">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.weather_function">[docs]</a>
+<span class="k">def</span> <span class="nf">weather_function</span><span class="p">(</span><span class="n">msfile</span><span class="p">):</span>
+    <span class="c1"># Use a standard preferred weather station (as noted in AU task).</span>
+    <span class="n">preferredStation</span> <span class="o">=</span> <span class="s2">&quot;TB2&quot;</span>
+    <span class="n">conditions</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="c1"># conditions[&#39;pwv&#39;] = _pwv_function(msfile)</span>
+    <span class="c1"># PWV data</span>
+    <span class="n">pwv</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msfile</span> <span class="o">+</span> <span class="s2">&quot;/ASDM_CALWVR&quot;</span><span class="p">)</span>
+        <span class="n">pwvtime</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;startValidTime&quot;</span><span class="p">)</span>  <span class="c1"># mjdsec</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwvtime</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;no valid data in table ASDM_CALWVR&quot;</span>
+        <span class="n">antenna</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;antennaName&quot;</span><span class="p">)</span>
+        <span class="n">nant</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">antenna</span><span class="p">)))</span>
+        <span class="k">assert</span> <span class="n">nant</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;no valid data in table ASDM_CALWVR&quot;</span>
+        <span class="n">pwv</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;water&quot;</span><span class="p">)</span>
+        <span class="n">tb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwv</span><span class="p">)</span> <span class="o">%</span> <span class="n">nant</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;weather_function: incompatible dimensions&quot;</span>
+        <span class="n">ntimes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pwv</span><span class="p">)</span> <span class="o">/</span> <span class="n">nant</span><span class="p">)</span>
+        <span class="n">pwvtime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">pwvtime</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ntimes</span><span class="p">,</span> <span class="n">nant</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pwv</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;weather_function: PWV all ones, no valid data&quot;</span><span class="p">)</span>
+            <span class="n">pwv</span> <span class="o">*=</span> <span class="mi">0</span>
+        <span class="n">pwv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">pwv</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ntimes</span><span class="p">,</span> <span class="n">nant</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">conditions</span><span class="p">[</span><span class="s2">&quot;pwv&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">tt</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">tt</span><span class="p">,</span> <span class="n">pwvtime</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;This measurement set does not have or has problems with ASDM_CALWVR table. Try the option asis=&#39;SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing&#39; in importasdm&quot;</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;no valid data in table ASDM_CALWVR. Trying ASDM_CALATMOSPHERE.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwv</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msfile</span> <span class="o">+</span> <span class="s2">&quot;/ASDM_CALATMOSPHERE&quot;</span><span class="p">)</span>
+            <span class="n">pwvtime</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;startValidTime&quot;</span><span class="p">)</span>  <span class="c1"># mjdsec</span>
+            <span class="n">antenna</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;antennaName&quot;</span><span class="p">)</span>
+            <span class="n">pwv</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;water&quot;</span><span class="p">)[</span>
+                <span class="mi">0</span>
+            <span class="p">]</span>  <span class="c1"># There seem to be 2 identical entries per row, so take first one.</span>
+            <span class="n">tb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">conditions</span><span class="p">[</span><span class="s2">&quot;pwv&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">tt</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">tt</span><span class="p">,</span> <span class="n">pwvtime</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;This measurement set does not have an ASDM_CALATMOSPHERE table. Try the option asis=&#39;SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing&#39; in importasdm&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
+
+    <span class="c1"># Get the weather table.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msfile</span> <span class="o">+</span> <span class="s2">&quot;/WEATHER&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Could not open the WEATHER table for this ms, default returned.&quot;</span><span class="p">)</span>
+        <span class="n">conditions</span><span class="p">[</span><span class="s2">&quot;pressure&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">tt</span><span class="p">:</span> <span class="mf">563.0</span>
+        <span class="n">conditions</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">tt</span><span class="p">:</span> <span class="mf">0.0</span>  <span class="c1"># in deg C</span>
+        <span class="n">conditions</span><span class="p">[</span><span class="s2">&quot;humidity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">tt</span><span class="p">:</span> <span class="mf">20.0</span>
+        <span class="c1"># return(conditions)</span>
+
+    <span class="c1"># Get all weather information.</span>
+    <span class="n">mjdsec</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;TIME&quot;</span><span class="p">)</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">mjdsec</span><span class="p">)</span>  <span class="c1"># sometimes slightly out of order, fix.</span>
+    <span class="n">pressure</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;PRESSURE&quot;</span><span class="p">)</span>
+    <span class="n">relativeHumidity</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;REL_HUMIDITY&quot;</span><span class="p">)</span>
+    <span class="n">temperature</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;TEMPERATURE&quot;</span><span class="p">)</span>
+    <span class="c1"># If in units of Kelvin, convert to C</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">temperature</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span> <span class="o">-</span> <span class="mf">273.15</span>
+
+    <span class="c1"># Apply correct ordering</span>
+    <span class="n">mjdsec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mjdsec</span><span class="p">)[</span><span class="n">indices</span><span class="p">]</span>
+    <span class="n">pressure</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pressure</span><span class="p">)[</span><span class="n">indices</span><span class="p">]</span>
+    <span class="c1"># assert False, pressure</span>
+    <span class="n">relativeHumidity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">relativeHumidity</span><span class="p">)[</span><span class="n">indices</span><span class="p">]</span>
+    <span class="n">temperature</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">temperature</span><span class="p">)[</span><span class="n">indices</span><span class="p">]</span>
+    <span class="c1"># Grab weather station IDs.</span>
+    <span class="k">if</span> <span class="s2">&quot;NS_WX_STATION_ID&quot;</span> <span class="ow">in</span> <span class="n">tb</span><span class="o">.</span><span class="n">colnames</span><span class="p">():</span>
+        <span class="n">stations</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;NS_WX_STATION_ID&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stations</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">prefix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;WSTB&quot;</span><span class="p">,</span> <span class="s2">&quot;Meteo&quot;</span><span class="p">,</span> <span class="s2">&quot;OSF&quot;</span><span class="p">]</span>  <span class="c1"># Do not know why</span>
+    <span class="n">asdmStation</span> <span class="o">=</span> <span class="n">msfile</span> <span class="o">+</span> <span class="s2">&quot;/ASDM_STATION&quot;</span>
+    <span class="n">wsdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">asdmStation</span><span class="p">),</span> <span class="s2">&quot;Could not open asdmStation. &quot;</span>
+        <span class="n">station_names</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">station_names</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">prefix</span><span class="p">:</span>
+                <span class="c1">#            print &quot;Checking if %s contains %s&quot; % (name.lower(),p.lower())</span>
+                <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">wsdict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="n">tb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;This measurement set does not have an ASDM_STATION table. Try the option asis=&#39;SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing&#39; in importasdm&quot;</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
+
+    <span class="c1"># Get the weather station names.</span>
+
+    <span class="n">preferredStationID</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># Loop over weather stations, searching for the preferred.</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">wsdict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="n">wsdict</span><span class="p">[</span><span class="n">w</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">preferredStation</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">preferredStationID</span> <span class="o">=</span> <span class="n">w</span>
+    <span class="c1"># If preferred found, use only data from that one, otherwise use all.</span>
+    <span class="c1"># assert False, preferredStationID</span>
+    <span class="k">if</span> <span class="n">preferredStationID</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">stations</span> <span class="o">==</span> <span class="n">preferredStationID</span><span class="p">)</span>
+        <span class="n">mjdsec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mjdsec</span><span class="p">)[</span><span class="n">indices</span><span class="p">]</span>
+        <span class="n">pressure</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pressure</span><span class="p">)[</span><span class="n">indices</span><span class="p">]</span>
+        <span class="n">relativeHumidity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">relativeHumidity</span><span class="p">)[</span><span class="n">indices</span><span class="p">]</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">temperature</span><span class="p">)[</span><span class="n">indices</span><span class="p">]</span>
+        <span class="n">stations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">stations</span><span class="p">)[</span><span class="n">indices</span><span class="p">]</span>
+
+    <span class="c1"># clean stations with invalid data</span>
+    <span class="c1"># assert False, stations</span>
+    <span class="c1"># stations  = stations[pressure&gt;0]</span>
+    <span class="n">pgt0</span> <span class="o">=</span> <span class="n">pressure</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span>
+            <span class="n">pgt0</span>
+        <span class="p">),</span> <span class="s2">&quot;weather_function: No valid weather data! Returning default conditions.&quot;</span>
+    <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+        <span class="n">conditions</span><span class="p">[</span><span class="s2">&quot;pressure&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">tt</span><span class="p">:</span> <span class="mf">563.0</span>
+        <span class="n">conditions</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">tt</span><span class="p">:</span> <span class="mf">0.0</span>  <span class="c1"># in deg C</span>
+        <span class="n">conditions</span><span class="p">[</span><span class="s2">&quot;humidity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">tt</span><span class="p">:</span> <span class="mf">20.0</span>
+        <span class="c1"># return conditions</span>
+
+    <span class="n">mjdsec</span> <span class="o">=</span> <span class="n">mjdsec</span><span class="p">[</span><span class="n">pgt0</span><span class="p">]</span>
+    <span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span><span class="p">[</span><span class="n">pgt0</span><span class="p">]</span>
+    <span class="n">relativeHumidity</span> <span class="o">=</span> <span class="n">relativeHumidity</span><span class="p">[</span><span class="n">pgt0</span><span class="p">]</span>
+    <span class="n">pressure</span> <span class="o">=</span> <span class="n">pressure</span><span class="p">[</span><span class="n">pgt0</span><span class="p">]</span>
+    <span class="n">stations</span> <span class="o">=</span> <span class="n">stations</span><span class="p">[</span><span class="n">pgt0</span><span class="p">]</span>
+    <span class="c1"># assert False, pressure</span>
+    <span class="c1"># sys.exit(0)</span>
+    <span class="n">nstations</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">stations</span><span class="p">)))</span>
+    <span class="c1"># delta_t = np.quantile(np.diff(mjdsec),(1-1/len(mjdsec))/nstations)</span>
+    <span class="n">data_weather</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;pressure&quot;</span><span class="p">:</span> <span class="n">pressure</span><span class="p">,</span>
+        <span class="s2">&quot;humidity&quot;</span><span class="p">:</span> <span class="n">relativeHumidity</span><span class="p">,</span>
+        <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">temperature</span><span class="p">,</span>
+        <span class="s2">&quot;mjdsec&quot;</span><span class="p">:</span> <span class="n">mjdsec</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="c1"># quantile = np.quantile(np.diff(mjdsec),(1-1/len(mjdsec))/nstations)</span>
+
+    <span class="n">split_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">mjdsec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">mjdsec</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">WEATHER_DATA_GROUPING</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data_weather</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">data_weather</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">_</span><span class="p">])</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">split_idx</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">data_weather</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;mjdsec&quot;</span><span class="p">]):</span>
+        <span class="c1"># One needs to be careful with lambda functions. They re-evaluate calls to the variables used</span>
+        <span class="c1"># one way to avoid this is by using the default valua as below.</span>
+        <span class="n">conditions</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">tt</span><span class="p">,</span> <span class="n">times</span><span class="o">=</span><span class="n">data_weather</span><span class="p">[</span><span class="s2">&quot;mjdsec&quot;</span><span class="p">],</span> <span class="n">vals</span><span class="o">=</span><span class="n">data_weather</span><span class="p">[</span>
+            <span class="n">k</span>
+        <span class="p">]:</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">tt</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">vals</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">conditions</span><span class="p">,</span> <span class="n">data_weather</span></div>
+
+
+
+<span class="c1"># # AL added - PIPE 1168 (2)</span>
+
+
+<div class="viewcode-block" id="getImageSBFreqs">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.getImageSBFreqs">[docs]</a>
+<span class="k">def</span> <span class="nf">getImageSBFreqs</span><span class="p">(</span><span class="n">msfile</span><span class="p">,</span> <span class="n">spwin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Purpose:</span>
+<span class="sd">        Given the spectral window, find the LO frequency and return the frequencies of</span>
+<span class="sd">        the image sideband. Specifically, return the inputs needed for ATMtrans() in</span>
+<span class="sd">        order to properly show the atmospheric transmission for bands 9 and 10 where the</span>
+<span class="sd">        image sideband atomospheric window also contributes to the spectral window.</span>
+
+<span class="sd">    Inputs:</span>
+<span class="sd">        spwin : int</span>
+<span class="sd">            The spectral window for which the image sideband frequencies are needed.</span>
+
+<span class="sd">    Outputs:</span>
+<span class="sd">        fSB : numpy.array</span>
+<span class="sd">            The frequencies of the image sideband. These will be properly arranged</span>
+<span class="sd">            (i.e. they will be opposite in direction to the input spectral window</span>
+<span class="sd">            frequencies).</span>
+
+<span class="sd">        chansepSB : float</span>
+<span class="sd">            The separation between channels (channel width).</span>
+
+<span class="sd">        fCenterSB : float</span>
+<span class="sd">            The mean frequency (center) of the image sideband.</span>
+
+<span class="sd">        fWidthSB : float</span>
+<span class="sd">            The total bandwidth of the image sideband (will be equal to the input</span>
+<span class="sd">            spectral window).</span>
+
+<span class="sd">    Note: This has been taken from Todd Hunter&#39;s AU tools, specifically au.interpretLOs,</span>
+<span class="sd">          au.getLOs, and plotbandpass3.py - CalcAtmTranmission.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get the information we need from the MS table ASDM_RECEIVER which will give us</span>
+    <span class="c1"># the spw numbers, the LOs, and the &quot;names&quot; (more like an intent) of the spws.</span>
+
+    <span class="n">tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msfile</span> <span class="o">+</span> <span class="s2">&quot;/ASDM_RECEIVER&quot;</span><span class="p">)</span>
+    <span class="n">numLO</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;numLO&quot;</span><span class="p">)</span>
+    <span class="n">freqLO</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">spws</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">numLO</span><span class="p">)):</span>
+        <span class="n">spw</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">tb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;spectralWindowId&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
+            <span class="n">spws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+            <span class="n">freqLO</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;freqLO&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+    <span class="n">tb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># We want to ignore the superfluous WVR windows and find the right index for our</span>
+    <span class="c1"># input spectral window.</span>
+    <span class="n">sawWVR</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spws</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;WVR&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">sawWVR</span><span class="p">:</span>
+                <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">sawWVR</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="c1"># This is quite clever (taken from Todd&#39;s bandpass3), the LO is the frequency that</span>
+    <span class="c1"># is exactly between the spw and the image sideband. Therefore,</span>
+    <span class="c1">#   2*(spw_freq - LO_freq) - spw_freq</span>
+    <span class="c1">#   2 * spw_freq - 2 * LO_freq - spw_freq</span>
+    <span class="c1">#   spw_freq - 2 * LO_freq</span>
+    <span class="c1"># this results in each channel getting the correctly matched image sideband frequency</span>
+    <span class="c1"># such that the array counts in the right direction which is opposite the input spectral</span>
+    <span class="c1"># window.</span>
+    <span class="n">mymsmd</span> <span class="o">=</span> <span class="n">msmdtool</span><span class="p">()</span>
+    <span class="n">mymsmd</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msfile</span><span class="p">)</span>
+    <span class="n">fSB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">freqLO</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">spwin</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">mymsmd</span><span class="o">.</span><span class="n">chanfreqs</span><span class="p">(</span><span class="n">spwin</span><span class="p">))</span> <span class="o">*</span> <span class="mf">1e-9</span>
+    <span class="n">mymsmd</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">fCenterSB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">fSB</span><span class="p">)</span>
+    <span class="n">chansepSB</span> <span class="o">=</span> <span class="p">(</span><span class="n">fSB</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">fSB</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fSB</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">fWidthSB</span> <span class="o">=</span> <span class="n">chansepSB</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">fSB</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fSB</span><span class="p">,</span> <span class="n">chansepSB</span><span class="p">,</span> <span class="n">fCenterSB</span><span class="p">,</span> <span class="n">fWidthSB</span></div>
+
+
+
+<div class="viewcode-block" id="chanfreq_records_to_functions">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.chanfreq_records_to_functions">[docs]</a>
+<span class="k">def</span> <span class="nf">chanfreq_records_to_functions</span><span class="p">(</span><span class="n">chan_records</span><span class="p">):</span>
+    <span class="n">ch_frq</span> <span class="o">=</span> <span class="n">chan_records</span>
+    <span class="n">freqMHz</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">chan</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">numchannels</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">recn</span> <span class="ow">in</span> <span class="n">ch_frq</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">chf</span> <span class="o">=</span> <span class="n">ch_frq</span><span class="p">[</span><span class="n">recn</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">spw</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">recn</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">f0</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">nchan</span> <span class="o">=</span> <span class="p">[</span><span class="n">chf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">chf</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">chf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">freqMHz</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">ch</span><span class="p">,</span> <span class="n">f0</span><span class="o">=</span><span class="n">f0</span><span class="p">,</span> <span class="n">f1</span><span class="o">=</span><span class="n">f1</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=</span><span class="n">nchan</span><span class="p">:</span> <span class="p">(</span><span class="n">f0</span> <span class="o">+</span> <span class="n">ch</span> <span class="o">*</span> <span class="p">(</span><span class="n">f1</span> <span class="o">-</span> <span class="n">f0</span><span class="p">)</span> <span class="o">/</span> <span class="n">nchan</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e6</span>
+        <span class="p">)</span>
+        <span class="n">chan</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">fMHz</span><span class="p">,</span> <span class="n">f0</span><span class="o">=</span><span class="n">f0</span><span class="p">,</span> <span class="n">f1</span><span class="o">=</span><span class="n">f1</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=</span><span class="n">nchan</span><span class="p">:</span> <span class="p">(</span><span class="n">fMHz</span> <span class="o">*</span> <span class="mf">1e6</span> <span class="o">-</span> <span class="n">f0</span><span class="p">)</span>
+            <span class="o">/</span> <span class="p">(</span><span class="n">f1</span> <span class="o">-</span> <span class="n">f0</span><span class="p">)</span>
+            <span class="o">*</span> <span class="n">nchan</span>
+        <span class="p">)</span>
+        <span class="c1"># chansizeMHz[spw] = ((f1-f0)/1.0e6/nchan)</span>
+        <span class="n">numchannels</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="n">nchan</span>
+    <span class="k">return</span> <span class="n">freqMHz</span><span class="p">,</span> <span class="n">chan</span><span class="p">,</span> <span class="n">numchannels</span></div>
+
+
+
+<div class="viewcode-block" id="TsysData">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.TsysData">[docs]</a>
+<span class="k">class</span> <span class="nc">TsysData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">tsystable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">oldobject</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">load_pickle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">single_polarization</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tsystable</span> <span class="o">=</span> <span class="n">tsystable</span>
+        <span class="k">if</span> <span class="n">tsystable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">oldobject</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tsystable</span> <span class="o">==</span> <span class="n">oldobject</span><span class="o">.</span><span class="n">tsystable</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">msfile</span> <span class="o">=</span> <span class="n">oldobject</span><span class="o">.</span><span class="n">msfile</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tsysfields</span> <span class="o">=</span> <span class="n">oldobject</span><span class="o">.</span><span class="n">tsysfields</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tsysdata</span> <span class="o">=</span> <span class="n">oldobject</span><span class="o">.</span><span class="n">tsysdata</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">specfields</span> <span class="o">=</span> <span class="n">oldobject</span><span class="o">.</span><span class="n">specfields</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">specdata</span> <span class="o">=</span> <span class="n">oldobject</span><span class="o">.</span><span class="n">specdata</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">absorptionfields</span> <span class="o">=</span> <span class="n">oldobject</span><span class="o">.</span><span class="n">absorptionfields</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">absorptiondata</span> <span class="o">=</span> <span class="n">oldobject</span><span class="o">.</span><span class="n">absorptiondata</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inversetsysmap</span> <span class="o">=</span> <span class="n">oldobject</span><span class="o">.</span><span class="n">inversetsysmap</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ch_frq</span> <span class="o">=</span> <span class="n">oldobject</span><span class="o">.</span><span class="n">ch_frq</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">msspec</span> <span class="o">=</span> <span class="n">oldobject</span><span class="o">.</span><span class="n">msspec</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">load_pickle</span><span class="p">:</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tsystable</span><span class="si">}</span><span class="s2">.tsysdata.pbz2&quot;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">bz2</span><span class="o">.</span><span class="n">BZ2File</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">reader</span><span class="p">:</span>
+                    <span class="n">data_dict</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+                    <span class="k">assert</span> <span class="p">(</span>
+                        <span class="s2">&quot;VERSION&quot;</span> <span class="ow">in</span> <span class="n">data_dict</span>
+                    <span class="p">),</span> <span class="s2">&quot;No version information in the picke file!&quot;</span>
+                    <span class="k">assert</span> <span class="p">(</span>
+                        <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;VERSION&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">VERSION</span>
+                    <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Version of pickle is </span><span class="si">{</span><span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;VERSION&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> &lt; </span><span class="si">{</span><span class="n">VERSION</span><span class="si">}</span><span class="s2">, which is the version of the script.&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">msfile</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;msfile&quot;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tsysfields</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;tsysfields&quot;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tsysdata</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;tsysdata&quot;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">specfields</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;specfields&quot;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">specdata</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;specdata&quot;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">absorptionfields</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;absorptionfields&quot;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">absorptiondata</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;absorptiondata&quot;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inversetsysmap</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;inversetsysmap&quot;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ch_frq</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;ch_frq&quot;</span><span class="p">]</span>
+                <span class="n">freqMHz</span><span class="p">,</span> <span class="n">chan</span><span class="p">,</span> <span class="n">numchannels</span> <span class="o">=</span> <span class="n">chanfreq_records_to_functions</span><span class="p">(</span>
+                    <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;ch_frq&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">msspec</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="p">(</span><span class="n">freqMHz</span><span class="p">[</span><span class="n">spw</span><span class="p">],</span> <span class="n">chan</span><span class="p">[</span><span class="n">spw</span><span class="p">],</span> <span class="n">numchannels</span><span class="p">[</span><span class="n">spw</span><span class="p">]))</span>
+                        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">freqMHz</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>  <span class="c1"># v2.4</span>
+                <span class="k">return</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not load </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(uid.+)\.ms\S+&quot;</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">m</span><span class="p">,</span> <span class="s2">&quot;Could not extract ms file name from tsystable:</span><span class="si">{tsystable}</span><span class="s2">&quot;</span>
+        <span class="n">msfile</span><span class="p">,</span> <span class="n">asdm</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.ms&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;../rawdata/</span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msfile</span> <span class="o">=</span> <span class="n">msfile</span>
+
+        <span class="k">assert</span> <span class="n">tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tsystable</span><span class="si">}</span><span class="s2">/ANTENNA&quot;</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Could not open </span><span class="si">{</span><span class="n">tsystable</span><span class="si">}</span><span class="s2">/ANTENNA&quot;</span>
+        <span class="n">ant_names</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;NAME&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antnames</span> <span class="o">=</span> <span class="n">ant_names</span>  <span class="c1"># v2.4</span>
+        <span class="k">assert</span> <span class="n">tb</span><span class="o">.</span><span class="n">close</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;Could not close </span><span class="si">{</span><span class="n">tsystable</span><span class="si">}</span><span class="s2">/ANTENNA.&quot;</span>
+        <span class="n">freqMHz</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="c1"># chansizeMHz = dict()</span>
+        <span class="n">chan</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">numchannels</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tsystable</span><span class="si">}</span><span class="s2">/SPECTRAL_WINDOW&quot;</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Could not open </span><span class="si">{</span><span class="n">tsystable</span><span class="si">}</span><span class="s2">/SPECTRAL_WINDOW&quot;</span>
+        <span class="n">ch_frq</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getvarcol</span><span class="p">(</span><span class="s2">&quot;CHAN_FREQ&quot;</span><span class="p">)</span>
+        <span class="n">tb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch_frq</span> <span class="o">=</span> <span class="n">ch_frq</span>
+        <span class="n">freqMHz</span><span class="p">,</span> <span class="n">chan</span><span class="p">,</span> <span class="n">numchannels</span> <span class="o">=</span> <span class="n">chanfreq_records_to_functions</span><span class="p">(</span><span class="n">ch_frq</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msspec</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="p">(</span><span class="n">freqMHz</span><span class="p">[</span><span class="n">spw</span><span class="p">],</span> <span class="n">chan</span><span class="p">[</span><span class="n">spw</span><span class="p">],</span> <span class="n">numchannels</span><span class="p">[</span><span class="n">spw</span><span class="p">]))</span>
+                <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">freqMHz</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="p">)</span>  <span class="c1"># v2.4</span>
+
+        <span class="k">assert</span> <span class="n">tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">tsystable</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Could not open </span><span class="si">{</span><span class="n">tsystable</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">ant1</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">spws</span><span class="p">,</span> <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;ANTENNA1&quot;</span><span class="p">),</span>
+            <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;SCAN_NUMBER&quot;</span><span class="p">),</span>
+            <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;SPECTRAL_WINDOW_ID&quot;</span><span class="p">),</span>
+            <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;FIELD_ID&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">fparam</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getvarcol</span><span class="p">(</span><span class="s2">&quot;FPARAM&quot;</span><span class="p">)</span>
+        <span class="n">tsysflag</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getvarcol</span><span class="p">(</span><span class="s2">&quot;FLAG&quot;</span><span class="p">)</span>
+        <span class="n">nrows</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">tb</span><span class="o">.</span><span class="n">close</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;Could not close </span><span class="si">{</span><span class="n">tsystable</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="n">single_polarization</span><span class="p">:</span>
+            <span class="n">fparam</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">fparam</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+            <span class="n">tsysflag</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">tsysflag</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+
+        <span class="k">assert</span> <span class="n">msmd</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msfile</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Could not open metadata for </span><span class="si">{</span><span class="n">msfile</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tsysmap</span> <span class="o">=</span> <span class="n">TsysData</span><span class="o">.</span><span class="n">tsysmap</span><span class="p">(</span>
+            <span class="n">vis</span><span class="o">=</span><span class="n">msfile</span><span class="p">,</span> <span class="n">tsystable</span><span class="o">=</span><span class="n">tsystable</span><span class="p">,</span> <span class="n">msmdtool_instance</span><span class="o">=</span><span class="n">msmd</span>
+        <span class="p">)</span>  <span class="c1"># v2.4</span>
+        <span class="n">auxi</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tsysmap</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">auxi</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inversetsysmap</span> <span class="o">=</span> <span class="n">auxi</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">intent</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">scans</span><span class="p">)):</span>
+            <span class="c1"># This is a bit tricky. We need all intents on the source _name_ associated with the scan. Necessary for mosaics.</span>
+            <span class="n">fieldnumbers_for_fieldname</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">fieldsforname</span><span class="p">(</span>
+                <span class="n">msmd</span><span class="o">.</span><span class="n">fieldnames</span><span class="p">()[</span><span class="n">msmd</span><span class="o">.</span><span class="n">fieldsforscan</span><span class="p">(</span><span class="n">scan</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="p">)</span>
+            <span class="n">all_intents</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fieldnumbers_for_fieldname</span><span class="p">:</span>
+                <span class="n">all_intents</span> <span class="o">+=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">intentsforfield</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">_ii</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># print(all_intents)</span>
+            <span class="k">if</span> <span class="s2">&quot;CALIBRATE_BANDPASS#ON_SOURCE&quot;</span> <span class="ow">in</span> <span class="n">all_intents</span><span class="p">:</span>
+                <span class="n">_ii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;bandpass&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;CALIBRATE_PHASE#ON_SOURCE&quot;</span> <span class="ow">in</span> <span class="n">all_intents</span><span class="p">:</span>
+                <span class="n">_ii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;phasecal&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;OBSERVE_TARGET#ON_SOURCE&quot;</span> <span class="ow">in</span> <span class="n">all_intents</span><span class="p">:</span>
+                <span class="n">_ii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;science&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_ii</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">_ii</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;other&quot;</span><span class="p">]</span>
+            <span class="n">intent</span><span class="p">[</span><span class="n">scan</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_ii</span><span class="p">)</span>
+        <span class="n">msmd</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+        <span class="c1"># break</span>
+
+        <span class="n">atmos_transmission</span> <span class="o">=</span> <span class="n">ATMtrans</span><span class="p">(</span>
+            <span class="n">msfile</span><span class="o">=</span><span class="n">msfile</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">scans</span><span class="p">)),</span> <span class="n">spws</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">spws</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">_</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">atmos_transmission</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+        <span class="p">),</span> <span class="s2">&quot;Not all transmission curves &lt;=1! Something is wrong!&quot;</span>
+
+        <span class="n">flags</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">tsys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">intents</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">recn</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">spw</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nrows</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">ant1</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">spws</span><span class="p">):</span>
+            <span class="n">flagspec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">tsysflag</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;r</span><span class="si">{</span><span class="n">recn</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">][:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">fparam</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;r</span><span class="si">{</span><span class="n">recn</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">][</span>
+                <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span>
+            <span class="p">]</span>  <span class="c1"># np.mean(fparam[f&#39;r{recn}&#39;][:,:,0], axis=0) # here the polarization average occurs.</span>
+            <span class="n">spec</span><span class="p">[:,</span> <span class="n">flagspec</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>  <span class="c1"># same flags per polarization are ensured.</span>
+            <span class="n">flags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flagspec</span><span class="p">)</span>
+            <span class="n">tsys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+            <span class="n">intents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">intent</span><span class="p">[</span><span class="n">scan</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tsysfields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;spw&quot;</span><span class="p">,</span> <span class="s2">&quot;scan&quot;</span><span class="p">,</span> <span class="s2">&quot;intent&quot;</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">,</span> <span class="s2">&quot;antenna&quot;</span><span class="p">,</span> <span class="s2">&quot;flags&quot;</span><span class="p">,</span> <span class="s2">&quot;tsys&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tsysdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">spws</span><span class="p">),</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">scans</span><span class="p">),</span>
+                <span class="n">intents</span><span class="p">,</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">fields</span><span class="p">),</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">ant_names</span><span class="p">[</span><span class="n">ant1</span><span class="p">]),</span>
+                <span class="n">flags</span><span class="p">,</span>
+                <span class="n">tsys</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">spws_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">spws</span><span class="p">)))</span>
+        <span class="n">scans_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">scans</span><span class="p">)))</span>
+
+        <span class="n">freq_mhz</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">nchans</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws_list</span><span class="p">:</span>
+            <span class="n">chans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">numchannels</span><span class="p">[</span><span class="n">spw</span><span class="p">])</span>
+            <span class="n">freq_mhz</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">freqMHz</span><span class="p">[</span><span class="n">spw</span><span class="p">](</span><span class="n">chans</span><span class="p">))</span>
+            <span class="n">nchans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">numchannels</span><span class="p">[</span><span class="n">spw</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">specfields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;spw&quot;</span><span class="p">,</span> <span class="s2">&quot;freq_mhz&quot;</span><span class="p">,</span> <span class="s2">&quot;nchan&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">specdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">spws_list</span><span class="p">,</span> <span class="n">freq_mhz</span><span class="p">,</span> <span class="n">nchans</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span>
+        <span class="p">)</span>  <span class="c1"># v2.4 nchan -&gt; nchans seems. like a bug.</span>
+
+        <span class="n">absorptions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">scans</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">spws</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws_list</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans_list</span><span class="p">:</span>
+                <span class="n">scans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span>
+                <span class="n">spws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+                <span class="n">absorptions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atmos_transmission</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">scan</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">absorptionfields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;spw&quot;</span><span class="p">,</span> <span class="s2">&quot;scan&quot;</span><span class="p">,</span> <span class="s2">&quot;absorption&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">absorptiondata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">spws</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">absorptions</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TsysData.tsysmap">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.TsysData.tsysmap">[docs]</a>
+    <span class="k">def</span> <span class="nf">tsysmap</span><span class="p">(</span>
+        <span class="n">vis</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">msmdtool_instance</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s2">&quot;OBSERVE_TARGET#ON_SOURCE&quot;</span>
+    <span class="p">):</span>  <span class="c1"># v2.4, this function</span>
+        <span class="n">_tsysmap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tsysspwmap</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">tsystable</span><span class="o">=</span><span class="n">tsystable</span><span class="p">))</span>
+        <span class="n">mymsmd</span> <span class="o">=</span> <span class="n">msmdtool_instance</span>
+        <span class="c1"># mymsmd.open(vis)</span>
+        <span class="n">allIntents</span> <span class="o">=</span> <span class="n">mymsmd</span><span class="o">.</span><span class="n">intents</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">intent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allIntents</span> <span class="ow">and</span> <span class="n">intent</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">allIntents</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">intent</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Translated intent to &quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                    <span class="k">break</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">intent</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">allIntents</span><span class="p">]</span>
+        <span class="c1"># If any intent gives a match, the mean value of the location list will be &gt; -1</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">spws</span> <span class="o">=</span> <span class="n">mymsmd</span><span class="o">.</span><span class="n">spwsforintent</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+            <span class="n">almaspws</span> <span class="o">=</span> <span class="n">mymsmd</span><span class="o">.</span><span class="n">almaspws</span><span class="p">(</span><span class="n">tdm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fdm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sqld</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># mymsmd.close()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spws</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">almaspws</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">scienceSpws</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">scienceSpws</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">spws</span><span class="p">,</span> <span class="n">almaspws</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="p">(</span><span class="n">sspw</span><span class="p">,</span> <span class="n">tspw</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">sspw</span><span class="p">,</span> <span class="n">tspw</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                        <span class="nb">list</span><span class="p">(</span><span class="n">scienceSpws</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="n">_tsysmap</span><span class="p">[</span><span class="n">scienceSpws</span><span class="p">])</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="c1"># return(scienceSpws, _tsysmap)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># mymsmd.close()</span>
+            <span class="k">raise</span> <span class="n">IntentException</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> not found in this dataset. Available intents: &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">intent</span><span class="p">),</span>
+                <span class="n">allIntents</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TsysData.IntentException">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.TsysData.IntentException">[docs]</a>
+    <span class="k">class</span> <span class="nc">IntentException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>  <span class="c1"># v2.4</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TsysData.get_valid_antennae">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.TsysData.get_valid_antennae">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_valid_antennae</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">valid_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="c1">##</span>
+        <span class="p">[</span><span class="n">antennas</span><span class="p">,</span> <span class="n">spws</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">tsyss</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tsysdata</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tsysfields</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;antenna&quot;</span><span class="p">,</span> <span class="s2">&quot;spw&quot;</span><span class="p">,</span> <span class="s2">&quot;scan&quot;</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">,</span> <span class="s2">&quot;flags&quot;</span><span class="p">,</span> <span class="s2">&quot;intent&quot;</span><span class="p">,</span> <span class="s2">&quot;tsys&quot;</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">antennas</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="n">spws</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="n">scans</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="n">fields</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">valid</span><span class="p">:</span>
+            <span class="n">selection</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">antennas</span> <span class="o">==</span> <span class="n">antenna</span><span class="p">)</span>
+                <span class="o">*</span> <span class="p">(</span><span class="n">spws</span> <span class="o">==</span> <span class="n">spw</span><span class="p">)</span>
+                <span class="o">*</span> <span class="p">(</span><span class="n">scans</span> <span class="o">==</span> <span class="n">scan</span><span class="p">)</span>
+                <span class="o">*</span> <span class="p">(</span><span class="n">fields</span> <span class="o">==</span> <span class="n">field</span><span class="p">)</span>
+            <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Selection antenna=</span><span class="si">{</span><span class="n">antenna</span><span class="si">}</span><span class="s2">,spw=</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">,scan=</span><span class="si">{</span><span class="n">scan</span><span class="si">}</span><span class="s2">,field=</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2"> has more than 1 match!&quot;</span>
+            <span class="n">selection</span> <span class="o">=</span> <span class="n">selection</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">flag</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>
+            <span class="n">intent</span> <span class="o">=</span> <span class="n">intents</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">scan</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">antenna</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">flag</span><span class="p">):</span>
+                <span class="n">exclude</span> <span class="o">=</span> <span class="n">exclude</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">key</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">valid_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">tsyss</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>
+        <span class="c1"># valid = valid - exclude</span>
+        <span class="k">return</span> <span class="n">valid_dict</span><span class="p">,</span> <span class="n">exclude</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_partition_by_equivalence_class</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">equiv</span><span class="p">):</span>
+        <span class="n">partitions</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Found partitions</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>  <span class="c1"># Loop over each element</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Note it is not yet part of a know partition</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">partitions</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">equiv</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">p</span><span class="p">))):</span>  <span class="c1"># Found a partition for it!</span>
+                    <span class="n">p</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                    <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>  <span class="c1"># Make a new partition for it.</span>
+                <span class="n">partitions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">e</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">partitions</span>
+
+    <span class="k">def</span> <span class="nf">_equiv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">numeric_fields</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">mx</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(&quot;</span> <span class="o">+</span> <span class="s2">&quot;[0-9]+_&quot;</span> <span class="o">*</span> <span class="n">numeric_fields</span> <span class="o">+</span> <span class="s2">&quot;).*&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">my</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(&quot;</span> <span class="o">+</span> <span class="s2">&quot;[0-9]+_&quot;</span> <span class="o">*</span> <span class="n">numeric_fields</span> <span class="o">+</span> <span class="s2">&quot;).*&quot;</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">mx</span> <span class="ow">and</span> <span class="n">my</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">mx</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">my</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_combine_difference</span><span class="p">(</span><span class="n">minuend_dict</span><span class="p">,</span> <span class="n">subtrahend_dict</span><span class="p">):</span>
+        <span class="n">minuend_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">minuend_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">subtrahend_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">subtrahend_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">minuend_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
+            <span class="sa">r</span><span class="s2">&quot;(?P&lt;spw&gt;\d+)_(?P&lt;field&gt;\d+)_(?P&lt;scan&gt;\d+)_(?P&lt;antenna&gt;.+)_(?P&lt;intent&gt;.+)&quot;</span><span class="p">,</span>
+            <span class="n">k</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">assert</span> <span class="n">m</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_combine_difference: no match for key k=</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">spw</span><span class="p">,</span> <span class="n">field</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;spw&quot;</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">)</span>
+        <span class="n">differences</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="c1"># antennae = []</span>
+        <span class="k">for</span> <span class="n">mi</span><span class="p">,</span> <span class="n">su</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">minuend_keys</span><span class="p">,</span> <span class="n">subtrahend_keys</span><span class="p">):</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
+                <span class="sa">rf</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">_(?P&lt;scan&gt;\d+)_(?P&lt;antenna&gt;.+)_(?P&lt;intent&gt;.+)&quot;</span><span class="p">,</span> <span class="n">mi</span>
+            <span class="p">)</span>
+            <span class="k">assert</span> <span class="n">m</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_combine_difference: no match for key mi=</span><span class="si">{</span><span class="n">mi</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">scan_mi</span><span class="p">,</span> <span class="n">antenna_mi</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;scan&quot;</span><span class="p">,</span> <span class="s2">&quot;antenna&quot;</span><span class="p">)</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">rf</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">_\d+_(?P&lt;scan&gt;\d+)_(?P&lt;antenna&gt;.+)_(?P&lt;intent&gt;.+)&quot;</span><span class="p">,</span> <span class="n">su</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># assert m, f&quot;_combine_difference: no match for key su={su}&quot;</span>
+            <span class="n">scan_su</span><span class="p">,</span> <span class="n">antenna_su</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;scan&quot;</span><span class="p">,</span> <span class="s2">&quot;antenna&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">antenna_mi</span> <span class="o">==</span> <span class="n">antenna_su</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">differences</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">scan_mi</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">scan_su</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">antenna_mi</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">minuend_dict</span><span class="p">[</span><span class="n">mi</span><span class="p">]</span> <span class="o">-</span> <span class="n">subtrahend_dict</span><span class="p">[</span><span class="n">su</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="c1"># assert not antenna_mi in antennae, f&quot;_combine_difference: Repeated antenna in difference calculation.\n--{minuend_keys}\n--{subtrahend_keys}&quot;</span>
+            <span class="c1"># antennae.append(antenna_mi)</span>
+
+        <span class="k">return</span> <span class="n">differences</span>  <span class="c1"># , antennae</span>
+
+<div class="viewcode-block" id="TsysData.filter_statistics_and_dif">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.TsysData.filter_statistics_and_dif">[docs]</a>
+    <span class="k">def</span> <span class="nf">filter_statistics_and_dif</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">statistics</span><span class="p">,</span> <span class="n">remove_n_extreme</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">polarizations</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="n">valid</span><span class="p">,</span> <span class="n">invalid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_valid_antennae</span><span class="p">()</span>
+        <span class="n">valid_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">valid</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="n">fequiv</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">TsysData</span><span class="o">.</span><span class="n">_equiv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">numeric_fields</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">partitioned_keys_by_field</span> <span class="o">=</span> <span class="n">TsysData</span><span class="o">.</span><span class="n">_partition_by_equivalence_class</span><span class="p">(</span>
+            <span class="n">valid_keys</span><span class="p">,</span> <span class="n">fequiv</span>
+        <span class="p">)</span>
+
+        <span class="n">intents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;.*_([^_]+)$&quot;</span><span class="p">,</span> <span class="n">vk</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">vk</span> <span class="ow">in</span> <span class="n">valid_keys</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="s2">&quot;bandpass&quot;</span> <span class="ow">in</span> <span class="n">intents</span><span class="p">,</span> <span class="s2">&quot;filter_average_dif: No &#39;bandpass&#39; in intents&quot;</span>
+        <span class="n">intents</span> <span class="o">=</span> <span class="n">intents</span> <span class="o">-</span> <span class="p">{</span><span class="s2">&quot;bandpass&quot;</span><span class="p">}</span>
+        <span class="n">partitioned_keys_source</span><span class="p">,</span> <span class="n">partitioned_keys_bp</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="n">bpdict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">partitioned_keys_by_field</span><span class="p">:</span>
+            <span class="n">keyset</span> <span class="o">=</span> <span class="n">partitioned_keys_by_field</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;bandpass&quot;</span> <span class="ow">in</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">keyset</span><span class="p">)):</span>
+                <span class="n">partitioned_keys_bp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keyset</span><span class="p">)</span>
+                <span class="n">bpdict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="n">valid</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyset</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">partitioned_keys_source</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keyset</span><span class="p">)</span>
+
+        <span class="n">stats_dif</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">stats_sou</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">stats_bp</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">stats_antenna</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="c1"># assert False, partitioned_keys_source</span>
+        <span class="k">for</span> <span class="n">keyset_s</span> <span class="ow">in</span> <span class="n">partitioned_keys_source</span><span class="p">:</span>
+            <span class="c1"># print(keyset_s)</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
+                <span class="sa">r</span><span class="s2">&quot;(?P&lt;spw&gt;\d+)_(?P&lt;field&gt;\d+)_(?P&lt;scan&gt;\d+)_(?P&lt;antenna&gt;.+)_(?P&lt;intent&gt;.+)&quot;</span><span class="p">,</span>
+                <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">keyset_s</span><span class="p">)),</span>
+            <span class="p">)</span>
+            <span class="n">spw</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent_sou</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;spw&quot;</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">,</span> <span class="s2">&quot;intent&quot;</span><span class="p">)</span>
+            <span class="n">sourcedict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="n">valid</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyset_s</span><span class="p">])</span>
+            <span class="n">bpdict_spw</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">bpdict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">rf</span><span class="s2">&quot;^</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">_.*&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">)]</span>
+            <span class="p">)</span>
+
+            <span class="n">diff</span> <span class="o">=</span> <span class="n">TsysData</span><span class="o">.</span><span class="n">_combine_difference</span><span class="p">(</span>
+                <span class="n">minuend_dict</span><span class="o">=</span><span class="n">sourcedict</span><span class="p">,</span> <span class="n">subtrahend_dict</span><span class="o">=</span><span class="n">bpdict_spw</span>
+            <span class="p">)</span>
+
+            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
+                <span class="sa">r</span><span class="s2">&quot;(?P&lt;spw&gt;\d+)_(?P&lt;field&gt;\d+)_(?P&lt;scan&gt;\d+)_(?P&lt;antenna&gt;.+)_(?P&lt;intent&gt;.+)&quot;</span><span class="p">,</span>
+                <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">bpdict_spw</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span>
+            <span class="p">)</span>
+            <span class="n">field_bp</span><span class="p">,</span> <span class="n">scan_bp</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;field&quot;</span><span class="p">,</span> <span class="s2">&quot;scan&quot;</span><span class="p">)</span>
+            <span class="n">diffkeyslist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># print(spw,field,intent_sou, diffkeyslist)</span>
+
+            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
+                <span class="sa">r</span><span class="s2">&quot;(?P&lt;spw&gt;\d+)_(?P&lt;scan_sou&gt;\d+)-(?P&lt;scan_bp&gt;\d+)_(?P&lt;antenna&gt;.+)&quot;</span><span class="p">,</span>
+                <span class="n">diffkeyslist</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="k">assert</span> <span class="n">m</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">diffkeyslist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="c1"># if key != &#39;24_3&#39;: continue</span>
+            <span class="n">auxi_dif</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[[</span><span class="n">diff</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">diffkeyslist</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">auxi_dif</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">remove_n_extreme</span><span class="p">:</span>
+                <span class="n">stats_dif</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">stats_sou</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">stats_bp</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">stats_antenna</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">continue</span>
+            <span class="c1"># print(diffkeyslist)</span>
+            <span class="c1"># print(f&#39;{np.nanmax(auxi_dif)}&#39;); assert False, &quot;&quot;</span>
+            <span class="n">auxiliar</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">auxi_dif</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">auxi_dif</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">order_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">auxiliar</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="p">)</span>  <span class="c1"># np.argsort(np.nanmax(auxi_dif-np.nanmean(auxi_dif,axis=1)[:,np.newaxis],axis=1))</span>
+            <span class="n">order_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">auxiliar</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="p">)</span>  <span class="c1"># np.argsort(np.nanmin(auxi_dif-np.nanmean(auxi_dif,axis=1)[:,np.newaxis],axis=1))</span>
+            <span class="n">selection</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="nb">list</span><span class="p">(</span>
+                    <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">auxi_dif</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                    <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">order_max</span><span class="p">[</span><span class="o">-</span><span class="n">remove_n_extreme</span><span class="p">:]))</span>
+                    <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">order_min</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">remove_n_extreme</span><span class="p">]))</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="c1"># selection = np.array(list(set(list(selection)) - set(list(selection[-remove_n_extreme:]))))</span>
+            <span class="n">auxi_dif_antenna</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span>
+                <span class="p">[</span>
+                    <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">rf</span><span class="s2">&quot;^</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">_.*_(?P&lt;antenna&gt;.+)$&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;antenna&quot;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">diffkeyslist</span>
+                <span class="p">]</span>
+            <span class="p">]</span>
+
+            <span class="c1"># selection = np.nonzero((order_negative&lt;len(order_negative)-remove_n_extreme) * (order_positive &lt;len(order)-remove_n_extreme))[0] # a bit of robustness against bad data.</span>
+            <span class="c1"># print(set(list(selection)))</span>
+            <span class="n">antenna_selection</span> <span class="o">=</span> <span class="n">auxi_dif_antenna</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>
+            <span class="n">auxi_sou</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span>
+                <span class="p">[</span>
+                    <span class="n">valid</span><span class="p">[</span>
+                        <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+                            <span class="sa">rf</span><span class="s2">&quot;^</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">_(\d+)-</span><span class="si">{</span><span class="n">scan_bp</span><span class="si">}</span><span class="s2">_([^_]+)$&quot;</span><span class="p">,</span>
+                            <span class="sa">rf</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">_\1_\2_</span><span class="si">{</span><span class="n">intent_sou</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">k</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">]</span>
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">diffkeyslist</span>
+                <span class="p">]</span>
+            <span class="p">]</span>
+            <span class="n">auxi_bp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span>
+                <span class="p">[</span>
+                    <span class="n">bpdict</span><span class="p">[</span>
+                        <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+                            <span class="sa">rf</span><span class="s2">&quot;^</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">_(\d+)-</span><span class="si">{</span><span class="n">scan_bp</span><span class="si">}</span><span class="s2">_([^_]+)$&quot;</span><span class="p">,</span>
+                            <span class="sa">rf</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">field_bp</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">scan_bp</span><span class="si">}</span><span class="s2">_\2_bandpass&quot;</span><span class="p">,</span>
+                            <span class="n">k</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">]</span>
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">diffkeyslist</span>
+                <span class="p">]</span>
+            <span class="p">]</span>
+            <span class="n">auxi_dif</span> <span class="o">=</span> <span class="n">auxi_dif</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>
+            <span class="n">auxi_sou</span> <span class="o">=</span> <span class="n">auxi_sou</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>
+            <span class="n">auxi_bp</span> <span class="o">=</span> <span class="n">auxi_bp</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>
+
+            <span class="n">stats_dif</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">statistics</span><span class="p">(</span><span class="n">auxi_dif</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">stats_sou</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">statistics</span><span class="p">(</span><span class="n">auxi_sou</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">stats_bp</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">statistics</span><span class="p">(</span><span class="n">auxi_bp</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">stats_antenna</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">antenna_selection</span>
+        <span class="c1"># print(f&#39;*** {np.sort(stats_antenna[&quot;24_3&quot;])} {np.nanmax(stats_sou[&quot;24_3&quot;])}&#39;);assert False,&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">stats_dif</span><span class="p">,</span> <span class="n">stats_sou</span><span class="p">,</span> <span class="n">stats_bp</span><span class="p">,</span> <span class="n">stats_antenna</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

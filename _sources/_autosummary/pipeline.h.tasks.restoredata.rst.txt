@@ -1,0 +1,20 @@
+pipeline.h.tasks.restoredata
+============================
+
+.. automodule:: pipeline.h.tasks.restoredata
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      RestoreData
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   qa
+   restoredata

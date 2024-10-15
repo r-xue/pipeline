@@ -1,0 +1,20 @@
+pipeline.hifa.tasks.restoredata
+===============================
+
+.. automodule:: pipeline.hifa.tasks.restoredata
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ALMARestoreData
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   almarestoredata
+   renderer

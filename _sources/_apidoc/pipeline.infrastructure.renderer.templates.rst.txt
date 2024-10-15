@@ -1,0 +1,18 @@
+pipeline.infrastructure.renderer.templates package
+==================================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pipeline.infrastructure.renderer.templates.resources
+
+Module contents
+---------------
+
+.. automodule:: pipeline.infrastructure.renderer.templates
+   :members:
+   :undoc-members:
+   :show-inheritance:

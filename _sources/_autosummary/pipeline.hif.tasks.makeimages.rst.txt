@@ -1,0 +1,21 @@
+pipeline.hif.tasks.makeimages
+=============================
+
+.. automodule:: pipeline.hif.tasks.makeimages
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MakeImages
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   makeimages
+   qa
+   resultobjects

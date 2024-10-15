@@ -1,0 +1,12 @@
+pipeline.h.tasks.common.sensitivity
+===================================
+
+.. automodule:: pipeline.h.tasks.common.sensitivity
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Sensitivity
+   

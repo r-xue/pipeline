@@ -1,0 +1,18 @@
+pipeline.hif.tasks.editimlist.renderer
+======================================
+
+.. automodule:: pipeline.hif.tasks.editimlist.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      plots_to_html
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsEditimlistRenderer
+   

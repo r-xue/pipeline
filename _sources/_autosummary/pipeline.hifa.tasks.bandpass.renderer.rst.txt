@@ -1,0 +1,12 @@
+pipeline.hifa.tasks.bandpass.renderer
+=====================================
+
+.. automodule:: pipeline.hifa.tasks.bandpass.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsBandpassRenderer
+   

@@ -1,0 +1,21 @@
+pipeline.hifa.tasks.lock\_refant
+================================
+
+.. automodule:: pipeline.hifa.tasks.lock_refant
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LockRefAnt
+      T2_4MDetailsLockRefantRenderer
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   lock_refant
+   renderer

@@ -1,0 +1,13 @@
+pipeline.hif.tasks.tclean.resultobjects
+=======================================
+
+.. automodule:: pipeline.hif.tasks.tclean.resultobjects
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BoxResult
+      TcleanResult
+   

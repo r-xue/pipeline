@@ -1,0 +1,21 @@
+pipeline.infrastructure.docutils package
+========================================
+
+Submodules
+----------
+
+pipeline.infrastructure.docutils.createTaskList module
+------------------------------------------------------
+
+.. automodule:: pipeline.infrastructure.docutils.createTaskList
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.infrastructure.docutils
+   :members:
+   :undoc-members:
+   :show-inheritance:

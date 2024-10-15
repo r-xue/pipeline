@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsdn.tasks.restoredata.ampcal &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsdn.tasks.restoredata.ampcal</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsdn.tasks.restoredata.ampcal</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">caltable_heuristic</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">csvfilereader</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">worker</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SDAmpCalInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.ampcal.SDAmpCalInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">SDAmpCalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Original is pipeline.hsd.tasks.k2jycal.k2jycal.py.</span>
+<span class="sd">    This ampcal.py is modified specially for NRO data</span>
+<span class="sd">    to correct scale differences between beams of FOREST.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">reffile</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span>
+
+    <span class="nd">@infiles</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the caltable argument for these inputs.</span>
+
+<span class="sd">        If set to a table-naming heuristic, this should give a sensible name</span>
+<span class="sd">        considering the current CASA task arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">namer</span> <span class="o">=</span> <span class="n">caltable_heuristic</span><span class="o">.</span><span class="n">AmpCaltable</span><span class="p">()</span>
+        <span class="c1"># ignore caltable to avoid circular reference</span>
+        <span class="n">casa_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_task_args</span><span class="p">(</span><span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;caltable&#39;</span><span class="p">,))</span>
+        <span class="k">return</span> <span class="n">namer</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                               <span class="n">stage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stage</span><span class="p">,</span> <span class="o">**</span><span class="n">casa_args</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">infiles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDAmpCalInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># context and vis/infiles must be set first so that properties that require</span>
+        <span class="c1"># domain objects can be function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span> <span class="o">=</span> <span class="n">infiles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+
+        <span class="c1"># set the properties to the values given as input arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reffile</span> <span class="o">=</span> <span class="n">reffile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span> <span class="o">=</span> <span class="n">endpoint</span></div>
+
+
+<div class="viewcode-block" id="SDAmpCalResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.ampcal.SDAmpCalResults">[docs]</a>
+<span class="k">class</span> <span class="nc">SDAmpCalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="p">[],</span> <span class="n">pool</span><span class="o">=</span><span class="p">[],</span> <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">factors</span><span class="o">=</span><span class="p">{},</span>
+                 <span class="n">all_ok</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDAmpCalResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">pool</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="n">final</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reffile</span> <span class="o">=</span> <span class="n">reffile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">factors</span> <span class="o">=</span> <span class="n">factors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_ok</span> <span class="o">=</span> <span class="n">all_ok</span>
+
+<div class="viewcode-block" id="SDAmpCalResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.ampcal.SDAmpCalResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No results to merge&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Adding calibration to callibrary:</span><span class="se">\n</span><span class="s1">&#39;</span>
+                      <span class="s1">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">))</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
+        <span class="c1"># merge k2jy factor to context assing the value as an attribute of MS</span>
+        <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">valid_k2jy</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">factors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">msobj</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">msobj</span><span class="o">.</span><span class="n">k2jy_factor</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">spw_k2jy</span> <span class="ow">in</span> <span class="n">valid_k2jy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">ant</span><span class="p">,</span> <span class="n">ant_k2jy</span> <span class="ow">in</span> <span class="n">spw_k2jy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">for</span> <span class="n">pol</span><span class="p">,</span> <span class="n">pol_k2jy</span> <span class="ow">in</span> <span class="n">ant_k2jy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="n">msobj</span><span class="o">.</span><span class="n">k2jy_factor</span><span class="p">[(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pol_k2jy</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Format the Tsyscal results.</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;SDAmpCalResults:</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">for</span> <span class="n">calapplication</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Best caltable for spw #</span><span class="si">{spw}</span><span class="s1"> in </span><span class="si">{vis}</span><span class="s1"> is </span><span class="si">{name}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">spw</span><span class="o">=</span><span class="n">calapplication</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">calapplication</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">calapplication</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+
+<div class="viewcode-block" id="SDAmpCal">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.ampcal.SDAmpCal">[docs]</a>
+<span class="k">class</span> <span class="nc">SDAmpCal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDAmpCalInputs</span>
+
+<div class="viewcode-block" id="SDAmpCal.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.ampcal.SDAmpCal.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># obtain scaling factors</span>
+        <span class="n">factors_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Read factor file</span>
+        <span class="n">reffile</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">reffile</span>
+        <span class="n">factors_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_factors</span><span class="p">(</span><span class="n">reffile</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;factors_list=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">factors_list</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">factors_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No factor data available&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">SDAmpCalResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span> <span class="n">pool</span><span class="o">=</span><span class="p">[],</span> <span class="n">reffile</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">reffile</span><span class="p">)</span>
+
+        <span class="c1"># generate scaling factor dictionary</span>
+        <span class="n">factors</span> <span class="o">=</span> <span class="n">rearrange_factors_list</span><span class="p">(</span><span class="n">factors_list</span><span class="p">)</span>
+
+        <span class="n">callist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">valid_factors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">all_factors_ok</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># Loop over MS and generate a caltable per MS</span>
+        <span class="n">ampcal_inputs</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">SDAmpCalWorker</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                                                       <span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span><span class="p">,</span> <span class="n">factors</span><span class="p">)</span>
+        <span class="n">ampcal_task</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">SDAmpCalWorker</span><span class="p">(</span><span class="n">ampcal_inputs</span><span class="p">)</span>
+        <span class="n">ampcal_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ampcal_task</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ampcal_result</span><span class="o">.</span><span class="n">calapp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">callist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ampcal_result</span><span class="o">.</span><span class="n">calapp</span><span class="p">)</span>
+        <span class="n">valid_factors</span><span class="p">[</span><span class="n">ampcal_result</span><span class="o">.</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">ampcal_result</span><span class="o">.</span><span class="n">ms_factors</span>
+        <span class="n">all_factors_ok</span> <span class="o">&amp;=</span> <span class="n">ampcal_result</span><span class="o">.</span><span class="n">factors_ok</span>
+
+        <span class="k">return</span> <span class="n">SDAmpCalResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">ampcal_result</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="n">callist</span><span class="p">,</span> <span class="n">reffile</span><span class="o">=</span><span class="n">reffile</span><span class="p">,</span>
+                                <span class="n">factors</span><span class="o">=</span><span class="n">valid_factors</span><span class="p">,</span> <span class="n">all_ok</span><span class="o">=</span><span class="n">all_factors_ok</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SDAmpCal.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.ampcal.SDAmpCal.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="c1"># With no best caltable to find, our task is simply to set the one</span>
+        <span class="c1"># caltable as the best result</span>
+
+        <span class="c1"># double-check that the caltable was actually generated</span>
+        <span class="n">on_disk</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">on_disk</span>
+
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">on_disk</span><span class="p">]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_read_factors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reffile</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">reffile</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="c1"># read scaling factor list</span>
+        <span class="n">factors_list</span> <span class="o">=</span> <span class="n">csvfilereader</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">reffile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">factors_list</span></div>
+
+
+<div class="viewcode-block" id="rearrange_factors_list">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.ampcal.rearrange_factors_list">[docs]</a>
+<span class="k">def</span> <span class="nf">rearrange_factors_list</span><span class="p">(</span><span class="n">factors_list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rearrange scaling factor list to dictionary which looks like</span>
+<span class="sd">    {&#39;MS&#39;: {&#39;spw&#39;: {&#39;Ant&#39;: {&#39;pol&#39;: factor}}}}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">factors</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">_factor</span><span class="p">)</span> <span class="ow">in</span> <span class="n">factors_list</span><span class="p">:</span>
+        <span class="n">spwid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_factor</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">factors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">factors</span><span class="p">[</span><span class="n">vis</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">factors</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">spwid</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">factors</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">spwid</span><span class="p">][</span><span class="n">ant</span><span class="p">]:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;There are duplicate rows in reffile, use </span><span class="si">%s</span><span class="s1"> instead of </span><span class="si">%s</span><span class="s1"> for (</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span>
+                                 <span class="p">(</span><span class="n">factors</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">spwid</span><span class="p">][</span><span class="n">ant</span><span class="p">][</span><span class="n">pol</span><span class="p">],</span> <span class="n">factor</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">))</span>
+                        <span class="n">factors</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">spwid</span><span class="p">][</span><span class="n">ant</span><span class="p">][</span><span class="n">pol</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">factors</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">spwid</span><span class="p">][</span><span class="n">ant</span><span class="p">][</span><span class="n">pol</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">factors</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">spwid</span><span class="p">][</span><span class="n">ant</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">pol</span><span class="p">:</span> <span class="n">factor</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">factors</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">ant</span><span class="p">:</span> <span class="p">{</span><span class="n">pol</span><span class="p">:</span> <span class="n">factor</span><span class="p">}}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">factors</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">spwid</span><span class="p">:</span> <span class="p">{</span><span class="n">ant</span><span class="p">:</span> <span class="p">{</span><span class="n">pol</span><span class="p">:</span> <span class="n">factor</span><span class="p">}}}</span>
+
+    <span class="k">return</span> <span class="n">factors</span></div>
+
+
+
+<div class="viewcode-block" id="export_jyperk">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.ampcal.export_jyperk">[docs]</a>
+<span class="k">def</span> <span class="nf">export_jyperk</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">factors</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outfile</span><span class="p">):</span>
+        <span class="c1"># create file with header information</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;MS,Beam,Spwid,Polarization,Factor</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">factors</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">row</span><span class="p">)))</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

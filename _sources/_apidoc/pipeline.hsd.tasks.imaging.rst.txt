@@ -1,0 +1,109 @@
+pipeline.hsd.tasks.imaging package
+==================================
+
+Submodules
+----------
+
+pipeline.hsd.tasks.imaging.accumulator module
+---------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.imaging.accumulator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.imaging.detectcontamination module
+-----------------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.imaging.detectcontamination
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.imaging.display module
+-----------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.imaging.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.imaging.gridding module
+------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.imaging.gridding
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.imaging.imaging module
+-----------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.imaging.imaging
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.imaging.imaging\_params module
+-------------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.imaging.imaging_params
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.imaging.qa module
+------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.imaging.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.imaging.renderer module
+------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.imaging.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.imaging.resultobjects module
+-----------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.imaging.resultobjects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.imaging.sdcombine module
+-------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.imaging.sdcombine
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.imaging.weighting module
+-------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.imaging.weighting
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.imaging.worker module
+----------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.imaging.worker
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hsd.tasks.imaging
+   :members:
+   :undoc-members:
+   :show-inheritance:

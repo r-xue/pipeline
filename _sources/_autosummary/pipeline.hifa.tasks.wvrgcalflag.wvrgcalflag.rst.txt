@@ -1,0 +1,18 @@
+pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag
+===========================================
+
+.. automodule:: pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Wvrgcalflag
+      WvrgcalflagData
+      WvrgcalflagDataInputs
+      WvrgcalflagInputs
+      WvrgcalflagResults
+      WvrgcalflagView
+      WvrgcalflagViewResults
+   

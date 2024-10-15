@@ -1,0 +1,358 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsdn.tasks.restoredata.worker &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsdn.tasks.restoredata.worker</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsdn.tasks.restoredata.worker</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">sqrt</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SDAmpCalWorkerInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">SDAmpCalWorkerInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+    <span class="n">caltype</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">factors</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDAmpCalWorkerInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">factors</span> <span class="o">=</span> <span class="n">factors</span>
+
+
+    <span class="c1"># Convert to CASA gencal task arguments.</span>
+<div class="viewcode-block" id="SDAmpCalWorkerInputs.to_casa_args">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerInputs.to_casa_args">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="p">,</span>
+                <span class="s1">&#39;caltype&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">caltype</span><span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SDAmpCalWorkerResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerResults">[docs]</a>
+<span class="k">class</span> <span class="nc">SDAmpCalWorkerResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">calapp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">factors</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDAmpCalWorkerResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calapp</span> <span class="o">=</span> <span class="n">calapp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms_factors</span> <span class="o">=</span> <span class="n">factors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">factors_ok</span> <span class="o">=</span> <span class="p">(</span><span class="n">calapp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SDAmpCalWorkerResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Invalid MS name passed to Result class&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calapp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;caltable generation failed&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SDAmpCalWorker">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorker">[docs]</a>
+<span class="k">class</span> <span class="nc">SDAmpCalWorker</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Per MS caltable creation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDAmpCalWorkerInputs</span>    
+
+<div class="viewcode-block" id="SDAmpCalWorker.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorker.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span>
+        <span class="n">factors</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">factors</span>
+
+        <span class="n">polmap</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;XX&#39;</span><span class="p">:</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;YY&#39;</span><span class="p">:</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not find MS &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">SDAmpCalWorkerResults</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">))</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">vis</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">factors</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SDAmpCalWorkerResults</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># make a note of the current inputs state before we start fiddling</span>
+        <span class="c1"># with it. This origin will be attached to the final CalApplication.</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalAppOrigin</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="n">SDAmpCalWorker</span><span class="p">,</span>
+                                         <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">())</span>
+        <span class="n">common_params</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+        <span class="n">factors_for_ms</span> <span class="o">=</span> <span class="n">factors</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span>
+        <span class="n">factors_used</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">spw_factor</span> <span class="ow">in</span> <span class="n">factors_for_ms</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">factors_used</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">ant</span><span class="p">,</span> <span class="n">ant_factor</span> <span class="ow">in</span> <span class="n">spw_factor</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">factors_used</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="n">ant</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="c1"># map polarization</span>
+                <span class="n">pol_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ant_factor</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="n">pols</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">polmap</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">pol_list</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pol_list</span><span class="p">:</span>
+                    <span class="n">factors_used</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="n">ant</span><span class="p">][</span><span class="n">pol</span><span class="p">]</span> <span class="o">=</span> <span class="n">ant_factor</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, SPW </span><span class="si">%d</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">: factor=</span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span>
+                              <span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">factors_used</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="n">ant</span><span class="p">][</span><span class="n">pol</span><span class="p">]))</span>
+                <span class="c1"># handle anonymous antenna</span>
+                <span class="n">ant_sel</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">ant</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;ANONYMOUS&#39;</span> <span class="k">else</span> <span class="n">ant</span>
+                <span class="n">gain_factor</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ant_factor</span><span class="p">[</span><span class="n">pol</span><span class="p">])</span> <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pol_list</span><span class="p">]</span>
+                <span class="n">gencal_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">),</span> <span class="n">antenna</span><span class="o">=</span><span class="n">ant_sel</span><span class="p">,</span> <span class="n">pol</span><span class="o">=</span><span class="n">pols</span><span class="p">,</span>
+                                   <span class="n">parameter</span><span class="o">=</span><span class="n">gain_factor</span><span class="p">)</span>
+                <span class="n">gencal_args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">common_params</span><span class="p">)</span>
+                <span class="n">gencal_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">gencal</span><span class="p">(</span><span class="o">**</span><span class="n">gencal_args</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">gencal_job</span><span class="p">)</span>
+        <span class="c1"># generate callibrary for the caltable</span>
+        <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">common_params</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+        <span class="n">calfrom</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">(</span><span class="n">common_params</span><span class="p">[</span><span class="s1">&#39;caltable&#39;</span><span class="p">],</span> 
+                                     <span class="n">caltype</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">caltype</span><span class="p">,</span>
+                                     <span class="n">gainfield</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                     <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;nearest,nearest&#39;</span><span class="p">)</span>
+        <span class="n">calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SDAmpCalWorkerResults</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">calapp</span><span class="o">=</span><span class="n">calapp</span><span class="p">,</span> <span class="n">factors</span><span class="o">=</span><span class="n">factors_used</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SDAmpCalWorker.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorker.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Define factors actually used and analyze if the factors are provided to all relevant data in MS.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">vis</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">ms_factors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">factors_ok</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No factor data is given for MS &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">pol_to_map_i</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;XX&#39;</span><span class="p">,</span> <span class="s1">&#39;YY&#39;</span><span class="p">,</span> <span class="s1">&#39;RR&#39;</span><span class="p">,</span> <span class="s1">&#39;LL&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">spwid</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
+            <span class="k">if</span> <span class="n">spwid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">ms_factors</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">factors_ok</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No factor data is given for Spw=</span><span class="si">%d</span><span class="s2"> of </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+                <span class="k">continue</span>
+            <span class="n">ddid</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spwid</span><span class="p">)</span>
+            <span class="n">pol_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">ddid</span><span class="o">.</span><span class="n">get_polarization_label</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">ddid</span><span class="o">.</span><span class="n">num_polarizations</span><span class="p">)))</span>
+            <span class="c1"># mapping for anonymous antenna if necessary</span>
+            <span class="n">is_anonymous_ant</span> <span class="o">=</span> <span class="s1">&#39;ANONYMOUS&#39;</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">ms_factors</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span>
+            <span class="n">all_ant_factor</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">ms_factors</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;ANONYMOUS&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">is_anonymous_ant</span> <span class="k">else</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">():</span>
+                <span class="n">ant_name</span> <span class="o">=</span> <span class="n">ant</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">if</span> <span class="n">is_anonymous_ant</span><span class="p">:</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">ms_factors</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="n">ant_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_ant_factor</span>
+                <span class="k">elif</span> <span class="n">ant_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">ms_factors</span><span class="p">[</span><span class="n">spwid</span><span class="p">]:</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">factors_ok</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No factor data is given for Spw=</span><span class="si">%d</span><span class="s2">, Ant=</span><span class="si">%s</span><span class="s2"> of </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">ant_name</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+                    <span class="k">continue</span>
+                <span class="n">is_anonymous_pol</span> <span class="o">=</span> <span class="s1">&#39;I&#39;</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">ms_factors</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="n">ant_name</span><span class="p">]</span>
+                <span class="n">all_pol_factor</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">ms_factors</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="n">ant_name</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">is_anonymous_pol</span> <span class="k">else</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pol_list</span><span class="p">:</span>
+                    <span class="c1"># mapping for stokes I if necessary</span>
+                    <span class="k">if</span> <span class="n">is_anonymous_pol</span> <span class="ow">and</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pol_to_map_i</span><span class="p">:</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">ms_factors</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="n">ant_name</span><span class="p">][</span><span class="n">pol</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_pol_factor</span>
+                    <span class="c1"># check factors provided for all spw, antenna, and pol</span>
+                    <span class="n">ok</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__check_factor</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">ms_factors</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">ant_name</span><span class="p">,</span> <span class="n">pol</span><span class="p">)</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">factors_ok</span> <span class="o">&amp;=</span> <span class="n">ok</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No factor data is given for Spw=</span><span class="si">%d</span><span class="s2">, Ant=</span><span class="si">%s</span><span class="s2">, Pol=</span><span class="si">%s</span><span class="s2"> of </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                                    <span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">ant_name</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+        <span class="c1"># LOG information</span>
+        <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span><span class="o">*</span><span class="mi">40</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Summary of relative amplitude factors between beams of </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">facs</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">ms_factors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">ant</span><span class="p">,</span> <span class="n">faca</span> <span class="ow">in</span> <span class="n">facs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">pol</span><span class="p">,</span> <span class="n">facp</span> <span class="ow">in</span> <span class="n">faca</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;SPW </span><span class="si">%d</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">: </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">facp</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__check_factor</span><span class="p">(</span><span class="n">factors</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">factors</span> <span class="ow">or</span> <span class="n">factors</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">ant</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">factors</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span> <span class="ow">or</span> <span class="n">factors</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="n">ant</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">pol</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">factors</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="n">ant</span><span class="p">]</span> <span class="ow">or</span> <span class="n">factors</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="n">ant</span><span class="p">][</span><span class="n">pol</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

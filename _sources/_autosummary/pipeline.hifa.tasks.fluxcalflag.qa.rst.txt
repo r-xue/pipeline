@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.fluxcalflag.qa
+==================================
+
+.. automodule:: pipeline.hifa.tasks.fluxcalflag.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FluxcalflagListQAHandler
+      FluxcalflagQAHandler
+   

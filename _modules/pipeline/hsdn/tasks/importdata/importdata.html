@@ -1,0 +1,340 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsdn.tasks.importdata.importdata &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsdn.tasks.importdata.importdata</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsdn.tasks.importdata.importdata</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Importdata tasks for observation data of Nobeyama.</span>
+
+<span class="sd">This task loads the specified visibility data into the pipeline</span>
+<span class="sd">context unpacking and / or converting it as necessary.</span>
+
+<span class="sd">Created on Dec 4, 2017</span>
+
+<span class="sd">@author: kana</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.hsd.tasks.importdata.importdata</span> <span class="k">as</span> <span class="nn">sd_importdata</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.fluxmeasurement</span> <span class="kn">import</span> <span class="n">FluxMeasurement</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.singledish</span> <span class="kn">import</span> <span class="n">MSReductionGroupDesc</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="NROImportDataInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportDataInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">NROImportDataInputs</span><span class="p">(</span><span class="n">sd_importdata</span><span class="o">.</span><span class="n">SDImportDataInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class of inputs of NROImportData.</span>
+
+<span class="sd">    This class extends importdata.ImportDataInputs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">datacolumns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nocopy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">createmms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">hm_rasterscan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise NROImportDataInputs class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: pipeline context</span>
+<span class="sd">            vis: list of input visibility data</span>
+<span class="sd">            output_dir: path of output directory</span>
+<span class="sd">            session: list of visibility data sessions</span>
+<span class="sd">            overwrite: flag of overwrite existing files on import</span>
+<span class="sd">            nocopy: flag of disable copying of MS to working directory</span>
+<span class="sd">            createmms: operation string to create an MMS</span>
+<span class="sd">            hm_rasterscan: Heuristics method for raster scan analysis</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># no-op parameters for MS</span>
+        <span class="n">asis</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">process_caldevice</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">bdfflags</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">lazy</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">ocorr_mode</span> <span class="o">=</span> <span class="s1">&#39;ao&#39;</span>
+        <span class="n">save_flagonline</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">NROImportDataInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="n">asis</span><span class="p">,</span>
+                                                  <span class="n">process_caldevice</span><span class="o">=</span><span class="n">process_caldevice</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
+                                                  <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">nocopy</span><span class="o">=</span><span class="n">nocopy</span><span class="p">,</span> <span class="n">save_flagonline</span><span class="o">=</span><span class="n">save_flagonline</span><span class="p">,</span>
+                                                  <span class="n">bdfflags</span><span class="o">=</span><span class="n">bdfflags</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="n">lazy</span><span class="p">,</span> <span class="n">createmms</span><span class="o">=</span><span class="n">createmms</span><span class="p">,</span>
+                                                  <span class="n">ocorr_mode</span><span class="o">=</span><span class="n">ocorr_mode</span><span class="p">,</span> <span class="n">datacolumns</span><span class="o">=</span><span class="n">datacolumns</span><span class="p">,</span>
+                                                  <span class="n">hm_rasterscan</span><span class="o">=</span><span class="n">hm_rasterscan</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="NROImportDataResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults">[docs]</a>
+<span class="k">class</span> <span class="nc">NROImportDataResults</span><span class="p">(</span><span class="n">sd_importdata</span><span class="o">.</span><span class="n">SDImportDataResults</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;NROImportDataResults is an equivalent class with ImportDataResults.</span>
+
+<span class="sd">    Purpose of NROImportDataResults is to replace QA scoring associated</span>
+<span class="sd">    with ImportDataResults with single dish specific QA scoring, which</span>
+<span class="sd">    is associated with this class.</span>
+
+<span class="sd">    ImportDataResults holds the results of the ImportData task. It contains</span>
+<span class="sd">    the resulting MeasurementSet domain objects and optionally the additional</span>
+<span class="sd">    SetJy results generated from flux entries in Source.xml.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mses</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reduction_group_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">MSReductionGroupDesc</span><span class="p">]]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">datatable_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">setjy_results</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">FluxMeasurement</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise NROImportDataResults class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mses: list of MeasurementSet domain objects</span>
+<span class="sd">            reduction_group_list: list of dictionaries that consist of reduction group IDs (key) and MSReductionGroupDesc (value)</span>
+<span class="sd">            datatable_prefix: table name prefix of MeasurementSet</span>
+<span class="sd">            setjy_results: the flux results generated from Source.xml</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NROImportDataResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mses</span><span class="o">=</span><span class="n">mses</span><span class="p">,</span> <span class="n">reduction_group_list</span><span class="o">=</span><span class="n">reduction_group_list</span><span class="p">,</span>
+                                                   <span class="n">datatable_prefix</span><span class="o">=</span><span class="n">datatable_prefix</span><span class="p">,</span> <span class="n">setjy_results</span><span class="o">=</span><span class="n">setjy_results</span><span class="p">)</span>
+
+<div class="viewcode-block" id="NROImportDataResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override method of basetask.Results.merge_with_context.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: pipeline context</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NROImportDataResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="c1"># Set observatory information</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mses</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ms</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;NRO&#39;</span><span class="p">,):</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">project_summary</span><span class="o">.</span><span class="n">telescope</span> <span class="o">=</span> <span class="s1">&#39;NRO&#39;</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">project_summary</span><span class="o">.</span><span class="n">observatory</span> <span class="o">=</span> <span class="s1">&#39;Nobeyama Radio Observatory&#39;</span>
+                <span class="k">break</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="NROImportData">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportData">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsdn_importdata&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Import Nobeyama MeasurementSets.&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">NROImportData</span><span class="p">(</span><span class="n">sd_importdata</span><span class="o">.</span><span class="n">SerialSDImportData</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;NRO Data import execution task.</span>
+
+<span class="sd">    This class extends importdata.ImportData class, and methods execute main logics depends on it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">NROImportDataInputs</span>
+
+<div class="viewcode-block" id="NROImportData.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportData.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NROImportDataResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare job requests for execution.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parameters: the parameters to pass through from the superclass.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            NROImportDataResults : result object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># the input data should be MSes</span>
+        <span class="c1"># TODO: check data type</span>
+        <span class="c1"># get results object by running super.prepare()</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">NROImportData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+        <span class="n">myresults</span> <span class="o">=</span> <span class="n">NROImportDataResults</span><span class="p">(</span><span class="n">mses</span><span class="o">=</span><span class="n">results</span><span class="o">.</span><span class="n">mses</span><span class="p">,</span> <span class="n">reduction_group_list</span><span class="o">=</span><span class="n">results</span><span class="o">.</span><span class="n">reduction_group_list</span><span class="p">,</span>
+                                         <span class="n">datatable_prefix</span><span class="o">=</span><span class="n">results</span><span class="o">.</span><span class="n">datatable_prefix</span><span class="p">,</span> <span class="n">setjy_results</span><span class="o">=</span><span class="n">results</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">)</span>
+        <span class="n">myresults</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">origin</span>
+        <span class="n">myresults</span><span class="o">.</span><span class="n">msglist</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">msglist</span>
+        <span class="k">return</span> <span class="n">myresults</span></div>
+
+
+<div class="viewcode-block" id="NROImportData.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportData.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">NROImportDataResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NROImportDataResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get version information for merge2 and set it to MS of result.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: Result object</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            NROImportDataResults : result object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">mses</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;OBSERVATION&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+                <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;RELEASE_DATE&#39;</span>
+                <span class="n">release_dates</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+                <span class="n">unit</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcolkeywords</span><span class="p">(</span><span class="n">col</span><span class="p">)[</span><span class="s1">&#39;QuantumUnits&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">release_dates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">release_date</span> <span class="o">=</span> <span class="n">release_dates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+                <span class="n">merge2_version</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">release_date</span><span class="p">,</span> <span class="n">unit</span><span class="p">),</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;ymd&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">merge2_version</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">merge2_version</span> <span class="o">=</span> <span class="n">merge2_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">merge2_version</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+            <span class="n">ms</span><span class="o">.</span><span class="n">merge2_version</span> <span class="o">=</span> <span class="n">merge2_version</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

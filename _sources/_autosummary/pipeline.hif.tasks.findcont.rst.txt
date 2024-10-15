@@ -1,0 +1,22 @@
+pipeline.hif.tasks.findcont
+===========================
+
+.. automodule:: pipeline.hif.tasks.findcont
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FindCont
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   findcont
+   qa
+   renderer
+   resultobjects

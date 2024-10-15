@@ -1,0 +1,33 @@
+hifv_flagcal
+============
+
+Task description
+-----------------
+Flagcal task
+
+Output:
+
+results -- The results object for the pipeline task is returned.
+
+Parameter List 
+--------------
+.. list-table::
+    :widths: 25 50
+    :header-rows: 1
+    :class: longtable
+
+    * - parameter name
+      - description
+    * - vis
+      - | List of input visibility data
+    * - caltable
+      - | String name of the caltable
+    * - clipminmax
+      - | Range to use for clipping
+
+
+Examples 
+--------
+1. Flag existing caltable
+
+>>> hifv_flagcal()

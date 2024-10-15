@@ -1,0 +1,15 @@
+pipeline.hif.tasks.setmodel.display
+===================================
+
+.. automodule:: pipeline.hif.tasks.setmodel.display
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AmpVsUVSummaryChart
+      BasebandComposite
+      BasebandSummaryChart
+      PlotmsBasebandComposite
+   

@@ -1,0 +1,1163 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.tasks.tsysflag package &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.h.tasks.tsysflag package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/pipeline.h.tasks.tsysflag.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-h-tasks-tsysflag-package">
+<h1>pipeline.h.tasks.tsysflag package<a class="headerlink" href="#pipeline-h-tasks-tsysflag-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pipeline.h.tasks.tsysflag.qa">
+<span id="pipeline-h-tasks-tsysflag-qa-module"></span><h2>pipeline.h.tasks.tsysflag.qa module<a class="headerlink" href="#module-pipeline.h.tasks.tsysflag.qa" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.qa.TsysflagListQAHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TsysflagListQAHandler</span></span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/qa.html#TsysflagListQAHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.qa.TsysflagListQAHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin" title="pipeline.infrastructure.pipelineqa.QAPlugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">QAPlugin</span></code></a></p>
+<p>QA handler for a list containing TsysflagResults.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.qa.TsysflagListQAHandler.child_cls">
+<span class="sig-name descname"><span class="pre">child_cls</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.qa.TsysflagListQAHandler.child_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.h.tasks.tsysflag.resultobjects.TsysflagResults" title="pipeline.h.tasks.tsysflag.resultobjects.TsysflagResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">TsysflagResults</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.qa.TsysflagListQAHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/qa.html#TsysflagListQAHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.qa.TsysflagListQAHandler.handle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.qa.TsysflagListQAHandler.result_cls">
+<span class="sig-name descname"><span class="pre">result_cls</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.qa.TsysflagListQAHandler.result_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.qa.TsysflagQAHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TsysflagQAHandler</span></span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/qa.html#TsysflagQAHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.qa.TsysflagQAHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.pipelineqa.QAPlugin" title="pipeline.infrastructure.pipelineqa.QAPlugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">QAPlugin</span></code></a></p>
+<p>QA handler for an uncontained TsysflagResult.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.qa.TsysflagQAHandler.child_cls">
+<span class="sig-name descname"><span class="pre">child_cls</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pipeline.h.tasks.tsysflag.qa.TsysflagQAHandler.child_cls" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.qa.TsysflagQAHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/qa.html#TsysflagQAHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.qa.TsysflagQAHandler.handle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.qa.TsysflagQAHandler.result_cls">
+<span class="sig-name descname"><span class="pre">result_cls</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.qa.TsysflagQAHandler.result_cls" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.h.tasks.tsysflag.resultobjects.TsysflagResults" title="pipeline.h.tasks.tsysflag.resultobjects.TsysflagResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">TsysflagResults</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.h.tasks.tsysflag.renderer">
+<span id="pipeline-h-tasks-tsysflag-renderer-module"></span><h2>pipeline.h.tasks.tsysflag.renderer module<a class="headerlink" href="#module-pipeline.h.tasks.tsysflag.renderer" title="Link to this heading"></a></h2>
+<p>Created on 9 Sep 2014</p>
+<p>&#64;author: sjw</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.ComponentRendererMap">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ComponentRendererMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.ComponentRendererMap" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.ComponentRendererMap.plot_fn">
+<span class="sig-name descname"><span class="pre">plot_fn</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.ComponentRendererMap.plot_fn" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.ComponentRendererMap.template">
+<span class="sig-name descname"><span class="pre">template</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.ComponentRendererMap.template" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.PlotDetailRenderer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PlotDetailRenderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template_uri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plots</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/renderer.html#PlotDetailRenderer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.PlotDetailRenderer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.JsonPlotRenderer" title="pipeline.infrastructure.renderer.basetemplates.JsonPlotRenderer"><code class="xref py py-class docutils literal notranslate"><span class="pre">JsonPlotRenderer</span></code></a></p>
+<p>Standard Mako renderer used to render all Tsys plot detail pages.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.PlotDetailRenderer.update_json_dict">
+<span class="sig-name descname"><span class="pre">update_json_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/renderer.html#PlotDetailRenderer.update_json_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.PlotDetailRenderer.update_json_dict" title="Link to this definition"></a></dt>
+<dd><p>Hook function that can be used by extending classes to extract extra
+parameters from the plot object and insert them into the JSON
+dictionary for that plot.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.T2_4MDetailsTsysflagRenderer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">T2_4MDetailsTsysflagRenderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tsysflag.mako'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Flag</span> <span class="pre">Tsys</span> <span class="pre">calibration'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_rerender</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/renderer.html#T2_4MDetailsTsysflagRenderer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.T2_4MDetailsTsysflagRenderer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer" title="pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer"><code class="xref py py-class docutils literal notranslate"><span class="pre">T2_4MDetailsDefaultRenderer</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.T2_4MDetailsTsysflagRenderer.task_intents">
+<span class="sig-name descname"><span class="pre">task_intents</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('AMPLITUDE',</span> <span class="pre">'BANDPASS',</span> <span class="pre">'DIFFGAINREF',</span> <span class="pre">'DIFFGAINSRC',</span> <span class="pre">'PHASE',</span> <span class="pre">'TARGET')</span></em><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.T2_4MDetailsTsysflagRenderer.task_intents" title="Link to this definition"></a></dt>
+<dd><p>Renders detailed HTML output for the Tsysflag task.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.T2_4MDetailsTsysflagRenderer.update_mako_context">
+<span class="sig-name descname"><span class="pre">update_mako_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mako_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><span class="pre">Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.ResultsList" title="pipeline.infrastructure.basetask.ResultsList"><span class="pre">ResultsList</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/renderer.html#T2_4MDetailsTsysflagRenderer.update_mako_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.T2_4MDetailsTsysflagRenderer.update_mako_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.convert_field_id_to_field_names">
+<span class="sig-name descname"><span class="pre">convert_field_id_to_field_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plots</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/renderer.html#convert_field_id_to_field_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.convert_field_id_to_field_names" title="Link to this definition"></a></dt>
+<dd><p>Convert field IDs in the Plot to field names where possible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plots</strong> – list of Plot objects to process</p></li>
+<li><p><strong>context</strong> – pipeline context</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Plot objects with field IDs replaced with field names</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.create_plot_detail_page">
+<span class="sig-name descname"><span class="pre">create_plot_detail_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric_mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/renderer.html#create_plot_detail_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.create_plot_detail_page" title="Link to this definition"></a></dt>
+<dd><p>Create and render any detail plots required for the Tsys result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric_mapping</strong> – a dict mapping Tsys metric to ComponentRendererMap objects</p></li>
+<li><p><strong>context</strong> – pipeline context</p></li>
+<li><p><strong>results_list</strong> – the Tsysflag results</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.ensure_vis_in_plot_metadata">
+<span class="sig-name descname"><span class="pre">ensure_vis_in_plot_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plots</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/renderer.html#ensure_vis_in_plot_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.ensure_vis_in_plot_metadata" title="Link to this definition"></a></dt>
+<dd><p>Update Plot parameters with the given vis metadata if required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plots</strong> – list of Plots to update</p></li>
+<li><p><strong>vis</strong> – the vis value to set</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.get_plots">
+<span class="sig-name descname"><span class="pre">get_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_of_metric</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/renderer.html#get_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.get_plots" title="Link to this definition"></a></dt>
+<dd><p>Generate detail plots for a Tsys flagging metric, returning a list of Plot
+objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plot_fn</strong> – plot generating function that returns Plot objects</p></li>
+<li><p><strong>context</strong> – pipeline context</p></li>
+<li><p><strong>results_list</strong> – list of results for Tsys</p></li>
+<li><p><strong>name_of_metric</strong> – name of Tsys metric</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of Plot objects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.plot_image_displays">
+<span class="sig-name descname"><span class="pre">plot_image_displays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name_of_metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_for_metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reportdir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/renderer.html#plot_image_displays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.plot_image_displays" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.plot_slice_displays">
+<span class="sig-name descname"><span class="pre">plot_slice_displays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name_of_metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_for_metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reportdir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/renderer.html#plot_slice_displays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.plot_slice_displays" title="Link to this definition"></a></dt>
+<dd><p>Create Slice plots for the given Tsys metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name_of_metric</strong> – name of Tsys flagging metric</p></li>
+<li><p><strong>context</strong> – pipeline context</p></li>
+<li><p><strong>result_for_metric</strong> – result for Tsys flagging metric</p></li>
+<li><p><strong>reportdir</strong> – destination directory for plots</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of Plot objects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.renderer.plot_tsys_spectra">
+<span class="sig-name descname"><span class="pre">plot_tsys_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name_of_metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_for_metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reportdir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/renderer.html#plot_tsys_spectra"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.renderer.plot_tsys_spectra" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pipeline.h.tasks.tsysflag.resultobjects">
+<span id="pipeline-h-tasks-tsysflag-resultobjects-module"></span><h2>pipeline.h.tasks.tsysflag.resultobjects module<a class="headerlink" href="#module-pipeline.h.tasks.tsysflag.resultobjects" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.resultobjects.TsysflagDataResults">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TsysflagDataResults</span></span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/resultobjects.html#TsysflagDataResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.resultobjects.TsysflagDataResults" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.Results" title="pipeline.infrastructure.basetask.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.resultobjects.TsysflagDataResults.merge_with_context">
+<span class="sig-name descname"><span class="pre">merge_with_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/resultobjects.html#TsysflagDataResults.merge_with_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.resultobjects.TsysflagDataResults.merge_with_context" title="Link to this definition"></a></dt>
+<dd><p>Merge these results with the given context.</p>
+<p>This method will be called during the execution of accept(). For
+calibration tasks, a typical implementation will register caltables
+with the pipeline callibrary.</p>
+<p>At this point the result is deemed safe to merge, so no further checks
+on the context need be performed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong> (<a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a>) – the target
+<a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.resultobjects.TsysflagResults">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TsysflagResults</span></span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/resultobjects.html#TsysflagResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.resultobjects.TsysflagResults" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.resultobjects.TsyscalResults" title="pipeline.h.tasks.tsyscal.resultobjects.TsyscalResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">TsyscalResults</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.resultobjects.TsysflagResults.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/resultobjects.html#TsysflagResults.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.resultobjects.TsysflagResults.add" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.resultobjects.TsysflagResults.merge_with_context">
+<span class="sig-name descname"><span class="pre">merge_with_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/resultobjects.html#TsysflagResults.merge_with_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.resultobjects.TsysflagResults.merge_with_context" title="Link to this definition"></a></dt>
+<dd><p>Merge these results with the given context.</p>
+<p>This method will be called during the execution of accept(). For
+calibration tasks, a typical implementation will register caltables
+with the pipeline callibrary.</p>
+<p>At this point the result is deemed safe to merge, so no further checks
+on the context need be performed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong> (<a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a>) – the target
+<a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.resultobjects.TsysflagViewResults">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TsysflagViewResults</span></span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/resultobjects.html#TsysflagViewResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.resultobjects.TsysflagViewResults" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.Results" title="pipeline.infrastructure.basetask.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a>, <a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults" title="pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">FlaggableViewResults</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.resultobjects.TsysflagViewResults.merge_with_context">
+<span class="sig-name descname"><span class="pre">merge_with_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/resultobjects.html#TsysflagViewResults.merge_with_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.resultobjects.TsysflagViewResults.merge_with_context" title="Link to this definition"></a></dt>
+<dd><p>Merge these results with the given context.</p>
+<p>This method will be called during the execution of accept(). For
+calibration tasks, a typical implementation will register caltables
+with the pipeline callibrary.</p>
+<p>At this point the result is deemed safe to merge, so no further checks
+on the context need be performed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong> (<a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a>) – the target
+<a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.resultobjects.TsysflagspectraResults">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TsysflagspectraResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">final</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preceding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/resultobjects.html#TsysflagspectraResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.resultobjects.TsysflagspectraResults" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.resultobjects.TsyscalResults" title="pipeline.h.tasks.tsyscal.resultobjects.TsyscalResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">TsyscalResults</span></code></a>, <a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults" title="pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">FlaggableViewResults</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.resultobjects.TsysflagspectraResults.merge_with_context">
+<span class="sig-name descname"><span class="pre">merge_with_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/resultobjects.html#TsysflagspectraResults.merge_with_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.resultobjects.TsysflagspectraResults.merge_with_context" title="Link to this definition"></a></dt>
+<dd><p>Merge these results with the given context.</p>
+<p>This method will be called during the execution of accept(). For
+calibration tasks, a typical implementation will register caltables
+with the pipeline callibrary.</p>
+<p>At this point the result is deemed safe to merge, so no further checks
+on the context need be performed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong> (<a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a>) – the target
+<a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.h.tasks.tsysflag.tsysflag">
+<span id="pipeline-h-tasks-tsysflag-tsysflag-module"></span><h2>pipeline.h.tasks.tsysflag.tsysflag module<a class="headerlink" href="#module-pipeline.h.tasks.tsysflag.tsysflag" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.Tsysflag">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Tsysflag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/tsysflag.html#Tsysflag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.Tsysflag" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.basetask.StandardTaskTemplate" title="pipeline.infrastructure.basetask.StandardTaskTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">StandardTaskTemplate</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.Tsysflag.Inputs">
+<span class="sig-name descname"><span class="pre">Inputs</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.Tsysflag.Inputs" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs" title="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">TsysflagInputs</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.Tsysflag.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/tsysflag.html#Tsysflag.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.Tsysflag.analyse" title="Link to this definition"></a></dt>
+<dd><p>Analyses the Tsysflag result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>result</strong> – TsysflagResults object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>TsysflagResults object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.Tsysflag.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/tsysflag.html#Tsysflag.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.Tsysflag.prepare" title="Link to this definition"></a></dt>
+<dd><p>Prepare job requests for execution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parameters</strong> – the parameters to pass through to the subclass.
+Refer to the implementing subclass for specific information on
+what these parameters are.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>a class implementing <code class="xref py py-class docutils literal notranslate"><span class="pre">Result</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TsysflagInputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_nmedian</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fnm_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fnm_byfield</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_derivative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fd_max_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_edgechans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_edge_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_fieldshape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ff_refintent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ff_max_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_birdies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb_sharps_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_toomany</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmf1_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmef1_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_tsys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filetemplate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/tsysflag/tsysflag.html#TsysflagInputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.vdp.StandardInputs" title="pipeline.infrastructure.vdp.StandardInputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">StandardInputs</span></code></a></p>
+<p>TsysflagInputs defines the inputs for the Tsysflag pipeline task.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.caltable">
+<span class="sig-name descname"><span class="pre">caltable</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.caltable" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fb_sharps_limit">
+<span class="sig-name descname"><span class="pre">fb_sharps_limit</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fb_sharps_limit" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fd_max_limit">
+<span class="sig-name descname"><span class="pre">fd_max_limit</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fd_max_limit" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fe_edge_limit">
+<span class="sig-name descname"><span class="pre">fe_edge_limit</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fe_edge_limit" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.ff_max_limit">
+<span class="sig-name descname"><span class="pre">ff_max_limit</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.ff_max_limit" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.ff_refintent">
+<span class="sig-name descname"><span class="pre">ff_refintent</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.ff_refintent" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.filetemplate">
+<span class="sig-name descname"><span class="pre">filetemplate</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.filetemplate" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_birdies">
+<span class="sig-name descname"><span class="pre">flag_birdies</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_birdies" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_derivative">
+<span class="sig-name descname"><span class="pre">flag_derivative</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_derivative" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_edgechans">
+<span class="sig-name descname"><span class="pre">flag_edgechans</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_edgechans" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_fieldshape">
+<span class="sig-name descname"><span class="pre">flag_fieldshape</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_fieldshape" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_nmedian">
+<span class="sig-name descname"><span class="pre">flag_nmedian</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_nmedian" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_toomany">
+<span class="sig-name descname"><span class="pre">flag_toomany</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_toomany" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fnm_byfield">
+<span class="sig-name descname"><span class="pre">fnm_byfield</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fnm_byfield" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fnm_limit">
+<span class="sig-name descname"><span class="pre">fnm_limit</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fnm_limit" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.metric_order">
+<span class="sig-name descname"><span class="pre">metric_order</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.metric_order" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.normalize_tsys">
+<span class="sig-name descname"><span class="pre">normalize_tsys</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.normalize_tsys" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.tmef1_limit">
+<span class="sig-name descname"><span class="pre">tmef1_limit</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.tmef1_limit" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.tmf1_limit">
+<span class="sig-name descname"><span class="pre">tmf1_limit</span></span><a class="headerlink" href="#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.tmf1_limit" title="Link to this definition"></a></dt>
+<dd><p>VisDependentProperty is a Python data descriptor that standardises the
+behaviour of pipeline Inputs properties and lets them create default values
+more easily.</p>
+<p>On reading a VisDependentProperty (ie. using the dot prefix: inputs.solint),
+one of two things happens:</p>
+<ol class="arabic simple">
+<li><p>If a NullMarker is found - signifying that no user input has been
+provided - and a ‘getter’ function has been defined, the getter function
+will be called to provide a default value for that measurement set.</p></li>
+<li><p>If a user has overridden the value (eg. inputs.solint = 123), that
+value will be retrieved.</p></li>
+<li><p>The value, either the default from step 1 or user-provided from step 2,
+is run through the optional postprocess function, which gives a final
+opportunity to change the value depending on the state/value of other
+properties.</p></li>
+</ol>
+<p>A VisDependentProperty can be made read-only by specifying ‘readonly=True’
+when creating the instance.</p>
+<p>A VisDependentProperty can be hidden from the containing Inputs string
+representation by setting ‘hidden=True’ when creating the instance. This
+will hide the property from the web log and CLI getInputs calls.</p>
+<p>Each VisDependentProperty has a set of values it considers equivalent to
+null. When the user sets the VDP value to one of these null values, the
+VDP machinery converts this to a private NullObject marker that signifies
+the property is now unset, resulting in the default value being returned
+next time the property is read. Developers can specify which values should
+be converted to NullObject by specifying null_input at creation time, e.g.,</p>
+<p>solint = &#64;VisDependentProperty(default=5, null_input=[None, ‘’, ‘RESET’, -1])</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipeline.h.tasks.tsysflag">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline.h.tasks.tsysflag" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

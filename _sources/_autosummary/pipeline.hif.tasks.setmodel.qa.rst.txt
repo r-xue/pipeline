@@ -1,0 +1,15 @@
+pipeline.hif.tasks.setmodel.qa
+==============================
+
+.. automodule:: pipeline.hif.tasks.setmodel.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SetModelsListQAHandler
+      SetModelsQAHandler
+      SetjyListQAHandler
+      SetjyQAHandler
+   

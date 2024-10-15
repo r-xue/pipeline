@@ -1,0 +1,296 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building the pipeline &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ALMA interferometry imaging workflow" href="ALMA-Imaging-Workflow.html" />
+    <link rel="prev" title="Comparing pipeline executions" href="comparing_pipeline_executions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Building the pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#downloading-and-installing-casa">Downloading and Installing CASA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dependency-requirements">Dependency Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#standard-install">Standard install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#developer-install">Developer install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pairing-casa-and-pipeline-at-runtime">Pairing CASA and Pipeline at runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-versioning">Pipeline versioning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Building the pipeline</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/develdocmd/building_the_pipeline.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="building-the-pipeline">
+<h1>Building the pipeline<a class="headerlink" href="#building-the-pipeline" title="Link to this heading"></a></h1>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>It is recommended to put the CASA <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory first on your path for the
+duration of the installation procedure.</p>
+<section id="downloading-and-installing-casa">
+<h3>Downloading and Installing CASA<a class="headerlink" href="#downloading-and-installing-casa" title="Link to this heading"></a></h3>
+<p>If you don’t already have CASA installed, you can find recent builds at <a class="reference external" href="https://casa.nrao.edu/download/distro/casa/releaseprep/">CASA pre-releases</a>. Sort by “Last Modified” to find the most recent version.</p>
+<p>After downloading a CASA build, follow the instructions on the <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/notebooks/usingcasa.html#Full-Installation-of-CASA-5-and-6">CASA Installation Guide</a> to install CASA.</p>
+</section>
+<section id="dependency-requirements">
+<h3>Dependency Requirements<a class="headerlink" href="#dependency-requirements" title="Link to this heading"></a></h3>
+<p>Following the change from <a class="reference external" href="https://open-jira.nrao.edu/browse/PIPE-1699">PIPE-1699</a>, Pipeline now specifies the required standard Python dependencies in a <a class="reference external" href="../requirements.txt">requirements.txt</a> file, and recommends using <code class="docutils literal notranslate"><span class="pre">pip</span></code> to install them directly from the Python Package Index (<a class="reference external" href="https://pypi.org/">PyPI</a>).
+The <a class="reference external" href="../pipeline/extern"><code class="docutils literal notranslate"><span class="pre">pipeline/extern</span></code></a> directory now only contains the non-standard Python packages/modules contributed by the developers and heuristics development team.</p>
+<p>Note that this file is currently <em>not</em> used by <a class="reference external" href="../setup.py"><code class="docutils literal notranslate"><span class="pre">setup.py</span></code></a> to auto-install dependencies, and only serves as a reference for development and packaging purposes.
+In addition, the list only includes dependencies that are <em>not</em> bundled in the monolith CASA release designated for the next Pipeline release, and their version specifications are continuously examined against potential compatibility issues with other Python packages already shipped in CASA.
+The developer team will maintain the file to reflect the current state of the dependency requirements across the development cycle.</p>
+<p>To use this file manually, you can type the following command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">PYTHONNOUSERSITE=1 ${casa_bin}/pip3 install --disable-pip-version-check \</span>
+<span class="go">    --upgrade-strategy=only-if-needed -r requirements.txt</span>
+</pre></div>
+</div>
+<p>Note that here <code class="docutils literal notranslate"><span class="pre">casa_bin</span></code> is the path to the CASA <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory.
+On macOS, this is typically <code class="docutils literal notranslate"><span class="pre">/Applications/CASA.app/Contents/MacOS</span></code>; on Linux, it is the <code class="docutils literal notranslate"><span class="pre">bin/</span></code> directory inside the unpacked CASA tarball, e.g. <code class="docutils literal notranslate"><span class="pre">casa-6.5.3-28-py3.8/bin</span></code>. <code class="docutils literal notranslate"><span class="pre">PYTHONNOUSERSITE=1</span></code> is used to prevent the <code class="docutils literal notranslate"><span class="pre">pip</span></code> command from checking dependencies from the user’s site-packages directory. This is necessary to isolate the user’s site-packages directory from your CASA development environment, which is generally confined to the unpacked CASA tarball directory. You may create a series of alias shortcuts to avoid accidentally using the wrong Python environment and tools:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">alias casa_pip=&#39;PYTHONNOUSERSITE=1 ${casa_bin}/pip3 --disable-pip-version-check&#39;</span>
+<span class="go">alias casa_python=&#39;PYTHONNOUSERSITE=1 ${casa_bin}/python3&#39;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">pip</span></code> command above should install the dependencies in the CASA site-packages directory, which can be verified with this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">:</span> <span class="kn">import</span> <span class="nn">astropy</span>
+<span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">astropy</span><span class="o">.</span><span class="n">__version__</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="s1">&#39;5.2.1&#39;</span>
+<span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">3</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">astropy</span><span class="o">.</span><span class="n">__path__</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="p">[</span><span class="s1">&#39;/opt/casa_dist/casa-6.5.3-28-py3.8/lib/py/lib/python3.8/site-packages/astropy&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="standard-install">
+<h2>Standard install<a class="headerlink" href="#standard-install" title="Link to this heading"></a></h2>
+<p>The Pipeline can be built and installed like any standard Python packages, with</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">casa_pip install .</span>
+</pre></div>
+</div>
+<p>If Pipeline is already installed, this command will upgrade the
+package with the new installation.</p>
+<p>You can also build a local wheel for easy distribution: <code class="docutils literal notranslate"><span class="pre">casa_pip</span> <span class="pre">wheel</span> <span class="pre">--no-deps</span> <span class="pre">.</span></code>
+For a custom installation with optional dependencies (e.g. building docs, running pytest plugins, or performance profiling), one can also try</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">casa_pip install .[dev]</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">casa_pip install .[docs]</span>
+</pre></div>
+</div>
+</section>
+<section id="developer-install">
+<h2>Developer install<a class="headerlink" href="#developer-install" title="Link to this heading"></a></h2>
+<p>As a developer, you will quickly grow weary of creating an egg every time you
+wish to exercise new code. The pipeline supports developer installations. In
+this mode, a pseudo installation is made which adds your source directory to
+the CASA site-packages. Hence the working version you are editing will become
+the pipeline version available to CASA.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">casa_pip install --editable .</span>
+</pre></div>
+</div>
+<p>To uninstall the developer installation, execute</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">casa_pip uninstall pipeline</span>
+</pre></div>
+</div>
+</section>
+<section id="pairing-casa-and-pipeline-at-runtime">
+<h2>Pairing CASA and Pipeline at runtime<a class="headerlink" href="#pairing-casa-and-pipeline-at-runtime" title="Link to this heading"></a></h2>
+<p>To pair and use a working copy of Pipeline with the local CASA installation temporarily without
+touching your CASA copy, you can add the Pipeline source code path to the CASA/Python <code class="docutils literal notranslate"><span class="pre">sys.path</span></code>
+at runtime. This can be conveniently achieved by adding the example code block below to your
+CASA <a class="reference external" href="https://casadocs.readthedocs.io/en/latest/api/configuration.html"><code class="docutils literal notranslate"><span class="pre">rcdir</span></code></a> (default to <code class="docutils literal notranslate"><span class="pre">~/.casa</span></code>)
+<code class="docutils literal notranslate"><span class="pre">startup.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="n">pipe_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PIPE_PATH&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pipe_path</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+    <span class="n">pipe_abspath</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">pipe_path</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">pipe_abspath</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="n">pipe_abspath</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Adding the Pipeline package from: </span><span class="si">{}</span><span class="s2"> to the Python interpreter sys.path</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pipe_abspath</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pipe_abspath</span><span class="p">)</span>
+        <span class="kn">import</span> <span class="nn">pipeline</span>
+        <span class="kn">import</span> <span class="nn">pipeline.infrastructure.executeppr</span> <span class="k">as</span> <span class="nn">eppr</span>  
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">initcli</span><span class="p">()</span> 
+</pre></div>
+</div>
+<p>Here <code class="docutils literal notranslate"><span class="pre">PIPE_PATH</span></code> is a shell environment variable that points at your Pipeline code path, e.g., <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PIPE_PATH=/path/to/workspace/pipeline_branches/main</span></code>.</p>
+<p>Note that this use case will only work if the CASA installation has all dependency libraries required by the Pipeline package. For a pristine “vanilla” CASA build without Pipeline pre-installed, this can be done with:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">casa_pip install --upgrade-strategy=only-if-needed -r requirements.txt</span>
+</pre></div>
+</div>
+</section>
+<section id="pipeline-versioning">
+<h2>Pipeline versioning<a class="headerlink" href="#pipeline-versioning" title="Link to this heading"></a></h2>
+<p>The Pipeline versioning following the principle convention outlined in <a class="reference external" href="https://peps.python.org/pep-0440/">PEP440</a>: public_label[+local_label]
+The public label is the latest main branch tag that is reachable from the Git repo HEAD: in our current tagging scheme, the lightweight tag value always meets the <a class="reference external" href="https://peps.python.org/pep-0440/">PEP440</a> requirements.
+On the other hand, the “local_label” string is joined by several mandate or optical string elements with ‘-’. The format is inspired by the output of <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">describe</span> <span class="pre">--long</span> <span class="pre">--tags</span> <span class="pre">--dirty</span> <span class="pre">--always</span></code> and various schemes used by <a class="reference external" href="https://github.com/pypa/setuptools_scm"><code class="docutils literal notranslate"><span class="pre">setuptools-scm</span></code></a>, but gets further expanded with additional branching information:</p>
+<ul class="simple">
+<li><p>the latest branch tag that is reachable from the HEAD, if it is identical to b, it will be skipped</p></li>
+<li><p>the number of additional commits from the latest branch tag to the current HEAD</p></li>
+<li><p>abbreviated commit name (always with a ‘g’ prefix); this is skipped if the following conditions are all met: the repo state is clean; no additional commits from the recent branch tag to the HEAD; the branch is a “release” branches, or unknown (e.g. a HEAD detached state)</p></li>
+<li><p>the ‘dirty’ string : only included if the repo is in a “dirty” state. note that a detached HEAD is not considered “dirty” here.</p></li>
+<li><p>the branch name; however, if the HEAD is a release branch (<code class="docutils literal notranslate"><span class="pre">release/*</span></code> or <code class="docutils literal notranslate"><span class="pre">main</span></code>), it will be skipped.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="comparing_pipeline_executions.html" class="btn btn-neutral float-left" title="Comparing pipeline executions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ALMA-Imaging-Workflow.html" class="btn btn-neutral float-right" title="ALMA interferometry imaging workflow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

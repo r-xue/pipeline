@@ -1,0 +1,1001 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.environment &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.environment</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.environment</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">environment.py defines functions and variables related to the execution environment.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">resource</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">from</span> <span class="nn">importlib.metadata</span> <span class="kn">import</span> <span class="n">PackageNotFoundError</span><span class="p">,</span> <span class="n">version</span>
+<span class="kn">from</span> <span class="nn">importlib.util</span> <span class="kn">import</span> <span class="n">find_spec</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">import</span> <span class="nn">casatasks</span>
+
+<span class="kn">from</span> <span class="nn">.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">mpihelpers</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">.infrastructure.mpihelpers</span> <span class="kn">import</span> <span class="n">MPIEnvironment</span>
+<span class="kn">from</span> <span class="nn">.infrastructure.version</span> <span class="kn">import</span> <span class="n">get_version_string_from_git</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;casa_version&#39;</span><span class="p">,</span> <span class="s1">&#39;casa_version_string&#39;</span><span class="p">,</span> <span class="s1">&#39;compare_casa_version&#39;</span><span class="p">,</span> <span class="s1">&#39;pipeline_revision&#39;</span><span class="p">,</span> <span class="s1">&#39;cluster_details&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;dependency_details&#39;</span><span class="p">]</span>
+
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run a command in a subprocess.</span>
+
+<span class="sd">    This helper function is intended to hide the boilerplate required to</span>
+<span class="sd">    create and handle a subprocess while capturing its output. Rather than</span>
+<span class="sd">    having functions call subprocess directly, they should consider calling</span>
+<span class="sd">    this routine so that we have uniform handling.</span>
+
+<span class="sd">    @param command: the command to execute</span>
+<span class="sd">    @param stdout: optional stream to direct stdout to</span>
+<span class="sd">    @param stderr: optional stream to direct stderr to</span>
+<span class="sd">    @param shell:</span>
+<span class="sd">    @param cwd: working directory for command</span>
+<span class="sd">    @return: exit code of the process in which the command executed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stdout</span> <span class="o">=</span> <span class="n">stdout</span> <span class="ow">or</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span>
+    <span class="n">stderr</span> <span class="o">=</span> <span class="n">stderr</span> <span class="ow">or</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="n">StringIO</span><span class="p">)</span> <span class="k">else</span> <span class="n">stdout</span>
+    <span class="n">err</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="n">StringIO</span><span class="p">)</span> <span class="k">else</span> <span class="n">stderr</span>
+
+    <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="n">shell</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">out</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">err</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">cwd</span><span class="p">)</span>
+
+    <span class="n">proc_stdout</span><span class="p">,</span> <span class="n">proc_stderr</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">proc_stdout</span><span class="p">:</span>
+        <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">proc_stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">proc_stderr</span><span class="p">:</span>
+        <span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">proc_stderr</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span>
+
+
+<span class="k">def</span> <span class="nf">_safe_run</span><span class="p">(</span><span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">on_error</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="n">cwd</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">log_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Safely run a command in a subprocess, returning the given string if an</span>
+<span class="sd">    error occurs.</span>
+
+<span class="sd">    @param command: the command to execute</span>
+<span class="sd">    @param on_error: message to return if an exception occurs</span>
+<span class="sd">    @param cwd: working directory for command</span>
+<span class="sd">    @param log_errors: whether to log errors that occur while running the command</span>
+<span class="sd">    @return: process output or error message</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stdout</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">exit_code</span> <span class="o">=</span> <span class="n">_run</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">cwd</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">,</span> <span class="ne">FileNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">log_errors</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error running </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">exit_code</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">stdout</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">on_error</span>
+
+
+<span class="k">def</span> <span class="nf">_load</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">AnyStr</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read in a file and return the contents</span>
+
+<span class="sd">    @param path: path to file</span>
+<span class="sd">    @param encoding: optional encoding used to decode the file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">Environment</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Environment is a Protocol that collects the attributes that describe a</span>
+<span class="sd">    pipeline execution environment.</span>
+
+<span class="sd">    This Protocol is intended to help with type safety, ensuring that</span>
+<span class="sd">    implementations for MacOS and Linux provide all required data in the</span>
+<span class="sd">    correct type.</span>
+
+<span class="sd">    There are several bits of information collected on CPU which are</span>
+<span class="sd">    subtly different:</span>
+
+<span class="sd">    - logical_cpu_cores and physical_cpu_cores reports how many CPUs are</span>
+<span class="sd">      present on the machine. With SMT, logical CPU cores can be more than</span>
+<span class="sd">      the number of physical cores.</span>
+<span class="sd">    - casa_cores and casa_threads reports how many physical and logical cores</span>
+<span class="sd">      are accessible to the running CASA process, as detected by CASA itself.</span>
+
+<span class="sd">    On a Linux machine, attributes describing the cgroup limits applied to the</span>
+<span class="sd">    CASA process are also populated:</span>
+
+<span class="sd">    - cgroup_cpus reports how many CPU cores have been allocated to the</span>
+<span class="sd">      running process, as detected through cgroup limits.</span>
+<span class="sd">    - cgroup_bandwidth reports the CPU bandwidth limits applied by cgroups.</span>
+<span class="sd">      &#39;bandwidth&#39; means the fraction of CPU time for CPUs allocated to the</span>
+<span class="sd">      cgroup, e.g., 25% of cores 1-4</span>
+<span class="sd">    - casa_cores and cgroup_cpus should generally (always?) be equal, but I</span>
+<span class="sd">      don&#39;t know enough about the CASA implementation to guarantee that.</span>
+
+<span class="sd">    The most complex scenario this can describe is, for example, that CASA has</span>
+<span class="sd">    been allocated 25% of cores 1-4 on a machine with 10 physical cores and</span>
+<span class="sd">    14 logical cores. There are other cgroup attributes that could affect the</span>
+<span class="sd">    amount of time CASA receives (e.g., CPU weighting), but those are ignored</span>
+<span class="sd">    for now. We also do not attempt to detect the difference between p-cores</span>
+<span class="sd">    and e-cores, though that may be a factor for non-cluster setups.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">host_distribution</span><span class="p">:</span> <span class="nb">str</span>      <span class="c1"># OS description, e.g., RedHat Linux 8.3</span>
+    <span class="n">hostname</span><span class="p">:</span> <span class="nb">str</span>               <span class="c1"># hostname, e.g., somepc.nrao.edu</span>
+
+    <span class="n">cpu_type</span><span class="p">:</span> <span class="nb">str</span>               <span class="c1"># CPU description, e.g.,</span>
+    <span class="n">logical_cpu_cores</span><span class="p">:</span> <span class="nb">str</span>      <span class="c1"># logical core count</span>
+    <span class="n">physical_cpu_cores</span><span class="p">:</span> <span class="nb">str</span>     <span class="c1"># physical CPU count</span>
+    <span class="n">ram</span><span class="p">:</span> <span class="nb">int</span>                    <span class="c1"># ram in KB</span>
+    <span class="n">swap</span><span class="p">:</span> <span class="nb">str</span>                   <span class="c1"># swap size in bytes</span>
+
+    <span class="n">casa_cores</span><span class="p">:</span> <span class="nb">int</span>             <span class="c1"># Number of cores seen by CASA</span>
+    <span class="n">casa_threads</span><span class="p">:</span> <span class="nb">int</span>           <span class="c1"># Number of CASA threads</span>
+    <span class="n">casa_memory</span><span class="p">:</span> <span class="nb">int</span>            <span class="c1"># tclean-reported available memory, in bytes</span>
+
+    <span class="n">cgroup_num_cpus</span><span class="p">:</span> <span class="nb">str</span>        <span class="c1"># cgroup CPU allocation</span>
+    <span class="n">cgroup_cpu_bandwidth</span><span class="p">:</span> <span class="nb">str</span>   <span class="c1"># cgroup CPU bandwidth limit</span>
+    <span class="n">cgroup_cpu_weight</span><span class="p">:</span> <span class="nb">str</span>      <span class="c1"># cgroup CPU weight</span>
+    <span class="n">cgroup_mem_limit</span><span class="p">:</span> <span class="nb">str</span>       <span class="c1"># cgroup memory limit</span>
+
+    <span class="n">ulimit_files</span><span class="p">:</span> <span class="nb">str</span>           <span class="c1"># open file descriptors ulimit</span>
+    <span class="n">ulimit_cpu</span><span class="p">:</span> <span class="nb">str</span>             <span class="c1"># cpu time ulimit, in seconds</span>
+    <span class="n">ulimit_mem</span><span class="p">:</span> <span class="nb">str</span>             <span class="c1"># memory ulimit</span>
+
+    <span class="n">role</span><span class="p">:</span> <span class="nb">str</span>                   <span class="c1"># MPI role</span>
+
+
+<span class="k">class</span> <span class="nc">EnvironmentFactory</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    EnvironmentFactory returns the Environment appropriate to the host.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Environment</span><span class="p">:</span>
+        <span class="n">system</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">system</span> <span class="o">==</span> <span class="s1">&#39;Linux&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">LinuxEnvironment</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">system</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">MacOSEnvironment</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="bp">NotImplemented</span><span class="p">(</span><span class="s1">&#39;Could not query environment for system </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">system</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">CommonEnvironment</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CommonEnvironment is a base class for environment properties that can be</span>
+<span class="sd">    measured in an OS-independent fashion.</span>
+
+<span class="sd">    CommonEnvironment does not provide all required properties to satisfy the</span>
+<span class="sd">    Environment interface, and is not intended to be instantiated directly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logsink</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">logsink</span>
+
+        <span class="c1"># number of physical cores as seen by CASA</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">casa_cores</span> <span class="o">=</span> <span class="n">logsink</span><span class="o">.</span><span class="n">getNumCPUs</span><span class="p">(</span><span class="n">use_aipsrc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># number of threads (=logical cores) as seen by CASA</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">casa_threads</span> <span class="o">=</span> <span class="n">logsink</span><span class="o">.</span><span class="n">ompGetNumThreads</span><span class="p">()</span>
+
+        <span class="c1"># tclean-reported available memory [result in KB]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">casa_memory</span> <span class="o">=</span> <span class="n">logsink</span><span class="o">.</span><span class="n">getMemoryTotal</span><span class="p">(</span><span class="n">use_aipsrc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1024</span>
+
+        <span class="c1"># hostname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hostname</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">node</span><span class="p">()</span>
+
+        <span class="c1"># helper function to get limits set by ulimit</span>
+        <span class="k">def</span> <span class="nf">get_ulimit</span><span class="p">(</span><span class="n">limit_types</span><span class="p">):</span>
+            <span class="n">active_limits</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">val</span>
+                <span class="k">for</span> <span class="n">limit</span> <span class="ow">in</span> <span class="n">limit_types</span>
+                <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">resource</span><span class="o">.</span><span class="n">getrlimit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+                <span class="c1"># ulimit on MacOS returns maximum 64-bit signed integer for unlimited</span>
+                <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="mi">9223372036854775807</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">active_limits</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># The &#39;too many open files&#39; error during imaging is often due to an</span>
+        <span class="c1"># incorrect ulimit. The ulimit value is recorded per host to assist in</span>
+        <span class="c1"># diagnosing these errors.</span>
+        <span class="c1">#</span>
+        <span class="c1"># See: PIPE-350; PIPE-338</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ulimit_files</span> <span class="o">=</span> <span class="n">get_ulimit</span><span class="p">([</span><span class="n">resource</span><span class="o">.</span><span class="n">RLIMIT_NOFILE</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ulimit_cpu</span> <span class="o">=</span> <span class="n">get_ulimit</span><span class="p">([</span><span class="n">resource</span><span class="o">.</span><span class="n">RLIMIT_CPU</span><span class="p">])</span>
+        <span class="c1"># three applicable limits for memory: RSS, heap size, and data seg size.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ulimit_mem</span> <span class="o">=</span> <span class="n">get_ulimit</span><span class="p">([</span><span class="n">resource</span><span class="o">.</span><span class="n">RLIMIT_AS</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">RLIMIT_RSS</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">RLIMIT_DATA</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">is_mpi_enabled</span><span class="p">:</span>
+            <span class="n">role</span> <span class="o">=</span> <span class="s1">&#39;Non-MPI Host&#39;</span>
+        <span class="k">elif</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">is_mpi_client</span><span class="p">:</span>
+            <span class="n">role</span> <span class="o">=</span> <span class="s1">&#39;MPI Client&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">role</span> <span class="o">=</span> <span class="s1">&#39;MPI Server&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">role</span> <span class="o">=</span> <span class="n">role</span>
+
+
+<span class="k">class</span> <span class="nc">LinuxEnvironment</span><span class="p">(</span><span class="n">CommonEnvironment</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    LinuxEnvironment adds the Environment properties missing from a</span>
+<span class="sd">    CommonEnvironment using methods that are specific to Linux.</span>
+
+<span class="sd">    LinuxEnvironment depends on the command line utilities lscpu and swapon</span>
+<span class="sd">    for its analysis of CPU and memory.</span>
+
+<span class="sd">    LinuxEnvironment is expected to be instantiated.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LinuxEnvironment</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="n">lscpu_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">_safe_run</span><span class="p">(</span><span class="s1">&#39;lscpu -J&#39;</span><span class="p">,</span> <span class="n">on_error</span><span class="o">=</span><span class="s1">&#39;{&quot;lscpu&quot;: </span><span class="si">{}</span><span class="s1">}&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cpu_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_lscpu</span><span class="p">(</span><span class="n">lscpu_json</span><span class="p">,</span> <span class="s1">&#39;Model name:&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logical_cpu_cores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_lscpu</span><span class="p">(</span><span class="n">lscpu_json</span><span class="p">,</span> <span class="s1">&#39;CPU(s):&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">physical_cpu_cores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_lscpu</span><span class="p">(</span><span class="n">lscpu_json</span><span class="p">,</span> <span class="s2">&quot;Core(s) per socket:&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ram</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">sysconf</span><span class="p">(</span><span class="s1">&#39;SC_PAGE_SIZE&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">os</span><span class="o">.</span><span class="n">sysconf</span><span class="p">(</span><span class="s1">&#39;SC_PHYS_PAGES&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swap</span> <span class="o">=</span> <span class="n">_safe_run</span><span class="p">(</span><span class="s1">&#39;swapon --show=SIZE --bytes --noheadings&#39;</span><span class="p">)</span>
+
+        <span class="n">cgroup_controllers</span> <span class="o">=</span> <span class="n">CGroupControllerParser</span><span class="o">.</span><span class="n">get_controllers</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cgroup_num_cpus</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">CGroupLimit</span><span class="o">.</span><span class="n">CPUAllocation</span><span class="o">.</span><span class="n">get_limit</span><span class="p">(</span><span class="n">cgroup_controllers</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cgroup_cpu_bandwidth</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">CGroupLimit</span><span class="o">.</span><span class="n">CPUBandwidth</span><span class="o">.</span><span class="n">get_limit</span><span class="p">(</span><span class="n">cgroup_controllers</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cgroup_cpu_weight</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">CGroupLimit</span><span class="o">.</span><span class="n">CPUWeight</span><span class="o">.</span><span class="n">get_limit</span><span class="p">(</span><span class="n">cgroup_controllers</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cgroup_mem_limit</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">CGroupLimit</span><span class="o">.</span><span class="n">MemoryLimit</span><span class="o">.</span><span class="n">get_limit</span><span class="p">(</span><span class="n">cgroup_controllers</span><span class="p">))</span>
+
+        <span class="n">os_release</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_os_release</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_distribution</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">os_release</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Linux&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                  <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">os_release</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;VERSION&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;(unknown distribution)&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_os_release</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads OS release information from disk.</span>
+
+<span class="sd">        Taken from https://www.freedesktop.org/software/systemd/man/latest/os-release.html</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># in Python &gt;= 3.10 we could do this:</span>
+        <span class="c1"># return platform.freedesktop_os_release()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;/etc/os-release&#39;</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;/usr/lib/os-release&#39;</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">line_number</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([A-Z][A-Z_0-9]+)=(.*)&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                <span class="n">name</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">val</span> <span class="ow">and</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="s1">&#39;&quot;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">yield</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">line_number</span><span class="si">}</span><span class="s1">: bad line </span><span class="si">{</span><span class="n">line</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_from_lscpu</span><span class="p">(</span><span class="n">lscpu_json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract data for the requested field from lscpu JSON output. If the field</span>
+<span class="sd">        is not present, &#39;unknown&#39; is returned.</span>
+
+<span class="sd">        @param lscpu_json: dict of lscpu output, as produced by &#39;lscpu -J&#39;</span>
+<span class="sd">        @param key: name of field to extract</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flattened</span> <span class="o">=</span> <span class="p">{</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]:</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">lscpu_json</span><span class="p">[</span><span class="s1">&#39;lscpu&#39;</span><span class="p">]}</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">flattened</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">k</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;unknown&#39;</span>
+        <span class="k">return</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">CGroupController</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CgroupSpec is a dataclass for properties that describe a cgroup limit. It</span>
+<span class="sd">    holds information on the path to the cgroup controller, cgroup type, and</span>
+<span class="sd">    cgroup limit path itself.</span>
+
+<span class="sd">    - name: name of the cgroup controller</span>
+<span class="sd">    - hierarchy_id: cgroup hierarchy ID; 1 for cgroup v1, 0 for disabled or cgroup</span>
+<span class="sd">      v2</span>
+<span class="sd">    - enabled: indicates cgroup controller status, either 1 for enabled or 0 for</span>
+<span class="sd">      disabled</span>
+<span class="sd">    - cgroup_path: path to cgroup limit</span>
+<span class="sd">    - mount_path: path to cgroup filesystem</span>
+<span class="sd">    - root_mount_point: path to root mount point of cgroup filesystem</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">hierarchy_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">cgroup_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span>  <span class="c1"># optional as path not present when controller is disabled</span>
+    <span class="n">mount_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span>  <span class="c1"># optional as path not present when controller is disabled</span>
+    <span class="n">root_mount_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span>  <span class="c1"># optional as path not present when controller is disabled</span>
+
+    <span class="k">def</span> <span class="nf">get_limits</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">v1_attrs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+            <span class="n">v2_attrs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the cgroup limits for a list of cgroup attributes.</span>
+
+<span class="sd">        @param v1_attrs: list of cgroup v1 attributes</span>
+<span class="sd">        @param v1_attrs: list of cgroup v2 attributes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">root_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_mount_path</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">mount_path</span>
+        <span class="n">cgroup_path</span> <span class="o">=</span> <span class="n">root_path</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">cgroup_path</span>
+
+        <span class="n">cgroups_to_consider</span> <span class="o">=</span> <span class="p">{</span><span class="n">cgroup_path</span><span class="p">,</span> <span class="o">*</span><span class="n">cgroup_path</span><span class="o">.</span><span class="n">parents</span><span class="p">}</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">root_path</span><span class="o">.</span><span class="n">parents</span><span class="p">)</span>
+        <span class="n">limit_files</span> <span class="o">=</span> <span class="n">v2_attrs</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hierarchy_id</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">v1_attrs</span>
+
+        <span class="n">limits</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">cgroups_to_consider</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">limit_files</span><span class="p">:</span>
+                <span class="n">file_name</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="n">f</span>
+                <span class="k">if</span> <span class="n">file_name</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                    <span class="n">limit</span> <span class="o">=</span> <span class="n">_load</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">limit</span><span class="p">:</span>
+                        <span class="n">limits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">limits</span>
+
+
+<span class="k">class</span> <span class="nc">CGroupControllerParser</span><span class="p">:</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_controllers</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">CGroupController</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a dict of cgroup controllers and mount points that can be used</span>
+<span class="sd">        for parsing cgroup limits.</span>
+
+<span class="sd">        Identifying the cgroup limits applicable to the running process</span>
+<span class="sd">        requires parsing three files:</span>
+
+<span class="sd">          - /proc/cgroups to determine cgroup controllers on the system</span>
+<span class="sd">          - /proc/self/cgroup to determine cgroup controllers applicable to</span>
+<span class="sd">            the running process</span>
+<span class="sd">          - /proc/self/mountinfo to list the filesystem mounts - inclduding</span>
+<span class="sd">            the cgroup virtual filesystem mount - for the running process</span>
+
+<span class="sd">        Translated from</span>
+<span class="sd">        https://github.com/openjdk/jdk/blob/jdk-17+18/src/hotspot/os/linux/cgroupSubsystem_linux.cpp</span>
+
+<span class="sd">        @return: dict of CGroupControllers indexed by controller name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># stage 1: read /proc/cgroups to list the available cgroup controllers</span>
+        <span class="c1"># and their status</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">controller_info</span> <span class="o">=</span> <span class="n">_load</span><span class="p">(</span><span class="s1">&#39;/proc/cgroups&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">cgroup_spec</span> <span class="ow">in</span> <span class="n">controller_info</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?P&lt;name&gt;\w+)\s(?P&lt;hierarchy_id&gt;\d+)\s\d+\s(?P&lt;enabled&gt;\d+)&quot;</span><span class="p">,</span> <span class="n">cgroup_spec</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+            <span class="n">hierarchy_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;hierarchy_id&quot;</span><span class="p">))</span>
+            <span class="n">enabled</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;enabled&quot;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="n">controller</span> <span class="o">=</span> <span class="n">CGroupController</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">hierarchy_id</span><span class="o">=</span><span class="n">hierarchy_id</span><span class="p">,</span>
+                <span class="n">enabled</span><span class="o">=</span><span class="n">enabled</span><span class="p">,</span>
+                <span class="n">cgroup_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">mount_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">root_mount_path</span><span class="o">=</span><span class="kc">None</span>
+            <span class="p">)</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">controller</span>
+
+        <span class="n">is_cgroups_v2</span> <span class="o">=</span> <span class="n">_safe_run</span><span class="p">(</span><span class="s1">&#39;stat -fc %T /sys/fs/cgroup/&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;cgroup2fs&#39;</span>
+
+        <span class="c1"># stage 2: read /proc/self/cgroup and determine:</span>
+        <span class="c1">#   - the cgroup path for cgroups v2 or</span>
+        <span class="c1">#   - on a cgroups v1 system, collect info for mapping</span>
+        <span class="c1">#     the host mount point to the local one via /proc/self/mountinfo below.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">self_cgroup</span> <span class="o">=</span> <span class="n">_load</span><span class="p">(</span><span class="s1">&#39;/proc/self/cgroup&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">results</span>
+
+        <span class="k">for</span> <span class="n">cgroup_spec</span> <span class="ow">in</span> <span class="n">self_cgroup</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span>
+                <span class="sa">r</span><span class="s2">&quot;(?P&lt;hierarchy_id&gt;\d+):(?P&lt;controllers&gt;[^:]*):(?P&lt;cgroup_path&gt;.+)&quot;</span><span class="p">,</span>
+                <span class="n">cgroup_spec</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">cgroup_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;cgroup_path&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+            <span class="k">if</span> <span class="n">is_cgroups_v2</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">controller</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                    <span class="n">controller</span><span class="o">.</span><span class="n">cgroup_path</span> <span class="o">=</span> <span class="n">cgroup_path</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">controller</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;controllers&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">controller</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                        <span class="n">results</span><span class="p">[</span><span class="n">controller</span><span class="p">]</span><span class="o">.</span><span class="n">cgroup_path</span> <span class="o">=</span> <span class="n">cgroup_path</span>
+
+        <span class="c1"># stage 3: find mount points by reading /proc/self/mountinfo</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mountinfo</span> <span class="o">=</span> <span class="n">_load</span><span class="p">(</span><span class="s2">&quot;/proc/self/mountinfo&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">results</span>
+
+        <span class="k">for</span> <span class="n">mount_spec</span> <span class="ow">in</span> <span class="n">mountinfo</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span>
+                <span class="sa">r</span><span class="s2">&quot;\d+\s\d+\s\d+:\d+\s(?P&lt;root&gt;[^\s]+)\s(?P&lt;mount_point&gt;[^\s]+)\s[^-]+-\s(?P&lt;fs_type&gt;[^\s]+)\s[^\s]+\s(?P&lt;cgroups&gt;[^\s]+)&quot;</span><span class="p">,</span>
+                <span class="n">mount_spec</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;root&quot;</span><span class="p">))</span>
+            <span class="n">mount_point</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;mount_point&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+            <span class="n">fs_type</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;fs_type&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_cgroups_v2</span> <span class="ow">and</span> <span class="n">fs_type</span> <span class="o">==</span> <span class="s2">&quot;cgroup2&quot;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">controller</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                    <span class="n">controller</span><span class="o">.</span><span class="n">mount_path</span> <span class="o">=</span> <span class="n">mount_point</span>
+                    <span class="n">controller</span><span class="o">.</span><span class="n">root_mount_path</span> <span class="o">=</span> <span class="n">root</span>
+            <span class="k">elif</span> <span class="n">fs_type</span> <span class="o">==</span> <span class="s2">&quot;cgroup&quot;</span><span class="p">:</span>
+                <span class="c1"># matched token will be similar to &#39;rw,memory&#39;</span>
+                <span class="n">cgroups</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;cgroups&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">cgroups</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                        <span class="n">results</span><span class="p">[</span><span class="n">token</span><span class="p">]</span><span class="o">.</span><span class="n">mount_path</span> <span class="o">=</span> <span class="n">mount_point</span>
+                        <span class="n">results</span><span class="p">[</span><span class="n">token</span><span class="p">]</span><span class="o">.</span><span class="n">root_mount_path</span> <span class="o">=</span> <span class="n">root</span>
+
+        <span class="k">return</span> <span class="n">results</span>
+
+
+<span class="k">class</span> <span class="nc">CGroupLimit</span><span class="p">:</span>
+
+    <span class="k">class</span> <span class="nc">CPUWeight</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Distribution of CPU time to allocate for this process relative to</span>
+<span class="sd">        other processes in the cgroup.</span>
+
+<span class="sd">        The weights of the child cgroups that have running processes are</span>
+<span class="sd">        summed up at the level of the parent cgroup. The CPU resource is then</span>
+<span class="sd">        distributed proportionally based on the respective weights. As a</span>
+<span class="sd">        result, when all processes run at the same time, the kernel allocates</span>
+<span class="sd">        to each of them the proportionate CPU time based on their respective</span>
+<span class="sd">        cgroup’s cpu.weight file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="si">}</span><span class="s1">%&#39;</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">get_limit</span><span class="p">(</span><span class="n">controllers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">CGroupController</span><span class="p">]):</span>
+            <span class="n">controller</span> <span class="o">=</span> <span class="n">controllers</span><span class="p">[</span><span class="s1">&#39;cpu&#39;</span><span class="p">]</span>
+            <span class="n">str_limits</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_limits</span><span class="p">([],</span> <span class="p">[</span><span class="s1">&#39;cpu.weight&#39;</span><span class="p">])</span>
+            <span class="n">limits</span> <span class="o">=</span> <span class="p">[</span><span class="n">CGroupLimit</span><span class="o">.</span><span class="n">CPUWeight</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">str_limits</span><span class="p">]</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">CPUBandwidth</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        CPUBandwidth describes a cgroup CPU bandwidth quota, the fraction of</span>
+<span class="sd">        time that the collective processes in a cgroup can use the CPUs</span>
+<span class="sd">        allocated to the cgroup.</span>
+
+<span class="sd">        A cgroup CPU Bandwidth is composed of two parts:</span>
+
+<span class="sd">        - quota: the allowed time quota in microseconds for which all processes</span>
+<span class="sd">          collectively in a child group can run during one period, or &#39;max&#39; if</span>
+<span class="sd">          no limit is applied</span>
+<span class="sd">        - period: length of the period.</span>
+
+<span class="sd">        During a single period, when processes in a control group collectively</span>
+<span class="sd">        exhaust the time specified by this quota, they are throttled for the</span>
+<span class="sd">        remainder of the period and not allowed to run until the next period.</span>
+
+<span class="sd">        For example, a quota of 25000 and period of 100000 means that,</span>
+<span class="sd">        collectively, the processes in this cgroup can collectively use 0.025s</span>
+<span class="sd">        of CPU time every 0.1s.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">quota</span><span class="p">,</span> <span class="n">period</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">quota</span> <span class="o">==</span> <span class="s1">&#39;max&#39;</span> <span class="ow">or</span> <span class="n">quota</span> <span class="o">==</span> <span class="s1">&#39;-1&#39;</span><span class="p">:</span>
+                <span class="n">quota</span> <span class="o">=</span> <span class="n">period</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">quota</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">quota</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">period</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">period</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quota</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">period</span>
+
+        <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ratio</span><span class="si">:</span><span class="s1">.0%</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">get_limit</span><span class="p">(</span><span class="n">controllers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">CGroupController</span><span class="p">]):</span>
+            <span class="n">controller</span> <span class="o">=</span> <span class="n">controllers</span><span class="p">[</span><span class="s1">&#39;cpu&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">controller</span><span class="o">.</span><span class="n">enabled</span> <span class="ow">and</span> <span class="n">controller</span><span class="o">.</span><span class="n">hierarchy_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">str_limits</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_limits</span><span class="p">([],</span> <span class="p">[</span><span class="s1">&#39;cpu.max&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># cgroup v1 CPU quota definitions are split across two parameters</span>
+                <span class="n">periods</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_limits</span><span class="p">([</span><span class="s1">&#39;cpu.cfs_period_us&#39;</span><span class="p">],</span> <span class="p">[])</span>
+                <span class="n">quotas</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_limits</span><span class="p">([</span><span class="s1">&#39;cpu.cfs_quota_us&#39;</span><span class="p">],</span> <span class="p">[])</span>
+                <span class="n">str_limits</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">quotas</span><span class="p">,</span> <span class="n">periods</span><span class="p">)]</span>
+
+            <span class="n">limits</span> <span class="o">=</span> <span class="p">[</span><span class="n">CGroupLimit</span><span class="o">.</span><span class="n">CPUBandwidth</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">str_limits</span><span class="p">]</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;ratio&#39;</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">CPUAllocation</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        CPUAllocation represents a cgroup CPU allocation.</span>
+
+<span class="sd">        A cgroup CPU allocation is described as a string. For example, a</span>
+<span class="sd">        cgroup value of &#39;1-3,5,7-9&#39; would mean CPU cores 1,2,3,5,7,8, and 9</span>
+<span class="sd">        can be used by processes in the cgroup.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cpus</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_expand</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_cpus</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cpus</span><span class="p">)</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">_expand</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Converts a CPU allocation from the original cgroups format to an</span>
+<span class="sd">            equivalent list of integer CPU IDs.</span>
+
+<span class="sd">            Example: converts &#39;1-4,7,8&#39; to [1,2,3,4,7,8]</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s1">&#39;-&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">i</span><span class="p">:</span>
+                    <span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">l</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span>
+                    <span class="n">r</span> <span class="o">+=</span> <span class="nb">range</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">r</span>
+
+        <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_cpus</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">get_limit</span><span class="p">(</span><span class="n">controllers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">CGroupController</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">CGroupLimit</span><span class="o">.</span><span class="n">CPUAllocation</span><span class="p">:</span>
+            <span class="n">controller</span> <span class="o">=</span> <span class="n">controllers</span><span class="p">[</span><span class="s1">&#39;cpuset&#39;</span><span class="p">]</span>
+            <span class="n">str_limits</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_limits</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;cpuset.cpus&#39;</span><span class="p">],</span>
+                <span class="p">[</span><span class="s1">&#39;cpuset.cpus&#39;</span><span class="p">,</span> <span class="s1">&#39;cpuset.cpus.effective&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">limits</span> <span class="o">=</span> <span class="p">[</span><span class="n">CGroupLimit</span><span class="o">.</span><span class="n">CPUAllocation</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">str_limits</span><span class="p">]</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;num_cpus&#39;</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">MemoryLimit</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Represents the limiting cgroup limit on RAM+swap usage for a process.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># No cgroup memory limits can be reported as max or as a magic number</span>
+        <span class="c1">#</span>
+        <span class="c1"># See https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/pull-requests/1244/overview?commentId=13998</span>
+        <span class="c1"># and links therein</span>
+        <span class="n">_UNLIMITED</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span> <span class="o">-</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">sysconf</span><span class="p">(</span><span class="s1">&#39;SC_PAGE_SIZE&#39;</span><span class="p">))))</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">CGroupLimit</span><span class="o">.</span><span class="n">MemoryLimit</span><span class="o">.</span><span class="n">_UNLIMITED</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">get_limit</span><span class="p">(</span><span class="n">controllers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">CGroupController</span><span class="p">]):</span>
+            <span class="n">controller</span> <span class="o">=</span> <span class="n">controllers</span><span class="p">[</span><span class="s1">&#39;memory&#39;</span><span class="p">]</span>
+            <span class="n">str_limits</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_limits</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;memory.limit_in_bytes&quot;</span><span class="p">,</span> <span class="s2">&quot;memory.memsw.limit_in_bytes&quot;</span><span class="p">,</span> <span class="s2">&quot;memory.soft_limit_in_bytes&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;memory.high&quot;</span><span class="p">,</span> <span class="s2">&quot;memory.max&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="c1"># -1 = remove any existing limits</span>
+            <span class="n">limits</span> <span class="o">=</span> <span class="p">[</span><span class="n">CGroupLimit</span><span class="o">.</span><span class="n">MemoryLimit</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">str_limits</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">limit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">limits</span> <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">limit</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;limit&#39;</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="c1"># empty list = no active memory limits</span>
+                <span class="k">return</span> <span class="s1">&#39;N/A&#39;</span>
+
+            <span class="k">return</span> <span class="n">limit</span><span class="o">.</span><span class="n">limit</span>
+
+
+<span class="k">class</span> <span class="nc">MacOSEnvironment</span><span class="p">(</span><span class="n">CommonEnvironment</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    MacOSEnvironment adds environment properties missing from a CommonEnvironment</span>
+<span class="sd">    using methods that are specific to MacOS.</span>
+
+<span class="sd">    Unlike CommonEnvironment, MacOSEnvironment is expected to be instantiated.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MacOSEnvironment</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cpu_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_sysctl</span><span class="p">(</span><span class="s1">&#39;machdep.cpu.brand_string&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logical_cpu_cores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_sysctl</span><span class="p">(</span><span class="s1">&#39;hw.logicalcpu&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">physical_cpu_cores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_sysctl</span><span class="p">(</span><span class="s1">&#39;hw.physicalcpu&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_distribution</span> <span class="o">=</span> <span class="s1">&#39;MacOS </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">mac_ver</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ram</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_from_sysctl</span><span class="p">(</span><span class="s1">&#39;hw.memsize&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_swap</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cgroup_num_cpus</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cgroup_cpu_bandwidth</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cgroup_cpu_weight</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cgroup_mem_limit</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_from_sysctl</span><span class="p">(</span><span class="n">prop</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_safe_run</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sysctl -n </span><span class="si">{</span><span class="n">prop</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_swap</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract total swap usage from a line like:</span>
+
+<span class="sd">        vm.swapusage: total = 1024.00M  used = 191.00M  free = 833.00M  (encrypted)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">swap</span> <span class="o">=</span> <span class="n">MacOSEnvironment</span><span class="o">.</span><span class="n">_from_sysctl</span><span class="p">(</span><span class="s1">&#39;vm.swapusage&#39;</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\S+ total = (?P&lt;total&gt;\S+)&quot;</span><span class="p">,</span> <span class="n">swap</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;unknown&#39;</span>
+        <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;total&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Determine pipeline version from Git or package.</span>
+<span class="k">def</span> <span class="nf">_pipeline_revision</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a string describing the pipeline revision and branch of the executing</span>
+<span class="sd">    pipeline distribution if executing from a Git repo; as a fall-back,</span>
+<span class="sd">    attempt to get version from built package.</span>
+<span class="sd">    :return: string describing pipeline version.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">version_str</span> <span class="o">=</span> <span class="s1">&#39;unknown&#39;</span>
+    <span class="c1"># check the version of installed package matching &#39;Pipeline&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># PIPE-1669: try to retrieve version from PEP566 metadata:</span>
+        <span class="c1"># https://peps.python.org/pep-0566/</span>
+        <span class="c1"># However, be aware that the metadata version string might be out-of-date</span>
+        <span class="c1"># from the package being imported depending on your workflow</span>
+        <span class="c1"># https://packaging.python.org/en/latest/guides/single-sourcing-package-version/#single-sourcing-the-version</span>
+        <span class="c1"># In addition, the version string could be converted form compliance reasons:</span>
+        <span class="c1"># https://peps.python.org/pep-0440/#local-version-segments</span>
+        <span class="c1"># &#39;1.0.0-dev1+PIPE-1243&#39; -&gt; 1.0.0-dev1+PIPE.1243&#39;.</span>
+        <span class="n">version_str</span> <span class="o">=</span> <span class="n">version</span><span class="p">(</span><span class="s1">&#39;pipeline&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Pipeline version found from importlib.metadata: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">version_str</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">PackageNotFoundError</span><span class="p">:</span>
+        <span class="c1"># likely the package is not installed</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Pipeline version is not found from importlib.metadata; &#39;</span>
+                  <span class="s1">&#39;the package is likely not pip-installed but added at runtime.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># more reliable method with the string most correctly preserved.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">._version</span> <span class="kn">import</span> <span class="n">version</span> <span class="k">as</span> <span class="n">version_str</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Pipeline version found from pipeline._version: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">version_str</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># We try to check version via the Git history again; this monkey patch is to deal with</span>
+    <span class="c1"># the situation that the PEP566 metadata might be out of date, e.g. developers</span>
+    <span class="c1"># are using a Python interpreter with older Pipeline versions installed but add</span>
+    <span class="c1"># the latest Git repo to sys.path for testing at runtime. The &#39;.git&#39; pre-check is intended</span>
+    <span class="c1"># to avoid the unnecessary cost of subprocess call cost. In addition, it avoids pulling</span>
+    <span class="c1"># the Git-based version string if the imported Python code is coming from a scratch directory</span>
+    <span class="c1"># inside the repo, etc. build/lib/pipeline</span>
+    <span class="n">git_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;.git&#39;</span><span class="p">))</span>
+    <span class="n">src_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">git_path</span><span class="p">):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;A Git repo is found at: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">git_path</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Checking the Git history from </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">src_path</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Silently test if this is a Git repo; if not, a CalledProcessError Exception</span>
+            <span class="c1"># will be triggered due to a non-zero subprocess exit status.</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;git&#39;</span><span class="p">,</span> <span class="s1">&#39;rev-parse&#39;</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="n">src_path</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">)</span>
+            <span class="c1"># If it&#39;s a Git repo, continue with fetching the desired Git-derived package version string.</span>
+            <span class="n">version_str</span> <span class="o">=</span> <span class="n">get_version_string_from_git</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Pipeline version derived from Git at runtime: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">version_str</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">version_str</span>
+
+
+<span class="k">def</span> <span class="nf">_ulimit</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the ulimit setting.</span>
+
+<span class="sd">    The &#39;too many open files&#39; error during imaging is often due to an</span>
+<span class="sd">    incorrect ulimit. The ulimit value is recorded per host to assist in</span>
+<span class="sd">    diagnosing these errors.</span>
+
+<span class="sd">    See: PIPE-350; PIPE-338</span>
+
+<span class="sd">    :return: ulimit as string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get soft limit on number of open files</span>
+    <span class="n">soft_limit</span><span class="p">,</span> <span class="n">hard_limit</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">getrlimit</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">RLIMIT_NOFILE</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">soft_limit</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_role</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">is_mpi_enabled</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;Non-MPI Host&#39;</span>
+
+    <span class="k">if</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">is_mpi_client</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;MPI Client&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;MPI Server&#39;</span>
+
+
+<span class="k">def</span> <span class="nf">_cluster_details</span><span class="p">():</span>
+    <span class="n">env_details</span> <span class="o">=</span> <span class="p">[</span><span class="n">node_details</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">is_mpi_ready</span><span class="p">():</span>
+        <span class="n">mpi_results</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">mpiclient</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span><span class="s1">&#39;pipeline.environment.node_details&#39;</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                                <span class="n">target_server</span><span class="o">=</span><span class="n">mpihelpers</span><span class="o">.</span><span class="n">mpi_server_list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">mpi_results</span><span class="p">:</span>
+            <span class="n">env_details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;ret&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">env_details</span>
+
+
+<span class="n">casa_version</span> <span class="o">=</span> <span class="n">casatasks</span><span class="o">.</span><span class="n">version</span><span class="p">()</span>
+<span class="n">casa_version_string</span> <span class="o">=</span> <span class="n">casatasks</span><span class="o">.</span><span class="n">version_string</span><span class="p">()</span>
+<span class="n">compare_casa_version</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">compare_version</span>
+
+
+<span class="k">def</span> <span class="nf">_get_dependency_details</span><span class="p">(</span><span class="n">package_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get dependency package version/path.</span>
+
+<span class="sd">    See https://docs.python.org/3.8/library/importlib.metadata.html#metadata</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">package_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">package_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="s1">&#39;scipy&#39;</span><span class="p">,</span> <span class="s1">&#39;matplotlib&#39;</span><span class="p">,</span> <span class="s1">&#39;astropy&#39;</span><span class="p">,</span> <span class="s1">&#39;bdsf&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;casatools&#39;</span><span class="p">,</span> <span class="s1">&#39;casatasks&#39;</span><span class="p">,</span> <span class="s1">&#39;almatasks&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;casampi&#39;</span><span class="p">,</span> <span class="s1">&#39;casaplotms&#39;</span><span class="p">]</span>
+
+    <span class="n">package_details</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">package_list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">package_list</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">package_version</span> <span class="o">=</span> <span class="n">version</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+            <span class="n">module_spec</span> <span class="o">=</span> <span class="n">find_spec</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">module_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">package_details</span><span class="p">[</span><span class="n">package</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="n">package_version</span><span class="p">,</span>
+                    <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">module_spec</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+                <span class="p">}</span>
+        <span class="k">except</span> <span class="n">PackageNotFoundError</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">package_details</span>
+
+
+<span class="n">dependency_details</span> <span class="o">=</span> <span class="n">_get_dependency_details</span><span class="p">()</span>
+<span class="n">iers_info</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">IERSInfo</span><span class="p">()</span>
+<span class="n">pipeline_revision</span> <span class="o">=</span> <span class="n">_pipeline_revision</span><span class="p">()</span>
+
+<span class="n">ENVIRONMENT</span> <span class="o">=</span> <span class="n">EnvironmentFactory</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="cluster_details">
+<a class="viewcode-back" href="../../_apidoc/pipeline.html#pipeline.environment.cluster_details">[docs]</a>
+<span class="k">def</span> <span class="nf">cluster_details</span><span class="p">():</span>
+    <span class="c1"># defer calculation as running this code at import time blocks MPI</span>
+    <span class="c1"># see https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/pull-requests/1244/overview?commentId=13655</span>
+    <span class="k">global</span> <span class="n">_cluster_details</span>
+    <span class="k">if</span> <span class="n">_cluster_details</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">env_details</span> <span class="o">=</span> <span class="p">[</span><span class="n">ENVIRONMENT</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">is_mpi_ready</span><span class="p">():</span>
+            <span class="n">mpi_results</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">mpiclient</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span>
+                <span class="s1">&#39;pipeline.environment.ENVIRONMENT&#39;</span><span class="p">,</span>
+                <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">target_server</span><span class="o">=</span><span class="n">mpihelpers</span><span class="o">.</span><span class="n">mpi_server_list</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">mpi_results</span><span class="p">:</span>
+                <span class="n">env_details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;ret&#39;</span><span class="p">])</span>
+
+        <span class="n">_cluster_details</span> <span class="o">=</span> <span class="n">env_details</span>
+
+    <span class="k">return</span> <span class="n">_cluster_details</span></div>
+
+
+
+<span class="n">_cluster_details</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

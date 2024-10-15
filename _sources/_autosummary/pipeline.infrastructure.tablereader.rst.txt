@@ -1,0 +1,37 @@
+pipeline.infrastructure.tablereader
+===================================
+
+.. automodule:: pipeline.infrastructure.tablereader
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      MSMDReader
+      bisect_left
+      find_EVLA_band
+      reduce
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Antenna
+      AntennaArray
+      AntennaTable
+      BandDescriber
+      DataDescriptionTable
+      ExecblockTable
+      FieldTable
+      MeasurementSetReader
+      ObservationTable
+      ObservingRunReader
+      PolarizationTable
+      RetrieveByIndexContainer
+      SBSummaryInfo
+      SBSummaryTable
+      SourceTable
+      SpectralWindowTable
+      StateTable
+   

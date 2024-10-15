@@ -1,0 +1,12 @@
+pipeline.hif.heuristics.bporder
+===============================
+
+.. automodule:: pipeline.hif.heuristics.bporder
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BPOrder
+   

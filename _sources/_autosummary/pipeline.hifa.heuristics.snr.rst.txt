@@ -1,0 +1,30 @@
+pipeline.hifa.heuristics.snr
+============================
+
+.. automodule:: pipeline.hifa.heuristics.snr
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      LOG
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      compute_bpsolint
+      compute_gaincalsnr
+      deepcopy
+      estimate_bpsolint
+      estimate_gaincalsnr
+      get_fluxinfo
+      get_mediantemp
+      get_obsinfo
+      get_tsysinfo
+      join_dicts
+      make_tsyslists
+      nextHighestDivisibleInt
+      round_up
+   

@@ -1,0 +1,952 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif package &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.hif package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/pipeline.hif.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hif-package">
+<h1>pipeline.hif package<a class="headerlink" href="#pipeline-hif-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_analyzealpha">pipeline.hif.cli.hif_analyzealpha module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_analyzealpha.hif_analyzealpha"><code class="docutils literal notranslate"><span class="pre">hif_analyzealpha()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_antpos">pipeline.hif.cli.hif_antpos module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_antpos.hif_antpos"><code class="docutils literal notranslate"><span class="pre">hif_antpos()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_applycal">pipeline.hif.cli.hif_applycal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_applycal.hif_applycal"><code class="docutils literal notranslate"><span class="pre">hif_applycal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_bandpass">pipeline.hif.cli.hif_bandpass module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_bandpass.hif_bandpass"><code class="docutils literal notranslate"><span class="pre">hif_bandpass()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_checkproductsize">pipeline.hif.cli.hif_checkproductsize module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_checkproductsize.hif_checkproductsize"><code class="docutils literal notranslate"><span class="pre">hif_checkproductsize()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_correctedampflag">pipeline.hif.cli.hif_correctedampflag module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_correctedampflag.hif_correctedampflag"><code class="docutils literal notranslate"><span class="pre">hif_correctedampflag()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_editimlist">pipeline.hif.cli.hif_editimlist module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_editimlist.hif_editimlist"><code class="docutils literal notranslate"><span class="pre">hif_editimlist()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_findcont">pipeline.hif.cli.hif_findcont module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_findcont.hif_findcont"><code class="docutils literal notranslate"><span class="pre">hif_findcont()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_gaincal">pipeline.hif.cli.hif_gaincal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_gaincal.hif_gaincal"><code class="docutils literal notranslate"><span class="pre">hif_gaincal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_lowgainflag">pipeline.hif.cli.hif_lowgainflag module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_lowgainflag.hif_lowgainflag"><code class="docutils literal notranslate"><span class="pre">hif_lowgainflag()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_makecutoutimages">pipeline.hif.cli.hif_makecutoutimages module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_makecutoutimages.hif_makecutoutimages"><code class="docutils literal notranslate"><span class="pre">hif_makecutoutimages()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_makeimages">pipeline.hif.cli.hif_makeimages module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_makeimages.hif_makeimages"><code class="docutils literal notranslate"><span class="pre">hif_makeimages()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_makeimlist">pipeline.hif.cli.hif_makeimlist module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_makeimlist.hif_makeimlist"><code class="docutils literal notranslate"><span class="pre">hif_makeimlist()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_makermsimages">pipeline.hif.cli.hif_makermsimages module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_makermsimages.hif_makermsimages"><code class="docutils literal notranslate"><span class="pre">hif_makermsimages()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_mstransform">pipeline.hif.cli.hif_mstransform module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_mstransform.hif_mstransform"><code class="docutils literal notranslate"><span class="pre">hif_mstransform()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_rawflagchans">pipeline.hif.cli.hif_rawflagchans module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_rawflagchans.hif_rawflagchans"><code class="docutils literal notranslate"><span class="pre">hif_rawflagchans()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_refant">pipeline.hif.cli.hif_refant module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_refant.hif_refant"><code class="docutils literal notranslate"><span class="pre">hif_refant()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_selfcal">pipeline.hif.cli.hif_selfcal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_selfcal.hif_selfcal"><code class="docutils literal notranslate"><span class="pre">hif_selfcal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_setjy">pipeline.hif.cli.hif_setjy module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_setjy.hif_setjy"><code class="docutils literal notranslate"><span class="pre">hif_setjy()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_setmodels">pipeline.hif.cli.hif_setmodels module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_setmodels.hif_setmodels"><code class="docutils literal notranslate"><span class="pre">hif_setmodels()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_transformimagedata">pipeline.hif.cli.hif_transformimagedata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_transformimagedata.hif_transformimagedata"><code class="docutils literal notranslate"><span class="pre">hif_transformimagedata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli.hif_uvcontsub">pipeline.hif.cli.hif_uvcontsub module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_uvcontsub.hif_uvcontsub"><code class="docutils literal notranslate"><span class="pre">hif_uvcontsub()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html#module-pipeline.hif.cli">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_analyzealpha"><code class="docutils literal notranslate"><span class="pre">hif_analyzealpha()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_antpos"><code class="docutils literal notranslate"><span class="pre">hif_antpos()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_applycal"><code class="docutils literal notranslate"><span class="pre">hif_applycal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_bandpass"><code class="docutils literal notranslate"><span class="pre">hif_bandpass()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_checkproductsize"><code class="docutils literal notranslate"><span class="pre">hif_checkproductsize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_correctedampflag"><code class="docutils literal notranslate"><span class="pre">hif_correctedampflag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_editimlist"><code class="docutils literal notranslate"><span class="pre">hif_editimlist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_findcont"><code class="docutils literal notranslate"><span class="pre">hif_findcont()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_gaincal"><code class="docutils literal notranslate"><span class="pre">hif_gaincal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_lowgainflag"><code class="docutils literal notranslate"><span class="pre">hif_lowgainflag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_makecutoutimages"><code class="docutils literal notranslate"><span class="pre">hif_makecutoutimages()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_makeimages"><code class="docutils literal notranslate"><span class="pre">hif_makeimages()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_makeimlist"><code class="docutils literal notranslate"><span class="pre">hif_makeimlist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_makermsimages"><code class="docutils literal notranslate"><span class="pre">hif_makermsimages()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_mstransform"><code class="docutils literal notranslate"><span class="pre">hif_mstransform()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_rawflagchans"><code class="docutils literal notranslate"><span class="pre">hif_rawflagchans()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_refant"><code class="docutils literal notranslate"><span class="pre">hif_refant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_selfcal"><code class="docutils literal notranslate"><span class="pre">hif_selfcal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_setjy"><code class="docutils literal notranslate"><span class="pre">hif_setjy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_setmodels"><code class="docutils literal notranslate"><span class="pre">hif_setmodels()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_transformimagedata"><code class="docutils literal notranslate"><span class="pre">hif_transformimagedata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.cli.html#pipeline.hif.cli.hif_uvcontsub"><code class="docutils literal notranslate"><span class="pre">hif_uvcontsub()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.heuristics.html">pipeline.hif.heuristics package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.auto_selfcal.html">pipeline.hif.heuristics.auto_selfcal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.auto_selfcal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.auto_selfcal.html#module-pipeline.hif.heuristics.auto_selfcal.auto_selfcal">pipeline.hif.heuristics.auto_selfcal.auto_selfcal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.auto_selfcal.html#module-pipeline.hif.heuristics.auto_selfcal.selfcal_helpers">pipeline.hif.heuristics.auto_selfcal.selfcal_helpers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.auto_selfcal.html#module-pipeline.hif.heuristics.auto_selfcal">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.bandpass">pipeline.hif.heuristics.bandpass module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.bandpass.MedianSNR"><code class="docutils literal notranslate"><span class="pre">MedianSNR</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.bandpass.MedianSNR.calculate"><code class="docutils literal notranslate"><span class="pre">MedianSNR.calculate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.bporder">pipeline.hif.heuristics.bporder module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.bporder.BPOrder"><code class="docutils literal notranslate"><span class="pre">BPOrder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.bporder.BPOrder.calculate"><code class="docutils literal notranslate"><span class="pre">BPOrder.calculate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.checkproductsize">pipeline.hif.heuristics.checkproductsize module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics"><code class="docutils literal notranslate"><span class="pre">CheckProductSizeHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics.calculate_sizes"><code class="docutils literal notranslate"><span class="pre">CheckProductSizeHeuristics.calculate_sizes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics.mitigate_imsize"><code class="docutils literal notranslate"><span class="pre">CheckProductSizeHeuristics.mitigate_imsize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics.mitigate_sizes"><code class="docutils literal notranslate"><span class="pre">CheckProductSizeHeuristics.mitigate_sizes()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.cleanbox">pipeline.hif.heuristics.cleanbox module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.cleanbox.analyse_clean_result"><code class="docutils literal notranslate"><span class="pre">analyse_clean_result()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.findcont">pipeline.hif.heuristics.findcont module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.findcont.FindContHeuristics"><code class="docutils literal notranslate"><span class="pre">FindContHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.findcont.FindContHeuristics.find_continuum"><code class="docutils literal notranslate"><span class="pre">FindContHeuristics.find_continuum()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.findrefant">pipeline.hif.heuristics.findrefant module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntFlagging"><code class="docutils literal notranslate"><span class="pre">RefAntFlagging</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntFlagging.calc_score"><code class="docutils literal notranslate"><span class="pre">RefAntFlagging.calc_score()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntGeometry"><code class="docutils literal notranslate"><span class="pre">RefAntGeometry</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntGeometry.calc_score"><code class="docutils literal notranslate"><span class="pre">RefAntGeometry.calc_score()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntHeuristics"><code class="docutils literal notranslate"><span class="pre">RefAntHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntHeuristics.calculate"><code class="docutils literal notranslate"><span class="pre">RefAntHeuristics.calculate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntHeuristics.refantignore"><code class="docutils literal notranslate"><span class="pre">RefAntHeuristics.refantignore</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.gaincal">pipeline.hif.heuristics.gaincal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.gaincal.MedianSNRNoAdapter"><code class="docutils literal notranslate"><span class="pre">MedianSNRNoAdapter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.gaincal.MedianSNRNoAdapter.calculate"><code class="docutils literal notranslate"><span class="pre">MedianSNRNoAdapter.calculate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.imageparams_alma">pipeline.hif.heuristics.imageparams_alma module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.arrays"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.arrays()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.calc_length_of_nth_baseline"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.calc_length_of_nth_baseline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.cyclefactor"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.cyclefactor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.dr_correction"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.dr_correction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.get_autobox_params"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.get_autobox_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.intent"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.intent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.keep_iterating"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.keep_iterating()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.mosweight"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.mosweight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.niter_correction"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.niter_correction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.nterms"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.nterms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.reffreq"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.reffreq()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.robust"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.robust()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.stokes"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.stokes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.tclean_stopcode_ignore"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.tclean_stopcode_ignore()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.threshold"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.threshold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.tlimit"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.tlimit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.uvtaper"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.uvtaper()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.warn_missing_cont_ranges"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMA.warn_missing_cont_ranges()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.imageparams_alma_scal">pipeline.hif.heuristics.imageparams_alma_scal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma_scal.ImageParamsHeuristicsALMAScal"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMAScal</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma_scal.ImageParamsHeuristicsALMAScal.deconvolver"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMAScal.deconvolver()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.imageparams_alma_srdp">pipeline.hif.heuristics.imageparams_alma_srdp module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma_srdp.ImageParamsHeuristicsALMASrdp"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMASrdp</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_alma_srdp.ImageParamsHeuristicsALMASrdp.uvtaper"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsALMASrdp.uvtaper()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.imageparams_base">pipeline.hif.heuristics.imageparams_base module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.aggregate_bandwidth"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.aggregate_bandwidth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.antenna_diameters"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.antenna_diameters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.antenna_ids"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.antenna_ids()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.arrays"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.arrays()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.calc_percentile_baseline_length"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.calc_percentile_baseline_length()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.calc_sensitivities"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.calc_sensitivities()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.calc_topo_ranges"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.calc_topo_ranges()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.cell"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.cell()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.center_field_ids"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.center_field_ids()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.check_psf"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.check_psf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.conjbeams"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.conjbeams()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.cont_ranges_spwsel"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.cont_ranges_spwsel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.cyclefactor"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.cyclefactor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.cycleniter"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.cycleniter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.datacolumn"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.datacolumn()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.deconvolver"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.deconvolver()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.dr_correction"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.dr_correction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.field"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.field()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.field_intent_list"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.field_intent_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.find_good_commonbeam"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.find_good_commonbeam()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.freq_intersection"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.freq_intersection()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.get_autobox_params"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.get_autobox_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.get_bw_corr_factor"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.get_bw_corr_factor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.get_cfcaches"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.get_cfcaches()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.get_channel_flags"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.get_channel_flags()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.get_first_unflagged_channel_from_center"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.get_first_unflagged_channel_from_center()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.get_fractional_bandwidth"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.get_fractional_bandwidth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.get_min_max_freq"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.get_min_max_freq()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.get_outmaskratio"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.get_outmaskratio()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.get_ref_msname"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.get_ref_msname()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.get_scanidlist"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.get_scanidlist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.get_sensitivity"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.get_sensitivity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.gridder"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.gridder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.has_data"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.has_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.imagename"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.imagename()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.imsize"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.imsize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.intent"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.intent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.is_eph_obj"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.is_eph_obj()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.is_mosaic"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.is_mosaic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.keep_iterating"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.keep_iterating()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.largest_primary_beam_size"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.largest_primary_beam_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.majority_antenna_ids"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.majority_antenna_ids()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.mask"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.mask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.mosweight"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.mosweight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.nchan_and_width"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.nchan_and_width()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.ncorr"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.ncorr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.niter"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.niter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.niter_by_iteration"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.niter_by_iteration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.niter_correction"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.niter_correction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.nmajor"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.nmajor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.nsigma"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.nsigma()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.nterms"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.nterms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.pb_correction"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.pb_correction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.pblimits"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.pblimits()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.pbmask"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.pbmask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.perchanweightdensity"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.perchanweightdensity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.phasecenter"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.phasecenter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.pointingoffsetsigdev"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.pointingoffsetsigdev()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.primary_beam_size"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.primary_beam_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.psfcutoff"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.psfcutoff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.reffreq"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.reffreq()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.representative_target"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.representative_target()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.restfreq"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.restfreq()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.restoringbeam"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.restoringbeam()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.robust"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.robust()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.rotatepastep"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.rotatepastep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.savemodel"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.savemodel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.scales"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.scales()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.select_fields"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.select_fields()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.smallscalebias"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.smallscalebias()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.specmode"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.specmode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.stokes"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.stokes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.synthesized_beam"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.synthesized_beam()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.tclean_stopcode_ignore"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.tclean_stopcode_ignore()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.threshold"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.threshold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.tlimit"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.tlimit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.usepointing"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.usepointing()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.uvrange"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.uvrange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.uvtaper"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.uvtaper()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.warn_missing_cont_ranges"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.warn_missing_cont_ranges()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.weighting"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.weighting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.width"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.width()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.wprojplanes"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristics.wprojplanes()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.imageparams_factory">pipeline.hif.heuristics.imageparams_factory module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsFactory"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsFactory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsFactory.getHeuristics"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsFactory.getHeuristics()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.imageparams_vla">pipeline.hif.heuristics.imageparams_vla module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.deconvolver"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.deconvolver()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.get_autobox_params"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.get_autobox_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.get_sensitivity"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.get_sensitivity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.gridder"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.gridder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.imagename"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.imagename()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.imsize"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.imsize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.keep_iterating"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.keep_iterating()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.niter_by_iteration"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.niter_by_iteration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.niter_correction"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.niter_correction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.nsigma"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.nsigma()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.nterms"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.nterms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.pblimits"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.pblimits()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.restfreq"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.restfreq()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.robust"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.robust()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.specmode"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.specmode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.tclean_stopcode_ignore"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.tclean_stopcode_ignore()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.threshold"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.threshold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.uvrange"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.uvrange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.uvtaper"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.uvtaper()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla.ImageParamsHeuristicsVLA.wprojplanes"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLA.wprojplanes()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.imageparams_vla_scal">pipeline.hif.heuristics.imageparams_vla_scal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla_scal.ImageParamsHeuristicsVLAScal"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLAScal</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vla_scal.ImageParamsHeuristicsVLAScal.deconvolver"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVLAScal.deconvolver()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.imageparams_vlass_quick_look">pipeline.hif.heuristics.imageparams_vlass_quick_look module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.buffer_radius"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.buffer_radius()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.cell"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.cell()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.conjbeams"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.conjbeams()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.cyclefactor"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.cyclefactor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.cycleniter"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.cycleniter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.datacolumn"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.datacolumn()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.deconvolver"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.deconvolver()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.find_fields"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.find_fields()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.get_autobox_params"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.get_autobox_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.get_sensitivity"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.get_sensitivity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.getfieldirbox_Claire"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.getfieldirbox_Claire()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.getfieldirbox_Steve"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.getfieldirbox_Steve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.gridder"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.gridder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.imsize"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.imsize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.intent"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.intent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.mask"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.mask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.niter"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.niter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.niter_correction"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.niter_correction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.nmajor"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.nmajor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.nsigma"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.nsigma()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.nterms"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.nterms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.pb_correction"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.pb_correction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.reffreq"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.reffreq()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.robust"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.robust()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.rotatepastep"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.rotatepastep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.savemodel"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.savemodel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.scales"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.scales()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.specmode"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.specmode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.stokes"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.stokes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.threshold"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.threshold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.uvrange"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.uvrange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.uvtaper"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.uvtaper()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_quick_look.ImageParamsHeuristicsVlassQl.wprojplanes"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassQl.wprojplanes()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum">pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.buffer_radius"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.buffer_radius()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.cell"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.cell()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.conjbeams"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.conjbeams()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.cyclefactor"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.cyclefactor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.cycleniter"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.cycleniter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.datacolumn"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.datacolumn()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.deconvolver"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.deconvolver()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.find_fields"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.find_fields()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.get_autobox_params"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.get_autobox_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.get_cfcaches"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.get_cfcaches()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.get_outmaskratio"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.get_outmaskratio()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.get_parallel_cont_synthesis_imager_csys"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.get_parallel_cont_synthesis_imager_csys()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.get_sensitivity"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.get_sensitivity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.gridder"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.gridder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.imsize"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.imsize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.intent"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.intent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.keep_iterating"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.keep_iterating()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.mask"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.mask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.niter"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.niter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.niter_correction"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.niter_correction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.nmajor"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.nmajor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.nsigma"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.nsigma()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.nterms"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.nterms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.pb_correction"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.pb_correction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.pblimits"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.pblimits()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.pbmask"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.pbmask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.pointingoffsetsigdev"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.pointingoffsetsigdev()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.reffreq"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.reffreq()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.restoringbeam"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.restoringbeam()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.robust"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.robust()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.rotatepastep"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.rotatepastep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.savemodel"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.savemodel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.scales"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.scales()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.set_user_cycleniter_final_image_nomask"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.set_user_cycleniter_final_image_nomask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.smallscalebias"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.smallscalebias()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.specmode"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.specmode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.stokes"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.stokes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.threshold"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.threshold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.usepointing"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.usepointing()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.uvrange"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.uvrange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.uvtaper"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.uvtaper()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeCont.wprojplanes"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCont.wprojplanes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContAWPP001"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeContAWPP001</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContAWPP001.gridder"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeContAWPP001.gridder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContAWPP001.wprojplanes"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeContAWPP001.wprojplanes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeContMosaic</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.conjbeams"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeContMosaic.conjbeams()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.cycleniter"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeContMosaic.cycleniter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.gridder"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeContMosaic.gridder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.imsize"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeContMosaic.imsize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.mosweight"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeContMosaic.mosweight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.pblimits"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeContMosaic.pblimits()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.usepointing"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeContMosaic.usepointing()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImageParamsHeuristicsVlassSeContMosaic.wprojplanes"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeContMosaic.wprojplanes()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube">pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCube</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.flagpct_spwgroup"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCube.flagpct_spwgroup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.mask"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCube.mask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.meanfreq_spwgroup"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCube.meanfreq_spwgroup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.nterms"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCube.nterms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.psfcutoff"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCube.psfcutoff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.reffreq"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCube.reffreq()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.stokes"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeCube.stokes()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper">pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.buffer_radius"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.buffer_radius()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.cell"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.cell()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.conjbeams"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.conjbeams()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.cyclefactor"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.cyclefactor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.cycleniter"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.cycleniter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.deconvolver"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.deconvolver()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.find_fields"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.find_fields()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.get_sensitivity"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.get_sensitivity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.gridder"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.gridder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.imsize"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.imsize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.intent"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.intent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.keep_iterating"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.keep_iterating()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.mask"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.mask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.niter"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.niter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.niter_correction"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.niter_correction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.nsigma"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.nsigma()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.nterms"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.nterms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.pb_correction"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.pb_correction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.reffreq"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.reffreq()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.robust"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.robust()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.savemodel"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.savemodel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.scales"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.scales()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.specmode"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.specmode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.stokes"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.stokes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.threshold"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.threshold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.uvrange"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.uvrange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.uvtaper"><code class="docutils literal notranslate"><span class="pre">ImageParamsHeuristicsVlassSeTaper.uvtaper()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.mosaicoverlap">pipeline.hif.heuristics.mosaicoverlap module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.mosaicoverlap.angularSeparation"><code class="docutils literal notranslate"><span class="pre">angularSeparation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.mosaicoverlap.angularSeparationOfDirections"><code class="docutils literal notranslate"><span class="pre">angularSeparationOfDirections()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.mosaicoverlap.angularSeparationRadians"><code class="docutils literal notranslate"><span class="pre">angularSeparationRadians()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.mosaicoverlap.baarsTaperFactor"><code class="docutils literal notranslate"><span class="pre">baarsTaperFactor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.mosaicoverlap.centralObstructionFactor"><code class="docutils literal notranslate"><span class="pre">centralObstructionFactor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.mosaicoverlap.effectiveTaper"><code class="docutils literal notranslate"><span class="pre">effectiveTaper()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.mosaicoverlap.gaussianBeamResponse"><code class="docutils literal notranslate"><span class="pre">gaussianBeamResponse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.mosaicoverlap.mosaicOverlapFactorMS"><code class="docutils literal notranslate"><span class="pre">mosaicOverlapFactorMS()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.mosaicoverlap.mosaicOverlapFactorVIS"><code class="docutils literal notranslate"><span class="pre">mosaicOverlapFactorVIS()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.mosaicoverlap.primaryBeamArcsec"><code class="docutils literal notranslate"><span class="pre">primaryBeamArcsec()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.solint">pipeline.hif.heuristics.solint module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.solint.PhaseUpSolInt"><code class="docutils literal notranslate"><span class="pre">PhaseUpSolInt</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.solint.PhaseUpSolInt.calculate"><code class="docutils literal notranslate"><span class="pre">PhaseUpSolInt.calculate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics.standard">pipeline.hif.heuristics.standard module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.standard.Standard"><code class="docutils literal notranslate"><span class="pre">Standard</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.standard.Standard.calculate"><code class="docutils literal notranslate"><span class="pre">Standard.calculate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.heuristics.html#pipeline.hif.heuristics.standard.Standard.ephemeris_fields"><code class="docutils literal notranslate"><span class="pre">Standard.ephemeris_fields</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.heuristics.html#module-pipeline.hif.heuristics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.tasks.html">pipeline.hif.tasks package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.tasks.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.analyzealpha.html">pipeline.hif.tasks.analyzealpha package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.analyzealpha.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.analyzealpha.html#module-pipeline.hif.tasks.analyzealpha.analyzealpha">pipeline.hif.tasks.analyzealpha.analyzealpha module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.analyzealpha.html#module-pipeline.hif.tasks.analyzealpha">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.antpos.html">pipeline.hif.tasks.antpos package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.antpos.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.antpos.html#module-pipeline.hif.tasks.antpos.antpos">pipeline.hif.tasks.antpos.antpos module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.antpos.html#module-pipeline.hif.tasks.antpos">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.applycal.html">pipeline.hif.tasks.applycal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.applycal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.applycal.html#module-pipeline.hif.tasks.applycal.ifapplycal">pipeline.hif.tasks.applycal.ifapplycal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.applycal.html#module-pipeline.hif.tasks.applycal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.bandpass.html">pipeline.hif.tasks.bandpass package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.bandpass.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.bandpass.html#module-pipeline.hif.tasks.bandpass.adapters">pipeline.hif.tasks.bandpass.adapters module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.bandpass.html#module-pipeline.hif.tasks.bandpass.bandpassmode">pipeline.hif.tasks.bandpass.bandpassmode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.bandpass.html#module-pipeline.hif.tasks.bandpass.bandpassworker">pipeline.hif.tasks.bandpass.bandpassworker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.bandpass.html#module-pipeline.hif.tasks.bandpass.channelbandpass">pipeline.hif.tasks.bandpass.channelbandpass module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.bandpass.html#module-pipeline.hif.tasks.bandpass.common">pipeline.hif.tasks.bandpass.common module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.bandpass.html#module-pipeline.hif.tasks.bandpass.phcorbandpass">pipeline.hif.tasks.bandpass.phcorbandpass module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.bandpass.html#module-pipeline.hif.tasks.bandpass.qa">pipeline.hif.tasks.bandpass.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.bandpass.html#module-pipeline.hif.tasks.bandpass.renderer">pipeline.hif.tasks.bandpass.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.bandpass.html#module-pipeline.hif.tasks.bandpass">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.checkproductsize.html">pipeline.hif.tasks.checkproductsize package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.checkproductsize.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.checkproductsize.html#module-pipeline.hif.tasks.checkproductsize.checkproductsize">pipeline.hif.tasks.checkproductsize.checkproductsize module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.checkproductsize.html#module-pipeline.hif.tasks.checkproductsize.qa">pipeline.hif.tasks.checkproductsize.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.checkproductsize.html#module-pipeline.hif.tasks.checkproductsize.renderer">pipeline.hif.tasks.checkproductsize.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.checkproductsize.html#module-pipeline.hif.tasks.checkproductsize.resultobjects">pipeline.hif.tasks.checkproductsize.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.checkproductsize.html#module-pipeline.hif.tasks.checkproductsize">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.common.html">pipeline.hif.tasks.common package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.common.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.common.html#module-pipeline.hif.tasks.common.commoncalinputs">pipeline.hif.tasks.common.commoncalinputs module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.common.html#module-pipeline.hif.tasks.common">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.correctedampflag.html">pipeline.hif.tasks.correctedampflag package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.correctedampflag.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.correctedampflag.html#module-pipeline.hif.tasks.correctedampflag.correctedampflag">pipeline.hif.tasks.correctedampflag.correctedampflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.correctedampflag.html#module-pipeline.hif.tasks.correctedampflag.qa">pipeline.hif.tasks.correctedampflag.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.correctedampflag.html#module-pipeline.hif.tasks.correctedampflag.renderer">pipeline.hif.tasks.correctedampflag.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.correctedampflag.html#module-pipeline.hif.tasks.correctedampflag.resultobjects">pipeline.hif.tasks.correctedampflag.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.correctedampflag.html#module-pipeline.hif.tasks.correctedampflag">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.editimlist.html">pipeline.hif.tasks.editimlist package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.editimlist.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.editimlist.html#module-pipeline.hif.tasks.editimlist.display">pipeline.hif.tasks.editimlist.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.editimlist.html#module-pipeline.hif.tasks.editimlist.editimlist">pipeline.hif.tasks.editimlist.editimlist module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.editimlist.html#module-pipeline.hif.tasks.editimlist.renderer">pipeline.hif.tasks.editimlist.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.editimlist.html#module-pipeline.hif.tasks.editimlist.resultobjects">pipeline.hif.tasks.editimlist.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.editimlist.html#module-pipeline.hif.tasks.editimlist">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.findcont.html">pipeline.hif.tasks.findcont package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.findcont.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.findcont.html#module-pipeline.hif.tasks.findcont.findcont">pipeline.hif.tasks.findcont.findcont module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.findcont.html#module-pipeline.hif.tasks.findcont.qa">pipeline.hif.tasks.findcont.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.findcont.html#module-pipeline.hif.tasks.findcont.renderer">pipeline.hif.tasks.findcont.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.findcont.html#module-pipeline.hif.tasks.findcont.resultobjects">pipeline.hif.tasks.findcont.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.findcont.html#module-pipeline.hif.tasks.findcont">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.fluxscale.html">pipeline.hif.tasks.fluxscale package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.fluxscale.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.fluxscale.html#module-pipeline.hif.tasks.fluxscale.fluxscale">pipeline.hif.tasks.fluxscale.fluxscale module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.fluxscale.html#module-pipeline.hif.tasks.fluxscale">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.gaincal.html">pipeline.hif.tasks.gaincal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.gaincal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.gaincal.html#module-pipeline.hif.tasks.gaincal.common">pipeline.hif.tasks.gaincal.common module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.gaincal.html#module-pipeline.hif.tasks.gaincal.gaincalmode">pipeline.hif.tasks.gaincal.gaincalmode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.gaincal.html#module-pipeline.hif.tasks.gaincal.gaincalworker">pipeline.hif.tasks.gaincal.gaincalworker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.gaincal.html#module-pipeline.hif.tasks.gaincal.gsplinegaincal">pipeline.hif.tasks.gaincal.gsplinegaincal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.gaincal.html#module-pipeline.hif.tasks.gaincal.gtypegaincal">pipeline.hif.tasks.gaincal.gtypegaincal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.gaincal.html#module-pipeline.hif.tasks.gaincal.ktypegaincal">pipeline.hif.tasks.gaincal.ktypegaincal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.gaincal.html#module-pipeline.hif.tasks.gaincal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.lowgainflag.html">pipeline.hif.tasks.lowgainflag package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.lowgainflag.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.lowgainflag.html#module-pipeline.hif.tasks.lowgainflag.lowgainflag">pipeline.hif.tasks.lowgainflag.lowgainflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.lowgainflag.html#module-pipeline.hif.tasks.lowgainflag.qa">pipeline.hif.tasks.lowgainflag.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.lowgainflag.html#module-pipeline.hif.tasks.lowgainflag.renderer">pipeline.hif.tasks.lowgainflag.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.lowgainflag.html#module-pipeline.hif.tasks.lowgainflag.resultobjects">pipeline.hif.tasks.lowgainflag.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.lowgainflag.html#module-pipeline.hif.tasks.lowgainflag">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.html">pipeline.hif.tasks.makecutoutimages package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.html#module-pipeline.hif.tasks.makecutoutimages.display">pipeline.hif.tasks.makecutoutimages.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.html#module-pipeline.hif.tasks.makecutoutimages.makecutoutimages">pipeline.hif.tasks.makecutoutimages.makecutoutimages module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.html#module-pipeline.hif.tasks.makecutoutimages.renderer">pipeline.hif.tasks.makecutoutimages.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.html#module-pipeline.hif.tasks.makecutoutimages">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.makeimages.html">pipeline.hif.tasks.makeimages package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makeimages.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makeimages.html#module-pipeline.hif.tasks.makeimages.makeimages">pipeline.hif.tasks.makeimages.makeimages module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makeimages.html#module-pipeline.hif.tasks.makeimages.qa">pipeline.hif.tasks.makeimages.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makeimages.html#module-pipeline.hif.tasks.makeimages.resultobjects">pipeline.hif.tasks.makeimages.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makeimages.html#module-pipeline.hif.tasks.makeimages">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.makeimlist.html">pipeline.hif.tasks.makeimlist package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makeimlist.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makeimlist.html#module-pipeline.hif.tasks.makeimlist.cleantarget">pipeline.hif.tasks.makeimlist.cleantarget module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makeimlist.html#module-pipeline.hif.tasks.makeimlist.makeimlist">pipeline.hif.tasks.makeimlist.makeimlist module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makeimlist.html#module-pipeline.hif.tasks.makeimlist.qa">pipeline.hif.tasks.makeimlist.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makeimlist.html#module-pipeline.hif.tasks.makeimlist.resultobjects">pipeline.hif.tasks.makeimlist.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makeimlist.html#module-pipeline.hif.tasks.makeimlist">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.makermsimages.html">pipeline.hif.tasks.makermsimages package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makermsimages.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makermsimages.html#module-pipeline.hif.tasks.makermsimages.display">pipeline.hif.tasks.makermsimages.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makermsimages.html#module-pipeline.hif.tasks.makermsimages.makermsimages">pipeline.hif.tasks.makermsimages.makermsimages module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makermsimages.html#module-pipeline.hif.tasks.makermsimages.renderer">pipeline.hif.tasks.makermsimages.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.makermsimages.html#module-pipeline.hif.tasks.makermsimages">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.mstransform.html">pipeline.hif.tasks.mstransform package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.mstransform.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.mstransform.html#module-pipeline.hif.tasks.mstransform.mstransform">pipeline.hif.tasks.mstransform.mstransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.mstransform.html#module-pipeline.hif.tasks.mstransform.qa">pipeline.hif.tasks.mstransform.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.mstransform.html#module-pipeline.hif.tasks.mstransform.renderer">pipeline.hif.tasks.mstransform.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.mstransform.html#module-pipeline.hif.tasks.mstransform">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.polarization.html">pipeline.hif.tasks.polarization package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.polarization.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.polarization.html#module-pipeline.hif.tasks.polarization.polarization">pipeline.hif.tasks.polarization.polarization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.polarization.html#module-pipeline.hif.tasks.polarization">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.polcal.html">pipeline.hif.tasks.polcal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.polcal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.polcal.html#module-pipeline.hif.tasks.polcal.polcalworker">pipeline.hif.tasks.polcal.polcalworker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.polcal.html#module-pipeline.hif.tasks.polcal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.rawflagchans.html">pipeline.hif.tasks.rawflagchans package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.rawflagchans.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.rawflagchans.html#module-pipeline.hif.tasks.rawflagchans.qa">pipeline.hif.tasks.rawflagchans.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.rawflagchans.html#module-pipeline.hif.tasks.rawflagchans.rawflagchans">pipeline.hif.tasks.rawflagchans.rawflagchans module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.rawflagchans.html#module-pipeline.hif.tasks.rawflagchans.renderer">pipeline.hif.tasks.rawflagchans.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.rawflagchans.html#module-pipeline.hif.tasks.rawflagchans.resultobjects">pipeline.hif.tasks.rawflagchans.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.rawflagchans.html#module-pipeline.hif.tasks.rawflagchans">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.refant.html">pipeline.hif.tasks.refant package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.refant.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.refant.html#module-pipeline.hif.tasks.refant.qa">pipeline.hif.tasks.refant.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.refant.html#module-pipeline.hif.tasks.refant.referenceantenna">pipeline.hif.tasks.refant.referenceantenna module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.refant.html#module-pipeline.hif.tasks.refant.renderer">pipeline.hif.tasks.refant.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.refant.html#module-pipeline.hif.tasks.refant.session_refant">pipeline.hif.tasks.refant.session_refant module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.refant.html#module-pipeline.hif.tasks.refant">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.selfcal.html">pipeline.hif.tasks.selfcal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.selfcal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.selfcal.html#module-pipeline.hif.tasks.selfcal.display">pipeline.hif.tasks.selfcal.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.selfcal.html#module-pipeline.hif.tasks.selfcal.qa">pipeline.hif.tasks.selfcal.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.selfcal.html#module-pipeline.hif.tasks.selfcal.renderer">pipeline.hif.tasks.selfcal.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.selfcal.html#module-pipeline.hif.tasks.selfcal.selfcal">pipeline.hif.tasks.selfcal.selfcal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.selfcal.html#module-pipeline.hif.tasks.selfcal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.setmodel.html">pipeline.hif.tasks.setmodel package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.setmodel.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.setmodel.html#module-pipeline.hif.tasks.setmodel.display">pipeline.hif.tasks.setmodel.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.setmodel.html#module-pipeline.hif.tasks.setmodel.qa">pipeline.hif.tasks.setmodel.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.setmodel.html#module-pipeline.hif.tasks.setmodel.renderer">pipeline.hif.tasks.setmodel.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.setmodel.html#module-pipeline.hif.tasks.setmodel.setjy">pipeline.hif.tasks.setmodel.setjy module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.setmodel.html#module-pipeline.hif.tasks.setmodel.setmodel">pipeline.hif.tasks.setmodel.setmodel module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.setmodel.html#module-pipeline.hif.tasks.setmodel">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.tclean.html">pipeline.hif.tasks.tclean package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.automaskthresholdsequence">pipeline.hif.tasks.tclean.automaskthresholdsequence module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.autoscalthresholdsequence">pipeline.hif.tasks.tclean.autoscalthresholdsequence module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.basecleansequence">pipeline.hif.tasks.tclean.basecleansequence module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.cleanbase">pipeline.hif.tasks.tclean.cleanbase module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.display">pipeline.hif.tasks.tclean.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.imagecentrethresholdsequence">pipeline.hif.tasks.tclean.imagecentrethresholdsequence module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.manualmaskthresholdsequence">pipeline.hif.tasks.tclean.manualmaskthresholdsequence module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.nomaskthresholdsequence">pipeline.hif.tasks.tclean.nomaskthresholdsequence module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.plot_beams">pipeline.hif.tasks.tclean.plot_beams module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.plot_beams_vlasscube">pipeline.hif.tasks.tclean.plot_beams_vlasscube module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.plot_spectra">pipeline.hif.tasks.tclean.plot_spectra module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.qa">pipeline.hif.tasks.tclean.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.renderer">pipeline.hif.tasks.tclean.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.resultobjects">pipeline.hif.tasks.tclean.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.tclean">pipeline.hif.tasks.tclean.tclean module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.vlaautomaskthresholdsequence">pipeline.hif.tasks.tclean.vlaautomaskthresholdsequence module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean.vlassmaskthresholdsequence">pipeline.hif.tasks.tclean.vlassmaskthresholdsequence module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.tclean.html#module-pipeline.hif.tasks.tclean">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.transformimagedata.html">pipeline.hif.tasks.transformimagedata package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.transformimagedata.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.transformimagedata.html#module-pipeline.hif.tasks.transformimagedata.transformimagedata">pipeline.hif.tasks.transformimagedata.transformimagedata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.transformimagedata.html#module-pipeline.hif.tasks.transformimagedata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.tasks.uvcontsub.html">pipeline.hif.tasks.uvcontsub package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.uvcontsub.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.uvcontsub.html#module-pipeline.hif.tasks.uvcontsub.qa">pipeline.hif.tasks.uvcontsub.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.uvcontsub.html#module-pipeline.hif.tasks.uvcontsub.renderer">pipeline.hif.tasks.uvcontsub.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.uvcontsub.html#module-pipeline.hif.tasks.uvcontsub.uvcontsub">pipeline.hif.tasks.uvcontsub.uvcontsub module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.uvcontsub.html#module-pipeline.hif.tasks.uvcontsub">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.tasks.html#module-pipeline.hif.tasks">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.templates.html">pipeline.hif.templates package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.templates.html#module-pipeline.hif.templates">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-pipeline.hif">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline.hif" title="Link to this heading"></a></h2>
+<p>Pipeline shared interferometric</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

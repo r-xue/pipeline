@@ -1,0 +1,22 @@
+pipeline.hifa.tasks.gaincal
+===========================
+
+.. automodule:: pipeline.hifa.tasks.gaincal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TimeGaincal
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   qa
+   renderer
+   timegaincal

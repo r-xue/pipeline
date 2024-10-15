@@ -1,0 +1,20 @@
+pipeline.hifa.heuristics
+========================
+
+.. automodule:: pipeline.hifa.heuristics
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   atm
+   exptimes
+   fluxscale
+   imageprecheck
+   phasemetrics
+   phasespwmap
+   snr
+   wvrgcal

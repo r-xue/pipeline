@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.targetflag.qa
+=================================
+
+.. automodule:: pipeline.hifa.tasks.targetflag.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TargetflagListQAHandler
+      TargetflagQAHandler
+   

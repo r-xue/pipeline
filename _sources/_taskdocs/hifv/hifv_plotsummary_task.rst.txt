@@ -1,0 +1,29 @@
+hifv_plotsummary
+================
+
+Task description
+-----------------
+Create pipeline summary plots
+
+Output:
+
+results -- The results object for the pipeline task is returned.
+
+Parameter List 
+--------------
+.. list-table::
+    :widths: 25 50
+    :header-rows: 1
+    :class: longtable
+
+    * - parameter name
+      - description
+    * - vis
+      - | List of input visibility data
+
+
+Examples 
+--------
+1. Execute the pipeline plotting task.
+
+>>> hifv_plotsummary()

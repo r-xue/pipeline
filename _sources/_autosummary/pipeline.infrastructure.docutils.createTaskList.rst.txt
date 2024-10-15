@@ -1,0 +1,25 @@
+pipeline.infrastructure.docutils.createTaskList
+===============================================
+
+.. automodule:: pipeline.infrastructure.docutils.createTaskList
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      create
+      create2
+      create3
+      get_task_description
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      hetaskutil
+      hetaskutil2
+      hetaskutil3
+      taskutil
+      taskutil2
+   

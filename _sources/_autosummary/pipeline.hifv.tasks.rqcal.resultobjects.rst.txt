@@ -1,0 +1,12 @@
+pipeline.hifv.tasks.rqcal.resultobjects
+=======================================
+
+.. automodule:: pipeline.hifv.tasks.rqcal.resultobjects
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      RqcalResults
+   

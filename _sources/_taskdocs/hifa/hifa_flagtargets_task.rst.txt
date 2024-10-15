@@ -1,0 +1,42 @@
+hifa_flagtargets
+================
+
+Task description
+-----------------
+The hifa_flagtargets task performs basic flagging operations on a list of
+science target MeasurementSets, including:
+
+- applying a flagging template
+
+Output:
+
+    results -- The results object for the pipeline task is returned.
+
+Parameter List 
+--------------
+.. list-table::
+    :widths: 25 50
+    :header-rows: 1
+    :class: longtable
+
+    * - parameter name
+      - description
+    * - vis
+      - | The list of input MeasurementSets. Defaults to the list
+        | of MeasurementSets defined in the pipeline context.
+    * - template
+      - | Apply flagging templates; defaults to True.
+    * - filetemplate
+      - | The name of a text file that contains the flagging
+        | template for issues with the science target data etc.
+        | If the template flags files is undefined a name of the
+        | form 'msname_flagtargetstemplate.txt' is assumed.
+    * - flagbackup
+      - | Back up any pre-existing flags; defaults to False.
+
+
+Examples 
+--------
+1. Do basic flagging on a science target MeasurementSet:
+
+>>> hifa_flagtargets()

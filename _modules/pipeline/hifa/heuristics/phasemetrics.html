@@ -1,0 +1,1174 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.heuristics.phasemetrics &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.heuristics.phasemetrics</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.heuristics.phasemetrics</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics</span> <span class="kn">import</span> <span class="n">atm</span> <span class="k">as</span> <span class="n">atm_heuristic</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics</span> <span class="kn">import</span> <span class="n">phasespwmap</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1">#################</span>
+<span class="c1"># Adapted from PIPE692.py::SSFanalyis. Original history:</span>
+<span class="c1"># L T Maud - ESO </span>
+<span class="c1">#          - April 2020 0RIG</span>
+<span class="c1">#          - May 2021 full CASA 6 version mockup</span>
+<span class="c1">#          - March 2022 CASA 6.4 &#39;class&#39; version for PL</span>
+<span class="c1">#          - July 2022 Edit for PL2022 implementation</span>
+<span class="c1">#            includes logger output messages</span>
+<span class="c1">#            included bl-name, bl-len, phase RMS in log</span>
+<span class="c1"># K Berry - NRAO</span>
+<span class="c1">#          -  July 2023 moved into PL</span>
+<span class="c1">##################</span>
+
+
+<div class="viewcode-block" id="PhaseStabilityHeuristics">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics">[docs]</a>
+<span class="k">class</span> <span class="nc">PhaseStabilityHeuristics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputsin</span><span class="p">,</span> <span class="n">outlier_limit</span><span class="p">,</span> <span class="n">flag_tolerance</span><span class="p">,</span> <span class="n">max_poor_ant</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outlierlimit</span> <span class="o">=</span> <span class="n">outlier_limit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_tolerance</span> <span class="o">=</span> <span class="n">flag_tolerance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxpoorant</span> <span class="o">=</span> <span class="n">max_poor_ant</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scan</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refantid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="p">[]</span>
+       
+        <span class="n">context</span> <span class="o">=</span> <span class="n">inputsin</span><span class="o">.</span><span class="n">context</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">phaseup_caltable_for_phase_rms</span><span class="p">)</span>
+
+        <span class="c1"># Fetch the bandpass phaseup caltable</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;For </span><span class="si">{}</span><span class="s2">, missing bandpass phaseup caltable and cannot perform decoherence assessment.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">refant</span> <span class="o">=</span> <span class="n">inputsin</span><span class="o">.</span><span class="n">refant</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># this is the NAME not the index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># loop ant list for id of refant</span>
+        <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ant</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">refant</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refantid</span> <span class="o">=</span> <span class="n">ant</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">antlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ant</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># Select which SpW to use for phase stability analysis.</span>
+        <span class="n">spw_candidates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_spw_candidates</span><span class="p">(</span><span class="n">inputsin</span><span class="p">)</span>
+
+        <span class="c1">##################</span>
+        <span class="c1"># PIPE-1661 related</span>
+        <span class="c1"># phasecal field ID out of the ms context passed - need for later flag assessment</span>
+        <span class="n">ph_fieldids</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;PHASE&#39;</span><span class="p">)]</span>
+        <span class="c1"># traditionally we should only have one phase calibrator</span>
+        <span class="c1"># but still pull this as a list and use in the _getblflags function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ph_ids</span> <span class="o">=</span> <span class="n">ph_fieldids</span>
+
+        <span class="c1"># future note, if we have multiple phase calibrators and these have</span>
+        <span class="c1"># a different spectral spec, should we do this as per the bandpass</span>
+        <span class="c1"># i.e. get the scans, then find the id of the field for that scan?</span>
+        <span class="c1"># we can loop the first scan of a scan list and find the associated </span>
+        <span class="c1"># field id - as below. </span>
+        <span class="c1"># bnot expected to be used in standard observing practice </span>
+        <span class="c1">####################</span>
+
+        <span class="c1"># Get the bandpass, using the first of the SpW candidates.</span>
+        <span class="n">targeted_scans</span> <span class="o">=</span> <span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">spw_candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">bp_scan</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bp_field</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bp_id</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">elm</span> <span class="ow">in</span> <span class="n">targeted_scans</span><span class="p">:</span>
+            <span class="n">bp_scan</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elm</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>  <span class="c1"># take the ID</span>
+            <span class="k">for</span> <span class="n">elms</span> <span class="ow">in</span> <span class="n">elm</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+                <span class="n">bp_field</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># fields is a dict again...</span>
+                <span class="n">bp_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elms</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>  <span class="c1"># PIPE-1661</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">scan</span> <span class="o">=</span> <span class="n">bp_scan</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># we only want the first scan, in case there are multiple for the BP (e.g. spectral scan data - NEEDS TESTING ON) - might want to do a sorted just to be sure. </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">bp_field</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fieldId</span> <span class="o">=</span> <span class="n">bp_id</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># PIPE-1661 needs ID not a name </span>
+
+        <span class="c1"># Select which SpW to use for phase stability analysis, and retrieve</span>
+        <span class="c1"># corresponding baseline flagging information.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blflags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_final_spw_and_blflags</span><span class="p">(</span><span class="n">inputsin</span><span class="p">,</span> <span class="n">spw_candidates</span><span class="p">)</span>
+
+        <span class="c1"># Check to see if data are ACA or not</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PMinACA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pm_in_aca</span><span class="p">()</span>
+
+        <span class="c1"># for BP scan only values from function for given scan/field/spw only</span>
+        <span class="c1"># this is keyed by blname, e.g.  self.baselines[&#39;DA42-DA42&#39;] </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baselines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getbaselinesproj</span><span class="p">()</span>
+
+        <span class="c1"># Get time/length of the bandpass scan </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">totaltime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">difftime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bandpass_scan_time</span><span class="p">()</span>
+
+        <span class="c1"># getcycletime will use a lookup if there is 1 or less phase cal scans (PIPE-1848)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycletime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getcycletime</span><span class="p">()</span>
+
+        <span class="c1"># PIPE-2081: for BandToBand MSes, also retrieve flagging information for</span>
+        <span class="c1"># the diffgain reference SpW associated with the selected SpW; to be</span>
+        <span class="c1"># used to assess fully flagged baseline for the phase calibrator(s).</span>
+        <span class="k">if</span> <span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">is_band_to_band</span><span class="p">:</span>
+            <span class="n">dg_refspws</span> <span class="o">=</span> <span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputsin</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">)</span>
+            <span class="n">dg_srcspws</span> <span class="o">=</span> <span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputsin</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">)</span>
+            <span class="n">spwmap</span> <span class="o">=</span> <span class="n">phasespwmap</span><span class="o">.</span><span class="n">update_spwmap_for_band_to_band</span><span class="p">([],</span> <span class="n">dg_refspws</span><span class="p">,</span> <span class="n">dg_srcspws</span><span class="p">)</span>
+            <span class="n">spw_ref</span> <span class="o">=</span> <span class="n">spwmap</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">blflagsref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getblflags</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw_ref</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># For any other MS, the assessment of fully flagged baselines for</span>
+            <span class="c1"># phase calibrator(s) can re-use the same flagging information</span>
+            <span class="c1"># retrieved for the SpW selected to analyse.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">blflagsref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blflags</span>
+
+        <span class="c1"># Set holder for outlier antennas related to plotting and scores later</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outlier_antennas</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Setup the main analysis dictionary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Write the seutp info to the log</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_setup_info</span><span class="p">()</span>
+
+<div class="viewcode-block" id="PhaseStabilityHeuristics.analysis">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.analysis">[docs]</a>
+    <span class="k">def</span> <span class="nf">analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Do the phase RMS calculation, outlier analysis,</span>
+<span class="sd">        and return everything required for qa scores, plotting, weblog</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_analysis</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycletime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">totaltime</span><span class="p">,</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outlier_antennas</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Do the phase RMS calculation, outlier analysis,</span>
+<span class="sd">        and fill the dictionary with everything required for later scoring and </span>
+<span class="sd">        plotting</span>
+
+<span class="sd">        inputs used are:</span>
+<span class="sd">                  self.cycletime, self.totaltime, self.PMinACA,</span>
+<span class="sd">                  self.outlierlimit, self.outlier_antennas, self.maxpoorant </span>
+
+<span class="sd">        uses functions:</span>
+<span class="sd">                  self._phase_rms_caltab, self.mad</span>
+
+<span class="sd">        fills:</span>
+<span class="sd">                  self.allResults</span>
+
+<span class="sd">        dict keys are:</span>
+<span class="sd">                  blphaserms, blphasermscycle, bllen, blname, blout,</span>
+<span class="sd">                  blphasermsbad, blphasermscyclebad, bllenbad,</span>
+<span class="sd">                  antphaserms, antphasermscycle, antname,</span>
+<span class="sd">                  phasermsP80, phasermscycleP80, blP80, blP80orig</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Call to phase_rms_caltab</span>
+        <span class="c1"># gets baseline based phase RMS and antenna based phase RMS for</span>
+        <span class="c1"># the total time (i.e. length of BP scan) and </span>
+        <span class="c1"># the cycle time (time it takes to cycle the start of a phase cal scan to the next - ties with a &#39;decohernce time&#39; over the target)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycletime</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">totaltime</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phase_rms_caltab</span><span class="p">(</span><span class="n">timeScale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cycletime</span><span class="p">)</span>  <span class="c1"># if cycle time is shorter we pass the option so it gets assessed</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phase_rms_caltab</span><span class="p">()</span>  <span class="c1"># otherwise no options added and cycletime value will equal total time value</span>
+
+        <span class="c1"># Check the cycle time calculation is not all nans - might happen if there are considerable flags</span>
+        <span class="c1"># i.e. if a large fraction of data &gt; self.flag_tolerance are flagged</span>
+        <span class="n">cycleResultFinite</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">])])</span>
+
+        <span class="c1"># if it is all flagged, theory to scale down total time with &#39;lower&#39; scaling constant power (Maud et al. 2022)</span>
+        <span class="k">if</span> <span class="n">cycleResultFinite</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphaserms&#39;</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cycletime</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">totaltime</span><span class="p">)</span><span class="o">**</span><span class="mf">0.3</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">PMinACA</span><span class="p">:</span>
+            <span class="c1"># we need to exclude PM antennas from the calculation as they &#39;can&#39; be too &#39;long&#39; baselines</span>
+            <span class="c1"># and not really useful for the understanding of the target likely phase RMS </span>
+            <span class="c1"># where only CM used in the images. Thus cut the PM from the upper 80 cut</span>
+            <span class="n">blACAid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">blid</span> <span class="k">for</span> <span class="n">blid</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blname&#39;</span><span class="p">]))</span> <span class="k">if</span> <span class="s1">&#39;PM&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blname&#39;</span><span class="p">][</span><span class="n">blid</span><span class="p">]])</span>
+            <span class="n">antACAid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">antid</span> <span class="k">for</span> <span class="n">antid</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;antname&#39;</span><span class="p">]))</span> <span class="k">if</span> <span class="s1">&#39;PM&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;antname&#39;</span><span class="p">][</span><span class="n">antid</span><span class="p">]])</span>
+ 
+            <span class="c1"># Reset allResult to exclude the PM baselines, and PM ants only</span>
+            <span class="n">bl_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;blphaserms&#39;</span><span class="p">,</span> <span class="s1">&#39;blphasermscycle&#39;</span><span class="p">,</span> <span class="s1">&#39;bllen&#39;</span><span class="p">,</span> <span class="s1">&#39;blname&#39;</span><span class="p">]</span> <span class="c1"># PIPE-1633</span>
+            <span class="n">ant_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;antphaserms&#39;</span><span class="p">,</span> <span class="s1">&#39;antphasermscycle&#39;</span><span class="p">,</span> <span class="s1">&#39;antname&#39;</span><span class="p">]</span> <span class="c1"># PIPE-1633</span>
+            <span class="k">for</span> <span class="n">bl_key</span> <span class="ow">in</span> <span class="n">bl_keys</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="n">bl_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="n">bl_key</span><span class="p">])[</span><span class="n">blACAid</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">ant_key</span> <span class="ow">in</span> <span class="n">ant_keys</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="n">ant_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="n">ant_key</span><span class="p">])[</span><span class="n">antACAid</span><span class="p">]</span>
+            
+        <span class="c1"># Get 80th percentile baseline length and ID of all baselines above it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blP80orig&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;bllen&#39;</span><span class="p">],</span> <span class="mi">80</span><span class="p">)</span>  <span class="c1"># was xy</span>
+
+        <span class="c1"># PIPE-1662 P80 to acount for flagged antennas, i.e work from P80 of the &#39;good&#39; data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blP80&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;bllen&#39;</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphaserms&#39;</span><span class="p">]))],</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="c1">#####</span>
+
+        <span class="n">ID_all80</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;bllen&#39;</span><span class="p">])</span><span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blP80&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># was xy</span>
+
+        <span class="c1"># First calculation of the representative phase RMS values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;phasermsP80&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphaserms&#39;</span><span class="p">])[</span><span class="n">ID_all80</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphaserms&#39;</span><span class="p">])[</span><span class="n">ID_all80</span><span class="p">])]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;phasermscycleP80&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">])[</span><span class="n">ID_all80</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">])[</span><span class="n">ID_all80</span><span class="p">])]])</span>
+        <span class="n">phaseRMScycleP80mad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mad</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">])[</span><span class="n">ID_all80</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">])[</span><span class="n">ID_all80</span><span class="p">])]])</span>
+        
+        <span class="c1"># Begin the outlier checks</span>
+        <span class="c1"># first check if any antennas are just above 100 deg phase RMS (this means ~pure phase noise for phases between -180 to +180 deg)</span>
+        <span class="c1"># so sensible to identify these antennas - over total time</span>
+        <span class="n">ID_poorant</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;antphaserms&#39;</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;antphaserms&#39;</span><span class="p">])]</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">outlierlimit</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ID_poorant</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">antout</span> <span class="ow">in</span> <span class="n">ID_poorant</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">outlier_antennas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;antname&#39;</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;antphaserms&#39;</span><span class="p">])][</span><span class="n">antout</span><span class="p">])</span>
+
+        <span class="c1"># for what are yellow or red scores where phase RMS &gt;50deg</span>
+        <span class="c1"># we check for statistical outliers, and then clip these out and re-calculate the phaseRMS</span>
+        <span class="c1"># in the case PL missed bad antennas were causing the high phase RMS</span>
+        <span class="c1"># self.outlier_antennas is used/passed in the score function as it adjusts the score and message too</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;phasermscycleP80&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">50.</span><span class="p">:</span>
+            <span class="n">statsoutlierlimit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;phasermscycleP80&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">4.</span><span class="o">*</span><span class="n">phaseRMScycleP80mad</span> <span class="c1"># tested limit works well</span>
+            <span class="c1"># ant phase on cycle time !</span>
+            <span class="n">ID_poorant</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;antphasermscycle&#39;</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;antphasermscycle&#39;</span><span class="p">])]</span> <span class="o">&gt;</span> <span class="n">statsoutlierlimit</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ID_poorant</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">antout</span> <span class="ow">in</span> <span class="n">ID_poorant</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">outlier_antennas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;antname&#39;</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;antphaserms&#39;</span><span class="p">])][</span><span class="n">antout</span><span class="p">])</span>
+        
+            <span class="c1"># max limit on number of &#39;bad&#39; antennas to be allowed to exclude from calculations (set at 11 good as tested in PIPE692)</span>
+            <span class="c1"># we clip them out and recalculate - score function also tracks and gives a warning</span>
+            <span class="c1"># if &gt;11, basically the data is rubbish, so don&#39;t clip and let scores be low</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outlier_antennas</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outlier_antennas</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxpoorant</span><span class="p">:</span>
+
+                <span class="c1"># crude way to get the index values is a loop over the baselines</span>
+                <span class="c1"># is there a way to better search allResult[&#39;blname&#39;] to check if any self.outlier_antennas are (or are not) in them</span>
+                <span class="n">ID_goodbl</span><span class="o">=</span><span class="p">[]</span>
+                <span class="n">ID_badbl</span><span class="o">=</span><span class="p">[]</span>
+                <span class="k">for</span> <span class="n">idg</span><span class="p">,</span> <span class="n">bln</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blname&#39;</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">bln</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outlier_antennas</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">bln</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outlier_antennas</span><span class="p">):</span>
+                        <span class="n">ID_goodbl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idg</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span> <span class="c1"># assume bad</span>
+                        <span class="n">ID_badbl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idg</span><span class="p">)</span>
+
+                <span class="c1"># now simply make a common list of IDs from good ones and the ID_all80 list - which are want we want to assess</span>
+                <span class="n">ID_all80</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ID_goodbl</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">ID_all80</span><span class="p">)))))</span>
+
+                <span class="c1"># recalculate the phase RMS that is bl &gt;P80 and in the &#39;good&#39; list</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;phasermsP80&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphaserms&#39;</span><span class="p">])[</span><span class="n">ID_all80</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphaserms&#39;</span><span class="p">])[</span><span class="n">ID_all80</span><span class="p">])]])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;phasermscycleP80&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">])[</span><span class="n">ID_all80</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">])[</span><span class="n">ID_all80</span><span class="p">])]])</span>
+
+                <span class="c1"># store outliers for passing to plot function - will be plotted in &#39;shade/alpha&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermsbad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphaserms&#39;</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ID_badbl</span><span class="p">)]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermscyclebad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ID_badbl</span><span class="p">)]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;bllenbad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;bllen&#39;</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ID_badbl</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># none the &#39;bad&#39; entires in dict </span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermsbad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermscyclebad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;bllenbad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># this else is for &lt;50deg phase RMS where we do not recalcualte the phase RMS as its low already</span>
+            <span class="c1"># but we still want to identify any outliers to notify in the messages</span>
+            <span class="n">statsoutlierlimit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;phasermscycleP80&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">6.0</span> <span class="o">*</span> <span class="n">phaseRMScycleP80mad</span><span class="p">,</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;phasermscycleP80&#39;</span><span class="p">]])</span>
+            <span class="c1"># outlier on cycle time </span>
+            <span class="n">ID_poorant</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;antphasermscycle&#39;</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;antphasermscycle&#39;</span><span class="p">])]</span><span class="o">&gt;</span><span class="n">statsoutlierlimit</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># add them to the list so score code picks them up if required and changes the messages</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ID_poorant</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">antout</span> <span class="ow">in</span> <span class="n">ID_poorant</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">outlier_antennas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;antname&#39;</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;antphaserms&#39;</span><span class="p">])][</span><span class="n">antout</span><span class="p">])</span>
+
+            <span class="c1"># none the &#39;bad&#39; entires in dict </span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermsbad&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermscyclebad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;bllenbad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># now loop over and log write the phase RMS parameters</span>
+        <span class="c1"># sort by baseline len</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39; Phase RMS calculated over the cycle time as function of baseline length&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">bnblph</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blname&#39;</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;bllen&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">argsort</span><span class="p">()],</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;bllen&#39;</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;bllen&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">argsort</span><span class="p">()],</span>
+                               <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;bllen&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">argsort</span><span class="p">()])):</span>
+
+            <span class="c1"># add simple text to flagged (i.e. we made nan for the calculation), or outlier antennas (outlier comes first)</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">bnblph</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outlier_antennas</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="n">bnblph</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outlier_antennas</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">bnblph</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; - outlier&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">bnblph</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">bnblph</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; - flagged&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">bnblph</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outlier_antennas</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">antoutstr</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outlier_antennas</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; Possible high phase RMS on antenna(s): </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">antoutstr</span><span class="p">))</span>
+
+        <span class="c1"># Save off spw, scan, field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;scan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allResult</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span>
+
+    <span class="c1"># Methods used by __init__</span>
+    <span class="k">def</span> <span class="nf">_pm_in_aca</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the array is ACA and has PM antennas</span>
+
+<span class="sd">        input used:</span>
+<span class="sd">                 self.antlist</span>
+
+<span class="sd">        returns: </span>
+<span class="sd">                Bool based on PM with CM antennas</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">antUse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">antlist</span>
+        <span class="n">antUse</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">antUse</span><span class="p">)</span>  <span class="c1"># See: PIPE-1633</span>
+
+        <span class="k">if</span> <span class="s1">&#39;CM&#39;</span> <span class="ow">in</span> <span class="n">antUse</span> <span class="ow">and</span> <span class="s1">&#39;PM&#39;</span> <span class="ow">in</span> <span class="n">antUse</span> <span class="ow">and</span> <span class="s1">&#39;DA&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">antUse</span> <span class="ow">and</span> <span class="s1">&#39;DV&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">antUse</span><span class="p">:</span>
+            <span class="n">PMincACA</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">PMincACA</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">PMincACA</span>
+
+    <span class="k">def</span> <span class="nf">_getbaselinesproj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Code to get the projected baseline from the openend </span>
+<span class="sd">        visibilitiy file already - these are ordered in </span>
+<span class="sd">        terms of antennas. This is a modified stand alone version</span>
+<span class="sd">        similar to the getProjectedBaselines from Todd Hunter&#39;s AUs.</span>
+
+<span class="sd">        returns a dict of lengths which are BL name keyed</span>
+<span class="sd">        e.g. bllens[DA41-DA42] - key is name ant 1 - dash - name ant 2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSMDReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">msmd</span><span class="p">:</span>
+            <span class="n">spwchan</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">nchan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+            <span class="n">datadescid</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">datadescids</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">ms</span><span class="p">:</span>
+            <span class="n">ms</span><span class="o">.</span><span class="n">selectinit</span><span class="p">(</span><span class="n">datadescid</span><span class="o">=</span><span class="n">datadescid</span><span class="p">)</span>
+            <span class="n">ms</span><span class="o">.</span><span class="n">select</span><span class="p">({</span><span class="s1">&#39;uvdist&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1e-9</span><span class="p">,</span> <span class="mf">1e12</span><span class="p">]})</span>  <span class="c1"># avoid auto corr</span>
+            <span class="n">ms</span><span class="o">.</span><span class="n">selectchannel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">spwchan</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># data structure related</span>
+            <span class="n">ms</span><span class="o">.</span><span class="n">select</span><span class="p">({</span><span class="s1">&#39;scan_number&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scan</span><span class="p">)})</span>
+            <span class="k">if</span> <span class="n">field_id</span><span class="p">:</span>
+                <span class="n">ms</span><span class="o">.</span><span class="n">select</span><span class="p">({</span><span class="s1">&#39;field_id&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">field_id</span><span class="p">)})</span>
+            <span class="n">alldata</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">getdata</span><span class="p">([</span><span class="s1">&#39;uvdist&#39;</span><span class="p">,</span> <span class="s1">&#39;antenna1&#39;</span><span class="p">,</span> <span class="s1">&#39;antenna2&#39;</span><span class="p">])</span>
+
+        <span class="c1"># The length of e.g. alldata[&#39;uvdist&#39;] is &gt; total no. of Bls - it loops over all time stamps of the BP </span>
+        <span class="c1"># we need a mean of the unique values (as Todd&#39;s aU) otherwise we just get the first time entry in the below</span>
+        <span class="n">bldict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">uniBl</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">baselineLen</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">allID</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alldata</span><span class="p">[</span><span class="s1">&#39;uvdist&#39;</span><span class="p">])):</span>
+            <span class="n">myBl</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">antlist</span><span class="p">[</span><span class="n">alldata</span><span class="p">[</span><span class="s1">&#39;antenna1&#39;</span><span class="p">][</span><span class="n">allID</span><span class="p">]],</span> <span class="bp">self</span><span class="o">.</span><span class="n">antlist</span><span class="p">[</span><span class="n">alldata</span><span class="p">[</span><span class="s1">&#39;antenna2&#39;</span><span class="p">][</span><span class="n">allID</span><span class="p">]])</span>
+            <span class="n">thelen</span> <span class="o">=</span> <span class="n">alldata</span><span class="p">[</span><span class="s1">&#39;uvdist&#39;</span><span class="p">][</span><span class="n">allID</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">myBl</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bldict</span><span class="p">:</span>
+                <span class="n">bldict</span><span class="p">[</span><span class="n">myBl</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">bldict</span><span class="p">[</span><span class="n">myBl</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">thelen</span><span class="p">)</span>
+            <span class="n">uniBl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">myBl</span><span class="p">)</span>
+
+        <span class="n">uniBl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">uniBl</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">myBl</span> <span class="ow">in</span> <span class="n">uniBl</span><span class="p">:</span>
+            <span class="n">baselineLen</span><span class="p">[</span><span class="n">myBl</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">bldict</span><span class="p">[</span><span class="n">myBl</span><span class="p">])</span>  <span class="c1"># this has a list for each</span>
+        
+        <span class="c1"># order irrelavant as keyed here with BL Name</span>
+        <span class="k">return</span> <span class="n">baselineLen</span>
+    
+    <span class="k">def</span> <span class="nf">_get_bandpass_scan_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read a caltable file and return time</span>
+<span class="sd">        shifted to start at zero seconds starting time.</span>
+<span class="sd">        Note these are the recored times in the caltable</span>
+
+<span class="sd">        uses inputs:</span>
+<span class="sd">               self.caltable, self.spw, self.scan, self.antlist</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: total time of baseline scan, average integration time </span>
+<span class="sd">        :rtype: float, float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">nant</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">antlist</span><span class="p">)</span>
+            <span class="n">timeX</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">antid</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeX</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">tb1</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;ANTENNA1 == </span><span class="si">%s</span><span class="s2">  &amp;&amp; SPECTRAL_WINDOW_ID == </span><span class="si">%s</span><span class="s2"> &amp;&amp; SCAN_NUMBER == </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">antid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan</span><span class="p">))</span>
+                <span class="n">timeX</span> <span class="o">=</span> <span class="n">tb1</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+                <span class="n">antid</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">antid</span> <span class="o">==</span> <span class="n">nant</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="n">tb1</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c1"># If there is no time found (should never happen), throw.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeX</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No times found in bandpass caltable: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="p">))</span>
+
+        <span class="n">timeX</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">timeX</span><span class="p">)</span> <span class="o">-</span> <span class="n">timeX</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">total_bp_scan_time</span> <span class="o">=</span> <span class="n">timeX</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">avg_integration_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">timeX</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">total_bp_scan_time</span><span class="p">,</span> <span class="n">avg_integration_time</span>
+
+    <span class="k">def</span> <span class="nf">_getcycletime</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the median time (in seconds) between visits to the specified intent.</span>
+<span class="sd">        Note that other parts of the ALMA project consider the &quot;cycleTime&quot; to be the </span>
+<span class="sd">        scan duration on the science target before going back to the phase calibrator,</span>
+<span class="sd">        i.e. ignoring the duration of the phasecal scan, the ATM cal scans, the </span>
+<span class="sd">        checksource, and all the slewing and overhead.</span>
+
+<span class="sd">        If the cycle time is not found, diverts to a lookup table (See: PIPE-1848)</span>
+<span class="sd">       </span>
+<span class="sd">        This method is adapted from:</span>
+<span class="sd">        - Todd Hunter ORIG in analysis Utils (cycleTime)</span>
+<span class="sd">        - LM edited for this code</span>
+
+<span class="sd">        input used:</span>
+<span class="sd">            self.vis</span>
+
+<span class="sd">        return: the cycletime (float)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSMDReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">msmd</span><span class="p">:</span>
+            <span class="n">scans</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">scansforintent</span><span class="p">(</span><span class="s1">&#39;*PHASE*&#39;</span><span class="p">)</span>
+
+            <span class="c1"># PIPE-1848: if there is no phase calibrator, we cannot get cycle time either</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># No phase calibrator in the data</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Using lookup Cycle Time as there is no PHASE intent in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">))</span>
+                <span class="n">usecycle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lookupcycle</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">usecycle</span>
+
+            <span class="c1"># Use the lookup if there is only one phase calibrator scan. See: PIPE-1848</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Using lookup Cycle Time as there is only 1 PHASE calibrator scan for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">))</span>
+                <span class="n">usecycle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lookupcycle</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">usecycle</span>
+
+            <span class="c1"># all correctly formed data should go here</span>
+            <span class="c1"># now get the times for the scans and work out the cycle time </span>
+            <span class="n">times</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">:</span>
+                <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">msmd</span><span class="o">.</span><span class="n">timesforscan</span><span class="p">(</span><span class="n">scan</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;There was only 1 scan with this intent.&quot;</span><span class="p">)</span>
+
+        <span class="n">diffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">diffs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_lookupcycle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Look up the nearest default cycle time</span>
+<span class="sd">        using best practices for Baseline length and</span>
+<span class="sd">        the frequency band. This is only needed when the</span>
+<span class="sd">        returned cycle time is None, which only happens</span>
+<span class="sd">        for malformed data with only one PHASE cal scan,</span>
+<span class="sd">        that ultimately should not be coming to pipeline at all.</span>
+
+<span class="sd">        See: PIPE-1848</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">PMinACA</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getconfig</span><span class="p">()</span>  <span class="c1"># Configs run 1 to 10, 0 is ACA</span>
+
+        <span class="n">bandu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getband</span><span class="p">()</span>  <span class="c1"># Gets freq then band 1 to 10</span>
+
+        <span class="c1"># List of lists for cycle times for Cycle 10</span>
+        <span class="c1"># [config][band]</span>
+        <span class="c1"># Band index 0 doesn&#39;t exist padded with 999</span>
+
+        <span class="n">cycletimes</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">999</span><span class="p">,</span> <span class="mi">660</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="mi">660</span><span class="p">,</span> <span class="mi">660</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="mi">540</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mi">999</span><span class="p">,</span> <span class="mi">660</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="mi">630</span><span class="p">,</span> <span class="mi">630</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="mi">510</span><span class="p">,</span> <span class="mi">390</span><span class="p">,</span> <span class="mi">390</span><span class="p">,</span> <span class="mi">270</span><span class="p">,</span> <span class="mi">270</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mi">999</span><span class="p">,</span> <span class="mi">660</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="mi">630</span><span class="p">,</span> <span class="mi">630</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="mi">510</span><span class="p">,</span> <span class="mi">390</span><span class="p">,</span> <span class="mi">390</span><span class="p">,</span> <span class="mi">270</span><span class="p">,</span> <span class="mi">270</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mi">999</span><span class="p">,</span> <span class="mi">660</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="mi">630</span><span class="p">,</span> <span class="mi">630</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="mi">510</span><span class="p">,</span> <span class="mi">270</span><span class="p">,</span> <span class="mi">270</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">210</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mi">999</span><span class="p">,</span> <span class="mi">660</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="mi">630</span><span class="p">,</span> <span class="mi">630</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="mi">510</span><span class="p">,</span> <span class="mi">270</span><span class="p">,</span> <span class="mi">270</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">210</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mi">999</span><span class="p">,</span> <span class="mi">390</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="mi">390</span><span class="p">,</span> <span class="mi">390</span><span class="p">,</span> <span class="mi">270</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">130</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mi">999</span><span class="p">,</span> <span class="mi">390</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="mi">390</span><span class="p">,</span> <span class="mi">390</span><span class="p">,</span> <span class="mi">270</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">130</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mi">999</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mi">999</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">65</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">45</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mi">999</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">65</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">45</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mi">999</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">65</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">45</span><span class="p">]]</span>
+
+        <span class="n">cycletime</span> <span class="o">=</span> <span class="n">cycletimes</span><span class="p">[</span><span class="n">config</span><span class="p">][</span><span class="n">bandu</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">cycletime</span> <span class="o">==</span> <span class="mi">999</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;For </span><span class="si">{}</span><span class="s2">, unable to find back-up cycle time.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">cycletime</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_getfreq</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Get the median frequency for the spw.</span>
+
+<span class="sd">        The return is in Hz used for getting the band.</span>
+
+<span class="sd">        See: PIPE-1848</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: update to fetch from context</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSMDReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">msmd</span><span class="p">:</span>
+            <span class="n">freqval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">msmd</span><span class="o">.</span><span class="n">chanfreqs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">))</span>  <span class="c1"># otherwise all channels </span>
+    
+        <span class="k">return</span> <span class="n">freqval</span>
+    
+    <span class="k">def</span> <span class="nf">_getband</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Identify the Band for specific frequency (in GHz)</span>
+<span class="sd">        PIPE-1848</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">freq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getfreq</span><span class="p">()</span>
+        
+        <span class="n">lo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">35</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">157</span><span class="p">,</span> <span class="mi">211</span><span class="p">,</span> <span class="mi">275</span><span class="p">,</span> <span class="mi">385</span><span class="p">,</span> <span class="mi">602</span><span class="p">,</span> <span class="mi">787</span><span class="p">])</span><span class="o">*</span><span class="mf">1e9</span>
+        <span class="n">hi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">51</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">116</span><span class="p">,</span> <span class="mi">163</span><span class="p">,</span> <span class="mi">212</span><span class="p">,</span> <span class="mi">275</span><span class="p">,</span> <span class="mi">373</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">720</span><span class="p">,</span> <span class="mi">950</span><span class="p">])</span><span class="o">*</span><span class="mf">1e9</span>
+        <span class="c1"># Set Band 2 to stop at current B3</span>
+
+        <span class="n">bandsel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lo</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)[(</span><span class="n">freq</span> <span class="o">&gt;</span> <span class="n">lo</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">freq</span> <span class="o">&lt;</span> <span class="n">hi</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">bandsel</span>
+
+    <span class="k">def</span> <span class="nf">_getconfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; Identify the configuration based on </span>
+<span class="sd">        baseline length - returns as an int to </span>
+<span class="sd">        allow a table search for cycle time</span>
+<span class="sd">        PIPE-1848</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># self.baselines is a dict, rule is max on a dict returns a</span>
+        <span class="c1"># key for the max so this is max baseline to use </span>
+        <span class="n">maxbl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">baselines</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baselines</span><span class="p">)]</span>
+        <span class="n">shortbl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">313</span><span class="p">,</span> <span class="mi">499</span><span class="p">,</span> <span class="mi">783</span><span class="p">,</span> <span class="mi">1399</span><span class="p">,</span> <span class="mi">2499</span><span class="p">,</span> <span class="mi">3599</span><span class="p">,</span> <span class="mi">8499</span><span class="p">,</span> <span class="mi">13899</span><span class="p">])</span>
+        <span class="n">longbl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">45</span><span class="p">,</span> <span class="mi">161</span><span class="p">,</span> <span class="mi">314</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">784</span><span class="p">,</span> <span class="mi">1400</span><span class="p">,</span> <span class="mi">2500</span><span class="p">,</span> <span class="mi">3600</span><span class="p">,</span> <span class="mi">8500</span><span class="p">,</span> <span class="mi">13900</span><span class="p">,</span> <span class="mi">20000</span><span class="p">])</span>  <span class="c1"># upper limit greater than baseline len </span>
+            
+        <span class="n">config</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">longbl</span><span class="p">))[(</span><span class="n">maxbl</span> <span class="o">&gt;</span> <span class="n">shortbl</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">maxbl</span> <span class="o">&lt;</span> <span class="n">longbl</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">config</span>
+    
+    <span class="k">def</span> <span class="nf">_getblflags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ant1</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ant2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
+            <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Code to open and close the table for the MS </span>
+<span class="sd">        and get the baseline based flags in one lump</span>
+
+<span class="sd">        we only pass the spw as previously established</span>
+<span class="sd">        here the assumption is that any phase RMS issue with</span>
+<span class="sd">        baseline length will be flagged across all the data,</span>
+<span class="sd">        true atmospheric things would not be spectral window based.</span>
+<span class="sd">        phase cal field id already known to class.</span>
+
+<span class="sd">        Added to support PIPE-1661</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spw: spectral window to retrieve flagging info for</span>
+<span class="sd">            ant1: if provided (together with ant2), then retrieve flagging info</span>
+<span class="sd">                only for baseline defined by ant1, ant2</span>
+<span class="sd">            ant2: if provided (together with ant1), then retrieve flagging info</span>
+<span class="sd">                only for baseline defined by ant1, ant2</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">             4-tuple containing Numpy arrays for flags, antenna1, antenna2, and field.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># MS reads datadescid not spw id</span>
+        <span class="c1"># need to do the conversion to make sure we use</span>
+        <span class="c1"># the correct value</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSMDReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">msmd</span><span class="p">:</span>
+            <span class="n">datadescid</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">datadescids</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ant1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ant2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">tb1</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;ANTENNA1 == </span><span class="si">%s</span><span class="s2"> &amp;&amp; ANTENNA2 == </span><span class="si">%s</span><span class="s2"> &amp;&amp; DATA_DESC_ID == </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ant1</span><span class="p">,</span> <span class="n">ant2</span><span class="p">,</span> <span class="n">datadescid</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Speed up - pull everything in one go not per antena, divide out later in main function</span>
+                <span class="n">tb1</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;DATA_DESC_ID == </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">datadescid</span><span class="p">))</span>
+
+            <span class="n">flags</span> <span class="o">=</span> <span class="n">tb1</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">)</span>  <span class="c1"># index is [pol][chan][integration]</span>
+            <span class="n">a1s</span> <span class="o">=</span> <span class="n">tb1</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA1&#39;</span><span class="p">)</span>
+            <span class="n">a2s</span> <span class="o">=</span> <span class="n">tb1</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;ANTENNA2&#39;</span><span class="p">)</span> 
+            <span class="n">field</span> <span class="o">=</span> <span class="n">tb1</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FIELD_ID&#39;</span><span class="p">)</span>
+            <span class="n">tb1</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">flags</span><span class="p">,</span> <span class="n">a1s</span><span class="p">,</span> <span class="n">a2s</span><span class="p">,</span> <span class="n">field</span>  
+
+    <span class="k">def</span> <span class="nf">_log_setup_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints information about the setup of the SSF analysis to the log at the &quot;info&quot; level</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;*** Phase RMS vs Baseline assessment setup ***&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39; Working on the MS </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39; Selected scan </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scan</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39; Selected spw </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39; Using field </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39; Using caltab </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39; The refant is </span><span class="si">{}</span><span class="s1"> id </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">refantid</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39; Is ACA with PM data </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PMinACA</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39; Total BP scan time </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">totaltime</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39; Phase referencing cycle time </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cycletime</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39; The median integration time </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difftime</span><span class="p">))</span>
+
+    <span class="c1"># Methods used by _do_analysis()</span>
+    <span class="k">def</span> <span class="nf">_get_cal_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read a caltable file and select the</span>
+<span class="sd">        phases from one pol (tested in PIPE692 as sufficient).</span>
+<span class="sd">        If those phase data have a flag, the phase</span>
+<span class="sd">        value is set to nan, which is dealt with in the correct</span>
+<span class="sd">        way during the rest of the calulation. The phases </span>
+<span class="sd">        are unwrapped, i.e. solved for the 2PI ambiguitiy </span>
+
+<span class="sd">        input required:</span>
+<span class="sd">                 ant (int)  - the antenna to get the phases for </span>
+
+<span class="sd">        uses inputs:</span>
+<span class="sd">                 self.caltable, self.refantid, self.spw, self.scan</span>
+<span class="sd">  </span>
+
+<span class="sd">        returns: float array of the phases of an antenna</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">tb1</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;ANTENNA1 == </span><span class="si">%s</span><span class="s2"> &amp;&amp; ANTENNA2 == </span><span class="si">%s</span><span class="s2"> &amp;&amp; SPECTRAL_WINDOW_ID == </span><span class="si">%s</span><span class="s2"> &amp;&amp; SCAN_NUMBER == </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">ant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">refantid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan</span><span class="p">))</span>
+            <span class="n">cal_phases</span> <span class="o">=</span> <span class="n">tb1</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">)</span>
+            <span class="n">cal_phases</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">cal_phases</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>  <span class="c1">## in radians one pol only</span>
+
+            <span class="c1"># code works fine as tested in PIPE 692 with only XX pol extractions</span>
+            <span class="c1"># not &#39;really&#39; required to do both pols, but could do so, and also get an average</span>
+            <span class="c1"># single and full-pol to check, this single pull will work, but with more then the order differs (c.f. renorm pol code)</span>
+
+            <span class="c1"># Exclude flagged data as it is extracted from the gaintable</span>
+            <span class="c1"># this is antenna based only   </span>
+            <span class="n">flags</span> <span class="o">=</span> <span class="n">tb1</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">)</span>  <span class="c1"># [0][0]</span>
+            <span class="n">tb1</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="n">cal_phases</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">flags</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">id_u</span><span class="p">]</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="k">for</span> <span class="n">id_u</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cal_phases</span><span class="p">)]</span>  <span class="c1"># so only one pol used &#39;X&#39;</span>
+        <span class="n">cal_phases</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cal_phases</span><span class="p">)</span>
+
+        <span class="c1"># Correct wraps in phase stream</span>
+        <span class="c1"># Note: everything is in radians</span>
+        <span class="n">cal_phases</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase_unwrap</span><span class="p">(</span><span class="n">cal_phases</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cal_phases</span>
+
+    <span class="k">def</span> <span class="nf">_phase_rms_caltab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antout</span><span class="p">:</span> <span class="nb">list</span><span class="o">=</span><span class="p">[],</span> <span class="n">timeScale</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run the loop over the caltable, work out the baseline based phases,</span>
+<span class="sd">        and calculate the phase RMS. Also get the Phase RMS per antenna (with</span>
+<span class="sd">        respect to the refant - i.e. ant based phase RMS).</span>
+<span class="sd">        </span>
+<span class="sd">        inputs used:</span>
+<span class="sd">              self.antlist, self.flag_tolerance, self.difftime, self.baselines</span>
+
+<span class="sd">        calls functions:</span>
+<span class="sd">              self._get_cal_phase, self.ave_phase, self.std_overlapping_avg</span>
+<span class="sd"> </span>
+<span class="sd">        returns:  rms_results{}</span>
+<span class="sd">        dict keys: blphaserms, bphasermscycle, bllen, blname,</span>
+<span class="sd">                   antphaserms, antphasermscycle, antname</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># setup the result list</span>
+        <span class="n">rms_results</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blphaserms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;bllen&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;antphaserms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;antphasermscycle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;antname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># PIPE-1661 baseline based flag awareness - these store flags </span>
+        <span class="c1"># that we read in - just in case we &#39;need&#39; this information</span>
+        <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blflags&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">nant</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">antlist</span><span class="p">)</span>
+        <span class="n">iloop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nant</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iloop</span><span class="p">:</span>
+            <span class="c1"># Ant based parameters</span>
+            <span class="n">pHant1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cal_phase</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;antname&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">antlist</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+            <span class="c1"># Make an assessment of flagged data for that antenna</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pHant1</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pHant1</span><span class="p">)])</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_tolerance</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">pHant1</span><span class="p">):</span>
+                <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;antphaserms&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+                <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;antphasermscycle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+                
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Do averaing -&gt; 10s</span>
+                <span class="n">pHant_ave</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ave_phase</span><span class="p">(</span><span class="n">pHant1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">difftime</span><span class="p">,</span> <span class="n">over</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>  <span class="c1"># for thermal/short term noise</span>
+                <span class="n">rmspHant_ave</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pHant_ave</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">pHant_ave</span><span class="p">)])</span>
+                <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;antphaserms&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rmspHant_ave</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">timeScale</span><span class="p">:</span>
+                    <span class="n">rmspHant_ave_cycle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">std_overlapping_avg</span><span class="p">(</span><span class="n">pHant_ave</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">difftime</span><span class="p">,</span> <span class="n">over</span><span class="o">=</span><span class="n">timeScale</span><span class="p">)</span>
+                    <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;antphasermscycle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rmspHant_ave_cycle</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;antphasermscycle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rmspHant_ave</span><span class="p">)</span>
+
+            <span class="n">jloop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">nant</span><span class="p">)</span>  <span class="c1"># baseline loop</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">jloop</span><span class="p">:</span>
+                <span class="c1"># Get the phases - needs to be the single read in table </span>
+                
+                <span class="c1"># pHant1 is read in above already</span>
+                <span class="n">pHant2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cal_phase</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+                <span class="c1"># phases from cal table come in an order, baseline then is simply the subtraction</span>
+                <span class="n">pH</span> <span class="o">=</span> <span class="n">pHant1</span> <span class="o">-</span> <span class="n">pHant2</span>
+                    
+                <span class="c1"># fill baseline information now</span>
+                <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blname&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">antlist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">antlist</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                <span class="c1"># OLD (new) WAY from context - average all as overview</span>
+                <span class="c1"># not direcrtly the BP only</span>
+                <span class="c1"># rms_results[&#39;bllen&#39;].append(float(self.baselines.get_baseline(i,j).length.value)) # from context input</span>
+                
+                <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;bllen&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baselines</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">antlist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">antlist</span><span class="p">[</span><span class="n">j</span><span class="p">]]))</span> <span class="c1"># from function</span>
+
+                <span class="c1"># PIPE-1661 - get baseline based flags</span>
+                <span class="n">blisflagged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isblflagged</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+
+                <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blflags&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blisflagged</span><span class="p">)</span>
+                <span class="c1">######</span>
+
+                <span class="c1"># make assessment if this is a bad antenna</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">antlist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">antout</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">antlist</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="ow">in</span> <span class="n">antout</span><span class="p">:</span>
+                    <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blphaserms&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+                    <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+                <span class="c1"># PIPE-1661 assessment (could tie with if above but separated for clarity</span>
+                <span class="k">elif</span> <span class="n">blisflagged</span><span class="p">:</span>  <span class="c1"># can only be T/F bool</span>
+                    <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blphaserms&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+                    <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+                <span class="c1">###############</span>
+              
+                <span class="c1"># make an assessment of flagged data</span>
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">pH</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pH</span><span class="p">)])</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_tolerance</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">pH</span><span class="p">):</span>
+                    <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blphaserms&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+                    <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># do averaing -&gt; 10s</span>
+                    <span class="c1"># need to get time and then rebin</span>
+                    <span class="n">pH_ave</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ave_phase</span><span class="p">(</span><span class="n">pH</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">difftime</span><span class="p">,</span> <span class="n">over</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>  <span class="c1"># for thermal/short term noise</span>
+                    <span class="n">rmspH_ave</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pH_ave</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">pH_ave</span><span class="p">)])</span>  
+                    <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blphaserms&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rmspH_ave</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">timeScale</span><span class="p">:</span>
+                        <span class="n">rmspH_ave_cycle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">std_overlapping_avg</span><span class="p">(</span><span class="n">pH_ave</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">difftime</span><span class="p">,</span> <span class="n">over</span><span class="o">=</span><span class="n">timeScale</span><span class="p">)</span>
+                        <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rmspH_ave_cycle</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">rms_results</span><span class="p">[</span><span class="s1">&#39;blphasermscycle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rmspH_ave</span><span class="p">)</span>
+
+        <span class="c1"># set RMS output in degrees as we want</span>
+        <span class="k">for</span> <span class="n">key_res</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;blphaserms&#39;</span><span class="p">,</span> <span class="s1">&#39;blphasermscycle&#39;</span><span class="p">,</span> <span class="s1">&#39;antphaserms&#39;</span><span class="p">,</span> <span class="s1">&#39;antphasermscycle&#39;</span><span class="p">]:</span>
+            <span class="n">rms_results</span><span class="p">[</span><span class="n">key_res</span><span class="p">]</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">rms_results</span><span class="p">[</span><span class="n">key_res</span><span class="p">])</span>
+        
+        <span class="k">return</span> <span class="n">rms_results</span>
+    
+    <span class="k">def</span> <span class="nf">_isblflagged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ant1</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ant2</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function to make the assessment of </span>
+<span class="sd">        the flags that are saved and return if the</span>
+<span class="sd">        full baseline is flagged or not</span>
+<span class="sd">       </span>
+<span class="sd">        requires the self.blflags</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># in checking the order of data read associated with each antenna</span>
+        <span class="c1"># the ordering system is not 100% preordained it seems,</span>
+        <span class="c1"># i.e. we have to select each time the index of bls in agreement with </span>
+        <span class="c1"># the antenna pair and antenna list - then check the flags</span>
+ 
+        <span class="c1"># simply need to select the correct cut for the baseline in question</span>
+        <span class="c1"># start with the bandpass, if totally flagged assume all data flagged </span>
+        <span class="c1"># for that baseline</span>
+
+        <span class="c1"># speed assumption is we will hit a false before a true</span>
+        <span class="c1"># flag for good data, so assume bad, set to good</span>
+        <span class="n">flaggedbl</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">idbl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">blflags</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="n">ant1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blflags</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">==</span><span class="n">ant2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blflags</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldId</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># loop over correct ant, integration time index </span>
+        <span class="k">for</span> <span class="n">iduse</span> <span class="ow">in</span> <span class="n">idbl</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">blflags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">blflags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blflags</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,:,</span><span class="n">iduse</span><span class="p">]):</span>
+                <span class="n">flaggedbl</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">break</span>
+
+        <span class="c1"># else here for Phase cal check if not flagged in BP</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flaggedbl</span><span class="p">:</span>
+            <span class="n">flaggedbl</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">phid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ph_ids</span><span class="p">:</span>  <span class="c1"># usually one phase cal anyway but loop incase multiple</span>
+                <span class="n">idbl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">blflagsref</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">ant1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blflagsref</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">ant2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blflagsref</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="n">phid</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">iduse</span> <span class="ow">in</span> <span class="n">idbl</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">blflagsref</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">blflagsref</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blflagsref</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span> <span class="p">:,</span> <span class="n">iduse</span><span class="p">]):</span>
+                        <span class="c1"># if there is unflagged data in this antenna pair and time then</span>
+                        <span class="c1"># that baseline is, in fact, not fully flagged</span>
+                        <span class="n">flaggedbl</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">flaggedbl</span>
+
+    <span class="k">def</span> <span class="nf">_get_final_spw_and_blflags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputsin</span><span class="p">,</span> <span class="n">qa_spw_candidates</span><span class="p">)</span> \
+            <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Select the best candidate SpW for the phase decoherence analysis based</span>
+<span class="sd">        on ranked list and baseline flagging information.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inputsin: inputs from caller task (expected to be hifa_spwphaseup)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            2-Tuple containing:</span>
+<span class="sd">                - selected SpW ID (integer)</span>
+<span class="sd">                - 4-tuple representing baseline flagging info for selected SpW</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># PIPE-1871: from the ranked list of SpWs, pick the first SpW for which</span>
+        <span class="c1"># the baselines are not fully flagged.</span>
+        <span class="n">spwid</span><span class="p">,</span> <span class="n">blflags</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">qa_spw</span> <span class="ow">in</span> <span class="n">qa_spw_candidates</span><span class="p">:</span>
+            <span class="n">candidate_spwid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">qa_spw</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: assessing baseline flags for SpW </span><span class="si">{</span><span class="n">candidate_spwid</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Retrieve flagging information for the selected SpW (PIPE-1661).</span>
+            <span class="n">blflags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getblflags</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">candidate_spwid</span><span class="p">)</span>
+
+            <span class="c1"># Check whether for current spw (and bandpass field), all</span>
+            <span class="c1"># corresponding baselines rows are entirely flagged in all pol and</span>
+            <span class="c1"># all channels:</span>
+            <span class="c1"># - blflags[3] represents the field, with shape (nrow).</span>
+            <span class="c1"># - blflags[0] represents the flag, with shape (npol, nchan, nrow).</span>
+            <span class="c1"># - np.all(blflags[0], (0, 1)) performs an AND on flags in each</span>
+            <span class="c1">#   (npol, nchan) plane, i.e. checking for each row if all pol, chan</span>
+            <span class="c1">#   are flagged.</span>
+            <span class="c1"># If the baselines are not entirely flagged, then keep this Spw as</span>
+            <span class="c1"># the one to analyse, and stop looking.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">blflags</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))[</span><span class="n">blflags</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldId</span><span class="p">]):</span>
+                <span class="n">spwid</span> <span class="o">=</span> <span class="n">candidate_spwid</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: SpW </span><span class="si">{</span><span class="n">candidate_spwid</span><span class="si">}</span><span class="s2"> appears to be fully flagged.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">spwid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: unable to identify a SpW for assessing phase decoherence; all&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot; candidate SpWs appear to be fully flagged.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">blflags</span>
+
+    <span class="c1"># Static methods</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_spw_candidates</span><span class="p">(</span><span class="n">inputsin</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves a list of spectral window candidates for the phase decoherence</span>
+<span class="sd">        analysis, ranked based on atmosphere heuristics.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inputsin: inputs from caller task (expected to be hifa_spwphaseup)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of SpW IDs (string)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Retrieve SpWs to consider.</span>
+        <span class="k">if</span> <span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">is_band_to_band</span><span class="p">:</span>
+            <span class="c1"># For a BandToBand MS, restrict to diffgain on-source SpWs.</span>
+            <span class="n">spws</span> <span class="o">=</span> <span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># For all other MSes, use all science SpWs.</span>
+            <span class="n">spws</span> <span class="o">=</span> <span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputsin</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-2081: rank the SpWs by Tsys and bandwidth using atmosphere</span>
+        <span class="c1"># heuristics module.</span>
+        <span class="n">atmheuristics</span> <span class="o">=</span> <span class="n">atm_heuristic</span><span class="o">.</span><span class="n">AtmHeuristics</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">inputsin</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputsin</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spws</span><span class="p">)</span>
+        <span class="n">qa_spw_list</span> <span class="o">=</span> <span class="n">atmheuristics</span><span class="o">.</span><span class="n">spwid_rank_by_tsys_and_bandwidth</span><span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">qa_spw_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># If ranking by Tsys failed (e.g. no Tsys table, or due to</span>
+            <span class="c1"># flagging), then fall back to ranking by opacity and bandwidth:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ranking spws by bandwidth and Tsys failed for </span><span class="si">{</span><span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">; will rank by bandwidth&quot;</span>
+                     <span class="sa">f</span><span class="s2">&quot; and opacity instead.&quot;</span><span class="p">)</span>
+            <span class="n">qa_spw_list</span> <span class="o">=</span> <span class="n">atmheuristics</span><span class="o">.</span><span class="n">spwid_rank_by_opacity_and_bandwidth</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">qa_spw_list</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: unable to identify a SpW for assessing phase decoherence; no&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot; candidate SpWs found.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-1871: as potential fall-back candidates, keep only those SpWs</span>
+        <span class="c1"># that have the same SpectralSpec as the top candidate.</span>
+        <span class="n">qa_spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span> <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">qa_spw_list</span><span class="p">]</span>
+        <span class="n">qa_spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span> <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">qa_spw_list</span><span class="p">]</span>
+        <span class="n">qa_spw_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">qa_spws</span> <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">spectralspec</span> <span class="o">==</span> <span class="n">qa_spws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">spectralspec</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">qa_spw_list</span>
+
+<div class="viewcode-block" id="PhaseStabilityHeuristics.phase_unwrap">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.phase_unwrap">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">phase_unwrap</span><span class="p">(</span><span class="n">phase</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unwraps the phases to solve for 2PI ambiguities</span>
+<span class="sd">        Input phases may contain np.nan. </span>
+
+<span class="sd">        :param phase: phase in radians</span>
+<span class="sd">        :type phase: float array</span>
+<span class="sd">        :returns: unwrapped phase-array</span>
+<span class="sd">        :rtype: float array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">working_phase</span> <span class="o">=</span> <span class="n">phase</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">working_phase</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">working_phase</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">working_phase</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">working_phase</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="n">working_phase</span></div>
+
+    
+<div class="viewcode-block" id="PhaseStabilityHeuristics.mad">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.mad">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">mad</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This calculates the MAD - median absolute deviation from the median</span>
+<span class="sd">        The input must be nan free, i.e. finite data</span>
+<span class="sd">        </span>
+<span class="sd">        :param data: input data stream</span>
+<span class="sd">        :type data: list or array</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: median absolute deviation (from the median)</span>
+<span class="sd">        :rtyep: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="p">)),</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PhaseStabilityHeuristics.std_overlapping_avg">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.std_overlapping_avg">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">std_overlapping_avg</span><span class="p">(</span><span class="n">phase</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">diffTime</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">over</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">120.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate STD over a set time and return the average of all overlapping</span>
+<span class="sd">        values of the standard deviation - overlapping estimator. This acts</span>
+<span class="sd">        upon a phase-time stream of data. Will consider only finite values in </span>
+<span class="sd">        the phase-time stream (i.e. phase array). The phase array must be </span>
+<span class="sd">        unwrapped, i.e. continous, no breaks or 2PI ambiguities</span>
+<span class="sd">    </span>
+<span class="sd">        This is the standard deviation, so it takes out the</span>
+<span class="sd">        mean value. RMS with mean or fit removed provides</span>
+<span class="sd">        the same value for zero-centered phases.</span>
+
+<span class="sd">        :param phase: any unwrapped input phase</span>
+<span class="sd">        :type phase: array</span>
+<span class="sd">        :param diffTime: the time between each data integration</span>
+<span class="sd">        :type diffTime: float</span>
+<span class="sd">        :param over: time in seconds to calculate the SD over</span>
+<span class="sd">        :type over: float</span>
+<span class="sd">        :returns: average standard deviation for the dataset calcualted over the input timescale </span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Overlap in elements</span>
+        <span class="n">over</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">over</span> <span class="o">/</span> <span class="n">diffTime</span><span class="p">))</span>
+        
+        <span class="c1"># Use nan versions of numpy functions as some elements of &#39;phase&#39; might be np.nan to indicate that it was flagged</span>
+        <span class="n">std_hold</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Loop over the data in range rounded to size of time step</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span> <span class="o">-</span> <span class="n">over</span><span class="p">):</span>
+            <span class="n">std_hold</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">phase</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">over</span><span class="p">]))</span>
+            <span class="p">)</span>
+
+        <span class="n">std_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">std_hold</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">std_mean</span></div>
+
+
+<div class="viewcode-block" id="PhaseStabilityHeuristics.ave_phase">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.ave_phase">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">ave_phase</span><span class="p">(</span><span class="n">phase</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">diffTime</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">over</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Do an averaging/smoopthing on the phase data</span>
+<span class="sd">        The default for ALMA for phase statistics should be 10s.</span>
+<span class="sd">        For default 6s integration times this will average 2 values.</span>
+<span class="sd">        If input phases from the gain table have integration(diffTime) &gt; 10s</span>
+<span class="sd">        then no averaging is made.</span>
+
+<span class="sd">        :param phase: phase series of the data to average</span>
+<span class="sd">        :type phase: array</span>
+<span class="sd">        :param diffTime: the average difference in time between each data value, i.e. each phase</span>
+<span class="sd">        :type diffTime: float</span>
+<span class="sd">        :param over: the time to average over - default is 1s</span>
+<span class="sd">        :type over: float</span>
+<span class="sd">        :returns: array of averaged phases</span>
+<span class="sd">        :rtype: array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">over</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">over</span> <span class="o">/</span> <span class="n">diffTime</span><span class="p">))</span>
+        <span class="c1"># Make an int for using elements</span>
+        <span class="c1"># There will be slight but minimal inaccuracies due to long timegaps in the data</span>
+        <span class="k">if</span> <span class="n">over</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">mean_hold</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span> <span class="o">-</span> <span class="n">over</span><span class="p">):</span>
+                <span class="c1"># Average/smooth the data and ignore the nan values</span>
+                <span class="n">mean_hold</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">phase</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">over</span><span class="p">])[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">phase</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">over</span><span class="p">])])</span>
+                    <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mean_hold</span> <span class="o">=</span> <span class="n">phase</span>
+            
+        <span class="k">return</span> <span class="n">mean_hold</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

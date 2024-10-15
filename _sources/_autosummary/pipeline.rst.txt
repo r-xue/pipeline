@@ -1,0 +1,45 @@
+﻿pipeline
+========
+
+.. automodule:: pipeline
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      find_frame
+      initcli
+      log_host_environment
+      show_weblog
+      stop_weblog
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Context
+      Pipeline
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   cli
+   domain
+   environment
+   extern
+   h
+   hif
+   hifa
+   hifv
+   hsd
+   hsdn
+   infrastructure
+   qa
+   recipereducer
+   recipes
+   runpipeline
+   runvlapipeline

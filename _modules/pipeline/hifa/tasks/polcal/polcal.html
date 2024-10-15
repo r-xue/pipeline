@@ -1,0 +1,1128 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.polcal.polcal &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.polcal.polcal</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.polcal.polcal</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.tablereader</span> <span class="k">as</span> <span class="nn">tablereader</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">measures</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">applycal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">gaincal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">polcal</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">sessionutils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Polcal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;PolcalInputs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;PolcalResults&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="PolcalResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.polcal.PolcalResults">[docs]</a>
+<span class="k">class</span> <span class="nc">PolcalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="PolcalResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.polcal.PolcalResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Register results for each session into context.</span>
+        <span class="k">for</span> <span class="n">session_results</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">session_results</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;PolcalResults&#39;</span></div>
+
+
+
+<span class="k">class</span> <span class="nc">PolcalSessionResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vislist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">polcal_field_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">init_gcal_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gain_ratio_rms_prior</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uncal_pfg_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">best_scan_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">kcross_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">polcal_phase_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">final_gcal_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gain_ratio_rms_after</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">cal_pfg_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">leak_polcal_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xyratio_gcal_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session_vs_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">vis_vs_results</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vs_diffs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">polcal_amp_results</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">final</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">final</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">vislist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vislist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">uncal_pfg_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">uncal_pfg_result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">cal_pfg_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cal_pfg_result</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="n">final</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">pool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vislist</span> <span class="o">=</span> <span class="n">vislist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">polcal_field_name</span> <span class="o">=</span> <span class="n">polcal_field_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refant</span> <span class="o">=</span> <span class="n">refant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_gcal_result</span> <span class="o">=</span> <span class="n">init_gcal_result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gain_ratio_rms_prior</span> <span class="o">=</span> <span class="n">gain_ratio_rms_prior</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uncal_pfg_result</span> <span class="o">=</span> <span class="n">uncal_pfg_result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_scan_id</span> <span class="o">=</span> <span class="n">best_scan_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kcross_result</span> <span class="o">=</span> <span class="n">kcross_result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">polcal_phase_result</span> <span class="o">=</span> <span class="n">polcal_phase_result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">final_gcal_result</span> <span class="o">=</span> <span class="n">final_gcal_result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gain_ratio_rms_after</span> <span class="o">=</span> <span class="n">gain_ratio_rms_after</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cal_pfg_result</span> <span class="o">=</span> <span class="n">cal_pfg_result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leak_polcal_result</span> <span class="o">=</span> <span class="n">leak_polcal_result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyratio_gcal_result</span> <span class="o">=</span> <span class="n">xyratio_gcal_result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_vs_result</span> <span class="o">=</span> <span class="n">session_vs_result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis_vs_results</span> <span class="o">=</span> <span class="n">vis_vs_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vs_diffs</span> <span class="o">=</span> <span class="n">vs_diffs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">polcal_amp_results</span> <span class="o">=</span> <span class="n">polcal_amp_results</span>
+
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Register all CalApplications from each session.</span>
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Adding calibration to callibrary:</span><span class="se">\n</span><span class="si">{</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                      <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;PolcalSessionResults&#39;</span>
+
+
+<div class="viewcode-block" id="PolcalInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.polcal.PolcalInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">PolcalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+
+    <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;POLARIZATION,POLANGLE,POLLEAKAGE&#39;</span><span class="p">)</span>
+    <span class="n">minpacov</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
+    <span class="n">solint_chavg</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;5MHz&#39;</span><span class="p">)</span>
+    <span class="n">vs_stats</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;min,max,mean&#39;</span><span class="p">)</span>
+    <span class="n">vs_thresh</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minpacov</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint_chavg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vs_stats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vs_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minpacov</span> <span class="o">=</span> <span class="n">minpacov</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solint_chavg</span> <span class="o">=</span> <span class="n">solint_chavg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vs_stats</span> <span class="o">=</span> <span class="n">vs_stats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vs_thresh</span> <span class="o">=</span> <span class="n">vs_thresh</span></div>
+
+
+
+<div class="viewcode-block" id="Polcal">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.polcal.Polcal">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_polcal&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Compute the polarization calibration.&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Polcal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">PolcalInputs</span>
+
+    <span class="c1"># This is a multi-vis task that handles all MSes for one or more sessions</span>
+    <span class="c1"># at once.</span>
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="Polcal.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.polcal.Polcal.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PolcalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute polarization calibration heuristics and return Results object</span>
+<span class="sd">        that includes final caltables.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            PolcalResults instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize results.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">PolcalResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Inspect the vis list to identify sessions and corresponding MSes.</span>
+        <span class="n">vislist_for_session</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">group_vislist_into_sessions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Run polarization calibration for each session.</span>
+        <span class="k">for</span> <span class="n">session_name</span><span class="p">,</span> <span class="n">vislist</span> <span class="ow">in</span> <span class="n">vislist_for_session</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="n">session_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_polcal_for_session</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">vislist</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="Polcal.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.polcal.Polcal.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">PolcalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PolcalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Analyze the PolcalResults: check that all caltables from</span>
+<span class="sd">        CalApplications exist on disk.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: PolcalResults instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            PolcalResults instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># For each session, check that the caltables were all generated.</span>
+        <span class="k">for</span> <span class="n">session_name</span><span class="p">,</span> <span class="n">sresults</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">on_disk</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">sresults</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
+            <span class="n">sresults</span><span class="o">.</span><span class="n">final</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">on_disk</span>
+
+            <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">sresults</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">on_disk</span><span class="p">]</span>
+            <span class="n">sresults</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="n">sresults</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_polcal_for_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">PolcalSessionResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run polarization calibration heuristics for a single session and</span>
+<span class="sd">        corresponding list of measurement sets.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            session_name: name of session.</span>
+<span class="sd">            vislist: list of measurement sets in session.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            PolcalSessionResults instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deriving polarization calibration for session &#39;</span><span class="si">{</span><span class="n">session_name</span><span class="si">}</span><span class="s2">&#39; with measurement set(s):&quot;</span>
+                 <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">vislist</span><span class="p">,</span><span class="w"> </span><span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check that each MS in session shares the same single polarization</span>
+        <span class="c1"># calibrator by field name; if not, then stop processing this session.</span>
+        <span class="n">polcal_field_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_matching_pol_field</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">vislist</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">polcal_field_name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PolcalSessionResults</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session_name</span><span class="p">)</span>
+
+        <span class="c1"># Retrieve reference antenna for this session.</span>
+        <span class="n">refant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_refant</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">vislist</span><span class="p">)</span>
+
+        <span class="c1"># For each MS in session, run applycal to apply the registered total</span>
+        <span class="c1"># intensity caltables to the polarization calibrator field.</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Session </span><span class="si">{</span><span class="n">session_name</span><span class="si">}</span><span class="s2">: apply pre-existing caltables to polarization calibrator for MS </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_run_applycal</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Extract polarization data from each MS in session, concatenate into</span>
+        <span class="c1"># a session MS, and register this session MS with local context.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating polarization data MS for session &#39;</span><span class="si">{</span><span class="n">session_name</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+        <span class="n">session_msname</span><span class="p">,</span> <span class="n">spwmaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_session_ms</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">vislist</span><span class="p">)</span>
+
+        <span class="c1"># Compute duration of polarization scans.</span>
+        <span class="n">scan_duration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_pol_scan_duration</span><span class="p">(</span><span class="n">session_msname</span><span class="p">)</span>
+
+        <span class="c1"># Compute initial gain calibration for polarization calibrator, and</span>
+        <span class="c1"># merge into local context.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">session_msname</span><span class="si">}</span><span class="s2">: compute initial gain calibration for polarization calibrator.&quot;</span><span class="p">)</span>
+        <span class="n">init_gcal_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_gaincal</span><span class="p">(</span><span class="n">session_msname</span><span class="p">,</span> <span class="n">refant</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_calapps_from_results</span><span class="p">([</span><span class="n">init_gcal_result</span><span class="p">])</span>
+        <span class="c1"># Compute gain ratio RMS per scan (prior to polarization calibration).</span>
+        <span class="n">gain_ratio_rms_prior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_gain_ratio_rms</span><span class="p">(</span><span class="n">init_gcal_result</span><span class="p">)</span>
+
+        <span class="c1"># Compute (uncalibrated) estimate of polarization of the polarization</span>
+        <span class="c1"># calibrator.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">session_msname</span><span class="si">}</span><span class="s2">: compute estimate of polarization.&quot;</span><span class="p">)</span>
+        <span class="n">uncal_pfg_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_polfromgain</span><span class="p">(</span><span class="n">session_msname</span><span class="p">,</span> <span class="n">init_gcal_result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">minpacov</span><span class="p">)</span>
+        <span class="c1"># If polfromgain did not find any solutions, then log a warning and</span>
+        <span class="c1"># return early (PIPE-2159).</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">uncal_pfg_result</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">list</span><span class="p">(</span><span class="n">uncal_pfg_result</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to derive polarization calibration for session &#39;</span><span class="si">{</span><span class="n">session_name</span><span class="si">}</span><span class="s2">&#39;, no solutions returned&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; by polfromgain.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">PolcalSessionResults</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session_name</span><span class="p">)</span>
+
+        <span class="c1"># Retrieve fractional Stokes results for averaged SpW for the</span>
+        <span class="c1"># polarization calibrator field.</span>
+        <span class="n">smodel</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">uncal_pfg_result</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;SpwAve&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Identify scan with highest XY signal.</span>
+        <span class="n">best_scan_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identify_scan_highest_xy</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">init_gcal_result</span><span class="p">)</span>
+
+        <span class="c1"># Compute XY delay.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">session_msname</span><span class="si">}</span><span class="s2">: compute XY delay (Kcross) for polarization calibrator.&quot;</span><span class="p">)</span>
+        <span class="n">kcross_result</span><span class="p">,</span> <span class="n">kcross_calapps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_xy_delay</span><span class="p">(</span><span class="n">session_msname</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">refant</span><span class="p">,</span> <span class="n">best_scan_id</span><span class="p">,</span> <span class="n">spwmaps</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_calapps_from_results</span><span class="p">([</span><span class="n">kcross_result</span><span class="p">])</span>
+
+        <span class="c1"># Calibrate XY phase.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">session_msname</span><span class="si">}</span><span class="s2">: compute XY phase for polarization calibrator.&quot;</span><span class="p">)</span>
+        <span class="n">polcal_phase_result</span><span class="p">,</span> <span class="n">pol_phase_calapps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calibrate_xy_phase</span><span class="p">(</span><span class="n">session_msname</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">smodel</span><span class="p">,</span>
+                                                                          <span class="n">scan_duration</span><span class="p">,</span> <span class="n">spwmaps</span><span class="p">)</span>
+
+        <span class="c1"># Retrieve fractional Stokes results for averaged SpW for the</span>
+        <span class="c1"># polarization calibrator field.</span>
+        <span class="n">smodel</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">polcal_phase_result</span><span class="o">.</span><span class="n">polcal_returns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;SpwAve&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Unregister caltables that have been created for the session MS so</span>
+        <span class="c1"># far, prior to re-computing the gain calibration for polarization</span>
+        <span class="c1"># calibrator.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unregister_caltables</span><span class="p">(</span><span class="n">session_msname</span><span class="p">)</span>
+
+        <span class="c1"># Final gain calibration for polarization calibrator, using the actual</span>
+        <span class="c1"># polarization model.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">session_msname</span><span class="si">}</span><span class="s2">: compute final gain calibration for polarization calibrator.&quot;</span><span class="p">)</span>
+        <span class="n">final_gcal_result</span><span class="p">,</span> <span class="n">final_gcal_calapps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_gaincal</span><span class="p">(</span><span class="n">session_msname</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">refant</span><span class="p">,</span> <span class="n">smodel</span><span class="p">,</span> <span class="n">spwmaps</span><span class="p">)</span>
+        <span class="c1"># Compute gain ratio RMS per scan (after polarization calibration).</span>
+        <span class="n">gain_ratio_rms_after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_gain_ratio_rms</span><span class="p">(</span><span class="n">final_gcal_result</span><span class="p">)</span>
+
+        <span class="c1"># Recompute polarization of the polarization calibrator after</span>
+        <span class="c1"># calibration.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">session_msname</span><span class="si">}</span><span class="s2">: recompute polarization of polarization calibrator after calibration.&quot;</span><span class="p">)</span>
+        <span class="n">cal_pfg_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_polfromgain</span><span class="p">(</span><span class="n">session_msname</span><span class="p">,</span> <span class="n">final_gcal_result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">minpacov</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cal_pfg_result</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to derive polarization calibration for session &#39;</span><span class="si">{</span><span class="n">session_name</span><span class="si">}</span><span class="s2">&#39;, no solutions returned&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; by polfromgain when recomputing polarization after calibration.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">PolcalSessionResults</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session_name</span><span class="p">)</span>
+
+        <span class="c1"># (Re-)register the final gain, XY delay, and XY phase caltables.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_calapps_from_results</span><span class="p">([</span><span class="n">final_gcal_result</span><span class="p">,</span> <span class="n">kcross_result</span><span class="p">,</span> <span class="n">polcal_phase_result</span><span class="p">])</span>
+
+        <span class="c1"># Compute leakage terms.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">session_msname</span><span class="si">}</span><span class="s2">: estimate leakage terms for polarization calibrator.&quot;</span><span class="p">)</span>
+        <span class="n">leak_polcal_result</span><span class="p">,</span> <span class="n">leak_pcal_calapps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_leakage_terms</span><span class="p">(</span><span class="n">session_msname</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">smodel</span><span class="p">,</span>
+                                                                            <span class="n">scan_duration</span><span class="p">,</span> <span class="n">spwmaps</span><span class="p">)</span>
+
+        <span class="c1"># Unregister caltables created so far, and re-register just the XY</span>
+        <span class="c1"># delay, XY phase, and leakage term caltables, prior to computing the</span>
+        <span class="c1"># X/Y ratio.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unregister_caltables</span><span class="p">(</span><span class="n">session_msname</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_calapps_from_results</span><span class="p">([</span><span class="n">kcross_result</span><span class="p">,</span> <span class="n">polcal_phase_result</span><span class="p">,</span> <span class="n">leak_polcal_result</span><span class="p">])</span>
+
+        <span class="c1"># Compute X/Y ratio.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">session_msname</span><span class="si">}</span><span class="s2">: compute X/Y ratio for polarization calibrator.&quot;</span><span class="p">)</span>
+        <span class="n">xyratio_gcal_result</span><span class="p">,</span> <span class="n">xyratio_calapps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_xy_ratio</span><span class="p">(</span><span class="n">session_msname</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">refant</span><span class="p">,</span> <span class="n">smodel</span><span class="p">,</span> <span class="n">spwmaps</span><span class="p">)</span>
+
+        <span class="c1"># Prior to applycal, re-register the final gain caltable.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_calapps_from_results</span><span class="p">([</span><span class="n">final_gcal_result</span><span class="p">])</span>
+
+        <span class="c1"># Apply the polarization calibration to the polarization calibrator.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">session_msname</span><span class="si">}</span><span class="s2">: apply polarization calibrations to the polarization calibrator.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_run_applycal</span><span class="p">(</span><span class="n">session_msname</span><span class="p">,</span> <span class="n">parang</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Run visstat on session MS, once per obsid.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">session_msname</span><span class="si">}</span><span class="s2">: run visstat for session MS.&quot;</span><span class="p">)</span>
+        <span class="n">session_vs_result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">obsid</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vislist</span><span class="p">)):</span>
+            <span class="n">session_vs_result</span><span class="p">[</span><span class="n">obsid</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_visstat</span><span class="p">(</span><span class="n">session_msname</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">obsid</span><span class="p">))</span>
+
+        <span class="c1"># Register the relevant CalApps for polarization calibrator in</span>
+        <span class="c1"># each MS in this session.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_calapps</span><span class="p">(</span><span class="n">final_gcal_calapps</span> <span class="o">+</span> <span class="n">kcross_calapps</span> <span class="o">+</span> <span class="n">pol_phase_calapps</span> <span class="o">+</span> <span class="n">leak_pcal_calapps</span><span class="p">)</span>
+
+        <span class="c1"># Run applycal to apply the newly derived polarization caltables to the</span>
+        <span class="c1"># polarization calibrator in each MS in this session.</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Session </span><span class="si">{</span><span class="n">session_name</span><span class="si">}</span><span class="s2">: apply polarization caltables to polarization calibrator for MS </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_run_applycal</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">parang</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Run visstat on each MS in this session.</span>
+        <span class="n">vis_vs_results</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">session_msname</span><span class="si">}</span><span class="s2">: run visstat for MS </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="n">vis_vs_results</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_visstat</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Compare results from visstat to log any differences exceeding the</span>
+        <span class="c1"># threshold.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">session_msname</span><span class="si">}</span><span class="s2">: comparison of visstat results.&quot;</span><span class="p">)</span>
+        <span class="n">vs_diffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare_visstat_results</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vs_stats</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vs_thresh</span><span class="p">,</span> <span class="n">session_vs_result</span><span class="p">,</span>
+                                                 <span class="n">vis_vs_results</span><span class="p">,</span> <span class="n">spwmaps</span><span class="p">)</span>
+
+        <span class="c1"># Set flux density for polarization calibrator in each MS in this</span>
+        <span class="c1"># session.</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">session_msname</span><span class="si">}</span><span class="s2">: run setjy for MS </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setjy_for_polcal</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">smodel</span><span class="p">)</span>
+
+        <span class="c1"># Compute amplitude calibration for polarization calibrator.</span>
+        <span class="n">polcal_amp_results</span><span class="p">,</span> <span class="n">amp_calapps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_ampcal_for_polcal</span><span class="p">(</span><span class="n">vislist</span><span class="p">,</span> <span class="n">refant</span><span class="p">)</span>
+
+        <span class="c1"># Collect CalApplications.</span>
+        <span class="n">final_calapps</span> <span class="o">=</span> <span class="n">final_gcal_calapps</span> <span class="o">+</span> <span class="n">kcross_calapps</span> <span class="o">+</span> <span class="n">pol_phase_calapps</span> <span class="o">+</span> <span class="n">leak_pcal_calapps</span> <span class="o">+</span> \
+            <span class="n">xyratio_calapps</span> <span class="o">+</span> <span class="n">amp_calapps</span>
+
+        <span class="c1"># Collect results for session.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">PolcalSessionResults</span><span class="p">(</span>
+            <span class="n">session</span><span class="o">=</span><span class="n">session_name</span><span class="p">,</span>
+            <span class="n">vis</span><span class="o">=</span><span class="n">session_msname</span><span class="p">,</span>
+            <span class="n">pool</span><span class="o">=</span><span class="n">final_calapps</span><span class="p">,</span>
+            <span class="n">vislist</span><span class="o">=</span><span class="n">vislist</span><span class="p">,</span>
+            <span class="n">polcal_field_name</span><span class="o">=</span><span class="n">polcal_field_name</span><span class="p">,</span>
+            <span class="n">refant</span><span class="o">=</span><span class="n">refant</span><span class="p">,</span>
+            <span class="n">init_gcal_result</span><span class="o">=</span><span class="n">init_gcal_result</span><span class="p">,</span>
+            <span class="n">gain_ratio_rms_prior</span><span class="o">=</span><span class="n">gain_ratio_rms_prior</span><span class="p">,</span>
+            <span class="n">uncal_pfg_result</span><span class="o">=</span><span class="n">uncal_pfg_result</span><span class="p">,</span>
+            <span class="n">best_scan_id</span><span class="o">=</span><span class="n">best_scan_id</span><span class="p">,</span>
+            <span class="n">kcross_result</span><span class="o">=</span><span class="n">kcross_result</span><span class="p">,</span>
+            <span class="n">polcal_phase_result</span><span class="o">=</span><span class="n">polcal_phase_result</span><span class="p">,</span>
+            <span class="n">final_gcal_result</span><span class="o">=</span><span class="n">final_gcal_result</span><span class="p">,</span>
+            <span class="n">gain_ratio_rms_after</span><span class="o">=</span><span class="n">gain_ratio_rms_after</span><span class="p">,</span>
+            <span class="n">cal_pfg_result</span><span class="o">=</span><span class="n">cal_pfg_result</span><span class="p">,</span>
+            <span class="n">leak_polcal_result</span><span class="o">=</span><span class="n">leak_polcal_result</span><span class="p">,</span>
+            <span class="n">xyratio_gcal_result</span><span class="o">=</span><span class="n">xyratio_gcal_result</span><span class="p">,</span>
+            <span class="n">session_vs_result</span><span class="o">=</span><span class="n">session_vs_result</span><span class="p">,</span>
+            <span class="n">vis_vs_results</span><span class="o">=</span><span class="n">vis_vs_results</span><span class="p">,</span>
+            <span class="n">vs_diffs</span><span class="o">=</span><span class="n">vs_diffs</span><span class="p">,</span>
+            <span class="n">polcal_amp_results</span><span class="o">=</span><span class="n">polcal_amp_results</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_get_refant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># In the polarization recipes, the best reference antenna should have</span>
+        <span class="c1"># been determined for the entire session by hifa_session_refant, and</span>
+        <span class="c1"># stored in each MS of the session. Retrieve this refant from the first</span>
+        <span class="c1"># MS in the MS list.</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vislist</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Session &#39;</span><span class="si">{</span><span class="n">session_name</span><span class="si">}</span><span class="s2">&#39; is using reference antenna: </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">reference_antenna</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ms</span><span class="o">.</span><span class="n">reference_antenna</span>
+
+    <span class="k">def</span> <span class="nf">_check_matching_pol_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># Retrieve polarization calibrator field name for each MS in session.</span>
+        <span class="n">pol_fields</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">pol_fields</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">)]</span>
+
+        <span class="c1"># Check that each MS has one and only one polarization calibrator.</span>
+        <span class="n">pol_field_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">pol_fields</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Cannot process session &#39;</span><span class="si">{</span><span class="n">session_name</span><span class="si">}</span><span class="s2">&#39;: one or more measurement sets do not have exactly 1&quot;</span> \
+                  <span class="sa">f</span><span class="s2">&quot; polarization calibrator field.&quot;</span>
+            <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">fields</span> <span class="ow">in</span> <span class="n">pol_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s2"> has polarization calibrator field(s): </span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c1"># Check that the polarization field for each MS matches by name.</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">({</span><span class="n">field</span> <span class="k">for</span> <span class="n">visfields</span> <span class="ow">in</span> <span class="n">pol_fields</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">visfields</span><span class="p">})</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Cannot process session &#39;</span><span class="si">{</span><span class="n">session_name</span><span class="si">}</span><span class="s2">&#39;: the measurement sets do not have the same polarization&quot;</span> \
+                  <span class="sa">f</span><span class="s2">&quot; calibrator (fields do not match by name).&quot;</span>
+            <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">fields</span> <span class="ow">in</span> <span class="n">pol_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s2"> has polarization calibrator field: </span><span class="si">{</span><span class="n">fields</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c1"># If no mismatch was found, then return the name of the single</span>
+        <span class="c1"># polarization calibrator field.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pol_field_name</span> <span class="o">=</span> <span class="n">pol_fields</span><span class="p">[</span><span class="n">vislist</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">pol_field_name</span>
+
+    <span class="k">def</span> <span class="nf">_run_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parang</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">acinputs</span> <span class="o">=</span> <span class="n">applycal</span><span class="o">.</span><span class="n">IFApplycalInputs</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+                                             <span class="n">parang</span><span class="o">=</span><span class="n">parang</span><span class="p">,</span> <span class="n">flagsum</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flagdetailedsum</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">actask</span> <span class="o">=</span> <span class="n">applycal</span><span class="o">.</span><span class="n">SerialIFApplycal</span><span class="p">(</span><span class="n">acinputs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">actask</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_session_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method uses mstransform to create a new MS that contains only</span>
+<span class="sd">        the polarization calibrator data.&quot;&quot;&quot;</span>
+        <span class="c1"># Extract polarization data for each vis, and capture name of new MS.</span>
+        <span class="n">pol_vislist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Extracting corrected polarization data for MS </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># Set name of output vis.</span>
+            <span class="n">outputvis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">vis</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.polcalib.ms&#39;</span>
+
+            <span class="c1"># Retrieve science SpW(s) for current MS.</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">sci_spws</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+            <span class="c1"># Create and execute mstransform job to split off the corrected</span>
+            <span class="c1"># column for polarization intent.</span>
+            <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span>
+                <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">to_CASA_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">),</span>
+                <span class="s1">&#39;outputvis&#39;</span><span class="p">:</span> <span class="n">outputvis</span><span class="p">,</span>
+                <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">sci_spws</span><span class="p">,</span>
+                <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;reindex&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">mstransform_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">mstransform</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">mstransform_job</span><span class="p">)</span>
+
+            <span class="n">pol_vislist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outputvis</span><span class="p">)</span>
+
+        <span class="c1"># Concatenate the new polarization MSes into a single session MS.</span>
+        <span class="n">session_msname</span> <span class="o">=</span> <span class="n">session_name</span> <span class="o">+</span> <span class="s1">&#39;_polcalib.ms&#39;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating polarization session measurement set &#39;</span><span class="si">{</span><span class="n">session_msname</span><span class="si">}</span><span class="s2">&#39; from input measurement set(s):&quot;</span>
+                 <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">pol_vislist</span><span class="p">,</span><span class="w"> </span><span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="n">concat_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">pol_vislist</span><span class="p">,</span> <span class="n">concatvis</span><span class="o">=</span><span class="n">session_msname</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">concat_job</span><span class="p">)</span>
+
+        <span class="c1"># Initialize MS object and set its reference antenna to locked, to</span>
+        <span class="c1"># enforce strict refantmode.</span>
+        <span class="n">session_ms</span> <span class="o">=</span> <span class="n">tablereader</span><span class="o">.</span><span class="n">MeasurementSetReader</span><span class="o">.</span><span class="n">get_measurement_set</span><span class="p">(</span><span class="n">session_msname</span><span class="p">)</span>
+        <span class="n">session_ms</span><span class="o">.</span><span class="n">reference_antenna_locked</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Add session MS to local context.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">add_measurement_set</span><span class="p">(</span><span class="n">session_ms</span><span class="p">)</span>
+
+        <span class="c1"># Create SpW mapping from session MS to original input MSes.</span>
+        <span class="n">spwmaps</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="n">target_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">mapped</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">get_spwmap</span><span class="p">(</span><span class="n">session_ms</span><span class="p">,</span> <span class="n">target_ms</span><span class="p">)</span>
+            <span class="n">spwmaps</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">mapped</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mapped</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">spwmaps</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span>
+
+        <span class="k">return</span> <span class="n">session_msname</span><span class="p">,</span> <span class="n">spwmaps</span>
+
+    <span class="k">def</span> <span class="nf">_compute_pol_scan_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="c1"># Get polarization scans for session MS.</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">pol_scans</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+
+        <span class="c1"># Compute median duration of polarization scans.</span>
+        <span class="n">scan_duration</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">([</span><span class="n">scan</span><span class="o">.</span><span class="n">time_on_source</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">pol_scans</span><span class="p">]))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Session MS </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s2">: median scan duration = </span><span class="si">{</span><span class="n">scan_duration</span><span class="si">}</span><span class="s2"> seconds.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scan_duration</span>
+
+    <span class="k">def</span> <span class="nf">_initial_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Initialize gaincal task inputs.</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;ap&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+            <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">refant</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="c1"># Initialize and execute gaincal task.</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">task_inputs</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="c1"># Replace the CalApp in the result with a modified CalApplication to</span>
+        <span class="c1"># register this caltable against the session MS.</span>
+        <span class="n">new_calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_calapp</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_register_calapps_from_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method will register any &quot;final&quot; CalApplication present in any</span>
+<span class="sd">        of the input Results to the callibrary in the local context (stored in</span>
+<span class="sd">        inputs).</span>
+
+<span class="sd">        Note: this is typically done through accepting the result into the</span>
+<span class="sd">        relevant context. However, the framework does not allow merging a</span>
+<span class="sd">        Results object into the same context multiple times. In this</span>
+<span class="sd">        hifa_polcal task, the workflow requires unregistering / re-registering</span>
+<span class="sd">        certain caltables, hence we use this worker method to do so.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Collect CalApps to merge.</span>
+        <span class="n">calapps_to_merge</span> <span class="o">=</span> <span class="p">[</span><span class="n">calapp</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_calapps</span><span class="p">(</span><span class="n">calapps_to_merge</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_register_calapps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calapps</span><span class="p">:</span> <span class="n">List</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method will register a list of CalApplications to the</span>
+<span class="sd">        callibrary in the local context (stored in inputs).&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">calapps</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Adding calibration to callibrary in task-specific context:</span><span class="se">\n</span><span class="si">{</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_compute_gain_ratio_rms</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+        <span class="c1"># Get caltable to analyse.</span>
+        <span class="n">caltable</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
+
+        <span class="c1"># Retrieve gains and scan from caltable.</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">scans</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SCAN_NUMBER&#39;</span><span class="p">)</span>
+            <span class="n">gains</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">))</span>
+
+        <span class="c1"># Compute the gain ratio RMS for each scan.</span>
+        <span class="n">uniq_scans</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">scans</span><span class="p">))</span>
+        <span class="n">ratio_rms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">uniq_scans</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">scanid</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">uniq_scans</span><span class="p">):</span>
+            <span class="n">filt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">scans</span> <span class="o">==</span> <span class="n">scanid</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ratio_rms</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">gains</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">filt</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">gains</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">filt</span><span class="p">])</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">uniq_scans</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">ratio_rms</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_compute_polfromgain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">gcal_result</span><span class="p">:</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">,</span> <span class="n">minpacov</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="c1"># Get caltable to analyse, and set name of output caltable.</span>
+        <span class="n">intable</span> <span class="o">=</span> <span class="n">gcal_result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
+        <span class="n">caltable</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">intable</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_polfromgain.tbl&#39;</span>
+
+        <span class="c1"># Create and run polfromgain CASA task.</span>
+        <span class="n">pfg_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">polfromgain</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">tablein</span><span class="o">=</span><span class="n">intable</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="n">caltable</span><span class="p">,</span> <span class="n">minpacov</span><span class="o">=</span><span class="n">minpacov</span><span class="p">)</span>
+        <span class="n">pfg_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">pfg_job</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pfg_result</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_identify_scan_highest_xy</span><span class="p">(</span><span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">gcal_result</span><span class="p">:</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="c1"># Get caltable to analyse.</span>
+        <span class="n">caltable</span> <span class="o">=</span> <span class="n">gcal_result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
+
+        <span class="c1"># Retrieve scan nr. and gains from initial polarization caltable.</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">scan_ids</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;SCAN_NUMBER&#39;</span><span class="p">)</span>
+            <span class="n">gains</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">))</span>
+
+        <span class="c1"># For each scan, derive the average XX/YY signal ratio.</span>
+        <span class="n">uniq_scan_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">scan_ids</span><span class="p">))</span>
+        <span class="n">ratios</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scan_id</span> <span class="ow">in</span> <span class="n">uniq_scan_ids</span><span class="p">:</span>
+            <span class="n">scan_idx</span> <span class="o">=</span> <span class="n">scan_ids</span> <span class="o">==</span> <span class="n">scan_id</span>
+            <span class="n">ratios</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">gains</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">scan_idx</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">gains</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">scan_idx</span><span class="p">])</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.</span><span class="p">))))</span>
+
+        <span class="c1"># Identify the scan with the best XY signal ratio as the scan where the</span>
+        <span class="c1"># polarization signal is minimum in XX and YY.</span>
+        <span class="n">best_ratio_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">ratios</span><span class="p">)</span>
+        <span class="n">best_scan_id</span> <span class="o">=</span> <span class="n">uniq_scan_ids</span><span class="p">[</span><span class="n">best_ratio_idx</span><span class="p">]</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Session </span><span class="si">{</span><span class="n">session_name</span><span class="si">}</span><span class="s2"> - scan with highest expected XY signal: </span><span class="si">{</span><span class="n">best_scan_id</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">best_scan_id</span>
+
+    <span class="k">def</span> <span class="nf">_compute_xy_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">best_scan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> \
+            <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Initialize gaincal task inputs.</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;ap&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+            <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">best_scan</span><span class="p">),</span>
+            <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># needed when selecting on scan.</span>
+            <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;inf&#39;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">solint_chavg</span><span class="p">]),</span>
+            <span class="s1">&#39;smodel&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;KCROSS&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">refant</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="c1"># Initialize and execute gaincal task.</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">task_inputs</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="c1"># Replace the CalApp in the result with a modified CalApplication to</span>
+        <span class="c1"># register this caltable against the session MS.</span>
+        <span class="n">new_calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span>
+                                                    <span class="n">calwt</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_calapp</span><span class="p">]</span>
+
+        <span class="c1"># For each MS in this session, create a modified CalApplication to</span>
+        <span class="c1"># register this caltable against it.</span>
+        <span class="n">final_calapps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">inp_vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="c1"># Retrieve science SpW(s) for vis.</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">inp_vis</span><span class="p">)</span>
+            <span class="n">sci_spws</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+            <span class="c1"># Create and append modified CalApplication.</span>
+            <span class="n">final_calapps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vis</span><span class="o">=</span><span class="n">inp_vis</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">sci_spws</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                                <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">calwt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmaps</span><span class="p">[</span><span class="n">inp_vis</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">final_calapps</span>
+
+    <span class="k">def</span> <span class="nf">_calibrate_xy_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">scan_duration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                            <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">polcal</span><span class="o">.</span><span class="n">polcalworker</span><span class="o">.</span><span class="n">PolcalWorkerResults</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Initialize polcal task inputs.</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+            <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;inf&#39;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">solint_chavg</span><span class="p">]),</span>
+            <span class="s1">&#39;smodel&#39;</span><span class="p">:</span> <span class="n">smodel</span><span class="p">,</span>
+            <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="s1">&#39;obs,scan&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;poltype&#39;</span><span class="p">:</span> <span class="s1">&#39;Xfparang+QU&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;preavg&#39;</span><span class="p">:</span> <span class="n">scan_duration</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">polcal</span><span class="o">.</span><span class="n">PolcalWorker</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="c1"># Initialize and execute polcal task.</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">polcal</span><span class="o">.</span><span class="n">PolcalWorker</span><span class="p">(</span><span class="n">task_inputs</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="c1"># Replace the CalApp in the result with a modified CalApplication to</span>
+        <span class="c1"># register this caltable against the session MS.</span>
+        <span class="n">new_calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span>
+                                                    <span class="n">calwt</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_calapp</span><span class="p">]</span>
+
+        <span class="c1"># For each MS in this session, create a modified CalApplication to</span>
+        <span class="c1"># register this caltable against it.</span>
+        <span class="n">final_calapps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">inp_vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="c1"># Retrieve science SpW(s) for vis.</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">inp_vis</span><span class="p">)</span>
+            <span class="n">sci_spws</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+            <span class="c1"># Create and append modified CalApplication.</span>
+            <span class="n">final_calapps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vis</span><span class="o">=</span><span class="n">inp_vis</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">sci_spws</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                                <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">calwt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmaps</span><span class="p">[</span><span class="n">inp_vis</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">final_calapps</span>
+
+    <span class="k">def</span> <span class="nf">_unregister_caltables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method will unregister from the callibrary in the local context</span>
+<span class="sd">        (stored in inputs) any CalApplication that is registered for caltable</span>
+<span class="sd">        produced so far during this hifa_polcal task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Define predicate function that matches the kind of caltable that</span>
+        <span class="c1"># needs to be removed from the CalLibrary.</span>
+        <span class="k">def</span> <span class="nf">hifa_polcal_matcher</span><span class="p">(</span><span class="n">calto</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalToArgs</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="n">calto_vis</span> <span class="o">=</span> <span class="p">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">calto</span><span class="o">.</span><span class="n">vis</span><span class="p">}</span>
+            <span class="n">do_delete</span> <span class="o">=</span> <span class="s1">&#39;hifa_polcal&#39;</span> <span class="ow">in</span> <span class="n">calfrom</span><span class="o">.</span><span class="n">gaintable</span> <span class="ow">and</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">calto_vis</span>
+            <span class="k">if</span> <span class="n">do_delete</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unregistering caltable </span><span class="si">{</span><span class="n">calfrom</span><span class="o">.</span><span class="n">gaintable</span><span class="si">}</span><span class="s1"> from task-specific context.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">do_delete</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">unregister_calibrations</span><span class="p">(</span><span class="n">hifa_polcal_matcher</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_final_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> \
+            <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Initialize gaincal task inputs.</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;ap&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+            <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;smodel&#39;</span><span class="p">:</span> <span class="n">smodel</span><span class="p">,</span>
+            <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">refant</span><span class="p">,</span>
+            <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="c1"># Initialize and execute gaincal task.</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">task_inputs</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="c1"># Replace the CalApp in the result with a modified CalApplication to</span>
+        <span class="c1"># register this caltable against the session MS.</span>
+        <span class="n">new_calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_calapp</span><span class="p">]</span>
+
+        <span class="c1"># For each MS in this session, create a modified CalApplication to</span>
+        <span class="c1"># register this caltable against it.</span>
+        <span class="n">final_calapps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">inp_vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="c1"># Retrieve science SpW(s) for vis.</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">inp_vis</span><span class="p">)</span>
+            <span class="n">sci_spws</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+            <span class="c1"># Create and append modified CalApplication.</span>
+            <span class="n">final_calapps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vis</span><span class="o">=</span><span class="n">inp_vis</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">sci_spws</span><span class="p">,</span>
+                                                                <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+                                                                <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmaps</span><span class="p">[</span><span class="n">inp_vis</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">final_calapps</span>
+
+    <span class="k">def</span> <span class="nf">_compute_leakage_terms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">scan_duration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                               <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">polcal</span><span class="o">.</span><span class="n">polcalworker</span><span class="o">.</span><span class="n">PolcalWorkerResults</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Initialize polcal task inputs.</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+            <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;inf&#39;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">solint_chavg</span><span class="p">]),</span>
+            <span class="s1">&#39;smodel&#39;</span><span class="p">:</span> <span class="n">smodel</span><span class="p">,</span>
+            <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="s1">&#39;obs,scan&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;poltype&#39;</span><span class="p">:</span> <span class="s1">&#39;Dflls&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;preavg&#39;</span><span class="p">:</span> <span class="n">scan_duration</span><span class="p">,</span>
+            <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">polcal</span><span class="o">.</span><span class="n">PolcalWorker</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="c1"># Initialize and execute polcal task.</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">polcal</span><span class="o">.</span><span class="n">PolcalWorker</span><span class="p">(</span><span class="n">task_inputs</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="c1"># Replace the CalApp in the result with a modified CalApplication to</span>
+        <span class="c1"># register this caltable against the session MS.</span>
+        <span class="n">new_calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span>
+                                                    <span class="n">calwt</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_calapp</span><span class="p">]</span>
+
+        <span class="c1"># For each MS in this session, create a modified CalApplication to</span>
+        <span class="c1"># register this caltable against it.</span>
+        <span class="n">final_calapps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">inp_vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="c1"># Retrieve science SpW(s) for vis.</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">inp_vis</span><span class="p">)</span>
+            <span class="n">sci_spws</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+            <span class="c1"># Create and append modified CalApplication.</span>
+            <span class="n">final_calapps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vis</span><span class="o">=</span><span class="n">inp_vis</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">sci_spws</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                                <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">calwt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmaps</span><span class="p">[</span><span class="n">inp_vis</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">final_calapps</span>
+
+    <span class="k">def</span> <span class="nf">_compute_xy_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> \
+            <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Initialize gaincal task inputs.</span>
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+            <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;inf&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;smodel&#39;</span><span class="p">:</span> <span class="n">smodel</span><span class="p">,</span>
+            <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="s1">&#39;obs,scan&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">refant</span><span class="p">,</span>
+            <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="c1"># Initialize and execute gaincal task.</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">task_inputs</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="c1"># For each MS in this session, create a modified CalApplication to</span>
+        <span class="c1"># register this caltable against the non-polarization intents.</span>
+        <span class="n">final_calapps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">inp_vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="c1"># Retrieve science SpW(s) for vis.</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">inp_vis</span><span class="p">)</span>
+            <span class="n">sci_spws</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+            <span class="c1"># Create and append modified CalApplication.</span>
+            <span class="n">final_calapps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vis</span><span class="o">=</span><span class="n">inp_vis</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">sci_spws</span><span class="p">,</span>
+                                                                <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;AMPLITUDE,BANDPASS,CHECK,PHASE,TARGET&#39;</span><span class="p">,</span>
+                                                                <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmaps</span><span class="p">[</span><span class="n">inp_vis</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">final_calapps</span>
+
+    <span class="k">def</span> <span class="nf">_run_visstat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obsid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">obsid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">obsid</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># Retrieve science SpW(s) for vis.</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">sci_spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+
+        <span class="c1"># Collect visstat results for each SpW in MS.</span>
+        <span class="n">vs_results</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">sci_spw</span> <span class="ow">in</span> <span class="n">sci_spws</span><span class="p">:</span>
+            <span class="c1"># Create and run CASA visstat job.</span>
+            <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span>
+                <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">to_CASA_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">),</span>
+                <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">sci_spw</span><span class="p">),</span>
+                <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;observation&#39;</span><span class="p">:</span> <span class="n">obsid</span><span class="p">,</span>
+                <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="s1">&#39;XY,YX&#39;</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">visstat_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">visstat</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+            <span class="n">visstat_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">visstat_job</span><span class="p">)</span>
+            <span class="n">vs_results</span><span class="p">[</span><span class="n">sci_spw</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">visstat_result</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">vs_results</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_compare_visstat_results</span><span class="p">(</span><span class="n">stats</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">session_vs_results</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">vis_vs_results</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+                                 <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="c1"># Define function for determining the difference in given visstat</span>
+        <span class="c1"># derived statistic between session MS and individual MS.</span>
+        <span class="k">def</span> <span class="nf">compute_diff</span><span class="p">(</span><span class="n">vres</span><span class="p">,</span> <span class="n">sres</span><span class="p">,</span> <span class="n">st</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">vres</span><span class="p">[</span><span class="n">st</span><span class="p">]</span> <span class="o">-</span> <span class="n">sres</span><span class="p">[</span><span class="n">st</span><span class="p">])</span> <span class="o">/</span> <span class="n">sres</span><span class="p">[</span><span class="n">st</span><span class="p">]</span>
+
+        <span class="c1"># Collect difference to put in task result.</span>
+        <span class="n">diffs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">stats_to_compare</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Compare visstat results for each observation id in the session MS</span>
+        <span class="c1"># with the corresponding individual MS.</span>
+        <span class="k">for</span> <span class="n">obsid</span><span class="p">,</span> <span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">vis_vs_result</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vis_vs_results</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">session_vs_result</span> <span class="o">=</span> <span class="n">session_vs_results</span><span class="p">[</span><span class="n">obsid</span><span class="p">]</span>
+            <span class="n">diffs</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">visres</span> <span class="ow">in</span> <span class="n">vis_vs_result</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="n">stats_to_compare</span><span class="p">:</span>
+                    <span class="n">diffs</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">stat</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_diff</span><span class="p">(</span><span class="n">visres</span><span class="p">,</span> <span class="n">session_vs_result</span><span class="p">[</span><span class="n">spwmaps</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">spw_id</span><span class="p">]],</span> <span class="n">stat</span><span class="p">)</span>
+
+                    <span class="c1"># If the relative difference is above the threshold, then</span>
+                    <span class="c1"># report the difference to the CASA log.</span>
+                    <span class="k">if</span> <span class="n">diffs</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">stat</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Large relative difference found in comparison of visstat results for session MS and&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s2">, SpW </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s2">, statistic &#39;</span><span class="si">{</span><span class="n">stat</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">diffs</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">stat</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">diffs</span>
+
+    <span class="k">def</span> <span class="nf">_setjy_for_polcal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]):</span>
+        <span class="c1"># Get pol calibrator field ID and science SpWs from MS.</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">sci_spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># This assumes that there is one and only one polcal field.</span>
+        <span class="n">polcal_field</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Get imported flux density measurements (populated during importdata</span>
+        <span class="c1"># stage).</span>
+        <span class="n">import_fluxes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">polcal_field</span><span class="o">.</span><span class="n">flux_densities</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;spw_id&#39;</span><span class="p">))</span>
+
+        <span class="c1"># Check for presence of fluxscale derived flux measurements in current</span>
+        <span class="c1"># MS. These should have been populated by the hifa_gfluxscale stage. If</span>
+        <span class="c1"># not present, log warning and return without running setjy.</span>
+        <span class="k">if</span> <span class="n">ms</span><span class="o">.</span><span class="n">fluxscale_fluxes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No fluxscale derived flux measurements registered for </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s2">, cannot retrieve total&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; intensity, skipping setjy step for polarization calibrator in this MS.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Get fluxscale derived flux measurements for the polarization</span>
+        <span class="c1"># calibrator field in the current MS</span>
+        <span class="n">gfs_fluxes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">fluxscale_fluxes</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">polcal_field</span><span class="o">.</span><span class="n">id</span><span class="p">)],</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;spw_id&#39;</span><span class="p">))</span>
+
+        <span class="c1"># Create a separate job for each SpW, to use corresponding reffreq.</span>
+        <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">sci_spw</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sci_spws</span><span class="p">):</span>
+            <span class="c1"># Get the spectral index for current SpW from imported flux</span>
+            <span class="c1"># density measurements.</span>
+            <span class="n">spix</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">import_fluxes</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">spix</span><span class="p">)</span>
+
+            <span class="c1"># Get fluxes for current SpW.</span>
+            <span class="n">iquv</span> <span class="o">=</span> <span class="n">gfs_fluxes</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">casa_flux_density</span>
+
+            <span class="c1"># For setjy command, use total intensity from hifa_gfluxscale stage,</span>
+            <span class="c1"># and use QUV from earlier in this stage but scaled by total intensity.</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="n">iquv</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">smodel</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">iquv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># Set reference frequency to the central frequency of this SpW.</span>
+            <span class="n">reffreq</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sci_spw</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">GHz&quot;</span>
+
+            <span class="c1"># Initialize setjy task inputs.</span>
+            <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span>
+                <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">sci_spw</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+                <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">to_CASA_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">),</span>
+                <span class="s1">&#39;scalebychan&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;standard&#39;</span><span class="p">:</span> <span class="s1">&#39;manual&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;fluxdensity&#39;</span><span class="p">:</span> <span class="n">iquv</span><span class="p">,</span>
+                <span class="s1">&#39;spix&#39;</span><span class="p">:</span> <span class="n">spix</span><span class="p">,</span>
+                <span class="s1">&#39;reffreq&#39;</span><span class="p">:</span> <span class="n">reffreq</span><span class="p">,</span>
+                <span class="s1">&#39;usescratch&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">setjy</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_compute_ampcal_for_polcal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> \
+            <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">],</span> <span class="n">List</span><span class="p">]:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">final_calapps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
+            <span class="c1"># Initialize gaincal task inputs.</span>
+            <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">vis</span><span class="p">,</span>
+                <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+                <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;inf&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="n">refant</span><span class="p">,</span>
+                <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+            <span class="c1"># Initialize and execute gaincal task.</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">task_inputs</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+            <span class="c1"># Create a modified CalApplication to register this caltable</span>
+            <span class="c1"># against the polarization intents.</span>
+            <span class="n">final_calapps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+                                                                <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">final_calapps</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

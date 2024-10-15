@@ -1,0 +1,53 @@
+pipeline.hif.tasks.setmodel package
+===================================
+
+Submodules
+----------
+
+pipeline.hif.tasks.setmodel.display module
+------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.setmodel.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.setmodel.qa module
+-------------------------------------
+
+.. automodule:: pipeline.hif.tasks.setmodel.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.setmodel.renderer module
+-------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.setmodel.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.setmodel.setjy module
+----------------------------------------
+
+.. automodule:: pipeline.hif.tasks.setmodel.setjy
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.setmodel.setmodel module
+-------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.setmodel.setmodel
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hif.tasks.setmodel
+   :members:
+   :undoc-members:
+   :show-inheritance:

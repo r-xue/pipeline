@@ -1,0 +1,19 @@
+pipeline.hifv.tasks.opcal.opcal
+===============================
+
+.. automodule:: pipeline.hifv.tasks.opcal.opcal
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      find_EVLA_band
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Opcal
+      OpcalInputs
+   

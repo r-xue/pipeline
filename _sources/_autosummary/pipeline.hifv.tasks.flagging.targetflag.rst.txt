@@ -1,0 +1,21 @@
+pipeline.hifv.tasks.flagging.targetflag
+=======================================
+
+.. automodule:: pipeline.hifv.tasks.flagging.targetflag
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      contfile_to_spwsel
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      Targetflag
+      TargetflagInputs
+      TargetflagResults
+   

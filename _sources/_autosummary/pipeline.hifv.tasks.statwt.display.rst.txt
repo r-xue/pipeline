@@ -1,0 +1,14 @@
+pipeline.hifv.tasks.statwt.display
+==================================
+
+.. automodule:: pipeline.hifv.tasks.statwt.display
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      vlaWeightboxChart
+      vlassWeightboxChart
+      weightboxChart
+   

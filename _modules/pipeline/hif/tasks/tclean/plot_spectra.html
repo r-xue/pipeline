@@ -1,0 +1,1048 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.tasks.tclean.plot_spectra &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.tasks.tclean.plot_spectra</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.tasks.tclean.plot_spectra</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># This module has been derived from Todd Hunter&#39;s plotSpectrumFromMask module.</span>
+<span class="c1"># It is used to create the diagnostic spectra plots for the cube imaging weblog.</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">degrees</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.ticker</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">casatasks</span> <span class="kn">import</span> <span class="n">imhead</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">ARCSEC_PER_RAD</span> <span class="o">=</span> <span class="mf">206264.80624709636</span>
+<span class="n">c_mks</span> <span class="o">=</span> <span class="mf">2.99792458e8</span>
+
+
+<div class="viewcode-block" id="addFrequencyAxisAbove">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.addFrequencyAxisAbove">[docs]</a>
+<span class="k">def</span> <span class="nf">addFrequencyAxisAbove</span><span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">firstFreq</span><span class="p">,</span> <span class="n">lastFreq</span><span class="p">,</span> <span class="n">freqType</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">showlabel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">twinx</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                          <span class="n">ylimits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xlimits</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given the descriptor returned by plt.subplot, draws a frequency</span>
+<span class="sd">    axis label at the top x-axis.</span>
+<span class="sd">    firstFreq and lastFreq: in Hz</span>
+<span class="sd">    twinx: if True, the create an independent y-axis on right edge</span>
+<span class="sd">    freqType: &#39;LSRK&#39;, &#39;REST&#39;, etc. for axis label purposes only</span>
+<span class="sd">    spw: integer or string (simply to add to the title)</span>
+<span class="sd">    xlimits: tuple or list or array of 2 values (in Hz)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">showlabel</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">spw</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">spw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;(Spw </span><span class="si">%s</span><span class="s1">) </span><span class="si">%s</span><span class="s1"> Frequency (GHz)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">),</span> <span class="n">freqType</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> Frequency (GHz)&#39;</span> <span class="o">%</span> <span class="n">freqType</span>
+    <span class="k">if</span> <span class="n">twinx</span><span class="p">:</span>
+        <span class="n">ax2</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twiny</span><span class="p">()</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Per-channel noise (mJy/beam)&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ylimits</span><span class="p">)</span>
+        <span class="c1"># ax2.set_xlabel does not work in this case, so use plt.text instead</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.055</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax2</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twiny</span><span class="p">()</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">xlimits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xlimits</span><span class="p">)</span><span class="o">*</span><span class="mf">1e-9</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">firstFreq</span><span class="o">*</span><span class="mf">1e-9</span><span class="p">,</span> <span class="n">lastFreq</span><span class="o">*</span><span class="mf">1e-9</span><span class="p">)</span>
+    <span class="n">freqRange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">lastFreq</span><span class="o">-</span><span class="n">firstFreq</span><span class="p">)</span>
+    <span class="n">power</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">freqRange</span><span class="p">))</span><span class="o">-</span><span class="mi">9</span>
+    <span class="n">ax2</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="n">power</span><span class="p">))</span>
+    <span class="n">numberOfTicks</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">visibleTicks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">mytick</span> <span class="ow">in</span> <span class="n">ax2</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">mytick</span><span class="o">*</span><span class="mf">1e9</span> <span class="o">&gt;=</span> <span class="n">firstFreq</span> <span class="ow">and</span> <span class="n">mytick</span><span class="o">*</span><span class="mf">1e9</span> <span class="o">&lt;=</span> <span class="n">lastFreq</span><span class="p">:</span>
+            <span class="n">numberOfTicks</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">visibleTicks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mytick</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numberOfTicks</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="mi">10</span><span class="o">**</span><span class="n">power</span><span class="p">))</span>
+        <span class="n">numberOfTicks</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">visibleTicks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">mytick</span> <span class="ow">in</span> <span class="n">ax2</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">mytick</span><span class="o">*</span><span class="mf">1e9</span> <span class="o">&gt;=</span> <span class="n">firstFreq</span> <span class="ow">and</span> <span class="n">mytick</span><span class="o">*</span><span class="mf">1e9</span> <span class="o">&lt;=</span> <span class="n">lastFreq</span><span class="p">:</span>
+                <span class="n">numberOfTicks</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">visibleTicks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mytick</span><span class="p">)</span>
+    <span class="n">ax2</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mf">0.1</span><span class="o">*</span><span class="mi">10</span><span class="o">**</span><span class="n">power</span><span class="p">))</span>
+    <span class="n">ax2</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">ScalarFormatter</span><span class="p">(</span><span class="n">useOffset</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="numberOfChannelsInCube">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.numberOfChannelsInCube">[docs]</a>
+<span class="k">def</span> <span class="nf">numberOfChannelsInCube</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">returnFreqs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">returnChannelWidth</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds the number of channels in a CASA image cube, using the ia tool.</span>
+<span class="sd">    returnFreqs: if True, then also return the frequency of the</span>
+<span class="sd">           first and last channel (in Hz)</span>
+<span class="sd">    returnChannelWidth: if True, then also return the channel width (in Hz)</span>
+<span class="sd">    verbose: if True, then print the frequencies of first and last channel</span>
+<span class="sd">    Returns: an int</span>
+<span class="sd">    -Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">img</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+        <span class="n">lcs</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">coordsys</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">findaxisbyname</span><span class="p">(</span><span class="s1">&#39;spectral&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find spectral axis. Assuming it is 3.&quot;</span><span class="p">)</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="k">elif</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find spectral axis. Assuming it is 2.&quot;</span><span class="p">)</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="k">elif</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No spectral axis found.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;No spectral axis found/&#39;</span><span class="p">)</span>
+
+        <span class="n">naxes</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">nchan</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">()[</span><span class="n">axis</span><span class="p">]</span>
+        <span class="n">cdelt</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">increment</span><span class="p">()[</span><span class="s1">&#39;numeric&#39;</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span>
+        <span class="n">pixel</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">naxes</span>
+        <span class="n">firstFreq</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">toworld</span><span class="p">(</span><span class="n">pixel</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;n&#39;</span><span class="p">)[</span><span class="s1">&#39;numeric&#39;</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span>
+        <span class="n">pixel</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">nchan</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">lastFreq</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">toworld</span><span class="p">(</span><span class="n">pixel</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;n&#39;</span><span class="p">)[</span><span class="s1">&#39;numeric&#39;</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span>
+        <span class="n">lcs</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+    <span class="n">nchan</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nchan</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">returnFreqs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">returnChannelWidth</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">firstFreq</span><span class="p">,</span> <span class="n">lastFreq</span><span class="p">,</span> <span class="n">cdelt</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">firstFreq</span><span class="p">,</span> <span class="n">lastFreq</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">returnChannelWidth</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">cdelt</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">nchan</span></div>
+
+
+
+<div class="viewcode-block" id="cubeFrameToTopo">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.cubeFrameToTopo">[docs]</a>
+<span class="k">def</span> <span class="nf">cubeFrameToTopo</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">freqrange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">nchan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chanwidth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">msname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fieldid</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads the date of observation, central RA and Dec,</span>
+<span class="sd">    and observatory from an image cube header and then calls lsrkToTopo or</span>
+<span class="sd">    casaRestToTopo to return the specified frequency range in TOPO (in Hz).</span>
+<span class="sd">    freqrange: desired range of frequencies (empty string or list = whole cube)</span>
+<span class="sd">          floating point list of two frequencies, or a delimited string</span>
+<span class="sd">          (delimiter = &#39;,&#39;, &#39;~&#39; or space)</span>
+<span class="sd">    prec: in fractions of Hz (only used to display the value when verbose=True)</span>
+<span class="sd">    msname: MS name</span>
+<span class="sd">    spw: spectral window ID (string)</span>
+<span class="sd">    fieldid: field ID (integer)</span>
+<span class="sd">    header: dictionary output by imheadlist</span>
+<span class="sd">    -Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">header</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">imheadlist</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">omitBeam</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nchan</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">f0</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">f1</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">chanwidth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">nchan</span><span class="p">,</span> <span class="n">f0</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">chanwidth</span> <span class="o">=</span> <span class="n">numberOfChannelsInCube</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">returnFreqs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">returnChannelWidth</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;reffreqtype&#39;</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;reffreqtype&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;TOPO&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f0</span><span class="p">,</span> <span class="n">f1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">freqrange</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">startFreq</span> <span class="o">=</span> <span class="n">f0</span>
+        <span class="n">stopFreq</span> <span class="o">=</span> <span class="n">f1</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">freqrange</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">freqrange</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">freqrange</span> <span class="o">=</span> <span class="p">[</span><span class="n">parseFrequencyArgument</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">freqrange</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+        <span class="k">elif</span> <span class="n">freqrange</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">freqrange</span> <span class="o">=</span> <span class="p">[</span><span class="n">parseFrequencyArgument</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">freqrange</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">freqrange</span> <span class="o">=</span> <span class="p">[</span><span class="n">parseFrequencyArgument</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">freqrange</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+        <span class="n">startFreq</span><span class="p">,</span> <span class="n">stopFreq</span> <span class="o">=</span> <span class="n">freqrange</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">startFreq</span><span class="p">,</span> <span class="n">stopFreq</span> <span class="o">=</span> <span class="n">freqrange</span>
+    <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span> <span class="o">=</span> <span class="n">rad2radec</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;crval1&#39;</span><span class="p">],</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;crval2&#39;</span><span class="p">],</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">equinox</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;equinox&#39;</span><span class="p">]</span>
+    <span class="n">observatory</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;telescope&#39;</span><span class="p">]</span>
+    <span class="n">datestring</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;date-obs&#39;</span><span class="p">]</span>
+
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">img</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+        <span class="n">lcs</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">coordsys</span><span class="p">()</span>
+        <span class="n">freqFrame</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">referencecode</span><span class="p">(</span><span class="s1">&#39;spectral&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">lcs</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">freqFrame</span> <span class="o">==</span> <span class="s1">&#39;LSRK&#39;</span><span class="p">:</span>
+        <span class="n">f0</span> <span class="o">=</span> <span class="n">lsrkToTopo</span><span class="p">(</span><span class="n">startFreq</span><span class="p">,</span> <span class="n">datestring</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">equinox</span><span class="p">,</span> <span class="n">observatory</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+        <span class="n">f1</span> <span class="o">=</span> <span class="n">lsrkToTopo</span><span class="p">(</span><span class="n">stopFreq</span><span class="p">,</span> <span class="n">datestring</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">equinox</span><span class="p">,</span> <span class="n">observatory</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">freqFrame</span> <span class="o">==</span> <span class="s1">&#39;REST&#39;</span><span class="p">:</span>
+        <span class="c1"># REST (or rather SOURCE) frame for ephemeris objects</span>
+        <span class="k">if</span> <span class="n">msname</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No MS provided for SOURCE/REST to TOPO conversion. Skipping frame conversion.&#39;</span><span class="p">)</span>
+            <span class="n">f0</span> <span class="o">=</span> <span class="n">startFreq</span>
+            <span class="n">f1</span> <span class="o">=</span> <span class="n">stopFreq</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">c0</span><span class="p">,</span> <span class="n">c1</span> <span class="o">=</span> <span class="n">casaRestToTopo</span><span class="p">(</span><span class="n">startFreq</span><span class="p">,</span> <span class="n">stopFreq</span><span class="p">,</span> <span class="n">msname</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">)</span>
+
+            <span class="c1"># convert TOPO channel to TOPO frequency</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSMDReader</span><span class="p">(</span><span class="n">msname</span><span class="p">)</span> <span class="k">as</span> <span class="n">msmd</span><span class="p">:</span>
+                <span class="n">chanfreqs</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">chanfreqs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">chanfreqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">chanfreqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>  <span class="c1"># USB</span>
+                    <span class="n">f0</span> <span class="o">=</span> <span class="n">chanfreqs</span><span class="p">[</span><span class="n">c0</span><span class="p">]</span>
+                    <span class="n">f1</span> <span class="o">=</span> <span class="n">chanfreqs</span><span class="p">[</span><span class="n">c1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">f0</span> <span class="o">=</span> <span class="n">chanfreqs</span><span class="p">[</span><span class="n">c1</span><span class="p">]</span>
+                    <span class="n">f1</span> <span class="o">=</span> <span class="n">chanfreqs</span><span class="p">[</span><span class="n">c0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">freqFrame</span> <span class="o">==</span> <span class="s1">&#39;TOPO&#39;</span><span class="p">:</span>
+        <span class="n">f0</span> <span class="o">=</span> <span class="n">startFreq</span>
+        <span class="n">f1</span> <span class="o">=</span> <span class="n">stopFreq</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Unrecognized frequency frame type: </span><span class="si">%s</span><span class="s1">. Skipping frame conversion.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">freqFrame</span><span class="p">))</span>
+        <span class="n">f0</span> <span class="o">=</span> <span class="n">startFreq</span>
+        <span class="n">f1</span> <span class="o">=</span> <span class="n">stopFreq</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f0</span><span class="p">,</span> <span class="n">f1</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="lsrkToTopo">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.lsrkToTopo">[docs]</a>
+<span class="k">def</span> <span class="nf">lsrkToTopo</span><span class="p">(</span><span class="n">lsrkFrequency</span><span class="p">,</span> <span class="n">datestring</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">equinox</span><span class="o">=</span><span class="s1">&#39;J2000&#39;</span><span class="p">,</span> <span class="n">observatory</span><span class="o">=</span><span class="s1">&#39;ALMA&#39;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts an LSRKfrequency and observing date/direction</span>
+<span class="sd">    to the corresponding frequency in the TOPO frame.</span>
+<span class="sd">    Inputs:</span>
+<span class="sd">    lsrkFrequency: floating point value in Hz or GHz, or a string with units</span>
+<span class="sd">    datestring:  &quot;YYYY/MM/DD/HH:MM:SS&quot; (format = image header keyword &#39;date-obs&#39;)</span>
+<span class="sd">    ra: string &quot;HH:MM:SS.SSSS&quot;</span>
+<span class="sd">    dec: string &quot;DD.MM.SS.SSSS&quot; or &quot;DD:MM:SS.SSSS&quot; (colons will be replaced with .)</span>
+<span class="sd">    prec: only used to display the value when verbose=True</span>
+<span class="sd">    Returns: the TOPO frequency in Hz</span>
+<span class="sd">    -Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">velocityLSRK</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># does not matter what it is, just needs to be same in both calls</span>
+    <span class="n">restFreqHz</span> <span class="o">=</span> <span class="n">lsrkToRest</span><span class="p">(</span><span class="n">lsrkFrequency</span><span class="p">,</span> <span class="n">velocityLSRK</span><span class="p">,</span> <span class="n">datestring</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">equinox</span><span class="p">,</span>
+                            <span class="n">observatory</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+    <span class="n">topoFrequencyHz</span> <span class="o">=</span> <span class="n">restToTopo</span><span class="p">(</span><span class="n">restFreqHz</span><span class="p">,</span> <span class="n">velocityLSRK</span><span class="p">,</span> <span class="n">datestring</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">equinox</span><span class="p">,</span> <span class="n">observatory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">topoFrequencyHz</span></div>
+
+
+
+<div class="viewcode-block" id="restToTopo">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.restToTopo">[docs]</a>
+<span class="k">def</span> <span class="nf">restToTopo</span><span class="p">(</span><span class="n">restFrequency</span><span class="p">,</span> <span class="n">velocityLSRK</span><span class="p">,</span> <span class="n">datestring</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">equinox</span><span class="o">=</span><span class="s1">&#39;J2000&#39;</span><span class="p">,</span>
+               <span class="n">observatory</span><span class="o">=</span><span class="s1">&#39;ALMA&#39;</span><span class="p">,</span> <span class="n">veltype</span><span class="o">=</span><span class="s1">&#39;radio&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a rest frequency, LSRK velocity, and observing date/direction</span>
+<span class="sd">    to the corresponding frequency in the TOPO frame.</span>
+<span class="sd">    Inputs:</span>
+<span class="sd">    restFrequency: floating point value in Hz or GHz, or a string with units</span>
+<span class="sd">    velocityLSRK: floating point value in km/s</span>
+<span class="sd">    datestring:  &quot;YYYY/MM/DD/HH:MM:SS&quot;</span>
+<span class="sd">    ra: string &quot;HH:MM:SS.SSSS&quot;</span>
+<span class="sd">    dec: string &quot;DD.MM.SS.SSSS&quot; or &quot;DD:MM:SS.SSSS&quot; (colons will be replaced with .)</span>
+<span class="sd">    prec: only used to display the value when verbose=True</span>
+<span class="sd">    Returns: the TOPO frequency in Hz</span>
+<span class="sd">    -Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">topoFreqHz</span><span class="p">,</span> <span class="n">diff1</span><span class="p">,</span> <span class="n">diff2</span> <span class="o">=</span> <span class="n">frames</span><span class="p">(</span><span class="n">velocityLSRK</span><span class="p">,</span> <span class="n">datestring</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">equinox</span><span class="p">,</span>
+                                      <span class="n">observatory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                                      <span class="n">restFreq</span><span class="o">=</span><span class="n">restFrequency</span><span class="p">,</span> <span class="n">veltype</span><span class="o">=</span><span class="n">veltype</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">topoFreqHz</span></div>
+
+
+
+<div class="viewcode-block" id="casaRestToTopo">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.casaRestToTopo">[docs]</a>
+<span class="k">def</span> <span class="nf">casaRestToTopo</span><span class="p">(</span><span class="n">freqstart</span><span class="p">,</span> <span class="n">freqend</span><span class="p">,</span> <span class="n">msname</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a range of SOURCE frame frequencies to TOPO channels in a </span>
+<span class="sd">    specified measurement set.  The input frequencies should be the </span>
+<span class="sd">    center frequencies of the edge channels in the cube.</span>
+<span class="sd">    freqstart: range start frequency in Hz</span>
+<span class="sd">    freqend: range end frequency in Hz</span>
+<span class="sd">    msname: MS name</span>
+<span class="sd">    spw: spectral window ID (string)</span>
+<span class="sd">    fieldid: field ID (integer)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">lsu</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">synthesisutils</span>
+
+    <span class="c1"># Figure out which channels in the ms were used to make the SOURCE frame cube</span>
+    <span class="c1"># this function expects the center frequency of each edge channel and returns channel number in ms/spw</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">lsu</span><span class="o">.</span><span class="n">advisechansel</span><span class="p">(</span><span class="n">msname</span><span class="o">=</span><span class="n">msname</span><span class="p">,</span> <span class="n">freqframe</span><span class="o">=</span><span class="s1">&#39;SOURCE&#39;</span><span class="p">,</span>
+                               <span class="n">ephemtable</span><span class="o">=</span><span class="s1">&#39;TRACKFIELD&#39;</span><span class="p">,</span> <span class="n">fieldid</span><span class="o">=</span><span class="n">fieldid</span><span class="p">,</span>
+                               <span class="n">freqstart</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">Hz&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">freqstart</span><span class="p">)),</span>
+                               <span class="n">freqend</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">Hz&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">freqend</span><span class="p">)))</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">startChan</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
+    <span class="n">nchan</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;nchan&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
+    <span class="n">stopChan</span> <span class="o">=</span> <span class="n">startChan</span> <span class="o">+</span> <span class="n">nchan</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">startChan</span><span class="p">,</span> <span class="n">stopChan</span></div>
+
+
+
+<div class="viewcode-block" id="frames">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.frames">[docs]</a>
+<span class="k">def</span> <span class="nf">frames</span><span class="p">(</span><span class="n">velocity</span><span class="o">=</span><span class="mf">286.7</span><span class="p">,</span> <span class="n">datestring</span><span class="o">=</span><span class="s2">&quot;2005/11/01/00:00:00&quot;</span><span class="p">,</span>
+           <span class="n">ra</span><span class="o">=</span><span class="s2">&quot;05:35:28.105&quot;</span><span class="p">,</span> <span class="n">dec</span><span class="o">=</span><span class="s2">&quot;-069.16.10.99&quot;</span><span class="p">,</span> <span class="n">equinox</span><span class="o">=</span><span class="s2">&quot;J2000&quot;</span><span class="p">,</span>
+           <span class="n">observatory</span><span class="o">=</span><span class="s2">&quot;ALMA&quot;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+           <span class="n">restFreq</span><span class="o">=</span><span class="mf">345.79599</span><span class="p">,</span> <span class="n">veltype</span><span class="o">=</span><span class="s1">&#39;optical&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts an optical velocity into barycentric, LSRK and TOPO frames.</span>
+<span class="sd">    Converts a radio LSRK velocity into TOPO frame.</span>
+<span class="sd">    Inputs:</span>
+<span class="sd">    velocity: in km/s</span>
+<span class="sd">    datestring:  &quot;YYYY/MM/DD/HH:MM:SS&quot;</span>
+<span class="sd">    ra: &quot;05:35:28.105&quot;</span>
+<span class="sd">    dec: &quot;-069.16.10.99&quot;</span>
+<span class="sd">    equinox: &quot;J2000&quot;</span>
+<span class="sd">    observatory: &quot;ALMA&quot;</span>
+<span class="sd">    prec: precision to display (digits to the right of the decimal point)</span>
+<span class="sd">    veltype: &#39;radio&#39; or &#39;optical&#39;</span>
+<span class="sd">    restFreq: in Hz, GHz or a string with units</span>
+<span class="sd">    Returns:</span>
+<span class="sd">    * TOPO frequency in Hz</span>
+<span class="sd">    * difference between LSRK-TOPO in km/sec</span>
+<span class="sd">    * difference between LSRK-TOPO in Hz</span>
+<span class="sd">    - Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lme</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+    <span class="n">lqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+    <span class="k">if</span> <span class="n">dec</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">dec</span> <span class="o">=</span> <span class="n">dec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+
+    <span class="n">position</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="n">equinox</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span>
+    <span class="n">obstime</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="s1">&#39;TAI&#39;</span><span class="p">,</span> <span class="n">datestring</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">veltype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;opt&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">velOpt</span> <span class="o">=</span> <span class="n">lqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">velocity</span><span class="p">,</span> <span class="s2">&quot;km/s&quot;</span><span class="p">)</span>
+        <span class="n">dopp</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">doppler</span><span class="p">(</span><span class="s2">&quot;OPTICAL&quot;</span><span class="p">,</span> <span class="n">velOpt</span><span class="p">)</span>
+        <span class="c1"># CASA doesn&#39;t do Helio, but difference to Bary is hopefully small</span>
+        <span class="n">rvelOpt</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">toradialvelocity</span><span class="p">(</span><span class="s2">&quot;BARY&quot;</span><span class="p">,</span> <span class="n">dopp</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">veltype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;rad&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">rvelOpt</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">radialvelocity</span><span class="p">(</span><span class="s1">&#39;LSRK&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;km/s&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;veltype must be &#39;rad&#39;io or &#39;opt&#39;ical&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">lme</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+    <span class="n">lme</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">lme</span><span class="o">.</span><span class="n">observatory</span><span class="p">(</span><span class="n">observatory</span><span class="p">))</span>
+    <span class="n">lme</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
+    <span class="n">lme</span><span class="o">.</span><span class="n">showframe</span><span class="p">()</span>
+
+    <span class="n">rvelRad</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">rvelOpt</span><span class="p">,</span> <span class="s1">&#39;LSRK&#39;</span><span class="p">)</span>
+    <span class="n">doppRad</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">todoppler</span><span class="p">(</span><span class="s2">&quot;RADIO&quot;</span><span class="p">,</span> <span class="n">rvelRad</span><span class="p">)</span>
+    <span class="n">restFreq</span> <span class="o">=</span> <span class="n">parseFrequencyArgumentToGHz</span><span class="p">(</span><span class="n">restFreq</span><span class="p">)</span>
+    <span class="n">freqRad</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">tofrequency</span><span class="p">(</span><span class="s1">&#39;LSRK&#39;</span><span class="p">,</span> <span class="n">doppRad</span><span class="p">,</span> <span class="n">lme</span><span class="o">.</span><span class="n">frequency</span><span class="p">(</span><span class="s1">&#39;rest&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">restFreq</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;GHz&#39;</span><span class="p">))</span>
+
+    <span class="n">lsrk</span> <span class="o">=</span> <span class="n">lqa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">rvelRad</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">],</span> <span class="n">prec</span><span class="o">=</span><span class="n">prec</span><span class="p">)</span>
+    <span class="n">rvelTop</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">rvelOpt</span><span class="p">,</span> <span class="s1">&#39;TOPO&#39;</span><span class="p">)</span>
+    <span class="n">doppTop</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">todoppler</span><span class="p">(</span><span class="s2">&quot;RADIO&quot;</span><span class="p">,</span> <span class="n">rvelTop</span><span class="p">)</span>
+    <span class="n">freqTop</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">tofrequency</span><span class="p">(</span><span class="s1">&#39;TOPO&#39;</span><span class="p">,</span> <span class="n">doppTop</span><span class="p">,</span> <span class="n">lme</span><span class="o">.</span><span class="n">frequency</span><span class="p">(</span><span class="s1">&#39;rest&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">restFreq</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;GHz&#39;</span><span class="p">))</span>
+
+    <span class="n">topo</span> <span class="o">=</span> <span class="n">lqa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">rvelTop</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">],</span> <span class="n">prec</span><span class="o">=</span><span class="n">prec</span><span class="p">)</span>
+    <span class="n">velocityDifference</span> <span class="o">=</span> <span class="mf">0.001</span><span class="o">*</span><span class="p">(</span><span class="n">rvelRad</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">rvelTop</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+    <span class="n">frequencyDifference</span> <span class="o">=</span> <span class="n">freqRad</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">freqTop</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+    <span class="n">lme</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+    <span class="n">lqa</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">freqTop</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">velocityDifference</span><span class="p">,</span> <span class="n">frequencyDifference</span></div>
+
+
+
+<div class="viewcode-block" id="RescaleTrans">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.RescaleTrans">[docs]</a>
+<span class="k">def</span> <span class="nf">RescaleTrans</span><span class="p">(</span><span class="n">trans</span><span class="p">,</span> <span class="n">lim</span><span class="p">):</span>
+    <span class="c1"># Input: the array of transmission values and current y-axis limits</span>
+    <span class="c1"># Returns: arrays of the rescaled transmission values and the zero point</span>
+    <span class="c1">#          values in units of the frame, and in amplitude.</span>
+    <span class="n">debug</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">yrange</span> <span class="o">=</span> <span class="n">lim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">lim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">labelgap</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="c1"># Use this fraction of the margin to separate the top</span>
+                       <span class="c1"># curve from the upper y-axis</span>
+    <span class="n">TOP_MARGIN</span> <span class="o">=</span> <span class="mf">0.25</span>
+    <span class="n">y2</span> <span class="o">=</span> <span class="n">lim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">labelgap</span><span class="o">*</span><span class="n">yrange</span><span class="o">*</span><span class="n">TOP_MARGIN</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">TOP_MARGIN</span><span class="p">)</span>
+    <span class="n">y1</span> <span class="o">=</span> <span class="n">lim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">yrange</span><span class="o">*</span><span class="n">TOP_MARGIN</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">TOP_MARGIN</span><span class="p">)</span>
+    <span class="n">transmissionRange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">transmissionRange</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">):</span>
+        <span class="c1"># force there to be a minimum range of transmission display</span>
+        <span class="c1"># overemphasize tiny ozone lines</span>
+        <span class="n">transmissionRange</span> <span class="o">=</span> <span class="mf">0.05</span>
+    <span class="c1"># convert transmission to amplitude</span>
+    <span class="n">newtrans</span> <span class="o">=</span> <span class="n">y2</span> <span class="o">-</span> <span class="p">(</span><span class="n">y2</span><span class="o">-</span><span class="n">y1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span><span class="o">-</span><span class="n">trans</span><span class="p">)</span><span class="o">/</span><span class="n">transmissionRange</span>
+
+    <span class="c1"># Use edge values</span>
+    <span class="n">edgeValueTransmission</span> <span class="o">=</span> <span class="n">trans</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">otherEdgeValueTransmission</span> <span class="o">=</span> <span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Now convert the edge channels&#39; transmission values into amplitude</span>
+    <span class="n">edgeValueAmplitude</span> <span class="o">=</span> <span class="n">y2</span> <span class="o">-</span> <span class="p">(</span><span class="n">y2</span><span class="o">-</span><span class="n">y1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span><span class="o">-</span><span class="n">trans</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">transmissionRange</span>
+    <span class="n">otherEdgeValueAmplitude</span> <span class="o">=</span> <span class="n">y2</span> <span class="o">-</span> <span class="p">(</span><span class="n">y2</span><span class="o">-</span><span class="n">y1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span><span class="o">-</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="n">transmissionRange</span>
+
+    <span class="c1"># Now convert amplitude to frame units, offsetting downward by half</span>
+    <span class="c1"># the font size</span>
+    <span class="n">fontoffset</span> <span class="o">=</span> <span class="mf">0.01</span>
+    <span class="n">edgeValueFrame</span> <span class="o">=</span> <span class="p">(</span><span class="n">edgeValueAmplitude</span> <span class="o">-</span> <span class="n">lim</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="n">yrange</span>  <span class="o">-</span> <span class="n">fontoffset</span>
+    <span class="n">otherEdgeValueFrame</span> <span class="o">=</span> <span class="p">(</span><span class="n">otherEdgeValueAmplitude</span> <span class="o">-</span> <span class="n">lim</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="n">yrange</span>  <span class="o">-</span> <span class="n">fontoffset</span>
+
+    <span class="c1"># scaleFactor is how large the plot is from the bottom x-axis</span>
+    <span class="c1"># up to the labelgap, in units of the transmissionRange</span>
+    <span class="n">scaleFactor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">TOP_MARGIN</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">labelgap</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">TOP_MARGIN</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">labelgap</span><span class="p">))</span>
+
+    <span class="c1"># compute the transmission at the bottom of the plot, and label it</span>
+    <span class="n">y0transmission</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span> <span class="o">-</span> <span class="n">transmissionRange</span><span class="o">*</span><span class="n">scaleFactor</span>
+    <span class="n">y0transmissionFrame</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">y0transmissionAmplitude</span> <span class="o">=</span> <span class="n">lim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">y0transmission</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="c1"># If the bottom of the plot is below zero transmission, then label</span>
+        <span class="c1"># the location of zero transmission instead.</span>
+        <span class="n">y0transmissionAmplitude</span> <span class="o">=</span> <span class="n">y1</span><span class="o">-</span><span class="p">(</span><span class="n">y2</span><span class="o">-</span><span class="n">y1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span><span class="o">/</span><span class="n">transmissionRange</span><span class="p">)</span>
+        <span class="n">y0transmissionFrame</span> <span class="o">=</span> <span class="p">(</span><span class="n">y0transmissionAmplitude</span><span class="o">-</span><span class="n">lim</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">lim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">lim</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">y0transmission</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">newtrans</span><span class="p">,</span> <span class="n">edgeValueFrame</span><span class="p">,</span> <span class="n">y0transmission</span><span class="p">,</span> <span class="n">y0transmissionFrame</span><span class="p">,</span>
+           <span class="n">otherEdgeValueFrame</span><span class="p">,</span> <span class="n">edgeValueTransmission</span><span class="p">,</span>
+           <span class="n">otherEdgeValueTransmission</span><span class="p">,</span> <span class="n">edgeValueAmplitude</span><span class="p">,</span>
+           <span class="n">otherEdgeValueAmplitude</span><span class="p">,</span> <span class="n">y0transmissionAmplitude</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="lsrkToRest">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.lsrkToRest">[docs]</a>
+<span class="k">def</span> <span class="nf">lsrkToRest</span><span class="p">(</span><span class="n">lsrkFrequency</span><span class="p">,</span> <span class="n">velocityLSRK</span><span class="p">,</span> <span class="n">datestring</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span>
+               <span class="n">equinox</span><span class="o">=</span><span class="s1">&#39;J2000&#39;</span><span class="p">,</span> <span class="n">observatory</span><span class="o">=</span><span class="s1">&#39;ALMA&#39;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts an LSRK frequency, LSRK velocity, and observing date/direction</span>
+<span class="sd">    to the corresponding frequency in the rest frame.</span>
+<span class="sd">    Inputs:</span>
+<span class="sd">    lsrkFrequency: floating point value in Hz or GHz, or a string with units</span>
+<span class="sd">    velocityLSRK: floating point value in km/s</span>
+<span class="sd">    datestring:  &quot;YYYY/MM/DD/HH:MM:SS&quot; (format = image header keyword &#39;date-obs&#39;)</span>
+<span class="sd">    ra: string &quot;HH:MM:SS.SSSS&quot;</span>
+<span class="sd">    dec: string &quot;DD.MM.SS.SSSS&quot; or &quot;DD:MM:SS.SSSS&quot; (colons will be replaced with .)</span>
+<span class="sd">    prec: only used to display the value when verbose=True</span>
+<span class="sd">    Returns: the Rest frequency in Hz</span>
+<span class="sd">    -Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dec</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">dec</span> <span class="o">=</span> <span class="n">dec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: replacing colons with decimals in the dec field.&quot;</span><span class="p">)</span>
+    <span class="n">freqGHz</span> <span class="o">=</span> <span class="n">parseFrequencyArgumentToGHz</span><span class="p">(</span><span class="n">lsrkFrequency</span><span class="p">)</span>
+    <span class="n">lqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+    <span class="n">lme</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+    <span class="n">velocityRadio</span> <span class="o">=</span> <span class="n">lqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">velocityLSRK</span><span class="p">,</span> <span class="s2">&quot;km/s&quot;</span><span class="p">)</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="n">equinox</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span>
+    <span class="n">obstime</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="s1">&#39;TAI&#39;</span><span class="p">,</span> <span class="n">datestring</span><span class="p">)</span>
+    <span class="n">dopp</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">doppler</span><span class="p">(</span><span class="s2">&quot;RADIO&quot;</span><span class="p">,</span> <span class="n">velocityRadio</span><span class="p">)</span>
+    <span class="n">radialVelocityLSRK</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">toradialvelocity</span><span class="p">(</span><span class="s2">&quot;LSRK&quot;</span><span class="p">,</span> <span class="n">dopp</span><span class="p">)</span>
+    <span class="n">lme</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+    <span class="n">lme</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">lme</span><span class="o">.</span><span class="n">observatory</span><span class="p">(</span><span class="n">observatory</span><span class="p">))</span>
+    <span class="n">lme</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
+    <span class="n">rvelRad</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">radialVelocityLSRK</span><span class="p">,</span> <span class="s1">&#39;LSRK&#39;</span><span class="p">)</span>
+    <span class="n">doppRad</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">todoppler</span><span class="p">(</span><span class="s1">&#39;RADIO&#39;</span><span class="p">,</span> <span class="n">rvelRad</span><span class="p">)</span>
+    <span class="n">freqRad</span> <span class="o">=</span> <span class="n">lme</span><span class="o">.</span><span class="n">torestfrequency</span><span class="p">(</span><span class="n">lme</span><span class="o">.</span><span class="n">frequency</span><span class="p">(</span><span class="s1">&#39;LSRK&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">freqGHz</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;GHz&#39;</span><span class="p">),</span> <span class="n">dopp</span><span class="p">)</span>
+    <span class="n">lqa</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+    <span class="n">lme</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">freqRad</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="parseFrequencyArgumentToGHz">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.parseFrequencyArgumentToGHz">[docs]</a>
+<span class="k">def</span> <span class="nf">parseFrequencyArgumentToGHz</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a frequency string into floating point in GHz, based on the units.</span>
+<span class="sd">    If the units are not present, then the value is assumed to be GHz if less</span>
+<span class="sd">    than 10000, otherwise it assumes Hz.</span>
+<span class="sd">    -Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">parseFrequencyArgument</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">&gt;</span> <span class="mi">10000</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;hz&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">*=</span> <span class="mf">1e-9</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="parseFrequencyArgument">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.parseFrequencyArgument">[docs]</a>
+<span class="k">def</span> <span class="nf">parseFrequencyArgument</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a string frequency (or dictionary) into floating point in Hz, based on</span>
+<span class="sd">    the units.  If the units are not present, then the value is simply converted to float.</span>
+<span class="sd">    -Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
+        <span class="n">bandwidth</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="n">bandwidth</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">bandwidth</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">)</span>
+    <span class="n">ghz</span> <span class="o">=</span> <span class="n">bandwidth</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ghz&#39;</span><span class="p">)</span>
+    <span class="n">mhz</span> <span class="o">=</span> <span class="n">bandwidth</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;mhz&#39;</span><span class="p">)</span>
+    <span class="n">khz</span> <span class="o">=</span> <span class="n">bandwidth</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;khz&#39;</span><span class="p">)</span>
+    <span class="n">hz</span> <span class="o">=</span> <span class="n">bandwidth</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;hz&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ghz</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">bandwidth</span> <span class="o">=</span> <span class="mf">1e9</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">[:</span><span class="n">ghz</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">mhz</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">bandwidth</span> <span class="o">=</span> <span class="mf">1e6</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">[:</span><span class="n">mhz</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">khz</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">bandwidth</span> <span class="o">=</span> <span class="mf">1e3</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">[:</span><span class="n">khz</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">hz</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">bandwidth</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">[:</span><span class="n">hz</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">bandwidth</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># FIXME: function contains unresolved references, clean-up or remove if not needed by Pipeline.</span>
+<div class="viewcode-block" id="rad2radec">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.rad2radec">[docs]</a>
+<span class="k">def</span> <span class="nf">rad2radec</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">dec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">imfitdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+              <span class="n">replaceDecDotsWithColons</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hmsdms</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;, &#39;</span><span class="p">,</span>
+              <span class="n">prependEquinox</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hmdm</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a position in RA/Dec from radians to sexagesimal string which</span>
+<span class="sd">    is comma-delimited, e.g. &#39;20:10:49.01, +057:17:44.806&#39;.</span>
+<span class="sd">    The position can either be entered as scalars via the &#39;ra&#39; and &#39;dec&#39;</span>
+<span class="sd">    parameters, as a tuple via the &#39;ra&#39; parameter, as an array of shape (2,1)</span>
+<span class="sd">    via the &#39;ra&#39; parameter, or</span>
+<span class="sd">    as an imfit dictionary can be passed via the &#39;imfitdict&#39; argument, and the</span>
+<span class="sd">    position of component 0 will be displayed in RA/Dec sexagesimal.</span>
+<span class="sd">    replaceDecDotsWithColons: replace dots with colons as the Declination d/m/s delimiter</span>
+<span class="sd">    hmsdms: produce output of format: &#39;20h10m49.01s, +057d17m44.806s&#39;</span>
+<span class="sd">    hmdm: produce output of format: &#39;20h10m49.01, +057d17m44.806&#39; (for simobserve)</span>
+<span class="sd">    delimiter: the character to use to delimit the RA and Dec strings output</span>
+<span class="sd">    prependEquinox: if True, insert &quot;J2000&quot; before coordinates (i.e. for clean or simobserve)</span>
+<span class="sd">    Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">imfitdict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
+        <span class="n">comp</span> <span class="o">=</span> <span class="s1">&#39;component</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">component</span><span class="p">)</span>
+        <span class="n">ra</span>  <span class="o">=</span> <span class="n">imfitdict</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="n">comp</span><span class="p">][</span><span class="s1">&#39;shape&#39;</span><span class="p">][</span><span class="s1">&#39;direction&#39;</span><span class="p">][</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">dec</span> <span class="o">=</span> <span class="n">imfitdict</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="n">comp</span><span class="p">][</span><span class="s1">&#39;shape&#39;</span><span class="p">][</span><span class="s1">&#39;direction&#39;</span><span class="p">][</span><span class="s1">&#39;m1&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">dec</span> <span class="o">=</span> <span class="n">ra</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># must come first before ra is redefined</span>
+            <span class="n">ra</span> <span class="o">=</span> <span class="n">ra</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ra</span> <span class="o">=</span> <span class="n">ra</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">dec</span> <span class="o">=</span> <span class="n">dec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">dec</span> <span class="o">=</span> <span class="n">ra</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ra</span> <span class="o">=</span> <span class="n">ra</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">lqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+    <span class="n">myra</span> <span class="o">=</span> <span class="n">lqa</span><span class="o">.</span><span class="n">formxxx</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.12f</span><span class="s1">rad&#39;</span> <span class="o">%</span> <span class="n">ra</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;hms&#39;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="n">prec</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">mydec</span> <span class="o">=</span> <span class="n">lqa</span><span class="o">.</span><span class="n">formxxx</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.12f</span><span class="s1">rad&#39;</span> <span class="o">%</span> <span class="n">dec</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;dms&#39;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="n">prec</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">replaceDecDotsWithColons</span><span class="p">:</span>
+        <span class="n">mydec</span> <span class="o">=</span> <span class="n">mydec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mydec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">mydec</span> <span class="o">=</span> <span class="n">mydec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">mydec</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+    <span class="n">mystring</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">myra</span><span class="p">,</span> <span class="n">mydec</span><span class="p">)</span>
+    <span class="n">lqa</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">hmsdms</span><span class="p">):</span>
+        <span class="c1"># FIXME: fix unresolved reference and/or clean-up/remove function if not needed by Pipeline.</span>
+        <span class="n">mystring</span> <span class="o">=</span> <span class="n">convertColonDelimitersToHMSDMS</span><span class="p">(</span><span class="n">mystring</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">prependEquinox</span><span class="p">):</span>
+            <span class="n">mystring</span> <span class="o">=</span> <span class="s2">&quot;J2000 &quot;</span> <span class="o">+</span> <span class="n">mystring</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">hmdm</span><span class="p">):</span>
+        <span class="c1"># FIXME: fix unresolved reference and/or clean-up/remove function if not needed by Pipeline.</span>
+        <span class="n">mystring</span> <span class="o">=</span> <span class="n">convertColonDelimitersToHMSDMS</span><span class="p">(</span><span class="n">mystring</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">prependEquinox</span><span class="p">):</span>
+            <span class="n">mystring</span> <span class="o">=</span> <span class="s2">&quot;J2000 &quot;</span> <span class="o">+</span> <span class="n">mystring</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">delimiter</span> <span class="o">!=</span> <span class="s1">&#39;, &#39;</span><span class="p">):</span>
+        <span class="n">mystring</span> <span class="o">=</span> <span class="n">mystring</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">mystring</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="imheadlist">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.imheadlist">[docs]</a>
+<span class="k">def</span> <span class="nf">imheadlist</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">omitBeam</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Emulates imhead(mode=&#39;list&#39;) but leaves off the min/max/minpos/maxpos</span>
+<span class="sd">    keywords, the filling of which makes it take so long to run on large cubes.</span>
+<span class="sd">    -Todd Hunter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not find image.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bunit&#39;</span><span class="p">,</span> <span class="s1">&#39;date-obs&#39;</span><span class="p">,</span> <span class="s1">&#39;equinox&#39;</span><span class="p">,</span> <span class="s1">&#39;imtype&#39;</span><span class="p">,</span> <span class="s1">&#39;masks&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;object&#39;</span><span class="p">,</span> <span class="s1">&#39;observer&#39;</span><span class="p">,</span> <span class="s1">&#39;projection&#39;</span><span class="p">,</span> <span class="s1">&#39;reffreqtype&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;restfreq&#39;</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="s1">&#39;telescope&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">omitBeam</span><span class="p">:</span>
+        <span class="n">singleBeam</span> <span class="o">=</span> <span class="n">imhead</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="n">hdkey</span><span class="o">=</span><span class="s1">&#39;beammajor&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">singleBeam</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="n">imhead</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No beam found.  Re-run with omitBeam=True.&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">if</span> <span class="s1">&#39;perplanebeams&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No beam found.  Re-run with omitBeam=True.&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">beammajor</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">beamminor</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">beampa</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">beamchan</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;perplanebeams&#39;</span><span class="p">][</span><span class="s1">&#39;nChannels&#39;</span><span class="p">]):</span>
+                <span class="n">beamdict</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;perplanebeams&#39;</span><span class="p">][</span><span class="s1">&#39;*&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">beamchan</span><span class="p">)]</span>
+                <span class="n">beammajor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">beamdict</span><span class="p">[</span><span class="s1">&#39;major&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+                <span class="n">beamminor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">beamdict</span><span class="p">[</span><span class="s1">&#39;minor&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+                <span class="n">beampa</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">beamdict</span><span class="p">[</span><span class="s1">&#39;positionangle&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+            <span class="n">bmaj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">beammajor</span><span class="p">)</span>
+            <span class="n">bmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">beamminor</span><span class="p">)</span>
+            <span class="n">sinbpa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">beampa</span><span class="p">)))</span>
+            <span class="n">cosbpa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">beampa</span><span class="p">)))</span>
+            <span class="n">bpa</span> <span class="o">=</span> <span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">sinbpa</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">cosbpa</span><span class="p">))))</span>
+            <span class="n">header</span><span class="p">[</span><span class="s1">&#39;beammajor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bmaj</span>
+            <span class="n">header</span><span class="p">[</span><span class="s1">&#39;beamminor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bmin</span>
+            <span class="n">header</span><span class="p">[</span><span class="s1">&#39;beampa&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bpa</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">keys</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;beammajor&#39;</span><span class="p">,</span> <span class="s1">&#39;beamminor&#39;</span><span class="p">,</span> <span class="s1">&#39;beampa&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">header</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">imhead</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="n">hdkey</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">])):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;cdelt&#39;</span><span class="p">,</span> <span class="s1">&#39;crval&#39;</span><span class="p">]:</span>
+            <span class="n">mykey</span> <span class="o">=</span> <span class="n">key</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">axis</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">imhead</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="n">hdkey</span><span class="o">=</span><span class="n">mykey</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
+                    <span class="n">header</span><span class="p">[</span><span class="n">mykey</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># crval3 (pol axis) will be an array (e.g. [&#39;I&#39;]) not a dict</span>
+                    <span class="n">header</span><span class="p">[</span><span class="n">mykey</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Failed to set header key: &quot;</span><span class="p">,</span> <span class="n">mykey</span><span class="p">)</span>
+                <span class="k">pass</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;crpix&#39;</span><span class="p">,</span> <span class="s1">&#39;ctype&#39;</span><span class="p">,</span> <span class="s1">&#39;cunit&#39;</span><span class="p">]:</span>
+            <span class="n">mykey</span> <span class="o">=</span> <span class="n">key</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">axis</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">header</span><span class="p">[</span><span class="n">mykey</span><span class="p">]</span> <span class="o">=</span> <span class="n">imhead</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="n">hdkey</span><span class="o">=</span><span class="n">mykey</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">header</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CalcAtmTransmissionForImage">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.CalcAtmTransmissionForImage">[docs]</a>
+<span class="k">def</span> <span class="nf">CalcAtmTransmissionForImage</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">chanInfo</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">airmass</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">pwv</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+                                <span class="n">spectralaxis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;transmission&#39;</span><span class="p">,</span> <span class="n">P</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">H</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+                                <span class="n">T</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">altitude</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">msname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fieldid</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function is called by atmosphereVariation.</span>
+<span class="sd">    Supported telescopes are VLA and ALMA (needed for default weather and PWV)</span>
+<span class="sd">    img: name of CASA image</span>
+<span class="sd">    value: &#39;transmission&#39; or &#39;tsky&#39;</span>
+<span class="sd">    chanInfo: a list containing nchan, firstFreqHz, lastFreqHz, channelWidthHz</span>
+<span class="sd">    pwv: in mm</span>
+<span class="sd">    P: in mbar</span>
+<span class="sd">    H: in percent</span>
+<span class="sd">    T: in Kelvin</span>
+<span class="sd">    msname: MS name</span>
+<span class="sd">    spw: spectral window ID (string)</span>
+<span class="sd">    fieldid: field ID (integer)</span>
+<span class="sd">    Returns:</span>
+<span class="sd">    2 arrays: frequencies (in GHz) and values (Kelvin, or transmission: 0..1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">img</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+        <span class="n">lcs</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">coordsys</span><span class="p">()</span>
+        <span class="n">telescopeName</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">telescope</span><span class="p">()</span>
+        <span class="n">lcs</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">chanInfo</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">chanInfo</span> <span class="o">=</span> <span class="n">numberOfChannelsInCube</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">returnChannelWidth</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">returnFreqs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">chanInfo</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mf">1e-9</span><span class="p">,</span> <span class="n">chanInfo</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mf">1e-9</span><span class="p">,</span> <span class="n">chanInfo</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">numchan</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">freqs</span><span class="p">)</span>
+    <span class="c1"># Make sure to not call conversion twice</span>
+    <span class="k">if</span> <span class="n">chanInfo</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;TOPO&#39;</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">cubeFrameToTopo</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">chanInfo</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">msname</span><span class="o">=</span><span class="n">msname</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span> <span class="n">fieldid</span><span class="o">=</span><span class="n">fieldid</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">topofreqs</span> <span class="o">=</span> <span class="n">freqs</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">topoWidth</span> <span class="o">=</span> <span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">numchan</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">topofreqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">chanInfo</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1e-9</span>
+    <span class="n">P0</span> <span class="o">=</span> <span class="mf">1000.0</span> <span class="c1"># mbar</span>
+    <span class="n">H0</span> <span class="o">=</span> <span class="mf">20.0</span>   <span class="c1"># percent</span>
+    <span class="n">T0</span> <span class="o">=</span> <span class="mf">273.0</span>  <span class="c1"># Kelvin</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">telescopeName</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ALMA&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">telescopeName</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ACA&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">pwv0</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">P0</span> <span class="o">=</span> <span class="mf">563.0</span>
+        <span class="n">H0</span> <span class="o">=</span> <span class="mf">20.0</span>
+        <span class="n">T0</span> <span class="o">=</span> <span class="mf">273.0</span>
+        <span class="n">altitude0</span> <span class="o">=</span> <span class="mi">5059</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">telescopeName</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;VLA&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">P0</span> <span class="o">=</span> <span class="mf">786.0</span>
+        <span class="n">pwv0</span> <span class="o">=</span> <span class="mf">5.0</span>
+        <span class="n">altitude0</span> <span class="o">=</span> <span class="mi">2124</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pwv0</span> <span class="o">=</span> <span class="mf">10.0</span>
+        <span class="n">altitude0</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">pwv</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">pwv</span> <span class="o">=</span> <span class="n">pwv0</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">T</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">T0</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">H</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">H0</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">P</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">P0</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">altitude</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">altitude</span> <span class="o">=</span> <span class="n">altitude0</span>
+    <span class="n">tropical</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">midLatitudeSummer</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">midLatitudeWinter</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">reffreq</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">topofreqs</span><span class="p">[</span><span class="n">numchan</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">topofreqs</span><span class="p">[</span><span class="n">numchan</span><span class="o">//</span><span class="mi">2</span><span class="p">])</span>
+<span class="c1">#    reffreq = np.mean(topofreqs)</span>
+    <span class="n">numchanModel</span> <span class="o">=</span> <span class="n">numchan</span><span class="o">*</span><span class="mi">1</span>
+    <span class="n">chansepModel</span> <span class="o">=</span> <span class="p">(</span><span class="n">topofreqs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">topofreqs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">numchanModel</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">nbands</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">lqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+    <span class="n">fCenter</span> <span class="o">=</span> <span class="n">lqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">reffreq</span><span class="p">,</span> <span class="s1">&#39;GHz&#39;</span><span class="p">)</span>
+    <span class="n">fResolution</span> <span class="o">=</span> <span class="n">lqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">chansepModel</span><span class="p">,</span> <span class="s1">&#39;GHz&#39;</span><span class="p">)</span>
+    <span class="n">fWidth</span> <span class="o">=</span> <span class="n">lqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">numchanModel</span><span class="o">*</span><span class="n">chansepModel</span><span class="p">,</span> <span class="s1">&#39;GHz&#39;</span><span class="p">)</span>
+    <span class="n">myat</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">atmosphere</span>
+    <span class="n">myat</span><span class="o">.</span><span class="n">initAtmProfile</span><span class="p">(</span><span class="n">humidity</span><span class="o">=</span><span class="n">H</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">lqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">),</span>
+                        <span class="n">altitude</span><span class="o">=</span><span class="n">lqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">altitude</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">),</span>
+                        <span class="n">pressure</span><span class="o">=</span><span class="n">lqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="s1">&#39;mbar&#39;</span><span class="p">),</span> <span class="n">atmType</span><span class="o">=</span><span class="n">midLatitudeWinter</span><span class="p">)</span>
+    <span class="n">myat</span><span class="o">.</span><span class="n">initSpectralWindow</span><span class="p">(</span><span class="n">nbands</span><span class="p">,</span> <span class="n">fCenter</span><span class="p">,</span> <span class="n">fWidth</span><span class="p">,</span> <span class="n">fResolution</span><span class="p">)</span>
+    <span class="n">myat</span><span class="o">.</span><span class="n">setUserWH2O</span><span class="p">(</span><span class="n">lqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">pwv</span><span class="p">,</span> <span class="s1">&#39;mm&#39;</span><span class="p">))</span>
+<span class="c1">#    myat.setAirMass()  # This does not affect the opacity, but it does effect TebbSky, so do it manually.</span>
+    <span class="n">lqa</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+    <span class="n">dry</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">myat</span><span class="o">.</span><span class="n">getDryOpacitySpec</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">wet</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">myat</span><span class="o">.</span><span class="n">getWetOpacitySpec</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+    <span class="n">TebbSky</span> <span class="o">=</span> <span class="n">myat</span><span class="o">.</span><span class="n">getTebbSkySpec</span><span class="p">(</span><span class="n">spwid</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="c1"># readback the values to be sure they got set</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">myat</span><span class="o">.</span><span class="n">getRefFreq</span><span class="p">()[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;GHz&#39;</span><span class="p">):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;There is a unit mismatch for refFreq in the atm code.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">myat</span><span class="o">.</span><span class="n">getChanSep</span><span class="p">()[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;MHz&#39;</span><span class="p">):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;There is a unit mismatch for chanSep in the atm code.&quot;</span><span class="p">)</span>
+    <span class="n">numchanModel</span> <span class="o">=</span> <span class="n">myat</span><span class="o">.</span><span class="n">getNumChan</span><span class="p">()</span>
+    <span class="n">freq0</span> <span class="o">=</span> <span class="n">myat</span><span class="o">.</span><span class="n">getChanFreq</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="n">freq1</span> <span class="o">=</span> <span class="n">myat</span><span class="o">.</span><span class="n">getChanFreq</span><span class="p">(</span><span class="n">numchanModel</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="c1"># We keep the original LSRK freqs for overlay on the LSRK spectrum, but associate</span>
+    <span class="c1"># the transmission values from the equivalent TOPO freqs</span>
+    <span class="n">newfreqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">freqs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">numchanModel</span><span class="p">)</span>  <span class="c1"># fix for SCOPS-4815</span>
+    <span class="n">transmission</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">airmass</span><span class="o">*</span><span class="p">(</span><span class="n">wet</span><span class="o">+</span><span class="n">dry</span><span class="p">))</span>
+    <span class="n">TebbSky</span> <span class="o">*=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">airmass</span><span class="o">*</span><span class="p">(</span><span class="n">wet</span><span class="o">+</span><span class="n">dry</span><span class="p">)))</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">wet</span><span class="o">-</span><span class="n">dry</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">value</span><span class="o">==</span><span class="s1">&#39;transmission&#39;</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">transmission</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">TebbSky</span>
+    <span class="n">myat</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+    <span class="k">del</span> <span class="n">myat</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">newfreqs</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="plot_spectra">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.plot_spectra.plot_spectra">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_spectra</span><span class="p">(</span><span class="n">image_robust_rms_and_spectra</span><span class="p">,</span> <span class="n">rec_info</span><span class="p">,</span> <span class="n">plotfile</span><span class="p">,</span> <span class="n">msname</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes a pipeline-produced cube and plots the spectrum within the clean</span>
+<span class="sd">    mask (pixels with value=1 in the mask), and the noise spectrum from outside</span>
+<span class="sd">    the mask and within the 0.2-0.3 level (auto adjusted upward if image size</span>
+<span class="sd">    has been mitigated).</span>
+<span class="sd">    image_robust_rms_and_spectra: dictionary of spectra and metadata</span>
+<span class="sd">    rec_info: dictionary of receiver information (type (DSB/TSB), LO1 frequency)</span>
+<span class="sd">    msname: name of representative MS</span>
+<span class="sd">    spw: spectral window (string)</span>
+<span class="sd">    fieldid: field ID (integer)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">qaTool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+    <span class="n">cube</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">image_robust_rms_and_spectra</span><span class="p">[</span><span class="s1">&#39;nonpbcor_imagename&#39;</span><span class="p">])</span>
+    <span class="c1"># Get spectral frame</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">cube</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+        <span class="n">lcs</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">coordsys</span><span class="p">()</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">referencecode</span><span class="p">(</span><span class="s1">&#39;spectral&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">lcs</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+    <span class="n">unmaskedPixels</span> <span class="o">=</span> <span class="n">image_robust_rms_and_spectra</span><span class="p">[</span><span class="s1">&#39;nonpbcor_image_cleanmask_npoints&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">unmaskedPixels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">unmaskedPixels</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+    <span class="n">desc</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="s1">&#39;mJy&#39;</span>
+    <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">9</span>
+
+    <span class="c1"># x axes</span>
+    <span class="n">nchan</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_robust_rms_and_spectra</span><span class="p">[</span><span class="s1">&#39;nonpbcor_image_cleanmask_spectrum&#39;</span><span class="p">])</span>
+    <span class="n">channels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nchan</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">freq_ch1</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">image_robust_rms_and_spectra</span><span class="p">[</span><span class="s1">&#39;nonpbcor_image_non_cleanmask_freq_ch1&#39;</span><span class="p">],</span> <span class="s1">&#39;Hz&#39;</span><span class="p">))</span>
+    <span class="n">freq_chN</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">image_robust_rms_and_spectra</span><span class="p">[</span><span class="s1">&#39;nonpbcor_image_non_cleanmask_freq_chN&#39;</span><span class="p">],</span> <span class="s1">&#39;Hz&#39;</span><span class="p">))</span>
+    <span class="n">freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">freq_ch1</span><span class="p">,</span> <span class="n">freq_chN</span><span class="p">,</span> <span class="n">nchan</span><span class="p">)</span>
+
+    <span class="c1"># Flux density spectrum</span>
+    <span class="n">intensity</span> <span class="o">=</span> <span class="n">image_robust_rms_and_spectra</span><span class="p">[</span><span class="s1">&#39;nonpbcor_image_cleanmask_spectrum&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1000.</span>
+    <span class="k">if</span> <span class="n">unmaskedPixels</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">mycolor</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Red spectrum from </span><span class="si">%d</span><span class="s1"> pixels in flattened clean mask&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">unmaskedPixels</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.96</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">desc</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mycolor</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span>
+        <span class="n">pblimit</span> <span class="o">=</span> <span class="n">image_robust_rms_and_spectra</span><span class="p">[</span><span class="s1">&#39;nonpbcor_image_cleanmask_spectrum_pblimit&#39;</span><span class="p">]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.96</span><span class="p">,</span>
+                <span class="s1">&#39;Blue spectrum is mean from pixels above the pb=</span><span class="si">%.2f</span><span class="s1"> level (no clean mask was found)&#39;</span> <span class="o">%</span> <span class="n">pblimit</span><span class="p">,</span>
+                 <span class="n">transform</span><span class="o">=</span><span class="n">desc</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Noise spectrum</span>
+    <span class="n">noise</span> <span class="o">=</span> <span class="n">image_robust_rms_and_spectra</span><span class="p">[</span><span class="s1">&#39;nonpbcor_image_non_cleanmask_robust_rms&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1000.</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.93</span><span class="p">,</span> <span class="s1">&#39;Black spectrum is per-channel scaled MAD from imstat annulus and outside clean mask&#39;</span><span class="p">,</span>
+             <span class="n">transform</span><span class="o">=</span><span class="n">desc</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Turn off rightside y-axis ticks to make way for second y-axis</span>
+    <span class="n">desc</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">intensity</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">mycolor</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> Channels&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Flux density (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">units</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">mycolor</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="n">mycolor</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">mycolor</span><span class="p">)</span>
+    <span class="c1"># Give a buffer between final data point and y-axes in order</span>
+    <span class="c1"># to be able to see high edge channel values</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span> <span class="o">//</span> <span class="mi">100</span><span class="p">,</span> <span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span> <span class="o">//</span> <span class="mi">100</span><span class="p">])</span>
+    <span class="n">freqDelta</span> <span class="o">=</span> <span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span><span class="o">//</span><span class="mi">100</span><span class="p">)</span> <span class="c1"># in Hz</span>
+    <span class="n">freqLimits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">freqDelta</span><span class="p">,</span> <span class="n">freqs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">freqDelta</span><span class="p">])</span>  <span class="c1"># Hz</span>
+
+    <span class="c1"># Ignore edge channels (otherwise the first channel in ephemeris</span>
+    <span class="c1"># cubes may go way off scale</span>
+    <span class="n">ylimits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">intensity</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">intensity</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])])</span>
+    <span class="n">ylimits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ylimits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">ylimits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Be sure the mean intensity spectrum is separated from lower y-axis by</span>
+    <span class="c1"># reducing the y lower limit by 5 percent.</span>
+    <span class="n">yrange</span> <span class="o">=</span> <span class="n">ylimits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">ylimits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ylimits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">0.05</span><span class="o">*</span><span class="n">yrange</span>
+    <span class="n">ylimits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.05</span><span class="o">*</span><span class="n">yrange</span>
+    <span class="n">noiseLimits</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">noise</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">noise</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+                   <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">noise</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+    <span class="n">yrange</span> <span class="o">=</span> <span class="n">noiseLimits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">noiseLimits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">noiseLimits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">yrange</span>
+    <span class="n">noiseLimits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">yrange</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">ylimits</span><span class="p">)</span>
+
+    <span class="c1"># Plot horizontal dotted line at zero intensity</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;k:&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.085</span><span class="p">,</span> <span class="n">cube</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">desc</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+    <span class="n">addFrequencyAxisAbove</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span> <span class="n">freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">freqs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="p">,</span>
+                          <span class="n">twinx</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ylimits</span><span class="o">=</span><span class="n">noiseLimits</span><span class="p">,</span>
+                          <span class="n">xlimits</span><span class="o">=</span><span class="n">freqLimits</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">freqs</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Plot continuum frequency ranges</span>
+    <span class="n">fpattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([\d.]*)(~)([\d.]*)(\D*)&#39;</span><span class="p">)</span>
+    <span class="n">cont_freq_ranges</span> <span class="o">=</span> <span class="n">fpattern</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">image_robust_rms_and_spectra</span><span class="p">[</span><span class="s1">&#39;cont_freq_ranges&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">cont_freq_range</span> <span class="ow">in</span> <span class="n">cont_freq_ranges</span><span class="p">:</span>
+        <span class="n">fLowGHz</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">cont_freq_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">cont_freq_range</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="s1">&#39;GHz&#39;</span><span class="p">))</span>
+        <span class="n">fHighGHz</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">cont_freq_range</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">cont_freq_range</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="s1">&#39;GHz&#39;</span><span class="p">))</span>
+        <span class="n">fcLevel</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">yrange</span> <span class="o">*</span> <span class="mf">0.025</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">fLowGHz</span><span class="p">,</span> <span class="n">fHighGHz</span><span class="p">],</span> <span class="p">[</span><span class="n">fcLevel</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;c-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Overlay atmosphere transmission</span>
+    <span class="n">freq</span><span class="p">,</span> <span class="n">transmission</span> <span class="o">=</span> <span class="n">CalcAtmTransmissionForImage</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">msname</span><span class="o">=</span><span class="n">msname</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span> <span class="n">fieldid</span><span class="o">=</span><span class="n">fieldid</span><span class="p">)</span>
+    <span class="n">rescaledY</span><span class="p">,</span> <span class="n">edgeYvalue</span><span class="p">,</span> <span class="n">zeroValue</span><span class="p">,</span> <span class="n">zeroYValue</span><span class="p">,</span> <span class="n">otherEdgeYvalue</span><span class="p">,</span> <span class="n">edgeT</span><span class="p">,</span> <span class="n">otherEdgeT</span><span class="p">,</span> <span class="n">edgeValueAmplitude</span><span class="p">,</span> <span class="n">otherEdgeValueAmplitude</span><span class="p">,</span> <span class="n">zeroValueAmplitude</span> <span class="o">=</span> <span class="n">RescaleTrans</span><span class="p">(</span><span class="n">transmission</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">())</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">rescaledY</span><span class="p">,</span> <span class="s1">&#39;m-&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">rec_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;DSB&#39;</span><span class="p">:</span>
+        <span class="n">LO1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">rec_info</span><span class="p">[</span><span class="s1">&#39;LO1&#39;</span><span class="p">],</span> <span class="s1">&#39;GHz&#39;</span><span class="p">)))</span>
+        <span class="c1"># Calculate image frequencies using TOPO frequencies from signal sideband.</span>
+        <span class="n">imageFreq0</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">LO1</span> <span class="o">-</span> <span class="n">freq</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1e9</span>
+        <span class="n">imageFreq1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">LO1</span> <span class="o">-</span> <span class="n">freq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1e9</span>
+        <span class="n">chanInfo</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">),</span> <span class="n">imageFreq0</span><span class="p">,</span> <span class="n">imageFreq1</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mf">1e9</span> <span class="o">*</span> <span class="p">(</span><span class="n">freq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">freq</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span> <span class="s1">&#39;TOPO&#39;</span><span class="p">]</span>
+        <span class="n">imageFreq</span><span class="p">,</span> <span class="n">imageTransmission</span> <span class="o">=</span> <span class="n">CalcAtmTransmissionForImage</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">chanInfo</span><span class="p">,</span> <span class="n">msname</span><span class="o">=</span><span class="n">msname</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span> <span class="n">fieldid</span><span class="o">=</span><span class="n">fieldid</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">RescaleTrans</span><span class="p">(</span><span class="n">imageTransmission</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">())</span>
+        <span class="n">rescaledImage</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># You need to keep the signal sideband frequency range so that the overlay works!</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">rescaledImage</span><span class="p">,</span> <span class="s1">&#39;m--&#39;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">flush_events</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">plotfile</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

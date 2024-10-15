@@ -1,0 +1,29 @@
+pipeline.hsd.tasks.applycal package
+===================================
+
+Submodules
+----------
+
+pipeline.hsd.tasks.applycal.applycal module
+-------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.applycal.applycal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.applycal.renderer module
+-------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.applycal.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hsd.tasks.applycal
+   :members:
+   :undoc-members:
+   :show-inheritance:

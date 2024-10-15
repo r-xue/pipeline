@@ -1,0 +1,12 @@
+pipeline.infrastructure.adapters
+================================
+
+.. automodule:: pipeline.infrastructure.adapters
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Adapter
+   

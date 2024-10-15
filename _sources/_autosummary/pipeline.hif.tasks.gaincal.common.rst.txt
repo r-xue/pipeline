@@ -1,0 +1,13 @@
+pipeline.hif.tasks.gaincal.common
+=================================
+
+.. automodule:: pipeline.hif.tasks.gaincal.common
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GaincalResults
+      VdpCommonGaincalInputs
+   

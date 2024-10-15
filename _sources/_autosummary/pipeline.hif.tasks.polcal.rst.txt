@@ -1,0 +1,19 @@
+pipeline.hif.tasks.polcal
+=========================
+
+.. automodule:: pipeline.hif.tasks.polcal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PolcalWorker
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   polcalworker

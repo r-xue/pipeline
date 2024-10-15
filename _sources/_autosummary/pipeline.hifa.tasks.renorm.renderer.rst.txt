@@ -1,0 +1,21 @@
+pipeline.hifa.tasks.renorm.renderer
+===================================
+
+.. automodule:: pipeline.hifa.tasks.renorm.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      getchild
+      make_renorm_plots
+      make_renorm_table
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsRenormRenderer
+      TR
+   

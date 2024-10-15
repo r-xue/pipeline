@@ -1,0 +1,22 @@
+pipeline.hif.tasks.correctedampflag
+===================================
+
+.. automodule:: pipeline.hif.tasks.correctedampflag
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Correctedampflag
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   correctedampflag
+   qa
+   renderer
+   resultobjects

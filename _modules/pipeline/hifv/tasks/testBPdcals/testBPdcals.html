@@ -1,0 +1,1254 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.testBPdcals.testBPdcals &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.testBPdcals.testBPdcals</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.testBPdcals.testBPdcals</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.hif.heuristics.findrefant</span> <span class="k">as</span> <span class="nn">findrefant</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics</span> <span class="kn">import</span> <span class="n">getCalFlaggedSoln</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics</span> <span class="kn">import</span> <span class="n">weakbp</span><span class="p">,</span> <span class="n">do_bandpass</span><span class="p">,</span> <span class="n">uvrange</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics</span> <span class="kn">import</span> <span class="n">getBCalStatistics</span>
+
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="testBPdcalsInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.testBPdcals.html#pipeline.hifv.tasks.testBPdcals.qa.testBPdcalsInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">testBPdcalsInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for the hifv_testBPdcals pipeline task.  Used on VLA measurement sets.</span>
+
+<span class="sd">    The class inherits from vdp.StandardInputs.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">weakbp</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">refantignore</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">doflagundernspwlimit</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">refant</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weakbp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refantignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doflagundernspwlimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            context (:obj:): Pipeline context</span>
+<span class="sd">            vis(str, optional): String name of the measurement set</span>
+<span class="sd">            weakbp(Boolean):  weak bandpass heuristics on/off - currently not used - see PIPE-104</span>
+<span class="sd">            refantignore(str):  csv string of reference antennas to ignore - &#39;ea24,ea15,ea08&#39;</span>
+<span class="sd">            doflagunderspwlimit(Boolean): Will identify individual spw when less than nspwlimit bad spw</span>
+<span class="sd">                                          Used in the flagging of bad deformatters heuristics</span>
+<span class="sd">            refant(str): A csv string of reference antenna(s). When used, disables refantignore.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">testBPdcalsInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weakbp</span> <span class="o">=</span> <span class="n">weakbp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refantignore</span> <span class="o">=</span> <span class="n">refantignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doflagundernspwlimit</span> <span class="o">=</span> <span class="n">doflagundernspwlimit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gain_solint1</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gain_solint2</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refant</span> <span class="o">=</span> <span class="n">refant</span></div>
+
+
+
+<div class="viewcode-block" id="testBPdcalsResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.testBPdcals.html#pipeline.hifv.tasks.testBPdcals.qa.testBPdcalsResults">[docs]</a>
+<span class="k">class</span> <span class="nc">testBPdcalsResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class for the hifv_testBPdcals pipeline task.  Used on VLA measurement sets.</span>
+
+<span class="sd">    The class inherits from basetask.Results.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preceding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gain_solint1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">shortsol1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bpdgain_touse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gtypecaltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">ktypecaltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flaggedSolnApplycalbandpass</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">flaggedSolnApplycaldelay</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result_amp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result_phase</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">amp_collection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phase_collection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_antennas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignorerefant</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            vis(str): String name of the measurement set</span>
+<span class="sd">            final(List, optional): Calibration list applied - not used</span>
+<span class="sd">            pool(List, optional): Calibration list assesed - not used</span>
+<span class="sd">            preceding(List, optional): DEPRECATED results from worker tasks executed by this task</span>
+<span class="sd">            gain_solint1(Dict):  Dict of csv strings, keyed by band</span>
+<span class="sd">            shortsol1(Dict):  Integration time determined from heuristics (1,3,10 x max int time) keyed by band</span>
+<span class="sd">            bpdgain_touse(Dict):  Dictionary of tables per band</span>
+<span class="sd">            gtypecaltable(Dict): Dictionary of tables per band</span>
+<span class="sd">            ktypecaltable(Dict): Dictionary of tables per band</span>
+<span class="sd">            bpcaltable(Dict): Dictionary of tables per band</span>
+<span class="sd">            flaggedSolnApplycalbandpass(Dict): returned from getCalFlaggedSoln for bpdgain_touse (per band)</span>
+<span class="sd">            flaggedSolnApplycaldelay(Dict): returned from getCalFlaggedSoln for ktypecaltable (per band)</span>
+<span class="sd">            result_amp(Dict):  Bad deformatters amp flagging list per band</span>
+<span class="sd">            result_phase(Dict): Bad deformatters phase flagging list per band</span>
+<span class="sd">            amp_collection(Dict):  Bad deformatters amp weblog table per band</span>
+<span class="sd">            phase_collection(Dict): Bad deformatters phase weblog table per band</span>
+<span class="sd">            num_antennas(Dict):  Number of antennas (same per band, but included for weblog formatting)</span>
+<span class="sd">            ignorerefant(List):  List of antennas removed if a baseband is determined to be bad for &gt;50% of antennas.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">final</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">final</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">preceding</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">preceding</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">amp_collection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">amp_collection</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">phase_collection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">phase_collection</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result_amp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result_amp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">result_phase</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result_phase</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">ignorerefant</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ignorerefant</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">testBPdcalsResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">pool</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="n">final</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preceding</span> <span class="o">=</span> <span class="n">preceding</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gain_solint1</span> <span class="o">=</span> <span class="n">gain_solint1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortsol1</span> <span class="o">=</span> <span class="n">shortsol1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpdgain_touse</span> <span class="o">=</span> <span class="n">bpdgain_touse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gtypecaltable</span> <span class="o">=</span> <span class="n">gtypecaltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ktypecaltable</span> <span class="o">=</span> <span class="n">ktypecaltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpcaltable</span> <span class="o">=</span> <span class="n">bpcaltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flaggedSolnApplycalbandpass</span> <span class="o">=</span> <span class="n">flaggedSolnApplycalbandpass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flaggedSolnApplycaldelay</span> <span class="o">=</span> <span class="n">flaggedSolnApplycaldelay</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignorerefant</span> <span class="o">=</span> <span class="n">ignorerefant</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_amp</span> <span class="o">=</span> <span class="n">result_amp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_phase</span> <span class="o">=</span> <span class="n">result_phase</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amp_collection</span> <span class="o">=</span> <span class="n">amp_collection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phase_collection</span> <span class="o">=</span> <span class="n">phase_collection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_antennas</span> <span class="o">=</span> <span class="n">num_antennas</span>
+
+<div class="viewcode-block" id="testBPdcalsResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.testBPdcals.html#pipeline.hifv.tasks.testBPdcals.qa.testBPdcalsResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">gain_solint1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gain_solint1</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">shortsol1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shortsol1</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">ignorerefant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignorerefant</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="testBPdcals">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.testBPdcals.html#pipeline.hifv.tasks.testBPdcals.qa.testBPdcals">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_testBPdcals&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">testBPdcals</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for the testBPdcals pipeline task.  Used on VLA measurement sets.</span>
+
+<span class="sd">    The class inherits from basetask.StandardTaskTemplate</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">testBPdcalsInputs</span>
+
+<div class="viewcode-block" id="testBPdcals.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.testBPdcals.html#pipeline.hifv.tasks.testBPdcals.qa.testBPdcals.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Bulk of task execution occurs here.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            testBPdcalsResults()</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignorerefant</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">spw2band</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_spw2band</span><span class="p">()</span>
+        <span class="n">band2spw</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">spwobjlist</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">listspws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwobjlist</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">spw2band</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">listspws</span><span class="p">:</span>  <span class="c1"># Science intents only</span>
+                <span class="n">band2spw</span><span class="p">[</span><span class="n">band</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">))</span>
+
+        <span class="n">gtypecaltable</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ktypecaltable</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">bpcaltable</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">bpdgain_touse</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">flaggedSolnApplycalbandpass</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">flaggedSolnApplycaldelay</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">gain_solint1</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">shortsol1</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">result_amp</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">result_phase</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">amp_collection</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">phase_collection</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">num_antennas</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">spwlist</span> <span class="ow">in</span> <span class="n">band2spw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;    RUNNING FIRST PART TESTBPDCALS    &quot;</span><span class="p">)</span>
+                <span class="n">gain_solint1perband</span><span class="p">,</span> <span class="n">shortsol1perband</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">bpdgain_tousename</span><span class="p">,</span> <span class="n">gtypecaltablename</span><span class="p">,</span> <span class="n">ktypecaltablename</span><span class="p">,</span> <span class="n">bpcaltablename</span><span class="p">,</span> \
+                <span class="n">flaggedSolnApplycalbandpassperband</span><span class="p">,</span> <span class="n">flaggedSolnApplycaldelayperband</span><span class="p">,</span> <span class="n">refant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_testBPdcals</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">)</span>
+
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                If an entire baseband is determined to be bad for &gt;50% of antennas,</span>
+<span class="sd">                the pipeline should do the following:</span>
+<span class="sd">                1.  Do not flag any data due to bad deformatters.</span>
+<span class="sd">                2.  Remove the first reference antenna from the refant list and ignore that antenna in refant calculations</span>
+<span class="sd">                        for the **entire pipeline run**</span>
+<span class="sd">                3.  Recalculate the reference antenna list</span>
+<span class="sd">                4.  Re-run hifv_testbpdcals and flagbaddef</span>
+<span class="sd">                5.  Repeat up to three times and then just drive ahead.</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;    RUNNING SECOND PART BADDEFORMATTERS    &quot;</span><span class="p">)</span>
+                <span class="n">result_amp_perband</span><span class="p">,</span> <span class="n">result_phase_perband</span><span class="p">,</span> <span class="n">amp_collection_perband</span><span class="p">,</span> <span class="n">phase_collection_perband</span><span class="p">,</span> \
+                <span class="n">num_antennas_perband</span><span class="p">,</span> <span class="n">amp_job</span><span class="p">,</span> <span class="n">phase_job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_baddeformatters</span><span class="p">(</span><span class="n">bpcaltablename</span><span class="p">)</span>
+
+                <span class="n">pct_amp_ant</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result_amp_perband</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_antennas_perband</span>
+                <span class="n">pct_phase_ant</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result_phase_perband</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_antennas_perband</span>
+                <span class="n">ant_threshold</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">pct_amp_ant</span> <span class="o">&lt;</span> <span class="n">ant_threshold</span> <span class="ow">and</span> <span class="n">pct_phase_ant</span> <span class="o">&lt;</span> <span class="n">ant_threshold</span><span class="p">)</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">amp_job</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing bad deformatters amp flag commands for band </span><span class="si">{!s}</span><span class="s2">...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">amp_job</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">phase_job</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing bad deformatters phase flag commands for band </span><span class="si">{!s}</span><span class="s2">...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">phase_job</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Criteria to finish not met - remove the first reference antenna from consideration</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ignorerefant</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">refant</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;A baseband is determined to be bad for &gt;50</span><span class="si">% o</span><span class="s2">f antennas.  &quot;</span>
+                             <span class="s2">&quot;Removing reference antenna(s) </span><span class="si">{!s}</span><span class="s2"> and rerunning the test calibration.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ignorerefant</span><span class="p">)))</span>
+
+            <span class="n">gtypecaltable</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">gtypecaltablename</span>
+            <span class="n">ktypecaltable</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktypecaltablename</span>
+            <span class="n">bpcaltable</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">bpcaltablename</span>
+            <span class="n">bpdgain_touse</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">bpdgain_tousename</span>
+            <span class="n">flaggedSolnApplycalbandpass</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">flaggedSolnApplycalbandpassperband</span>
+            <span class="n">flaggedSolnApplycaldelay</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">flaggedSolnApplycaldelayperband</span>
+            <span class="n">gain_solint1</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">gain_solint1perband</span>
+            <span class="n">shortsol1</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">shortsol1perband</span>
+
+            <span class="n">result_amp</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_amp_perband</span>
+            <span class="n">result_phase</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_phase_perband</span>
+            <span class="n">amp_collection</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">amp_collection_perband</span>
+            <span class="n">phase_collection</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">phase_collection_perband</span>
+            <span class="n">num_antennas</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_antennas_perband</span>
+
+        <span class="k">return</span> <span class="n">testBPdcalsResults</span><span class="p">(</span><span class="n">gain_solint1</span><span class="o">=</span><span class="n">gain_solint1</span><span class="p">,</span> <span class="n">shortsol1</span><span class="o">=</span><span class="n">shortsol1</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span>
+                                  <span class="n">bpdgain_touse</span><span class="o">=</span><span class="n">bpdgain_touse</span><span class="p">,</span> <span class="n">gtypecaltable</span><span class="o">=</span><span class="n">gtypecaltable</span><span class="p">,</span>
+                                  <span class="n">ktypecaltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="o">=</span><span class="n">bpcaltable</span><span class="p">,</span>
+                                  <span class="n">flaggedSolnApplycalbandpass</span><span class="o">=</span><span class="n">flaggedSolnApplycalbandpass</span><span class="p">,</span>
+                                  <span class="n">flaggedSolnApplycaldelay</span><span class="o">=</span><span class="n">flaggedSolnApplycaldelay</span><span class="p">,</span> <span class="n">result_amp</span><span class="o">=</span><span class="n">result_amp</span><span class="p">,</span>
+                                  <span class="n">result_phase</span><span class="o">=</span><span class="n">result_phase</span><span class="p">,</span> <span class="n">amp_collection</span><span class="o">=</span><span class="n">amp_collection</span><span class="p">,</span>
+                                  <span class="n">phase_collection</span><span class="o">=</span><span class="n">phase_collection</span><span class="p">,</span>
+                                  <span class="n">num_antennas</span><span class="o">=</span><span class="n">num_antennas</span><span class="p">,</span> <span class="n">ignorerefant</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignorerefant</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="testBPdcals.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.testBPdcals.html#pipeline.hifv.tasks.testBPdcals.qa.testBPdcals.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the best parameters by analysing the given jobs before returning any final jobs to execute.</span>
+
+<span class="sd">        Override method of basetask.StandardTaskTemplate.analyze()</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            results (list of class: `~pipeline.infrastructure.jobrequest.JobRequest`):</span>
+<span class="sd">                the job requests generated by :func:`~SimpleTask.prepare`</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            class:`~pipeline.api.Result`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_testBPdcals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute testBPdcals heuristics per band and spwlist</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            band(str):  String band single letter identifier -  &#39;L&#39;  &#39;U&#39;  &#39;X&#39; etc.</span>
+<span class="sd">            spwlist(List):  List of string values for spws - [&#39;0&#39;, &#39;1&#39;, &#39;2&#39;, &#39;3&#39;]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            gain_solint1(str):  solution interval value</span>
+<span class="sd">            shortsol1(str):  Integration time determined from heuristics (1,3,10 x max int time)</span>
+<span class="sd">            vis:  MS name</span>
+<span class="sd">            bpdgain_touse(str):  bp&#39;d gain table used</span>
+<span class="sd">            gtypecaltable(str):  G-type table from gaincal</span>
+<span class="sd">            ktypecaltable(str):  K-type table from gaincal</span>
+<span class="sd">            bpcaltable(str):     BP cal table</span>
+<span class="sd">            flaggedSolnApplycalbandpass(Dict):  returned from getCalFlaggedSoln for bpdgain_tous</span>
+<span class="sd">            flaggedSolnApplycaldelay(Dict): returned from getCalFlaggedSoln for ktypecaltable</span>
+<span class="sd">            RefAntOutput(str):  Reference antenna used</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing for band </span><span class="si">{!s}</span><span class="s2">  spws: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parang</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setjy_results</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">setjy_results</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">stage_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stage_number</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">stage_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">stage_number</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="n">tableprefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="s1">&#39;hifv_testBPdcals.s&#39;</span>
+
+        <span class="n">gtypecaltable</span> <span class="o">=</span> <span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_1.&#39;</span> <span class="o">+</span> <span class="s1">&#39;testdelayinitialgain_</span><span class="si">{!s}</span><span class="s1">.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
+        <span class="n">ktypecaltable</span> <span class="o">=</span> <span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_2.&#39;</span> <span class="o">+</span> <span class="s1">&#39;testdelay_</span><span class="si">{!s}</span><span class="s1">.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
+        <span class="n">bpcaltable</span> <span class="o">=</span> <span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_4.&#39;</span> <span class="o">+</span> <span class="s1">&#39;testBPcal_</span><span class="si">{!s}</span><span class="s1">.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
+        <span class="n">tablebase</span> <span class="o">=</span> <span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_3.&#39;</span> <span class="o">+</span> <span class="s1">&#39;testBPdinitialgain&#39;</span>
+        <span class="n">table_suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_</span><span class="si">{!s}</span><span class="s1">.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">),</span> <span class="s1">&#39;3_</span><span class="si">{!s}</span><span class="s1">.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">),</span> <span class="s1">&#39;10_</span><span class="si">{!s}</span><span class="s1">.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">)]</span>
+        <span class="n">soltimes</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">]</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">soltimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">get_vla_max_integration_time</span><span class="p">()</span> <span class="o">*</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">soltimes</span><span class="p">]</span>
+        <span class="n">solints</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">soltimes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">soltimes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;s&#39;</span><span class="p">]</span>
+        <span class="n">soltime</span> <span class="o">=</span> <span class="n">soltimes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">solint</span> <span class="o">=</span> <span class="n">solints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Remove tables if they exist</span>
+        <span class="k">for</span> <span class="n">tablename</span> <span class="ow">in</span> <span class="p">[</span><span class="n">gtypecaltable</span><span class="p">,</span> <span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="p">,</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">2</span><span class="p">]]:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">tablename</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Removing table: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tablename</span><span class="p">))</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">tablename</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-1637: adding &#39;,&#39; in the manual and auto refantignore parameter</span>
+        <span class="n">refantignore</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">refantignore</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ignorerefant</span><span class="p">])</span>
+        <span class="n">refantfield</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">calibrator_field_select_string</span>
+
+        <span class="c1"># PIPE-595: if refant list is not provided, compute refants else use provided refant list.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">refantobj</span> <span class="o">=</span> <span class="n">findrefant</span><span class="o">.</span><span class="n">RefAntHeuristics</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">refantfield</span><span class="p">,</span>
+                                                    <span class="n">geometry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flagging</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                    <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">refantignore</span><span class="o">=</span><span class="n">refantignore</span><span class="p">)</span>
+
+            <span class="n">RefAntOutput</span> <span class="o">=</span> <span class="n">refantobj</span><span class="o">.</span><span class="n">calculate</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">RefAntOutput</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;RefAntOutput: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">RefAntOutput</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_gtype_delaycal</span><span class="p">(</span><span class="n">caltable</span><span class="o">=</span><span class="n">gtypecaltable</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="o">=</span><span class="n">RefAntOutput</span><span class="p">,</span> <span class="n">spwlist</span><span class="o">=</span><span class="n">spwlist</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Initial phase calibration on delay calibrator complete for band </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">))</span>
+
+        <span class="n">fracFlaggedSolns</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="n">critfrac</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_critfrac</span><span class="p">()</span>
+
+        <span class="c1"># Iterate and check the fraction of Flagged solutions, each time running gaincal in &#39;K&#39; mode</span>
+        <span class="n">flagcount</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">fracFlaggedSolns</span> <span class="o">&gt;</span> <span class="n">critfrac</span> <span class="ow">and</span> <span class="n">flagcount</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_ktype_delaycal</span><span class="p">(</span><span class="n">caltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">addcaltable</span><span class="o">=</span><span class="n">gtypecaltable</span><span class="p">,</span>
+                                    <span class="n">RefAntOutput</span><span class="o">=</span><span class="n">RefAntOutput</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+            <span class="n">flaggedSolnResult</span> <span class="o">=</span> <span class="n">getCalFlaggedSoln</span><span class="p">(</span><span class="n">ktypecaltable</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">fracFlaggedSolns</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_flagSolns</span><span class="p">(</span><span class="n">flaggedSolnResult</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fraction of flagged solutions = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Median fraction of flagged solutions per antenna = &quot;</span> <span class="o">+</span>
+                     <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+            <span class="n">flagcount</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Do initial amplitude and phase gain solutions on the BPcalibrator and delay</span>
+        <span class="c1"># calibrator; the amplitudes are used for flagging; only phase</span>
+        <span class="c1"># calibration is applied in final BP calibration, so that solutions are</span>
+        <span class="c1"># not normalized per spw and take out the baseband filter shape</span>
+
+        <span class="c1"># Try running with solint of int_time, 3*int_time, and 10*int_time.</span>
+        <span class="c1"># If there is still a large fraction of failed solutions with</span>
+        <span class="c1"># solint=10*int_time the source may be too weak, and calibration via the</span>
+        <span class="c1"># pipeline has failed; will need to implement a mode to cope with weak</span>
+        <span class="c1"># calibrators (later)</span>
+
+        <span class="n">bpdgain_touse</span> <span class="o">=</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_gtype_bpdgains</span><span class="p">(</span><span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">addcaltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span>
+                                <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="o">=</span><span class="n">RefAntOutput</span><span class="p">,</span> <span class="n">spwlist</span><span class="o">=</span><span class="n">spwlist</span><span class="p">)</span>
+
+        <span class="n">flaggedSolnResult1</span> <span class="o">=</span> <span class="n">getCalFlaggedSoln</span><span class="p">(</span><span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;For solint = &quot;</span> <span class="o">+</span> <span class="n">solint</span> <span class="o">+</span> <span class="s2">&quot; fraction of flagged solutions = &quot;</span> <span class="o">+</span>
+                 <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult1</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Median fraction of flagged solutions per antenna = &quot;</span> <span class="o">+</span>
+                 <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult1</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="n">flaggedSolnResult1</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fracFlaggedSolns1</span> <span class="o">=</span> <span class="n">flaggedSolnResult1</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fracFlaggedSolns1</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="n">gain_solint1</span> <span class="o">=</span> <span class="n">solint</span>
+        <span class="n">shortsol1</span> <span class="o">=</span> <span class="n">soltime</span>
+
+        <span class="k">if</span> <span class="n">fracFlaggedSolns1</span> <span class="o">&gt;</span> <span class="mf">0.05</span><span class="p">:</span>
+            <span class="n">soltime</span> <span class="o">=</span> <span class="n">soltimes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">solint</span> <span class="o">=</span> <span class="n">solints</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_gtype_bpdgains</span><span class="p">(</span><span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">addcaltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span>
+                                    <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="o">=</span><span class="n">RefAntOutput</span><span class="p">,</span> <span class="n">spwlist</span><span class="o">=</span><span class="n">spwlist</span><span class="p">)</span>
+
+            <span class="n">flaggedSolnResult3</span> <span class="o">=</span> <span class="n">getCalFlaggedSoln</span><span class="p">(</span><span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;For solint = &quot;</span> <span class="o">+</span> <span class="n">solint</span> <span class="o">+</span> <span class="s2">&quot; fraction of flagged solutions = &quot;</span> <span class="o">+</span>
+                     <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult3</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Median fraction of flagged solutions per antenna = &quot;</span> <span class="o">+</span>
+                     <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult3</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+
+            <span class="k">if</span> <span class="n">flaggedSolnResult3</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">fracFlaggedSolns3</span> <span class="o">=</span> <span class="n">flaggedSolnResult3</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fracFlaggedSolns3</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+            <span class="k">if</span> <span class="n">fracFlaggedSolns3</span> <span class="o">&lt;</span> <span class="n">fracFlaggedSolns1</span><span class="p">:</span>
+                <span class="n">gain_solint1</span> <span class="o">=</span> <span class="n">solint</span>
+                <span class="n">shortsol1</span> <span class="o">=</span> <span class="n">soltime</span>
+
+                <span class="n">bpdgain_touse</span> <span class="o">=</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">fracFlaggedSolns3</span> <span class="o">&gt;</span> <span class="mf">0.05</span><span class="p">:</span>
+                    <span class="n">soltime</span> <span class="o">=</span> <span class="n">soltimes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">solint</span> <span class="o">=</span> <span class="n">solints</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_do_gtype_bpdgains</span><span class="p">(</span><span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">addcaltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span>
+                                            <span class="n">RefAntOutput</span><span class="o">=</span><span class="n">RefAntOutput</span><span class="p">,</span> <span class="n">spwlist</span><span class="o">=</span><span class="n">spwlist</span><span class="p">)</span>
+                    <span class="n">flaggedSolnResult10</span> <span class="o">=</span> <span class="n">getCalFlaggedSoln</span><span class="p">(</span><span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;For solint = &quot;</span> <span class="o">+</span> <span class="n">solint</span> <span class="o">+</span> <span class="s2">&quot; fraction of flagged solutions = &quot;</span> <span class="o">+</span>
+                             <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult10</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Median fraction of flagged solutions per antenna = &quot;</span> <span class="o">+</span>
+                             <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult10</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+
+                    <span class="k">if</span> <span class="n">flaggedSolnResult10</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">fracFlaggedSolns10</span> <span class="o">=</span> <span class="n">flaggedSolnResult10</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">fracFlaggedSolns10</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+                    <span class="k">if</span> <span class="n">fracFlaggedSolns10</span> <span class="o">&lt;</span> <span class="n">fracFlaggedSolns3</span><span class="p">:</span>
+                        <span class="n">gain_solint1</span> <span class="o">=</span> <span class="n">solint</span>
+                        <span class="n">shortsol1</span> <span class="o">=</span> <span class="n">soltime</span>
+                        <span class="n">bpdgain_touse</span> <span class="o">=</span> <span class="n">tablebase</span> <span class="o">+</span> <span class="n">table_suffix</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+                        <span class="k">if</span> <span class="n">fracFlaggedSolns10</span> <span class="o">&gt;</span> <span class="mf">0.05</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;There is a large fraction of flagged solutions, &quot;</span> <span class="o">+</span>
+                                     <span class="s2">&quot;there might be something wrong with your data.  &quot;</span> <span class="o">+</span>
+                                     <span class="s2">&quot;The fraction of flagged solutions is &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">fracFlaggedSolns10</span><span class="p">))</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Test amp and phase calibration on delay and bandpass calibrators complete for band </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using short solint = </span><span class="si">{!s}</span><span class="s2"> for band </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">gain_solint1</span><span class="p">),</span> <span class="n">band</span><span class="p">))</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Doing test bandpass calibration for band </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">weakbp</span><span class="p">:</span>
+            <span class="c1"># LOG.info(&quot;USING WEAKBP HEURISTICS&quot;)</span>
+            <span class="n">interp</span> <span class="o">=</span> <span class="n">weakbp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="o">=</span><span class="n">RefAntOutput</span><span class="p">,</span>
+                            <span class="n">ktypecaltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">bpdgain_touse</span><span class="o">=</span><span class="n">bpdgain_touse</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="s1">&#39;inf&#39;</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">executor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># LOG.info(&quot;Using REGULAR heuristics&quot;)</span>
+            <span class="n">interp</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">do_bandpass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="o">=</span><span class="n">RefAntOutput</span><span class="p">,</span>
+                        <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">),</span> <span class="n">ktypecaltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">bpdgain_touse</span><span class="o">=</span><span class="n">bpdgain_touse</span><span class="p">,</span>
+                        <span class="n">solint</span><span class="o">=</span><span class="s1">&#39;inf&#39;</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">)</span>
+
+            <span class="n">AllCalTables</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">())</span>
+            <span class="n">AllCalTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ktypecaltable</span><span class="p">)</span>
+            <span class="n">AllCalTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bpdgain_touse</span><span class="p">)</span>
+            <span class="n">AllCalTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bpcaltable</span><span class="p">)</span>
+            <span class="n">ntables</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">AllCalTables</span><span class="p">)</span>
+            <span class="n">interp</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">ntables</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using &#39;linear,linearflag&#39; for bandpass table&quot;</span><span class="p">)</span>
+            <span class="n">interp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;linear,linearflag&#39;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Test bandpass calibration complete&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fraction of flagged solutions = </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">])))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Median fraction of flagged solutions per antenna = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">flaggedSolnResult</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]))</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing flagdata in clip mode.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_clipflag</span><span class="p">(</span><span class="n">bpcaltable</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Applying test calibrations to BP and delay calibrators for band </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">band</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_applycal</span><span class="p">(</span><span class="n">ktypecaltable</span><span class="o">=</span><span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">bpdgain_touse</span><span class="o">=</span><span class="n">bpdgain_touse</span><span class="p">,</span>
+                          <span class="n">bpcaltable</span><span class="o">=</span><span class="n">bpcaltable</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwlist</span><span class="p">))</span>
+
+        <span class="n">flaggedSolnApplycalbandpass</span> <span class="o">=</span> <span class="n">getCalFlaggedSoln</span><span class="p">(</span><span class="n">bpdgain_touse</span><span class="p">)</span>
+        <span class="n">flaggedSolnApplycaldelay</span> <span class="o">=</span> <span class="n">getCalFlaggedSoln</span><span class="p">(</span><span class="n">ktypecaltable</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">gain_solint1</span><span class="p">,</span> <span class="n">shortsol1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">bpdgain_touse</span><span class="p">,</span> <span class="n">gtypecaltable</span><span class="p">,</span>\
+               <span class="n">ktypecaltable</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="p">,</span> <span class="n">flaggedSolnApplycalbandpass</span><span class="p">,</span> <span class="n">flaggedSolnApplycaldelay</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_do_gtype_delaycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform a G-Type delay calibration with CASA task gaincal</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            caltable(str): Name of the caltable to be created</span>
+<span class="sd">            RefAntOutput(List): List of string antenna values to use as reference antennas - [&#39;ea01&#39;, &#39;ea24&#39;, ...]</span>
+<span class="sd">            spwlist(List): List of string values for spws pertaining to the particular band - [&#39;0&#39;, &#39;1&#39;, &#39;2&#39;, ...]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">delay_field_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">delay_field_select_string</span>
+        <span class="n">tst_delay_spw</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_tst_bpass_spw</span><span class="p">(</span><span class="n">spwlist</span><span class="o">=</span><span class="n">spwlist</span><span class="p">)</span>
+        <span class="n">delay_scan_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">delay_scan_select_string</span>
+        <span class="n">minBL_for_cal</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">vla_minbaselineforcal</span><span class="p">()</span>
+
+        <span class="n">delaycal_task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                              <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+                              <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">tst_delay_spw</span><span class="p">,</span>
+                              <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">delay_scan_select_string</span><span class="p">,</span>
+                              <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;preavg&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                              <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">RefAntOutput</span><span class="p">),</span>
+                              <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">minBL_for_cal</span><span class="p">,</span>
+                              <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+                              <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;smodel&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;append&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;docallib&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">()),</span>
+                              <span class="s1">&#39;gainfield&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;interp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parang</span><span class="p">}</span>
+
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">delay_field_select_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">fieldidstring</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="n">fieldid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fieldidstring</span><span class="p">)</span>
+            <span class="n">uvrangestring</span> <span class="o">=</span> <span class="n">uvrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">)</span>
+            <span class="n">delaycal_task_args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldidstring</span>
+            <span class="n">delaycal_task_args</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uvrangestring</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">caltable</span><span class="p">):</span>
+                <span class="n">delaycal_task_args</span><span class="p">[</span><span class="s1">&#39;append&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">gaincal</span><span class="p">(</span><span class="o">**</span><span class="n">delaycal_task_args</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_do_ktype_delaycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">addcaltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">RefAntOutput</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform a K-Type delay calibration with CASA task gaincal</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            caltable(str): Name of the caltable to be created</span>
+<span class="sd">            addcaltable(str):  String name of table to temporarily be added to the gaincal gaintable parameter</span>
+<span class="sd">            RefAntOutput(List): List of string antenna values to use as reference antennas - [&#39;ea01&#39;, &#39;ea24&#39;, ...]</span>
+<span class="sd">            spw(str): csv string values for spws pertaining to the particular band - &#39;0,1,2,3,4,5,6&#39;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">delay_field_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">delay_field_select_string</span>
+        <span class="n">delay_scan_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">delay_scan_select_string</span>
+        <span class="n">minBL_for_cal</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">vla_minbaselineforcal</span><span class="p">()</span>
+
+        <span class="n">GainTables</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">())</span>
+        <span class="n">GainTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">addcaltable</span><span class="p">)</span>
+
+        <span class="n">delaycal_task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                              <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+                              <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                              <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">delay_scan_select_string</span><span class="p">,</span>
+                              <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;inf&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;preavg&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                              <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">RefAntOutput</span><span class="p">),</span>
+                              <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">minBL_for_cal</span><span class="p">,</span>
+                              <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+                              <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;smodel&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;append&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;docallib&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="n">GainTables</span><span class="p">,</span>
+                              <span class="s1">&#39;gainfield&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;interp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parang</span><span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">fieldidstring</span> <span class="ow">in</span> <span class="n">delay_field_select_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+            <span class="n">fieldid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fieldidstring</span><span class="p">)</span>
+            <span class="n">uvrangestring</span> <span class="o">=</span> <span class="n">uvrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">)</span>
+            <span class="n">delaycal_task_args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldidstring</span>
+            <span class="n">delaycal_task_args</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uvrangestring</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">caltable</span><span class="p">):</span>
+                <span class="n">delaycal_task_args</span><span class="p">[</span><span class="s1">&#39;append&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">gaincal</span><span class="p">(</span><span class="o">**</span><span class="n">delaycal_task_args</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_check_flagSolns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flaggedSolnResult</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change reference antenna list based on a critical fraction of flagged solutions</span>
+<span class="sd">            (defined in the domain ms object)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            flaggedSolnResult(Dict): Breakdown of flagged solutions</span>
+<span class="sd">            RefAntOutput(List): List of string antenna values to use as reference antennas - [&#39;ea01&#39;, &#39;ea24&#39;, ...]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            fracFlaggedSolns(float):  fraction of flagged solutions used in this function</span>
+<span class="sd">            RefAntOutput(List): List of string antenna values to use as reference antennas - [&#39;ea01&#39;, &#39;ea24&#39;, ...]</span>
+<span class="sd">                                Modified if fraction of flagged solutions is greater than critical fraction</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">flaggedSolnResult</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fracFlaggedSolns</span> <span class="o">=</span> <span class="n">flaggedSolnResult</span><span class="p">[</span><span class="s1">&#39;antmedian&#39;</span><span class="p">][</span><span class="s1">&#39;fraction&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fracFlaggedSolns</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">critfrac</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_critfrac</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">fracFlaggedSolns</span> <span class="o">&gt;</span> <span class="n">critfrac</span><span class="p">:</span>
+            <span class="n">RefAntOutput</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">RefAntOutput</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reference_antenna</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">RefAntOutput</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Not enough good solutions, trying a different reference antenna.&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The pipeline will start with antenna &quot;</span><span class="o">+</span><span class="n">RefAntOutput</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot; as the reference.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fracFlaggedSolns</span><span class="p">,</span> <span class="n">RefAntOutput</span>
+
+    <span class="k">def</span> <span class="nf">_do_gtype_bpdgains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">addcaltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+                           <span class="n">RefAntOutput</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform a G-Type cal with CASA task gaincal on the bp&#39;d gaintable</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            caltable(str): Name of the caltable to be created</span>
+<span class="sd">            addcaltable(str):  String name of table to temporarily be added to the gaincal gaintable parameter</span>
+<span class="sd">            solint(str):  String value for solint keyword of CASA task gaincal</span>
+<span class="sd">            RefAntOutput(List): List of string antenna values to use as reference antennas - [&#39;ea01&#39;, &#39;ea24&#39;, ...]</span>
+<span class="sd">            spwlist(List): List of string values for spws pertaining to the particular band - [&#39;0&#39;, &#39;1&#39;, &#39;2&#39;, ...]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">tst_bpass_spw</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_tst_bpass_spw</span><span class="p">(</span><span class="n">spwlist</span><span class="o">=</span><span class="n">spwlist</span><span class="p">)</span>
+        <span class="n">delay_scan_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">delay_scan_select_string</span>
+        <span class="n">bandpass_scan_select_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">bandpass_scan_select_string</span>
+        <span class="n">minBL_for_cal</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">vla_minbaselineforcal</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">delay_scan_select_string</span> <span class="o">==</span> <span class="n">bandpass_scan_select_string</span><span class="p">:</span>
+            <span class="n">testgainscans</span> <span class="o">=</span> <span class="n">bandpass_scan_select_string</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">testgainscans</span> <span class="o">=</span> <span class="n">bandpass_scan_select_string</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="n">delay_scan_select_string</span>
+
+        <span class="n">GainTables</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">())</span>
+        <span class="n">GainTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">addcaltable</span><span class="p">)</span>
+
+        <span class="n">bpdgains_task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                              <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+                              <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">tst_bpass_spw</span><span class="p">,</span>
+                              <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">testgainscans</span><span class="p">,</span>
+                              <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="n">solint</span><span class="p">,</span>
+                              <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;preavg&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                              <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">RefAntOutput</span><span class="p">),</span>
+                              <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">minBL_for_cal</span><span class="p">,</span>
+                              <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span>
+                              <span class="s1">&#39;solnorm&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;smodel&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;ap&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;append&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;docallib&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="n">GainTables</span><span class="p">,</span>
+                              <span class="s1">&#39;gainfield&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;interp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parang</span><span class="p">}</span>
+
+        <span class="n">testgainscanslist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">testgainscans</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span>
+        <span class="n">scanobjlist</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="n">testgainscanslist</span><span class="p">)</span>
+        <span class="n">fieldidlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scanobj</span> <span class="ow">in</span> <span class="n">scanobjlist</span><span class="p">:</span>
+            <span class="n">fieldobj</span><span class="p">,</span> <span class="o">=</span> <span class="n">scanobj</span><span class="o">.</span><span class="n">fields</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">fieldobj</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fieldidlist</span><span class="p">:</span>
+                <span class="n">fieldidlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fieldobj</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">fieldidstring</span> <span class="ow">in</span> <span class="n">fieldidlist</span><span class="p">:</span>
+            <span class="n">fieldid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fieldidstring</span><span class="p">)</span>
+            <span class="n">uvrangestring</span> <span class="o">=</span> <span class="n">uvrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">)</span>
+            <span class="n">bpdgains_task_args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldidstring</span>
+            <span class="n">bpdgains_task_args</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uvrangestring</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">caltable</span><span class="p">):</span>
+                <span class="n">bpdgains_task_args</span><span class="p">[</span><span class="s1">&#39;append&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">gaincal</span><span class="p">(</span><span class="o">**</span><span class="n">bpdgains_task_args</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_do_clipflag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute CASA task flagdata on the bpcaltable</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            bpcaltable(str):  caltable to flag</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Executed job</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">bpcaltable</span><span class="p">,</span>
+                     <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;clip&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="s1">&#39;CPARAM&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;clipminmax&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
+                     <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="s1">&#39;ABS_ALL&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;clipoutside&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;savepars&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;apply&#39;</span><span class="p">}</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ktypecaltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bpdgain_touse</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">interp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run CASA task applycal with tables from priorcals task plus those generated in testBPdcals</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ktypecaltable(str): output from K-type gaincal</span>
+<span class="sd">            bpgain_touse(str): gaintable determined to be used from heuristics</span>
+<span class="sd">            bpcaltable(str): BP caltable to use</span>
+<span class="sd">            interp(str): applycal CASA task keyword</span>
+<span class="sd">            spw(str): csv string values for spws pertaining to the particular band - &#39;0,1,2,3,4,5,6&#39;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Executed job</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">testgainscans</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">testgainscans</span>
+
+        <span class="n">AllCalTables</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">())</span>
+        <span class="n">AllCalTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ktypecaltable</span><span class="p">)</span>
+        <span class="n">AllCalTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bpdgain_touse</span><span class="p">)</span>
+        <span class="n">AllCalTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bpcaltable</span><span class="p">)</span>
+
+        <span class="n">ntables</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">AllCalTables</span><span class="p">)</span>
+
+        <span class="n">applycal_task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                              <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                              <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                              <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">testgainscans</span><span class="p">,</span>
+                              <span class="s1">&#39;docallib&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="n">AllCalTables</span><span class="p">,</span>
+                              <span class="s1">&#39;gainfield&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+                              <span class="s1">&#39;interp&#39;</span><span class="p">:</span> <span class="n">interp</span><span class="p">,</span>
+                              <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;calwt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="n">ntables</span><span class="p">,</span>
+                              <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parang</span><span class="p">,</span>
+                              <span class="s1">&#39;applymode&#39;</span><span class="p">:</span> <span class="s1">&#39;calflagstrict&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">applycal</span><span class="p">(</span><span class="o">**</span><span class="n">applycal_task_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_run_baddeformatters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bpcaltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setting control parameters as method arguments</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            bpcaltable(str): BP cal table to use</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            result_amp(List): Bad deformatters amp flagging</span>
+<span class="sd">            result_phase(List): Bad deformatters phase flagging</span>
+<span class="sd">            amp_collection(Dict): Collection for weblog display</span>
+<span class="sd">            phase_collection(Dict):  Collection for weblog display</span>
+<span class="sd">            num_antennas(int): Number of antennas (for weblog convenience)</span>
+<span class="sd">            amp_job(Dict):  flagdata result from the amplitude execution</span>
+<span class="sd">            phase_job(Dict):  flagdata result from the phase execution</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">method_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;testq&#39;</span><span class="p">:</span> <span class="s1">&#39;amp&#39;</span><span class="p">,</span>  <span class="c1"># Which quantity to test? [&#39;amp&#39;,&#39;phase&#39;,&#39;real&#39;,&#39;imag&#39;]</span>
+                       <span class="s1">&#39;tstat&#39;</span><span class="p">:</span> <span class="s1">&#39;rat&#39;</span><span class="p">,</span>  <span class="c1"># Which stat to use?[&#39;min&#39;,&#39;max&#39;,&#39;mean&#39;,&#39;var&#39;]or&#39;rat&#39;=min/max or &#39;diff&#39;=max-min</span>
+                       <span class="s1">&#39;doprintall&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Print detailed flagging stats</span>
+                       <span class="s1">&#39;testlimit&#39;</span><span class="p">:</span> <span class="mf">0.15</span><span class="p">,</span>  <span class="c1"># Limit for test (flag values under/over this limit)</span>
+                       <span class="s1">&#39;testunder&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                       <span class="s1">&#39;nspwlimit&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># Number of spw per baseband to trigger flagging entire baseband</span>
+                       <span class="s1">&#39;doflagundernspwlimit&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">doflagundernspwlimit</span><span class="p">,</span>
+                       <span class="c1"># Flag individual spws when below nspwlimit</span>
+                       <span class="s1">&#39;doflagemptyspws&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># Flag data for spws with no unflagged channel solutions in any poln?</span>
+                       <span class="s1">&#39;calBPtablename&#39;</span><span class="p">:</span> <span class="n">bpcaltable</span><span class="p">,</span>  <span class="c1"># Define the table</span>
+                       <span class="s1">&#39;flagreason&#39;</span><span class="p">:</span> <span class="s1">&#39;bad_deformatters_amp or RFI&#39;</span><span class="p">}</span>  <span class="c1"># Define the REASON given for the flags</span>
+
+        <span class="p">(</span><span class="n">result_amp</span><span class="p">,</span> <span class="n">amp_collection</span><span class="p">,</span> <span class="n">num_antennas</span><span class="p">,</span> <span class="n">amp_job</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_flag_baddeformatters</span><span class="p">(</span><span class="o">**</span><span class="n">method_args</span><span class="p">)</span>
+
+        <span class="n">method_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;testq&#39;</span><span class="p">:</span> <span class="s1">&#39;phase&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;tstat&#39;</span><span class="p">:</span> <span class="s1">&#39;diff&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;doprintall&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                       <span class="s1">&#39;testlimit&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+                       <span class="s1">&#39;testunder&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                       <span class="s1">&#39;nspwlimit&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                       <span class="s1">&#39;doflagundernspwlimit&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">doflagundernspwlimit</span><span class="p">,</span>
+                       <span class="s1">&#39;doflagemptyspws&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                       <span class="s1">&#39;calBPtablename&#39;</span><span class="p">:</span> <span class="n">bpcaltable</span><span class="p">,</span>
+                       <span class="s1">&#39;flagreason&#39;</span><span class="p">:</span> <span class="s1">&#39;bad_deformatters_phase or RFI&#39;</span><span class="p">}</span>
+
+        <span class="p">(</span><span class="n">result_phase</span><span class="p">,</span> <span class="n">phase_collection</span><span class="p">,</span> <span class="n">num_antennas</span><span class="p">,</span> <span class="n">phase_job</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_flag_baddeformatters</span><span class="p">(</span><span class="o">**</span><span class="n">method_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result_amp</span><span class="p">,</span> <span class="n">result_phase</span><span class="p">,</span> <span class="n">amp_collection</span><span class="p">,</span> <span class="n">phase_collection</span><span class="p">,</span> <span class="n">num_antennas</span><span class="p">,</span> <span class="n">amp_job</span><span class="p">,</span> <span class="n">phase_job</span>
+
+    <span class="k">def</span> <span class="nf">_do_flag_baddeformatters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">testq</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">tstat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doprintall</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">testlimit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">testunder</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">nspwlimit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+                                 <span class="n">doflagundernspwlimit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">doflagemptyspws</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                                 <span class="n">calBPtablename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">flagreason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine bad deformatters in the MS and flag them</span>
+<span class="sd">           Looks for bandpass solutions that have small ratio of min/max amplitudes</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            testq(str): Which quantity to test? [&#39;amp&#39;,&#39;phase&#39;,&#39;real&#39;,&#39;imag&#39;]                    Original script: &#39;amp&#39;</span>
+<span class="sd">            tstat(str): Which stat to use? [&#39;min&#39;,&#39;max&#39;,&#39;mean&#39;,&#39;var&#39;] or &#39;rat&#39;=min/max or &#39;diff&#39;=max-min</span>
+<span class="sd">                        Original script: &#39;rat&#39;</span>
+<span class="sd">            doprintall(bool): Print detailed flagging stats                                      Original script: True</span>
+<span class="sd">            testlimit(float): Limit for test (flag values under/over this limit)                 Original script: 0.15</span>
+<span class="sd">            testunder(bool): Will flag values under limit                                        Original script: True</span>
+<span class="sd">            nspwlimit(int): Number of spw per baseband to trigger flagging entire baseband       Original script: 4</span>
+<span class="sd">            doflagundernspwlimit(bool): Flag individual spws when below nspwlimit                Original script: True</span>
+<span class="sd">            doflagemptyspws(bool): Flag data for spws with no unflagged channel solutions in any poln?</span>
+<span class="sd">            calBPtablename(str): caltable name</span>
+<span class="sd">            flagreason(str): Reason for flagging</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            flaglist(List): phase or amp flagging commands list</span>
+<span class="sd">            weblogflagdict(Dict): collection for weblog display</span>
+<span class="sd">            num_antennas(int):  number of antennas</span>
+<span class="sd">            job(Dict):  Result of flagdata execution</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">num_antennas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">antennas</span><span class="p">)</span>
+        <span class="n">startdate</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">start_time</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start date for flag bad deformatters is: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">startdate</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">startdate</span> <span class="o">&lt;=</span> <span class="mf">56062.7</span><span class="p">:</span>
+            <span class="n">doflagdata</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">doflagdata</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Define the table to run this on</span>
+        <span class="c1"># calBPtablename =&#39;testBPcal.b&#39;</span>
+        <span class="c1"># Define the REASON given for the flags</span>
+        <span class="c1"># flagreason = &#39;bad_deformatters_amp or RFI&#39;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Will test on quantity: &quot;</span><span class="o">+</span><span class="n">testq</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Will test using statistic: &quot;</span><span class="o">+</span><span class="n">tstat</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">testunder</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Will flag values under limit = &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">testlimit</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Will flag values over limit = &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">testlimit</span><span class="p">))</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Will identify basebands with more than &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">nspwlimit</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; bad spw&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">doflagundernspwlimit</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Will identify individual spw when less than &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">nspwlimit</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; bad spw&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">doflagemptyspws</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Will identify spw with no unflagged channels&quot;</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Will use flag REASON = &quot;</span><span class="o">+</span><span class="n">flagreason</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">doflagdata</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Will flag data based on what we found&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Will NOT flag data based on what we found&quot;</span><span class="p">)</span>
+
+        <span class="n">calBPstatresult</span> <span class="o">=</span> <span class="n">getBCalStatistics</span><span class="p">(</span><span class="n">calBPtablename</span><span class="p">)</span>
+        <span class="n">flaglist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">extflaglist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">weblogflagdict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">iant</span> <span class="ow">in</span> <span class="n">calBPstatresult</span><span class="p">[</span><span class="s1">&#39;antband&#39;</span><span class="p">]:</span>
+            <span class="n">antName</span> <span class="o">=</span> <span class="n">calBPstatresult</span><span class="p">[</span><span class="s1">&#39;antDict&#39;</span><span class="p">][</span><span class="n">iant</span><span class="p">]</span>
+            <span class="n">badspwlist</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">flaggedspwlist</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">rrx</span> <span class="ow">in</span> <span class="n">calBPstatresult</span><span class="p">[</span><span class="s1">&#39;antband&#39;</span><span class="p">][</span><span class="n">iant</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">bband</span> <span class="ow">in</span> <span class="n">calBPstatresult</span><span class="p">[</span><span class="s1">&#39;antband&#39;</span><span class="p">][</span><span class="n">iant</span><span class="p">][</span><span class="n">rrx</span><span class="p">]:</span>
+                    <span class="c1"># List of spw in this baseband</span>
+                    <span class="n">spwl</span> <span class="o">=</span> <span class="n">calBPstatresult</span><span class="p">[</span><span class="s1">&#39;rxBasebandDict&#39;</span><span class="p">][</span><span class="n">rrx</span><span class="p">][</span><span class="n">bband</span><span class="p">]</span>
+
+                    <span class="n">nbadspws</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">badspws</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">flaggedspws</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spwl</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">doprintall</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39; Ant </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">) </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> processing spws=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                                     <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">iant</span><span class="p">),</span> <span class="n">antName</span><span class="p">,</span> <span class="n">rrx</span><span class="p">,</span> <span class="n">bband</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">spwl</span><span class="p">)))</span>
+
+                        <span class="k">for</span> <span class="n">ispw</span> <span class="ow">in</span> <span class="n">spwl</span><span class="p">:</span>
+                            <span class="n">testvalid</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="k">if</span> <span class="n">ispw</span> <span class="ow">in</span> <span class="n">calBPstatresult</span><span class="p">[</span><span class="s1">&#39;antspw&#39;</span><span class="p">][</span><span class="n">iant</span><span class="p">]:</span>
+                                <span class="k">for</span> <span class="n">poln</span> <span class="ow">in</span> <span class="n">calBPstatresult</span><span class="p">[</span><span class="s1">&#39;antspw&#39;</span><span class="p">][</span><span class="n">iant</span><span class="p">][</span><span class="n">ispw</span><span class="p">]:</span>
+                                    <span class="c1"># Get stats of this ant/spw/poln</span>
+                                    <span class="n">nbp</span> <span class="o">=</span> <span class="n">calBPstatresult</span><span class="p">[</span><span class="s1">&#39;antspw&#39;</span><span class="p">][</span><span class="n">iant</span><span class="p">][</span><span class="n">ispw</span><span class="p">][</span><span class="n">poln</span><span class="p">][</span><span class="s1">&#39;inner&#39;</span><span class="p">][</span><span class="s1">&#39;number&#39;</span><span class="p">]</span>
+
+                                    <span class="k">if</span> <span class="n">nbp</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                        <span class="k">if</span> <span class="n">tstat</span> <span class="o">==</span> <span class="s1">&#39;rat&#39;</span><span class="p">:</span>
+                                            <span class="n">bpmax</span> <span class="o">=</span> <span class="n">calBPstatresult</span><span class="p">[</span><span class="s1">&#39;antspw&#39;</span><span class="p">][</span><span class="n">iant</span><span class="p">][</span><span class="n">ispw</span><span class="p">][</span><span class="n">poln</span><span class="p">][</span><span class="s1">&#39;inner&#39;</span><span class="p">][</span><span class="n">testq</span><span class="p">][</span><span class="s1">&#39;max&#39;</span><span class="p">]</span>
+                                            <span class="n">bpmin</span> <span class="o">=</span> <span class="n">calBPstatresult</span><span class="p">[</span><span class="s1">&#39;antspw&#39;</span><span class="p">][</span><span class="n">iant</span><span class="p">][</span><span class="n">ispw</span><span class="p">][</span><span class="n">poln</span><span class="p">][</span><span class="s1">&#39;inner&#39;</span><span class="p">][</span><span class="n">testq</span><span class="p">][</span><span class="s1">&#39;min&#39;</span><span class="p">]</span>
+
+                                            <span class="k">if</span> <span class="n">bpmax</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+                                                <span class="n">tval</span> <span class="o">=</span> <span class="mf">0.0</span>
+                                            <span class="k">else</span><span class="p">:</span>
+                                                <span class="n">tval</span> <span class="o">=</span> <span class="n">bpmin</span><span class="o">/</span><span class="n">bpmax</span>
+                                        <span class="k">elif</span> <span class="n">tstat</span> <span class="o">==</span> <span class="s1">&#39;diff&#39;</span><span class="p">:</span>
+                                            <span class="n">bpmax</span> <span class="o">=</span> <span class="n">calBPstatresult</span><span class="p">[</span><span class="s1">&#39;antspw&#39;</span><span class="p">][</span><span class="n">iant</span><span class="p">][</span><span class="n">ispw</span><span class="p">][</span><span class="n">poln</span><span class="p">][</span><span class="s1">&#39;inner&#39;</span><span class="p">][</span><span class="n">testq</span><span class="p">][</span><span class="s1">&#39;max&#39;</span><span class="p">]</span>
+                                            <span class="n">bpmin</span> <span class="o">=</span> <span class="n">calBPstatresult</span><span class="p">[</span><span class="s1">&#39;antspw&#39;</span><span class="p">][</span><span class="n">iant</span><span class="p">][</span><span class="n">ispw</span><span class="p">][</span><span class="n">poln</span><span class="p">][</span><span class="s1">&#39;inner&#39;</span><span class="p">][</span><span class="n">testq</span><span class="p">][</span><span class="s1">&#39;min&#39;</span><span class="p">]</span>
+
+                                            <span class="n">tval</span> <span class="o">=</span> <span class="n">bpmax</span><span class="o">-</span><span class="n">bpmin</span>
+                                        <span class="k">else</span><span class="p">:</span>
+                                            <span class="c1"># simple test on quantity</span>
+                                            <span class="n">tval</span> <span class="o">=</span> <span class="n">calBPstatresult</span><span class="p">[</span><span class="s1">&#39;antspw&#39;</span><span class="p">][</span><span class="n">iant</span><span class="p">][</span><span class="n">ispw</span><span class="p">][</span><span class="n">poln</span><span class="p">][</span><span class="s1">&#39;inner&#39;</span><span class="p">][</span><span class="n">testq</span><span class="p">][</span><span class="n">tstat</span><span class="p">]</span>
+                                        <span class="k">if</span> <span class="ow">not</span> <span class="n">testvalid</span><span class="p">:</span>
+                                            <span class="n">testval</span> <span class="o">=</span> <span class="n">tval</span>
+                                            <span class="n">testvalid</span> <span class="o">=</span> <span class="kc">True</span>
+                                        <span class="k">elif</span> <span class="n">testunder</span><span class="p">:</span>
+                                            <span class="k">if</span> <span class="n">tval</span> <span class="o">&lt;</span> <span class="n">testval</span><span class="p">:</span>
+                                                <span class="n">testval</span> <span class="o">=</span> <span class="n">tval</span>
+                                        <span class="k">else</span><span class="p">:</span>
+                                            <span class="k">if</span> <span class="n">tval</span> <span class="o">&gt;</span> <span class="n">testval</span><span class="p">:</span>
+                                                <span class="n">testval</span> <span class="o">=</span> <span class="n">tval</span>
+                                <span class="c1"># Test on extrema of the polarizations for this ant/spw</span>
+                                <span class="k">if</span> <span class="ow">not</span> <span class="n">testvalid</span><span class="p">:</span>
+                                    <span class="c1"># these have no unflagged channels in any poln</span>
+                                    <span class="n">flaggedspws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ispw</span><span class="p">)</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="p">(</span><span class="n">testunder</span> <span class="ow">and</span> <span class="n">testval</span> <span class="o">&lt;</span> <span class="n">testlimit</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">testunder</span> <span class="ow">and</span> <span class="n">testval</span> <span class="o">&gt;</span> <span class="n">testlimit</span><span class="p">):</span>
+                                        <span class="n">nbadspws</span> <span class="o">+=</span> <span class="mi">1</span>
+                                        <span class="n">badspws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ispw</span><span class="p">)</span>
+                                        <span class="k">if</span> <span class="n">doprintall</span><span class="p">:</span>
+                                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  Found Ant </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">) </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> spw=</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">=</span><span class="si">%6.4f</span><span class="s1">&#39;</span> <span class="o">%</span>
+                                                     <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">iant</span><span class="p">),</span> <span class="n">antName</span><span class="p">,</span> <span class="n">rrx</span><span class="p">,</span> <span class="n">bband</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ispw</span><span class="p">),</span> <span class="n">testq</span><span class="p">,</span> <span class="n">tstat</span><span class="p">,</span> <span class="n">testval</span><span class="p">))</span>
+
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="c1"># this spw is missing from this antenna/rx</span>
+                                <span class="k">if</span> <span class="n">doprintall</span><span class="p">:</span>
+                                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  Ant </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">) </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> spw=</span><span class="si">%s</span><span class="s1"> missing solution&#39;</span> <span class="o">%</span>
+                                             <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">iant</span><span class="p">),</span> <span class="n">antName</span><span class="p">,</span> <span class="n">rrx</span><span class="p">,</span> <span class="n">bband</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ispw</span><span class="p">)))</span>
+
+                    <span class="c1"># Test to see if this baseband should be entirely flagged</span>
+                    <span class="k">if</span> <span class="n">nbadspws</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">nbadspws</span> <span class="o">&gt;=</span> <span class="n">nspwlimit</span><span class="p">:</span>
+                        <span class="c1"># Flag all spw in this baseband</span>
+                        <span class="n">bbspws</span> <span class="o">=</span> <span class="n">calBPstatresult</span><span class="p">[</span><span class="s1">&#39;rxBasebandDict&#39;</span><span class="p">][</span><span class="n">rrx</span><span class="p">][</span><span class="n">bband</span><span class="p">]</span>
+                        <span class="n">badspwlist</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bbspws</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Ant </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">) </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> bad baseband spws=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                                 <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">iant</span><span class="p">),</span> <span class="n">antName</span><span class="p">,</span> <span class="n">rrx</span><span class="p">,</span> <span class="n">bband</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">bbspws</span><span class="p">)))</span>
+                    <span class="k">elif</span> <span class="n">nbadspws</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">doflagundernspwlimit</span><span class="p">:</span>
+                        <span class="c1"># Flag spws individually</span>
+                        <span class="n">badspwlist</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">badspws</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Ant </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">) </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> bad spws=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">iant</span><span class="p">),</span> <span class="n">antName</span><span class="p">,</span> <span class="n">rrx</span><span class="p">,</span> <span class="n">bband</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">badspws</span><span class="p">)))</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flaggedspws</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">flaggedspwlist</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">flaggedspws</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Ant </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">) </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> no unflagged solutions spws=</span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span>
+                                 <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">iant</span><span class="p">),</span> <span class="n">antName</span><span class="p">,</span> <span class="n">rrx</span><span class="p">,</span> <span class="n">bband</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">flaggedspws</span><span class="p">)))</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">badspwlist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">spwstr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">for</span> <span class="n">ispw</span> <span class="ow">in</span> <span class="n">badspwlist</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">spwstr</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">spwstr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ispw</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">spwstr</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ispw</span><span class="p">)</span>
+                <span class="c1">#</span>
+                <span class="c1"># reastr = &#39;bad_deformatters&#39;</span>
+                <span class="n">reastr</span> <span class="o">=</span> <span class="n">flagreason</span>
+                <span class="c1"># Add entry for this antenna</span>
+                <span class="c1"># flagstr = &quot;mode=&#39;manual&#39; antenna=&#39;&quot;+str(iant)+&quot;&#39; spw=&#39;&quot;+spwstr+&quot;&#39; reason=&#39;&quot;+reastr+&quot;&#39;&quot;</span>
+                <span class="c1"># Use name for flagging</span>
+                <span class="n">flagstr</span> <span class="o">=</span> <span class="s2">&quot;mode=&#39;manual&#39; antenna=&#39;&quot;</span><span class="o">+</span><span class="n">antName</span><span class="o">+</span><span class="s2">&quot;&#39; spw=&#39;&quot;</span><span class="o">+</span><span class="n">spwstr</span><span class="o">+</span><span class="s2">&quot;&#39;&quot;</span>
+                <span class="n">flaglist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flagstr</span><span class="p">)</span>
+                <span class="n">weblogflagdict</span><span class="p">[</span><span class="n">antName</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spwstr</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">doflagemptyspws</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">flaggedspwlist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">spwstr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">for</span> <span class="n">ispw</span> <span class="ow">in</span> <span class="n">flaggedspwlist</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">spwstr</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">spwstr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ispw</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">spwstr</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ispw</span><span class="p">)</span>
+                <span class="c1">#</span>
+                <span class="c1"># Add entry for this antenna</span>
+                <span class="n">reastr</span> <span class="o">=</span> <span class="s1">&#39;no_unflagged_solutions&#39;</span>
+                <span class="c1"># flagstr = &quot;mode=&#39;manual&#39; antenna=&#39;&quot;+str(iant)+&quot;&#39; spw=&#39;&quot;+spwstr+&quot;&#39; reason=&#39;&quot;+reastr+&quot;&#39;&quot;</span>
+                <span class="c1"># Use name for flagging</span>
+                <span class="n">flagstr</span> <span class="o">=</span> <span class="s2">&quot;mode=&#39;manual&#39; antenna=&#39;&quot;</span><span class="o">+</span><span class="n">antName</span><span class="o">+</span><span class="s2">&quot;&#39; spw=&#39;&quot;</span><span class="o">+</span><span class="n">spwstr</span><span class="o">+</span><span class="s2">&quot;&#39;&quot;</span>
+                <span class="n">extflaglist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flagstr</span><span class="p">)</span>
+                <span class="n">weblogflagdict</span><span class="p">[</span><span class="n">antName</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spwstr</span><span class="p">)</span>
+
+        <span class="c1"># Get basebands matched with spws.  spws is a single element list with a single csv string</span>
+        <span class="n">tempDict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">antNamekey</span><span class="p">,</span> <span class="n">spws</span> <span class="ow">in</span> <span class="n">weblogflagdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">basebands</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">spwstr</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                <span class="n">spw</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spwstr</span><span class="p">)</span>
+                <span class="n">basebands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">basebands</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">basebands</span><span class="p">))</span>  <span class="c1"># Unique basebands</span>
+            <span class="n">tempDict</span><span class="p">[</span><span class="n">antNamekey</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;spws&#39;</span><span class="p">:</span> <span class="n">spws</span><span class="p">,</span> <span class="s1">&#39;basebands&#39;</span><span class="p">:</span> <span class="n">basebands</span><span class="p">}</span>
+
+        <span class="n">weblogflagdict</span> <span class="o">=</span> <span class="n">tempDict</span>
+
+        <span class="n">nflagcmds</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">flaglist</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">extflaglist</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nflagcmds</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No bad basebands/spws found&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Possible bad basebands/spws found:&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">flagstr</span> <span class="ow">in</span> <span class="n">flaglist</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;    &quot;</span><span class="o">+</span><span class="n">flagstr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">extflaglist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;    &quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">flagstr</span> <span class="ow">in</span> <span class="n">extflaglist</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;    &quot;</span><span class="o">+</span><span class="n">flagstr</span><span class="p">)</span>
+                <span class="n">flaglist</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">extflaglist</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">doflagdata</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting flag commands for bad deformatters in the ms (quantity </span><span class="si">{!s}</span><span class="s2">)...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">testq</span><span class="p">))</span>
+
+                <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                             <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;list&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;inpfile&#39;</span><span class="p">:</span> <span class="n">flaglist</span><span class="p">,</span>
+                             <span class="s1">&#39;savepars&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+                <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+                <span class="c1"># self._executor.execute(job)</span>
+
+                <span class="c1"># get the total fraction of data flagged for all antennas</span>
+                <span class="c1"># flagging_stats = getCalFlaggedSoln(calBPtablename)</span>
+                <span class="c1"># total = 0</span>
+                <span class="c1"># flagged = 0</span>
+                <span class="c1"># for antenna in flagging_stats[&#39;ant&#39;]:</span>
+                <span class="c1">#     for pol in flagging_stats[&#39;ant&#39;][antenna]:</span>
+                <span class="c1">#         flagged += flagging_stats[&#39;ant&#39;][antenna][pol][&#39;flagged&#39;]</span>
+                <span class="c1">#         total += flagging_stats[&#39;ant&#39;][antenna][pol][&#39;total&#39;]</span>
+                <span class="c1"># fraction_flagged = flagged / total</span>
+
+                <span class="c1"># LOG.info(&#39;Flagged ({}) Total ({}) Fraction ({})&#39;.format(flagged, total, fraction_flagged))</span>
+                <span class="k">return</span> <span class="n">flaglist</span><span class="p">,</span> <span class="n">weblogflagdict</span><span class="p">,</span> <span class="n">num_antennas</span><span class="p">,</span> <span class="n">job</span>
+
+        <span class="c1"># If the flag commands are not executed.</span>
+        <span class="k">return</span> <span class="p">[],</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">),</span> <span class="n">num_antennas</span><span class="p">,</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+pipeline.hif.tasks.refant.qa
+============================
+
+.. automodule:: pipeline.hif.tasks.refant.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      RefantListQAHandler
+      RefantQAHandler
+   

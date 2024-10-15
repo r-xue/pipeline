@@ -1,0 +1,29 @@
+pipeline.hsd.tasks.flagging package
+===================================
+
+Submodules
+----------
+
+pipeline.hsd.tasks.flagging.flagdeteralmasd module
+--------------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.flagging.flagdeteralmasd
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.flagging.renderer module
+-------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.flagging.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hsd.tasks.flagging
+   :members:
+   :undoc-members:
+   :show-inheritance:

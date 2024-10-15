@@ -1,0 +1,12 @@
+pipeline.hif.tasks.makeimages.resultobjects
+===========================================
+
+.. automodule:: pipeline.hif.tasks.makeimages.resultobjects
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MakeImagesResult
+   

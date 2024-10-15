@@ -1,0 +1,20 @@
+pipeline.hifa.tasks.unlock\_refant
+==================================
+
+.. automodule:: pipeline.hifa.tasks.unlock_refant
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsDefaultRenderer
+      UnlockRefAnt
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   unlock_refant

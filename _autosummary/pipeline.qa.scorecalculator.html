@@ -1,0 +1,481 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.qa.scorecalculator &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.qa.scorecalculator</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.qa.scorecalculator.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pipeline.qa.scorecalculator">
+<span id="pipeline-qa-scorecalculator"></span><h1>pipeline.qa.scorecalculator<a class="headerlink" href="#module-pipeline.qa.scorecalculator" title="Link to this heading"></a></h1>
+<p>Created on 9 Jan 2014</p>
+<p>&#64;author: sjw</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_flags_per_agent</span></code>(summaries[, scanids])</p></td>
+<td><p>Calculate flagging statistics per agents.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_frac_newly_flagged</span></code>(summaries[, agents, ...])</p></td>
+<td><p>Calculate fraction of data that is newly flagged, i.e. exclude pre-existing flags (assumed to be represented in first summary).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_frac_total_flagged</span></code>(summaries[, agents, ...])</p></td>
+<td><p>Calculate total fraction of data that is flagged.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_vla_science_frac_total_flagged</span></code>(summaries)</p></td>
+<td><p>Calculate total fraction of vla science data that is flagged.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">channel_ranges_for_image</span></code>(edge, nchan, ...)</p></td>
+<td><p>Convert channel ranges in MS coordinate to those in image coordinate.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">countbaddelays</span></code>(m, delaytable, delaymax)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">direction_recover</span></code>(ra, dec, org_direction)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">examine_sd_edge_lines</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">examine_sd_wide_lines</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_metric_mask</span></code>(context, result, cs, mask)</p></td>
+<td><p>Generate boolean mask array for metric calculation in score_sdimage_masked_pixels.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_line_ranges</span></code>(lines)</p></td>
+<td><p>Get valid line ranges from list of line properties.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">linear_score</span></code>(x, x1, x2[, y1, y2])</p></td>
+<td><p>Calculate the score for the given data value, assuming the score follows a linear gradient between the low and high values.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">linear_score_fraction_newly_flagged</span></code>(self, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">linear_score_fraction_unflagged_newly_flagged_for_intent</span></code>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_qa</span></code>(method)</p></td>
+<td><p>Decorator that logs QA evaluations as they return with a log level of INFO for scores between perfect and 'slightly suboptimal' scores and WARNING for any other level.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_applycal_agents" title="pipeline.qa.scorecalculator.score_applycal_agents"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_applycal_agents</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_applycmds_exist" title="pipeline.qa.scorecalculator.score_applycmds_exist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_applycmds_exist</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_bands" title="pipeline.qa.scorecalculator.score_bands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_bands</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_caltables_exist" title="pipeline.qa.scorecalculator.score_caltables_exist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_caltables_exist</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_checksources" title="pipeline.qa.scorecalculator.score_checksources"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_checksources</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_combine_spwmapping</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_contiguous_session" title="pipeline.qa.scorecalculator.score_contiguous_session"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_contiguous_session</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_data_flagged_by_agents</span></code>(ms, summaries, ...)</p></td>
+<td><p>Calculate a score for the agentflagger summaries based on the fraction of data flagged by certain flagging agents.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_decoherence_assessment" title="pipeline.qa.scorecalculator.score_decoherence_assessment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_decoherence_assessment</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_derived_fluxes_snr" title="pipeline.qa.scorecalculator.score_derived_fluxes_snr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_derived_fluxes_snr</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_ephemeris_coordinates" title="pipeline.qa.scorecalculator.score_ephemeris_coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_ephemeris_coordinates</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_file_exists" title="pipeline.qa.scorecalculator.score_file_exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_file_exists</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_flagged_vla_baddef" title="pipeline.qa.scorecalculator.score_flagged_vla_baddef"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_flagged_vla_baddef</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_flagging_view_exists" title="pipeline.qa.scorecalculator.score_flagging_view_exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_flagging_view_exists</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_flags_exist" title="pipeline.qa.scorecalculator.score_flags_exist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_flags_exist</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_fluxcsv</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_fluxservice" title="pipeline.qa.scorecalculator.score_fluxservice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_fluxservice</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_fluxservicemessages</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_fluxservicestatuscodes</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_fraction_newly_flagged</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_gfluxscale_k_spw" title="pipeline.qa.scorecalculator.score_gfluxscale_k_spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_gfluxscale_k_spw</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_iersstate" title="pipeline.qa.scorecalculator.score_iersstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_iersstate</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_images_exist</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_lowtrans_flagcmds" title="pipeline.qa.scorecalculator.score_lowtrans_flagcmds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_lowtrans_flagcmds</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_missing_bandpass_snrs" title="pipeline.qa.scorecalculator.score_missing_bandpass_snrs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_missing_bandpass_snrs</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_missing_derived_fluxes" title="pipeline.qa.scorecalculator.score_missing_derived_fluxes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_missing_derived_fluxes</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_missing_intents" title="pipeline.qa.scorecalculator.score_missing_intents"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_missing_intents</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_missing_phase_snrs" title="pipeline.qa.scorecalculator.score_missing_phase_snrs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_missing_phase_snrs</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_missing_phaseup_snrs" title="pipeline.qa.scorecalculator.score_missing_phaseup_snrs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_missing_phaseup_snrs</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_mom8_fc_image" title="pipeline.qa.scorecalculator.score_mom8_fc_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_mom8_fc_image</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_ms_history_entries_present" title="pipeline.qa.scorecalculator.score_ms_history_entries_present"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_ms_history_entries_present</span></code></a>(self, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_ms_model_data_column_present" title="pipeline.qa.scorecalculator.score_ms_model_data_column_present"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_ms_model_data_column_present</span></code></a>(all_mses, ...)</p></td>
+<td><p>Give a score for a group of mses based on the number with modeldata columns present.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_mses_exist" title="pipeline.qa.scorecalculator.score_mses_exist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_mses_exist</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_multiply" title="pipeline.qa.scorecalculator.score_multiply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_multiply</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_number_antenna_offsets" title="pipeline.qa.scorecalculator.score_number_antenna_offsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_number_antenna_offsets</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_observing_modes" title="pipeline.qa.scorecalculator.score_observing_modes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_observing_modes</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_online_shadow_template_agents" title="pipeline.qa.scorecalculator.score_online_shadow_template_agents"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_online_shadow_template_agents</span></code></a>(self, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_parallactic_range</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_path_exists" title="pipeline.qa.scorecalculator.score_path_exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_path_exists</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_phaseup_mapping_fraction</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_phaseup_spw_median_snr_for_check" title="pipeline.qa.scorecalculator.score_phaseup_spw_median_snr_for_check"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_phaseup_spw_median_snr_for_check</span></code></a>(self, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_phaseup_spw_median_snr_for_phase" title="pipeline.qa.scorecalculator.score_phaseup_spw_median_snr_for_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_phaseup_spw_median_snr_for_phase</span></code></a>(self, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_polcal_gain_ratio" title="pipeline.qa.scorecalculator.score_polcal_gain_ratio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_polcal_gain_ratio</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_polcal_gain_ratio_rms" title="pipeline.qa.scorecalculator.score_polcal_gain_ratio_rms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_polcal_gain_ratio_rms</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_polcal_leakage" title="pipeline.qa.scorecalculator.score_polcal_leakage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_polcal_leakage</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_polcal_residual_pol" title="pipeline.qa.scorecalculator.score_polcal_residual_pol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_polcal_residual_pol</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_polcal_results" title="pipeline.qa.scorecalculator.score_polcal_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_polcal_results</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_polintents" title="pipeline.qa.scorecalculator.score_polintents"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_polintents</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_poor_bandpass_solutions" title="pipeline.qa.scorecalculator.score_poor_bandpass_solutions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_poor_bandpass_solutions</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_poor_phase_snrs" title="pipeline.qa.scorecalculator.score_poor_phase_snrs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_poor_phase_snrs</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_poor_phaseup_solutions" title="pipeline.qa.scorecalculator.score_poor_phaseup_solutions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_poor_phaseup_solutions</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_rasterscan_correctness_direction_domain_rasterscan_fail</span></code>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_rasterscan_correctness_imaging_raster_analysis_incomplete</span></code>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_rasterscan_correctness_imaging_raster_gap</span></code>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_rasterscan_correctness_time_domain_rasterscan_fail</span></code>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_refspw_mapping_fraction" title="pipeline.qa.scorecalculator.score_refspw_mapping_fraction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_refspw_mapping_fraction</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_renorm" title="pipeline.qa.scorecalculator.score_renorm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_renorm</span></code></a>(result)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_samecalobjects</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_science_spw_names" title="pipeline.qa.scorecalculator.score_science_spw_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_science_spw_names</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_sd_baseline_quality</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_sd_line_detection</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_sd_skycal_elevation_difference</span></code>(self, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_sdimage_contamination</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_sdimage_masked_pixels</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_sdtotal_data_flagged</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_sdtotal_data_flagged_old</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_setjy_measurements" title="pipeline.qa.scorecalculator.score_setjy_measurements"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_setjy_measurements</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_total_data_flagged" title="pipeline.qa.scorecalculator.score_total_data_flagged"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_total_data_flagged</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_total_data_flagged_vla" title="pipeline.qa.scorecalculator.score_total_data_flagged_vla"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_total_data_flagged_vla</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_total_data_flagged_vla_bandpass" title="pipeline.qa.scorecalculator.score_total_data_flagged_vla_bandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_total_data_flagged_vla_bandpass</span></code></a>(self, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_total_data_vla_delay" title="pipeline.qa.scorecalculator.score_total_data_vla_delay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_total_data_vla_delay</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_tsysflagcontamination_contamination_flagged" title="pipeline.qa.scorecalculator.score_tsysflagcontamination_contamination_flagged"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_tsysflagcontamination_contamination_flagged</span></code></a>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_tsysflagcontamination_external_heuristic" title="pipeline.qa.scorecalculator.score_tsysflagcontamination_external_heuristic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_tsysflagcontamination_external_heuristic</span></code></a>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_tsysspwmap" title="pipeline.qa.scorecalculator.score_tsysspwmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_tsysspwmap</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_vla_agents" title="pipeline.qa.scorecalculator.score_vla_agents"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_vla_agents</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_vla_flux_residual_rms" title="pipeline.qa.scorecalculator.score_vla_flux_residual_rms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_vla_flux_residual_rms</span></code></a>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_vla_science_data_flagged_by_agents</span></code>(ms, ...)</p></td>
+<td><p>Calculate a score for the agentflagger summaries based on the fraction of VLA science data flagged by certain flagging agents.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_wvrgcal</span></code>(self, *args, **kw)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_deviation_masks</span></code>(deviation_masks, ...)</p></td>
+<td><p>Select deviation masks that belongs to given reduction group member.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">AgentStats</span></code>(name, flagged, total)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code>(name[, session])</p></td>
+<td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RasterScanHeuristicsResult</span></code>(ms)</p></td>
+<td><p>Result class of raster scan analysis.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDImagingResultItem</span></code>([task, success, ...])</p></td>
+<td><p>The class to store result of each image.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDImportDataResults</span></code>([mses, ...])</p></td>
+<td><p>SDImportDataResults is an equivalent class with ImportDataResults.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

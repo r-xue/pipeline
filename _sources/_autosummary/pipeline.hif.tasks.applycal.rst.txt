@@ -1,0 +1,21 @@
+pipeline.hif.tasks.applycal
+===========================
+
+.. automodule:: pipeline.hif.tasks.applycal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      IFApplycal
+      IFApplycalInputs
+      SerialIFApplycal
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   ifapplycal

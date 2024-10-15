@@ -1,0 +1,117 @@
+pipeline.hsd.heuristics package
+===============================
+
+Submodules
+----------
+
+pipeline.hsd.heuristics.MaskDeviation module
+--------------------------------------------
+
+.. automodule:: pipeline.hsd.heuristics.MaskDeviation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.heuristics.baselineparamconfig module
+--------------------------------------------------
+
+.. automodule:: pipeline.hsd.heuristics.baselineparamconfig
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.heuristics.fitorder module
+---------------------------------------
+
+.. automodule:: pipeline.hsd.heuristics.fitorder
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.heuristics.fragmentation module
+--------------------------------------------
+
+.. automodule:: pipeline.hsd.heuristics.fragmentation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.heuristics.grouping2 module
+----------------------------------------
+
+.. automodule:: pipeline.hsd.heuristics.grouping2
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.heuristics.grouping2\_test module
+----------------------------------------------
+
+.. automodule:: pipeline.hsd.heuristics.grouping2_test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.heuristics.observingpattern2 module
+------------------------------------------------
+
+.. automodule:: pipeline.hsd.heuristics.observingpattern2
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.heuristics.rasterscan module
+-----------------------------------------
+
+.. automodule:: pipeline.hsd.heuristics.rasterscan
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.heuristics.rasterscan\_test module
+-----------------------------------------------
+
+.. automodule:: pipeline.hsd.heuristics.rasterscan_test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.heuristics.sdbeamsize module
+-----------------------------------------
+
+.. automodule:: pipeline.hsd.heuristics.sdbeamsize
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.heuristics.sdcaltype module
+----------------------------------------
+
+.. automodule:: pipeline.hsd.heuristics.sdcaltype
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.heuristics.sddatatype module
+-----------------------------------------
+
+.. automodule:: pipeline.hsd.heuristics.sddatatype
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.heuristics.tsysspwmap module
+-----------------------------------------
+
+.. automodule:: pipeline.hsd.heuristics.tsysspwmap
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hsd.heuristics
+   :members:
+   :undoc-members:
+   :show-inheritance:

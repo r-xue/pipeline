@@ -1,0 +1,13 @@
+pipeline.h.tasks.tsyscal.qa
+===========================
+
+.. automodule:: pipeline.h.tasks.tsyscal.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TsyscalListQAHandler
+      TsyscalQAHandler
+   

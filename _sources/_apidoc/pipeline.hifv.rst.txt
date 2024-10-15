@@ -1,0 +1,21 @@
+pipeline.hifv package
+=====================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pipeline.hifv.cli
+   pipeline.hifv.heuristics
+   pipeline.hifv.tasks
+   pipeline.hifv.templates
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifv
+   :members:
+   :undoc-members:
+   :show-inheritance:

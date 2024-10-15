@@ -1,0 +1,39 @@
+pipeline.infrastructure.utils.conversion
+========================================
+
+.. automodule:: pipeline.infrastructure.utils.conversion
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      ant_arg_to_id
+      commafy
+      dequote
+      field_arg_to_id
+      flatten
+      format_datetime
+      format_timedelta
+      get_epoch_as_datetime
+      mjd_seconds_to_datetime
+      phasecenter_to_skycoord
+      range_to_list
+      record_to_quantity
+      refcode_to_skyframe
+      safe_split
+      spw_arg_to_id
+      to_CASA_intent
+      to_pipeline_intent
+      unix_seconds_to_datetime
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LoggingLRUCache
+      Number
+      SkyCoord
+      datetime
+      timedelta
+   

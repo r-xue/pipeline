@@ -1,0 +1,544 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.heuristics.cleanbox &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.heuristics.cleanbox</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.heuristics.cleanbox</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os.path</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="analyse_clean_result">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.cleanbox.analyse_clean_result">[docs]</a>
+<span class="k">def</span> <span class="nf">analyse_clean_result</span><span class="p">(</span><span class="n">multiterm</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">restored</span><span class="p">,</span> <span class="n">residual</span><span class="p">,</span> <span class="n">pb</span><span class="p">,</span> <span class="n">cleanmask</span><span class="p">,</span> <span class="n">pblimit_image</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+                         <span class="n">pblimit_cleanmask</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">cont_freq_ranges</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="n">qaTool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+    <span class="k">if</span> <span class="n">pb</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">pb</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">multiterm</span><span class="p">:</span>
+        <span class="n">extension</span> <span class="o">=</span> <span class="s1">&#39;.tt0&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">extension</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="c1"># get the sum of the model image to find how much flux has been</span>
+    <span class="c1"># cleaned</span>
+    <span class="n">model_sum</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">model</span> <span class="o">+</span> <span class="n">extension</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+            <span class="n">model_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">robust</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">model_sum</span> <span class="o">=</span> <span class="n">model_stats</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Sum of model: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">model_sum</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Fixing coordsys of pb and cleanmask&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">residual</span> <span class="o">+</span> <span class="n">extension</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+        <span class="n">csys</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">coordsys</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">pb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">pb</span> <span class="o">+</span> <span class="n">extension</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+            <span class="n">image</span><span class="o">.</span><span class="n">setcoordsys</span><span class="p">(</span><span class="n">csys</span><span class="o">.</span><span class="n">torecord</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">cleanmask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+            <span class="n">image</span><span class="o">.</span><span class="n">setcoordsys</span><span class="p">(</span><span class="n">csys</span><span class="o">.</span><span class="n">torecord</span><span class="p">())</span>
+    <span class="n">csys</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">residual</span> <span class="o">+</span> <span class="n">extension</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+        <span class="c1"># get the rms of the residual image inside the cleaned area</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">todo</span><span class="p">(</span><span class="s1">&#39;Cannot use dirname in mask&#39;</span><span class="p">)</span>
+        <span class="n">residual_cleanmask_rms</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">cleanmask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">):</span>
+            <span class="c1"># Area inside clean mask</span>
+            <span class="n">statsmask</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot; &gt; 0.1&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">))</span>
+
+            <span class="n">resid_clean_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">statsmask</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">residual_cleanmask_rms</span> <span class="o">=</span> <span class="n">resid_clean_stats</span><span class="p">[</span><span class="s1">&#39;rms&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Residual rms inside cleaned area: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">residual_cleanmask_rms</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="c1"># and the rms of the residual image outside the cleaned area</span>
+        <span class="n">residual_non_cleanmask_rms</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">pb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pb</span><span class="o">+</span><span class="n">extension</span><span class="p">):</span>
+            <span class="n">have_mask</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">statsmask</span> <span class="o">=</span> <span class="s1">&#39;(&quot;</span><span class="si">%s</span><span class="s1">&quot; &gt; </span><span class="si">%f</span><span class="s1">) &amp;&amp; (&quot;</span><span class="si">%s</span><span class="s1">&quot; &lt; </span><span class="si">%f</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span><span class="o">+</span><span class="n">extension</span><span class="p">,</span> <span class="n">pblimit_image</span><span class="p">,</span>
+                                                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span><span class="o">+</span><span class="n">extension</span><span class="p">,</span> <span class="n">pblimit_cleanmask</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">cleanmask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">):</span>
+            <span class="n">have_mask</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="c1"># Area outside clean mask</span>
+            <span class="n">statsmask</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot; &lt; 0.1&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">have_mask</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">statsmask</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">residual_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">statsmask</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">residual_non_cleanmask_rms</span> <span class="o">=</span> <span class="n">residual_stats</span><span class="p">[</span><span class="s1">&#39;rms&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">have_mask</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Residual rms in the annulus: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">residual_non_cleanmask_rms</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Residual rms across full area: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">residual_non_cleanmask_rms</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># get the max, min of the residual image (avoiding the edges</span>
+        <span class="c1"># where spikes can occur)</span>
+        <span class="k">if</span> <span class="n">pb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pb</span><span class="o">+</span><span class="n">extension</span><span class="p">):</span>
+            <span class="n">residual_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span>
+              <span class="n">mask</span><span class="o">=</span><span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot; &gt; </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span><span class="o">+</span><span class="n">extension</span><span class="p">,</span> <span class="n">pblimit_image</span><span class="p">),</span> <span class="n">robust</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">residual_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">robust</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">residual_max</span> <span class="o">=</span> <span class="n">residual_stats</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">residual_min</span> <span class="o">=</span> <span class="n">residual_stats</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">residual_max</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">residual_min</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Residual max: </span><span class="si">%s</span><span class="s1"> min: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">residual_max</span><span class="p">,</span> <span class="n">residual_min</span><span class="p">))</span>
+
+        <span class="n">residual_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">excludepix</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">residual_robust_rms</span> <span class="o">=</span> <span class="n">residual_stats</span><span class="p">[</span><span class="s1">&#39;medabsdevmed&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1.4826</span>  <span class="c1"># see CAS-9631</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;residual scaled MAD: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">residual_robust_rms</span><span class="p">)</span>
+
+    <span class="n">pbcor_image_min</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">pbcor_image_min_iquv</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">pbcor_image_max</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">pbcor_image_max_iquv</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nonpbcor_imagename</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nonpbcor_image_non_cleanmask_rms</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nonpbcor_image_non_cleanmask_rms_min</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nonpbcor_image_non_cleanmask_rms_max</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nonpbcor_image_non_cleanmask_robust_rms</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nonpbcor_image_non_cleanmask_freq_ch1</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nonpbcor_image_non_cleanmask_freq_chN</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nonpbcor_image_non_cleanmask_freq_frame</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nonpbcor_image_non_cleanmask_rms_iquv</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nonpbcor_image_cleanmask_spectrum</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nonpbcor_image_cleanmask_spectrum_pblimit</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nonpbcor_image_cleanmask_npoints</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nonpbcor_image_statsmask</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">restored</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
+        <span class="c1"># get min and max of the pb-corrected cleaned result</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">restored</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.image</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">extension</span><span class="p">))</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pb</span><span class="o">+</span><span class="n">extension</span><span class="p">):</span>
+                <span class="n">have_mask</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="c1"># Default is area pb &gt; 0.3</span>
+                <span class="n">statsmask</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot; &gt; </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span><span class="o">+</span><span class="n">extension</span><span class="p">,</span> <span class="n">pblimit_cleanmask</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">cleanmask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">):</span>
+                <span class="n">have_mask</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="c1"># Area inside clean mask</span>
+                <span class="n">statsmask</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot; &gt; 0.1&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">have_mask</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">statsmask</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+            <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">image</span><span class="o">.</span><span class="n">miscinfo</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;intent&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">image_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">statsmask</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="c1"># For polarization calibrators we need stats for I, Q, U and V, so exclude the</span>
+                <span class="c1"># Stokes axis from collapsing.</span>
+                <span class="n">image_stats_iquv</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">statsmask</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Restrict region to inner 25% x 25% of the image for calibrators to</span>
+                <span class="c1"># avoid picking up sidelobes (PIPE-611)</span>
+                <span class="n">shape</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span>
+                <span class="n">rgTool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">regionmanager</span>
+                <span class="n">nPixels</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">region</span> <span class="o">=</span> <span class="n">rgTool</span><span class="o">.</span><span class="n">box</span><span class="p">([</span><span class="n">nPixels</span><span class="o">*</span><span class="mf">0.375</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nPixels</span><span class="o">*</span><span class="mf">0.375</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">nPixels</span><span class="o">*</span><span class="mf">0.625</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nPixels</span><span class="o">*</span><span class="mf">0.625</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">image_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">statsmask</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="c1"># For polarization calibrators we need stats for I, Q, U and V, so exclude the</span>
+                <span class="c1"># Stokes axis from collapsing.</span>
+                <span class="n">image_stats_iquv</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">statsmask</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">rgTool</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+            <span class="n">pbcor_image_min</span> <span class="o">=</span> <span class="n">image_stats</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">pbcor_image_min_iquv</span> <span class="o">=</span> <span class="n">image_stats_iquv</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">]</span>
+            <span class="n">pbcor_image_max</span> <span class="o">=</span> <span class="n">image_stats</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">pbcor_image_max_iquv</span> <span class="o">=</span> <span class="n">image_stats_iquv</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">have_mask</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Clean pb-corrected image min in cleaned area: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">pbcor_image_min</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Clean pb-corrected image max in cleaned area: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">pbcor_image_max</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Clean pb-corrected image min in full area: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">pbcor_image_min</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Clean pb-corrected image max in full area: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">pbcor_image_max</span><span class="p">)</span>
+
+        <span class="c1"># get RMS in non cleanmask area of non-pb-corrected cleaned result</span>
+        <span class="k">if</span> <span class="n">restored</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">nonpbcor_imagename</span> <span class="o">=</span> <span class="n">restored</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.image</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">extension</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nonpbcor_imagename</span> <span class="o">=</span> <span class="n">restored</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.image</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">extension</span><span class="p">)</span>
+
+        <span class="c1"># If possible use flattened clean mask for exclusion of areas for all spectral channels</span>
+        <span class="n">flattened_mask</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">cleanmask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;.mask&#39;</span> <span class="ow">in</span> <span class="n">cleanmask</span><span class="p">:</span>
+                <span class="n">flattened_mask</span> <span class="o">=</span> <span class="n">cleanmask</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.mask&#39;</span><span class="p">,</span> <span class="s1">&#39;.mask.flattened&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s1">&#39;.cleanmask&#39;</span> <span class="ow">in</span> <span class="n">cleanmask</span><span class="p">:</span>
+                <span class="n">flattened_mask</span> <span class="o">=</span> <span class="n">cleanmask</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.cleanmask&#39;</span><span class="p">,</span> <span class="s1">&#39;.cleanmask.flattened&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="s1">&#39;Cannot handle clean mask name </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">))</span>
+
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+                <span class="n">image_shape</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">image_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">image_shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">flattened_mask</span> <span class="o">=</span> <span class="n">cleanmask</span>
+                    <span class="n">flattened_mask_image</span> <span class="o">=</span> <span class="n">image</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">flattened_mask_image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">collapse</span><span class="p">(</span>
+                        <span class="n">function</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">outfile</span><span class="o">=</span><span class="n">flattened_mask</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">npoints_mask</span> <span class="o">=</span> <span class="n">flattened_mask_image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot; &gt; 0.1&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">flattened_mask</span><span class="p">)),</span> <span class="n">robust</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s1">&#39;npts&#39;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">npoints_mask</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,):</span>
+                        <span class="n">nonpbcor_image_cleanmask_npoints</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">npoints_mask</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">nonpbcor_image_cleanmask_npoints</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">nonpbcor_image_cleanmask_npoints</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">flattened_mask_image</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">nonpbcor_imagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+            <span class="c1"># Get the image frequency axis for later plotting.</span>
+            <span class="n">imhead</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="nb">list</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">lcs</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">coordsys</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">csys</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">coordsys</span><span class="p">()</span>
+                <span class="n">freq_axis</span> <span class="o">=</span> <span class="n">csys</span><span class="o">.</span><span class="n">findaxisbyname</span><span class="p">(</span><span class="s1">&#39;spectral&#39;</span><span class="p">)</span>
+                <span class="n">csys</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">num_axes</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">num_axes</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find spectral axis. Assuming it is 3.&quot;</span><span class="p">)</span>
+                    <span class="n">freq_axis</span> <span class="o">=</span> <span class="mi">3</span>
+                <span class="k">elif</span> <span class="n">num_axes</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find spectral axis. Assuming it is 2.&quot;</span><span class="p">)</span>
+                    <span class="n">freq_axis</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="k">elif</span> <span class="n">num_axes</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No spectral axis found&quot;</span><span class="p">)</span>
+                    <span class="n">freq_axis</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">lcs</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+            <span class="n">nonpbcor_image_non_cleanmask_freq_ch1</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">imhead</span><span class="p">[</span><span class="s1">&#39;refval&#39;</span><span class="p">][</span><span class="n">freq_axis</span><span class="p">]</span> <span class="o">-</span> <span class="n">imhead</span><span class="p">[</span><span class="s1">&#39;refpix&#39;</span><span class="p">][</span><span class="n">freq_axis</span><span class="p">]</span> <span class="o">*</span> <span class="n">imhead</span><span class="p">[</span><span class="s1">&#39;incr&#39;</span><span class="p">][</span><span class="n">freq_axis</span><span class="p">],</span> <span class="n">imhead</span><span class="p">[</span><span class="s1">&#39;axisunits&#39;</span><span class="p">][</span><span class="n">freq_axis</span><span class="p">])</span>
+            <span class="n">nonpbcor_image_non_cleanmask_freq_chN</span> <span class="o">=</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">imhead</span><span class="p">[</span><span class="s1">&#39;refval&#39;</span><span class="p">][</span><span class="n">freq_axis</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">imhead</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">][</span><span class="n">freq_axis</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">imhead</span><span class="p">[</span><span class="s1">&#39;refpix&#39;</span><span class="p">][</span><span class="n">freq_axis</span><span class="p">])</span> <span class="o">*</span> <span class="n">imhead</span><span class="p">[</span><span class="s1">&#39;incr&#39;</span><span class="p">][</span><span class="n">freq_axis</span><span class="p">],</span> <span class="n">imhead</span><span class="p">[</span><span class="s1">&#39;axisunits&#39;</span><span class="p">][</span><span class="n">freq_axis</span><span class="p">])</span>
+            <span class="c1"># Get the spectral reference. Unfortunately this is coded in text</span>
+            <span class="c1"># messages rather than a key/value pair. Hence the parsing code.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">imhead</span><span class="p">[</span><span class="s1">&#39;messages&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+                    <span class="n">msg_l</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="s1">&#39;spectral&#39;</span> <span class="ow">in</span> <span class="n">msg_l</span> <span class="ow">and</span> <span class="s1">&#39;reference&#39;</span> <span class="ow">in</span> <span class="n">msg_l</span><span class="p">:</span>
+                        <span class="n">nonpbcor_image_non_cleanmask_freq_frame</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Cannot determine spectral reference in </span><span class="si">%s</span><span class="s1">. Assuming it is LSRK.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nonpbcor_imagename</span><span class="p">))</span>
+                <span class="n">nonpbcor_image_non_cleanmask_freq_frame</span> <span class="o">=</span> <span class="s1">&#39;LSRK&#39;</span>
+
+            <span class="c1"># define mask outside the cleaned area</span>
+            <span class="n">image_stats</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">pb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pb</span><span class="o">+</span><span class="n">extension</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cleanmask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">):</span>
+                <span class="n">pb_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span><span class="o">+</span><span class="n">extension</span>
+                <span class="n">have_mask</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="c1"># Annulus without clean mask</span>
+                <span class="n">statsmask</span> <span class="o">=</span> <span class="s1">&#39;(&quot;</span><span class="si">%s</span><span class="s1">&quot; &lt; 0.1) &amp;&amp; (&quot;</span><span class="si">%s</span><span class="s1">&quot; &gt; </span><span class="si">%f</span><span class="s1">) &amp;&amp; (&quot;</span><span class="si">%s</span><span class="s1">&quot; &lt; </span><span class="si">%f</span><span class="s1">)&#39;</span> <span class="o">%</span> \
+                            <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">flattened_mask</span><span class="p">),</span> \
+                             <span class="n">pb_name</span><span class="p">,</span> <span class="n">pblimit_image</span><span class="p">,</span> \
+                             <span class="n">pb_name</span><span class="p">,</span> <span class="n">pblimit_cleanmask</span><span class="p">)</span>
+                <span class="c1"># Check for number of points per channel (PIPE-541):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">image_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">statsmask</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;chauvenet&#39;</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">image_stats</span><span class="p">[</span><span class="s1">&#39;npts&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">image_stats</span><span class="p">[</span><span class="s1">&#39;npts&#39;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mf">10.0</span><span class="p">:</span>
+                        <span class="c1"># Switch to full annulus to avoid zero noise spectrum due to voluminous mask</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Using full annulus for noise spectrum due to voluminous mask &quot;</span><span class="si">%s</span><span class="s1">&quot;.&#39;</span> <span class="o">%</span>
+                                    <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">)))</span>
+                        <span class="n">statsmask</span> <span class="o">=</span> <span class="s1">&#39;(&quot;</span><span class="si">%s</span><span class="s1">&quot; &gt; </span><span class="si">%f</span><span class="s1">) &amp;&amp; (&quot;</span><span class="si">%s</span><span class="s1">&quot; &lt; </span><span class="si">%f</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pb_name</span><span class="p">,</span> <span class="n">pblimit_image</span><span class="p">,</span>
+                                                                    <span class="n">pb_name</span><span class="p">,</span> <span class="n">pblimit_cleanmask</span><span class="p">)</span>
+                        <span class="n">image_stats</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="c1"># Try full annulus as a fallback</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Using full annulus for noise spectrum due to voluminous mask &quot;</span><span class="si">%s</span><span class="s1">&quot;.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">)),</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+                    <span class="n">statsmask</span> <span class="o">=</span> <span class="s1">&#39;(&quot;</span><span class="si">%s</span><span class="s1">&quot; &gt; </span><span class="si">%f</span><span class="s1">) &amp;&amp; (&quot;</span><span class="si">%s</span><span class="s1">&quot; &lt; </span><span class="si">%f</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pb_name</span><span class="p">,</span> <span class="n">pblimit_image</span><span class="p">,</span>
+                                                                <span class="n">pb_name</span><span class="p">,</span> <span class="n">pblimit_cleanmask</span><span class="p">)</span>
+                    <span class="n">image_stats</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">elif</span> <span class="n">pb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pb</span><span class="o">+</span><span class="n">extension</span><span class="p">):</span>
+                <span class="n">pb_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span><span class="o">+</span><span class="n">extension</span>
+                <span class="n">have_mask</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="c1"># Full annulus</span>
+                <span class="n">statsmask</span> <span class="o">=</span> <span class="s1">&#39;(&quot;</span><span class="si">%s</span><span class="s1">&quot; &gt; </span><span class="si">%f</span><span class="s1">) &amp;&amp; (&quot;</span><span class="si">%s</span><span class="s1">&quot; &lt; </span><span class="si">%f</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pb_name</span><span class="p">,</span> <span class="n">pblimit_image</span><span class="p">,</span>
+                                                            <span class="n">pb_name</span><span class="p">,</span> <span class="n">pblimit_cleanmask</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">cleanmask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cleanmask</span><span class="p">):</span>
+                <span class="n">have_mask</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="c1"># Area outside clean mask</span>
+                <span class="n">statsmask</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot; &lt; 0.1&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">flattened_mask</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Full area</span>
+                <span class="n">have_mask</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">statsmask</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Get image RMS for all channels (this is for the weblog)</span>
+                <span class="c1"># Avoid repeat if the check for npts was done and is OK.</span>
+                <span class="k">if</span> <span class="n">image_stats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">image_stats</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">statsmask</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;chauvenet&#39;</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="c1"># For IQUV images we need the individual values along the Stokes axis</span>
+                <span class="n">image_stats_iquv</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">statsmask</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;chauvenet&#39;</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="n">nonpbcor_image_statsmask</span> <span class="o">=</span> <span class="n">statsmask</span>
+
+                <span class="c1"># Filter continuum frequency ranges if given</span>
+                <span class="k">if</span> <span class="n">cont_freq_ranges</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="s1">&#39;ALL&#39;</span><span class="p">,</span> <span class="s1">&#39;ALLCONT&#39;</span><span class="p">):</span>
+                    <span class="c1"># TODO: utils.freq_selection_to_channels uses casa_tools.image to get the frequency axis</span>
+                    <span class="c1">#       and closes the global pipeline image tool. The context manager wrapped tool</span>
+                    <span class="c1">#       used in this &quot;with&quot; statement is a different instance, so this is OK, but stacked</span>
+                    <span class="c1">#       use of casa_tools.image might lead to unexpected results.</span>
+                    <span class="n">cont_chan_ranges</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">freq_selection_to_channels</span><span class="p">(</span><span class="n">nonpbcor_imagename</span><span class="p">,</span> <span class="n">cont_freq_ranges</span><span class="p">)</span>
+                    <span class="n">cont_chan_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="ow">in</span> <span class="n">cont_chan_ranges</span><span class="p">])</span>
+                    <span class="n">nonpbcor_image_non_cleanmask_rms_vs_chan</span> <span class="o">=</span> <span class="n">image_stats</span><span class="p">[</span><span class="s1">&#39;rms&#39;</span><span class="p">][</span><span class="n">cont_chan_indices</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">nonpbcor_image_non_cleanmask_rms_vs_chan</span> <span class="o">=</span> <span class="n">image_stats</span><span class="p">[</span><span class="s1">&#39;rms&#39;</span><span class="p">]</span>
+
+                <span class="n">nonpbcor_image_non_cleanmask_robust_rms</span> <span class="o">=</span> <span class="n">image_stats</span><span class="p">[</span><span class="s1">&#39;medabsdevmed&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1.4826</span>
+
+                <span class="n">nonpbcor_image_non_cleanmask_rms_median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">nonpbcor_image_non_cleanmask_rms_vs_chan</span><span class="p">)</span>
+                <span class="n">nonpbcor_image_non_cleanmask_rms_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">nonpbcor_image_non_cleanmask_rms_vs_chan</span><span class="p">)</span>
+                <span class="n">nonpbcor_image_non_cleanmask_rms_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">nonpbcor_image_non_cleanmask_rms_vs_chan</span><span class="p">)</span>
+                <span class="n">nonpbcor_image_non_cleanmask_rms_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">nonpbcor_image_non_cleanmask_rms_vs_chan</span><span class="p">)</span>
+                <span class="n">nonpbcor_image_non_cleanmask_rms</span> <span class="o">=</span> <span class="n">nonpbcor_image_non_cleanmask_rms_median</span>
+
+                <span class="n">nonpbcor_image_non_cleanmask_rms_iquv</span> <span class="o">=</span> <span class="n">image_stats_iquv</span><span class="p">[</span><span class="s1">&#39;rms&#39;</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">have_mask</span><span class="p">:</span>
+                    <span class="n">area_text</span> <span class="o">=</span> <span class="s1">&#39;annulus&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">area_text</span> <span class="o">=</span> <span class="s1">&#39;full image&#39;</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Clean image statistics (</span><span class="si">%s</span><span class="s1">) for </span><span class="si">%s</span><span class="s1">: rmsmedian: </span><span class="si">%s</span><span class="s1"> Jy/bm rmsmean: </span><span class="si">%s</span><span class="s1"> Jy/bm rmsmin:&#39;</span>
+                         <span class="s1">&#39; </span><span class="si">%s</span><span class="s1"> Jy/bm rmsmax: </span><span class="si">%s</span><span class="s1"> Jy/bm&#39;</span> <span class="o">%</span> \
+                    <span class="p">(</span><span class="n">area_text</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">nonpbcor_imagename</span><span class="p">),</span>
+                     <span class="n">nonpbcor_image_non_cleanmask_rms_median</span><span class="p">,</span>
+                     <span class="n">nonpbcor_image_non_cleanmask_rms_mean</span><span class="p">,</span>
+                     <span class="n">nonpbcor_image_non_cleanmask_rms_min</span><span class="p">,</span>
+                     <span class="n">nonpbcor_image_non_cleanmask_rms_max</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">nonpbcor_image_non_cleanmask_rms_median</span><span class="p">,</span> \
+                <span class="n">nonpbcor_image_non_cleanmask_rms_mean</span><span class="p">,</span> \
+                <span class="n">nonpbcor_image_non_cleanmask_rms_min</span> <span class="o">=</span> \
+                <span class="n">nonpbcor_image_non_cleanmask_rms_max</span> <span class="o">=</span> \
+                <span class="n">nonpbcor_image_non_cleanmask_rms</span> <span class="o">=</span> \
+                    <span class="o">-</span><span class="mf">999.0</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Exception while determining image RMS for </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nonpbcor_imagename</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+
+            <span class="c1"># Get the flux density spectrum in the clean mask area if available</span>
+            <span class="k">if</span> <span class="n">nonpbcor_image_cleanmask_npoints</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="c1"># Area in flattened clean mask</span>
+                <span class="n">spectrum_mask</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot; &gt; 0.1&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">flattened_mask</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">pb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Area of pb &gt; pblimit_cleanmask</span>
+                <span class="n">spectrum_mask</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot; &gt; </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span><span class="o">+</span><span class="n">extension</span><span class="p">,</span> <span class="n">pblimit_cleanmask</span><span class="p">)</span>
+                <span class="n">nonpbcor_image_cleanmask_spectrum_pblimit</span> <span class="o">=</span> <span class="n">pblimit_cleanmask</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">spectrum_mask</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="c1"># Because image.getprofile(axis=freq_axis) doesn&#39;t work on an image/cube with more than</span>
+            <span class="c1"># one polarization plane (e.g. VLASS fullstokes images), we first create a stokes-I only</span>
+            <span class="c1"># image with &#39;spectrum_mask&#39; included, and then run ia.getprofile().</span>
+            <span class="c1"># note: the stoke-i extraction can also be done with imagepol.stokesi()</span>
+
+            <span class="n">image_csys</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">coordsys</span><span class="p">()</span>
+            <span class="n">rgTool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">regionmanager</span>
+            <span class="n">region</span> <span class="o">=</span> <span class="n">rgTool</span><span class="o">.</span><span class="n">frombcs</span><span class="p">(</span><span class="n">csys</span><span class="o">=</span><span class="n">image_csys</span><span class="o">.</span><span class="n">torecord</span><span class="p">(),</span> <span class="n">shape</span><span class="o">=</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">(),</span> <span class="n">stokes</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">stokescontrol</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+            <span class="n">image_csys</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+            <span class="n">rgTool</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+            <span class="n">image_stokesi</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">subimage</span><span class="p">(</span><span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">spectrum_mask</span><span class="p">,</span> <span class="n">dropdeg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">nonpbcor_image_cleanmask_spectrum</span> <span class="o">=</span> <span class="n">image_stokesi</span><span class="o">.</span><span class="n">getprofile</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="s1">&#39;flux&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">freq_axis</span><span class="p">)[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span>
+            <span class="n">image_stokesi</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">residual_cleanmask_rms</span><span class="p">,</span> <span class="n">residual_non_cleanmask_rms</span><span class="p">,</span> <span class="n">residual_min</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span>
+            <span class="n">nonpbcor_image_non_cleanmask_rms_min</span><span class="p">,</span> <span class="n">nonpbcor_image_non_cleanmask_rms_max</span><span class="p">,</span>
+            <span class="n">nonpbcor_image_non_cleanmask_rms</span><span class="p">,</span> <span class="n">pbcor_image_min</span><span class="p">,</span> <span class="n">pbcor_image_max</span><span class="p">,</span> <span class="n">residual_robust_rms</span><span class="p">,</span>
+            <span class="p">{</span><span class="s1">&#39;nonpbcor_imagename&#39;</span><span class="p">:</span> <span class="n">nonpbcor_imagename</span><span class="p">,</span>
+             <span class="s1">&#39;nonpbcor_image_non_cleanmask_freq_ch1&#39;</span><span class="p">:</span> <span class="n">nonpbcor_image_non_cleanmask_freq_ch1</span><span class="p">,</span>
+             <span class="s1">&#39;nonpbcor_image_non_cleanmask_freq_chN&#39;</span><span class="p">:</span> <span class="n">nonpbcor_image_non_cleanmask_freq_chN</span><span class="p">,</span>
+             <span class="s1">&#39;nonpbcor_image_non_cleanmask_freq_frame&#39;</span><span class="p">:</span> <span class="n">nonpbcor_image_non_cleanmask_freq_frame</span><span class="p">,</span>
+             <span class="s1">&#39;nonpbcor_image_non_cleanmask_robust_rms&#39;</span><span class="p">:</span> <span class="n">nonpbcor_image_non_cleanmask_robust_rms</span><span class="p">,</span>
+             <span class="s1">&#39;nonpbcor_image_cleanmask_spectrum&#39;</span><span class="p">:</span> <span class="n">nonpbcor_image_cleanmask_spectrum</span><span class="p">,</span>
+             <span class="s1">&#39;nonpbcor_image_cleanmask_spectrum_pblimit&#39;</span><span class="p">:</span> <span class="n">nonpbcor_image_cleanmask_spectrum_pblimit</span><span class="p">,</span>
+             <span class="s1">&#39;nonpbcor_image_cleanmask_npoints&#39;</span><span class="p">:</span> <span class="n">nonpbcor_image_cleanmask_npoints</span><span class="p">,</span>
+             <span class="s1">&#39;cont_freq_ranges&#39;</span><span class="p">:</span> <span class="n">cont_freq_ranges</span><span class="p">,</span>
+             <span class="s1">&#39;nonpbcor_image_statsmask&#39;</span><span class="p">:</span> <span class="n">nonpbcor_image_statsmask</span><span class="p">},</span>
+            <span class="n">pbcor_image_min_iquv</span><span class="p">,</span> <span class="n">pbcor_image_max_iquv</span><span class="p">,</span> <span class="n">nonpbcor_image_non_cleanmask_rms_iquv</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,781 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.hif.heuristics.findrefant</span> <span class="k">as</span> <span class="nn">findrefant</span>
+<span class="kn">import</span> <span class="nn">pipeline.hif.tasks.gaincal</span> <span class="k">as</span> <span class="nn">gaincal</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.polarization</span> <span class="kn">import</span> <span class="n">polarization</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.setmodel.vlasetjy</span> <span class="kn">import</span> <span class="n">standard_sources</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics</span> <span class="kn">import</span> <span class="n">uvrange</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CircfeedpolcalResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.circfeedpolcal.html#pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal.CircfeedpolcalResults">[docs]</a>
+<span class="k">class</span> <span class="nc">CircfeedpolcalResults</span><span class="p">(</span><span class="n">polarization</span><span class="o">.</span><span class="n">PolarizationResults</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preceding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calstrategy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caldictionary</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">final</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">final</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">preceding</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">preceding</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">refant</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">refant</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">calstrategy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">calstrategy</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">caldictionary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">caldictionary</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">CircfeedpolcalResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">pool</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="n">final</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preceding</span> <span class="o">=</span> <span class="n">preceding</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refant</span> <span class="o">=</span> <span class="n">refant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calstrategy</span> <span class="o">=</span> <span class="n">calstrategy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caldictionary</span> <span class="o">=</span> <span class="n">caldictionary</span>
+
+<div class="viewcode-block" id="CircfeedpolcalResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.circfeedpolcal.html#pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal.CircfeedpolcalResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No circfeedpolcal results to add to the callibrary&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Adding pol calibration to callibrary:</span><span class="se">\n</span><span class="s1">&#39;</span>
+                      <span class="s1">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">))</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># return &#39;CircfeedpolcalResults:\n\t{0}&#39;.format(</span>
+        <span class="c1">#     &#39;\n\t&#39;.join([ms.name for ms in self.mses]))</span>
+        <span class="k">return</span> <span class="s1">&#39;CircfeedpolcalResults:&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="CircfeedpolcalInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.circfeedpolcal.html#pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal.CircfeedpolcalInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">CircfeedpolcalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+    <span class="n">Dterm_solint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;2MHz&#39;</span><span class="p">)</span>
+    <span class="n">refantignore</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">leakage_poltype</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">mbdkcross</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">refant</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">run_setjy</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">clipminmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Dterm_solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refantignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">leakage_poltype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">mbdkcross</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clipminmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">run_setjy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CircfeedpolcalInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Dterm_solint</span> <span class="o">=</span> <span class="n">Dterm_solint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refantignore</span> <span class="o">=</span> <span class="n">refantignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leakage_poltype</span> <span class="o">=</span> <span class="n">leakage_poltype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mbdkcross</span> <span class="o">=</span> <span class="n">mbdkcross</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clipminmax</span> <span class="o">=</span> <span class="n">clipminmax</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refant</span> <span class="o">=</span> <span class="n">refant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_setjy</span> <span class="o">=</span> <span class="n">run_setjy</span></div>
+
+
+<div class="viewcode-block" id="Circfeedpolcal">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.circfeedpolcal.html#pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal.Circfeedpolcal">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_circfeedpolcal&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Circfeedpolcal</span><span class="p">(</span><span class="n">polarization</span><span class="o">.</span><span class="n">Polarization</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">CircfeedpolcalInputs</span>
+
+<div class="viewcode-block" id="Circfeedpolcal.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.circfeedpolcal.html#pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal.Circfeedpolcal.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">callist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setjy_results</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">setjy_results</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">intents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">RefAntOutput</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calstrategy</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caldictionary</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="p">[</span><span class="n">intent</span> <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intents</span> <span class="k">if</span> <span class="s1">&#39;POL&#39;</span> <span class="ow">in</span> <span class="n">intent</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_prepare</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">CircfeedpolcalResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">callist</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">callist</span><span class="p">,</span>
+                                     <span class="n">refant</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">RefAntOutput</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">calstrategy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calstrategy</span><span class="p">,</span>
+                                     <span class="n">caldictionary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">caldictionary</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Circfeedpolcal.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.circfeedpolcal.html#pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal.Circfeedpolcal.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="Circfeedpolcal.do_prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.circfeedpolcal.html#pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal.Circfeedpolcal.do_prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignorerefant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">ignorerefant</span>
+        <span class="c1"># PIPE-1637: adding &#39;,&#39; in the manual and auto refantignore parameter</span>
+        <span class="n">refantignore</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">refantignore</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ignorerefant</span><span class="p">])</span>
+        <span class="n">refantfield</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">][</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">calibrator_field_select_string</span>
+        <span class="c1"># PIPE-595: if refant list is not provided, compute refants else use provided refant list.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">refantobj</span> <span class="o">=</span> <span class="n">findrefant</span><span class="o">.</span><span class="n">RefAntHeuristics</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">refantfield</span><span class="p">,</span>
+                                                    <span class="n">geometry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flagging</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                    <span class="n">refantignore</span><span class="o">=</span><span class="n">refantignore</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RefAntOutput</span> <span class="o">=</span> <span class="n">refantobj</span><span class="o">.</span><span class="n">calculate</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RefAntOutput</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+        <span class="c1"># setjy for amplitude/flux calibrator (VLASS 3C286 or 3C48)</span>
+        <span class="n">fluxcalfieldname</span><span class="p">,</span> <span class="n">fluxcalfieldid</span><span class="p">,</span> <span class="n">fluxcal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_setjy</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">stage_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stage_number</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">stage_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">stage_number</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="n">tableprefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="s1">&#39;hifv_circfeedpolcal.s&#39;</span>
+
+        <span class="n">tablesToAdd</span> <span class="o">=</span> <span class="p">[[</span><span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_1.&#39;</span> <span class="o">+</span> <span class="s1">&#39;kcross.tbl&#39;</span><span class="p">,</span> <span class="s1">&#39;kcross&#39;</span><span class="p">,</span> <span class="p">[]],</span>
+                       <span class="p">[</span><span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_2.&#39;</span> <span class="o">+</span> <span class="s1">&#39;D2.tbl&#39;</span><span class="p">,</span> <span class="s1">&#39;polarization&#39;</span><span class="p">,</span> <span class="p">[]],</span>
+                       <span class="p">[</span><span class="n">tableprefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_3.&#39;</span> <span class="o">+</span> <span class="s1">&#39;X1.tbl&#39;</span><span class="p">,</span> <span class="s1">&#39;polarization&#39;</span><span class="p">,</span> <span class="p">[]]]</span>
+
+        <span class="c1"># D-terms   - do we need this?</span>
+        <span class="c1"># self.do_polcal(self.inputs.vis+&#39;.D1&#39;, &#39;D+QU&#39;,field=&#39;&#39;,</span>
+        <span class="c1">#               intent=&#39;CALIBRATE_POL_LEAKAGE#UNSPECIFIED&#39;,</span>
+        <span class="c1">#               gainfield=[&#39;&#39;], spwmap=[],</span>
+        <span class="c1">#               solint=&#39;inf&#39;)</span>
+
+        <span class="c1"># First pass R-L delay</span>
+
+        <span class="n">tablesToAdd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Default for KCROSS table</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">mbdkcross</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">baseband_spws_list</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_baseband_spws</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_select_list</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">baseband_spwstr</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">spws_list</span><span class="p">))</span> <span class="k">for</span> <span class="n">spws_list</span> <span class="ow">in</span> <span class="n">baseband_spws_list</span><span class="p">]</span>
+
+            <span class="n">addcallib</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">baseband_spwstr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">addcallib</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">spws</span> <span class="ow">in</span> <span class="n">baseband_spwstr</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing gaincal on baseband with spws=</span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spws</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">do_gaincal</span><span class="p">(</span><span class="n">tablesToAdd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">field</span><span class="o">=</span><span class="n">fluxcalfieldname</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spws</span><span class="p">,</span>
+                                <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;scan,spw&#39;</span><span class="p">)</span>
+                <span class="n">tablesToAdd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_spwmap</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">spwsobj</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">spwslist</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwsobj</span><span class="p">]</span>
+            <span class="n">spws</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spwslist</span><span class="p">)</span>
+            <span class="n">addcallib</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_gaincal</span><span class="p">(</span><span class="n">tablesToAdd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">field</span><span class="o">=</span><span class="n">fluxcalfieldname</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spws</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tablesToAdd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">addcallib</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">addcallib</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Adding &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">tablesToAdd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; to callibrary.&quot;</span><span class="p">)</span>
+            <span class="n">calfrom</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">(</span><span class="n">gaintable</span><span class="o">=</span><span class="n">tablesToAdd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">calwt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">caltype</span><span class="o">=</span><span class="s1">&#39;kcross&#39;</span><span class="p">)</span>
+            <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
+
+        <span class="c1"># Determine number of scans with POLLEAKGE intent and use the first POLLEAKAGE FIELD</span>
+        <span class="n">polleakagefield</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">polleakagefields</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">polleakagefield</span> <span class="o">=</span> <span class="n">polleakagefields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="c1"># If no POLLEAKAGE intent is associated with a field, then use the flux calibrator</span>
+            <span class="n">polleakagefield</span> <span class="o">=</span> <span class="n">fluxcalfieldname</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Exception: No POLLEAKGE intents found. </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">polleakagefields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Use the first pol leakage field</span>
+            <span class="n">polleakagefield</span> <span class="o">=</span> <span class="n">polleakagefields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;More than one field with intent of POLLEAKGE.  Using field </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">polleakagefield</span><span class="p">))</span>
+
+        <span class="n">polleakagescans</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">poltype</span> <span class="o">=</span> <span class="s1">&#39;Df+QU&#39;</span>  <span class="c1"># Default</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">polleakagefield</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;POLLEAKAGE&#39;</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">intents</span><span class="p">:</span>
+                <span class="n">polleakagescans</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">scan</span><span class="o">.</span><span class="n">intents</span><span class="p">))</span>
+
+        <span class="c1"># Calibration Strategies</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Number of POL_LEAKAGE scans: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">polleakagescans</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calstrategy</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">polleakagescans</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">poltype</span> <span class="o">=</span> <span class="s1">&#39;Df+QU&#39;</span>   <span class="c1"># C4</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calstrategy</span> <span class="o">=</span> <span class="s2">&quot;Using Calibration Strategy C4: 3 or more slices CALIBRATE_POL_LEAKAGE, KCROSS, Df+QU, Xf.&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">polleakagescans</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">poltype</span> <span class="o">=</span> <span class="s1">&#39;Df&#39;</span>      <span class="c1"># C1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calstrategy</span> <span class="o">=</span> <span class="s2">&quot;Using Calibration Strategy C1: Less than 3 slices CALIBRATE_POL_LEAKAGE, KCROSS, Df, Xf.&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calstrategy</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">leakage_poltype</span><span class="p">:</span>
+            <span class="n">poltype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">leakage_poltype</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calstrategy</span> <span class="o">=</span> <span class="s2">&quot;Calibration Strategy OVERRIDE: User-defined leakage_poltype of &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">poltype</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calstrategy</span><span class="p">)</span>
+
+        <span class="c1"># Determine the first POLANGLE FIELD</span>
+        <span class="n">polanglefield</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">polanglefields</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;POLANGLE&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">polanglefield</span> <span class="o">=</span> <span class="n">polanglefields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="c1"># If no POLANGLE intent is associated with a field, then use the flux calibrator</span>
+            <span class="n">polanglefield</span> <span class="o">=</span> <span class="n">fluxcalfieldname</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Exception: No POLANGLE intents found. </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">polanglefields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Use the first pol angle field</span>
+            <span class="n">polanglefield</span> <span class="o">=</span> <span class="n">polanglefields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;More than one field with intent of POLANGLE.  Using field </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">polanglefield</span><span class="p">))</span>
+
+        <span class="c1"># D-terms in 2MHz pieces, minsnr of 5.0</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Polcal D-terms using solint=</span><span class="se">\&#39;</span><span class="s2">inf,</span><span class="si">{!s}</span><span class="se">\&#39;</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">Dterm_solint</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_polcal</span><span class="p">(</span><span class="n">tablesToAdd</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">kcrosstable</span><span class="o">=</span><span class="n">tablesToAdd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">poltype</span><span class="o">=</span><span class="n">poltype</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">polleakagefield</span><span class="p">,</span>
+                       <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;CALIBRATE_POL_LEAKAGE#UNSPECIFIED&#39;</span><span class="p">,</span>
+                       <span class="n">gainfield</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="n">kcrossspwmap</span><span class="o">=</span><span class="n">tablesToAdd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>
+                       <span class="n">solint</span><span class="o">=</span><span class="s1">&#39;inf,</span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">Dterm_solint</span><span class="p">),</span>
+                       <span class="n">minsnr</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+
+        <span class="c1"># Clip flagging</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_clipflag</span><span class="p">(</span><span class="n">tablesToAdd</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># 2MHz pieces, minsnr of 3.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_polcal</span><span class="p">(</span><span class="n">tablesToAdd</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">kcrosstable</span><span class="o">=</span><span class="n">tablesToAdd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">poltype</span><span class="o">=</span><span class="s1">&#39;Xf&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">polanglefield</span><span class="p">,</span>
+                       <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;CALIBRATE_POL_ANGLE#UNSPECIFIED&#39;</span><span class="p">,</span>
+                       <span class="n">gainfield</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="n">kcrossspwmap</span><span class="o">=</span><span class="n">tablesToAdd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">solint</span><span class="o">=</span><span class="s1">&#39;inf,2MHz&#39;</span><span class="p">,</span>
+                       <span class="n">minsnr</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">addcaltable</span><span class="p">,</span> <span class="n">caltype</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">)</span> <span class="ow">in</span> <span class="n">tablesToAdd</span><span class="p">:</span>
+            <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">calfrom</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">(</span><span class="n">gaintable</span><span class="o">=</span><span class="n">addcaltable</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">calwt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                         <span class="n">caltype</span><span class="o">=</span><span class="n">caltype</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmap</span><span class="p">)</span>
+            <span class="n">calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">callist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">caldictionary</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fluxcalfieldname&#39;</span><span class="p">:</span> <span class="n">fluxcalfieldname</span><span class="p">,</span>
+                              <span class="s1">&#39;fluxcalfieldid&#39;</span><span class="p">:</span> <span class="n">fluxcalfieldid</span><span class="p">,</span>
+                              <span class="s1">&#39;fluxcal&#39;</span><span class="p">:</span> <span class="n">fluxcal</span><span class="p">,</span>
+                              <span class="s1">&#39;polanglefield&#39;</span><span class="p">:</span> <span class="n">polanglefield</span><span class="p">,</span>
+                              <span class="s1">&#39;polleakagefield&#39;</span><span class="p">:</span> <span class="n">polleakagefield</span><span class="p">}</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_modifyGainTables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">GainTables</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            GainTables: Python List of tables from the calibrary</span>
+
+<span class="sd">        Returns: replaces the finalphasegaincal name with the phaseshortgaincal table from hifv_finalcals</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># Should be last element</span>
+        <span class="n">newtable</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">table</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">GainTables</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;finalphasegaincal&#39;</span> <span class="ow">in</span> <span class="n">table</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">finalcals_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">finalcals_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="n">newtable</span> <span class="o">=</span> <span class="n">finalcals_result</span><span class="o">.</span><span class="n">phaseshortgaincaltable</span>
+        <span class="n">GainTables</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">newtable</span>
+
+        <span class="k">return</span> <span class="n">GainTables</span>
+
+<div class="viewcode-block" id="Circfeedpolcal.do_gaincal">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.circfeedpolcal.html#pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal.Circfeedpolcal.do_gaincal">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;scan&#39;</span><span class="p">):</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">minBL_for_cal</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">vla_minbaselineforcal</span><span class="p">()</span>
+
+        <span class="n">append</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">caltable</span><span class="p">):</span>
+            <span class="n">append</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{!s}</span><span class="s2"> exists.  Appending to caltable.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">caltable</span><span class="p">))</span>
+
+        <span class="n">GainTables</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">interp</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">calstate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">get_calstate</span><span class="p">(</span><span class="n">calto</span><span class="p">)</span>
+        <span class="n">merged</span> <span class="o">=</span> <span class="n">calstate</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span> <span class="ow">in</span> <span class="n">merged</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span><span class="p">)</span>
+            <span class="n">GainTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span>
+            <span class="n">interp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">interp</span><span class="p">)</span>
+
+        <span class="n">GainTables</span> <span class="o">=</span> <span class="n">GainTables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">interp</span> <span class="o">=</span> <span class="n">interp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">GainTables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modifyGainTables</span><span class="p">(</span><span class="n">GainTables</span><span class="p">)</span>
+
+        <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+                                                  <span class="n">output_dir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                  <span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                                                  <span class="n">caltable</span><span class="o">=</span><span class="n">caltable</span><span class="p">,</span>
+                                                  <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span>
+                                                  <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                  <span class="n">scan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                  <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span>
+                                                  <span class="n">solint</span><span class="o">=</span><span class="s1">&#39;inf&#39;</span><span class="p">,</span>
+                                                  <span class="n">gaintype</span><span class="o">=</span><span class="s1">&#39;KCROSS&#39;</span><span class="p">,</span>
+                                                  <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span>
+                                                  <span class="n">refant</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">RefAntOutput</span><span class="p">,</span>
+                                                  <span class="n">minblperant</span><span class="o">=</span><span class="n">minBL_for_cal</span><span class="p">,</span>
+                                                  <span class="n">parang</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                  <span class="n">append</span><span class="o">=</span><span class="n">append</span><span class="p">)</span>
+
+        <span class="c1"># gaincal_task = gaincal.GTypeGaincal(task_inputs)</span>
+        <span class="c1"># result = self._executor.execute(gaincal_task, merge=True)</span>
+
+        <span class="n">casa_task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                          <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+                          <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span>
+                          <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;CALIBRATE_FLUX#UNSPECIFIED,CALIBRATE_AMPLI#UNSPECIFIED,CALIBRATE_PHASE#UNSPECIFIED,CALIBRATE_BANDPASS#UNSPECIFIED,CALIBRATE_POL_ANGLE#UNSPECIFIED&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                          <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;inf&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="s1">&#39;KCROSS&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="n">combine</span><span class="p">,</span>
+                          <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RefAntOutput</span><span class="p">),</span>
+                          <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="n">GainTables</span><span class="p">,</span>
+                          <span class="s1">&#39;interp&#39;</span><span class="p">:</span> <span class="n">interp</span><span class="p">,</span>
+                          <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">minBL_for_cal</span><span class="p">,</span>
+                          <span class="s1">&#39;parang&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                          <span class="s1">&#39;uvrange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;append&#39;</span><span class="p">:</span> <span class="n">append</span><span class="p">}</span>
+
+        <span class="n">fieldobj</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">field</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">fieldid</span> <span class="o">=</span> <span class="n">fieldobj</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">casa_task_args</span><span class="p">[</span><span class="s1">&#39;uvrange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uvrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">)</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">gaincal</span><span class="p">(</span><span class="o">**</span><span class="n">casa_task_args</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+
+        <span class="c1"># return result</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="Circfeedpolcal.do_polcal">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.circfeedpolcal.html#pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal.Circfeedpolcal.do_polcal">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_polcal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">kcrosstable</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">poltype</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                  <span class="n">gainfield</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="n">kcrossspwmap</span><span class="o">=</span><span class="p">[],</span> <span class="n">solint</span><span class="o">=</span><span class="s1">&#39;inf&#39;</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
+
+        <span class="n">GainTables</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">calstate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">get_calstate</span><span class="p">(</span><span class="n">calto</span><span class="p">)</span>
+        <span class="n">merged</span> <span class="o">=</span> <span class="n">calstate</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span> <span class="ow">in</span> <span class="n">merged</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span><span class="p">)</span>
+            <span class="n">GainTables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span>
+
+        <span class="n">GainTables</span> <span class="o">=</span> <span class="n">GainTables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">minBL_for_cal</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">vla_minbaselineforcal</span><span class="p">()</span>
+
+        <span class="n">spwmap</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">gaintable</span> <span class="ow">in</span> <span class="n">GainTables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">gaintable</span> <span class="ow">in</span> <span class="n">kcrosstable</span><span class="p">:</span>
+                <span class="n">spwmap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kcrossspwmap</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">spwmap</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+
+        <span class="n">GainTables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modifyGainTables</span><span class="p">(</span><span class="n">GainTables</span><span class="p">)</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                     <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
+                     <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span>
+                     <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">,</span>
+                     <span class="s1">&#39;refant&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RefAntOutput</span><span class="p">),</span>
+                     <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="n">GainTables</span><span class="p">,</span>
+                     <span class="s1">&#39;poltype&#39;</span><span class="p">:</span> <span class="n">poltype</span><span class="p">,</span>
+                     <span class="s1">&#39;gainfield&#39;</span><span class="p">:</span> <span class="n">gainfield</span><span class="p">,</span>
+                     <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="n">minsnr</span><span class="p">,</span>
+                     <span class="s1">&#39;minblperant&#39;</span><span class="p">:</span> <span class="n">minBL_for_cal</span><span class="p">,</span>
+                     <span class="s1">&#39;combine&#39;</span><span class="p">:</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;spwmap&#39;</span><span class="p">:</span> <span class="n">spwmap</span><span class="p">,</span>
+                     <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="n">solint</span><span class="p">}</span>
+
+        <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">polcal</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="n">calfrom</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">(</span><span class="n">gaintable</span><span class="o">=</span><span class="n">caltable</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">calwt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">caltype</span><span class="o">=</span><span class="s1">&#39;polarization&#39;</span><span class="p">)</span>
+        <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_setjy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The code in this private class method are (for now) specific to VLASS</span>
+<span class="sd">        requirements and heuristics.</span>
+
+<span class="sd">        Returns: string name of the amplitude flux calibrator</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># fluxfields = m.get_fields(intent=&#39;AMPLITUDE&#39;)</span>
+        <span class="c1"># fluxfieldnames = [amp.name for amp in fluxfields]</span>
+
+        <span class="n">standard_source_names</span><span class="p">,</span> <span class="n">standard_source_fields</span> <span class="o">=</span> <span class="n">standard_sources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="n">fluxcal</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">fluxcalfieldid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">fluxcalfieldname</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">fields</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">standard_source_fields</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">myfield</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">standard_source_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;3C48&#39;</span><span class="p">,</span> <span class="s1">&#39;3C286&#39;</span><span class="p">,</span> <span class="s1">&#39;3C138&#39;</span><span class="p">)</span> \
+                        <span class="ow">and</span> <span class="s1">&#39;POLANGLE&#39;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">myfield</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">intents</span><span class="p">:</span>
+                    <span class="n">fluxcalfieldid</span> <span class="o">=</span> <span class="n">myfield</span>
+                    <span class="n">fluxcalfieldname</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">myfield</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+                    <span class="n">fluxcal</span> <span class="o">=</span> <span class="n">standard_source_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">standard_source_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;3C48&#39;</span><span class="p">,</span> <span class="s1">&#39;3C286&#39;</span><span class="p">,</span> <span class="s1">&#39;3C138&#39;</span><span class="p">)</span> \
+                        <span class="ow">and</span> <span class="s1">&#39;AMPLITUDE&#39;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">myfield</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">intents</span><span class="p">:</span>
+                    <span class="n">fluxcalfieldid</span> <span class="o">=</span> <span class="n">myfield</span>
+                    <span class="n">fluxcalfieldname</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">myfield</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+                    <span class="n">fluxcal</span> <span class="o">=</span> <span class="n">standard_source_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># J1800+7828</span>
+                    <span class="n">fluxcalfieldid</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;POLANGLE&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+                    <span class="n">fluxcalfieldname</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;POLANGLE&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+                    <span class="n">fluxcal</span> <span class="o">=</span> <span class="n">fluxcalfieldname</span>
+
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">task_args</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">fluxcal</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;3C286&#39;</span><span class="p">,</span> <span class="s1">&#39;1331+3030&#39;</span><span class="p">,</span> <span class="s1">&#39;&quot;1331+305=3C286&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;J1331+3030&#39;</span><span class="p">):</span>
+                <span class="n">d0</span> <span class="o">=</span> <span class="mf">33.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+                <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                             <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">fluxcalfieldname</span><span class="p">,</span>
+                             <span class="s1">&#39;standard&#39;</span><span class="p">:</span> <span class="s1">&#39;manual&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;fluxdensity&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">9.97326</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                             <span class="s1">&#39;spix&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.582142</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.154655</span><span class="p">],</span>
+                             <span class="s1">&#39;reffreq&#39;</span><span class="p">:</span> <span class="s1">&#39;3000.0MHz&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;polindex&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.107943</span><span class="p">,</span> <span class="mf">0.01184</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0055</span><span class="p">,</span> <span class="mf">0.0224</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0312</span><span class="p">],</span>
+                             <span class="s1">&#39;polangle&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">d0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                             <span class="s1">&#39;rotmeas&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                             <span class="s1">&#39;scalebychan&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="s1">&#39;usescratch&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+            <span class="k">elif</span> <span class="n">fluxcal</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;3C48&#39;</span><span class="p">,</span> <span class="s1">&#39;J0137+3309&#39;</span><span class="p">,</span> <span class="s1">&#39;0137+3309&#39;</span><span class="p">,</span> <span class="s1">&#39;&quot;0137+331=3C48&quot;&#39;</span><span class="p">):</span>
+                <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                             <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">fluxcalfieldname</span><span class="p">,</span>
+                             <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                             <span class="s1">&#39;timerange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;observation&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;scalebychan&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="s1">&#39;standard&#39;</span><span class="p">:</span> <span class="s1">&#39;manual&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;listmodels&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                             <span class="s1">&#39;fluxdensity&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">6.4861</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.132</span><span class="p">,</span> <span class="mf">0.0417</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                             <span class="s1">&#39;spix&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.934677</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.125579</span><span class="p">],</span>
+                             <span class="s1">&#39;reffreq&#39;</span><span class="p">:</span> <span class="s1">&#39;3000.0MHz&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;polindex&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.02143</span><span class="p">,</span> <span class="mf">0.0392</span><span class="p">,</span> <span class="mf">0.002349</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0230</span><span class="p">],</span>
+                             <span class="s1">&#39;polangle&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.7233</span><span class="p">,</span> <span class="mf">1.569</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.282</span><span class="p">,</span> <span class="mf">1.49</span><span class="p">],</span>
+                             <span class="s1">&#39;rotmeas&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1"># inside polangle</span>
+                             <span class="s1">&#39;fluxdict&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                             <span class="s1">&#39;useephemdir&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                             <span class="s1">&#39;interpolation&#39;</span><span class="p">:</span> <span class="s1">&#39;nearest&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;usescratch&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+            <span class="k">elif</span> <span class="n">fluxcal</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;3C138&#39;</span><span class="p">,</span> <span class="s1">&#39;0521+1638&#39;</span><span class="p">,</span> <span class="s1">&#39;J0521+1638&#39;</span><span class="p">):</span>
+                <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                             <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">fluxcalfieldname</span><span class="p">,</span>
+                             <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;selectdata&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                             <span class="s1">&#39;timerange&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;observation&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;scalebychan&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="s1">&#39;standard&#39;</span><span class="p">:</span> <span class="s1">&#39;manual&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;listmodels&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                             <span class="s1">&#39;fluxdensity&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">5.471</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                             <span class="s1">&#39;spix&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.6432</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.082</span><span class="p">],</span>
+                             <span class="s1">&#39;reffreq&#39;</span><span class="p">:</span> <span class="s1">&#39;3.0GHz&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;polindex&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.10122</span><span class="p">,</span> <span class="mf">0.01389</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.03738</span><span class="p">,</span> <span class="mf">0.0471</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0200</span><span class="p">],</span>
+                             <span class="s1">&#39;polangle&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.17557</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0163</span><span class="p">,</span> <span class="mf">0.013</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0057</span><span class="p">],</span>
+                             <span class="s1">&#39;rotmeas&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1"># inside polangle</span>
+                             <span class="s1">&#39;fluxdict&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                             <span class="s1">&#39;useephemdir&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                             <span class="s1">&#39;interpolation&#39;</span><span class="p">:</span> <span class="s1">&#39;nearest&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;usescratch&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+            <span class="k">elif</span> <span class="n">fluxcal</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;J1800+7828&#39;</span><span class="p">,</span> <span class="s1">&#39;1800+7828&#39;</span><span class="p">):</span>
+                <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                             <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">fluxcalfieldname</span><span class="p">,</span>
+                             <span class="s1">&#39;standard&#39;</span><span class="p">:</span> <span class="s1">&#39;manual&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;fluxdensity&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.3511</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                             <span class="s1">&#39;spix&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1567</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.104</span><span class="p">],</span>
+                             <span class="s1">&#39;reffreq&#39;</span><span class="p">:</span> <span class="s1">&#39;3.0GHz&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;polindex&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.04709</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.00860</span><span class="p">,</span> <span class="mf">0.0096</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.00285</span><span class="p">],</span>
+                             <span class="s1">&#39;polangle&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.900</span><span class="p">,</span> <span class="mf">1.28</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.10</span><span class="p">,</span> <span class="mf">5.26</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.7</span><span class="p">],</span>
+                             <span class="s1">&#39;rotmeas&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                             <span class="s1">&#39;scalebychan&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="s1">&#39;usescratch&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No known flux calibrator found - please check the data.&quot;</span><span class="p">)</span>
+
+            <span class="c1"># PIPE-1750, added an option to disable setjy call</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">run_setjy</span><span class="p">:</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">setjy</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Setting the polarized flux densities for the polarization angle calibrator within the task was disabled.&quot;</span>
+                            <span class="s2">&quot;Polarization angle will not be properly calibrated unless the polarized flux densities were set prior to invoking this task.&quot;</span>
+                            <span class="s2">&quot;Check the RL phase offset vs. Freq and RL delay vs. freq plots to ensure behavior is as expected.&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Exception: Problem with circfeedpolcal setjy. </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">fluxcalfieldname</span><span class="p">,</span> <span class="n">fluxcalfieldid</span><span class="p">,</span> <span class="n">fluxcal</span>
+
+<div class="viewcode-block" id="Circfeedpolcal.do_spwmap">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.circfeedpolcal.html#pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal.Circfeedpolcal.do_spwmap">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_spwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns: spwmap for use with gaintable in callibrary (polcal and applycal)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">baseband_spws_list</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_vla_baseband_spws</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_select_list</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">baseband_spwstr</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">spws_list</span><span class="p">))</span> <span class="k">for</span> <span class="n">spws_list</span> <span class="ow">in</span> <span class="n">baseband_spws_list</span><span class="p">]</span>
+
+        <span class="n">spwmap</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">spwstr</span> <span class="ow">in</span> <span class="n">baseband_spwstr</span><span class="p">:</span>
+            <span class="n">spwlist</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+            <span class="n">basebandmap</span> <span class="o">=</span> <span class="p">[</span><span class="n">spwlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">spwlist</span><span class="p">)</span>
+            <span class="n">spwmap</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">basebandmap</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">spwmap</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_clipflag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dcaltable</span><span class="p">):</span>
+
+        <span class="n">clipminmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">clipminmax</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">clipminmax</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">clipminmax</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">clipminmax</span><span class="p">)</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">dcaltable</span><span class="p">,</span>
+                     <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;clip&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="s1">&#39;CPARAM&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;clipminmax&#39;</span><span class="p">:</span> <span class="n">clipminmax</span><span class="p">,</span>
+                     <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="s1">&#39;ABS_ALL&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;clipoutside&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;savepars&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;apply&#39;</span><span class="p">}</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span></div>
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

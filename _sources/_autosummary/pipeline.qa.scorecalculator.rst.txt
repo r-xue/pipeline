@@ -1,0 +1,115 @@
+pipeline.qa.scorecalculator
+===========================
+
+.. automodule:: pipeline.qa.scorecalculator
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      calc_flags_per_agent
+      calc_frac_newly_flagged
+      calc_frac_total_flagged
+      calc_vla_science_frac_total_flagged
+      channel_ranges_for_image
+      countbaddelays
+      direction_recover
+      examine_sd_edge_lines
+      examine_sd_wide_lines
+      generate_metric_mask
+      get_line_ranges
+      linear_score
+      linear_score_fraction_newly_flagged
+      linear_score_fraction_unflagged_newly_flagged_for_intent
+      log_qa
+      score_applycal_agents
+      score_applycmds_exist
+      score_bands
+      score_caltables_exist
+      score_checksources
+      score_combine_spwmapping
+      score_contiguous_session
+      score_data_flagged_by_agents
+      score_decoherence_assessment
+      score_derived_fluxes_snr
+      score_ephemeris_coordinates
+      score_file_exists
+      score_flagged_vla_baddef
+      score_flagging_view_exists
+      score_flags_exist
+      score_fluxcsv
+      score_fluxservice
+      score_fluxservicemessages
+      score_fluxservicestatuscodes
+      score_fraction_newly_flagged
+      score_gfluxscale_k_spw
+      score_iersstate
+      score_images_exist
+      score_lowtrans_flagcmds
+      score_missing_bandpass_snrs
+      score_missing_derived_fluxes
+      score_missing_intents
+      score_missing_phase_snrs
+      score_missing_phaseup_snrs
+      score_mom8_fc_image
+      score_ms_history_entries_present
+      score_ms_model_data_column_present
+      score_mses_exist
+      score_multiply
+      score_number_antenna_offsets
+      score_observing_modes
+      score_online_shadow_template_agents
+      score_parallactic_range
+      score_path_exists
+      score_phaseup_mapping_fraction
+      score_phaseup_spw_median_snr_for_check
+      score_phaseup_spw_median_snr_for_phase
+      score_polcal_gain_ratio
+      score_polcal_gain_ratio_rms
+      score_polcal_leakage
+      score_polcal_residual_pol
+      score_polcal_results
+      score_polintents
+      score_poor_bandpass_solutions
+      score_poor_phase_snrs
+      score_poor_phaseup_solutions
+      score_rasterscan_correctness_direction_domain_rasterscan_fail
+      score_rasterscan_correctness_imaging_raster_analysis_incomplete
+      score_rasterscan_correctness_imaging_raster_gap
+      score_rasterscan_correctness_time_domain_rasterscan_fail
+      score_refspw_mapping_fraction
+      score_renorm
+      score_samecalobjects
+      score_science_spw_names
+      score_sd_baseline_quality
+      score_sd_line_detection
+      score_sd_skycal_elevation_difference
+      score_sdimage_contamination
+      score_sdimage_masked_pixels
+      score_sdtotal_data_flagged
+      score_sdtotal_data_flagged_old
+      score_setjy_measurements
+      score_total_data_flagged
+      score_total_data_flagged_vla
+      score_total_data_flagged_vla_bandpass
+      score_total_data_vla_delay
+      score_tsysflagcontamination_contamination_flagged
+      score_tsysflagcontamination_external_heuristic
+      score_tsysspwmap
+      score_vla_agents
+      score_vla_flux_residual_rms
+      score_vla_science_data_flagged_by_agents
+      score_wvrgcal
+      select_deviation_masks
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AgentStats
+      MeasurementSet
+      RasterScanHeuristicsResult
+      SDImagingResultItem
+      SDImportDataResults
+   

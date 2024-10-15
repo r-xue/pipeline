@@ -1,0 +1,42 @@
+pipeline.hsd.tasks.common.rasterutil
+====================================
+
+.. automodule:: pipeline.hsd.tasks.common.rasterutil
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      anim_gen
+      animate
+      distance
+      extract_dtrow_list
+      find_most_frequent
+      flag_incomplete_raster
+      flag_raster_map
+      flag_worm_eaten_raster
+      from_context
+      generate_animation
+      get_angle
+      get_aspect
+      get_raster_distance
+      get_raster_flag_list
+      get_science_spectral_windows
+      get_science_target_fields
+      is_multi_beam
+      read_datatable
+      read_readonly_data
+      read_readwrite_data
+      sub
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataTableImpl
+      FuncAnimation
+      ImageMagickWriter
+      Line2D
+      MetaDataSet
+   

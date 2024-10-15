@@ -1,0 +1,25 @@
+pipeline.hif.tasks.correctedampflag.correctedampflag
+====================================================
+
+.. automodule:: pipeline.hif.tasks.correctedampflag.correctedampflag
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      mode
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Correctedampflag
+      CorrectedampflagInputs
+      CorrectedampflagResults
+      DataType
+      FlagCmd
+      FlagdataSetter
+      MeasurementSet
+      NDArray
+   

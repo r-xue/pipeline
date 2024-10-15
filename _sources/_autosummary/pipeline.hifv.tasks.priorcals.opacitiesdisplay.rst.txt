@@ -1,0 +1,12 @@
+pipeline.hifv.tasks.priorcals.opacitiesdisplay
+==============================================
+
+.. automodule:: pipeline.hifv.tasks.priorcals.opacitiesdisplay
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      opacitiesSummaryChart
+   

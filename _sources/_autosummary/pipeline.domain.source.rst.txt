@@ -1,0 +1,12 @@
+pipeline.domain.source
+======================
+
+.. automodule:: pipeline.domain.source
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Source
+   

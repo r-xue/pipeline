@@ -1,0 +1,18 @@
+pipeline.recipereducer
+======================
+
+.. automodule:: pipeline.recipereducer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      reduce
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TaskArgs
+   

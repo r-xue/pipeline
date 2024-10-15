@@ -1,0 +1,13 @@
+pipeline.hifv.tasks.gaincurves.gaincurves
+=========================================
+
+.. automodule:: pipeline.hifv.tasks.gaincurves.gaincurves
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GainCurves
+      GainCurvesInputs
+   

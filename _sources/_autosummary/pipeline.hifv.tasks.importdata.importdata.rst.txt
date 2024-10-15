@@ -1,0 +1,22 @@
+pipeline.hifv.tasks.importdata.importdata
+=========================================
+
+.. automodule:: pipeline.hifv.tasks.importdata.importdata
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      detect_spectral_lines
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SerialVLAImportData
+      VLAImportData
+      VLAImportDataInputs
+      VLAImportDataResults
+      VLAScanHeuristics
+   

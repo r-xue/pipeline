@@ -1,0 +1,37 @@
+pipeline.hifa.tasks.tsysflag\_contamination package
+===================================================
+
+Submodules
+----------
+
+pipeline.hifa.tasks.tsysflag\_contamination.qa module
+-----------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.tsysflag_contamination.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.tsysflag\_contamination.renderer module
+-----------------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.tsysflag_contamination.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.tsysflag\_contamination.tsysflagcontamination module
+------------------------------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.tsysflag_contamination.tsysflagcontamination
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifa.tasks.tsysflag_contamination
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,25 @@
+pipeline.hsd.heuristics.fitorder
+================================
+
+.. automodule:: pipeline.hsd.heuristics.fitorder
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_fitting_function
+      is_cubic_spline_fit
+      is_polynomial_fit
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      EdgeChannels
+      FitOrderHeuristics
+      FittingFunction
+      MaskMaker
+      MaskMakerNoLine
+      SwitchPolynomialWhenLargeMaskAtEdgeHeuristic
+   

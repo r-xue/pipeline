@@ -1,0 +1,16 @@
+pipeline.hsd.heuristics.sdcaltype
+=================================
+
+.. automodule:: pipeline.hsd.heuristics.sdcaltype
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AsdmCalibrationTypeHeuristics
+      CalibrationTypeHeuristics
+      DataTypeHeuristics
+      DefaultCalibrationTypeHeuristics
+      MsCalibrationTypeHeuristics
+   

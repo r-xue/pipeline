@@ -1,0 +1,14 @@
+pipeline.hsd.tasks.imaging.accumulator
+======================================
+
+.. automodule:: pipeline.hsd.tasks.imaging.accumulator
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Accumulator
+      GaussianKernel
+      LinearKernel
+   

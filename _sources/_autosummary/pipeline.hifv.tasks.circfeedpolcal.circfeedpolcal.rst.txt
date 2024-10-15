@@ -1,0 +1,21 @@
+pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal
+=================================================
+
+.. automodule:: pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      standard_sources
+      uvrange
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Circfeedpolcal
+      CircfeedpolcalInputs
+      CircfeedpolcalResults
+   

@@ -1,0 +1,14 @@
+pipeline.hifv.tasks.pbcor.display
+=================================
+
+.. automodule:: pipeline.hifv.tasks.pbcor.display
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ImageHistDisplay
+      ImageStats
+      PbcorimagesSummary
+   

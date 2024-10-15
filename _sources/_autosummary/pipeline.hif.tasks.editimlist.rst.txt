@@ -1,0 +1,22 @@
+pipeline.hif.tasks.editimlist
+=============================
+
+.. automodule:: pipeline.hif.tasks.editimlist
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Editimlist
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   editimlist
+   renderer
+   resultobjects

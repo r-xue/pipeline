@@ -1,0 +1,20 @@
+pipeline.hifv.tasks.opcal
+=========================
+
+.. automodule:: pipeline.hifv.tasks.opcal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Opcal
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   opcal
+   resultobjects

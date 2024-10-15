@@ -1,0 +1,37 @@
+pipeline.hifv.tasks.mstransform package
+=======================================
+
+Submodules
+----------
+
+pipeline.hifv.tasks.mstransform.mstransform module
+--------------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.mstransform.mstransform
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.mstransform.qa module
+-----------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.mstransform.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.mstransform.renderer module
+-----------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.mstransform.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifv.tasks.mstransform
+   :members:
+   :undoc-members:
+   :show-inheritance:

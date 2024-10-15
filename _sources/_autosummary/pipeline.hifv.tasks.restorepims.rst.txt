@@ -1,0 +1,19 @@
+pipeline.hifv.tasks.restorepims
+===============================
+
+.. automodule:: pipeline.hifv.tasks.restorepims
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Restorepims
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   restorepims

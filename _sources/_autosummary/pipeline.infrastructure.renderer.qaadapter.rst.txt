@@ -1,0 +1,20 @@
+pipeline.infrastructure.renderer.qaadapter
+==========================================
+
+.. automodule:: pipeline.infrastructure.renderer.qaadapter
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CalibrationTopic
+      DataSetTopic
+      FlaggingTopic
+      ImagingTopic
+      LineFindingTopic
+      MiscellaneousTopic
+      QABaseAdapter
+      Topic
+      TopicRegistry
+   

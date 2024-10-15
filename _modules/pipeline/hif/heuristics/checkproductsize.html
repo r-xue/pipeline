@@ -1,0 +1,751 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.heuristics.checkproductsize &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.heuristics.checkproductsize</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.heuristics.checkproductsize</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.makeimlist</span> <span class="kn">import</span> <span class="n">makeimlist</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CheckProductSizeHeuristics">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics">[docs]</a>
+<span class="k">class</span> <span class="nc">CheckProductSizeHeuristics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+
+<div class="viewcode-block" id="CheckProductSizeHeuristics.calculate_sizes">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics.calculate_sizes">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate_sizes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imlist</span><span class="p">):</span>
+        <span class="n">cubesizes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">productsizes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">total_productsize</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">ref_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">imlist</span><span class="p">:</span>
+            <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">nbin</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nbin</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span><span class="p">:</span>
+                <span class="n">real_spw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual2real_spw_id</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]),</span> <span class="n">ref_ms</span><span class="p">)</span>
+                <span class="n">nchan</span> <span class="o">=</span> <span class="n">ref_ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">real_spw</span><span class="p">)</span><span class="o">.</span><span class="n">num_channels</span>
+                <span class="n">cubesize</span> <span class="o">=</span> <span class="mf">4.</span> <span class="o">*</span> <span class="n">nx</span> <span class="o">*</span> <span class="n">ny</span> <span class="o">*</span> <span class="n">nchan</span> <span class="o">/</span> <span class="n">nbin</span> <span class="o">/</span> <span class="mf">1e9</span>
+            <span class="c1"># Handle the &#39;cont&#39; specmode case</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nchan</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">cubesize</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">mfssize</span> <span class="o">=</span> <span class="mf">4.</span> <span class="o">*</span> <span class="n">nx</span> <span class="o">*</span> <span class="n">ny</span> <span class="o">/</span> <span class="mf">1e9</span> <span class="c1"># Should include nterms, though overall size is dominated by cube mode which is currently always nterms=1</span>
+            <span class="n">cubesizes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cubesize</span><span class="p">)</span>
+            <span class="n">productsize</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">mfssize</span> <span class="o">+</span> <span class="n">cubesize</span><span class="p">)</span>
+            <span class="n">productsizes</span><span class="p">[</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">productsize</span>
+            <span class="n">total_productsize</span> <span class="o">+=</span> <span class="n">productsize</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Cube size for Field </span><span class="si">%s</span><span class="s1"> SPW </span><span class="si">%s</span><span class="s1"> nchan </span><span class="si">%d</span><span class="s1"> nbin </span><span class="si">%d</span><span class="s1"> imsize </span><span class="si">%d</span><span class="s1"> x </span><span class="si">%d</span><span class="s1"> is </span><span class="si">%.3g</span><span class="s1"> GB&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">nbin</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">cubesize</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">cubesizes</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">cubesizes</span><span class="p">),</span> <span class="n">productsizes</span><span class="p">,</span> <span class="n">total_productsize</span></div>
+
+
+<div class="viewcode-block" id="CheckProductSizeHeuristics.mitigate_sizes">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics.mitigate_sizes">[docs]</a>
+    <span class="k">def</span> <span class="nf">mitigate_sizes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">synthesized_beams</span>
+
+        <span class="c1"># Initialize mitigation parameter dictionary</span>
+        <span class="c1"># Possible keys:</span>
+        <span class="c1"># &#39;nbins&#39;, &#39;hm_imsize&#39;, &#39;hm_cell&#39;, &#39;field&#39;</span>
+        <span class="n">size_mitigation_parameters</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Create makeimlist inputs</span>
+        <span class="n">makeimlist_inputs</span> <span class="o">=</span> <span class="n">makeimlist</span><span class="o">.</span><span class="n">MakeImListInputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="s1">&#39;TARGET&#39;</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">=</span> <span class="s1">&#39;cube&#39;</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">clearlist</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">calcsb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">calcsb</span>
+
+        <span class="c1"># Create makeimlist task for size calculations</span>
+        <span class="n">makeimlist_task</span> <span class="o">=</span> <span class="n">makeimlist</span><span class="o">.</span><span class="n">MakeImList</span><span class="p">(</span><span class="n">makeimlist_inputs</span><span class="p">)</span>
+
+        <span class="c1"># Get default target setup</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">known_synthesized_beams</span>
+        <span class="n">makeimlist_result</span> <span class="o">=</span> <span class="n">makeimlist_task</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+        <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">synthesized_beams</span>
+        <span class="n">imlist</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">targets</span>
+
+        <span class="c1"># Extract some information for later</span>
+        <span class="c1">#</span>
+        <span class="c1"># Sort fields to get consistent mitigation results.</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">imlist</span><span class="p">})</span>
+        <span class="n">nfields</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+        <span class="n">spws</span> <span class="o">=</span> <span class="nb">list</span><span class="p">({</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">imlist</span><span class="p">})</span>
+        <span class="n">ref_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">real_spws</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual2real_spw_id</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">),</span> <span class="n">ref_ms</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">]</span>
+        <span class="n">nchans</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">spw</span><span class="p">,</span> <span class="n">ref_ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">real_spw</span><span class="p">)</span><span class="o">.</span><span class="n">num_channels</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">real_spw</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">spws</span><span class="p">,</span> <span class="n">real_spws</span><span class="p">)])</span>
+        <span class="n">frequencies</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">spw</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">ref_ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">real_spw</span><span class="p">)</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">))</span> <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">real_spw</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">spws</span><span class="p">,</span> <span class="n">real_spws</span><span class="p">)])</span>
+        <span class="n">ch_width_ratios</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">spw</span><span class="p">,</span> \
+            <span class="nb">float</span><span class="p">(</span><span class="n">ref_ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">real_spw</span><span class="p">)</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">effective_bw</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">/</span> \
+            <span class="nb">float</span><span class="p">(</span><span class="n">ref_ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">real_spw</span><span class="p">)</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">getWidth</span><span class="p">()</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">))</span> \
+            <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">real_spw</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">spws</span><span class="p">,</span> <span class="n">real_spws</span><span class="p">)])</span>
+
+        <span class="k">if</span> <span class="n">nfields</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Cannot determine any default specmode=&#39;cube&#39; imaging targets&quot;</span><span class="p">)</span>
+            <span class="n">long_short_msg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;longmsg&#39;</span><span class="p">:</span> <span class="s2">&quot;Cannot determine any default specmode=&#39;cube&#39; imaging targets&quot;</span><span class="p">,</span>
+                              <span class="s1">&#39;shortmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;Cannot determine targets&#39;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="p">{},</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">long_short_msg</span><span class="p">,</span> <span class="n">known_synthesized_beams</span>
+
+        <span class="c1"># Get representative target information</span>
+        <span class="n">repr_target</span><span class="p">,</span> \
+        <span class="n">repr_source</span><span class="p">,</span> \
+        <span class="n">repr_spw</span><span class="p">,</span> \
+        <span class="n">repr_freq</span><span class="p">,</span> \
+        <span class="n">reprBW_mode</span><span class="p">,</span> \
+        <span class="n">real_repr_target</span><span class="p">,</span> \
+        <span class="n">minAcceptableAngResolution</span><span class="p">,</span> \
+        <span class="n">maxAcceptableAngResolution</span><span class="p">,</span> \
+        <span class="n">maxAllowedBeamAxialRatio</span><span class="p">,</span> \
+        <span class="n">sensitivityGoal</span> <span class="o">=</span> \
+            <span class="n">imlist</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;heuristics&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">representative_target</span><span class="p">()</span>
+
+        <span class="c1"># Make sure that the representative source is the first list item.</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">place_repr_source_first</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">repr_source</span><span class="p">)</span>
+
+        <span class="c1"># Get original maximum cube and product sizes</span>
+        <span class="n">cubesizes</span><span class="p">,</span> <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">productsizes</span><span class="p">,</span> <span class="n">total_productsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_sizes</span><span class="p">(</span><span class="n">imlist</span><span class="p">)</span>
+        <span class="n">original_maxcubesize</span> <span class="o">=</span> <span class="n">maxcubesize</span>
+        <span class="n">original_productsize</span> <span class="o">=</span> <span class="n">total_productsize</span>
+        <span class="c1"># Requested image size</span>
+        <span class="n">original_imsize</span> <span class="o">=</span> <span class="n">imlist</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span>
+        <span class="n">mitigated_imsize</span> <span class="o">=</span> <span class="n">original_imsize</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Default imaging leads to a maximum cube size of </span><span class="si">%s</span><span class="s1"> GB and a product size of </span><span class="si">%s</span><span class="s1"> GB&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">maxcubesize</span><span class="p">,</span> <span class="n">total_productsize</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Allowed maximum cube size: </span><span class="si">%s</span><span class="s1"> GB. Allowed cube size limit: </span><span class="si">%s</span><span class="s1"> GB. Allowed maximum product size: </span><span class="si">%s</span><span class="s1"> GB.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubelimit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span><span class="p">))</span>
+
+        <span class="c1"># If too large, try to mitigate via channel binning</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">maxcubesize</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span><span class="p">):</span>
+            <span class="n">nbins</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">nbin_mitigation</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">nchan</span> <span class="ow">in</span> <span class="n">nchans</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">nchan</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">7680</span><span class="p">,</span> <span class="mi">3840</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">nchan</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1920</span><span class="p">,</span> <span class="mi">960</span><span class="p">,</span> <span class="mi">480</span><span class="p">)</span> <span class="ow">and</span> <span class="n">utils</span><span class="o">.</span><span class="n">equal_to_n_digits</span><span class="p">(</span><span class="n">ch_width_ratios</span><span class="p">[</span><span class="n">spw</span><span class="p">],</span> <span class="mf">2.667</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Size mitigation: Setting nbin for SPW </span><span class="si">%s</span><span class="s1"> to 2.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw</span><span class="p">))</span>
+                    <span class="n">nbins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">:2&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw</span><span class="p">))</span>
+                    <span class="n">nbin_mitigation</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">nbins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">:1&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">nbin_mitigation</span><span class="p">:</span>
+                <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;nbins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
+
+                <span class="c1"># Recalculate sizes</span>
+                <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">nbins</span> <span class="o">=</span> <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;nbins&#39;</span><span class="p">]</span>
+                <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">known_synthesized_beams</span>
+                <span class="n">makeimlist_result</span> <span class="o">=</span> <span class="n">makeimlist_task</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+                <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">synthesized_beams</span>
+                <span class="n">imlist</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">targets</span>
+                <span class="n">cubesizes</span><span class="p">,</span> <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">productsizes</span><span class="p">,</span> <span class="n">total_productsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_sizes</span><span class="p">(</span><span class="n">imlist</span><span class="p">)</span>
+                <span class="n">mitigated_imsize</span> <span class="o">=</span> <span class="n">imlist</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;nbin mitigation leads to a maximum cube size of </span><span class="si">%s</span><span class="s1"> GB&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">maxcubesize</span><span class="p">))</span>
+
+        <span class="c1"># If still too large, try changing the FoV (in makeimlist this is applied to single fields only)</span>
+        <span class="n">PB_limit</span> <span class="o">=</span> <span class="mf">0.2</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">maxcubesize</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span><span class="p">):</span>
+
+            <span class="c1"># Calculate PB level at which the largest cube size of all targets</span>
+            <span class="c1"># is equal to the maximum allowed cube size.</span>
+            <span class="n">PB_mitigation</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">2.2064</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span> <span class="o">/</span> <span class="n">maxcubesize</span> <span class="o">/</span> <span class="mf">1.01</span><span class="p">)</span>
+            <span class="c1"># Cap at PB=0.7</span>
+            <span class="n">PB_mitigation</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">PB_mitigation</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
+            <span class="c1"># Cap at PB=0.2</span>
+            <span class="n">PB_mitigation</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">PB_mitigation</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+            <span class="c1"># Round to 2 significant digits</span>
+            <span class="n">PB_mitigation</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">(</span><span class="n">PB_mitigation</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="n">PB_limit</span> <span class="o">=</span> <span class="n">PB_mitigation</span>
+
+            <span class="k">if</span> <span class="n">PB_limit</span> <span class="o">!=</span> <span class="mf">0.2</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Size mitigation: Setting hm_imsize to </span><span class="si">%.2g</span><span class="s1">pb&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">PB_mitigation</span><span class="p">))</span>
+                <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_imsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%.2g</span><span class="s1">pb&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">PB_mitigation</span><span class="p">)</span>
+
+                <span class="c1"># Recalculate sizes</span>
+                <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">hm_imsize</span> <span class="o">=</span> <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_imsize&#39;</span><span class="p">]</span>
+                <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">known_synthesized_beams</span>
+                <span class="n">makeimlist_result</span> <span class="o">=</span> <span class="n">makeimlist_task</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+                <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">synthesized_beams</span>
+                <span class="n">imlist</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">targets</span>
+                <span class="n">cubesizes</span><span class="p">,</span> <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">productsizes</span><span class="p">,</span> <span class="n">total_productsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_sizes</span><span class="p">(</span><span class="n">imlist</span><span class="p">)</span>
+                <span class="n">mitigated_imsize</span> <span class="o">=</span> <span class="n">imlist</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;hm_imsize mitigation leads to a maximum cube size of </span><span class="si">%s</span><span class="s1"> GB&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">maxcubesize</span><span class="p">))</span>
+
+        <span class="c1"># If still too large, try changing pixperbeam setting</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">maxcubesize</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;robust&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span><span class="p">:</span>
+                <span class="n">robust</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span><span class="p">[</span><span class="s1">&#39;robust&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">robust</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">robust</span> <span class="o">==</span> <span class="mf">2.0</span><span class="p">:</span>
+                <span class="c1"># Special case to avoid undersampling the beam (PIPE-107)</span>
+                <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;3.25ppb&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;3ppb&#39;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Size mitigation: Setting hm_cell to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]))</span>
+
+            <span class="c1"># Recalculate sizes</span>
+            <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">hm_cell</span> <span class="o">=</span> <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span>
+            <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">known_synthesized_beams</span>
+            <span class="n">makeimlist_result</span> <span class="o">=</span> <span class="n">makeimlist_task</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+            <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">synthesized_beams</span>
+            <span class="n">imlist</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">targets</span>
+            <span class="n">cubesizes</span><span class="p">,</span> <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">productsizes</span><span class="p">,</span> <span class="n">total_productsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_sizes</span><span class="p">(</span><span class="n">imlist</span><span class="p">)</span>
+            <span class="n">mitigated_imsize</span> <span class="o">=</span> <span class="n">imlist</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;hm_cell mitigation leads to a maximum cube size of </span><span class="si">%s</span><span class="s1"> GB&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">maxcubesize</span><span class="p">))</span>
+
+        <span class="c1"># Save cube mitigated product size for logs</span>
+        <span class="n">cube_mitigated_productsize</span> <span class="o">=</span> <span class="n">total_productsize</span>
+
+        <span class="c1"># If still too large, stop with an error</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">maxcubesize</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">maxcubesize</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubelimit</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Maximum cube size cannot be mitigated. Remaining factor: </span><span class="si">%.4f</span><span class="s1"> and cube size larger than limit of </span><span class="si">%s</span><span class="s1"> GB.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">maxcubesize</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubelimit</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">size_mitigation_parameters</span><span class="p">,</span> \
+                       <span class="n">original_maxcubesize</span><span class="p">,</span> <span class="n">original_productsize</span><span class="p">,</span> \
+                       <span class="n">cube_mitigated_productsize</span><span class="p">,</span> \
+                       <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">total_productsize</span><span class="p">,</span> \
+                       <span class="n">original_imsize</span><span class="p">,</span> <span class="n">mitigated_imsize</span><span class="p">,</span> \
+                       <span class="kc">True</span><span class="p">,</span> \
+                       <span class="p">{</span><span class="s1">&#39;longmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;Cube size could not be mitigated. Remaining factor: </span><span class="si">%.4f</span><span class="s1"> and cube size larger than limit of </span><span class="si">%s</span><span class="s1"> GB.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">maxcubesize</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubelimit</span><span class="p">),</span> \
+                        <span class="s1">&#39;shortmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;Cube size could not be mitigated&#39;</span><span class="p">},</span> \
+                       <span class="n">known_synthesized_beams</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Maximum cube size cannot be mitigated. Remaining factor: </span><span class="si">%.4f</span><span class="s1">. But cube size is smaller than limit of </span><span class="si">%s</span><span class="s1"> GB.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">maxcubesize</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubelimit</span><span class="p">))</span>
+
+        <span class="c1"># If product size too large, try reducing number of fields / targets</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">total_productsize</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">nfields</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">nfields</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span> <span class="o">/</span> <span class="p">(</span><span class="n">total_productsize</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">nfields</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">nfields</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="c1"># Truncate the field list. The representative source is always</span>
+            <span class="c1"># included since it is the first list item.</span>
+            <span class="n">mitigated_fields</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[:</span><span class="n">nfields</span><span class="p">]</span>
+
+            <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mitigated_fields</span><span class="p">)</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Size mitigation: Setting field to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]))</span>
+
+            <span class="c1"># Recalculate sizes</span>
+            <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span>
+            <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">known_synthesized_beams</span>
+            <span class="n">makeimlist_result</span> <span class="o">=</span> <span class="n">makeimlist_task</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+            <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">synthesized_beams</span>
+            <span class="n">imlist</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">targets</span>
+            <span class="n">cubesizes</span><span class="p">,</span> <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">productsizes</span><span class="p">,</span> <span class="n">total_productsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_sizes</span><span class="p">(</span><span class="n">imlist</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;field / target mitigation leads to product size of </span><span class="si">%s</span><span class="s1"> GB&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">total_productsize</span><span class="p">))</span>
+
+        <span class="c1"># If cube size is OK, but product size with single target is still too large, try mitigating further with nbin, FoV, and cell size</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">nfields</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">maxcubesize</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">total_productsize</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Product size with single target is still too large. Trying nbin mitigation.&#39;</span><span class="p">)</span>
+
+                <span class="n">nbins</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">nbin_mitigation</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">nchan</span> <span class="ow">in</span> <span class="n">nchans</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">nchan</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">7680</span><span class="p">,</span> <span class="mi">3840</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">nchan</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1920</span><span class="p">,</span> <span class="mi">960</span><span class="p">,</span> <span class="mi">480</span><span class="p">)</span> <span class="ow">and</span> <span class="n">utils</span><span class="o">.</span><span class="n">equal_to_n_digits</span><span class="p">(</span><span class="n">ch_width_ratios</span><span class="p">[</span><span class="n">spw</span><span class="p">],</span> <span class="mf">2.667</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Size mitigation: Setting nbin for SPW </span><span class="si">%s</span><span class="s1"> to 2.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw</span><span class="p">))</span>
+                        <span class="n">nbins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">:2&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw</span><span class="p">))</span>
+                        <span class="n">nbin_mitigation</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">nbins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">:1&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spw</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="n">nbin_mitigation</span><span class="p">:</span>
+                    <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;nbins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
+
+                    <span class="c1"># Recalculate sizes</span>
+                    <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">nbins</span> <span class="o">=</span> <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;nbins&#39;</span><span class="p">]</span>
+                    <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">known_synthesized_beams</span>
+                    <span class="n">makeimlist_result</span> <span class="o">=</span> <span class="n">makeimlist_task</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+                    <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">synthesized_beams</span>
+                    <span class="n">imlist</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">targets</span>
+                    <span class="n">cubesizes</span><span class="p">,</span> <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">productsizes</span><span class="p">,</span> <span class="n">total_productsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_sizes</span><span class="p">(</span><span class="n">imlist</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;nbin mitigation leads to a maximum cube size of </span><span class="si">%s</span><span class="s1"> GB&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">maxcubesize</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">total_productsize</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Product size with single target is still too large. Trying FoV mitigation.&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Calculate PB level at which the largest cube size of all targets</span>
+                <span class="c1"># is equal to the maximum allowed cube size.</span>
+                <span class="n">PB_mitigation</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">2.2064</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubesize</span> <span class="o">/</span> <span class="n">maxcubesize</span> <span class="o">/</span> <span class="mf">1.01</span><span class="p">)</span>
+                <span class="c1"># Cap at PB=0.7</span>
+                <span class="n">PB_mitigation</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">PB_mitigation</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
+                <span class="c1"># Cap at PB=&lt;current PB_limit from earlier mitigation&gt;</span>
+                <span class="n">PB_mitigation</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">PB_mitigation</span><span class="p">,</span> <span class="n">PB_limit</span><span class="p">)</span>
+                <span class="c1"># Round to 2 significant digits</span>
+                <span class="n">PB_mitigation</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">round_half_up</span><span class="p">(</span><span class="n">PB_mitigation</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">PB_mitigation</span> <span class="o">!=</span> <span class="mf">0.2</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Size mitigation: Setting hm_imsize to </span><span class="si">%.2g</span><span class="s1">pb&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">PB_mitigation</span><span class="p">))</span>
+                    <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_imsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%.2g</span><span class="s1">pb&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">PB_mitigation</span><span class="p">)</span>
+
+                    <span class="c1"># Recalculate sizes</span>
+                    <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">hm_imsize</span> <span class="o">=</span> <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_imsize&#39;</span><span class="p">]</span>
+                    <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">known_synthesized_beams</span>
+                    <span class="n">makeimlist_result</span> <span class="o">=</span> <span class="n">makeimlist_task</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+                    <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">synthesized_beams</span>
+                    <span class="n">imlist</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">targets</span>
+                    <span class="n">cubesizes</span><span class="p">,</span> <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">productsizes</span><span class="p">,</span> <span class="n">total_productsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_sizes</span><span class="p">(</span><span class="n">imlist</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;hm_imsize mitigation leads to a maximum cube size of </span><span class="si">%s</span><span class="s1"> GB&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">maxcubesize</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">total_productsize</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Product size with single target is still too large. Trying cell size mitigation.&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="s1">&#39;robust&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span><span class="p">:</span>
+                    <span class="n">robust</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span><span class="p">[</span><span class="s1">&#39;robust&#39;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">robust</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">robust</span> <span class="o">==</span> <span class="mf">2.0</span><span class="p">:</span>
+                    <span class="c1"># Special case to avoid undersampling the beam (PIPE-107)</span>
+                    <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;3.25ppb&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;3ppb&#39;</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Size mitigation: Setting hm_cell to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]))</span>
+
+                <span class="c1"># Recalculate sizes</span>
+                <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">hm_cell</span> <span class="o">=</span> <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span>
+                <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">known_synthesized_beams</span>
+                <span class="n">makeimlist_result</span> <span class="o">=</span> <span class="n">makeimlist_task</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+                <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">synthesized_beams</span>
+                <span class="n">imlist</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">targets</span>
+                <span class="n">cubesizes</span><span class="p">,</span> <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">productsizes</span><span class="p">,</span> <span class="n">total_productsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_sizes</span><span class="p">(</span><span class="n">imlist</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;hm_cell mitigation leads to a maximum cube size of </span><span class="si">%s</span><span class="s1"> GB&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">maxcubesize</span><span class="p">))</span>
+
+        <span class="c1"># Check if there is more than one spw leading to cubes larger than</span>
+        <span class="c1"># 0.5 * maxcubelimit. Remove all but one of these spws and make sure</span>
+        <span class="c1"># the representative spw is still included. Add spws with smaller</span>
+        <span class="c1"># cubes up until total_productsize reaches the limit.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubelimit</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">):</span>
+            <span class="n">spw_oversizes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">imlist</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">cubesizes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubelimit</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxcubelimit</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                    <span class="n">spw_oversizes</span><span class="p">[</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="p">([</span><span class="n">n</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">spw_oversizes</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> \
+               <span class="p">((</span><span class="n">total_productsize</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">oversize_spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span> <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">spw_oversizes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span>
+                <span class="c1"># Add one large cube if there are any and make sure the representative</span>
+                <span class="c1"># spw is chosen if it is among the large cubes.</span>
+                <span class="k">if</span> <span class="n">oversize_spws</span> <span class="o">!=</span> <span class="p">[]:</span>
+                    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">)</span> <span class="ow">in</span> <span class="n">oversize_spws</span><span class="p">:</span>
+                        <span class="n">large_cube_spw</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">large_cube_spw</span> <span class="o">=</span> <span class="n">oversize_spws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">mitigated_spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">large_cube_spw</span><span class="p">]</span>
+                    <span class="n">mitigated_productsize</span> <span class="o">=</span> <span class="n">productsizes</span><span class="p">[</span><span class="n">large_cube_spw</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">mitigated_spws</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">mitigated_productsize</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="c1"># Add at least the representative spw if it is among the small cubes.</span>
+                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">oversize_spws</span><span class="p">:</span>
+                    <span class="n">mitigated_spws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">))</span>
+                    <span class="n">mitigated_productsize</span> <span class="o">+=</span> <span class="n">productsizes</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">)]</span>
+                <span class="c1"># Add other small cubes</span>
+                <span class="n">other_small_cube_spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span> <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">spw_oversizes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">spw</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">)]</span>
+                <span class="n">small_cube_frequencies</span> <span class="o">=</span> <span class="p">[</span><span class="n">frequencies</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">other_small_cube_spws</span><span class="p">]</span>
+                <span class="n">small_cube_productsizes</span> <span class="o">=</span> <span class="p">[</span><span class="n">productsizes</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">other_small_cube_spws</span><span class="p">]</span>
+                <span class="n">small_cube_info</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">other_small_cube_spws</span><span class="p">,</span> <span class="n">small_cube_frequencies</span><span class="p">,</span> <span class="n">small_cube_productsizes</span><span class="p">))</span>
+                <span class="c1"># Sort spw list by size and frequency</span>
+                <span class="n">small_cube_info</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">small_cube_info</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">small_cube_spw</span><span class="p">,</span> <span class="n">small_cube_frequency</span><span class="p">,</span> <span class="n">small_cube_productsize</span> <span class="ow">in</span> <span class="n">small_cube_info</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">mitigated_productsize</span> <span class="o">+</span> <span class="n">small_cube_productsize</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                        <span class="n">mitigated_spws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">small_cube_spw</span><span class="p">)</span>
+                        <span class="n">mitigated_productsize</span> <span class="o">+=</span> <span class="n">small_cube_productsize</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">break</span>
+                <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">mitigated_spws</span><span class="p">)))</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;At least one cube size exceeded the large cube limit. Only one large SPW will be imaged.&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Size mitigation: Setting (cube) spw to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]))</span>
+
+                <span class="c1"># Recalculate sizes</span>
+                <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span>
+                <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">known_synthesized_beams</span>
+                <span class="c1"># Keep previous imsize and cell which would change if the spw list is different</span>
+                <span class="n">hm_imsize_orig</span> <span class="o">=</span> <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">hm_imsize</span>
+                <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">hm_imsize</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span>
+                <span class="n">hm_cell_orig</span> <span class="o">=</span> <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">hm_cell</span>
+                <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">hm_cell</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span>
+                <span class="n">makeimlist_result</span> <span class="o">=</span> <span class="n">makeimlist_task</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+                <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">synthesized_beams</span>
+                <span class="c1"># Restore previous settings</span>
+                <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">hm_imsize</span> <span class="o">=</span> <span class="n">hm_imsize_orig</span>
+                <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">hm_cell</span> <span class="o">=</span> <span class="n">hm_cell_orig</span>
+                <span class="n">imlist</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">targets</span>
+                <span class="n">cubesizes</span><span class="p">,</span> <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">productsizes</span><span class="p">,</span> <span class="n">total_productsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_sizes</span><span class="p">(</span><span class="n">imlist</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;spw mitigation leads to product size of </span><span class="si">%s</span><span class="s1"> GB&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">total_productsize</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">total_productsize</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Product size cannot be mitigated. Remaining factor: </span><span class="si">%.4f</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">total_productsize</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span> <span class="o">/</span> <span class="n">nfields</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">size_mitigation_parameters</span><span class="p">,</span> \
+                   <span class="n">original_maxcubesize</span><span class="p">,</span> <span class="n">original_productsize</span><span class="p">,</span> \
+                   <span class="n">cube_mitigated_productsize</span><span class="p">,</span> \
+                   <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">total_productsize</span><span class="p">,</span> \
+                   <span class="n">original_imsize</span><span class="p">,</span> <span class="n">mitigated_imsize</span><span class="p">,</span> \
+                   <span class="kc">True</span><span class="p">,</span> \
+                   <span class="p">{</span><span class="s1">&#39;longmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;Product size could not be mitigated. Remaining factor: </span><span class="si">%.4f</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">total_productsize</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxproductsize</span> <span class="o">/</span> <span class="n">nfields</span><span class="p">),</span> \
+                    <span class="s1">&#39;shortmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;Product size could not be mitigated&#39;</span><span class="p">},</span> \
+                   <span class="n">known_synthesized_beams</span>
+
+        <span class="c1"># Check for case with many targets which will cause long run times in spite</span>
+        <span class="c1"># of any mitigation.</span>
+        <span class="n">max_num_sciencetargets</span> <span class="o">=</span> <span class="mi">30</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">nfields</span> <span class="o">&gt;</span> <span class="n">max_num_sciencetargets</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">nchans</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">960</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The number of science targets is &gt; 30 and the total number of spectral channels across all science spws &gt; 960. &#39;</span>
+                        <span class="s1">&#39;The imaging pipeline will take substantial time to run on this MOUS.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">size_mitigation_parameters</span> <span class="o">!=</span> <span class="p">{}:</span>
+            <span class="k">return</span> <span class="n">size_mitigation_parameters</span><span class="p">,</span> \
+                   <span class="n">original_maxcubesize</span><span class="p">,</span> <span class="n">original_productsize</span><span class="p">,</span> \
+                   <span class="n">cube_mitigated_productsize</span><span class="p">,</span> \
+                   <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">total_productsize</span><span class="p">,</span> \
+                   <span class="n">original_imsize</span><span class="p">,</span> <span class="n">mitigated_imsize</span><span class="p">,</span> \
+                   <span class="kc">False</span><span class="p">,</span> \
+                   <span class="p">{</span><span class="s1">&#39;longmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;Size had to be mitigated (</span><span class="si">%s</span><span class="s1">)</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">size_mitigation_parameters</span><span class="p">),</span> <span class="s1">&#39; - large cube limit exceeded&#39;</span> <span class="k">if</span> <span class="s1">&#39;spw&#39;</span> <span class="ow">in</span> <span class="n">size_mitigation_parameters</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> \
+                    <span class="s1">&#39;shortmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;Size was mitigated&#39;</span><span class="p">},</span> \
+                   <span class="n">known_synthesized_beams</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">size_mitigation_parameters</span><span class="p">,</span> \
+                   <span class="n">original_maxcubesize</span><span class="p">,</span> <span class="n">original_productsize</span><span class="p">,</span> \
+                   <span class="n">cube_mitigated_productsize</span><span class="p">,</span> \
+                   <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">total_productsize</span><span class="p">,</span> \
+                   <span class="n">original_imsize</span><span class="p">,</span> <span class="n">mitigated_imsize</span><span class="p">,</span> \
+                   <span class="kc">False</span><span class="p">,</span> \
+                   <span class="p">{</span><span class="s1">&#39;longmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;No size mitigation needed&#39;</span><span class="p">,</span> \
+                    <span class="s1">&#39;shortmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;No size mitigation&#39;</span><span class="p">},</span> \
+                   <span class="n">known_synthesized_beams</span></div>
+
+
+
+<div class="viewcode-block" id="CheckProductSizeHeuristics.mitigate_imsize">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics.mitigate_imsize">[docs]</a>
+    <span class="k">def</span> <span class="nf">mitigate_imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Mitigate product size by adjusting ppb and imsize only. This is used in the VLA imaging heuristic, see</span>
+<span class="sd">        PIPE-676.</span>
+
+<span class="sd">        Uses the size_mitigation_parameters dictionary similarly to mitigate_sizes() method.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># TODO: note that it always assumes continuum imaging mode</span>
+        <span class="n">maximsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">maximsize</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">maximsize</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">maximsize</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">maximsize</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Argument maximsize has type </span><span class="si">%s</span><span class="s1">, but integer is expected&#39;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">maximsize</span><span class="p">))</span>
+        <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">synthesized_beams</span>
+
+        <span class="c1"># Initialize mitigation parameter dictionary</span>
+        <span class="c1"># Possible keys:</span>
+        <span class="c1"># &#39;nbins&#39;, &#39;hm_imsize&#39;, &#39;hm_cell&#39;, &#39;field&#39;</span>
+        <span class="n">size_mitigation_parameters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">multi_target_size_mitigation</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">is_mitigated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">original_imsize</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mitigated_imsize</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Initialize cube specific variables for compatibility with mitigate_sizes</span>
+        <span class="n">original_maxcubesize</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="n">original_productsize</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">cube_mitigated_productsize</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="n">mitigated_maxcubesize</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="n">total_productsize</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Create makeimlist inputs</span>
+        <span class="n">makeimlist_inputs</span> <span class="o">=</span> <span class="n">makeimlist</span><span class="o">.</span><span class="n">MakeImListInputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="s1">&#39;TARGET&#39;</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">=</span> <span class="s1">&#39;cont&#39;</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">clearlist</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># calcsb         Force (re-)calculation of sensitivities and beams (Default None)</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">calcsb</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Create makeimlist task for size calculations</span>
+        <span class="n">makeimlist_task</span> <span class="o">=</span> <span class="n">makeimlist</span><span class="o">.</span><span class="n">MakeImList</span><span class="p">(</span><span class="n">makeimlist_inputs</span><span class="p">)</span>
+
+        <span class="c1"># Get default target setup</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">known_synthesized_beams</span>
+        <span class="n">makeimlist_result</span> <span class="o">=</span> <span class="n">makeimlist_task</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+        <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">synthesized_beams</span>
+        <span class="n">imlist</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">targets</span>  <span class="c1"># at this stage the expected image size is known</span>
+
+        <span class="c1"># Loop over imaging targets</span>
+        <span class="k">for</span> <span class="n">im</span> <span class="ow">in</span> <span class="n">imlist</span><span class="p">:</span>
+            <span class="c1"># Mitigation parameters</span>
+            <span class="n">im_specific_mitigation</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="c1"># Local makeimlist inputs copy for recomputing image size for current (field, intent, spw) combination</span>
+            <span class="n">local_makeimlist_inputs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">makeimlist_inputs</span><span class="p">)</span>
+            <span class="n">local_makeimlist_inputs</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">im</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span>
+            <span class="n">local_makeimlist_inputs</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">im</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span>
+            <span class="c1"># Requested image size</span>
+            <span class="n">imsize_request</span> <span class="o">=</span> <span class="n">im</span><span class="p">[</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">imlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">original_imsize</span> <span class="o">=</span> <span class="n">imsize_request</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">original_imsize</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imsize_request</span><span class="p">)</span>
+
+            <span class="c1"># Get original maximum cube and product sizes for compatibility</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">im_productsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_sizes</span><span class="p">([</span><span class="n">im</span><span class="p">])</span>
+            <span class="n">original_productsize</span> <span class="o">+=</span> <span class="n">im_productsize</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Default imaging leads to image pixel count of </span><span class="si">%s</span><span class="s1"> for target </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">imsize_request</span><span class="p">,</span> <span class="n">im</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Allowed maximum image pixel count: </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="p">([</span><span class="n">maximsize</span><span class="p">,</span> <span class="n">maximsize</span><span class="p">]))</span>
+
+            <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">imsize_request</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">maximsize</span><span class="p">:</span>
+                <span class="c1"># If too large, try changing pixperbeam setting</span>
+                <span class="n">im_specific_mitigation</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;4ppb&#39;</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Size mitigation: Setting hm_cell to </span><span class="si">%s</span><span class="s1"> for target </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">im_specific_mitigation</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">],</span>
+                                                                                   <span class="n">im</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]))</span>
+
+                <span class="c1"># Recalculate sizes with mitigation</span>
+                <span class="n">local_makeimlist_inputs</span><span class="o">.</span><span class="n">hm_cell</span> <span class="o">=</span> <span class="n">im_specific_mitigation</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span>
+                <span class="n">local_makeimlist_inputs</span><span class="o">.</span><span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">known_synthesized_beams</span>
+                <span class="n">local_makeimlist_task</span> <span class="o">=</span> <span class="n">makeimlist</span><span class="o">.</span><span class="n">MakeImList</span><span class="p">(</span><span class="n">local_makeimlist_inputs</span><span class="p">)</span>
+                <span class="n">local_makeimlist_result</span> <span class="o">=</span> <span class="n">local_makeimlist_task</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+                <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">local_makeimlist_result</span><span class="o">.</span><span class="n">synthesized_beams</span>
+                <span class="n">local_imlist</span> <span class="o">=</span> <span class="n">local_makeimlist_result</span><span class="o">.</span><span class="n">targets</span>
+                <span class="c1"># New sizes</span>
+                <span class="n">cubesizes</span><span class="p">,</span> <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">productsizes</span><span class="p">,</span> <span class="n">im_productsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_sizes</span><span class="p">(</span><span class="n">local_imlist</span><span class="p">)</span>
+
+                <span class="c1"># Compute current sizes</span>
+                <span class="n">imsize_request</span> <span class="o">=</span> <span class="n">local_imlist</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;imsize&#39;</span><span class="p">]</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;hm_cell mitigation leads to image pixel count of </span><span class="si">%s</span><span class="s1"> for target </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">imsize_request</span><span class="p">,</span>
+                                                                                                <span class="n">im</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]))</span>
+
+            <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">imsize_request</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">maximsize</span><span class="p">:</span>
+                <span class="c1"># If still too large, try changing pixperbeam setting</span>
+                <span class="n">imsize_request</span> <span class="o">=</span> <span class="p">[</span><span class="n">maximsize</span><span class="p">,</span> <span class="n">maximsize</span><span class="p">]</span>
+                <span class="n">im_specific_mitigation</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;4ppb&#39;</span>
+                <span class="n">im_specific_mitigation</span><span class="p">[</span><span class="s1">&#39;hm_imsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imsize_request</span>
+
+                <span class="c1"># Recalculate sizes with mitigation</span>
+                <span class="n">local_makeimlist_inputs</span><span class="o">.</span><span class="n">hm_cell</span> <span class="o">=</span> <span class="n">im_specific_mitigation</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span>
+                <span class="n">local_makeimlist_inputs</span><span class="o">.</span><span class="n">hm_imsize</span> <span class="o">=</span> <span class="n">im_specific_mitigation</span><span class="p">[</span><span class="s1">&#39;hm_imsize&#39;</span><span class="p">]</span>
+                <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">known_synthesized_beams</span>
+                <span class="n">makeimlist_task</span> <span class="o">=</span> <span class="n">makeimlist</span><span class="o">.</span><span class="n">MakeImList</span><span class="p">(</span><span class="n">makeimlist_inputs</span><span class="p">)</span>
+                <span class="n">makeimlist_result</span> <span class="o">=</span> <span class="n">makeimlist_task</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+                <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">synthesized_beams</span>
+                <span class="n">local_imlist</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">targets</span>
+                <span class="c1"># New sizes</span>
+                <span class="n">cubesizes</span><span class="p">,</span> <span class="n">maxcubesize</span><span class="p">,</span> <span class="n">productsizes</span><span class="p">,</span> <span class="n">im_productsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_sizes</span><span class="p">(</span><span class="n">local_imlist</span><span class="p">)</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Size mitigation: image pixel count is still larger than allowed for target </span><span class="si">%s</span><span class="s1">. Truncating &#39;</span>
+                         <span class="s1">&#39;image.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">im</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Size mitigation: Setting hm_cell to </span><span class="si">%s</span><span class="s1"> for target </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">im_specific_mitigation</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">],</span>
+                                                                                   <span class="n">im</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Size mitigation: Setting hm_imsize to </span><span class="si">%s</span><span class="s1"> for target </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">im_specific_mitigation</span><span class="p">[</span><span class="s1">&#39;hm_imsize&#39;</span><span class="p">],</span>
+                                                                                     <span class="n">im</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]))</span>
+
+            <span class="c1"># Save cube mitigated product size for logs</span>
+            <span class="n">total_productsize</span> <span class="o">+=</span> <span class="n">im_productsize</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">imlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">mitigated_imsize</span> <span class="o">=</span> <span class="n">imsize_request</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mitigated_imsize</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imsize_request</span><span class="p">)</span>
+
+            <span class="c1"># Store mitigation parameters per spw list</span>
+            <span class="n">multi_target_size_mitigation</span><span class="p">[</span><span class="n">im</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">im_specific_mitigation</span>
+            <span class="k">if</span> <span class="n">im_specific_mitigation</span> <span class="o">!=</span> <span class="p">{}:</span>
+                <span class="n">is_mitigated</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Store imaging target specific parameters in mitigation dictionary only if imsize is mitigated</span>
+        <span class="k">if</span> <span class="n">is_mitigated</span><span class="p">:</span>
+            <span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;multi_target_size_mitigation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">multi_target_size_mitigation</span>
+
+        <span class="k">if</span> <span class="n">is_mitigated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">size_mitigation_parameters</span><span class="p">,</span> \
+                   <span class="n">original_maxcubesize</span><span class="p">,</span> <span class="n">original_productsize</span><span class="p">,</span> \
+                   <span class="n">cube_mitigated_productsize</span><span class="p">,</span> \
+                   <span class="n">mitigated_maxcubesize</span><span class="p">,</span> <span class="n">total_productsize</span><span class="p">,</span> \
+                   <span class="n">original_imsize</span><span class="p">,</span> <span class="n">mitigated_imsize</span><span class="p">,</span> \
+                   <span class="kc">False</span><span class="p">,</span> \
+                   <span class="p">{</span><span class="s1">&#39;longmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;Size had to be mitigated (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">size_mitigation_parameters</span><span class="p">)),</span> \
+                    <span class="s1">&#39;shortmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;Size was mitigated&#39;</span><span class="p">},</span> \
+                   <span class="n">known_synthesized_beams</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">size_mitigation_parameters</span><span class="p">,</span> \
+                   <span class="n">original_maxcubesize</span><span class="p">,</span> <span class="n">original_productsize</span><span class="p">,</span> \
+                   <span class="n">cube_mitigated_productsize</span><span class="p">,</span> \
+                   <span class="n">mitigated_maxcubesize</span><span class="p">,</span> <span class="n">total_productsize</span><span class="p">,</span> \
+                   <span class="n">original_imsize</span><span class="p">,</span> <span class="n">mitigated_imsize</span><span class="p">,</span> \
+                   <span class="kc">False</span><span class="p">,</span> \
+                   <span class="p">{</span><span class="s1">&#39;longmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;No size mitigation needed&#39;</span><span class="p">,</span> \
+                    <span class="s1">&#39;shortmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;No size mitigation&#39;</span><span class="p">},</span> \
+                   <span class="n">known_synthesized_beams</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

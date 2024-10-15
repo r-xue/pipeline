@@ -1,0 +1,12 @@
+pipeline.hif.tasks.findcont.resultobjects
+=========================================
+
+.. automodule:: pipeline.hif.tasks.findcont.resultobjects
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FindContResult
+   

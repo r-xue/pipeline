@@ -1,0 +1,13 @@
+pipeline.h.tasks.applycal.qa
+============================
+
+.. automodule:: pipeline.h.tasks.applycal.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ApplycalListQAHandler
+      ApplycalQAHandler
+   

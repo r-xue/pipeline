@@ -1,0 +1,19 @@
+pipeline.hif.tasks.mstransform.renderer
+=======================================
+
+.. automodule:: pipeline.hif.tasks.mstransform.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      make_mstransform_table
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MstransformTR
+      T2_4MDetailsMstransformRenderer
+   

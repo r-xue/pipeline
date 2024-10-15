@@ -1,0 +1,15 @@
+pipeline.hifv.tasks.flagging.flagdetervla
+=========================================
+
+.. automodule:: pipeline.hifv.tasks.flagging.flagdetervla
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      FlagDeterVLA
+      FlagDeterVLAInputs
+      FlagDeterVLAResults
+   

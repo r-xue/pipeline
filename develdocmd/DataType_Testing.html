@@ -1,0 +1,246 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataType Testing &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pipeline Quality Assurance (QA) Score Class Design" href="QA_scores.html" />
+    <link rel="prev" title="Pipeline testing" href="pipeline_tests.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">DataType Testing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/develdocmd/DataType_Testing.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="datatype-testing">
+<h1>DataType Testing<a class="headerlink" href="#datatype-testing" title="Link to this heading"></a></h1>
+<p>The data type information is stored in two places in the MS domain objects.
+Originally, we just had a mapping of column (data or corrected) to data
+type for all sources and spws. This dictionary is <code class="docutils literal notranslate"><span class="pre">MeasurementSet::data_column</span></code>
+with keys being a data type from the DataType enum and values being the column
+name.</p>
+<p>Later we saw the need for the per source/spw information. This is stored in
+the <code class="docutils literal notranslate"><span class="pre">MeasurementSet::data_types_per_source_and_spw</span></code> dictionary. Its keys are
+tuples of source name and real spw ID. The values are lists of data types that
+exist for the given selection in this MS (at most two because there are just
+the data and corrected columns).
+This dictionary is not intended to be manipulated directly, but only via calls
+to <code class="docutils literal notranslate"><span class="pre">MeasurementSet::set_data_column</span></code> method. The <code class="docutils literal notranslate"><span class="pre">importdata</span></code> tasks use it
+to set a data type for the column. This also sets <em>all</em> source/spw entries in
+<code class="docutils literal notranslate"><span class="pre">data_types_per_source_and_spw</span> <span class="pre">if</span></code> no special source/spw selection is given
+(which is the case for the <code class="docutils literal notranslate"><span class="pre">importdata</span></code> tasks).</p>
+<p>The self calibration task is using <code class="docutils literal notranslate"><span class="pre">set_data_column</span></code> always with a source/spw
+selection. In that case <code class="docutils literal notranslate"><span class="pre">MeasurementSet::data_column</span></code> is set, but
+<code class="docutils literal notranslate"><span class="pre">MeasurementSet::data_types_per_source_and_spw</span></code> just gets an entry for the
+particular selection.</p>
+<p>The two methods <code class="docutils literal notranslate"><span class="pre">MeasurementSet::get_data_column</span></code> and <code class="docutils literal notranslate"><span class="pre">MeasurementSet::get_data_type</span></code>
+retrieve the corresponding data type for the given column or vice versa,
+optionally restricting the query to a subset of sources and/or spws.</p>
+<p>To arrive at a setup that might be generated by <code class="docutils literal notranslate"><span class="pre">hif_selfcal</span></code> one needs to mimic
+some <code class="docutils literal notranslate"><span class="pre">set_data_column</span></code> calls.</p>
+<p>For PIPE-1474, for example, two MSes were used that were mentioned in PIPE-1209
+which are not too large and also exercise the virtual spws. From a normal PL
+run one can take
+<code class="docutils literal notranslate"><span class="pre">uid___A002_Xed4607_Xfbf7_targets.ms</span></code>
+and
+<code class="docutils literal notranslate"><span class="pre">uid___A002_Xed4607_Xfd64_targets.ms</span></code>
+and manually copy the DATA column to CORRECTED just to have some data in both
+columns. The first MS has science spw IDs 13, 15, 17, 19, the second MS has
+5, 7, 9, 11.</p>
+<p>Now one can import these MSes in a new PL session and modify the lookup tables
+manually:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="n">ctx</span><span class="o">=</span><span class="n">h_init</span><span class="p">()</span>
+<span class="n">hifa_importdata</span><span class="p">([</span><span class="s1">&#39;uid___A002_Xed4607_Xfbf7_targets.ms&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;uid___A002_Xed4607_Xfd64_targets.ms&#39;</span><span class="p">],</span>
+                 <span class="n">datacolumns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="s1">&#39;regcal_contline_science&#39;</span><span class="p">})</span>
+<span class="c1"># First MS</span>
+<span class="n">ctx</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_data_column</span><span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;HL_Tau&#39;</span><span class="p">,</span> <span class="s1">&#39;17&#39;</span><span class="p">)</span>
+<span class="n">ctx</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_data_column</span><span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;HL_Tau&#39;</span><span class="p">,</span> <span class="s1">&#39;19&#39;</span><span class="p">)</span>
+<span class="c1"># Second MS</span>
+<span class="n">ctx</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_data_column</span><span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;HL_Tau&#39;</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">)</span>
+<span class="n">ctx</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_data_column</span><span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;HL_Tau&#39;</span><span class="p">,</span> <span class="s1">&#39;9&#39;</span><span class="p">)</span>
+<span class="n">ctx</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_data_column</span><span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;HL_Tau&#39;</span><span class="p">,</span> <span class="s1">&#39;11&#39;</span><span class="p">)</span>
+<span class="n">h_save</span><span class="p">(</span><span class="s1">&#39;c1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would set up just regular calibration data for virtual spw 13, one MS
+with selfcal in virtual spw 15 (real spw ID 7 in MS2) and two MSes with selfcal
+in virtual spw IDs 17 and 19.</p>
+<p>Now one has a setup to test various combinations of data types per
+source/spw, including virtual spw lookups. One would keep resuming the saved
+context, run some commands and save to a new file (<code class="docutils literal notranslate"><span class="pre">h_save('c2')</span></code>, etc.).</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">hif_makeimlist</span></code> and <code class="docutils literal notranslate"><span class="pre">hif_editimlist</span></code> the query involves a list of MSes,
+so there is another method to deliver that information. It is
+<code class="docutils literal notranslate"><span class="pre">ObservingRun::get_measurement_sets_of_type</span></code>. It takes a list of data types in
+the order of possible fallbacks. This list is provided by a function
+<code class="docutils literal notranslate"><span class="pre">get_specmode_datatypes</span></code> from <code class="docutils literal notranslate"><span class="pre">makeimlist.py</span></code>.
+For example, for specmode mfs the list is</p>
+<p><code class="docutils literal notranslate"><span class="pre">[DataType.SELFCAL_CONTLINE_SCIENCE,</span> <span class="pre">DataType.REGCAL_CONTLINE_SCIENCE,</span> <span class="pre">DataType.REGCAL_CONTLINE_ALL,</span> <span class="pre">DataType.RAW]</span></code></p>
+<p>for science targets and</p>
+<p><code class="docutils literal notranslate"><span class="pre">[DataType.REGCAL_CONTLINE_ALL,</span> <span class="pre">DataType.RAW]</span></code></p>
+<p>for calibrators. This means for science targets that selfcal is preferred over
+regcal and if the split into the _targets MSes has not yet been done, the regcal
+from the original MSes is used and so on. The method delivers a list MSes where
+to find the data. Optionally, one can again specify a source and spw.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline_tests.html" class="btn btn-neutral float-left" title="Pipeline testing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="QA_scores.html" class="btn btn-neutral float-right" title="Pipeline Quality Assurance (QA) Score Class Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

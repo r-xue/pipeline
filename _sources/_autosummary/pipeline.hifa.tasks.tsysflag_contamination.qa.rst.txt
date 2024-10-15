@@ -1,0 +1,24 @@
+pipeline.hifa.tasks.tsysflag\_contamination.qa
+==============================================
+
+.. automodule:: pipeline.hifa.tasks.tsysflag_contamination.qa
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      score_tsysflagcontamination_contamination_flagged
+      score_tsysflagcontamination_external_heuristic
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TsysFlagContamination
+      TsysflagContaminationListQAHandler
+      TsysflagContaminationQAHandler
+      TsysflagListQAHandler
+      TsysflagQAHandler
+      TsysflagResults
+   

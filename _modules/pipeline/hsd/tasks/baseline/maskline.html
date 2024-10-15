@@ -1,0 +1,513 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.baseline.maskline &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.baseline.maskline</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.baseline.maskline</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Task to create channel mask for baseline subtraction.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.datatable</span> <span class="kn">import</span> <span class="n">DataTableImpl</span> <span class="k">as</span> <span class="n">DataTable</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.datatable</span> <span class="kn">import</span> <span class="n">DataTableIndexer</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">simplegrid</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">detection</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">validation</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">utils</span>
+
+<span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">LineWindow</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+    <span class="kn">from</span> <span class="nn">pipeline.domain.singledish</span> <span class="kn">import</span> <span class="n">MSReductionGroupDesc</span><span class="p">,</span> <span class="n">MSReductionGroupMember</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">NoData</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">NoData</span>
+
+
+<div class="viewcode-block" id="MaskLineInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.maskline.MaskLineInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">MaskLineInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs for mask creation task.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Search order of input vis</span>
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">ATMCORR</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
+
+    <span class="n">window</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[])</span>
+    <span class="n">windowmode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">)</span>
+    <span class="n">edge</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">broadline</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">clusteringalgorithm</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;hierarchy&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">group_desc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MSReductionGroupDesc&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return reduction group description.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_reduction_group</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">group_id</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">reference_member</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MSReductionGroupMember&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return reference member of reduction group.</span>
+
+<span class="sd">        The first member in the list is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_desc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">member_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
+                 <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">member_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                 <span class="n">window</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LineWindow</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">windowmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">broadline</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">clusteringalgorithm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct MaskLineInputs instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context</span>
+<span class="sd">            iteration: Iteration counter for baseline/blflag loop</span>
+<span class="sd">            group_id: Reduction group id.</span>
+<span class="sd">            member_list: List of member indices for the reduction group members</span>
+<span class="sd">            window: Manual line window. Defaults to None, which means that no user-defined</span>
+<span class="sd">                    line window is given.</span>
+<span class="sd">            windowmode: Line window handling mode. &#39;replace&#39; exclusively uses manual line window</span>
+<span class="sd">                        while &#39;merge&#39; merges manual line window into automatic line detection</span>
+<span class="sd">                        and validation result. Defaults to &#39;replace&#39; if None is given.</span>
+<span class="sd">            edge: Edge channels to exclude. Defaults to None, which means that all channels</span>
+<span class="sd">                  are processed.</span>
+<span class="sd">            broadline: Detect broadline component or not. Defaults to True if None is given.</span>
+<span class="sd">            clusteringalgorithm: Clustering algorithm to use. Allowed values are &#39;kmean&#39;,</span>
+<span class="sd">                                 &#39;hierarchy&#39;, or &#39;both&#39;. Defaults to &#39;hierarchy&#39; if None is given.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MaskLineInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="n">iteration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_id</span> <span class="o">=</span> <span class="n">group_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">member_list</span> <span class="o">=</span> <span class="n">member_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">windowmode</span> <span class="o">=</span> <span class="n">windowmode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span> <span class="o">=</span> <span class="n">edge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broadline</span> <span class="o">=</span> <span class="n">broadline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clusteringalgorithm</span> <span class="o">=</span> <span class="n">clusteringalgorithm</span></div>
+
+
+
+<div class="viewcode-block" id="MaskLineResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.maskline.MaskLineResults">[docs]</a>
+<span class="k">class</span> <span class="nc">MaskLineResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class to hold the result of mask creation task.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">success</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">outcome</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct MaskLineResults instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task: Task class that produced the result.</span>
+<span class="sd">            success: Whether task execution is successful or not.</span>
+<span class="sd">            outcome: Outcome of the task execution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MaskLineResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MaskLineResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.maskline.MaskLineResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge result instance into context.</span>
+
+<span class="sd">        No specific merge operation is done.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MaskLineResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representing the outcome.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Empty string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="MaskLine">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.maskline.MaskLine">[docs]</a>
+<span class="k">class</span> <span class="nc">MaskLine</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Task to create channel mask for baseline subtraction.</span>
+
+<span class="sd">    MaskLine task creates channel mask by performing spectral</span>
+<span class="sd">    line detection (DetectLine task) and validation of detected</span>
+<span class="sd">    lines (ValidateLine task).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">MaskLineInputs</span>
+
+<div class="viewcode-block" id="MaskLine.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.maskline.MaskLine.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MaskLineResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create channel mask.&quot;&quot;&quot;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">iteration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">iteration</span>
+        <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">group_id</span>
+        <span class="n">member_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">member_list</span>
+        <span class="n">group_desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">group_desc</span>
+        <span class="n">reference_member</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">reference_member</span>
+        <span class="n">reference_data</span> <span class="o">=</span> <span class="n">reference_member</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">reference_antenna</span> <span class="o">=</span> <span class="n">reference_member</span><span class="o">.</span><span class="n">antenna_id</span>
+        <span class="n">reference_field</span> <span class="o">=</span> <span class="n">reference_member</span><span class="o">.</span><span class="n">field_id</span>
+        <span class="n">reference_spw</span> <span class="o">=</span> <span class="n">reference_member</span><span class="o">.</span><span class="n">spw_id</span>
+        <span class="n">duplicated_member_mses</span> <span class="o">=</span> <span class="p">[</span><span class="n">group_desc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ms</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">member_list</span><span class="p">]</span>
+        <span class="c1"># list of unique MS object in member list in the order that appears in context</span>
+        <span class="n">unique_member_mses</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span> <span class="k">if</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">duplicated_member_mses</span><span class="p">]</span>
+        <span class="c1">#dt_dict: key = origin_ms name, value = DataTable instance</span>
+        <span class="n">dt_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">),</span>
+                        <span class="n">DataTable</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">get_data_table_path</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">)))</span>
+                       <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">unique_member_mses</span><span class="p">)</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="c1"># index_dict: key = origin_ms name, value = row IDs of DataTable</span>
+        <span class="n">index_dict</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_index_list_for_ms2</span><span class="p">(</span><span class="n">dt_dict</span><span class="p">,</span> <span class="n">group_desc</span><span class="p">,</span> <span class="n">member_list</span><span class="p">)</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Elapsed time for generating index_dict: </span><span class="si">{0}</span><span class="s1"> sec&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;index_dict=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">index_dict</span><span class="p">)</span>
+        <span class="c1"># debugging</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">indexer</span> <span class="o">=</span> <span class="n">DataTableIndexer</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">_g</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">unique_member_mses</span><span class="p">:</span>
+                <span class="n">origin_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">origin_basename</span> <span class="ow">in</span> <span class="n">index_dict</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index_dict</span><span class="p">[</span><span class="n">origin_basename</span><span class="p">]:</span>
+                        <span class="k">yield</span> <span class="n">indexer</span><span class="o">.</span><span class="n">perms2serial</span><span class="p">(</span><span class="n">origin_basename</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="c1"># index_list stores serial DataTable row IDs of all group members</span>
+        <span class="n">index_list</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">_g</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;index_list=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">index_list</span><span class="p">)</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Elapsed time for generating index_list: </span><span class="si">{0}</span><span class="s1"> sec&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+        <span class="c1"># LOG.trace(&#39;all(spwid == {}) ? {}&#39;, spwid_list[0], numpy.all(dt.getcol(&#39;IF&#39;).take(index_list) == spwid_list[0]))</span>
+        <span class="c1"># LOG.trace(&#39;all(fieldid == {}) ? {}&#39;, field_list[0], numpy.all(dt.getcol(&#39;FIELD_ID&#39;).take(index_list) == field_list[0]))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># No valid data</span>
+            <span class="n">outcome</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;detected_lines&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                       <span class="s1">&#39;cluster_info&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                       <span class="s1">&#39;flag_digits&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                       <span class="s1">&#39;grid_table&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">MaskLineResults</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+                                     <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">outcome</span><span class="o">=</span><span class="n">outcome</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="n">window</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">window</span>
+        <span class="n">windowmode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">windowmode</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: window=</span><span class="si">{}</span><span class="s1">, windowmode=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="n">windowmode</span><span class="p">))</span>
+        <span class="n">edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">edge</span>
+        <span class="n">broadline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">broadline</span>
+        <span class="n">clusteringalgorithm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">clusteringalgorithm</span>
+        <span class="n">beam_size</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">reference_data</span><span class="o">.</span><span class="n">beam_sizes</span><span class="p">[</span><span class="n">reference_antenna</span><span class="p">][</span><span class="n">reference_spw</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">observing_pattern</span> <span class="o">=</span> <span class="n">reference_data</span><span class="o">.</span><span class="n">observing_pattern</span><span class="p">[</span><span class="n">reference_antenna</span><span class="p">][</span><span class="n">reference_spw</span><span class="p">][</span><span class="n">reference_field</span><span class="p">]</span>
+
+        <span class="c1"># parse window</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">detection</span><span class="o">.</span><span class="n">LineWindowParser</span><span class="p">(</span><span class="n">reference_data</span><span class="p">,</span> <span class="n">window</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">reference_field</span><span class="p">)</span>
+        <span class="n">parsed_window</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_result</span><span class="p">(</span><span class="n">reference_spw</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Members to be processed:&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">iterate_group_member</span><span class="p">(</span><span class="n">group_desc</span><span class="p">,</span> <span class="n">member_list</span><span class="p">):</span><span class="c1">#itertools.izip(vis_list, field_list, antenna_list, spwid_list):</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;MS &quot;</span><span class="si">%s</span><span class="s1">&quot; Field </span><span class="si">%s</span><span class="s1"> Antenna </span><span class="si">%s</span><span class="s1"> Spw </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">f</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+        <span class="c1"># gridding size</span>
+        <span class="n">grid_size</span> <span class="o">=</span> <span class="n">beam_size</span>
+
+        <span class="c1"># simple gridding</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">gridding_inputs</span> <span class="o">=</span> <span class="n">simplegrid</span><span class="o">.</span><span class="n">SDSimpleGridding</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">member_list</span><span class="p">,</span> <span class="n">parsed_window</span><span class="p">,</span>
+                                                             <span class="n">windowmode</span><span class="p">)</span>
+        <span class="n">gridding_task</span> <span class="o">=</span> <span class="n">simplegrid</span><span class="o">.</span><span class="n">SDSimpleGridding</span><span class="p">(</span><span class="n">gridding_inputs</span><span class="p">)</span>
+        <span class="n">gridding_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">gridding_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                 <span class="n">datatable_dict</span><span class="o">=</span><span class="n">dt_dict</span><span class="p">,</span>
+                                                 <span class="n">index_list</span><span class="o">=</span><span class="n">index_list</span><span class="p">)</span>
+        <span class="c1"># gridded spectrum of each grid position x ncube and corrsponding grdi_table</span>
+        <span class="n">spectra</span> <span class="o">=</span> <span class="n">gridding_result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;spectral_data&#39;</span><span class="p">]</span>
+        <span class="n">grid_table</span> <span class="o">=</span> <span class="n">gridding_result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;grid_table&#39;</span><span class="p">]</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># return empty result if grid_table is empty</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid_table</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># or len(spectra) == 0:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s1">&#39;Line detection/validation will not be done since grid table is empty. Maybe all the data are flagged out in the previous step.&#39;</span><span class="p">)</span>
+            <span class="n">outcome</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;detected_lines&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                       <span class="s1">&#39;cluster_info&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                       <span class="s1">&#39;flag_digits&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                       <span class="s1">&#39;grid_table&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">MaskLineResults</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+                                     <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">outcome</span><span class="o">=</span><span class="n">outcome</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;len(grid_table)=</span><span class="si">%s</span><span class="s1">, spectra.shape=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid_table</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">spectra</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;grid_table=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">grid_table</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;PROFILE simplegrid: elapsed time is </span><span class="si">%s</span><span class="s1"> sec&#39;</span><span class="p">,</span> <span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span>
+
+        <span class="c1"># line finding</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">detection_inputs</span> <span class="o">=</span> <span class="n">detection</span><span class="o">.</span><span class="n">DetectLine</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">parsed_window</span><span class="p">,</span> <span class="n">windowmode</span><span class="p">,</span>
+                                                       <span class="n">edge</span><span class="p">,</span> <span class="n">broadline</span><span class="p">)</span>
+        <span class="n">line_finder</span> <span class="o">=</span> <span class="n">detection</span><span class="o">.</span><span class="n">DetectLine</span><span class="p">(</span><span class="n">detection_inputs</span><span class="p">)</span>
+        <span class="n">detection_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">line_finder</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                  <span class="n">datatable_dict</span><span class="o">=</span><span class="n">dt_dict</span><span class="p">,</span>
+                                                  <span class="n">grid_table</span><span class="o">=</span><span class="n">grid_table</span><span class="p">,</span>
+                                                  <span class="n">spectral_data</span><span class="o">=</span><span class="n">spectra</span><span class="p">)</span>
+        <span class="c1"># detected line channels for each grid position x ncube (grid_table row)</span>
+        <span class="n">detect_signal</span> <span class="o">=</span> <span class="n">detection_result</span><span class="o">.</span><span class="n">signals</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;detect_signal=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">detect_signal</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;PROFILE detection: elapsed time is </span><span class="si">%s</span><span class="s1"> sec&#39;</span><span class="p">,</span> <span class="n">t1</span><span class="o">-</span><span class="n">t0</span><span class="p">)</span>
+
+        <span class="c1"># line validation</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">validator_cls</span> <span class="o">=</span> <span class="n">validation</span><span class="o">.</span><span class="n">ValidationFactory</span><span class="p">(</span><span class="n">observing_pattern</span><span class="p">)</span>
+        <span class="n">validation_inputs</span> <span class="o">=</span> <span class="n">validator_cls</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">member_list</span><span class="p">,</span>
+                                                 <span class="n">iteration</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span>
+                                                 <span class="n">grid_size</span><span class="p">,</span> <span class="n">parsed_window</span><span class="p">,</span> <span class="n">windowmode</span><span class="p">,</span>
+                                                 <span class="n">edge</span><span class="p">,</span>
+                                                 <span class="n">clusteringalgorithm</span><span class="o">=</span><span class="n">clusteringalgorithm</span><span class="p">)</span>
+        <span class="n">validator_task</span> <span class="o">=</span> <span class="n">validator_cls</span><span class="p">(</span><span class="n">validation_inputs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;len(index_list)=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">))</span>
+        <span class="n">validation_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">validator_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                   <span class="n">datatable_dict</span><span class="o">=</span><span class="n">dt_dict</span><span class="p">,</span>
+                                                   <span class="n">index_list</span><span class="o">=</span><span class="n">index_list</span><span class="p">,</span>
+                                                   <span class="n">grid_table</span><span class="o">=</span><span class="n">grid_table</span><span class="p">,</span>
+                                                   <span class="n">detect_signal</span><span class="o">=</span><span class="n">detect_signal</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">validation_result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;lines&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;channelmap_range&#39;</span> <span class="ow">in</span> <span class="n">validation_result</span><span class="o">.</span><span class="n">outcome</span><span class="p">:</span>
+            <span class="n">channelmap_range</span> <span class="o">=</span> <span class="n">validation_result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;channelmap_range&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">channelmap_range</span> <span class="o">=</span> <span class="n">validation_result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;lines&#39;</span><span class="p">]</span>
+        <span class="n">cluster_info</span> <span class="o">=</span> <span class="n">validation_result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;cluster_info&#39;</span><span class="p">]</span>
+        <span class="n">flag_digits</span>  <span class="o">=</span> <span class="n">validation_result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;flag_digits&#39;</span><span class="p">]</span>
+
+        <span class="c1"># export datatables</span>
+        <span class="k">for</span> <span class="n">datatable</span> <span class="ow">in</span> <span class="n">dt_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">datatable</span><span class="o">.</span><span class="n">exportdata</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># LOG.debug(&#39;lines=%s&#39;%(lines))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;PROFILE validation: elapsed time is </span><span class="si">%s</span><span class="s1"> sec&#39;</span><span class="p">,</span> <span class="n">t1</span><span class="o">-</span><span class="n">t0</span><span class="p">)</span>
+
+        <span class="c1"># LOG.debug(&#39;cluster_info=%s&#39;%(cluster_info))</span>
+
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;PROFILE execute: elapsed time is </span><span class="si">%s</span><span class="s1"> sec&#39;</span><span class="p">,</span> <span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="p">)</span>
+
+        <span class="n">outcome</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;detected_lines&#39;</span><span class="p">:</span> <span class="n">lines</span><span class="p">,</span>
+                   <span class="s1">&#39;channelmap_range&#39;</span><span class="p">:</span> <span class="n">channelmap_range</span><span class="p">,</span>
+                   <span class="s1">&#39;cluster_info&#39;</span><span class="p">:</span> <span class="n">cluster_info</span><span class="p">,</span>
+                   <span class="s1">&#39;flag_digits&#39;</span><span class="p">:</span> <span class="n">flag_digits</span><span class="p">,</span>
+                   <span class="s1">&#39;grid_table&#39;</span><span class="p">:</span> <span class="n">grid_table</span><span class="p">}</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">MaskLineResults</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+                                 <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">outcome</span><span class="o">=</span><span class="n">outcome</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="MaskLine.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.maskline.MaskLine.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">MaskLineResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MaskLineResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyse results instance generated by prepare.</span>
+
+<span class="sd">        Do nothing.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MaskLineResults instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

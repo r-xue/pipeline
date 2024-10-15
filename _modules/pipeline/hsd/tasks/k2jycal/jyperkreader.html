@@ -1,0 +1,565 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.k2jycal.jyperkreader &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.k2jycal.jyperkreader</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.k2jycal.jyperkreader</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module to read Jy/K factor file.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">io</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+
+    <span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="read">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.jyperkreader.read">[docs]</a>
+<span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read jyperk factors from a file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context: Pipeline context</span>
+<span class="sd">        filename: Name of the file to read</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        String list of [[&#39;MS&#39;,&#39;ant&#39;,&#39;spwid&#39;,&#39;polid&#39;,&#39;factor&#39;], ...]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filetype</span> <span class="o">=</span> <span class="n">inspect_type</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s1">&#39;MS-Based&#39;</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;MS-Based Jy/K factors file is specified&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">read_ms_based</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Session-Based Jy/K factors file is specified&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">read_session_based</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="inspect_type">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.jyperkreader.inspect_type">[docs]</a>
+<span class="k">def</span> <span class="nf">inspect_type</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inspect file type.</span>
+
+<span class="sd">    Read the first line and check its contents.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filename: Name of the file to read</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        &#39;Session-Based&#39; or &#39;MS-Based&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;Session-Based&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;MS-Based&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="read_ms_based">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.jyperkreader.read_ms_based">[docs]</a>
+<span class="k">def</span> <span class="nf">read_ms_based</span><span class="p">(</span><span class="n">reffile</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read &quot;MS-Based&quot; jyperk factor file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        reffile: Name of the file to read</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        String list of [[&#39;MS&#39;,&#39;ant&#39;,&#39;spwid&#39;,&#39;polid&#39;,&#39;factor&#39;], ...]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#factor_list = []</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">reffile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">_read_stream</span><span class="p">(</span><span class="n">f</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="read_session_based">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.jyperkreader.read_session_based">[docs]</a>
+<span class="k">def</span> <span class="nf">read_session_based</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">reffile</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read &quot;Session-Based&quot; jyperk factor file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context: Pipeline context</span>
+<span class="sd">        reffile: Name of the file to read</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        String list of [[&#39;MS&#39;,&#39;ant&#39;,&#39;spwid&#39;,&#39;polid&#39;,&#39;factor&#39;], ...]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">JyPerKDataParser</span>
+    <span class="n">storage</span> <span class="o">=</span> <span class="n">JyPerK</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">reffile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span>
+                <span class="c1"># header</span>
+                <span class="n">meta</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_header</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="n">storage</span><span class="o">.</span><span class="n">register_meta</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># data</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_data</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="n">storage</span><span class="o">.</span><span class="n">register_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">associate</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">storage</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">_read_stream</span><span class="p">(</span><span class="n">f</span><span class="p">))</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_read_stream</span><span class="p">(</span><span class="n">stream</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read CSV data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        stream (): I/O stream returned by open()</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        Single line (CSV entry) of the file as a list of strings</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+    <span class="c1"># Check if first line is header or not</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;MS&#39;</span> <span class="ow">or</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span>
+        <span class="c1"># must be a header, commented line, or empty line</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="c1"># may be a data record</span>
+        <span class="c1">#factor_list.append(line)</span>
+        <span class="k">yield</span> <span class="n">line</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Jy/K factor file is invalid format&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">line</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Jy/K factor file is invalid format&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># Utility classes/functions to convert session based factors file</span>
+<span class="c1"># to MS based one are defined below</span>
+<div class="viewcode-block" id="JyPerKDataParser">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerKDataParser">[docs]</a>
+<span class="k">class</span> <span class="nc">JyPerKDataParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Utility class to convert session based factors file into MS based one.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="JyPerKDataParser.get_content">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerKDataParser.get_content">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_content</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sanitize the string.</span>
+
+<span class="sd">        Strip some special characters from the string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            line: String to be sanitized</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Sanitized string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;# </span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JyPerKDataParser.parse_header">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerKDataParser.parse_header">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">parse_header</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse single header string.</span>
+
+<span class="sd">        Header string may contain,</span>
+
+<span class="sd">            - meta data in &quot;key=value&quot; format</span>
+<span class="sd">            - data header as a comma separated list of column names</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            line: Single line of header</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Contents of the header string. If given string is not a header,</span>
+<span class="sd">            None is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_content</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">content</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># this must be a meta data</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">content</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">content</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="c1"># this must be a data header</span>
+            <span class="k">return</span> <span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># empty line or commented data, ignored</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="JyPerKDataParser.parse_data">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerKDataParser.parse_data">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">parse_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse comma-separated data string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            line: Comma-separated data string</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of data or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_content</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">content</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># data</span>
+            <span class="k">return</span> <span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># invalid or empty line, ignored</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="JyPerK">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerK">[docs]</a>
+<span class="k">class</span> <span class="nc">JyPerK</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse session based jyperk csv and store.</span>
+
+<span class="sd">    * meta stores meta data information from the lines in the form, &#39;#name=value&#39;,</span>
+<span class="sd">        as a dictionary, meta[name]=value.</span>
+<span class="sd">    * header stores column label from the line in the form &#39;#header0, header1, ...&#39;</span>
+<span class="sd">        as a list, header = [&#39;header0&#39;, &#39;header1&#39;, ...]</span>
+<span class="sd">    * data stores values in csv file as a dictionary,</span>
+<span class="sd">        data[&#39;header0&#39;] = [data00, data01, ...]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize JyPerK class instance.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="JyPerK.register_meta">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerK.register_meta">[docs]</a>
+    <span class="k">def</span> <span class="nf">register_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register meta data for the contents.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            content: Contents of the file as a list or a tuple of string.</span>
+<span class="sd">                     Should be either tuple of (key, value) format, or</span>
+<span class="sd">                     a list of column names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="c1"># this should be data header</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">content</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(((</span><span class="n">k</span><span class="p">,</span> <span class="p">[])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="n">content</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">content</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="JyPerK.register_data">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.jyperkreader.JyPerK.register_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">register_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            content: Contents of the file as a list of string.</span>
+<span class="sd">                     Should be list of data as strings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="associate">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.jyperkreader.associate">[docs]</a>
+<span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+<span class="k">def</span> <span class="nf">associate</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">factors</span><span class="p">:</span> <span class="n">JyPerK</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">TextIO</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide an interface to access &quot;Session-Based&quot; data like &quot;MS-Based&quot; one.</span>
+
+<span class="sd">    Convert data collected from session based jyperk csv as JyPerK object</span>
+<span class="sd">    to MS-beased csv, i.e., a string list of [&#39;MS,ant,spwid,polid,factor&#39;, ...].</span>
+
+<span class="sd">    This is intended to be used in combination with &quot;with&quot; statement.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context: Pipeline context</span>
+<span class="sd">        factors: JyPerK instance</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        StringIO instance that caller of this function can handle the return value</span>
+<span class="sd">        as if it accessed to the file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stream</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">factors</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_measurement_sets_of_type</span><span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">):</span>
+            <span class="n">session_name</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">session</span>
+            <span class="k">if</span> <span class="n">session_name</span> <span class="o">==</span> <span class="s1">&#39;Session_default&#39;</span><span class="p">:</span>
+                <span class="c1"># Session_default is not supported, use Session_1 instead</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Session for </span><span class="si">%s</span><span class="s1"> is </span><span class="se">\&#39;</span><span class="s1">Session_default</span><span class="se">\&#39;</span><span class="s1">. Use </span><span class="se">\&#39;</span><span class="s1">Session_1</span><span class="se">\&#39;</span><span class="s1"> for application of Jy/K factor. &#39;</span> <span class="o">%</span>
+                            <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+                <span class="n">session_id</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># session_name should be &#39;Session_X&#39; where X is an integer</span>
+                <span class="n">session_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">session_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">session_list</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sessionID&#39;</span><span class="p">]])</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">session_list</span> <span class="o">==</span> <span class="n">session_id</span><span class="p">)</span>
+
+            <span class="n">antennas</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">]</span>
+            <span class="n">antenna_list</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Antenna&#39;</span><span class="p">]</span>
+
+            <span class="n">factor_list</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Factor&#39;</span><span class="p">]])</span>
+
+            <span class="n">spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">()</span>
+            <span class="n">bandcenter</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.0e6</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;BandCenter(MHz)&#39;</span><span class="p">]])</span>
+            <span class="n">bandwidth</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.0e6</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;BandWidth(MHz)&#39;</span><span class="p">]])</span>
+            <span class="n">range_min</span> <span class="o">=</span> <span class="n">bandcenter</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">bandwidth</span>
+            <span class="n">range_max</span> <span class="o">=</span> <span class="n">bandcenter</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">bandwidth</span>
+            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
+                <span class="n">max_freq</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">max_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">min_freq</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">min_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">tot_bandwidth</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+                <span class="n">spwid</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="c1">#coverage = inspect_coverage(min_freq, max_freq, range_min[i], range_max[i])</span>
+                    <span class="n">antenna</span> <span class="o">=</span> <span class="n">antenna_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+                        <span class="c1">#d[antenna].append([i, coverage, bandwidth[i]])</span>
+                        <span class="n">d</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1">#d[antenna] = [[i, coverage, bandwidth[i]]]</span>
+                        <span class="n">d</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+                <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+                        <span class="n">f</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">ant</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: No factors available for spw </span><span class="si">%s</span><span class="s1"> antenna </span><span class="si">%s</span><span class="s1"> use ANONYMOUS&#39;</span> <span class="o">%</span>
+                                 <span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">ant</span><span class="p">))</span>
+                        <span class="n">f</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ANONYMOUS&#39;</span><span class="p">]</span>
+                    <span class="n">coverage_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">inspect_coverage</span><span class="p">(</span><span class="n">min_freq</span><span class="p">,</span> <span class="n">max_freq</span><span class="p">,</span> <span class="n">range_min</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">range_max</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="p">]</span>
+                    <span class="c1">#_best_index = numpy.argmax(coverage_list)</span>
+                    <span class="n">best_index</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">_best_score</span> <span class="o">=</span> <span class="n">inspect_coverage</span><span class="p">(</span><span class="n">min_freq</span><span class="p">,</span> <span class="n">max_freq</span><span class="p">,</span> <span class="n">range_min</span><span class="p">[</span><span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">range_max</span><span class="p">[</span><span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                    <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                        <span class="n">coverage</span> <span class="o">=</span> <span class="n">inspect_coverage</span><span class="p">(</span><span class="n">min_freq</span><span class="p">,</span> <span class="n">max_freq</span><span class="p">,</span> <span class="n">range_min</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span> <span class="n">range_max</span><span class="p">[</span><span class="n">_i</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">coverage</span> <span class="o">&gt;</span> <span class="n">_best_score</span><span class="p">:</span>
+                            <span class="n">best_index</span> <span class="o">=</span> <span class="n">_i</span>
+                            <span class="n">_best_score</span> <span class="o">=</span> <span class="n">coverage</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;POL&#39;</span><span class="p">][</span><span class="n">best_index</span><span class="p">],</span>
+                                               <span class="n">factor_list</span><span class="p">[</span><span class="n">best_index</span><span class="p">])</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">stream</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">stream</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="inspect_coverage">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.jyperkreader.inspect_coverage">[docs]</a>
+<span class="k">def</span> <span class="nf">inspect_coverage</span><span class="p">(</span><span class="n">minval</span><span class="p">:</span> <span class="s1">&#39;Number&#39;</span><span class="p">,</span> <span class="n">maxval</span><span class="p">:</span> <span class="s1">&#39;Number&#39;</span><span class="p">,</span> <span class="n">minref</span><span class="p">:</span> <span class="s1">&#39;Number&#39;</span><span class="p">,</span> <span class="n">maxref</span><span class="p">:</span> <span class="s1">&#39;Number&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Number&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inspect overlapped region of given two ranges.</span>
+
+<span class="sd">    Compute a fraction of the overlapped region of given two ranges</span>
+<span class="sd">    specified by (minval, maxval) and (minref, maxref). If reference</span>
+<span class="sd">    range (minref, maxref) is too broad (&gt; 110%) compared with</span>
+<span class="sd">    (minval, maxval), returned value will be 0 regardless of actual</span>
+<span class="sd">    fraction.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        minval: minimum value of the range</span>
+<span class="sd">        maxval: maximum value of the range</span>
+<span class="sd">        minref: minimum value of the reference range</span>
+<span class="sd">        maxref: maximum value of the reference range</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Fraction of the overlapped region. Ranges from 0 to 1.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">minval</span> <span class="o">&gt;</span> <span class="n">maxval</span> <span class="ow">or</span> <span class="n">minref</span> <span class="o">&gt;</span> <span class="n">maxref</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="n">coverage</span> <span class="o">=</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">maxval</span><span class="p">,</span> <span class="n">maxref</span><span class="p">)</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">minval</span><span class="p">,</span> <span class="n">minref</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">maxval</span> <span class="o">-</span> <span class="n">minval</span><span class="p">)</span>
+
+    <span class="n">bandwidth_ratio</span> <span class="o">=</span> <span class="p">(</span><span class="n">maxref</span> <span class="o">-</span> <span class="n">minref</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">maxval</span> <span class="o">-</span> <span class="n">minval</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">coverage</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">coverage</span> <span class="o">&gt;</span> <span class="mf">1.0</span> <span class="ow">or</span> <span class="n">bandwidth_ratio</span> <span class="o">&gt;</span> <span class="mf">1.1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="k">return</span> <span class="n">coverage</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

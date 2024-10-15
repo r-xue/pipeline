@@ -1,0 +1,19 @@
+pipeline.hif.tasks.makeimages.qa
+================================
+
+.. automodule:: pipeline.hif.tasks.makeimages.qa
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      reduce
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MakeImagesListQAHandler
+      MakeImagesQAHandler
+   

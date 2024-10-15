@@ -1,0 +1,22 @@
+pipeline.hifa.tasks.bandpassflag
+================================
+
+.. automodule:: pipeline.hifa.tasks.bandpassflag
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Bandpassflag
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   bandpassflag
+   qa
+   renderer
+   resultobjects

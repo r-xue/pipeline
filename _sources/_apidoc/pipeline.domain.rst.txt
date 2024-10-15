@@ -1,0 +1,149 @@
+pipeline.domain package
+=======================
+
+Submodules
+----------
+
+pipeline.domain.antenna module
+------------------------------
+
+.. automodule:: pipeline.domain.antenna
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.antennaarray module
+-----------------------------------
+
+.. automodule:: pipeline.domain.antennaarray
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.datadescription module
+--------------------------------------
+
+.. automodule:: pipeline.domain.datadescription
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.datatable module
+--------------------------------
+
+.. automodule:: pipeline.domain.datatable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.datatype module
+-------------------------------
+
+.. automodule:: pipeline.domain.datatype
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.field module
+----------------------------
+
+.. automodule:: pipeline.domain.field
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.fluxmeasurement module
+--------------------------------------
+
+.. automodule:: pipeline.domain.fluxmeasurement
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.measurementset module
+-------------------------------------
+
+.. automodule:: pipeline.domain.measurementset
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.measures module
+-------------------------------
+
+.. automodule:: pipeline.domain.measures
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.observingrun module
+-----------------------------------
+
+.. automodule:: pipeline.domain.observingrun
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.polarization module
+-----------------------------------
+
+.. automodule:: pipeline.domain.polarization
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.scan module
+---------------------------
+
+.. automodule:: pipeline.domain.scan
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.singledish module
+---------------------------------
+
+.. automodule:: pipeline.domain.singledish
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.source module
+-----------------------------
+
+.. automodule:: pipeline.domain.source
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.spectralwindow module
+-------------------------------------
+
+.. automodule:: pipeline.domain.spectralwindow
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.state module
+----------------------------
+
+.. automodule:: pipeline.domain.state
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.domain.unitformat module
+---------------------------------
+
+.. automodule:: pipeline.domain.unitformat
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.domain
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,421 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.utils.casa_data &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.utils.casa_data</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.utils.casa_data</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utilities to work with the CASA data files</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">.conversion</span> <span class="kn">import</span> <span class="n">get_epoch_as_datetime</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;SOLAR_SYSTEM_MODELS_PATH&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;IERS_TABLES_PATH&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;get_file_md5&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;get_iso_mtime&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;get_solar_system_model_files&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;get_filename_info&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;get_object_info_string&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;IERSInfo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;from_mjd_to_datetime&quot;</span>
+<span class="p">]</span>
+
+<span class="c1"># PIPE-1845: as of CASA version 6.5.4, CASA/setjy uses ctsys.resolve() to search for calibrator models. </span>
+<span class="c1"># This search is influenced by the precedence list defined in CASA/config.py via the datapath variable. </span>
+<span class="c1"># Meanwhile, casatools uses the path returned by ctsys.rundata() to locate essential CASA runtime data </span>
+<span class="c1"># (e.g., IERS tables). Therefore, the Pipeline adopts the same methods used by casatools and casatasks </span>
+<span class="c1"># to search for and examine the in-use data file&#39;s version and modification time.</span>
+<span class="n">SOLAR_SYSTEM_MODELS_PATH</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="s1">&#39;alma/SolarSystemModels&#39;</span><span class="p">)</span>
+<span class="n">IERS_TABLES_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rundata</span><span class="p">(),</span> <span class="s1">&#39;geodetic&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_file_md5">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.casa_data.get_file_md5">[docs]</a>
+<span class="k">def</span> <span class="nf">get_file_md5</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a readable hex string of the MD5 hash of a given file&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="get_iso_mtime">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.casa_data.get_iso_mtime">[docs]</a>
+<span class="k">def</span> <span class="nf">get_iso_mtime</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the ISO 8601 datetime string corresponding to the</span>
+<span class="sd">    modification time of a given file&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="get_solar_system_model_files">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.casa_data.get_solar_system_model_files">[docs]</a>
+<span class="k">def</span> <span class="nf">get_solar_system_model_files</span><span class="p">(</span><span class="n">ss_object</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ss_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">SOLAR_SYSTEM_MODELS_PATH</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the data files corresponding to a Solar System object&quot;&quot;&quot;</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ss_path</span><span class="p">,</span> <span class="s2">&quot;*.dat&quot;</span><span class="p">))</span>
+    <span class="c1"># NOTE: The filter function may fail in the unlikely case that an object name is</span>
+    <span class="c1">#  contained in other object name or in the path. This may be refined later.</span>
+    <span class="n">object_models</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ss_object</span> <span class="ow">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">models</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">object_models</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_filename_info">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.casa_data.get_filename_info">[docs]</a>
+<span class="k">def</span> <span class="nf">get_filename_info</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a string with information about the modification date and MD5 hash of a file&quot;&quot;&quot;</span>
+    <span class="n">md5_hex</span> <span class="o">=</span> <span class="n">get_file_md5</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">mtime</span> <span class="o">=</span> <span class="n">get_iso_mtime</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;MD5&quot;</span><span class="p">:</span> <span class="n">md5_hex</span><span class="p">,</span> <span class="s2">&quot;mtime&quot;</span><span class="p">:</span> <span class="n">mtime</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="get_object_info_string">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.casa_data.get_object_info_string">[docs]</a>
+<span class="k">def</span> <span class="nf">get_object_info_string</span><span class="p">(</span><span class="n">ss_object</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ss_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">SOLAR_SYSTEM_MODELS_PATH</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the file information (MD5 hash and modification date) for a given</span>
+<span class="sd">    Solar System object.</span>
+
+<span class="sd">    At the moment the function returns all the matching model files corresponding</span>
+<span class="sd">    to an object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">object_models</span> <span class="o">=</span> <span class="n">get_solar_system_model_files</span><span class="p">(</span><span class="n">ss_object</span><span class="p">,</span> <span class="n">ss_path</span><span class="o">=</span><span class="n">ss_path</span><span class="p">)</span>
+    <span class="n">object_model_filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">o</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">object_models</span><span class="p">]</span>
+    <span class="n">info_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">object_model_filenames</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">get_filename_info</span><span class="p">(</span><span class="n">om</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">om</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">object_models</span><span class="p">)}</span>
+    <span class="n">info_string</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">info_dict</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Solar System models used for </span><span class="si">{</span><span class="n">ss_object</span><span class="si">}</span><span class="s2"> =&gt; &quot;</span> <span class="o">+</span> <span class="n">info_string</span></div>
+
+
+
+<span class="c1"># Get IERSpredict version</span>
+<div class="viewcode-block" id="from_mjd_to_datetime">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.casa_data.from_mjd_to_datetime">[docs]</a>
+<span class="k">def</span> <span class="nf">from_mjd_to_datetime</span><span class="p">(</span><span class="n">mjd</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a MJD float into a datetime&quot;&quot;&quot;</span>
+    <span class="n">mt</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+    <span class="n">epoch</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="s1">&#39;UTC&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">d&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mjd</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">get_epoch_as_datetime</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="IERSInfo">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.casa_data.IERSInfo">[docs]</a>
+<span class="k">class</span> <span class="nc">IERSInfo</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to store, retrieve and process the information from the IERS geodetic tables</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    IERS_tables : tuple</span>
+<span class="sd">        Class attribute with the name of the relevant tables</span>
+<span class="sd">    iers_path : str</span>
+<span class="sd">        Path to the location of the geodetic tables</span>
+<span class="sd">    info : dict</span>
+<span class="sd">        Dictionary with the information retrieved</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">IERS_tables</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;IERSpredict&quot;</span><span class="p">,</span> <span class="s2">&quot;IERSeop2000&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iers_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">IERS_TABLES_PATH</span><span class="p">,</span> <span class="n">load_on_creation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create instance of IERS Tables info.</span>
+
+<span class="sd">        In the option load_on_creation is set to False the information has to be manually</span>
+<span class="sd">        loaded with the method load_info().</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        iers_path : str, optional</span>
+<span class="sd">            Path to the location of the IERS geodetic tables</span>
+<span class="sd">        load_on_creation : bool, optional</span>
+<span class="sd">            Do not load the IERS tables information when creating the instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iers_path</span> <span class="o">=</span> <span class="n">iers_path</span>
+        <span class="k">if</span> <span class="n">load_on_creation</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_info</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="IERSInfo.get_IERS_version">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.casa_data.IERSInfo.get_IERS_version">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_IERS_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IERS_tablename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the VS_VERSION header of the IERSpredict table</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        IERS_tablename : str</span>
+<span class="sd">            Name of the table to be loaded (&quot;IERSpredict&quot; or &quot;IERSeop2000&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">IERS_tablename</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">IERS_tables</span>
+        <span class="n">table_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iers_path</span><span class="p">,</span> <span class="n">IERS_tablename</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+                <span class="n">vs_version</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getkeyword</span><span class="p">(</span><span class="s1">&#39;VS_VERSION&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">):</span>
+            <span class="n">vs_version</span> <span class="o">=</span> <span class="s2">&quot;NOT FOUND&quot;</span>
+        <span class="k">return</span> <span class="n">vs_version</span></div>
+
+
+<div class="viewcode-block" id="IERSInfo.get_IERS_last_entry">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.casa_data.IERSInfo.get_IERS_last_entry">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_IERS_last_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s2">&quot;IERSeop2000&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the last entry in the MJD column of the specified IERS table. Defaults to IERSeop2000.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">table_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iers_path</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+                <span class="n">last_mjd</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;MJD&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+            <span class="n">last_mjd</span> <span class="o">=</span> <span class="s2">&quot;NOT FOUND&quot;</span>
+        <span class="k">return</span> <span class="n">last_mjd</span></div>
+
+
+<div class="viewcode-block" id="IERSInfo.load_info">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.casa_data.IERSInfo.load_info">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the following data from the casa geodetic tables:</span>
+<span class="sd">            * IERSpredict version</span>
+<span class="sd">            * IERSeop2000 version</span>
+<span class="sd">            * IERSeop2000 last MJD entry</span>
+<span class="sd">            * IERSeop2000 last datetime entry</span>
+<span class="sd">            * IERSpredict last datetime entry</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">versions</span> <span class="o">=</span> <span class="p">{</span><span class="n">table</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_IERS_version</span><span class="p">(</span><span class="n">table</span><span class="p">)</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">IERS_tables</span><span class="p">}</span>
+        <span class="n">last_mjd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_IERS_last_entry</span><span class="p">(</span><span class="s2">&quot;IERSeop2000&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">last_mjd</span> <span class="o">!=</span> <span class="s2">&quot;NOT FOUND&quot;</span><span class="p">:</span>
+            <span class="n">last_dt</span> <span class="o">=</span> <span class="n">from_mjd_to_datetime</span><span class="p">(</span><span class="n">last_mjd</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">last_dt</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Get the same information for the prediected IERS (see PIPE-1231).</span>
+        <span class="n">last_mjd_predict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_IERS_last_entry</span><span class="p">(</span><span class="s2">&quot;IERSpredict&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">last_mjd_predict</span> <span class="o">!=</span> <span class="s2">&quot;NOT FOUND&quot;</span><span class="p">:</span>
+            <span class="n">last_dt_predict</span> <span class="o">=</span> <span class="n">from_mjd_to_datetime</span><span class="p">(</span><span class="n">last_mjd_predict</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">last_dt_predict</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;versions&quot;</span><span class="p">:</span> <span class="n">versions</span><span class="p">,</span> <span class="s2">&quot;IERSeop2000_last_MJD&quot;</span><span class="p">:</span> <span class="n">last_mjd</span><span class="p">,</span> <span class="s2">&quot;IERSeop2000_last&quot;</span><span class="p">:</span> <span class="n">last_dt</span><span class="p">,</span> <span class="s2">&quot;IERSpredict_last&quot;</span><span class="p">:</span> <span class="n">last_dt_predict</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="IERSInfo.validate_date">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.casa_data.IERSInfo.validate_date">[docs]</a>
+    <span class="k">def</span> <span class="nf">validate_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a date is lower or equal than the last entry of the IERSeop2000 table.</span>
+<span class="sd">        The end date of the MS should be lower (see PIPE-734).</span>
+<span class="sd">        If the geodetic tables could not be loaded correctly it always return False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;IERSeop2000_last&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">date</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;IERSeop2000_last&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="IERSInfo.date_message_type">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.casa_data.IERSInfo.date_message_type">[docs]</a>
+    <span class="k">def</span> <span class="nf">date_message_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if and where a date falls within the time ranges covered by the IERSeop2000 table and the IERSpredict table, and return a string indicating what kind of message should be displayed about this.</span>
+<span class="sd">        See PIPE-734 and PIPE-1231 for more information.</span>
+
+<span class="sd">        GOOD: Date is lower than or equal to the last entry of the IERSeop2000 table</span>
+<span class="sd">        INFO: Date is greater than the last entry of the IERSeop2000 table but less than three months after that entry (the normal maximum delay between table updates,) so the predicted IERS table will be used.</span>
+<span class="sd">        WARN: Date is greater than the last entry of the IERSeop2000 table + 3 months, but less than the last entry of the IERSpredict table, so WARN and use the predicted table</span>
+<span class="sd">        CRITICAL: Date is greater than the last entry of the IERSpredicted table, or one or both of the IERS tables are missing, so issue a critical ALERT</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">maximum_delay</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">weeks</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span> <span class="c1"># 3 months is the normal maximum delay for table updates (see PIPE-1231)</span>
+
+        <span class="n">iers_eop_last</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;IERSeop2000_last&quot;</span><span class="p">]</span>
+        <span class="n">iers_eop_predict_last</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;IERSpredict_last&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">iers_eop_last</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;CRITICAL&quot;</span>
+        <span class="k">if</span> <span class="n">date</span> <span class="o">&lt;=</span> <span class="n">iers_eop_last</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;GOOD&quot;</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">date</span> <span class="o">&gt;</span> <span class="n">iers_eop_last</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">date</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">iers_eop_last</span> <span class="o">+</span> <span class="n">maximum_delay</span><span class="p">)</span> <span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;INFO&quot;</span>
+
+        <span class="c1"># Comparisons with predicted IERS</span>
+        <span class="k">if</span>  <span class="n">iers_eop_predict_last</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;CRITICAL&quot;</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">date</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">iers_eop_last</span> <span class="o">+</span> <span class="n">maximum_delay</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="n">date</span> <span class="o">&lt;=</span> <span class="n">iers_eop_predict_last</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;WARN&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;CRITICAL&quot;</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">info_string</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;IERS table information =&gt; &quot;</span> <span class="o">+</span> <span class="n">info_string</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;IERS table information not loaded&quot;</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

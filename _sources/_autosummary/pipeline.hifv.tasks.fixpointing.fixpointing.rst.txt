@@ -1,0 +1,21 @@
+pipeline.hifv.tasks.fixpointing.fixpointing
+===========================================
+
+.. automodule:: pipeline.hifv.tasks.fixpointing.fixpointing
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      fixpointing_offset_vlass
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Fixpointing
+      FixpointingInputs
+      FixpointingResults
+      datetime
+   

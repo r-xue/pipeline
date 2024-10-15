@@ -1,0 +1,21 @@
+pipeline.hifa.tasks.gaincal.timegaincal
+=======================================
+
+.. automodule:: pipeline.hifa.tasks.gaincal.timegaincal
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      combine_spwmap
+      do_gtype_gaincal
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MeasurementSet
+      TimeGaincal
+      TimeGaincalInputs
+   

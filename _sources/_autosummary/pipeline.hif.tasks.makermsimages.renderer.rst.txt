@@ -1,0 +1,13 @@
+pipeline.hif.tasks.makermsimages.renderer
+=========================================
+
+.. automodule:: pipeline.hif.tasks.makermsimages.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsMakermsimagesRenderer
+      T2_4MDetailsMakermsimagesVlassCubeRenderer
+   

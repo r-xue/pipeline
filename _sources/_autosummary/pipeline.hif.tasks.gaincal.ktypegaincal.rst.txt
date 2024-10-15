@@ -1,0 +1,13 @@
+pipeline.hif.tasks.gaincal.ktypegaincal
+=======================================
+
+.. automodule:: pipeline.hif.tasks.gaincal.ktypegaincal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      KTypeGaincal
+      KTypeGaincalInputs
+   

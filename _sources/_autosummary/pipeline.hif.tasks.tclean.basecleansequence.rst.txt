@@ -1,0 +1,13 @@
+pipeline.hif.tasks.tclean.basecleansequence
+===========================================
+
+.. automodule:: pipeline.hif.tasks.tclean.basecleansequence
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BaseCleanSequence
+      BoxResult
+   

@@ -1,0 +1,13 @@
+pipeline.hifa.tasks.renorm.qa
+=============================
+
+.. automodule:: pipeline.hifa.tasks.renorm.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      RenormListQAHandler
+      RenormQAHandler
+   

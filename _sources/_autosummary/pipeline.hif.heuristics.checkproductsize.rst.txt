@@ -1,0 +1,12 @@
+pipeline.hif.heuristics.checkproductsize
+========================================
+
+.. automodule:: pipeline.hif.heuristics.checkproductsize
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CheckProductSizeHeuristics
+   

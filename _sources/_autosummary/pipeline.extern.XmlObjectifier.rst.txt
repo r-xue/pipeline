@@ -1,0 +1,26 @@
+pipeline.extern.XmlObjectifier
+==============================
+
+.. automodule:: pipeline.extern.XmlObjectifier
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      castType
+      copy
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      XmlElement
+      XmlObject
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      XmlObjectifierError
+   

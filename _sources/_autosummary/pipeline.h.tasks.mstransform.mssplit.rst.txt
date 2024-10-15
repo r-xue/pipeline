@@ -1,0 +1,16 @@
+pipeline.h.tasks.mstransform.mssplit
+====================================
+
+.. automodule:: pipeline.h.tasks.mstransform.mssplit
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      MeasurementSet
+      MsSplit
+      MsSplitInputs
+      MsSplitResults
+   

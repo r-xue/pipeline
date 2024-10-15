@@ -1,0 +1,30 @@
+pipeline.hsd.tasks.importdata.inspection
+========================================
+
+.. automodule:: pipeline.hsd.tasks.importdata.inspection
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      inspect_reduction_group
+      set_beam_size
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Context
+      DataTableImpl
+      MSReductionGroupDesc
+      MeasurementSet
+      RasterScanHeuristicsResult
+      SDInspection
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      RasterScanHeuristicsFailure
+   

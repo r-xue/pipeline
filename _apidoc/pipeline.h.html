@@ -1,0 +1,503 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h package &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.h package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/pipeline.h.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-h-package">
+<h1>pipeline.h package<a class="headerlink" href="#pipeline-h-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.cli">pipeline.h.cli.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.h_applycal">pipeline.h.cli.h_applycal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_applycal.h_applycal"><code class="docutils literal notranslate"><span class="pre">h_applycal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.h_export_calstate">pipeline.h.cli.h_export_calstate module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_export_calstate.h_export_calstate"><code class="docutils literal notranslate"><span class="pre">h_export_calstate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.h_exportdata">pipeline.h.cli.h_exportdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_exportdata.h_exportdata"><code class="docutils literal notranslate"><span class="pre">h_exportdata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.h_import_calstate">pipeline.h.cli.h_import_calstate module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_import_calstate.h_import_calstate"><code class="docutils literal notranslate"><span class="pre">h_import_calstate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.h_importdata">pipeline.h.cli.h_importdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_importdata.h_importdata"><code class="docutils literal notranslate"><span class="pre">h_importdata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.h_init">pipeline.h.cli.h_init module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_init.h_init"><code class="docutils literal notranslate"><span class="pre">h_init()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.h_mssplit">pipeline.h.cli.h_mssplit module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_mssplit.h_mssplit"><code class="docutils literal notranslate"><span class="pre">h_mssplit()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.h_restoredata">pipeline.h.cli.h_restoredata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_restoredata.h_restoredata"><code class="docutils literal notranslate"><span class="pre">h_restoredata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.h_resume">pipeline.h.cli.h_resume module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_resume.h_resume"><code class="docutils literal notranslate"><span class="pre">h_resume()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.h_save">pipeline.h.cli.h_save module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_save.h_save"><code class="docutils literal notranslate"><span class="pre">h_save()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.h_show_calstate">pipeline.h.cli.h_show_calstate module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_show_calstate.h_show_calstate"><code class="docutils literal notranslate"><span class="pre">h_show_calstate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.h_tsyscal">pipeline.h.cli.h_tsyscal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_tsyscal.h_tsyscal"><code class="docutils literal notranslate"><span class="pre">h_tsyscal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.h_weblog">pipeline.h.cli.h_weblog module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_weblog.h_weblog"><code class="docutils literal notranslate"><span class="pre">h_weblog()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli.utils">pipeline.h.cli.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.utils.cli_wrapper"><code class="docutils literal notranslate"><span class="pre">cli_wrapper()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.utils.execute_task"><code class="docutils literal notranslate"><span class="pre">execute_task()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.utils.get_context"><code class="docutils literal notranslate"><span class="pre">get_context()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.utils.get_heuristic"><code class="docutils literal notranslate"><span class="pre">get_heuristic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.utils.get_ms"><code class="docutils literal notranslate"><span class="pre">get_ms()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.utils.get_output_dir"><code class="docutils literal notranslate"><span class="pre">get_output_dir()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html#module-pipeline.h.cli">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_applycal"><code class="docutils literal notranslate"><span class="pre">h_applycal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_export_calstate"><code class="docutils literal notranslate"><span class="pre">h_export_calstate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_exportdata"><code class="docutils literal notranslate"><span class="pre">h_exportdata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_import_calstate"><code class="docutils literal notranslate"><span class="pre">h_import_calstate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_importdata"><code class="docutils literal notranslate"><span class="pre">h_importdata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_init"><code class="docutils literal notranslate"><span class="pre">h_init()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_mssplit"><code class="docutils literal notranslate"><span class="pre">h_mssplit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_restoredata"><code class="docutils literal notranslate"><span class="pre">h_restoredata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_resume"><code class="docutils literal notranslate"><span class="pre">h_resume()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_save"><code class="docutils literal notranslate"><span class="pre">h_save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_show_calstate"><code class="docutils literal notranslate"><span class="pre">h_show_calstate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_tsyscal"><code class="docutils literal notranslate"><span class="pre">h_tsyscal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.cli.html#pipeline.h.cli.h_weblog"><code class="docutils literal notranslate"><span class="pre">h_weblog()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.heuristics.html">pipeline.h.heuristics package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.heuristics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.heuristics.html#module-pipeline.h.heuristics.caltable">pipeline.h.heuristics.caltable module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.AmpCaltable"><code class="docutils literal notranslate"><span class="pre">AmpCaltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.AmpCaltable.get_namer"><code class="docutils literal notranslate"><span class="pre">AmpCaltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.AntposCaltable"><code class="docutils literal notranslate"><span class="pre">AntposCaltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.AntposCaltable.get_namer"><code class="docutils literal notranslate"><span class="pre">AntposCaltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.BandpassCaltable"><code class="docutils literal notranslate"><span class="pre">BandpassCaltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.BandpassCaltable.customise"><code class="docutils literal notranslate"><span class="pre">BandpassCaltable.customise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.BandpassCaltable.get_namer"><code class="docutils literal notranslate"><span class="pre">BandpassCaltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.CaltableNamer"><code class="docutils literal notranslate"><span class="pre">CaltableNamer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.CaltableNamer.calculate"><code class="docutils literal notranslate"><span class="pre">CaltableNamer.calculate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.CaltableNamer.customise"><code class="docutils literal notranslate"><span class="pre">CaltableNamer.customise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.CaltableNamer.get_namer"><code class="docutils literal notranslate"><span class="pre">CaltableNamer.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.DelayCaltable"><code class="docutils literal notranslate"><span class="pre">DelayCaltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.DelayCaltable.get_namer"><code class="docutils literal notranslate"><span class="pre">DelayCaltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.FluxCaltable"><code class="docutils literal notranslate"><span class="pre">FluxCaltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.FluxCaltable.get_namer"><code class="docutils literal notranslate"><span class="pre">FluxCaltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.GainCurvestable"><code class="docutils literal notranslate"><span class="pre">GainCurvestable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.GainCurvestable.get_namer"><code class="docutils literal notranslate"><span class="pre">GainCurvestable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.GaincalCaltable"><code class="docutils literal notranslate"><span class="pre">GaincalCaltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.GaincalCaltable.customise"><code class="docutils literal notranslate"><span class="pre">GaincalCaltable.customise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.GaincalCaltable.get_namer"><code class="docutils literal notranslate"><span class="pre">GaincalCaltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.OpCaltable"><code class="docutils literal notranslate"><span class="pre">OpCaltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.OpCaltable.get_namer"><code class="docutils literal notranslate"><span class="pre">OpCaltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.PolcalCaltable"><code class="docutils literal notranslate"><span class="pre">PolcalCaltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.PolcalCaltable.customise"><code class="docutils literal notranslate"><span class="pre">PolcalCaltable.customise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.PolcalCaltable.get_namer"><code class="docutils literal notranslate"><span class="pre">PolcalCaltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.RqCaltable"><code class="docutils literal notranslate"><span class="pre">RqCaltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.RqCaltable.get_namer"><code class="docutils literal notranslate"><span class="pre">RqCaltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.SDBaselinetable"><code class="docutils literal notranslate"><span class="pre">SDBaselinetable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.SDBaselinetable.get_namer"><code class="docutils literal notranslate"><span class="pre">SDBaselinetable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.SDSkyCaltable"><code class="docutils literal notranslate"><span class="pre">SDSkyCaltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.SDSkyCaltable.customise"><code class="docutils literal notranslate"><span class="pre">SDSkyCaltable.customise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.SDSkyCaltable.get_namer"><code class="docutils literal notranslate"><span class="pre">SDSkyCaltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.SwpowCaltable"><code class="docutils literal notranslate"><span class="pre">SwpowCaltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.SwpowCaltable.get_namer"><code class="docutils literal notranslate"><span class="pre">SwpowCaltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.TecMapstable"><code class="docutils literal notranslate"><span class="pre">TecMapstable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.TecMapstable.get_namer"><code class="docutils literal notranslate"><span class="pre">TecMapstable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.TsysCaltable"><code class="docutils literal notranslate"><span class="pre">TsysCaltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.TsysCaltable.get_namer"><code class="docutils literal notranslate"><span class="pre">TsysCaltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.UVcontCaltable"><code class="docutils literal notranslate"><span class="pre">UVcontCaltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.UVcontCaltable.customise"><code class="docutils literal notranslate"><span class="pre">UVcontCaltable.customise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.UVcontCaltable.get_namer"><code class="docutils literal notranslate"><span class="pre">UVcontCaltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.WvrgCaltable"><code class="docutils literal notranslate"><span class="pre">WvrgCaltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.WvrgCaltable.customise"><code class="docutils literal notranslate"><span class="pre">WvrgCaltable.customise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.WvrgCaltable.get_namer"><code class="docutils literal notranslate"><span class="pre">WvrgCaltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.XYf0Caltable"><code class="docutils literal notranslate"><span class="pre">XYf0Caltable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.caltable.XYf0Caltable.get_namer"><code class="docutils literal notranslate"><span class="pre">XYf0Caltable.get_namer()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.heuristics.html#module-pipeline.h.heuristics.echoheuristic">pipeline.h.heuristics.echoheuristic module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.echoheuristic.EchoHeuristic"><code class="docutils literal notranslate"><span class="pre">EchoHeuristic</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.echoheuristic.EchoHeuristic.calculate"><code class="docutils literal notranslate"><span class="pre">EchoHeuristic.calculate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.echoheuristic.NullHeuristic"><code class="docutils literal notranslate"><span class="pre">NullHeuristic</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.echoheuristic.NullHeuristic.calculate"><code class="docutils literal notranslate"><span class="pre">NullHeuristic.calculate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.heuristics.html#module-pipeline.h.heuristics.fieldnames">pipeline.h.heuristics.fieldnames module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.fieldnames.IntentFieldnames"><code class="docutils literal notranslate"><span class="pre">IntentFieldnames</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.fieldnames.IntentFieldnames.calculate"><code class="docutils literal notranslate"><span class="pre">IntentFieldnames.calculate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.heuristics.html#module-pipeline.h.heuristics.linefinder">pipeline.h.heuristics.linefinder module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.linefinder.HeuristicsLineFinder"><code class="docutils literal notranslate"><span class="pre">HeuristicsLineFinder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.linefinder.HeuristicsLineFinder.tweak_lines"><code class="docutils literal notranslate"><span class="pre">HeuristicsLineFinder.tweak_lines()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.linefinder.HeuristicsLineFinder.calculate"><code class="docutils literal notranslate"><span class="pre">HeuristicsLineFinder.calculate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#id0"><code class="docutils literal notranslate"><span class="pre">HeuristicsLineFinder.tweak_lines()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline-h-heuristics-linefinder-test-module">pipeline.h.heuristics.linefinder_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.heuristics.html#module-pipeline.h.heuristics.tsysnormalize">pipeline.h.heuristics.tsysnormalize module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.tsysnormalize.TsysAfterPowerChange"><code class="docutils literal notranslate"><span class="pre">TsysAfterPowerChange()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.tsysnormalize.getPower"><code class="docutils literal notranslate"><span class="pre">getPower()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.tsysnormalize.scienceSpwForTsysSpw"><code class="docutils literal notranslate"><span class="pre">scienceSpwForTsysSpw()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.tsysnormalize.tsysNormalize"><code class="docutils literal notranslate"><span class="pre">tsysNormalize()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.heuristics.html#module-pipeline.h.heuristics.tsysspwmap">pipeline.h.heuristics.tsysspwmap module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.SpwInfo"><code class="docutils literal notranslate"><span class="pre">SpwInfo</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.SpwInfo.setSpwId"><code class="docutils literal notranslate"><span class="pre">SpwInfo.setSpwId()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.SpwInfo.setTable"><code class="docutils literal notranslate"><span class="pre">SpwInfo.setTable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.SpwInfo.setTableAndSpwId"><code class="docutils literal notranslate"><span class="pre">SpwInfo.setTableAndSpwId()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.SpwMap"><code class="docutils literal notranslate"><span class="pre">SpwMap</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.areIdentical"><code class="docutils literal notranslate"><span class="pre">areIdentical()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.trimSpwmap"><code class="docutils literal notranslate"><span class="pre">trimSpwmap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.tsysspwmap"><code class="docutils literal notranslate"><span class="pre">tsysspwmap()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.heuristics.html#module-pipeline.h.heuristics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.tasks.html">pipeline.h.tasks package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html">pipeline.h.tasks.applycal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#module-pipeline.h.tasks.applycal.applycal">pipeline.h.tasks.applycal.applycal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#module-pipeline.h.tasks.applycal.qa">pipeline.h.tasks.applycal.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#module-pipeline.h.tasks.applycal.renderer">pipeline.h.tasks.applycal.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#module-pipeline.h.tasks.applycal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html">pipeline.h.tasks.common package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.arrayflaggerbase">pipeline.h.tasks.common.arrayflaggerbase module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.atmutil">pipeline.h.tasks.common.atmutil module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline-h-tasks-common-atmutil-test-module">pipeline.h.tasks.common.atmutil_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.calibrationtableaccess">pipeline.h.tasks.common.calibrationtableaccess module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.commonfluxresults">pipeline.h.tasks.common.commonfluxresults module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.commonhelpermethods">pipeline.h.tasks.common.commonhelpermethods module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.commonresultobjects">pipeline.h.tasks.common.commonresultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.flaggableviewresults">pipeline.h.tasks.common.flaggableviewresults module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.flagging_renderer_utils">pipeline.h.tasks.common.flagging_renderer_utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.manifest">pipeline.h.tasks.common.manifest module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.mstools">pipeline.h.tasks.common.mstools module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.ozone">pipeline.h.tasks.common.ozone module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.sensitivity">pipeline.h.tasks.common.sensitivity module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.viewflaggers">pipeline.h.tasks.common.viewflaggers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html">pipeline.h.tasks.exportdata package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#module-pipeline.h.tasks.exportdata.aqua">pipeline.h.tasks.exportdata.aqua module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#module-pipeline.h.tasks.exportdata.exportdata">pipeline.h.tasks.exportdata.exportdata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#module-pipeline.h.tasks.exportdata.qa">pipeline.h.tasks.exportdata.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#module-pipeline.h.tasks.exportdata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.flagging.html">pipeline.h.tasks.flagging package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#module-pipeline.h.tasks.flagging.flagdatasetter">pipeline.h.tasks.flagging.flagdatasetter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#module-pipeline.h.tasks.flagging.flagdeterbase">pipeline.h.tasks.flagging.flagdeterbase module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#module-pipeline.h.tasks.flagging.qa">pipeline.h.tasks.flagging.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#module-pipeline.h.tasks.flagging.renderer">pipeline.h.tasks.flagging.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#module-pipeline.h.tasks.flagging">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html">pipeline.h.tasks.importdata package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#module-pipeline.h.tasks.importdata.fluxes">pipeline.h.tasks.importdata.fluxes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#module-pipeline.h.tasks.importdata.importdata">pipeline.h.tasks.importdata.importdata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#module-pipeline.h.tasks.importdata.qa">pipeline.h.tasks.importdata.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#module-pipeline.h.tasks.importdata.renderer">pipeline.h.tasks.importdata.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#module-pipeline.h.tasks.importdata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.mstransform.html">pipeline.h.tasks.mstransform package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#module-pipeline.h.tasks.mstransform.mssplit">pipeline.h.tasks.mstransform.mssplit module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#module-pipeline.h.tasks.mstransform.qa">pipeline.h.tasks.mstransform.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#module-pipeline.h.tasks.mstransform.renderer">pipeline.h.tasks.mstransform.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#module-pipeline.h.tasks.mstransform">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.restoredata.html">pipeline.h.tasks.restoredata package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#module-pipeline.h.tasks.restoredata.qa">pipeline.h.tasks.restoredata.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#module-pipeline.h.tasks.restoredata.restoredata">pipeline.h.tasks.restoredata.restoredata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#module-pipeline.h.tasks.restoredata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html">pipeline.h.tasks.tsyscal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#module-pipeline.h.tasks.tsyscal.qa">pipeline.h.tasks.tsyscal.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#module-pipeline.h.tasks.tsyscal.renderer">pipeline.h.tasks.tsyscal.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#module-pipeline.h.tasks.tsyscal.resultobjects">pipeline.h.tasks.tsyscal.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#module-pipeline.h.tasks.tsyscal.tsyscal">pipeline.h.tasks.tsyscal.tsyscal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#module-pipeline.h.tasks.tsyscal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html">pipeline.h.tasks.tsysflag package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#module-pipeline.h.tasks.tsysflag.qa">pipeline.h.tasks.tsysflag.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#module-pipeline.h.tasks.tsysflag.renderer">pipeline.h.tasks.tsysflag.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#module-pipeline.h.tasks.tsysflag.resultobjects">pipeline.h.tasks.tsysflag.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#module-pipeline.h.tasks.tsysflag.tsysflag">pipeline.h.tasks.tsysflag.tsysflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#module-pipeline.h.tasks.tsysflag">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.html#module-pipeline.h.tasks">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.templates.html">pipeline.h.templates package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.templates.html#module-pipeline.h.templates">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-pipeline.h">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline.h" title="Link to this heading"></a></h2>
+<p>Pipeline generic</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

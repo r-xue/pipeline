@@ -1,0 +1,393 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.targetflag.targetflag &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.targetflag.targetflag</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.targetflag.targetflag</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">functools</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.displays</span> <span class="kn">import</span> <span class="n">applycal</span> <span class="k">as</span> <span class="n">applycal_displays</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.flagging.flagdatasetter</span> <span class="kn">import</span> <span class="n">FlagdataSetter</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">applycal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">correctedampflag</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TargetflagResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.targetflag.html#pipeline.hifa.tasks.targetflag.qa.TargetflagResults">[docs]</a>
+<span class="k">class</span> <span class="nc">TargetflagResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TargetflagResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cafresult</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callib_map</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="TargetflagResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.targetflag.html#pipeline.hifa.tasks.targetflag.qa.TargetflagResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;TargetflagResults&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="TargetflagInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.targetflag.html#pipeline.hifa.tasks.targetflag.qa.TargetflagInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">TargetflagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span></div>
+
+
+
+<div class="viewcode-block" id="Targetflag">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.targetflag.html#pipeline.hifa.tasks.targetflag.qa.Targetflag">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_targetflag&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Flag target source outliers.&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Targetflag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">TargetflagInputs</span>
+
+<div class="viewcode-block" id="Targetflag.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.targetflag.html#pipeline.hifa.tasks.targetflag.qa.Targetflag.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Initialize results.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">TargetflagResults</span><span class="p">()</span>
+
+        <span class="n">cafflags</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># create a shortcut to the plotting function that pre-supplies the inputs and context</span>
+        <span class="n">plot_fn</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">create_plots</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># Check for any target intents</span>
+        <span class="n">eb_intents</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span><span class="o">.</span><span class="n">intents</span>
+        <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">eb_intents</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No target intents found.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># Create back-up of flags.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating back-up of &quot;pre-targetflag&quot; flagging state&#39;</span><span class="p">)</span>
+        <span class="n">flag_backup_name_pretgtf</span> <span class="o">=</span> <span class="s1">&#39;before_tgtflag&#39;</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;save&#39;</span><span class="p">,</span> <span class="n">versionname</span><span class="o">=</span><span class="n">flag_backup_name_pretgtf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="c1"># Ensure that any flagging applied to the MS by this applycal are</span>
+        <span class="c1"># reverted at the end, even in the case of exceptions.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Run applycal to apply pre-existing caltables and propagate their</span>
+            <span class="c1"># corresponding flags to the MS. Should typically include Tsys,</span>
+            <span class="c1"># bandpass, and spwphaseup tables, as well as WVR if 12-m antennas</span>
+            <span class="c1"># are present, and antpos if any position corrections were made.</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Applying pre-existing cal tables.&#39;</span><span class="p">)</span>
+            <span class="n">acinputs</span> <span class="o">=</span> <span class="n">applycal</span><span class="o">.</span><span class="n">IFApplycalInputs</span><span class="p">(</span>
+                <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">flagsum</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">actask</span> <span class="o">=</span> <span class="n">applycal</span><span class="o">.</span><span class="n">SerialIFApplycal</span><span class="p">(</span><span class="n">acinputs</span><span class="p">)</span>
+            <span class="n">acresult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">actask</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># copy across the vis:callibrary dict to our result. This dict </span>
+            <span class="c1"># will be inspected by the renderer to know if/which callibrary</span>
+            <span class="c1"># files should be copied across to the weblog stage directory</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">callib_map</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">acresult</span><span class="o">.</span><span class="n">callib_map</span><span class="p">)</span>
+
+            <span class="c1"># Create back-up of flags after applycal but before correctedampflag.</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating back-up of &quot;after_tgtflag_applycal&quot; flagging state&#39;</span><span class="p">)</span>
+            <span class="n">flag_backup_name_after_tgtflag_applycal</span> <span class="o">=</span> <span class="s1">&#39;after_tgtflag_applycal&#39;</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;save&#39;</span><span class="p">,</span> <span class="n">versionname</span><span class="o">=</span><span class="n">flag_backup_name_after_tgtflag_applycal</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+            <span class="c1"># Find amplitude outliers and flag data. This needs to be done</span>
+            <span class="c1"># per source / per field ID / per spw basis.</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Running correctedampflag to identify target source outliers to flag.&#39;</span><span class="p">)</span>
+
+            <span class="c1"># This task is called by the framework for each EB in the vis list.</span>
+
+            <span class="c1"># Call correctedampflag for the target intent. For that intent it</span>
+            <span class="c1"># will loop over spw and field IDs to inspect the flags individually</span>
+            <span class="c1"># per mosaic pointing.</span>
+            <span class="n">cafinputs</span> <span class="o">=</span> <span class="n">correctedampflag</span><span class="o">.</span><span class="n">Correctedampflag</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span>
+                <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">caftask</span> <span class="o">=</span> <span class="n">correctedampflag</span><span class="o">.</span><span class="n">Correctedampflag</span><span class="p">(</span><span class="n">cafinputs</span><span class="p">)</span>
+            <span class="n">cafresult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">caftask</span><span class="p">)</span>
+
+            <span class="c1"># Store correctedampflag result</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">cafresult</span> <span class="o">=</span> <span class="n">cafresult</span>
+
+            <span class="c1"># Get new flag commands</span>
+            <span class="n">cafflags</span> <span class="o">=</span> <span class="n">cafresult</span><span class="o">.</span><span class="n">flagcmds</span><span class="p">()</span>
+
+            <span class="c1"># If new outliers were identified...make &quot;after flagging&quot; plots that</span>
+            <span class="c1"># include both applycal flags and correctedampflag flags</span>
+            <span class="k">if</span> <span class="n">cafflags</span><span class="p">:</span>
+                <span class="c1"># Make &quot;after calibration, after flagging&quot; plots for the weblog</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating &quot;after calibration, after flagging&quot; plots&#39;</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="s1">&#39;after&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot_fn</span><span class="p">(</span><span class="n">flagcmds</span><span class="o">=</span><span class="n">cafflags</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;after&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Restore the &quot;after_tgtflag_applycal&quot; backup of the flagging</span>
+                <span class="c1"># state, so that the &quot;before plots&quot; only show things needing</span>
+                <span class="c1"># to be flagged by correctedampflag</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Restoring back-up of &quot;after_tgtflag_applycal&quot; flagging state.&#39;</span><span class="p">)</span>
+                <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;restore&#39;</span><span class="p">,</span> <span class="n">versionname</span><span class="o">=</span><span class="n">flag_backup_name_after_tgtflag_applycal</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+                <span class="c1"># Make &quot;after calibration, before flagging&quot; plots for the weblog</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating &quot;after calibration, before flagging&quot; plots&#39;</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="s1">&#39;before&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot_fn</span><span class="p">(</span><span class="n">flagcmds</span><span class="o">=</span><span class="n">cafflags</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;before&#39;</span><span class="p">)</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># Restore the &quot;pre-targetflag&quot; backup of the flagging state, to</span>
+            <span class="c1"># undo any flags that were propagated from caltables to the MS by</span>
+            <span class="c1"># the applycal call.</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Restoring back-up of &quot;pre-targetflag&quot; flagging state.&#39;</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;restore&#39;</span><span class="p">,</span> <span class="n">versionname</span><span class="o">=</span><span class="n">flag_backup_name_pretgtf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">cafflags</span><span class="p">:</span>
+            <span class="c1"># Re-apply the newly found flags from correctedampflag.</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Re-applying flags from correctedampflag.&#39;</span><span class="p">)</span>
+            <span class="n">fsinputs</span> <span class="o">=</span> <span class="n">FlagdataSetter</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">inpfile</span><span class="o">=</span><span class="p">[])</span>
+            <span class="n">fstask</span> <span class="o">=</span> <span class="n">FlagdataSetter</span><span class="p">(</span><span class="n">fsinputs</span><span class="p">)</span>
+            <span class="n">fstask</span><span class="o">.</span><span class="n">flags_to_set</span><span class="p">(</span><span class="n">cafflags</span><span class="p">)</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">fstask</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="Targetflag.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.targetflag.html#pipeline.hifa.tasks.targetflag.qa.Targetflag.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+</div>
+
+
+<div class="viewcode-block" id="create_plots">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.targetflag.html#pipeline.hifa.tasks.targetflag.qa.create_plots">[docs]</a>
+<span class="k">def</span> <span class="nf">create_plots</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">flagcmds</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return amplitude vs time plots for the given data column.</span>
+
+<span class="sd">    :param inputs: pipeline inputs</span>
+<span class="sd">    :param context: pipeline context</span>
+<span class="sd">    :param flagcmds: list of FlagCmd objects</span>
+<span class="sd">    :param suffix: optional component to add to the plot filenames</span>
+<span class="sd">    :return: dict of (x axis type =&gt; str, [plots,...])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Exit early if weblog generation has been disabled</span>
+    <span class="k">if</span> <span class="n">basetask</span><span class="o">.</span><span class="n">DISABLE_WEBLOG</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[],</span> <span class="p">[]</span>
+
+    <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">output_dir</span>
+
+    <span class="c1"># Amplitude vs time plots</span>
+    <span class="n">amp_time_plots</span> <span class="o">=</span> <span class="n">AmpVsXChart</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+    <span class="c1"># Amplitude vs UV distance plots shall contain only the fields that were flagged</span>
+    <span class="n">flagged_spws</span> <span class="o">=</span> <span class="p">{</span><span class="n">flagcmd</span><span class="o">.</span><span class="n">spw</span> <span class="k">for</span> <span class="n">flagcmd</span> <span class="ow">in</span> <span class="n">flagcmds</span><span class="p">}</span>
+    <span class="n">spw_field_dict</span> <span class="o">=</span> <span class="p">{</span><span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="p">):</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">({</span><span class="n">flagcmd</span><span class="o">.</span><span class="n">field</span> <span class="k">for</span> <span class="n">flagcmd</span> <span class="ow">in</span> <span class="n">flagcmds</span> <span class="k">if</span> <span class="n">flagcmd</span><span class="o">.</span><span class="n">spw</span><span class="o">==</span><span class="n">spw</span><span class="p">}))</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">flagged_spws</span><span class="p">}</span>
+    <span class="n">amp_uvdist_plots</span> <span class="o">=</span> <span class="n">AmpVsXChart</span><span class="p">(</span><span class="s1">&#39;uvdist&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">spw_field_dict</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">spw_field_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Fields flagged for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="s1"> spw </span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">amp_time_plots</span><span class="p">,</span> <span class="s1">&#39;uvdist&#39;</span><span class="p">:</span> <span class="n">amp_uvdist_plots</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="AmpVsXChart">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.targetflag.html#pipeline.hifa.tasks.targetflag.qa.AmpVsXChart">[docs]</a>
+<span class="k">class</span> <span class="nc">AmpVsXChart</span><span class="p">(</span><span class="n">applycal_displays</span><span class="o">.</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plotting class that creates an amplitude vs X plot for each spw, where X</span>
+<span class="sd">    is given as a constructor argument.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">):</span>
+        <span class="n">plot_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;ydatacolumn&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;avgtime&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;avgscan&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s1">&#39;avgbaseline&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s1">&#39;avgchannel&#39;</span><span class="p">:</span> <span class="s1">&#39;9000&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;coloraxis&#39;</span><span class="p">:</span> <span class="s1">&#39;field&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;overwrite&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s1">&#39;plotrange&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="n">plot_args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">overrides</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">AmpVsXChart</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">xaxis</span><span class="o">=</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+                                          <span class="o">**</span><span class="n">plot_args</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

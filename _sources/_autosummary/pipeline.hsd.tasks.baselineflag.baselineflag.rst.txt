@@ -1,0 +1,24 @@
+pipeline.hsd.tasks.baselineflag.baselineflag
+============================================
+
+.. automodule:: pipeline.hsd.tasks.baselineflag.baselineflag
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      absolute_path
+      reshape_flagdata_summary
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      SDBLFlag
+      SDBLFlagInputs
+      SDBLFlagResults
+      SDBLFlagSummary
+      SerialSDBLFlag
+   

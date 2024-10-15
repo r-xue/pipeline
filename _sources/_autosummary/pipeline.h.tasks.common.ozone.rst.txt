@@ -1,0 +1,12 @@
+pipeline.h.tasks.common.ozone
+=============================
+
+.. automodule:: pipeline.h.tasks.common.ozone
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_ozone_channels_for_spw
+   

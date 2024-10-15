@@ -1,0 +1,16 @@
+pipeline.qa.utility.filters
+===========================
+
+.. automodule:: pipeline.qa.utility.filters
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      getOutlierIndices
+      maxDict
+      minDict
+      outlierDictFilter
+      outlierFilter
+   

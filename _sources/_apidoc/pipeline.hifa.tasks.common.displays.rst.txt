@@ -1,0 +1,21 @@
+pipeline.hifa.tasks.common.displays package
+===========================================
+
+Submodules
+----------
+
+pipeline.hifa.tasks.common.displays.phaseoffset module
+------------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.common.displays.phaseoffset
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifa.tasks.common.displays
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,23 @@
+pipeline.hif.heuristics.imageparams\_base
+=========================================
+
+.. automodule:: pipeline.hif.heuristics.imageparams_base
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      phasecenter_to_skycoord
+      refcode_to_skyframe
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ImageParamsHeuristics
+      ImagerParameters
+      PyParallelContSynthesisImager
+      PySynthesisImager
+      SkyCoord
+   

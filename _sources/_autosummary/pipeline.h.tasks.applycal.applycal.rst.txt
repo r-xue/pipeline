@@ -1,0 +1,27 @@
+pipeline.h.tasks.applycal.applycal
+==================================
+
+.. automodule:: pipeline.h.tasks.applycal.applycal
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      contains_uvcont_table
+      jobs_with_calapply
+      jobs_without_calapply
+      reshape_flagdata_summary
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Applycal
+      ApplycalInputs
+      ApplycalResults
+      DataType
+      IntentFieldnames
+      IntervalCalState
+      SerialApplycal
+   

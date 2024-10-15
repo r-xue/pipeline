@@ -1,0 +1,22 @@
+pipeline.hsd.tasks.common.compress
+==================================
+
+.. automodule:: pipeline.hsd.tasks.common.compress
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      compress_object
+      decompress_object
+      get_obj_size
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CompressedIter
+      CompressedList
+      CompressedObj
+   

@@ -1,0 +1,578 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.baselineflag.flagsummary &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.baselineflag.flagsummary</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.baselineflag.flagsummary</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Class SDBLFlagSummary.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">MeasurementSet</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+
+<span class="kn">from</span> <span class="nn">.SDFlagPlotter</span> <span class="kn">import</span> <span class="n">SDFlagPlotter</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">SDFlagRule</span>
+<span class="kn">from</span> <span class="nn">.worker</span> <span class="kn">import</span> <span class="n">_get_permanent_flag_summary</span><span class="p">,</span> <span class="n">_get_iteration</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">sdutils</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SDBLFlagSummary">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary">[docs]</a>
+<span class="k">class</span> <span class="nc">SDBLFlagSummary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class of single dish flagging task.</span>
+
+<span class="sd">    This class defines per spwid flagging operation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span><span class="n">Context</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span><span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">antid_list</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">fieldid_list</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                  <span class="n">spwid_list</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">pols_list</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">thresholds</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">flagRule</span><span class="p">:</span><span class="n">Dict</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct SDBLFlagSummary instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context      : pipeline Context</span>
+<span class="sd">            ms           : Measurement Set</span>
+<span class="sd">            antid_list   : list of antenna ID</span>
+<span class="sd">            fieldid_list : list of field ID</span>
+<span class="sd">            spwid_list   : list of SpW ID</span>
+<span class="sd">            pols_list    : list of pols</span>
+<span class="sd">            thresholds   : list of threshold</span>
+<span class="sd">            flagRule     : FlagRule</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (none)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">ms</span>
+        <span class="n">datatable_name</span> <span class="o">=</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">get_data_table_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span> <span class="o">=</span> <span class="n">DataTable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">datatable_name</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antid_list</span> <span class="o">=</span> <span class="n">antid_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fieldid_list</span> <span class="o">=</span> <span class="n">fieldid_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwid_list</span> <span class="o">=</span> <span class="n">spwid_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pols_list</span> <span class="o">=</span> <span class="n">pols_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thres_value</span> <span class="o">=</span> <span class="n">thresholds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flagRule</span> <span class="o">=</span> <span class="n">flagRule</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bunit</span> <span class="o">=</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">get_brightness_unit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">defaultunit</span><span class="o">=</span><span class="s1">&#39;Jy/beam&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SDBLFlagSummary.execute">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.execute">[docs]</a>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span><span class="n">List</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Summarizes flagging results.</span>
+
+<span class="sd">        Iterates over antenna and polarization for a certain spw ID</span>
+<span class="sd">        Returns:</span>
+<span class="sd">           flagSummary : flagsummary</span>
+<span class="sd">           plot_list   : list of plot objects</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception when is_baselined is False for baselined data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">datatable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span>
+        <span class="n">origin_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
+        <span class="n">antid_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">antid_list</span>
+        <span class="n">fieldid_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldid_list</span>
+        <span class="n">spwid_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spwid_list</span>
+        <span class="n">pols_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pols_list</span>
+        <span class="n">thresholds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thres_value</span>
+        <span class="n">flagRule</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flagRule</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Members to be processed in worker class:&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">antid_list</span><span class="p">,</span> <span class="n">fieldid_list</span><span class="p">,</span> <span class="n">spwid_list</span><span class="p">,</span> <span class="n">pols_list</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">%s</span><span class="s1">: Antenna </span><span class="si">%s</span><span class="s1"> Field </span><span class="si">%d</span><span class="s1"> Spw </span><span class="si">%d</span><span class="s1"> Pol </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+
+        <span class="c1"># create output directory, stage#, manually</span>
+        <span class="n">stage_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span>
+        <span class="n">FigFileDir</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="o">+</span><span class="s2">&quot;/stage</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">stage_number</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">FigFileDir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">FigFileDir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1">#handle race condition in Tier-0 operation gracefully</span>
+        <span class="n">FigFileDir</span> <span class="o">+=</span> <span class="s2">&quot;/&quot;</span>
+
+        <span class="n">flagSummary</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">plot_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># loop over members (practically, per antenna loop in an MS)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">antid</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">pollist</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">antid_list</span><span class="p">,</span> <span class="n">fieldid_list</span><span class="p">,</span> <span class="n">spwid_list</span><span class="p">,</span> <span class="n">pols_list</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Performing flagging for </span><span class="si">%s</span><span class="s1"> Antenna </span><span class="si">%d</span><span class="s1"> Field </span><span class="si">%d</span><span class="s1"> Spw </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">antid</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">))</span>
+            <span class="n">filename_in</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">ant_name</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">antid</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">asdm</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">asdm_name_from_ms</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+            <span class="n">field_name</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">fieldid</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;*** Summarizing table: </span><span class="si">%s</span><span class="s2"> ***&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename_in</span><span class="p">)))</span>
+            <span class="n">time_table</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">get_timetable</span><span class="p">(</span><span class="n">antid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">origin_ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">)</span>
+            <span class="c1"># Select time gap list: &#39;subscan&#39;: large gap; &#39;raster&#39;: small gap</span>
+            <span class="k">if</span> <span class="n">flagRule</span><span class="p">[</span><span class="s1">&#39;Flagging&#39;</span><span class="p">][</span><span class="s1">&#39;ApplicableDuration&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;subscan&quot;</span><span class="p">:</span>
+                <span class="n">TimeTable</span> <span class="o">=</span> <span class="n">time_table</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">TimeTable</span> <span class="o">=</span> <span class="n">time_table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">flatiter</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">([</span><span class="n">chunks</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">chunks</span> <span class="ow">in</span> <span class="n">TimeTable</span><span class="p">])</span>
+            <span class="n">dt_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">chunk</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">flatiter</span><span class="p">]</span>
+            <span class="n">iteration</span> <span class="o">=</span> <span class="n">_get_iteration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_reduction_group</span><span class="p">,</span>
+                                       <span class="n">ms</span><span class="p">,</span> <span class="n">antid</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+            <span class="n">time_gap</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">get_timegap</span><span class="p">(</span><span class="n">antid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">asrow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                             <span class="n">ms</span><span class="o">=</span><span class="n">origin_ms</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="n">fieldid</span><span class="p">)</span>
+            <span class="c1"># time_gap[0]: PosGap, time_gap[1]: TimeGap</span>
+
+            <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pollist</span><span class="p">:</span>
+                <span class="n">ddobj</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spwid</span><span class="p">)</span>
+                <span class="n">polid</span> <span class="o">=</span> <span class="n">ddobj</span><span class="o">.</span><span class="n">get_polarization_id</span><span class="p">(</span><span class="n">pol</span><span class="p">)</span>
+                <span class="c1"># generate summary plot</span>
+                <span class="n">FigFileRoot</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;FlagStat_</span><span class="si">%s</span><span class="s2">_ant</span><span class="si">%d</span><span class="s2">_field</span><span class="si">%d</span><span class="s2">_spw</span><span class="si">%d</span><span class="s2">_pol</span><span class="si">%d</span><span class="s2">_iter</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span>
+                               <span class="p">(</span><span class="n">asdm</span><span class="p">,</span> <span class="n">antid</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">polid</span><span class="p">,</span> <span class="n">iteration</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">thresholds</span><span class="p">)):</span>
+                    <span class="n">thres</span> <span class="o">=</span> <span class="n">thresholds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">thres</span><span class="p">[</span><span class="s1">&#39;msname&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span> <span class="ow">and</span> <span class="n">thres</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">antid</span> <span class="ow">and</span>
+                            <span class="n">thres</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">fieldid</span> <span class="ow">and</span> <span class="n">thres</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">spwid</span> <span class="ow">and</span>
+                            <span class="n">thres</span><span class="p">[</span><span class="s1">&#39;pol&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">pol</span><span class="p">):</span>
+                        <span class="n">final_thres</span> <span class="o">=</span> <span class="n">thres</span><span class="p">[</span><span class="s1">&#39;result_threshold&#39;</span><span class="p">]</span>
+                        <span class="n">is_baselined</span> <span class="o">=</span> <span class="n">thres</span><span class="p">[</span><span class="s1">&#39;baselined&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;baselined&#39;</span> <span class="ow">in</span> <span class="n">thres</span> <span class="k">else</span> <span class="kc">False</span>
+                        <span class="n">thresholds</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">is_baselined</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Internal error: is_baselined flag is set to False for baselined data.&quot;</span><span class="p">)</span>
+                <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+                <span class="c1"># create FlagRule_local</span>
+                <span class="n">FlagRule_local</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">flagRule</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">is_baselined</span><span class="p">:</span>
+                    <span class="n">FlagRule_local</span><span class="p">[</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">FlagRule_local</span><span class="p">[</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">FlagRule_local</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="c1"># pack flag values</span>
+                <span class="n">FlaggedRows</span><span class="p">,</span> <span class="n">FlaggedRowsCategory</span><span class="p">,</span> <span class="n">PermanentFlag</span><span class="p">,</span> <span class="n">NPp_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pack_flags</span><span class="p">(</span> <span class="n">datatable</span><span class="p">,</span> <span class="n">polid</span><span class="p">,</span> <span class="n">dt_idx</span><span class="p">,</span> <span class="n">FlagRule_local</span> <span class="p">)</span>
+                <span class="c1"># create summary data and pack statistics</span>
+                <span class="n">nflags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_summary_data</span><span class="p">(</span> <span class="n">FlaggedRows</span><span class="p">,</span> <span class="n">FlaggedRowsCategory</span> <span class="p">)</span>
+                <span class="n">nrow</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">dt_idx</span> <span class="p">)</span>
+                <span class="n">stat_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">frac</span><span class="o">=</span><span class="mf">100.0</span><span class="o">*</span><span class="n">v</span><span class="o">/</span><span class="n">nrow</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">nflags</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="p">)</span>
+
+                <span class="c1"># create plots</span>
+                <span class="c1">### instance to be made outside pol loop if overplotting pols</span>
+                <span class="n">flagplotter</span> <span class="o">=</span> <span class="n">SDFlagPlotter</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">datatable</span><span class="p">,</span> <span class="n">antid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">time_gap</span><span class="p">,</span> <span class="n">FigFileDir</span> <span class="p">)</span>
+                <span class="n">flagplotter</span><span class="o">.</span><span class="n">register_data</span><span class="p">(</span> <span class="n">pol</span><span class="p">,</span> <span class="n">is_baselined</span><span class="p">,</span> <span class="n">FlagRule_local</span><span class="p">,</span> <span class="n">PermanentFlag</span><span class="p">,</span> <span class="n">NPp_dict</span><span class="p">,</span> <span class="n">final_thres</span> <span class="p">)</span>
+                <span class="n">plots</span> <span class="o">=</span> <span class="n">flagplotter</span><span class="o">.</span><span class="n">create_plots</span><span class="p">(</span> <span class="n">FigFileRoot</span> <span class="p">)</span>
+                <span class="n">flag_desc</span> <span class="o">=</span> <span class="n">SDFlagRule</span><span class="o">.</span><span class="n">SDFlag_Desc</span>
+                <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="n">plot</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">flag_desc</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="p">[</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">flag_desc</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">plot</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">plot_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">{</span> <span class="s1">&#39;FigFileDir&#39;</span> <span class="p">:</span> <span class="n">FigFileDir</span><span class="p">,</span>
+                                        <span class="s1">&#39;FigFileRoot&#39;</span> <span class="p">:</span> <span class="n">FigFileRoot</span><span class="p">,</span>
+                                        <span class="s1">&#39;plot&#39;</span> <span class="p">:</span> <span class="n">plot</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">],</span>
+                                        <span class="s1">&#39;vis&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                        <span class="s1">&#39;type&#39;</span> <span class="p">:</span> <span class="n">plot</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">],</span>
+                                        <span class="s1">&#39;ant&#39;</span> <span class="p">:</span> <span class="n">ant_name</span><span class="p">,</span>
+                                        <span class="s1">&#39;spw&#39;</span> <span class="p">:</span> <span class="n">spwid</span><span class="p">,</span>
+                                        <span class="s1">&#39;pol&#39;</span> <span class="p">:</span> <span class="n">pol</span><span class="p">,</span>
+                                        <span class="s1">&#39;field&#39;</span> <span class="p">:</span> <span class="n">field_name</span><span class="p">,</span>
+                                        <span class="s1">&#39;outlier_Tsys&#39;</span>         <span class="p">:</span> <span class="n">stat_dict</span><span class="p">[</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">],</span>
+                                        <span class="s1">&#39;rms_prefit&#39;</span>           <span class="p">:</span> <span class="n">stat_dict</span><span class="p">[</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">],</span>
+                                        <span class="s1">&#39;rms_postfit&#39;</span>          <span class="p">:</span> <span class="n">stat_dict</span><span class="p">[</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">],</span>
+                                        <span class="s1">&#39;runmean_prefit&#39;</span>       <span class="p">:</span> <span class="n">stat_dict</span><span class="p">[</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">],</span>
+                                        <span class="s1">&#39;runmean_postfit&#39;</span>      <span class="p">:</span> <span class="n">stat_dict</span><span class="p">[</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">],</span>
+                                        <span class="s1">&#39;expected_rms_prefit&#39;</span>  <span class="p">:</span> <span class="n">stat_dict</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">],</span>
+                                        <span class="s1">&#39;expected_rms_postfit&#39;</span> <span class="p">:</span> <span class="n">stat_dict</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">],</span>
+                                        <span class="s1">&#39;myflag&#39;</span>               <span class="p">:</span> <span class="n">stat_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                                    <span class="p">}</span> <span class="p">)</span>
+                <span class="c1"># delete variables not used after all</span>
+                <span class="k">del</span> <span class="n">FlagRule_local</span><span class="p">,</span> <span class="n">NPp_dict</span>
+
+                <span class="c1"># show flags on LOG</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">show_flags</span><span class="p">(</span> <span class="n">nrow</span><span class="p">,</span> <span class="n">is_baselined</span><span class="p">,</span> <span class="n">FlaggedRows</span><span class="p">,</span> <span class="n">FlaggedRowsCategory</span> <span class="p">)</span>
+
+                <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Plot flags End: Elapsed time = </span><span class="si">%.1f</span><span class="s1"> sec&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span> <span class="p">)</span>
+                <span class="n">flagSummary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">{</span> <span class="s1">&#39;nrow&#39;</span><span class="p">:</span> <span class="n">nrow</span><span class="p">,</span> <span class="s1">&#39;nflags&#39;</span><span class="p">:</span> <span class="n">nflags</span> <span class="p">}</span> <span class="p">)</span>
+                <span class="n">flagplotter</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;PROFILE execute: elapsed time is </span><span class="si">%s</span><span class="s1"> sec&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">flagSummary</span><span class="p">,</span> <span class="n">plot_list</span></div>
+
+
+<div class="viewcode-block" id="SDBLFlagSummary.pack_flags">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.pack_flags">[docs]</a>
+    <span class="k">def</span> <span class="nf">pack_flags</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">datatable</span><span class="p">:</span><span class="n">DataTable</span><span class="p">,</span> <span class="n">polid</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">FlagRule_local</span><span class="p">:</span><span class="n">Dict</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Dict</span> <span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pack flag data into data sets.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            datatable      : DataTable</span>
+<span class="sd">            polid          : polarization ID</span>
+<span class="sd">            ids            : row numbers</span>
+<span class="sd">            FlagRule_local : FlagRule modified for local use</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            FlaggedRows         : flagged rows</span>
+<span class="sd">            FlaggedRowsCategory : flagged rows by category</span>
+<span class="sd">            PermanentFlag       : permanent flag</span>
+<span class="sd">            NPp_dict            : flagging data summarized for weblog</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">FlaggedRows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">PermanentFlag</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">NROW</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+
+        <span class="n">NPprows</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">NPptime</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span> <span class="s1">&#39;TsysFlag&#39;</span><span class="p">,</span> <span class="s1">&#39;BaselineFlag&#39;</span> <span class="p">]:</span>
+            <span class="n">NPprows</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">NROW</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span> <span class="p">)</span>
+            <span class="n">NPptime</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">NROW</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span> <span class="p">)</span>
+
+        <span class="n">NPpdata</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">NPpflag</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span> <span class="s1">&#39;TsysFlag&#39;</span><span class="p">,</span> <span class="s1">&#39;OnlineFlag&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">,</span> <span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">,</span> <span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">,</span> <span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span> <span class="p">]:</span>
+            <span class="n">NPpdata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">NROW</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span> <span class="p">)</span>
+            <span class="n">NPpflag</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">NROW</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span> <span class="p">)</span>
+
+        <span class="n">FlaggedRowsCategory</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">((</span>
+            <span class="p">(</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">,</span> <span class="p">[]),</span>              <span class="p">(</span><span class="s1">&#39;OnlineFlag&#39;</span><span class="p">,</span> <span class="p">[]),</span>
+            <span class="p">(</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">,</span> <span class="p">[]),</span>        <span class="p">(</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">,</span> <span class="p">[]),</span>
+            <span class="p">(</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">,</span> <span class="p">[]),</span>    <span class="p">(</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">,</span> <span class="p">[]),</span>
+            <span class="p">(</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">,[]),</span> <span class="p">(</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="p">))</span>
+
+        <span class="c1"># Plot statistics</span>
+        <span class="c1"># Store data for plotting</span>
+        <span class="k">for</span> <span class="n">N</span><span class="p">,</span> <span class="n">ID</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ids</span><span class="p">):</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;ROW&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">)</span>
+            <span class="n">dtime</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">)</span>
+            <span class="c1"># Check every flags to create summary flag</span>
+            <span class="n">tFLAG</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">)[</span><span class="n">polid</span><span class="p">]</span>
+            <span class="n">tPFLAG</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;FLAG_PERMANENT&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">)[</span><span class="n">polid</span><span class="p">]</span>
+            <span class="n">tTSYS</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;TSYS&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">)[</span><span class="n">polid</span><span class="p">]</span>
+            <span class="n">tSTAT</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;STATISTICS&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">)[</span><span class="n">polid</span><span class="p">]</span>
+
+            <span class="c1"># FLAG_SUMMARY</span>
+            <span class="n">Flag</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;FLAG_SUMMARY&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">)[</span><span class="n">polid</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">Flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">FlaggedRows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="c1"># permanent flag</span>
+            <span class="n">PermanentFlag</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">_get_permanent_flag_summary</span><span class="p">(</span><span class="n">tPFLAG</span><span class="p">,</span> <span class="n">FlagRule_local</span><span class="p">)</span> <span class="p">)</span>
+            <span class="c1"># Tsys flag</span>
+            <span class="n">NPpdata</span><span class="p">[</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">tTSYS</span>
+            <span class="n">NPpflag</span><span class="p">[</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">tPFLAG</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">NPprows</span><span class="p">[</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span>
+            <span class="n">NPptime</span><span class="p">[</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtime</span>
+            <span class="k">if</span> <span class="n">FlagRule_local</span><span class="p">[</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">tPFLAG</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="c1"># Online flag</span>
+            <span class="k">if</span> <span class="n">tPFLAG</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;OnlineFlag&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+            <span class="n">NPprows</span><span class="p">[</span><span class="s1">&#39;BaselineFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span>
+            <span class="n">NPptime</span><span class="p">[</span><span class="s1">&#39;BaselineFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtime</span>
+            <span class="c1"># RMS flag before baseline fit</span>
+            <span class="n">NPpdata</span><span class="p">[</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">tSTAT</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">NPpflag</span><span class="p">[</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">tFLAG</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">FlagRule_local</span><span class="p">[</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">tFLAG</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="c1">#  RMS flag after baseline fit</span>
+            <span class="n">NPpdata</span><span class="p">[</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">tSTAT</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">NPpflag</span><span class="p">[</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">tFLAG</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">FlagRule_local</span><span class="p">[</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">tFLAG</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="c1"># Running mean flag before baseline fit</span>
+            <span class="n">NPpdata</span><span class="p">[</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">tSTAT</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="n">NPpflag</span><span class="p">[</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">tFLAG</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">FlagRule_local</span><span class="p">[</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">tFLAG</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="c1"># Running mean flag after baseline fit</span>
+            <span class="n">NPpdata</span><span class="p">[</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">tSTAT</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">NPpflag</span><span class="p">[</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">tFLAG</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">FlagRule_local</span><span class="p">[</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">tFLAG</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="c1"># Expected RMS flag before baseline fit</span>
+            <span class="n">NPpdata</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">tSTAT</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+            <span class="n">NPpflag</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">tFLAG</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">FlagRule_local</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">tFLAG</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="c1"># Expected RMS flag after baseline fit</span>
+            <span class="n">NPpdata</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">tSTAT</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+            <span class="n">NPpflag</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">][</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">tFLAG</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">FlagRule_local</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">tFLAG</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="c1"># data store finished</span>
+
+        <span class="n">NPp_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;data&#39;</span> <span class="p">:</span> <span class="n">NPpdata</span><span class="p">,</span>
+            <span class="s1">&#39;flag&#39;</span> <span class="p">:</span> <span class="n">NPpflag</span><span class="p">,</span>
+            <span class="s1">&#39;rows&#39;</span> <span class="p">:</span> <span class="n">NPprows</span><span class="p">,</span>
+            <span class="s1">&#39;time&#39;</span> <span class="p">:</span> <span class="n">NPptime</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">FlaggedRows</span><span class="p">,</span> <span class="n">FlaggedRowsCategory</span><span class="p">,</span> <span class="n">PermanentFlag</span><span class="p">,</span> <span class="n">NPp_dict</span></div>
+
+
+
+<div class="viewcode-block" id="SDBLFlagSummary.show_flags">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.show_flags">[docs]</a>
+    <span class="k">def</span> <span class="nf">show_flags</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">nrow</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">is_baselined</span><span class="p">:</span><span class="nb">bool</span><span class="p">,</span> <span class="n">FlaggedRows</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">FlaggedRowsCategory</span><span class="p">:</span><span class="n">Dict</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Output flag statistics to LOG.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nrow                : number of rows</span>
+<span class="sd">            is_baselined        : True if baselined, Fause if not</span>
+<span class="sd">            FlaggedRows         : flagged rows</span>
+<span class="sd">            FlaggedRowsCategory : flagged rows by category</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (none)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Tsys</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Number of rows flagged by Tsys = </span><span class="si">%d</span><span class="s1"> /</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">]),</span> <span class="n">nrow</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Flagged rows by Tsys =</span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">])</span>
+        <span class="c1"># on-line flag</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Number of rows flagged by on-line flag = </span><span class="si">%d</span><span class="s1"> /</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;OnlineFlag&#39;</span><span class="p">]),</span> <span class="n">nrow</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;OnlineFlag&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Flagged rows by Online-flag =</span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;OnlineFlag&#39;</span><span class="p">])</span>
+        <span class="c1"># Pre-fit RMS</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Number of rows flagged by the baseline fluctuation (pre-fit) = </span><span class="si">%d</span><span class="s1"> /</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span>
+                 <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">]),</span> <span class="n">nrow</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Flagged rows by the baseline fluctuation (pre-fit) =</span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">])</span>
+        <span class="c1"># Post-fit RMS</span>
+        <span class="k">if</span> <span class="n">is_baselined</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Number of rows flagged by the baseline fluctuation (post-fit) = </span><span class="si">%d</span><span class="s1"> /</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span>
+                     <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">]),</span> <span class="n">nrow</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Flagged rows by the baseline fluctuation (post-fit) =</span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">])</span>
+        <span class="c1"># Pre-fit running mean</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Number of rows flagged by the difference from running mean (pre-fit) = </span><span class="si">%d</span><span class="s1"> /</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span>
+                 <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">]),</span> <span class="n">nrow</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Flagged rows by the difference from running mean (pre-fit) =</span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">])</span>
+        <span class="c1"># Post-fit running mean</span>
+        <span class="k">if</span> <span class="n">is_baselined</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Number of rows flagged by the difference from running mean (post-fit) = </span><span class="si">%d</span><span class="s1"> /</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span>
+                     <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">]),</span> <span class="n">nrow</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Flagged rows by the difference from running mean (post-fit) =</span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">])</span>
+        <span class="c1"># Pre-fit expected RMS</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Number of rows flagged by the expected RMS (pre-fit) = </span><span class="si">%d</span><span class="s1"> /</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">]),</span> <span class="n">nrow</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Flagged rows by the expected RMS (pre-fit) =</span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">])</span>
+        <span class="c1"># Post-fit expected RMS</span>
+        <span class="k">if</span> <span class="n">is_baselined</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Number of rows flagged by the expected RMS (post-fit) = </span><span class="si">%d</span><span class="s1"> /</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span>
+                     <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">]),</span> <span class="n">nrow</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Flagged rows by the expected RMS (post-fit) =</span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">])</span>
+
+        <span class="c1"># All categories</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Number of rows flagged by all active categories = </span><span class="si">%d</span><span class="s1"> /</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRows</span><span class="p">),</span> <span class="n">nrow</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">FlaggedRows</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Final Flagged rows by all active categories =</span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">FlaggedRows</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SDBLFlagSummary.create_summary_data">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.create_summary_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_summary_data</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">FlaggedRows</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">FlaggedRowsCategory</span><span class="p">:</span><span class="n">Dict</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Count flagged rows for each flagging reason.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            FlaggedRows         : flagged rows</span>
+<span class="sd">            FlaggedRowsCategory : flagged rows by category</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary of flag counts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Flag counts</span>
+        <span class="n">flag_nums</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">flag_nums</span><span class="p">[</span><span class="s1">&#39;Flagged&#39;</span><span class="p">]</span>                <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">FlaggedRows</span> <span class="p">)</span>
+        <span class="n">flag_nums</span><span class="p">[</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">]</span>               <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">]</span> <span class="p">)</span>
+        <span class="n">flag_nums</span><span class="p">[</span><span class="s1">&#39;OnlineFlag&#39;</span><span class="p">]</span>             <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;OnlineFlag&#39;</span><span class="p">]</span> <span class="p">)</span>
+
+        <span class="n">flag_nums</span><span class="p">[</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">]</span>         <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsPostFitFlag&#39;</span><span class="p">]</span> <span class="p">)</span>
+        <span class="n">flag_nums</span><span class="p">[</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">]</span>          <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">]</span> <span class="p">)</span>
+        <span class="n">flag_nums</span><span class="p">[</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">]</span>     <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RunMeanPostFitFlag&#39;</span><span class="p">]</span> <span class="p">)</span>
+        <span class="n">flag_nums</span><span class="p">[</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">]</span>      <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RunMeanPreFitFlag&#39;</span><span class="p">]</span> <span class="p">)</span>
+        <span class="n">flag_nums</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPostFitFlag&#39;</span><span class="p">]</span> <span class="p">)</span>
+        <span class="n">flag_nums</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">FlaggedRowsCategory</span><span class="p">[</span><span class="s1">&#39;RmsExpectedPreFitFlag&#39;</span><span class="p">]</span> <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">flag_nums</span></div>
+</div>
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

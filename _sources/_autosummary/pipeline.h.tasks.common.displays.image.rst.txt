@@ -1,0 +1,22 @@
+pipeline.h.tasks.common.displays.image
+======================================
+
+.. automodule:: pipeline.h.tasks.common.displays.image
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      sanitize
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ColorConverter
+      Colormap
+      ImageDisplay
+      Normalize
+      Rectangle
+   

@@ -1,0 +1,20 @@
+pipeline.hifa.tasks.sessionrefant.sessionrefant
+===============================================
+
+.. automodule:: pipeline.hifa.tasks.sessionrefant.sessionrefant
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      reduce
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SessionRefAnt
+      SessionRefAntInputs
+      SessionRefAntResults
+   

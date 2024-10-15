@@ -1,0 +1,15 @@
+pipeline.hif.tasks.mstransform.mstransform
+==========================================
+
+.. automodule:: pipeline.hif.tasks.mstransform.mstransform
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      Mstransform
+      MstransformInputs
+      MstransformResults
+   

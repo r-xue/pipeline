@@ -1,0 +1,13 @@
+pipeline.hif.tasks.tclean.autoscalthresholdsequence
+===================================================
+
+.. automodule:: pipeline.hif.tasks.tclean.autoscalthresholdsequence
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AutoScalThresholdSequence
+      BaseCleanSequence
+   

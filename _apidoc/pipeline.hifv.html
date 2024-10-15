@@ -1,0 +1,675 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv package &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.hifv package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/pipeline.hifv.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hifv-package">
+<h1>pipeline.hifv package<a class="headerlink" href="#pipeline-hifv-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_analyzestokescubes">pipeline.hifv.cli.hifv_analyzestokescubes module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_analyzestokescubes.hifv_analyzestokescubes"><code class="docutils literal notranslate"><span class="pre">hifv_analyzestokescubes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_applycals">pipeline.hifv.cli.hifv_applycals module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_applycals.hifv_applycals"><code class="docutils literal notranslate"><span class="pre">hifv_applycals()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_checkflag">pipeline.hifv.cli.hifv_checkflag module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_checkflag.hifv_checkflag"><code class="docutils literal notranslate"><span class="pre">hifv_checkflag()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_circfeedpolcal">pipeline.hifv.cli.hifv_circfeedpolcal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_circfeedpolcal.hifv_circfeedpolcal"><code class="docutils literal notranslate"><span class="pre">hifv_circfeedpolcal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_exportdata">pipeline.hifv.cli.hifv_exportdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_exportdata.hifv_exportdata"><code class="docutils literal notranslate"><span class="pre">hifv_exportdata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_exportvlassdata">pipeline.hifv.cli.hifv_exportvlassdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_exportvlassdata.hifv_exportvlassdata"><code class="docutils literal notranslate"><span class="pre">hifv_exportvlassdata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_finalcals">pipeline.hifv.cli.hifv_finalcals module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_finalcals.hifv_finalcals"><code class="docutils literal notranslate"><span class="pre">hifv_finalcals()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_fixpointing">pipeline.hifv.cli.hifv_fixpointing module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_fixpointing.hifv_fixpointing"><code class="docutils literal notranslate"><span class="pre">hifv_fixpointing()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_flagcal">pipeline.hifv.cli.hifv_flagcal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_flagcal.hifv_flagcal"><code class="docutils literal notranslate"><span class="pre">hifv_flagcal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_flagdata">pipeline.hifv.cli.hifv_flagdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_flagdata.hifv_flagdata"><code class="docutils literal notranslate"><span class="pre">hifv_flagdata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_flagtargetsdata">pipeline.hifv.cli.hifv_flagtargetsdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_flagtargetsdata.hifv_flagtargetsdata"><code class="docutils literal notranslate"><span class="pre">hifv_flagtargetsdata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_fluxboot">pipeline.hifv.cli.hifv_fluxboot module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_fluxboot.hifv_fluxboot"><code class="docutils literal notranslate"><span class="pre">hifv_fluxboot()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_gaincurves">pipeline.hifv.cli.hifv_gaincurves module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_gaincurves.hifv_gaincurves"><code class="docutils literal notranslate"><span class="pre">hifv_gaincurves()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_hanning">pipeline.hifv.cli.hifv_hanning module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_hanning.hifv_hanning"><code class="docutils literal notranslate"><span class="pre">hifv_hanning()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_importdata">pipeline.hifv.cli.hifv_importdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_importdata.hifv_importdata"><code class="docutils literal notranslate"><span class="pre">hifv_importdata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_mstransform">pipeline.hifv.cli.hifv_mstransform module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_mstransform.hifv_mstransform"><code class="docutils literal notranslate"><span class="pre">hifv_mstransform()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_opcal">pipeline.hifv.cli.hifv_opcal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_opcal.hifv_opcal"><code class="docutils literal notranslate"><span class="pre">hifv_opcal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_pbcor">pipeline.hifv.cli.hifv_pbcor module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_pbcor.hifv_pbcor"><code class="docutils literal notranslate"><span class="pre">hifv_pbcor()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_plotsummary">pipeline.hifv.cli.hifv_plotsummary module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_plotsummary.hifv_plotsummary"><code class="docutils literal notranslate"><span class="pre">hifv_plotsummary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_priorcals">pipeline.hifv.cli.hifv_priorcals module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_priorcals.hifv_priorcals"><code class="docutils literal notranslate"><span class="pre">hifv_priorcals()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_restoredata">pipeline.hifv.cli.hifv_restoredata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_restoredata.hifv_restoredata"><code class="docutils literal notranslate"><span class="pre">hifv_restoredata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_restorepims">pipeline.hifv.cli.hifv_restorepims module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_restorepims.hifv_restorepims"><code class="docutils literal notranslate"><span class="pre">hifv_restorepims()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_rqcal">pipeline.hifv.cli.hifv_rqcal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_rqcal.hifv_rqcal"><code class="docutils literal notranslate"><span class="pre">hifv_rqcal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_selfcal">pipeline.hifv.cli.hifv_selfcal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_selfcal.hifv_selfcal"><code class="docutils literal notranslate"><span class="pre">hifv_selfcal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_semiFinalBPdcals">pipeline.hifv.cli.hifv_semiFinalBPdcals module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_semiFinalBPdcals.hifv_semiFinalBPdcals"><code class="docutils literal notranslate"><span class="pre">hifv_semiFinalBPdcals()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_solint">pipeline.hifv.cli.hifv_solint module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_solint.hifv_solint"><code class="docutils literal notranslate"><span class="pre">hifv_solint()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_statwt">pipeline.hifv.cli.hifv_statwt module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_statwt.hifv_statwt"><code class="docutils literal notranslate"><span class="pre">hifv_statwt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_swpowcal">pipeline.hifv.cli.hifv_swpowcal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_swpowcal.hifv_swpowcal"><code class="docutils literal notranslate"><span class="pre">hifv_swpowcal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_syspower">pipeline.hifv.cli.hifv_syspower module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_syspower.hifv_syspower"><code class="docutils literal notranslate"><span class="pre">hifv_syspower()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_targetflag">pipeline.hifv.cli.hifv_targetflag module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_targetflag.hifv_targetflag"><code class="docutils literal notranslate"><span class="pre">hifv_targetflag()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_tecmaps">pipeline.hifv.cli.hifv_tecmaps module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_tecmaps.hifv_tecmaps"><code class="docutils literal notranslate"><span class="pre">hifv_tecmaps()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_testBPdcals">pipeline.hifv.cli.hifv_testBPdcals module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_testBPdcals.hifv_testBPdcals"><code class="docutils literal notranslate"><span class="pre">hifv_testBPdcals()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_vlasetjy">pipeline.hifv.cli.hifv_vlasetjy module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_vlasetjy.hifv_vlasetjy"><code class="docutils literal notranslate"><span class="pre">hifv_vlasetjy()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli.hifv_vlassmasking">pipeline.hifv.cli.hifv_vlassmasking module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_vlassmasking.hifv_vlassmasking"><code class="docutils literal notranslate"><span class="pre">hifv_vlassmasking()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html#module-pipeline.hifv.cli">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_analyzestokescubes"><code class="docutils literal notranslate"><span class="pre">hifv_analyzestokescubes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_applycals"><code class="docutils literal notranslate"><span class="pre">hifv_applycals()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_checkflag"><code class="docutils literal notranslate"><span class="pre">hifv_checkflag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_circfeedpolcal"><code class="docutils literal notranslate"><span class="pre">hifv_circfeedpolcal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_exportdata"><code class="docutils literal notranslate"><span class="pre">hifv_exportdata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_exportvlassdata"><code class="docutils literal notranslate"><span class="pre">hifv_exportvlassdata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_finalcals"><code class="docutils literal notranslate"><span class="pre">hifv_finalcals()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_fixpointing"><code class="docutils literal notranslate"><span class="pre">hifv_fixpointing()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_flagcal"><code class="docutils literal notranslate"><span class="pre">hifv_flagcal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_flagdata"><code class="docutils literal notranslate"><span class="pre">hifv_flagdata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_flagtargetsdata"><code class="docutils literal notranslate"><span class="pre">hifv_flagtargetsdata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_fluxboot"><code class="docutils literal notranslate"><span class="pre">hifv_fluxboot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_gaincurves"><code class="docutils literal notranslate"><span class="pre">hifv_gaincurves()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_hanning"><code class="docutils literal notranslate"><span class="pre">hifv_hanning()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_importdata"><code class="docutils literal notranslate"><span class="pre">hifv_importdata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_mstransform"><code class="docutils literal notranslate"><span class="pre">hifv_mstransform()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_opcal"><code class="docutils literal notranslate"><span class="pre">hifv_opcal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_pbcor"><code class="docutils literal notranslate"><span class="pre">hifv_pbcor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_plotsummary"><code class="docutils literal notranslate"><span class="pre">hifv_plotsummary()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_priorcals"><code class="docutils literal notranslate"><span class="pre">hifv_priorcals()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_restoredata"><code class="docutils literal notranslate"><span class="pre">hifv_restoredata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_restorepims"><code class="docutils literal notranslate"><span class="pre">hifv_restorepims()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_rqcal"><code class="docutils literal notranslate"><span class="pre">hifv_rqcal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_selfcal"><code class="docutils literal notranslate"><span class="pre">hifv_selfcal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_semiFinalBPdcals"><code class="docutils literal notranslate"><span class="pre">hifv_semiFinalBPdcals()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_solint"><code class="docutils literal notranslate"><span class="pre">hifv_solint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_statwt"><code class="docutils literal notranslate"><span class="pre">hifv_statwt()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_swpowcal"><code class="docutils literal notranslate"><span class="pre">hifv_swpowcal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_syspower"><code class="docutils literal notranslate"><span class="pre">hifv_syspower()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_targetflag"><code class="docutils literal notranslate"><span class="pre">hifv_targetflag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_tecmaps"><code class="docutils literal notranslate"><span class="pre">hifv_tecmaps()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_testBPdcals"><code class="docutils literal notranslate"><span class="pre">hifv_testBPdcals()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_vlasetjy"><code class="docutils literal notranslate"><span class="pre">hifv_vlasetjy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.cli.html#pipeline.hifv.cli.hifv_vlassmasking"><code class="docutils literal notranslate"><span class="pre">hifv_vlassmasking()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.heuristics.html">pipeline.hifv.heuristics package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.heuristics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.heuristics.html#module-pipeline.hifv.heuristics.bandpass">pipeline.hifv.heuristics.bandpass module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.bandpass.computeChanFlag"><code class="docutils literal notranslate"><span class="pre">computeChanFlag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.bandpass.do_bandpass"><code class="docutils literal notranslate"><span class="pre">do_bandpass()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.bandpass.do_bandpassweakbp"><code class="docutils literal notranslate"><span class="pre">do_bandpassweakbp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.bandpass.removeRows"><code class="docutils literal notranslate"><span class="pre">removeRows()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.bandpass.weakbp"><code class="docutils literal notranslate"><span class="pre">weakbp()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.heuristics.html#module-pipeline.hifv.heuristics.lib_EVLApipeutils">pipeline.hifv.heuristics.lib_EVLApipeutils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.lib_EVLApipeutils.getBCalStatistics"><code class="docutils literal notranslate"><span class="pre">getBCalStatistics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.lib_EVLApipeutils.getCalFlaggedSoln"><code class="docutils literal notranslate"><span class="pre">getCalFlaggedSoln()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.lib_EVLApipeutils.set_add_model_column_parameters"><code class="docutils literal notranslate"><span class="pre">set_add_model_column_parameters()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.heuristics.html#module-pipeline.hifv.heuristics.rfi">pipeline.hifv.heuristics.rfi module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.RflagDevHeuristic"><code class="docutils literal notranslate"><span class="pre">RflagDevHeuristic</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.RflagDevHeuristic.calculate"><code class="docutils literal notranslate"><span class="pre">RflagDevHeuristic.calculate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.RflagDevHeuristic.get_vla_sefd"><code class="docutils literal notranslate"><span class="pre">RflagDevHeuristic.get_vla_sefd()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.get_amp_range"><code class="docutils literal notranslate"><span class="pre">get_amp_range()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.mssel_valid"><code class="docutils literal notranslate"><span class="pre">mssel_valid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.plotms_get_autorange"><code class="docutils literal notranslate"><span class="pre">plotms_get_autorange()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.plotms_get_xyrange"><code class="docutils literal notranslate"><span class="pre">plotms_get_xyrange()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.rfi.test_checkflag_dataselect"><code class="docutils literal notranslate"><span class="pre">test_checkflag_dataselect()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.heuristics.html#module-pipeline.hifv.heuristics.specline_detect">pipeline.hifv.heuristics.specline_detect module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.specline_detect.detect_spectral_lines"><code class="docutils literal notranslate"><span class="pre">detect_spectral_lines()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.heuristics.html#module-pipeline.hifv.heuristics.standard">pipeline.hifv.heuristics.standard module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.standard.Standard"><code class="docutils literal notranslate"><span class="pre">Standard</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.standard.Standard.calculate"><code class="docutils literal notranslate"><span class="pre">Standard.calculate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.standard.Standard.ephemeris_fields"><code class="docutils literal notranslate"><span class="pre">Standard.ephemeris_fields</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline-hifv-heuristics-standard-test-module">pipeline.hifv.heuristics.standard_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.heuristics.html#module-pipeline.hifv.heuristics.uvrange">pipeline.hifv.heuristics.uvrange module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.uvrange.uvrange"><code class="docutils literal notranslate"><span class="pre">uvrange()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline-hifv-heuristics-uvrange-test-module">pipeline.hifv.heuristics.uvrange_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.heuristics.html#module-pipeline.hifv.heuristics.vip_helper_functions">pipeline.hifv.heuristics.vip_helper_functions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vip_helper_functions.Timer"><code class="docutils literal notranslate"><span class="pre">Timer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vip_helper_functions.Timer.start"><code class="docutils literal notranslate"><span class="pre">Timer.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vip_helper_functions.Timer.stop"><code class="docutils literal notranslate"><span class="pre">Timer.stop()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vip_helper_functions.cat_to_ds9_rgn"><code class="docutils literal notranslate"><span class="pre">cat_to_ds9_rgn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vip_helper_functions.edit_pybdsf_islands"><code class="docutils literal notranslate"><span class="pre">edit_pybdsf_islands()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vip_helper_functions.mask_from_catalog"><code class="docutils literal notranslate"><span class="pre">mask_from_catalog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vip_helper_functions.run_bdsf"><code class="docutils literal notranslate"><span class="pre">run_bdsf()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.heuristics.html#module-pipeline.hifv.heuristics.vlascanheuristics">pipeline.hifv.heuristics.vlascanheuristics module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics"><code class="docutils literal notranslate"><span class="pre">VLAScanHeuristics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics.calibratorIntents"><code class="docutils literal notranslate"><span class="pre">VLAScanHeuristics.calibratorIntents()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics.calibratorIntentsOld"><code class="docutils literal notranslate"><span class="pre">VLAScanHeuristics.calibratorIntentsOld()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics.determine3C84"><code class="docutils literal notranslate"><span class="pre">VLAScanHeuristics.determine3C84()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics.find_3C84"><code class="docutils literal notranslate"><span class="pre">VLAScanHeuristics.find_3C84()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics.makescandict"><code class="docutils literal notranslate"><span class="pre">VLAScanHeuristics.makescandict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.buildscans"><code class="docutils literal notranslate"><span class="pre">buildscans()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.testCalibratorIntents"><code class="docutils literal notranslate"><span class="pre">testCalibratorIntents()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.heuristics.html#module-pipeline.hifv.heuristics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.tasks.html">pipeline.hifv.tasks package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.tasks.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.analyzestokescubes.html">pipeline.hifv.tasks.analyzestokescubes package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.analyzestokescubes.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.analyzestokescubes.html#module-pipeline.hifv.tasks.analyzestokescubes.analyzestokescubes">pipeline.hifv.tasks.analyzestokescubes.analyzestokescubes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.analyzestokescubes.html#module-pipeline.hifv.tasks.analyzestokescubes.display">pipeline.hifv.tasks.analyzestokescubes.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.analyzestokescubes.html#module-pipeline.hifv.tasks.analyzestokescubes.renderer">pipeline.hifv.tasks.analyzestokescubes.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.analyzestokescubes.html#module-pipeline.hifv.tasks.analyzestokescubes">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.circfeedpolcal.html">pipeline.hifv.tasks.circfeedpolcal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.circfeedpolcal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.circfeedpolcal.html#module-pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal">pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.circfeedpolcal.html#module-pipeline.hifv.tasks.circfeedpolcal.display">pipeline.hifv.tasks.circfeedpolcal.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.circfeedpolcal.html#module-pipeline.hifv.tasks.circfeedpolcal.renderer">pipeline.hifv.tasks.circfeedpolcal.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.circfeedpolcal.html#module-pipeline.hifv.tasks.circfeedpolcal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.exportdata.html">pipeline.hifv.tasks.exportdata package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.exportdata.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.exportdata.html#module-pipeline.hifv.tasks.exportdata.vlaexportdata">pipeline.hifv.tasks.exportdata.vlaexportdata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.exportdata.html#module-pipeline.hifv.tasks.exportdata.vlaifaqua">pipeline.hifv.tasks.exportdata.vlaifaqua module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.exportdata.html#module-pipeline.hifv.tasks.exportdata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.exportvlassdata.html">pipeline.hifv.tasks.exportvlassdata package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.exportvlassdata.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.exportvlassdata.html#module-pipeline.hifv.tasks.exportvlassdata.exportvlassdata">pipeline.hifv.tasks.exportvlassdata.exportvlassdata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.exportvlassdata.html#module-pipeline.hifv.tasks.exportvlassdata.qa">pipeline.hifv.tasks.exportvlassdata.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.exportvlassdata.html#module-pipeline.hifv.tasks.exportvlassdata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.finalcals.html">pipeline.hifv.tasks.finalcals package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.finalcals.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.finalcals.html#module-pipeline.hifv.tasks.finalcals.applycals">pipeline.hifv.tasks.finalcals.applycals module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.finalcals.html#module-pipeline.hifv.tasks.finalcals.display">pipeline.hifv.tasks.finalcals.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.finalcals.html#module-pipeline.hifv.tasks.finalcals.finalcals">pipeline.hifv.tasks.finalcals.finalcals module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.finalcals.html#module-pipeline.hifv.tasks.finalcals.qa">pipeline.hifv.tasks.finalcals.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.finalcals.html#module-pipeline.hifv.tasks.finalcals.renderer">pipeline.hifv.tasks.finalcals.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.finalcals.html#module-pipeline.hifv.tasks.finalcals">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.fixpointing.html">pipeline.hifv.tasks.fixpointing package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.fixpointing.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.fixpointing.html#module-pipeline.hifv.tasks.fixpointing.fixpointing">pipeline.hifv.tasks.fixpointing.fixpointing module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.fixpointing.html#module-pipeline.hifv.tasks.fixpointing">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.flagging.html">pipeline.hifv.tasks.flagging package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.flagging.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.flagging.html#module-pipeline.hifv.tasks.flagging.checkflag">pipeline.hifv.tasks.flagging.checkflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.flagging.html#module-pipeline.hifv.tasks.flagging.displaycheckflag">pipeline.hifv.tasks.flagging.displaycheckflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.flagging.html#module-pipeline.hifv.tasks.flagging.flagcal">pipeline.hifv.tasks.flagging.flagcal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.flagging.html#module-pipeline.hifv.tasks.flagging.flagdetervla">pipeline.hifv.tasks.flagging.flagdetervla module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.flagging.html#module-pipeline.hifv.tasks.flagging.flagtargetsdata">pipeline.hifv.tasks.flagging.flagtargetsdata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.flagging.html#module-pipeline.hifv.tasks.flagging.qa">pipeline.hifv.tasks.flagging.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.flagging.html#module-pipeline.hifv.tasks.flagging.renderer">pipeline.hifv.tasks.flagging.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.flagging.html#module-pipeline.hifv.tasks.flagging.targetflag">pipeline.hifv.tasks.flagging.targetflag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.flagging.html#module-pipeline.hifv.tasks.flagging.targetflagdisplay">pipeline.hifv.tasks.flagging.targetflagdisplay module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.flagging.html#module-pipeline.hifv.tasks.flagging">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.fluxscale.html">pipeline.hifv.tasks.fluxscale package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.fluxscale.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.fluxscale.html#module-pipeline.hifv.tasks.fluxscale.fluxboot">pipeline.hifv.tasks.fluxscale.fluxboot module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.fluxscale.html#module-pipeline.hifv.tasks.fluxscale.fluxbootdisplay">pipeline.hifv.tasks.fluxscale.fluxbootdisplay module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.fluxscale.html#module-pipeline.hifv.tasks.fluxscale.qa">pipeline.hifv.tasks.fluxscale.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.fluxscale.html#module-pipeline.hifv.tasks.fluxscale.renderer">pipeline.hifv.tasks.fluxscale.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.fluxscale.html#module-pipeline.hifv.tasks.fluxscale.solint">pipeline.hifv.tasks.fluxscale.solint module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.fluxscale.html#module-pipeline.hifv.tasks.fluxscale.testgainsdisplay">pipeline.hifv.tasks.fluxscale.testgainsdisplay module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.fluxscale.html#module-pipeline.hifv.tasks.fluxscale">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.gaincurves.html">pipeline.hifv.tasks.gaincurves package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.gaincurves.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.gaincurves.html#module-pipeline.hifv.tasks.gaincurves.gaincurves">pipeline.hifv.tasks.gaincurves.gaincurves module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.gaincurves.html#module-pipeline.hifv.tasks.gaincurves.resultobjects">pipeline.hifv.tasks.gaincurves.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.gaincurves.html#module-pipeline.hifv.tasks.gaincurves">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.hanning.html">pipeline.hifv.tasks.hanning package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.hanning.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.hanning.html#module-pipeline.hifv.tasks.hanning.hanning">pipeline.hifv.tasks.hanning.hanning module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.hanning.html#module-pipeline.hifv.tasks.hanning.qa">pipeline.hifv.tasks.hanning.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.hanning.html#module-pipeline.hifv.tasks.hanning.renderer">pipeline.hifv.tasks.hanning.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.hanning.html#module-pipeline.hifv.tasks.hanning">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.importdata.html">pipeline.hifv.tasks.importdata package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.importdata.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.importdata.html#module-pipeline.hifv.tasks.importdata.importdata">pipeline.hifv.tasks.importdata.importdata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.importdata.html#module-pipeline.hifv.tasks.importdata.qa">pipeline.hifv.tasks.importdata.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.importdata.html#module-pipeline.hifv.tasks.importdata.renderer">pipeline.hifv.tasks.importdata.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.importdata.html#module-pipeline.hifv.tasks.importdata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.mstransform.html">pipeline.hifv.tasks.mstransform package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.mstransform.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.mstransform.html#module-pipeline.hifv.tasks.mstransform.mstransform">pipeline.hifv.tasks.mstransform.mstransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.mstransform.html#module-pipeline.hifv.tasks.mstransform.qa">pipeline.hifv.tasks.mstransform.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.mstransform.html#module-pipeline.hifv.tasks.mstransform.renderer">pipeline.hifv.tasks.mstransform.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.mstransform.html#module-pipeline.hifv.tasks.mstransform">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.opcal.html">pipeline.hifv.tasks.opcal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.opcal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.opcal.html#module-pipeline.hifv.tasks.opcal.opcal">pipeline.hifv.tasks.opcal.opcal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.opcal.html#module-pipeline.hifv.tasks.opcal.resultobjects">pipeline.hifv.tasks.opcal.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.opcal.html#module-pipeline.hifv.tasks.opcal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.pbcor.html">pipeline.hifv.tasks.pbcor package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.pbcor.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.pbcor.html#module-pipeline.hifv.tasks.pbcor.display">pipeline.hifv.tasks.pbcor.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.pbcor.html#module-pipeline.hifv.tasks.pbcor.pbcor">pipeline.hifv.tasks.pbcor.pbcor module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.pbcor.html#module-pipeline.hifv.tasks.pbcor.renderer">pipeline.hifv.tasks.pbcor.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.pbcor.html#module-pipeline.hifv.tasks.pbcor">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.plotsummary.html">pipeline.hifv.tasks.plotsummary package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.plotsummary.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.plotsummary.html#module-pipeline.hifv.tasks.plotsummary.display">pipeline.hifv.tasks.plotsummary.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.plotsummary.html#module-pipeline.hifv.tasks.plotsummary.plotsummary">pipeline.hifv.tasks.plotsummary.plotsummary module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.plotsummary.html#module-pipeline.hifv.tasks.plotsummary.qa">pipeline.hifv.tasks.plotsummary.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.plotsummary.html#module-pipeline.hifv.tasks.plotsummary.renderer">pipeline.hifv.tasks.plotsummary.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.plotsummary.html#module-pipeline.hifv.tasks.plotsummary">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.priorcals.html">pipeline.hifv.tasks.priorcals package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.priorcals.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.priorcals.html#module-pipeline.hifv.tasks.priorcals.opacitiesdisplay">pipeline.hifv.tasks.priorcals.opacitiesdisplay module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.priorcals.html#module-pipeline.hifv.tasks.priorcals.priorcals">pipeline.hifv.tasks.priorcals.priorcals module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.priorcals.html#module-pipeline.hifv.tasks.priorcals.qa">pipeline.hifv.tasks.priorcals.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.priorcals.html#module-pipeline.hifv.tasks.priorcals.renderer">pipeline.hifv.tasks.priorcals.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.priorcals.html#module-pipeline.hifv.tasks.priorcals.resultobjects">pipeline.hifv.tasks.priorcals.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.priorcals.html#module-pipeline.hifv.tasks.priorcals.swpowdisplay">pipeline.hifv.tasks.priorcals.swpowdisplay module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.priorcals.html#module-pipeline.hifv.tasks.priorcals.vlaantpos">pipeline.hifv.tasks.priorcals.vlaantpos module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.priorcals.html#module-pipeline.hifv.tasks.priorcals">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.restoredata.html">pipeline.hifv.tasks.restoredata package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.restoredata.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.restoredata.html#module-pipeline.hifv.tasks.restoredata.vlarestoredata">pipeline.hifv.tasks.restoredata.vlarestoredata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.restoredata.html#module-pipeline.hifv.tasks.restoredata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.restorepims.html">pipeline.hifv.tasks.restorepims package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.restorepims.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.restorepims.html#module-pipeline.hifv.tasks.restorepims.restorepims">pipeline.hifv.tasks.restorepims.restorepims module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.restorepims.html#module-pipeline.hifv.tasks.restorepims">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.rqcal.html">pipeline.hifv.tasks.rqcal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.rqcal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.rqcal.html#module-pipeline.hifv.tasks.rqcal.resultobjects">pipeline.hifv.tasks.rqcal.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.rqcal.html#module-pipeline.hifv.tasks.rqcal.rqcal">pipeline.hifv.tasks.rqcal.rqcal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.rqcal.html#module-pipeline.hifv.tasks.rqcal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.selfcal.html">pipeline.hifv.tasks.selfcal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.selfcal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.selfcal.html#module-pipeline.hifv.tasks.selfcal.display">pipeline.hifv.tasks.selfcal.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.selfcal.html#module-pipeline.hifv.tasks.selfcal.renderer">pipeline.hifv.tasks.selfcal.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.selfcal.html#module-pipeline.hifv.tasks.selfcal.selfcal">pipeline.hifv.tasks.selfcal.selfcal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.selfcal.html#module-pipeline.hifv.tasks.selfcal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.semiFinalBPdcals.html">pipeline.hifv.tasks.semiFinalBPdcals package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.semiFinalBPdcals.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.semiFinalBPdcals.html#module-pipeline.hifv.tasks.semiFinalBPdcals.display">pipeline.hifv.tasks.semiFinalBPdcals.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.semiFinalBPdcals.html#module-pipeline.hifv.tasks.semiFinalBPdcals.qa">pipeline.hifv.tasks.semiFinalBPdcals.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.semiFinalBPdcals.html#module-pipeline.hifv.tasks.semiFinalBPdcals.renderer">pipeline.hifv.tasks.semiFinalBPdcals.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.semiFinalBPdcals.html#module-pipeline.hifv.tasks.semiFinalBPdcals.semiFinalBPdcals">pipeline.hifv.tasks.semiFinalBPdcals.semiFinalBPdcals module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.semiFinalBPdcals.html#module-pipeline.hifv.tasks.semiFinalBPdcals">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.setmodel.html">pipeline.hifv.tasks.setmodel package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.setmodel.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.setmodel.html#module-pipeline.hifv.tasks.setmodel.qa">pipeline.hifv.tasks.setmodel.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.setmodel.html#module-pipeline.hifv.tasks.setmodel.renderer">pipeline.hifv.tasks.setmodel.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.setmodel.html#module-pipeline.hifv.tasks.setmodel.vlasetjy">pipeline.hifv.tasks.setmodel.vlasetjy module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.setmodel.html#module-pipeline.hifv.tasks.setmodel">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.statwt.html">pipeline.hifv.tasks.statwt package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.statwt.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.statwt.html#module-pipeline.hifv.tasks.statwt.display">pipeline.hifv.tasks.statwt.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.statwt.html#module-pipeline.hifv.tasks.statwt.qa">pipeline.hifv.tasks.statwt.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.statwt.html#module-pipeline.hifv.tasks.statwt.renderer">pipeline.hifv.tasks.statwt.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.statwt.html#module-pipeline.hifv.tasks.statwt.statwt">pipeline.hifv.tasks.statwt.statwt module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.statwt.html#module-pipeline.hifv.tasks.statwt">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.swpowcal.html">pipeline.hifv.tasks.swpowcal package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.swpowcal.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.swpowcal.html#module-pipeline.hifv.tasks.swpowcal.resultobjects">pipeline.hifv.tasks.swpowcal.resultobjects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.swpowcal.html#module-pipeline.hifv.tasks.swpowcal.swpowcal">pipeline.hifv.tasks.swpowcal.swpowcal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.swpowcal.html#module-pipeline.hifv.tasks.swpowcal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.syspower.html">pipeline.hifv.tasks.syspower package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.syspower.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.syspower.html#module-pipeline.hifv.tasks.syspower.display">pipeline.hifv.tasks.syspower.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.syspower.html#module-pipeline.hifv.tasks.syspower.renderer">pipeline.hifv.tasks.syspower.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.syspower.html#module-pipeline.hifv.tasks.syspower.syspower">pipeline.hifv.tasks.syspower.syspower module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.syspower.html#module-pipeline.hifv.tasks.syspower">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.tecmaps.html">pipeline.hifv.tasks.tecmaps package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.tecmaps.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.tecmaps.html#module-pipeline.hifv.tasks.tecmaps.tecmaps">pipeline.hifv.tasks.tecmaps.tecmaps module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.tecmaps.html#module-pipeline.hifv.tasks.tecmaps">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.testBPdcals.html">pipeline.hifv.tasks.testBPdcals package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.testBPdcals.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.testBPdcals.html#module-pipeline.hifv.tasks.testBPdcals.display">pipeline.hifv.tasks.testBPdcals.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.testBPdcals.html#module-pipeline.hifv.tasks.testBPdcals.qa">pipeline.hifv.tasks.testBPdcals.qa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.testBPdcals.html#module-pipeline.hifv.tasks.testBPdcals.renderer">pipeline.hifv.tasks.testBPdcals.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.testBPdcals.html#module-pipeline.hifv.tasks.testBPdcals.testBPdcals">pipeline.hifv.tasks.testBPdcals.testBPdcals module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.testBPdcals.html#module-pipeline.hifv.tasks.testBPdcals">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.tasks.vlassmasking.html">pipeline.hifv.tasks.vlassmasking package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.vlassmasking.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.vlassmasking.html#module-pipeline.hifv.tasks.vlassmasking.display">pipeline.hifv.tasks.vlassmasking.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.vlassmasking.html#module-pipeline.hifv.tasks.vlassmasking.renderer">pipeline.hifv.tasks.vlassmasking.renderer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.vlassmasking.html#module-pipeline.hifv.tasks.vlassmasking.vlassmasking">pipeline.hifv.tasks.vlassmasking.vlassmasking module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifv.tasks.vlassmasking.html#module-pipeline.hifv.tasks.vlassmasking">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.tasks.html#module-pipeline.hifv.tasks">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.templates.html">pipeline.hifv.templates package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.templates.html#module-pipeline.hifv.templates">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-pipeline.hifv">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline.hifv" title="Link to this heading"></a></h2>
+<p>VLA</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

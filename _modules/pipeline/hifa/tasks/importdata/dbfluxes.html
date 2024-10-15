@@ -1,0 +1,546 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.importdata.dbfluxes &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.importdata.dbfluxes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.importdata.dbfluxes</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">certifi</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">decimal</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">ssl</span>
+<span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">minidom</span>
+<span class="kn">from</span> <span class="nn">xml.parsers.expat</span> <span class="kn">import</span> <span class="n">ExpatError</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain</span> <span class="k">as</span> <span class="nn">domain</span>
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">import</span> <span class="nn">pipeline.h.tasks.common.commonfluxresults</span> <span class="k">as</span> <span class="nn">commonfluxresults</span>
+<span class="kn">import</span> <span class="nn">pipeline.h.tasks.importdata.fluxes</span> <span class="k">as</span> <span class="nn">fluxes</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">FLUX_SERVICE_URL</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;FLUX_SERVICE_URL&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">FLUX_SERVICE_URL</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable FLUX_SERVICE_URL not defined.  Switching to backup url.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using ALMA flux service URL: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">FLUX_SERVICE_URL</span><span class="p">))</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable FLUX_SERVICE_URL not defined.  Switching to backup url.&#39;</span><span class="p">)</span>
+    <span class="n">FLUX_SERVICE_URL</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="c1"># FLUX_SERVICE_URL = &#39;https://almascience.eso.org/sc/flux&#39;</span>
+    <span class="c1"># FLUX_SERVICE_URL = &#39;https://osf-sourcecat-2019jul.asa-test.alma.cl/sc/&#39;</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">FLUX_SERVICE_URL_BACKUP</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;FLUX_SERVICE_URL_BACKUP&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">FLUX_SERVICE_URL_BACKUP</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable FLUX_SERVICE_URL_BACKUP not defined.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Backup URL defined at: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">FLUX_SERVICE_URL_BACKUP</span><span class="p">))</span>
+    <span class="c1"># &#39;https://2019jul.asa-test.alma.cl/sc/flux&#39;</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable FLUX_SERVICE_URL_BACKUP not defined.&#39;</span><span class="p">)</span>
+    <span class="n">FLUX_SERVICE_URL_BACKUP</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<span class="n">ORIGIN_DB</span> <span class="o">=</span> <span class="s1">&#39;DB&#39;</span>
+
+
+<div class="viewcode-block" id="get_setjy_results">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.get_setjy_results">[docs]</a>
+<span class="k">def</span> <span class="nf">get_setjy_results</span><span class="p">(</span><span class="n">mses</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get flux values from the database service reverting to the Source</span>
+<span class="sd">    tables XML for backup values and store the values in the context</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">qastatus</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mses</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">commonfluxresults</span><span class="o">.</span><span class="n">FluxCalibrationResults</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">science_spw_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">()}</span>
+
+        <span class="n">fluxdb_results</span><span class="p">,</span> <span class="n">qacodes</span> <span class="o">=</span> <span class="n">read_fluxes_db</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">measurements</span> <span class="ow">in</span> <span class="n">fluxdb_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">measurements</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">spw_id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">science_spw_ids</span><span class="p">]</span>
+
+            <span class="c1"># import flux values for all fields and intents so that we can</span>
+            <span class="c1"># compare them to the fluxscale-derived values later in the run</span>
+            <span class="c1">#            for field in [f for f in source.fields if &#39;AMPLITUDE&#39; in f.intents]:</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">measurements</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">qacodes</span><span class="p">:</span>
+            <span class="n">qastatus</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">qacodes</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">qastatus</span></div>
+
+
+
+<div class="viewcode-block" id="read_fluxes_db">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.read_fluxes_db">[docs]</a>
+<span class="k">def</span> <span class="nf">read_fluxes_db</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read fluxes from the database server, defaulting to the Source XML table</span>
+<span class="sd">    if no fluxes can be found</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xml_measurements</span> <span class="o">=</span> <span class="n">fluxes</span><span class="o">.</span><span class="n">read_fluxes_nodb</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">xml_measurements</span><span class="p">:</span>
+        <span class="c1"># Source.xml could not be read or parsed. Fall back to catalogue query</span>
+        <span class="k">return</span> <span class="n">flux_nosourcexml</span><span class="p">(</span><span class="n">ms</span><span class="p">),</span> <span class="kc">None</span>
+
+    <span class="n">results</span><span class="p">,</span> <span class="n">qacodes</span> <span class="o">=</span> <span class="n">add_catalogue_fluxes</span><span class="p">(</span><span class="n">xml_measurements</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">qacodes</span></div>
+
+
+
+<div class="viewcode-block" id="flux_nosourcexml">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.flux_nosourcexml">[docs]</a>
+<span class="k">def</span> <span class="nf">flux_nosourcexml</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Call the flux service and get the frequencies from the ms if no Source.xml is available</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">sources</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">query_online_catalogue</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">source</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+                <span class="n">log_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">I</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">spix</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="buildurl">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.buildurl">[docs]</a>
+<span class="k">def</span> <span class="nf">buildurl</span><span class="p">(</span><span class="n">service_url</span><span class="p">,</span> <span class="n">obs_time</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">sourcename</span><span class="p">):</span>
+    <span class="c1"># Example:</span>
+    <span class="c1"># https://almascience.eso.org/sc/flux?DATE=10-August-2017&amp;FREQUENCY=232101563000.0&amp;NAME=J1924-2914&amp;WEIGHTED=true&amp;RESULT=1&amp;CATALOGUE=5</span>
+    <span class="c1"># New Example May 2019:</span>
+    <span class="c1"># https://osf-sourcecat-2019apr.asa-test.alma.cl/sc/flux?DATE=27-March-2013&amp;FREQUENCY=86837309056.169219970703125&amp;WEIGHTED=true&amp;RESULT=0&amp;NAME=J1427-4206</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{!s}</span><span class="s1">-</span><span class="si">{!s}</span><span class="s1">-</span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">obs_time</span><span class="o">.</span><span class="n">day</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">obs_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%B&#39;</span><span class="p">),</span> <span class="n">obs_time</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+    <span class="n">sourcename</span> <span class="o">=</span> <span class="n">sanitize_string</span><span class="p">(</span><span class="n">sourcename</span><span class="p">)</span>
+    <span class="n">urlparams</span> <span class="o">=</span> <span class="n">buildparams</span><span class="p">(</span><span class="n">sourcename</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)</span>
+
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{!s}</span><span class="s1">?</span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">service_url</span><span class="p">,</span> <span class="n">urlparams</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;SC URL: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">url</span></div>
+
+
+
+<div class="viewcode-block" id="fluxservice">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.fluxservice">[docs]</a>
+<span class="k">def</span> <span class="nf">fluxservice</span><span class="p">(</span><span class="n">service_url</span><span class="p">,</span> <span class="n">obs_time</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">sourcename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Usage of this online service requires:</span>
+<span class="sd">        - service_url - url for the db service</span>
+<span class="sd">        - obs_time - for getting the date</span>
+<span class="sd">        - frequency_text - we will get the frequency out of this in Hz</span>
+<span class="sd">        - source - we will get source.name from this object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">url</span> <span class="o">=</span> <span class="n">buildurl</span><span class="p">(</span><span class="n">service_url</span><span class="p">,</span> <span class="n">obs_time</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">sourcename</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Attempting query </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+
+    <span class="n">ssl_context</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">create_default_context</span><span class="p">(</span><span class="n">cafile</span><span class="o">=</span><span class="n">certifi</span><span class="o">.</span><span class="n">where</span><span class="p">())</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">ssl_context</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">60.0</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Problem contacting flux service at: &lt;a href=&quot;</span><span class="si">{!s}</span><span class="s1">&quot;&gt;</span><span class="si">{!s}</span><span class="s1">&lt;/a&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">url</span><span class="p">))</span>
+        <span class="k">raise</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dom</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">ExpatError</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Could not parse source catalogue response&#39;</span><span class="p">)</span>
+        <span class="k">raise</span>
+
+    <span class="n">rowdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">dom</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;TR&#39;</span><span class="p">):</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;TD&#39;</span><span class="p">)</span>
+        <span class="n">rl</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;statuscode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span>
+        <span class="k">if</span> <span class="n">rl</span> <span class="o">==</span> <span class="mi">13</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;clarification&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;clarification&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;clarification&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;sourcename&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">rl</span><span class="o">-</span><span class="mi">11</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span>
+        <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;dbfrequency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">rl</span><span class="o">-</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span>
+        <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">rl</span><span class="o">-</span><span class="mi">9</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span>
+        <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;fluxdensity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">rl</span><span class="o">-</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span>
+        <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;fluxdensityerror&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">rl</span><span class="o">-</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span>
+        <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;spectralindex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">rl</span><span class="o">-</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span>
+        <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;spectralindexerror&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">rl</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span>
+        <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;dataconditions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">rl</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span>
+        <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;ageOfNearestMonitorPoint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">rl</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span>
+        <span class="c1"># rowdict[&#39;verbose&#39;] = row[rl-2].childNodes[0].nodeValue</span>
+        <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">rl</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodeValue</span>
+        <span class="n">rowdict</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">url</span>
+
+    <span class="k">return</span> <span class="n">rowdict</span></div>
+
+
+
+<div class="viewcode-block" id="buildparams">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.buildparams">[docs]</a>
+<span class="k">def</span> <span class="nf">buildparams</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">frequency</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Inputs are all strings with the format:</span>
+<span class="sd">    NAME=3c279&amp;DATE=04-Apr-2014&amp;FREQUENCY=231.435E9&amp;WEIGHTED=true&amp;RESULT=1&amp;CATALOGUE=5</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">NAME</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">DATE</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">FREQUENCY</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span> <span class="n">WEIGHTED</span><span class="o">=</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="n">RESULT</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">VERBOSE</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">CATALOGUE</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">params</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="sanitize_string">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.sanitize_string">[docs]</a>
+<span class="k">def</span> <span class="nf">sanitize_string</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sanitize source name if needed, taking first alias.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="query_online_catalogue">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.query_online_catalogue">[docs]</a>
+<span class="k">def</span> <span class="nf">query_online_catalogue</span><span class="p">(</span><span class="n">flux_url</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
+    <span class="c1"># At this point we take:</span>
+    <span class="c1">#  - the source name string</span>
+    <span class="c1">#  - the frequency of the spw_id in Hz</span>
+    <span class="c1">#  - The observation date</span>
+    <span class="c1">#  and attempt to call the online flux catalog web service, and use the flux result</span>
+    <span class="c1">#  and spectral index</span>
+    <span class="n">source_name</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">freq_hz</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">))</span>
+    <span class="n">obs_time</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_epoch_as_datetime</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">start_time</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Input source name: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">source_name</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;    Input SPW: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+    <span class="n">utcnow</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S UTC&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fluxdict</span> <span class="o">=</span> <span class="n">fluxservice</span><span class="p">(</span><span class="n">flux_url</span><span class="p">,</span> <span class="n">obs_time</span><span class="p">,</span> <span class="n">freq_hz</span><span class="p">,</span> <span class="n">source_name</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># error contacting service</span>
+        <span class="k">return</span> <span class="n">flux_url</span><span class="p">,</span> <span class="s1">&#39;0.0&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cat_fd</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fluxdict</span><span class="p">[</span><span class="s1">&#39;fluxdensity&#39;</span><span class="p">])</span>
+        <span class="n">cat_spix</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fluxdict</span><span class="p">[</span><span class="s1">&#39;spectralindex&#39;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># could not convert &#39;null&#39; to number. Bad catalogue value.</span>
+        <span class="k">return</span> <span class="n">flux_url</span><span class="p">,</span> <span class="s1">&#39;0.0&#39;</span><span class="p">,</span> <span class="n">fluxdict</span><span class="p">[</span><span class="s1">&#39;statuscode&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fluxdict</span><span class="p">[</span><span class="s1">&#39;clarification&#39;</span><span class="p">],</span> <span class="kc">None</span>
+
+    <span class="n">valid_catalogue_val</span> <span class="o">=</span> <span class="n">cat_fd</span> <span class="o">&gt;</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">cat_spix</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1000</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_catalogue_val</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">flux_url</span><span class="p">,</span> <span class="s1">&#39;0.0&#39;</span><span class="p">,</span> <span class="n">fluxdict</span><span class="p">[</span><span class="s1">&#39;statuscode&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fluxdict</span><span class="p">[</span><span class="s1">&#39;clarification&#39;</span><span class="p">],</span> <span class="kc">None</span>
+
+    <span class="n">final_I</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">FluxDensity</span><span class="p">(</span><span class="n">cat_fd</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span>
+    <span class="n">final_spix</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%0.3f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">cat_spix</span><span class="p">)</span>
+    <span class="n">age_n_m_p</span> <span class="o">=</span> <span class="n">fluxdict</span><span class="p">[</span><span class="s1">&#39;ageOfNearestMonitorPoint&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">fluxdict</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">fluxdict</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">],</span> <span class="n">fluxdict</span><span class="p">[</span><span class="s1">&#39;statuscode&#39;</span><span class="p">],</span> <span class="n">fluxdict</span><span class="p">[</span><span class="s1">&#39;dataconditions&#39;</span><span class="p">],</span> <span class="n">fluxdict</span><span class="p">[</span><span class="s1">&#39;clarification&#39;</span><span class="p">],</span> \
+           <span class="n">domain</span><span class="o">.</span><span class="n">FluxMeasurement</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">final_I</span><span class="p">,</span> <span class="n">spix</span><span class="o">=</span><span class="n">final_spix</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">ORIGIN_DB</span><span class="p">,</span> <span class="n">queried_at</span><span class="o">=</span><span class="n">utcnow</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="n">age_n_m_p</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="add_catalogue_fluxes">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.add_catalogue_fluxes">[docs]</a>
+<span class="k">def</span> <span class="nf">add_catalogue_fluxes</span><span class="p">(</span><span class="n">measurements</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">science_windows</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Test query to see if we need to switch to the backup URL</span>
+    <span class="n">obs_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">168000</span><span class="p">)</span>
+    <span class="n">freq_hz</span> <span class="o">=</span> <span class="s1">&#39;86837309056.169219970703125&#39;</span>
+    <span class="n">source_name</span> <span class="o">=</span> <span class="s1">&#39;J1427-4206&#39;</span>
+    <span class="n">contact_fail</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">backup_url</span> <span class="o">=</span> <span class="n">FLUX_SERVICE_URL_BACKUP</span>
+    <span class="c1"># &#39;https://2019jul.asa-test.alma.cl/sc/flux&#39;</span>
+    <span class="n">flux_url</span> <span class="o">=</span> <span class="n">FLUX_SERVICE_URL</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Test query...&quot;</span><span class="p">)</span>
+        <span class="n">fluxdict</span> <span class="o">=</span> <span class="n">fluxservice</span><span class="p">(</span><span class="n">flux_url</span><span class="p">,</span> <span class="n">obs_time</span><span class="p">,</span> <span class="n">freq_hz</span><span class="p">,</span> <span class="n">source_name</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="c1"># error contacting service</span>
+        <span class="c1"># LOG.warning(&quot;Could not contact the primary flux service at {!s}&quot;.format(flux_url))</span>
+        <span class="n">flux_url</span> <span class="o">=</span> <span class="n">backup_url</span>
+        <span class="n">contact_fail</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="n">ExpatError</span><span class="p">:</span>
+        <span class="c1"># error parsing the XML table</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Table parsing issue.&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not contact the primary flux service at </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flux_url</span><span class="p">))</span>
+        <span class="n">flux_url</span> <span class="o">=</span> <span class="n">backup_url</span>
+        <span class="n">contact_fail</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">contact_fail</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Try the backup URL at JAO</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Switching to backup url at: </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flux_url</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Test query...&quot;</span><span class="p">)</span>
+            <span class="n">fluxdict</span> <span class="o">=</span> <span class="n">fluxservice</span><span class="p">(</span><span class="n">flux_url</span><span class="p">,</span> <span class="n">obs_time</span><span class="p">,</span> <span class="n">freq_hz</span><span class="p">,</span> <span class="n">source_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="c1"># LOG.error(&quot;Could not contact the backup flux service URL.&quot;)</span>
+            <span class="k">return</span> <span class="n">results</span>
+
+    <span class="n">qacodes</span> <span class="o">=</span> <span class="p">[]</span>   <span class="c1"># Dictionaries will be added here for codes and warning messages from the sources catalog</span>
+
+    <span class="c1"># Continue with required queries</span>
+    <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">xml_measurements</span> <span class="ow">in</span> <span class="n">measurements</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">xml_measurement</span> <span class="ow">in</span> <span class="n">xml_measurements</span><span class="p">:</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">xml_measurement</span><span class="o">.</span><span class="n">spw_id</span><span class="p">)</span>
+            <span class="c1"># LOG.info(&quot;SPW ID: &quot;+str(spw.id))</span>
+
+            <span class="c1"># only query database for science windows</span>
+            <span class="k">if</span> <span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">science_windows</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">url</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">status_code</span><span class="p">,</span> <span class="n">data_conditions</span><span class="p">,</span> <span class="n">clarification</span><span class="p">,</span> <span class="n">catalogue_measurement</span> <span class="o">=</span> <span class="n">query_online_catalogue</span><span class="p">(</span><span class="n">flux_url</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">catalogue_measurement</span><span class="p">:</span>
+                <span class="c1"># Catalogue doesn&#39;t return Q,U,V so adopt Q,U,V from XML</span>
+                <span class="n">catalogue_measurement</span><span class="o">.</span><span class="n">Q</span> <span class="o">=</span> <span class="n">xml_measurement</span><span class="o">.</span><span class="n">Q</span>
+                <span class="n">catalogue_measurement</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="n">xml_measurement</span><span class="o">.</span><span class="n">U</span>
+                <span class="n">catalogue_measurement</span><span class="o">.</span><span class="n">V</span> <span class="o">=</span> <span class="n">xml_measurement</span><span class="o">.</span><span class="n">V</span>
+
+                <span class="n">results</span><span class="p">[</span><span class="n">source</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">catalogue_measurement</span><span class="p">)</span>
+
+                <span class="c1"># set text for logging statements</span>
+                <span class="n">catalogue_I</span> <span class="o">=</span> <span class="n">catalogue_measurement</span><span class="o">.</span><span class="n">I</span>
+                <span class="n">spix</span> <span class="o">=</span> <span class="n">catalogue_measurement</span><span class="o">.</span><span class="n">spix</span>
+                <span class="n">age</span> <span class="o">=</span> <span class="n">catalogue_measurement</span><span class="o">.</span><span class="n">age</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># No/invalid catalogue entry, so use Source.XML measurement</span>
+
+                <span class="n">results</span><span class="p">[</span><span class="n">source</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xml_measurement</span><span class="p">)</span>
+
+                <span class="c1"># set text for logging statements</span>
+                <span class="n">catalogue_I</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+                <span class="n">spix</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+                <span class="n">age</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+
+            <span class="k">if</span> <span class="n">clarification</span> <span class="ow">or</span> <span class="nb">int</span><span class="p">(</span><span class="n">status_code</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">qacodes</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">source</span><span class="p">,</span> <span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="n">status_code</span><span class="p">,</span> <span class="s1">&#39;clarification&#39;</span><span class="p">:</span> <span class="n">clarification</span><span class="p">})</span>
+
+            <span class="n">log_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">xml_measurement</span><span class="o">.</span><span class="n">I</span><span class="p">,</span> <span class="n">catalogue_I</span><span class="p">,</span> <span class="n">spix</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span>
+                       <span class="n">status_code</span><span class="p">,</span> <span class="n">data_conditions</span><span class="p">,</span> <span class="n">clarification</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">qacodes</span></div>
+
+
+
+<div class="viewcode-block" id="log_result">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.log_result">[docs]</a>
+<span class="k">def</span> <span class="nf">log_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">asdm_I</span><span class="p">,</span> <span class="n">catalogue_I</span><span class="p">,</span> <span class="n">spix</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">status_code</span><span class="p">,</span> <span class="n">data_conditions</span><span class="p">,</span> <span class="n">clarification</span><span class="p">):</span>
+
+    <span class="n">codedict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">codedict</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Grid cal flux estimation heuristic used&quot;</span>
+    <span class="n">codedict</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Low-cadence flux estimation heuristic used&quot;</span>
+    <span class="n">codedict</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Flux densities outside of the window were required to calculate an answer&quot;</span>
+    <span class="n">codedict</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Fallback algorithm used, went outside the window&quot;</span>
+    <span class="n">codedict</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;No valid flux density could be calculated&quot;</span>
+
+    <span class="c1"># &quot;dual-band data? &quot; yes/no; &quot;measurements bracketed in time? &quot; yes/no.</span>
+    <span class="n">decision</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="s1">&#39;No&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="s1">&#39;Yes&#39;</span><span class="p">}</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Source: </span><span class="si">{!s}</span><span class="s1"> spw: </span><span class="si">{!s}</span><span class="s1">    ASDM flux: </span><span class="si">{!s}</span><span class="s1">    Catalogue flux: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                                                                        <span class="n">asdm_I</span><span class="p">,</span> <span class="n">catalogue_I</span><span class="p">))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;         Online catalog Spectral Index: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spix</span><span class="p">))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;         ageOfNearestMonitorPoint: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">age</span><span class="p">))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;         </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">codedict</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">status_code</span><span class="p">)]))</span>
+    <span class="k">if</span> <span class="n">data_conditions</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;         Number of measurements = </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">data_conditions</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;         Dual-band data? </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">decision</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">data_conditions</span><span class="p">)[</span><span class="mi">1</span><span class="p">]]))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;         Measurements bracketed in time? </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">decision</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">data_conditions</span><span class="p">)[</span><span class="mi">2</span><span class="p">]]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;         Number of measurements = </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;N/A&#39;</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;         Dual-band data? </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;N/A&#39;</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;         Measurements bracketed in time? </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;N/A&#39;</span><span class="p">))</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;         URL: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;         Version: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">clarification</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;         WARNING message returned: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clarification</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">catalogue_I</span> <span class="o">==</span> <span class="s1">&#39;N/A&#39;</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;         **No flux returned from the flux catalogue service.**&#39;</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;---------------------------------------------&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

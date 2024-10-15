@@ -1,0 +1,15 @@
+pipeline.hifv.tasks.flagging.renderer
+=====================================
+
+.. automodule:: pipeline.hifv.tasks.flagging.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsFlagDeterVLARenderer
+      T2_4MDetailsFlagtargetsdataRenderer
+      T2_4MDetailscheckflagRenderer
+      T2_4MDetailstargetflagRenderer
+   

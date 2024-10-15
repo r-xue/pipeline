@@ -1,0 +1,12 @@
+pipeline.domain.scan
+====================
+
+.. automodule:: pipeline.domain.scan
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Scan
+   

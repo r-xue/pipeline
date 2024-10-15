@@ -1,0 +1,650 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">inspect</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">commonhelpermethods</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">viewflaggers</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.tasks</span> <span class="kn">import</span> <span class="n">bandpass</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">wvrgcalflagsetter</span>
+<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">WvrgcalflagResults</span><span class="p">,</span> <span class="n">WvrgcalflagViewResults</span>
+<span class="kn">from</span> <span class="nn">..wvrgcal</span> <span class="kn">import</span> <span class="n">wvrgcal</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Wvrgcalflag&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;WvrgcalflagInputs&#39;</span>
+<span class="p">]</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="WvrgcalflagInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag.WvrgcalflagInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">WvrgcalflagInputs</span><span class="p">(</span><span class="n">wvrgcal</span><span class="o">.</span><span class="n">WvrgcalInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    WvrgcalflagInputs defines the inputs for the Wvrgcalflag pipeline task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ants_with_wvr_nr_thresh</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">ants_with_wvr_thresh</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">flag_hi</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">flag_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bp_inputs</span> <span class="o">=</span> <span class="n">bandpass</span><span class="o">.</span><span class="n">ALMAPhcorBandpass</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bp_inputs</span><span class="o">.</span><span class="n">intent</span>
+
+    <span class="n">fhi_limit</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+    <span class="n">fhi_minsample</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">qa_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Ensure that qa_intent includes flag_intent otherwise the results for</span>
+        <span class="c1"># flag_intent will not be calculated.</span>
+        <span class="n">value_set</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;PHASE&#39;</span><span class="p">}</span>
+        <span class="n">value_set</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag_intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">value_set</span><span class="p">)</span>
+
+    <span class="nd">@qa_intent</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">qa_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="c1"># Ensure that qa_intent includes flag_intent otherwise the results for</span>
+        <span class="c1"># flag_intent will not be calculated.</span>
+        <span class="n">value_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+        <span class="n">value_set</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag_intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">value_set</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetstable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_toffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">toffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">segsource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sourceflag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nsol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disperse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">wvrflag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxdistm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minnumants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">mingoodfrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_bandpass_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">accept_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_hi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fhi_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fhi_minsample</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ants_with_wvr_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">ants_with_wvr_nr_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">WvrgcalflagInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="n">caltable</span><span class="p">,</span> <span class="n">offsetstable</span><span class="o">=</span><span class="n">offsetstable</span><span class="p">,</span>
+            <span class="n">hm_toffset</span><span class="o">=</span><span class="n">hm_toffset</span><span class="p">,</span> <span class="n">toffset</span><span class="o">=</span><span class="n">toffset</span><span class="p">,</span> <span class="n">segsource</span><span class="o">=</span><span class="n">segsource</span><span class="p">,</span> <span class="n">hm_tie</span><span class="o">=</span><span class="n">hm_tie</span><span class="p">,</span> <span class="n">tie</span><span class="o">=</span><span class="n">tie</span><span class="p">,</span> <span class="n">sourceflag</span><span class="o">=</span><span class="n">sourceflag</span><span class="p">,</span>
+            <span class="n">nsol</span><span class="o">=</span><span class="n">nsol</span><span class="p">,</span> <span class="n">disperse</span><span class="o">=</span><span class="n">disperse</span><span class="p">,</span> <span class="n">wvrflag</span><span class="o">=</span><span class="n">wvrflag</span><span class="p">,</span> <span class="n">hm_smooth</span><span class="o">=</span><span class="n">hm_smooth</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="n">smooth</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
+            <span class="n">maxdistm</span><span class="o">=</span><span class="n">maxdistm</span><span class="p">,</span> <span class="n">minnumants</span><span class="o">=</span><span class="n">minnumants</span><span class="p">,</span> <span class="n">mingoodfrac</span><span class="o">=</span><span class="n">mingoodfrac</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">refant</span><span class="p">,</span> <span class="n">qa_intent</span><span class="o">=</span><span class="n">qa_intent</span><span class="p">,</span>
+            <span class="n">qa_bandpass_intent</span><span class="o">=</span><span class="n">qa_bandpass_intent</span><span class="p">,</span> <span class="n">accept_threshold</span><span class="o">=</span><span class="n">accept_threshold</span><span class="p">)</span>
+
+        <span class="c1"># solution parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ants_with_wvr_nr_thresh</span> <span class="o">=</span> <span class="n">ants_with_wvr_nr_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ants_with_wvr_thresh</span> <span class="o">=</span> <span class="n">ants_with_wvr_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_intent</span> <span class="o">=</span> <span class="n">flag_intent</span>
+
+        <span class="c1"># flagging parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_hi</span> <span class="o">=</span> <span class="n">flag_hi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fhi_limit</span> <span class="o">=</span> <span class="n">fhi_limit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fhi_minsample</span> <span class="o">=</span> <span class="n">fhi_minsample</span></div>
+
+
+
+<div class="viewcode-block" id="Wvrgcalflag">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag.Wvrgcalflag">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_wvrgcalflag&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
+    <span class="s1">&#39;Water vapour radiometer corrections are calculated for each antenna. The quality of the correction is assessed by &#39;</span>
+    <span class="s1">&#39;comparing a phase gain solution calculated with and without the WVR correction. This requires calculation of a &#39;</span>
+    <span class="s1">&#39;temporary phase gain on the bandpass calibrator, a temporary bandpass using that temporary gain, followed by phase&#39;</span>
+    <span class="s1">&#39; gains with the temporary bandpass, with and without the WVR correction. After that, some antennas are wvrflagged &#39;</span>
+    <span class="s1">&#39;(so that their WVR corrections are interpolated), and then the quality of the correction recalculated.&#39;</span>
+<span class="p">)</span>
+<span class="k">class</span> <span class="nc">Wvrgcalflag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">WvrgcalflagInputs</span>
+
+<div class="viewcode-block" id="Wvrgcalflag.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag.Wvrgcalflag.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Identify number and fraction of antennas with WVR.</span>
+        <span class="n">nr_ants_wvr</span><span class="p">,</span> <span class="n">frac_ants_wvr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identify_ants_with_wvr</span><span class="p">()</span>
+
+        <span class="c1"># Evaluate whether there are enough antennas with WVR by number and</span>
+        <span class="c1"># fraction to be worth proceeding with calibration and flagging.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">nr_ants_wvr</span> <span class="o">&lt;</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ants_with_wvr_nr_thresh</span> <span class="ow">or</span>
+                <span class="n">frac_ants_wvr</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ants_with_wvr_thresh</span><span class="p">):</span>
+            <span class="c1"># If there are too few antennas, return an empty result, with</span>
+            <span class="c1"># flag set to indicate that there were too few WVR antennas.</span>
+            <span class="n">flaggerresult</span> <span class="o">=</span> <span class="n">viewflaggers</span><span class="o">.</span><span class="n">MatrixFlaggerResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">WvrgcalflagResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                                        <span class="n">flaggerresult</span><span class="o">=</span><span class="n">flaggerresult</span><span class="p">,</span>
+                                        <span class="n">too_few_wvr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># Log info message.</span>
+            <span class="k">if</span> <span class="n">nr_ants_wvr</span> <span class="o">&lt;</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ants_with_wvr_nr_thresh</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Number of antennas with WVR (</span><span class="si">{}</span><span class="s2">) below the&quot;</span>
+                         <span class="s2">&quot; threshold (</span><span class="si">{}</span><span class="s2">), skipping WVR calibration.&quot;</span>
+                         <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nr_ants_wvr</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ants_with_wvr_nr_thresh</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">frac_ants_wvr</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ants_with_wvr_thresh</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fraction of antennas with WVR (</span><span class="si">{:.2f}</span><span class="s2">) below the&quot;</span>
+                         <span class="s2">&quot; threshold of </span><span class="si">{}</span><span class="s2">, skipping WVR calibration.&quot;</span>
+                         <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frac_ants_wvr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ants_with_wvr_thresh</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If there are enough WVR antennas initially, run calibration</span>
+            <span class="c1"># and flagging.</span>
+            <span class="n">flaggerresult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_flagger</span><span class="p">()</span>
+
+            <span class="c1"># Attach flagging result to final result.</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">WvrgcalflagResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                                        <span class="n">flaggerresult</span><span class="o">=</span><span class="n">flaggerresult</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="Wvrgcalflag.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag.Wvrgcalflag.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># If flagging views are available, then evaluate the flagger result to</span>
+        <span class="c1"># check whether the WVR correction should still be applied.</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">flaggerresult</span><span class="o">.</span><span class="n">viewresult</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">flaggerresult</span><span class="o">.</span><span class="n">viewresult</span><span class="o">.</span><span class="n">descriptions</span><span class="p">():</span>
+            <span class="c1"># Identify number and fraction of unflagged antennas with WVR.</span>
+            <span class="n">nr_ants_wvr</span><span class="p">,</span> <span class="n">frac_ants_wvr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identify_unflagged_ants_with_wvr</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+            <span class="c1"># If too few unflagged antennas with WVR remain (by number or</span>
+            <span class="c1"># fraction), then remove the calfile from the result so that it</span>
+            <span class="c1"># cannot be accepted into the context, and set flag in result</span>
+            <span class="c1"># to indicate too few WVR antennas remained.</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">nr_ants_wvr</span> <span class="o">&lt;</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ants_with_wvr_nr_thresh</span> <span class="ow">or</span>
+                    <span class="n">frac_ants_wvr</span> <span class="o">&lt;</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ants_with_wvr_thresh</span><span class="p">):</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">flaggerresult</span><span class="o">.</span><span class="n">dataresult</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">too_few_wvr_post_flagging</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="c1"># Log warning.</span>
+                <span class="k">if</span> <span class="n">nr_ants_wvr</span> <span class="o">&lt;</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ants_with_wvr_nr_thresh</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s2">&quot;After flagging, the number of unflagged antennas&quot;</span>
+                        <span class="s2">&quot; with WVR (</span><span class="si">{}</span><span class="s2">) is below the threshold of </span><span class="si">{}</span><span class="s2">, skipping&quot;</span>
+                        <span class="s2">&quot; WVR calibration.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nr_ants_wvr</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ants_with_wvr_nr_thresh</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">frac_ants_wvr</span> <span class="o">&lt;</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ants_with_wvr_thresh</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s2">&quot;After flagging, the fraction of unflagged antennas&quot;</span>
+                        <span class="s2">&quot; with WVR (</span><span class="si">{:.2f}</span><span class="s2">) is below the threshold of </span><span class="si">{}</span><span class="s2">;&quot;</span>
+                        <span class="s2">&quot; wvrgcal file will not be applied.&quot;</span>
+                        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frac_ants_wvr</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ants_with_wvr_thresh</span><span class="p">))</span>
+
+            <span class="c1"># If the associated qa score indicates that applying the WVR</span>
+            <span class="c1"># calibration will make things worse then remove the calfile from</span>
+            <span class="c1"># the result so that it cannot be accepted into the context. </span>
+            <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">flaggerresult</span><span class="o">.</span><span class="n">dataresult</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">overall_score</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+                    <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">flaggerresult</span><span class="o">.</span><span class="n">dataresult</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">overall_score</span> <span class="o">&lt;</span> <span class="n">inputs</span><span class="o">.</span><span class="n">accept_threshold</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">flaggerresult</span><span class="o">.</span><span class="n">dataresult</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_identify_ants_with_wvr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Identify antennas with WVR, return as number and as fraction of all</span>
+<span class="sd">        antennas.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the MS domain object.</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Identify antennas with WVR as those whose name does not start with &#39;CM&#39;.</span>
+        <span class="n">ants_with_wvr</span> <span class="o">=</span> <span class="p">[</span><span class="n">antenna</span><span class="o">.</span><span class="n">name</span>
+                         <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span>
+                         <span class="k">if</span> <span class="ow">not</span> <span class="n">antenna</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;CM&#39;</span><span class="p">)]</span>
+        <span class="n">nr_ants_wvr</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ants_with_wvr</span><span class="p">)</span>
+        <span class="n">frac_ants_wvr</span> <span class="o">=</span> <span class="n">nr_ants_wvr</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">nr_ants_wvr</span><span class="p">,</span> <span class="n">frac_ants_wvr</span>
+
+    <span class="k">def</span> <span class="nf">_identify_unflagged_ants_with_wvr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate flagger result to identify remaining unflagged antennas with</span>
+<span class="sd">        WVR, return as a number and as a fraction of all antennas.</span>
+
+<span class="sd">        :param result: WvrgcalflagResults object</span>
+<span class="sd">        :return: (int, float): number of antennas, fraction of antennas.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the MS domain object.</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Only expect 1 flagging view for Wvrgcalflag.</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">flaggerresult</span><span class="o">.</span><span class="n">last</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">flaggerresult</span><span class="o">.</span><span class="n">descriptions</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Identify antennas fully flagged for all timestamps, mapping the</span>
+        <span class="c1"># array indices to the original antenna IDs using the flagging view</span>
+        <span class="c1"># x-axis data.</span>
+        <span class="n">antids_fully_flagged</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">flag</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]]</span>
+
+        <span class="c1"># Identify antennas with WVR that also remain unflagged.</span>
+        <span class="n">ants_with_wvr_and_unflagged</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">antenna</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">antenna</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;CM&#39;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">antenna</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">antids_fully_flagged</span>
+        <span class="p">]</span>
+
+        <span class="n">nr_ants_wvr</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ants_with_wvr_and_unflagged</span><span class="p">)</span>
+        <span class="n">frac_ants_wvr</span> <span class="o">=</span> <span class="n">nr_ants_wvr</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">nr_ants_wvr</span><span class="p">,</span> <span class="n">frac_ants_wvr</span>
+
+    <span class="k">def</span> <span class="nf">_run_flagger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Construct the task that will prepare/read the data necessary to</span>
+        <span class="c1"># create a flagging view.</span>
+        <span class="n">datainputs</span> <span class="o">=</span> <span class="n">WvrgcalflagData</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span><span class="p">,</span>
+            <span class="n">offsetstable</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">offsetstable</span><span class="p">,</span>
+            <span class="n">hm_toffset</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">hm_toffset</span><span class="p">,</span> <span class="n">toffset</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">toffset</span><span class="p">,</span>
+            <span class="n">segsource</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">segsource</span><span class="p">,</span> <span class="n">hm_tie</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">hm_tie</span><span class="p">,</span>
+            <span class="n">tie</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">tie</span><span class="p">,</span> <span class="n">sourceflag</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">sourceflag</span><span class="p">,</span> <span class="n">nsol</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">nsol</span><span class="p">,</span>
+            <span class="n">disperse</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">disperse</span><span class="p">,</span> <span class="n">wvrflag</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">wvrflag</span><span class="p">,</span>
+            <span class="n">hm_smooth</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">hm_smooth</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">smooth</span><span class="p">,</span>
+            <span class="n">scale</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="n">maxdistm</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxdistm</span><span class="p">,</span>
+            <span class="n">minnumants</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">minnumants</span><span class="p">,</span> <span class="n">mingoodfrac</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">mingoodfrac</span><span class="p">,</span>
+            <span class="n">refant</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span> <span class="n">qa_intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">qa_intent</span><span class="p">,</span>
+            <span class="n">qa_bandpass_intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">qa_bandpass_intent</span><span class="p">)</span>
+        <span class="n">datatask</span> <span class="o">=</span> <span class="n">WvrgcalflagData</span><span class="p">(</span><span class="n">datainputs</span><span class="p">)</span>
+
+        <span class="c1"># Construct the generator that will create the views of the data</span>
+        <span class="c1"># that is the basis for flagging.</span>
+        <span class="n">viewtask</span> <span class="o">=</span> <span class="n">WvrgcalflagView</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+                                   <span class="n">flag_intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">flag_intent</span><span class="p">)</span>
+
+        <span class="c1"># Construct the &quot;flagsetter&quot; task: Wvrgcalflag has its own dedicated</span>
+        <span class="c1"># flagsetter that does not really set flags in underlying data, but</span>
+        <span class="c1"># rather updates the &quot;pre-existing flags&quot; parameter (wvrflag) of the</span>
+        <span class="c1"># datatask, such that a subsequent run of the datatask takes the newly</span>
+        <span class="c1"># found flags into account.</span>
+        <span class="n">flagsetterinputs</span> <span class="o">=</span> <span class="n">wvrgcalflagsetter</span><span class="o">.</span><span class="n">WvrgcalFlagSetterInputs</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="n">datatask</span><span class="o">=</span><span class="n">datatask</span><span class="p">)</span>
+        <span class="n">flagsettertask</span> <span class="o">=</span> <span class="n">wvrgcalflagsetter</span><span class="o">.</span><span class="n">WvrgcalFlagSetter</span><span class="p">(</span><span class="n">flagsetterinputs</span><span class="p">)</span>
+
+        <span class="c1"># Define which type of flagger to use.</span>
+        <span class="n">flagger</span> <span class="o">=</span> <span class="n">viewflaggers</span><span class="o">.</span><span class="n">MatrixFlagger</span>
+
+        <span class="c1"># Translate the input flagging parameters to a more compact</span>
+        <span class="c1"># list of rules.</span>
+        <span class="n">rules</span> <span class="o">=</span> <span class="n">flagger</span><span class="o">.</span><span class="n">make_flag_rules</span><span class="p">(</span>
+            <span class="n">flag_hi</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">flag_hi</span><span class="p">,</span>
+            <span class="n">fhi_limit</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">fhi_limit</span><span class="p">,</span>
+            <span class="n">fhi_minsample</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">fhi_minsample</span><span class="p">)</span>
+
+        <span class="c1"># Construct the flagger task around the data, view, and flagsetter</span>
+        <span class="c1"># tasks. Wvrgcalflag passes its own Results class to be used by the</span>
+        <span class="c1"># flagger, and the flagger produces the final result.</span>
+        <span class="n">flaggerinputs</span> <span class="o">=</span> <span class="n">flagger</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">datatask</span><span class="o">=</span><span class="n">datatask</span><span class="p">,</span> <span class="n">viewtask</span><span class="o">=</span><span class="n">viewtask</span><span class="p">,</span>
+            <span class="n">flagsettertask</span><span class="o">=</span><span class="n">flagsettertask</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="n">rules</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">iter_datatask</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">flaggertask</span> <span class="o">=</span> <span class="n">flagger</span><span class="p">(</span><span class="n">flaggerinputs</span><span class="p">)</span>
+
+        <span class="c1"># Execute the flagger task, and wrap this child task in a</span>
+        <span class="c1"># SuspendCapturingLogger so that warnings emitted by the child task</span>
+        <span class="c1"># do not make it to the web log page; see CAS-7795.</span>
+        <span class="k">with</span> <span class="n">logging</span><span class="o">.</span><span class="n">SuspendCapturingLogger</span><span class="p">():</span>
+            <span class="n">flaggerresult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">flaggertask</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">flaggerresult</span></div>
+
+
+
+<span class="k">class</span> <span class="nc">WvrgcalflagDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetstable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_toffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">toffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">segsource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sourceflag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nsol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disperse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">wvrflag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxdistm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minnumants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">mingoodfrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_bandpass_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="c1"># pipeline inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="c1"># vis must be set first, as other properties may depend on it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+
+        <span class="c1"># data selection arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offsetstable</span> <span class="o">=</span> <span class="n">offsetstable</span>
+
+        <span class="c1"># solution parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_toffset</span> <span class="o">=</span> <span class="n">hm_toffset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toffset</span> <span class="o">=</span> <span class="n">toffset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segsource</span> <span class="o">=</span> <span class="n">segsource</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_tie</span> <span class="o">=</span> <span class="n">hm_tie</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tie</span> <span class="o">=</span> <span class="n">tie</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sourceflag</span> <span class="o">=</span> <span class="n">sourceflag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nsol</span> <span class="o">=</span> <span class="n">nsol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disperse</span> <span class="o">=</span> <span class="n">disperse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wvrflag</span> <span class="o">=</span> <span class="n">wvrflag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_smooth</span> <span class="o">=</span> <span class="n">hm_smooth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">smooth</span> <span class="o">=</span> <span class="n">smooth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxdistm</span> <span class="o">=</span> <span class="n">maxdistm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minnumants</span> <span class="o">=</span> <span class="n">minnumants</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mingoodfrac</span> <span class="o">=</span> <span class="n">mingoodfrac</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refant</span> <span class="o">=</span> <span class="n">refant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qa_intent</span> <span class="o">=</span> <span class="n">qa_intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qa_bandpass_intent</span> <span class="o">=</span> <span class="n">qa_bandpass_intent</span>
+
+    <span class="c1"># WvrgcalflagDataInputs is a worker task for Wvrgcalflag and does not need</span>
+    <span class="c1"># to define its own defaults for input parameters. However, as a result, its</span>
+    <span class="c1"># input parameters will not show up in the &quot;inputs as a dictionary&quot; object.</span>
+    <span class="c1"># The weblog renderer for Wvrgcalflag creates plots based on the result</span>
+    <span class="c1"># from WvrgcalflagData, and the renderer needs to access attributes from</span>
+    <span class="c1"># its inputs (expecting a dictionary).</span>
+    <span class="c1"># To ensure all parameters from WvrgcalflagData show up in its final inputs</span>
+    <span class="c1"># as a dictionary, we override &quot;as_dict&quot; here.</span>
+
+    <span class="c1"># TODO: could this override be removed after initializing all parameters</span>
+    <span class="c1"># TODO: as vdp parameters with default = None?</span>
+    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">skip</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;context&#39;</span><span class="p">,</span> <span class="s1">&#39;ms&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">dd_name</span><span class="p">:</span> <span class="n">dd</span>
+                <span class="k">for</span> <span class="n">dd_name</span><span class="p">,</span> <span class="n">dd</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="ow">not</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">isroutine</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">dd_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dd_name</span> <span class="ow">in</span> <span class="n">skip</span><span class="p">)}</span>
+
+
+<span class="k">class</span> <span class="nc">WvrgcalflagData</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">WvrgcalflagDataInputs</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WvrgcalflagData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+        <span class="c1"># Initialize parameters that should persist across multiple flagging</span>
+        <span class="c1"># iterations. These will be populated by the output from Wvrgcal on</span>
+        <span class="c1"># the first iteration, and are then passed on to Wvrgcal on subsequent</span>
+        <span class="c1"># iterations.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bandpass_result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nowvr_result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qa_spw</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Calculate the wvrgcal:</span>
+        <span class="c1">#  * set accept_threshold to zero to ensure that the Wvrgcal result</span>
+        <span class="c1">#    is always accepted into the local copy of the context, to force</span>
+        <span class="c1">#    trigger the QA scoring determination.</span>
+        <span class="c1">#  * pass along locally cached values for &quot;bandpass_result&quot;,</span>
+        <span class="c1">#    &quot;nowvr_result&quot;: if these are not empty, then they were</span>
+        <span class="c1">#    populated by a previous flagging iteration, and Wvrgcal will</span>
+        <span class="c1">#    avoid running an exact repeat of the same task</span>
+        <span class="c1">#  * pass along locally cached value for &quot;qa_spw&quot; to ensure that</span>
+        <span class="c1">#    Wvrgcal will use the same spw list on subsequent iterations.</span>
+        <span class="n">wvrgcalinputs</span> <span class="o">=</span> <span class="n">wvrgcal</span><span class="o">.</span><span class="n">Wvrgcal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">offsetstable</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">offsetstable</span><span class="p">,</span>
+            <span class="n">hm_toffset</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">hm_toffset</span><span class="p">,</span> <span class="n">toffset</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">toffset</span><span class="p">,</span>
+            <span class="n">segsource</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">segsource</span><span class="p">,</span> <span class="n">hm_tie</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">hm_tie</span><span class="p">,</span> <span class="n">tie</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">tie</span><span class="p">,</span>
+            <span class="n">sourceflag</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">sourceflag</span><span class="p">,</span> <span class="n">nsol</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">nsol</span><span class="p">,</span>
+            <span class="n">disperse</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">disperse</span><span class="p">,</span> <span class="n">wvrflag</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">wvrflag</span><span class="p">,</span>
+            <span class="n">hm_smooth</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">hm_smooth</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">smooth</span><span class="p">,</span>
+            <span class="n">scale</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="n">maxdistm</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxdistm</span><span class="p">,</span>
+            <span class="n">minnumants</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">minnumants</span><span class="p">,</span> <span class="n">mingoodfrac</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">mingoodfrac</span><span class="p">,</span>
+            <span class="n">refant</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span> <span class="n">qa_intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">qa_intent</span><span class="p">,</span>
+            <span class="n">qa_bandpass_intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">qa_bandpass_intent</span><span class="p">,</span>
+            <span class="n">accept_threshold</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">bandpass_result</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bandpass_result</span><span class="p">,</span>
+            <span class="n">nowvr_result</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nowvr_result</span><span class="p">,</span> <span class="n">qa_spw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qa_spw</span><span class="p">)</span>
+        <span class="n">wvrgcaltask</span> <span class="o">=</span> <span class="n">wvrgcal</span><span class="o">.</span><span class="n">Wvrgcal</span><span class="p">(</span><span class="n">wvrgcalinputs</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">wvrgcaltask</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Cache bandpass result, nowvr result, and qa_spw for next call to</span>
+        <span class="c1"># wvrgcal.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bandpass_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">bandpass_result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nowvr_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">nowvr_result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qa_spw</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">qa_spw</span>
+
+        <span class="c1"># Add a top-level reference to the &quot;No WVR&quot; result, expected by WVR</span>
+        <span class="c1"># renderer.</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">nowvr_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">nowvr_result</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">class</span> <span class="nc">WvrgcalflagView</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">flag_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates an WvrgcalflagView instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_intent</span> <span class="o">=</span> <span class="n">flag_intent</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataresult</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        When called, the WvrgcalflagView object calculates flagging views</span>
+<span class="sd">        based on the provided dataresult (from Wvrgcal). For the views matching</span>
+<span class="sd">        the intent specified by &quot;inputs.flag_intent&quot;, it retrieves the view,</span>
+<span class="sd">        updates the flags in this view to reflect the flagging found by</span>
+<span class="sd">        Wvrgcal, and then stores the resulting view in WvrgcalflagViewResults.</span>
+
+<span class="sd">        dataresult  -- WvrgcalResult object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        WvrgcalflagViewResults object containing the flagging view.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Initialize result structure.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">WvrgcalflagViewResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">dataresult</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># As part of the data task, Wvrgcal will have created flagging views,</span>
+        <span class="c1"># Wvrgcalflag will start from a copy of the views stored in dataresult.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Retrieving flagging views for vis </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">dataresult</span><span class="o">.</span><span class="n">vis</span><span class="p">))</span>
+
+        <span class="c1"># Get a list of available intents from the MS.</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">dataresult</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">ms_intent_list</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">intents</span>
+
+        <span class="c1"># Test if the flagging intents are present in the MS.</span>
+        <span class="n">intent_available</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">flag_intent_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">flag_intent</span> <span class="ow">in</span> <span class="n">flag_intent_list</span><span class="p">:</span>
+            <span class="n">intent_available</span> <span class="o">=</span> <span class="p">[</span><span class="n">intent</span> <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">ms_intent_list</span> <span class="k">if</span> <span class="n">flag_intent</span> <span class="ow">in</span> <span class="n">intent</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">intent_available</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;flagging views will use </span><span class="si">%s</span><span class="s1"> data&#39;</span> <span class="o">%</span> <span class="n">flag_intent</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;no data for intent </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">flag_intent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">intent_available</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;no data fits flag_intent </span><span class="si">{0}</span><span class="s1">, no flagging will be&#39;</span>
+                        <span class="s1">&#39; done&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag_intent</span><span class="p">))</span>
+
+        <span class="c1"># From the QA section of the dataresult (from Wvrgcal) copy those views</span>
+        <span class="c1"># for which the intent matches the flag_intent.</span>
+        <span class="k">for</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">dataresult</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">descriptions</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">flag_intent</span> <span class="ow">in</span> <span class="n">flag_intent_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;Intent:</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">flag_intent</span> <span class="ow">in</span> <span class="n">description</span><span class="p">:</span>
+                    <span class="c1"># Translate list of WVR flagged antenna names back to list</span>
+                    <span class="c1"># of antenna IDs.</span>
+                    <span class="n">ant_names</span><span class="p">,</span> <span class="n">ant_ids</span> <span class="o">=</span> <span class="n">commonhelpermethods</span><span class="o">.</span><span class="n">get_antenna_names</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+                    <span class="n">wvrflagids</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">ant_name</span> <span class="ow">in</span> <span class="n">dataresult</span><span class="o">.</span><span class="n">wvrflag</span><span class="p">:</span>
+                        <span class="n">ant_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">ant_names</span> <span class="k">if</span>
+                                  <span class="n">ant_names</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">==</span> <span class="n">ant_name</span><span class="p">]</span>
+                        <span class="n">wvrflagids</span> <span class="o">+=</span> <span class="n">ant_id</span>
+
+                    <span class="c1"># Set antennas specified by the wvrflag parameter in the</span>
+                    <span class="c1"># flagging image to show that these data are already &#39;flagged&#39;</span>
+                    <span class="c1"># (i.e. interpolated).</span>
+                    <span class="n">image</span> <span class="o">=</span> <span class="n">dataresult</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">last</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+                    <span class="n">image</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">axisname</span><span class="o">=</span><span class="s1">&#39;Antenna&#39;</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">wvrflagids</span><span class="p">)</span>
+
+                    <span class="c1"># Add updated view to result.</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

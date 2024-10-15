@@ -1,0 +1,53 @@
+pipeline.hifa.tasks.flagging package
+====================================
+
+Submodules
+----------
+
+pipeline.hifa.tasks.flagging.flagdeteralma module
+-------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.flagging.flagdeteralma
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.flagging.flagdeteralma\_test module
+-------------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.flagging.flagdeteralma_test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.flagging.flagtargetsalma module
+---------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.flagging.flagtargetsalma
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.flagging.qa module
+--------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.flagging.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.flagging.renderer module
+--------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.flagging.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifa.tasks.flagging
+   :members:
+   :undoc-members:
+   :show-inheritance:

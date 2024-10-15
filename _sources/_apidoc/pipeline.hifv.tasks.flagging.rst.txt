@@ -1,0 +1,85 @@
+pipeline.hifv.tasks.flagging package
+====================================
+
+Submodules
+----------
+
+pipeline.hifv.tasks.flagging.checkflag module
+---------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.flagging.checkflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.flagging.displaycheckflag module
+----------------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.flagging.displaycheckflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.flagging.flagcal module
+-------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.flagging.flagcal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.flagging.flagdetervla module
+------------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.flagging.flagdetervla
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.flagging.flagtargetsdata module
+---------------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.flagging.flagtargetsdata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.flagging.qa module
+--------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.flagging.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.flagging.renderer module
+--------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.flagging.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.flagging.targetflag module
+----------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.flagging.targetflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.flagging.targetflagdisplay module
+-----------------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.flagging.targetflagdisplay
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifv.tasks.flagging
+   :members:
+   :undoc-members:
+   :show-inheritance:

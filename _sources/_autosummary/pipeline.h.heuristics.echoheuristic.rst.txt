@@ -1,0 +1,13 @@
+pipeline.h.heuristics.echoheuristic
+===================================
+
+.. automodule:: pipeline.h.heuristics.echoheuristic
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      EchoHeuristic
+      NullHeuristic
+   

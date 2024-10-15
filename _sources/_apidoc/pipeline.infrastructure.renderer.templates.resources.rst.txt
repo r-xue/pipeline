@@ -1,0 +1,10 @@
+pipeline.infrastructure.renderer.templates.resources package
+============================================================
+
+Module contents
+---------------
+
+.. automodule:: pipeline.infrastructure.renderer.templates.resources
+   :members:
+   :undoc-members:
+   :show-inheritance:

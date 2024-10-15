@@ -1,0 +1,13 @@
+pipeline.hifv.tasks.syspower.renderer
+=====================================
+
+.. automodule:: pipeline.hifv.tasks.syspower.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailssyspowerRenderer
+      VLASubPlotRenderer
+   

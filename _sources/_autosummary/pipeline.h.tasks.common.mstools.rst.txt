@@ -1,0 +1,20 @@
+pipeline.h.tasks.common.mstools
+===============================
+
+.. automodule:: pipeline.h.tasks.common.mstools
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      compute_mean_flux
+      get_corr_products
+      read_channel_averaged_data_from_ms
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MeasurementSet
+   

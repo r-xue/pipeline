@@ -1,0 +1,33 @@
+pipeline.infrastructure.displays.plotmosaic
+===========================================
+
+.. automodule:: pipeline.infrastructure.displays.plotmosaic
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      antenna_taper_factor
+      baars_taper_factor
+      central_obstruction_factor
+      get_arc_formatter
+      get_dish_colour
+      is_tsys_only
+      label_format
+      plot_mosaic
+      primary_beam_fwhm
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ArcUnits
+      Circle
+      Distance
+      DistanceUnits
+      EquatorialArc
+      FrequencyUnits
+      FuncFormatter
+      Line2D
+   

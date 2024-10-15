@@ -1,0 +1,15 @@
+pipeline.hifa.tasks.flagging.qa
+===============================
+
+.. automodule:: pipeline.hifa.tasks.flagging.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FlagDeterALMAListQAHandler
+      FlagDeterALMAQAHandler
+      FlagTargetsALMAListQAHandler
+      FlagTargetsALMAQAHandler
+   

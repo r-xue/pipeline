@@ -1,0 +1,953 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.heuristics.rasterscan &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.heuristics.rasterscan</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.heuristics.rasterscan</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Heuristics to detect raster rows and maps.</span>
+
+<span class="sd">Examine spatial observing pattern in celestial coordinate</span>
+<span class="sd">(R.A./Dec. etc.) to distinguish each raster row and each</span>
+<span class="sd">raster map, which is a set of raster rows to cover whole</span>
+<span class="sd">observing region.</span>
+
+<span class="sd">Note that it does not check if observing pattern is raster.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># import standard modules</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="c1"># import 3rd party modules</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
+
+<span class="c1"># import pipeline submodules</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.api</span> <span class="k">as</span> <span class="nn">api</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils.compatibility</span> <span class="k">as</span> <span class="nn">compatibility</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="RasterScanHeuristicsFailure">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsFailure">[docs]</a>
+<span class="k">class</span> <span class="nc">RasterScanHeuristicsFailure</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates failure of RasterScanHeuristics.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="HeuristicsParameter">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.HeuristicsParameter">[docs]</a>
+<span class="k">class</span> <span class="nc">HeuristicsParameter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Holds tunable parameters for RasterScanHeuristic.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Threshold for contiguous sequence</span>
+    <span class="n">AngleThreshold</span> <span class="o">=</span> <span class="mi">45</span>
+
+    <span class="c1"># Thresholds for histogram</span>
+    <span class="n">AngleHistogramThreshold</span> <span class="o">=</span> <span class="mf">0.3</span>
+    <span class="n">AngleHistogramSparseness</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="n">AngleHistogramBinWidth</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># Angle tolerance for &quot;turn-around scan&quot;</span>
+    <span class="n">TurnaroundAngleTolerance</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="c1"># Distance threshold factor</span>
+    <span class="c1"># for std</span>
+    <span class="c1"># DistanceThresholdFactor = 5</span>
+    <span class="c1"># for MAD</span>
+    <span class="n">DistanceThresholdFactor</span> <span class="o">=</span> <span class="mi">75</span>
+
+    <span class="c1"># Distance threshold factor for raster gap detection</span>
+    <span class="n">RasterGapThresholdFactor</span> <span class="o">=</span> <span class="mf">0.05</span>
+
+    <span class="c1"># Threshold for &quot;Round-trip&quot; raster scan detection</span>
+    <span class="n">RoundTripRasterScanThresholdFactor</span> <span class="o">=</span> <span class="mf">0.6</span></div>
+
+
+
+<div class="viewcode-block" id="distance">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.distance">[docs]</a>
+<span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">x0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">x1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y1</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute distance between two points (x0, y0) and (x1, y1).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x0: x-coordinate value for point 0</span>
+<span class="sd">        y0: y-coordinate value for point 0</span>
+<span class="sd">        x1: x-coordinate value for point 1</span>
+<span class="sd">        y1: y-coordinate value for point 1</span>
+
+<span class="sd">    Returns: distance between two points</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span><span class="p">,</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="generate_histogram">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.generate_histogram">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_histogram</span><span class="p">(</span>
+    <span class="n">arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">bin_width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">left_edge</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">right_edge</span><span class="p">:</span> <span class="nb">float</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate histogram for given array.</span>
+
+<span class="sd">    Generates histogram for given array, arr, with the configuration specified by</span>
+<span class="sd">    the parameters, bin_width, left_edge, and right_edge.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        arr: data for histogram</span>
+<span class="sd">        bin_width: width of the bin</span>
+<span class="sd">        left_edge: lower limit of the histogram bin</span>
+<span class="sd">        right_edge: upper limit of the histogram bin</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        histogram and bin configuration as two tuples</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nbin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">right_edge</span> <span class="o">-</span> <span class="n">left_edge</span><span class="p">)</span> <span class="o">/</span> <span class="n">bin_width</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">nbin</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="n">left_edge</span><span class="p">,</span> <span class="n">right_edge</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="detect_peak">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.detect_peak">[docs]</a>
+<span class="k">def</span> <span class="nf">detect_peak</span><span class="p">(</span>
+    <span class="n">hist</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detect peak in the given histogram.</span>
+
+<span class="sd">    Detects single peak and find its range. Also compute the</span>
+<span class="sd">    number of data included in the range.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        hist: histogram to be examined</span>
+<span class="sd">        mask: boolean mask array. setting True excludes the corresponding</span>
+<span class="sd">              array element in hist from the examination. Defaults to None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Four ints, total numlber of data included in the range, and</span>
+<span class="sd">        indices of the peak, left edge, and right edge.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mh</span> <span class="o">=</span> <span class="n">hist</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+
+    <span class="n">ipeak</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">mh</span><span class="p">[</span><span class="n">ipeak</span><span class="p">]</span>
+    <span class="n">imin</span> <span class="o">=</span> <span class="n">ipeak</span>
+    <span class="n">imax</span> <span class="o">=</span> <span class="n">ipeak</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Detected peak </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ipeak</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ipeak</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">mh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">is_masked</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;break left wing </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">imin</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="n">x</span>
+        <span class="n">imin</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;peak </span><span class="si">%s</span><span class="s1"> left wing </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ipeak</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ipeak</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">hist</span><span class="p">)):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">mh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">is_masked</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;break right wing </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">imax</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="n">x</span>
+        <span class="n">imax</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;peak </span><span class="si">%s</span><span class="s1"> right wing </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ipeak</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">total</span><span class="p">,</span> <span class="n">ipeak</span><span class="p">,</span> <span class="n">imin</span><span class="p">,</span> <span class="n">imax</span></div>
+
+
+
+<div class="viewcode-block" id="find_histogram_peak">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_histogram_peak">[docs]</a>
+<span class="k">def</span> <span class="nf">find_histogram_peak</span><span class="p">(</span><span class="n">hist</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find histogram peaks.</span>
+
+<span class="sd">    Repeatedly calls detect_peak until fraction of data included in</span>
+<span class="sd">    the peak region reaches HeuristicsParameter.AngleHistogramThreshold.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        hist: histogram data.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RasterScanHeuristicsFailure:</span>
+<span class="sd">            fraction of detected peak region exceeded the threshold</span>
+<span class="sd">            specified by HeuristicsParameter.AngleHistogramSparseness</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of peak indices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">hist</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">threshold</span> <span class="o">=</span> <span class="n">HeuristicsParameter</span><span class="o">.</span><span class="n">AngleHistogramThreshold</span>
+    <span class="n">sparseness</span> <span class="o">=</span> <span class="n">HeuristicsParameter</span><span class="o">.</span><span class="n">AngleHistogramSparseness</span>
+    <span class="n">fraction</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">peak_indices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hist</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">ss</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;hist = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">hist</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+    <span class="k">while</span> <span class="n">fraction</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">il</span><span class="p">,</span> <span class="n">ir</span> <span class="o">=</span> <span class="n">detect_peak</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Found peak: peak </span><span class="si">%s</span><span class="s1">, range </span><span class="si">%s</span><span class="s1">~</span><span class="si">%s</span><span class="s1">, number of data </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">il</span><span class="p">,</span> <span class="n">ir</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="n">ss</span> <span class="o">+=</span> <span class="n">v</span>
+        <span class="n">fraction</span> <span class="o">=</span> <span class="p">(</span><span class="n">total</span> <span class="o">-</span> <span class="n">ss</span><span class="p">)</span> <span class="o">/</span> <span class="n">total</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;cumulative number </span><span class="si">%s</span><span class="s1"> fraction </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ss</span><span class="p">,</span> <span class="n">fraction</span><span class="p">)</span>
+        <span class="n">mask</span><span class="p">[</span><span class="n">il</span><span class="p">:</span><span class="n">ir</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">peak_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;thre </span><span class="si">%s</span><span class="s1">, frac </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">fraction</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;peak_indices = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">peak_indices</span><span class="p">)</span>
+    <span class="c1"># if angle distribution is too wide, fail the heuristics</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">sparseness</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Angle distribution is not likely to be the one for raster scan&#39;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">RasterScanHeuristicsFailure</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">peak_indices</span></div>
+
+
+
+<div class="viewcode-block" id="shift_angle">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.shift_angle">[docs]</a>
+<span class="k">def</span> <span class="nf">shift_angle</span><span class="p">(</span>
+    <span class="n">angle</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Shift angle or angle array by the value, delta.</span>
+
+<span class="sd">    All angles must be the value in degree.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        angle: angle value or angle array in degree.</span>
+<span class="sd">        delta: angle shift in degree.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        shifted angle in degree</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">angle</span> <span class="o">+</span> <span class="mi">360</span> <span class="o">+</span> <span class="n">delta</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span></div>
+
+
+
+<div class="viewcode-block" id="find_most_frequent">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_most_frequent">[docs]</a>
+<span class="k">def</span> <span class="nf">find_most_frequent</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the most frequent value in an input array.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        v: data</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        most frequent value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">values</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">max_count</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;max count: </span><span class="si">{</span><span class="n">max_count</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">modes</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">counts</span> <span class="o">==</span> <span class="n">max_count</span><span class="p">]</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;modes: </span><span class="si">{</span><span class="n">modes</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">modes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">modes</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">modes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;mode = </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mode</span></div>
+
+
+
+<div class="viewcode-block" id="refine_gaps">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.refine_gaps">[docs]</a>
+<span class="k">def</span> <span class="nf">refine_gaps</span><span class="p">(</span><span class="n">gap_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">num_data</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Refine gap list by eliminating unreasonable gaps.</span>
+
+<span class="sd">    When there is relatively large pointing error right before</span>
+<span class="sd">    the turnaround of raster row, turnaround effectively spread</span>
+<span class="sd">    two data points so that individual angles become shallow.</span>
+<span class="sd">    As a result, additional gap is introduced at the end of raster</span>
+<span class="sd">    row and edge point is isolated by the additional gap.</span>
+<span class="sd">    Such isolation can be compensated by refine_gaps.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        gap_list: original gap list</span>
+<span class="sd">        num_data: total number of data</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        refined gap list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gaps</span> <span class="o">=</span> <span class="n">gap_list</span><span class="p">[:]</span>
+    <span class="k">if</span> <span class="n">gap_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">gaps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(([</span><span class="mi">0</span><span class="p">],</span> <span class="n">gaps</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">gap_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">num_data</span><span class="p">:</span>
+        <span class="n">gaps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">gaps</span><span class="p">,</span> <span class="p">[</span><span class="n">num_data</span><span class="p">]))</span>
+    <span class="n">num_data_per_row</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">gaps</span><span class="p">)</span>
+
+    <span class="c1"># remove gaps that causes unnatural division of data sequence</span>
+    <span class="n">most_frequent</span> <span class="o">=</span> <span class="n">find_most_frequent</span><span class="p">(</span><span class="n">num_data_per_row</span><span class="p">)</span>
+
+    <span class="n">refined_gaps</span> <span class="o">=</span> <span class="p">[</span><span class="n">gaps</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">ntmp</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gaps</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">num_data_per_row</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">gap</span> <span class="o">=</span> <span class="n">gaps</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;idx </span><span class="si">%s</span><span class="s1">, gap </span><span class="si">%s</span><span class="s1">, n </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">gap</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">ntmp</span> <span class="o">+=</span> <span class="n">n</span>
+        <span class="k">if</span> <span class="n">ntmp</span> <span class="o">&gt;=</span> <span class="n">most_frequent</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;most_frequent </span><span class="si">%s</span><span class="s1">, n </span><span class="si">%s</span><span class="s1">, ntmp </span><span class="si">%s</span><span class="s1">, registering </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">most_frequent</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">ntmp</span><span class="p">,</span> <span class="n">gap</span><span class="p">)</span>
+            <span class="n">refined_gaps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gap</span><span class="p">)</span>
+            <span class="n">ntmp</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;adding </span><span class="si">%s</span><span class="s1"> to ntmp </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">ntmp</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">refined_gaps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">gaps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">refined_gaps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gaps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">refined_gaps</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="create_range">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.create_range">[docs]</a>
+<span class="k">def</span> <span class="nf">create_range</span><span class="p">(</span>
+    <span class="n">peak_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">acceptable_deviation</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">angle_min</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">angle_max</span><span class="p">:</span> <span class="nb">float</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create angle ranges (in degree) from peak values and width of the ranges.</span>
+
+<span class="sd">    It takes into account periodic property of the angle so that</span>
+<span class="sd">    ranges exceeding the range [angle_min, angle_max] are wrapped</span>
+<span class="sd">    around.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        peak_values: List of peak values in degree that become</span>
+<span class="sd">                     the center of the ranges</span>
+<span class="sd">        acceptable_deviation: (half-)width of the range in degree</span>
+<span class="sd">        angle_min: minimum angle in degree</span>
+<span class="sd">        angle_max: maximum angle in degree</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: inconsistent angle setup</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of angle ranges in degree</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">acceptable_ranges</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">peak_values</span><span class="p">:</span>
+        <span class="n">upper</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">acceptable_deviation</span>
+        <span class="n">lower</span> <span class="o">=</span> <span class="n">p</span> <span class="o">-</span> <span class="n">acceptable_deviation</span>
+        <span class="k">if</span> <span class="n">angle_min</span> <span class="o">&lt;=</span> <span class="n">lower</span> <span class="ow">and</span> <span class="n">upper</span> <span class="o">&lt;=</span> <span class="n">angle_max</span><span class="p">:</span>
+            <span class="n">acceptable_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">angle_max</span> <span class="o">&lt;</span> <span class="n">upper</span><span class="p">:</span>
+            <span class="n">upper</span> <span class="o">=</span> <span class="n">angle_min</span> <span class="o">+</span> <span class="p">(</span><span class="n">upper</span> <span class="o">-</span> <span class="n">angle_max</span><span class="p">)</span>
+            <span class="n">acceptable_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">lower</span><span class="p">,</span> <span class="n">angle_max</span><span class="p">))</span>
+            <span class="n">acceptable_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">angle_min</span><span class="p">,</span> <span class="n">upper</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">lower</span> <span class="o">&lt;</span> <span class="n">angle_min</span><span class="p">:</span>
+            <span class="n">lower</span> <span class="o">=</span> <span class="n">angle_max</span> <span class="o">-</span> <span class="p">(</span><span class="n">angle_min</span> <span class="o">-</span> <span class="n">lower</span><span class="p">)</span>
+            <span class="n">acceptable_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">angle_min</span><span class="p">,</span> <span class="n">upper</span><span class="p">))</span>
+            <span class="n">acceptable_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">lower</span><span class="p">,</span> <span class="n">angle_max</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Inconsistent angle range. Aborting.&#39;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">acceptable_ranges</span></div>
+
+
+
+<div class="viewcode-block" id="find_angle_gap_by_range">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_angle_gap_by_range">[docs]</a>
+<span class="k">def</span> <span class="nf">find_angle_gap_by_range</span><span class="p">(</span>
+    <span class="n">angle_deg</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">acceptable_ranges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find angle gap using the range.</span>
+
+<span class="sd">    Given the angle array in degree, angle_deg, find angle using the</span>
+<span class="sd">    range specified by acceptable_ranges. When a certan angle is out of</span>
+<span class="sd">    ranges in acceptable_ranges, it is regarded as a gap.</span>
+
+<span class="sd">        ASCII illustration for angle gap index</span>
+
+<span class="sd">                |                 *</span>
+<span class="sd">         gap idx|   0   1   2   3 | 4 (gap)</span>
+<span class="sd">                | *---*---*---*---*</span>
+<span class="sd">        data idx| 0   1   2   3   4</span>
+
+
+<span class="sd">    Args:</span>
+<span class="sd">        angle_deg: angle array in degree</span>
+<span class="sd">        acceptable_ranges: angle ranges to detect gaps.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list of indices of angle gaps</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">angle_deg</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">mask</span><span class="p">[:]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span> <span class="ow">in</span> <span class="n">acceptable_ranges</span><span class="p">:</span>
+        <span class="n">in_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">lower</span> <span class="o">&lt;=</span> <span class="n">angle_deg</span><span class="p">,</span> <span class="n">angle_deg</span> <span class="o">&lt;=</span> <span class="n">upper</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">in_range</span><span class="p">)</span>
+
+    <span class="n">angle_gap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">angle_gap</span></div>
+
+
+
+<div class="viewcode-block" id="find_distance_gap">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_distance_gap">[docs]</a>
+<span class="k">def</span> <span class="nf">find_distance_gap</span><span class="p">(</span><span class="n">delta_ra</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">delta_dec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find distance gap.</span>
+
+<span class="sd">    Distance gap is detected by the condition below:</span>
+
+<span class="sd">        abs(distance - median(distance)) &gt; X * MAD(distance)</span>
+
+<span class="sd">    where X is HeuristicsParameter.DistanceThresholdFactor.</span>
+<span class="sd">    Detection process is performed three times with clipping.</span>
+
+<span class="sd">        ASCII illustration for distance gap</span>
+
+<span class="sd">                             (gap)</span>
+<span class="sd">         gap idx |   0   1     2     3</span>
+<span class="sd">                 | *---*---*-------*---*</span>
+<span class="sd">        data idx | 0   1   2       3   4</span>
+
+
+<span class="sd">    Args:</span>
+<span class="sd">        delta_ra: horisontal position separation</span>
+<span class="sd">        delta_dec: vertical position separation</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list of indices of distance gaps</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">delta_ra</span><span class="p">,</span> <span class="n">delta_dec</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">factor</span> <span class="o">=</span> <span class="n">HeuristicsParameter</span><span class="o">.</span><span class="n">DistanceThresholdFactor</span>
+    <span class="n">num_loop</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">distance_gap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distance</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">num_gap_prev</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_loop</span><span class="p">):</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">distance</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+        <span class="n">dmed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+        <span class="c1"># TODO: replace the following two lines with scipy function call:</span>
+        <span class="c1">#</span>
+        <span class="c1"># dstd = scipy.stats.median_abs_deviation(dist, scale=&#39;normal&#39;)</span>
+        <span class="c1">#</span>
+        <span class="c1"># This should be done after we drop support of CASA py3.6 release.</span>
+        <span class="n">compute_mad</span> <span class="o">=</span> <span class="n">compatibility</span><span class="o">.</span><span class="n">get_scipy_function_for_mad</span><span class="p">()</span>
+        <span class="n">dstd</span> <span class="o">=</span> <span class="n">compute_mad</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+        <span class="n">distance_threshold</span> <span class="o">=</span> <span class="n">factor</span> <span class="o">*</span> <span class="n">dstd</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">distance</span> <span class="o">-</span> <span class="n">dmed</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">distance_threshold</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tmp</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;LOOP </span><span class="si">%s</span><span class="s1">. Threshold </span><span class="si">%s</span><span class="s1">. found </span><span class="si">%s</span><span class="s1"> gaps&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">distance_threshold</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">!=</span> <span class="n">num_gap_prev</span><span class="p">:</span>
+            <span class="n">distance_gap</span> <span class="o">=</span> <span class="n">idx</span>
+            <span class="n">num_gap_prev</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span>
+    <span class="n">distance_gap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">distance_gap</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;distance gap: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">distance_gap</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">distance</span><span class="p">,</span> <span class="n">distance_gap</span><span class="p">,</span> <span class="n">distance_threshold</span></div>
+
+
+
+<div class="viewcode-block" id="find_angle_gap">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_angle_gap">[docs]</a>
+<span class="k">def</span> <span class="nf">find_angle_gap</span><span class="p">(</span><span class="n">angle_deg</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find angle gap.</span>
+
+<span class="sd">    Find angle gap by using angle histogram. For raster scan,</span>
+<span class="sd">    there should be one (one-way raster) or two (round-trip raster)</span>
+<span class="sd">    angle peaks in the histogram. When deviation from the peaks exceeds</span>
+<span class="sd">    45deg, it is regarded as angle gap. Currently the algorithm doesn&#39;t</span>
+<span class="sd">    support one-way raster scan that all the raster rows are the same.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        angle_deg: angle array in degree</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RasterScanHeuristicsFailure:</span>
+<span class="sd">            scan pattern is not likely to be raster scan</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list of indices of angle gaps</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bin_width</span> <span class="o">=</span> <span class="n">HeuristicsParameter</span><span class="o">.</span><span class="n">AngleHistogramBinWidth</span>
+    <span class="n">hist</span><span class="p">,</span> <span class="n">bin_edges</span> <span class="o">=</span> <span class="n">generate_histogram</span><span class="p">(</span><span class="n">angle_deg</span><span class="p">,</span> <span class="n">bin_width</span><span class="o">=</span><span class="n">bin_width</span><span class="p">,</span>
+                                         <span class="n">left_edge</span><span class="o">=-</span><span class="mi">180</span><span class="p">,</span> <span class="n">right_edge</span><span class="o">=</span><span class="mi">180</span><span class="p">)</span>
+    <span class="n">peak_indices</span> <span class="o">=</span> <span class="n">find_histogram_peak</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+    <span class="n">num_peak</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">peak_indices</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;original angle: found </span><span class="si">%s</span><span class="s1"> peaks&#39;</span><span class="p">,</span> <span class="n">num_peak</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">num_peak</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="c1"># should be raster scan, but one of the raster direction is along 180deg</span>
+        <span class="c1"># need angle shifting</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="mi">70</span>
+        <span class="n">angle_deg</span> <span class="o">=</span> <span class="n">shift_angle</span><span class="p">(</span><span class="n">angle_deg</span><span class="p">,</span> <span class="n">delta</span><span class="p">)</span>
+        <span class="n">hist</span><span class="p">,</span> <span class="n">bin_edges</span> <span class="o">=</span> <span class="n">generate_histogram</span><span class="p">(</span><span class="n">angle_deg</span><span class="p">,</span> <span class="n">bin_width</span><span class="o">=</span><span class="n">bin_width</span><span class="p">,</span>
+                                             <span class="n">left_edge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right_edge</span><span class="o">=</span><span class="mi">360</span> <span class="o">+</span> <span class="n">delta</span><span class="p">)</span>
+        <span class="n">peak_indices</span> <span class="o">=</span> <span class="n">find_histogram_peak</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+        <span class="n">num_peak</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">peak_indices</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;shifted angle: found </span><span class="si">%s</span><span class="s1"> peaks&#39;</span><span class="p">,</span> <span class="n">num_peak</span><span class="p">)</span>
+
+    <span class="n">peak_values</span> <span class="o">=</span> <span class="p">[(</span><span class="n">bin_edges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">bin_edges</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">peak_indices</span><span class="p">]</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;peak_values = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">peak_values</span><span class="p">)</span>
+
+    <span class="c1"># fail if scan pattern is not likely to be raster</span>
+    <span class="c1"># check if angle distribution is</span>
+    <span class="c1"># check if the pattern is one-way raster</span>
+    <span class="n">is_one_way_raster</span> <span class="o">=</span> <span class="n">num_peak</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="c1"># check if the pattern is round-trip rasetr</span>
+    <span class="c1"># 1. check if number of peaks in angle histogram is 2 (assuming round-trip scan)</span>
+    <span class="c1"># 2. difference of peak angles is around 180deg</span>
+    <span class="n">tolerance</span> <span class="o">=</span> <span class="n">HeuristicsParameter</span><span class="o">.</span><span class="n">TurnaroundAngleTolerance</span>
+    <span class="n">is_round_trip_raster</span> <span class="o">=</span> <span class="p">((</span><span class="n">num_peak</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="mi">180</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">peak_values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">peak_values</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span> <span class="o">&lt;=</span> <span class="n">tolerance</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">is_one_way_raster</span> <span class="ow">or</span> <span class="n">is_round_trip_raster</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Scan pattern is not likely to be raster scan.&#39;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">RasterScanHeuristicsFailure</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="c1"># acceptable angle deviation from peak angle in degree</span>
+    <span class="n">acceptable_deviation</span> <span class="o">=</span> <span class="n">HeuristicsParameter</span><span class="o">.</span><span class="n">AngleThreshold</span>
+    <span class="n">angle_min</span> <span class="o">=</span> <span class="n">bin_edges</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="n">angle_max</span> <span class="o">=</span> <span class="n">bin_edges</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">acceptable_ranges</span> <span class="o">=</span> <span class="n">create_range</span><span class="p">(</span><span class="n">peak_values</span><span class="p">,</span> <span class="n">acceptable_deviation</span><span class="p">,</span> <span class="n">angle_min</span><span class="p">,</span> <span class="n">angle_max</span><span class="p">)</span>
+    <span class="n">angle_gap</span> <span class="o">=</span> <span class="n">find_angle_gap_by_range</span><span class="p">(</span><span class="n">angle_deg</span><span class="p">,</span> <span class="n">acceptable_ranges</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;angle gap: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">angle_gap</span><span class="p">)</span>
+
+    <span class="c1">#return angle_deg, angle_gap, hist, bin_edges, peak_indices, acceptable_ranges</span>
+    <span class="k">return</span> <span class="n">angle_gap</span></div>
+
+
+
+<div class="viewcode-block" id="find_raster_row">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_raster_row">[docs]</a>
+<span class="k">def</span> <span class="nf">find_raster_row</span><span class="p">(</span><span class="n">ra</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find raster rows using angle gap as primary and distance gap as secondary.</span>
+
+<span class="sd">    The function tries to find angle gap with tight condition and distance</span>
+<span class="sd">    gap with loose condition. Then, these gaps are combined by taking union.</span>
+<span class="sd">    Finally, gap list is refined.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ra: horizontal position sequence</span>
+<span class="sd">        dec: vertical position sequence</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list of indices that separate individual raster rows</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">delta_ra</span> <span class="o">=</span> <span class="n">ra</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">ra</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">delta_dec</span> <span class="o">=</span> <span class="n">dec</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">dec</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># heuristics based on distances between integrations</span>
+    <span class="n">distance</span><span class="p">,</span> <span class="n">distance_gap</span><span class="p">,</span> <span class="n">distance_threshold</span> <span class="o">=</span> <span class="n">find_distance_gap</span><span class="p">(</span><span class="n">delta_ra</span><span class="p">,</span> <span class="n">delta_dec</span><span class="p">)</span>
+
+    <span class="c1"># heuristics based on scan direction</span>
+    <span class="n">angle_rad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">delta_dec</span><span class="p">,</span> <span class="n">delta_ra</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">angle_deg</span> <span class="o">=</span> <span class="n">angle_rad</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="c1">#shifted_angle, angle_gap, hist, bin_edges, peak_indices, ranges = find_angle_gap(angle_deg)</span>
+    <span class="n">angle_gap</span> <span class="o">=</span> <span class="n">find_angle_gap</span><span class="p">(</span><span class="n">angle_deg</span><span class="p">)</span>
+    <span class="n">merged_gap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">union1d</span><span class="p">(</span><span class="n">angle_gap</span><span class="p">,</span> <span class="n">distance_gap</span><span class="p">)</span>
+    <span class="n">num_data</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+    <span class="n">merged_gap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(([</span><span class="mi">0</span><span class="p">],</span> <span class="n">merged_gap</span><span class="p">,</span> <span class="p">[</span><span class="n">num_data</span><span class="p">]))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;merged gap: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">merged_gap</span><span class="p">)</span>
+    <span class="n">refined_gap</span> <span class="o">=</span> <span class="n">refine_gaps</span><span class="p">(</span><span class="n">merged_gap</span><span class="p">,</span> <span class="n">num_data</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;final gap list: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">refined_gap</span><span class="p">)</span>
+
+    <span class="c1">#return shifted_angle, distance, refined_gap, angle_gap, distance_gap, (hist, bin_edges), peak_indices, ranges, distance_threshold</span>
+    <span class="k">return</span> <span class="n">refined_gap</span></div>
+
+
+
+<div class="viewcode-block" id="get_raster_distance">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.get_raster_distance">[docs]</a>
+<span class="k">def</span> <span class="nf">get_raster_distance</span><span class="p">(</span><span class="n">ra</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dtrow_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute distances between raster rows and the first row.</span>
+
+<span class="sd">    Compute distances between representative positions of raster rows and that of the first raster row.</span>
+<span class="sd">    Origin of the distance is the first raster row.</span>
+<span class="sd">    The representative position of each raster row is the mid point (mean position) of R.A. and Dec.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ra: np.ndarray of RA</span>
+<span class="sd">        dec: np.ndarray of Dec</span>
+<span class="sd">        dtrow_list: list of row ids for datatable rows per data chunk indicating</span>
+<span class="sd">                    single raster row.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray of the distances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">i1</span> <span class="o">=</span> <span class="n">dtrow_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">ra</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">y1</span> <span class="o">=</span> <span class="n">dec</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+    <span class="n">distance_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">distance</span><span class="p">(</span><span class="n">ra</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">dec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dtrow_list</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">distance_list</span></div>
+
+
+
+<div class="viewcode-block" id="RasterScanHeuristicsResult">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult">[docs]</a>
+<span class="k">class</span> <span class="nc">RasterScanHeuristicsResult</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result class of raster scan analysis.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ms (MeasurementSet): an MeasurementSet object related to the instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__ms</span> <span class="o">=</span> <span class="n">ms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__antenna</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ms</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__antenna</span>
+    
+<div class="viewcode-block" id="RasterScanHeuristicsResult.set_result_fail">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult.set_result_fail">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_result_fail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">spwid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set False means raster analysis failure to self.antenna dictionary that is used for getting fail antennas.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            antid (int): An Antenna ID of the result</span>
+<span class="sd">            spwid (int): An SpW ID of the result</span>
+<span class="sd">            fieldid (int): A field ID of the result</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_result</span><span class="p">(</span><span class="n">antid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_set_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">spwid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set boolean that appears the result of raster analysis to self.antenna dictionary that is used for getting fail antennas.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            antid (int): An Antenna ID of the result</span>
+<span class="sd">            spwid (int): An SpW ID of the result</span>
+<span class="sd">            fieldid (int): A field ID of the result</span>
+<span class="sd">            result (bool): result of raster analysis</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">antid</span><span class="p">,</span> <span class="p">{})</span> \
+                            <span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="p">{})</span> \
+                            <span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">fieldid</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">field</span><span class="p">[</span><span class="n">fieldid</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+
+<div class="viewcode-block" id="RasterScanHeuristicsResult.get_antennas_rasterscan_failed">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult.get_antennas_rasterscan_failed">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_antennas_rasterscan_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get antennas which have had some error in raster scan analysis of the self.ms.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[str]: List of antenna names</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">_contains_fail</span><span class="p">(</span><span class="n">value</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">_contains_fail</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">False</span>
+        
+        <span class="n">antenna_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">([</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__antenna</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">_contains_fail</span><span class="p">(</span><span class="n">v</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">antenna_ids</span><span class="p">])</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="find_raster_gap">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_raster_gap">[docs]</a>
+<span class="k">def</span> <span class="nf">find_raster_gap</span><span class="p">(</span><span class="n">ra</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">dec</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">dtrow_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]])</span> \
+        <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find gaps between individual raster map.</span>
+
+<span class="sd">    Returned list should be used in combination with timetable.</span>
+<span class="sd">    Here is an example to plot RA/DEC data per raster map:</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; import maplotlib.pyplot as plt</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; gap = find_raster_gap(ra, dec, dtrow_list)</span>
+<span class="sd">    &gt;&gt;&gt; for s, e in zip(gap[:-1], gap[1:]):</span>
+<span class="sd">    &gt;&gt;&gt;     idx = np.concatenate(dtrow_list[s:e])</span>
+<span class="sd">    &gt;&gt;&gt;     plt.plot(ra[idx], dec[idx], &#39;.&#39;)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ra: np.ndarray of RA</span>
+<span class="sd">        dec: np.ndarray of Dec</span>
+<span class="sd">        dtrow_list: List of np.ndarray holding array indices for ra and dec.</span>
+<span class="sd">                    Each index array is supposed to represent single raster row.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RasterScanHeuristicsFailure:</span>
+<span class="sd">            irregular row input or unsupported raster mapping</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray of index for dtrow_list indicating boundary between raster maps</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to identify gap between raster map iteration.&#39;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dtrow_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">RasterScanHeuristicsFailure</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="n">distance_list</span> <span class="o">=</span> <span class="n">get_raster_distance</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">dtrow_list</span><span class="p">)</span>
+    <span class="n">delta_distance</span> <span class="o">=</span> <span class="n">distance_list</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">distance_list</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">threshold</span> <span class="o">=</span> <span class="n">HeuristicsParameter</span><span class="o">.</span><span class="n">RasterGapThresholdFactor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">delta_distance</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;delta_distance = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">delta_distance</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;threshold = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">delta_distance</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">raster_gap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="n">idx</span><span class="p">,</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">dtrow_list</span><span class="p">)]])</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">raster_gap</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">raster_gap</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;idx = </span><span class="si">%s</span><span class="s1">, raster_gap = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">raster_gap</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;delta = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">delta</span><span class="p">)</span>
+    <span class="c1"># check if the direction of raster mapping is one-way (go back to</span>
+    <span class="c1"># the start position of previous raster frame) or round-trip</span>
+    <span class="c1"># (start from the end position of previous raster frame)</span>
+    <span class="c1"># For the latter case, all raster rows in the raster frames taken</span>
+    <span class="c1"># along returning direction are separated by the above threshold</span>
+    <span class="c1"># so that most of the elements in delta become 1</span>
+    <span class="n">ndelta1</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">delta</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ndelta1 = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ndelta1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ndelta1</span> <span class="o">&gt;</span> <span class="n">HeuristicsParameter</span><span class="o">.</span><span class="n">RoundTripRasterScanThresholdFactor</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">raster_gap</span><span class="p">):</span>
+        <span class="c1"># possibly round-trip raster mapping which is not supported</span>
+        <span class="k">raise</span> <span class="n">RasterScanHeuristicsFailure</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">raster_gap</span></div>
+
+
+
+<div class="viewcode-block" id="RasterScanHeuristic">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristic">[docs]</a>
+<span class="k">class</span> <span class="nc">RasterScanHeuristic</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Heuristic to analyze raster scan pattern.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RasterScanHeuristic.calculate">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristic.calculate">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">dec</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">])</span> \
+                      <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect gaps that separate individual raster rows and raster maps.</span>
+
+<span class="sd">        Detected gaps are transrated into TimeTable and TimeGap described below.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ra: horizontal position list</span>
+<span class="sd">            dec: vertical position list</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RasterScanHeuristicsFailure (raised from find_raster_row() or find_raster_gap()):</span>
+<span class="sd">                scan pattern is not likely to be raster scan or</span>
+<span class="sd">                irregular row input, or unsupported raster mapping</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Two-tuple containing information on group membership</span>
+<span class="sd">            (TimeTable) and boundaries between groups (TimeGap).</span>
+
+<span class="sd">            TimeTable is the &quot;list-of-list&quot; whose items are the set</span>
+<span class="sd">            of indices for each group. TimeTable[0] is the groups</span>
+<span class="sd">            separaged by &quot;small&quot; gap while TimeTable[1] is for</span>
+<span class="sd">            groups separated by &quot;large&quot; gap. They are used for</span>
+<span class="sd">            baseline subtraction (hsd_baseline) and subsequent</span>
+<span class="sd">            flagging (hsd_blflag).</span>
+
+<span class="sd">            TimeTable:</span>
+<span class="sd">                [[[ismall00,...,ismall0M],[...],...,[ismallX0,...,ismallXN]],</span>
+<span class="sd">                 [[ilarge00,...,ilarge0P],[...],...,[ilargeY0,...,ilargeYQ]]]</span>
+<span class="sd">            TimeTable[0]: separated by small gaps</span>
+<span class="sd">            TimeTable[1]: separated by large gaps</span>
+
+<span class="sd">            TimeGap is the list of indices which indicate boundaries</span>
+<span class="sd">            for &quot;small&quot; and &quot;large&quot; gaps. The &quot;small&quot; gap is a merged</span>
+<span class="sd">            list of gaps for groups separated by small time gaps and</span>
+<span class="sd">            the ones grouped by positions. These are used for plotting.</span>
+
+<span class="sd">            TimeGap: [[rowX1, rowX2,...,rowXN], [rowY1, rowY2,...,rowYN]]</span>
+<span class="sd">            TimeGap[0]: small gap</span>
+<span class="sd">            TimeGap[1]: large gap</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">gaplist_row</span> <span class="o">=</span> <span class="n">find_raster_row</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span>
+        <span class="c1"># gaplist_row = ret[2]</span>
+        <span class="n">idx_iter</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">gaplist_row</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">gaplist_row</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">dtrow_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">idx_iter</span><span class="p">]</span>
+        <span class="n">gaplist_map</span> <span class="o">=</span> <span class="n">find_raster_gap</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">dtrow_list</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;large gap list: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">gaplist_map</span><span class="p">)</span>
+
+        <span class="c1"># construct return value that is compatible with grouping2 heuristics</span>
+        <span class="c1"># - gaps for raster row correspond to &quot;small&quot; time gap</span>
+        <span class="c1"># - gaps for raster map correspond to &quot;large&quot; time gap</span>
+        <span class="n">gap_small</span> <span class="o">=</span> <span class="n">gaplist_row</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">gap_large</span> <span class="o">=</span> <span class="p">[</span><span class="n">gaplist_row</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">gaplist_map</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">gaplist</span> <span class="o">=</span> <span class="p">[</span><span class="n">gap_small</span><span class="p">,</span> <span class="n">gap_large</span><span class="p">]</span>
+
+        <span class="n">table_small</span> <span class="o">=</span> <span class="n">dtrow_list</span>
+        <span class="n">idx_iter</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">gaplist_map</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">gaplist_map</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">table_large</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">dtrow_list</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">])</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">idx_iter</span><span class="p">]</span>
+        <span class="n">gaptable</span> <span class="o">=</span> <span class="p">[</span><span class="n">table_small</span><span class="p">,</span> <span class="n">table_large</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">gaptable</span><span class="p">,</span> <span class="n">gaplist</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

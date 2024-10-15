@@ -1,0 +1,695 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.tasks.common.displays.slice &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.h.tasks.common.displays.slice</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.h.tasks.common.displays.slice</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">string</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.dates</span> <span class="k">as</span> <span class="nn">mdates</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.ticker</span> <span class="k">as</span> <span class="nn">ticker</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.logger</span> <span class="k">as</span> <span class="nn">logger</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">_valid_chars</span> <span class="o">=</span> <span class="s2">&quot;_.</span><span class="si">%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span><span class="p">,</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_char_replacer</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A small utility function that echoes the argument or returns &#39;_&#39; if the</span>
+<span class="sd">    argument is in a list of forbidden characters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_valid_chars</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;_&#39;</span>
+    <span class="k">return</span> <span class="n">s</span>
+
+
+<div class="viewcode-block" id="sanitize">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.slice.sanitize">[docs]</a>
+<span class="k">def</span> <span class="nf">sanitize</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_char_replacer</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">filename</span></div>
+
+
+
+<span class="n">flag_color</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;edges&#39;</span><span class="p">:</span> <span class="s1">&#39;lightblue&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;high outlier&#39;</span><span class="p">:</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;low outlier&#39;</span><span class="p">:</span> <span class="s1">&#39;yellow&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;max abs&#39;</span><span class="p">:</span> <span class="s1">&#39;pink&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;min abs&#39;</span><span class="p">:</span> <span class="s1">&#39;darkcyan&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;nmedian&#39;</span><span class="p">:</span> <span class="s1">&#39;darkred&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;outlier&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;sharps&#39;</span><span class="p">:</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;sharps2&#39;</span><span class="p">:</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;diffmad&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;tmf&#39;</span><span class="p">:</span> <span class="s1">&#39;aqua&#39;</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="SliceDisplay">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.slice.SliceDisplay">[docs]</a>
+<span class="k">class</span> <span class="nc">SliceDisplay</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="SliceDisplay.plot">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.slice.SliceDisplay.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">,</span> <span class="n">description_to_plot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">overplot_spectrum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plotbad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_only_flagged</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">results</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">stagenumber</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">stage</span>
+
+        <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">description_to_plot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># plot all results</span>
+            <span class="n">descriptionlist</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">descriptions</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># plot just this one</span>
+            <span class="n">descriptionlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">description_to_plot</span><span class="p">]</span>
+
+        <span class="n">flagcmds</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">flagcmds</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">descriptionlist</span><span class="p">:</span>
+            <span class="c1"># decide if we want to plot this result</span>
+            <span class="n">plot_result</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">plot_only_flagged</span><span class="p">:</span>
+                <span class="n">plot_result</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">flagcmd</span> <span class="ow">in</span> <span class="n">flagcmds</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">flagcmd</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">last</span><span class="p">(</span><span class="n">description</span><span class="p">)):</span>
+                        <span class="n">plot_result</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">plot_result</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># bug here somewhere - pol has 3 possible values for Tsyscal;</span>
+            <span class="c1"># None, Pol1 or Pol2 but only None and Pol1 get displayed as</span>
+            <span class="c1"># buttons.</span>
+            <span class="c1"># Not fixed as reporting is to be rewritten.</span>
+            <span class="c1"># save the image (remove odd characters from filename to cut</span>
+            <span class="c1"># down length)</span>
+            <span class="n">xtitle</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">ytitle</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">datatype</span>
+            <span class="n">plotfile</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_</span><span class="si">%s</span><span class="s1">_</span><span class="si">%s</span><span class="s1">_v_</span><span class="si">%s</span><span class="s1">_</span><span class="si">%s</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">prefix</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">datatype</span><span class="p">,</span> <span class="n">ytitle</span><span class="p">,</span> <span class="n">xtitle</span><span class="p">,</span>
+                <span class="n">description</span><span class="p">)</span>
+            <span class="n">plotfile</span> <span class="o">=</span> <span class="n">sanitize</span><span class="p">(</span><span class="n">plotfile</span><span class="p">)</span>
+            <span class="n">plotfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reportdir</span><span class="p">,</span> <span class="n">plotfile</span><span class="p">)</span>
+
+            <span class="n">ant</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">ant</span>
+            <span class="k">if</span> <span class="n">ant</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ant</span> <span class="o">=</span> <span class="n">ant</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span>
+                <span class="n">plotfile</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="n">xtitle</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="n">ytitle</span><span class="p">,</span>
+                <span class="n">field</span><span class="o">=</span><span class="n">results</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">fieldname</span><span class="p">,</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+                    <span class="s1">&#39;pol&#39;</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">pol</span><span class="p">,</span>
+                    <span class="s1">&#39;ant&#39;</span><span class="p">:</span> <span class="n">ant</span><span class="p">,</span>
+                    <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+                    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">datatype</span><span class="p">,</span>
+                    <span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">filename</span><span class="p">)})</span>
+            <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plot</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">plotfile</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Not overwriting existing image at </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">plotfile</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># clear plot to avoid contamination of previous plots</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+
+            <span class="c1"># do the plot</span>
+            <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">flagging</span><span class="p">:</span>
+                <span class="n">nsubplots</span> <span class="o">=</span> <span class="mi">3</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_panel</span><span class="p">(</span>
+                    <span class="n">nsubplots</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">description</span><span class="p">),</span> <span class="s1">&#39;Before Flagging&#39;</span><span class="p">,</span>
+                    <span class="n">overplot_spectrum</span><span class="o">=</span><span class="n">overplot_spectrum</span><span class="p">,</span> <span class="n">plotbad</span><span class="o">=</span><span class="n">plotbad</span><span class="p">)</span>
+
+                <span class="c1"># and &#39;after flagging&#39;</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_panel</span><span class="p">(</span>
+                    <span class="n">nsubplots</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">last</span><span class="p">(</span><span class="n">description</span><span class="p">),</span> <span class="s1">&#39;After&#39;</span><span class="p">,</span>
+                    <span class="n">plotbad</span><span class="o">=</span><span class="n">plotbad</span><span class="p">,</span> <span class="n">flagcmds</span><span class="o">=</span><span class="n">flagcmds</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nsubplots</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_panel</span><span class="p">(</span>
+                    <span class="n">nsubplots</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="n">description</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                    <span class="n">overplot_spectrum</span><span class="o">=</span><span class="n">overplot_spectrum</span><span class="p">,</span>
+                    <span class="n">plotbad</span><span class="o">=</span><span class="n">plotbad</span><span class="p">,</span> <span class="n">flagcmds</span><span class="o">=</span><span class="n">flagcmds</span><span class="p">)</span>
+
+            <span class="c1"># plot the titles and key</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">nsubplots</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nsubplots</span><span class="p">)</span>
+            <span class="n">yoff</span> <span class="o">=</span> <span class="mf">0.9</span>
+            <span class="n">xoff</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+            <span class="n">yoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plottext</span><span class="p">(</span><span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="s1">&#39;STAGE: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">stagenumber</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span>
+                                 <span class="n">ny_subplot</span><span class="o">=</span><span class="n">nsubplots</span><span class="p">,</span> <span class="n">mult</span><span class="o">=</span><span class="mf">1.8</span><span class="p">)</span>
+            <span class="n">yoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plottext</span><span class="p">(</span><span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span>
+                                 <span class="n">ny_subplot</span><span class="o">=</span><span class="n">nsubplots</span><span class="p">,</span> <span class="n">mult</span><span class="o">=</span><span class="mf">1.8</span><span class="p">)</span>
+
+            <span class="n">yoff</span> <span class="o">-=</span> <span class="mf">0.1</span>
+            <span class="n">yoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plottext</span><span class="p">(</span><span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="s1">&#39;Key&#39;</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">mult</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+            <span class="n">yoff</span> <span class="o">-=</span> <span class="mf">0.015</span>
+
+            <span class="k">if</span> <span class="n">overplot_spectrum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># overplot key</span>
+                <span class="n">overplot_datatype</span> <span class="o">=</span> <span class="n">overplot_spectrum</span><span class="o">.</span><span class="n">datatype</span>
+
+                <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">xoff</span><span class="p">],</span> <span class="p">[</span><span class="n">yoff</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                         <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;lightblue&#39;</span><span class="p">,</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;lightblue&#39;</span><span class="p">)</span>
+                <span class="n">yoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plottext</span><span class="p">(</span><span class="n">xoff</span><span class="o">+</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="n">overplot_datatype</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span>
+                                     <span class="n">ny_subplot</span><span class="o">=</span><span class="n">nsubplots</span><span class="p">,</span> <span class="n">mult</span><span class="o">=</span><span class="mf">1.6</span><span class="p">)</span>
+
+            <span class="c1"># flagging</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">xoff</span><span class="p">],</span> <span class="p">[</span><span class="n">yoff</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;indigo&#39;</span><span class="p">,</span>
+                     <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;indigo&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">yoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plottext</span><span class="p">(</span><span class="n">xoff</span><span class="o">+</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="s1">&#39;no data&#39;</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span>
+                                 <span class="n">ny_subplot</span><span class="o">=</span><span class="n">nsubplots</span><span class="p">,</span> <span class="n">mult</span><span class="o">=</span><span class="mf">1.6</span><span class="p">)</span>
+
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">xoff</span><span class="p">],</span> <span class="p">[</span><span class="n">yoff</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>
+                     <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">yoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plottext</span><span class="p">(</span><span class="n">xoff</span><span class="o">+</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="s1">&#39;already flagged&#39;</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span>
+                                 <span class="n">ny_subplot</span><span class="o">=</span><span class="n">nsubplots</span><span class="p">,</span> <span class="n">mult</span><span class="o">=</span><span class="mf">1.6</span><span class="p">)</span>
+
+            <span class="c1"># key for data flagged during this stage</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flagcmds</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+                <span class="n">rulesplotted</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+                <span class="k">for</span> <span class="n">flagcmd</span> <span class="ow">in</span> <span class="n">flagcmds</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">flagcmd</span><span class="o">.</span><span class="n">rulename</span> <span class="o">==</span> <span class="s1">&#39;ignore&#39;</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="n">flagcmd</span><span class="o">.</span><span class="n">rulename</span><span class="p">,</span> <span class="n">flagcmd</span><span class="o">.</span><span class="n">ruleaxis</span><span class="p">,</span>
+                            <span class="n">flag_color</span><span class="p">[</span><span class="n">flagcmd</span><span class="o">.</span><span class="n">rulename</span><span class="p">])</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rulesplotted</span><span class="p">:</span>
+
+                        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">xoff</span><span class="p">],</span> <span class="p">[</span><span class="n">yoff</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span>
+                                 <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                                 <span class="n">markerfacecolor</span><span class="o">=</span><span class="n">flag_color</span><span class="p">[</span><span class="n">flagcmd</span><span class="o">.</span><span class="n">rulename</span><span class="p">],</span>
+                                 <span class="n">markeredgecolor</span><span class="o">=</span><span class="n">flag_color</span><span class="p">[</span><span class="n">flagcmd</span><span class="o">.</span><span class="n">rulename</span><span class="p">],</span>
+                                 <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">flagcmd</span><span class="o">.</span><span class="n">ruleaxis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">yoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plottext</span><span class="p">(</span>
+                                <span class="n">xoff</span><span class="o">+</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span>
+                                <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> axis - </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">flagcmd</span><span class="o">.</span><span class="n">ruleaxis</span><span class="p">,</span> <span class="n">flagcmd</span><span class="o">.</span><span class="n">rulename</span><span class="p">),</span>
+                                <span class="mi">45</span><span class="p">,</span> <span class="n">ny_subplot</span><span class="o">=</span><span class="n">nsubplots</span><span class="p">,</span> <span class="n">mult</span><span class="o">=</span><span class="mf">1.6</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">yoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plottext</span><span class="p">(</span>
+                                <span class="n">xoff</span><span class="o">+</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="n">flagcmd</span><span class="o">.</span><span class="n">rulename</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span>
+                                <span class="n">ny_subplot</span><span class="o">=</span><span class="n">nsubplots</span><span class="p">,</span> <span class="n">mult</span><span class="o">=</span><span class="mf">1.6</span><span class="p">)</span>
+
+                        <span class="n">rulesplotted</span><span class="o">.</span><span class="n">update</span><span class="p">([(</span><span class="n">flagcmd</span><span class="o">.</span><span class="n">rulename</span><span class="p">,</span> <span class="n">flagcmd</span><span class="o">.</span><span class="n">ruleaxis</span><span class="p">,</span>
+                                             <span class="n">flag_color</span><span class="p">[</span><span class="n">flagcmd</span><span class="o">.</span><span class="n">rulename</span><span class="p">])])</span>
+
+            <span class="c1"># do not print axes, turn off autoscaling</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">plotfile</span><span class="p">)</span>
+
+            <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">plots</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_plot_panel</span><span class="p">(</span><span class="n">nplots</span><span class="p">,</span> <span class="n">plotnumber</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">subtitle</span><span class="p">,</span>
+                    <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;landscape&#39;</span><span class="p">,</span> <span class="n">lineregions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">spectrumlineregions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overplot_spectrum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">plotbad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flagcmds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot the 2d data into one panel.</span>
+
+<span class="sd">        Keyword arguments:</span>
+<span class="sd">        nplots             -- The number of sub-plots on the page.</span>
+<span class="sd">        plotnumber         -- The index of this sub-plot.</span>
+<span class="sd">        spectrum           -- The 1d data.</span>
+<span class="sd">        subtitle           -- The title to be given to this subplot.</span>
+<span class="sd">        plotbad            -- True to plot flagged data, False to</span>
+<span class="sd">                              plot a &#39;floating&#39; symbol at the x position.</span>
+<span class="sd">        flagcmds           -- List of FlagCmd flagging operations done</span>
+<span class="sd">                              to the data in this stage.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">flagcmds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flagcmds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">data_mad</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">data_mad</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">flag</span>
+        <span class="n">nodata</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">nodata</span>
+        <span class="n">noisy</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">noisychannels</span>
+        <span class="n">xtitle</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">xunits</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">units</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">dataunits</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">units</span>
+        <span class="n">datatype</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">datatype</span>
+
+        <span class="k">if</span> <span class="n">overplot_spectrum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">overplot_data</span> <span class="o">=</span> <span class="n">overplot_spectrum</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">overplot_data_mad</span> <span class="o">=</span> <span class="n">overplot_spectrum</span><span class="o">.</span><span class="n">data_mad</span>
+            <span class="n">overplot_flag</span> <span class="o">=</span> <span class="n">overplot_spectrum</span><span class="o">.</span><span class="n">flag</span>
+
+        <span class="c1"># get time axis in sensible units (hours since beginning of day) -</span>
+        <span class="c1"># if x-axis is TIME</span>
+        <span class="k">if</span> <span class="n">xtitle</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;TIME&#39;</span><span class="p">:</span>
+            <span class="n">day</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mf">86400.0</span><span class="p">)</span>
+            <span class="n">xaxis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">day</span> <span class="o">*</span> <span class="mf">86400.0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xaxis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># set the font sizes etc.</span>
+        <span class="k">if</span> <span class="n">layout</span> <span class="o">==</span> <span class="s1">&#39;landscape&#39;</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="n">titlesize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;xtick&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;ytick&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.35</span><span class="p">)</span>
+
+        <span class="c1"># set the plot layout</span>
+        <span class="k">if</span> <span class="n">layout</span> <span class="o">==</span> <span class="s1">&#39;portrait&#39;</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nplots</span><span class="p">,</span> <span class="n">plotnumber</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">layout</span> <span class="o">==</span> <span class="s1">&#39;landscape&#39;</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">nplots</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">plotnumber</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;bad layout: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">layout</span><span class="p">)</span>
+
+        <span class="n">not_noisy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">noisy</span><span class="p">)</span>
+
+        <span class="c1"># plot &#39;not noisy&#39; points first</span>
+        <span class="k">if</span> <span class="n">overplot_spectrum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># plot overplot data as light blue circles first</span>
+            <span class="n">plot_data</span> <span class="o">=</span> <span class="n">overplot_data</span><span class="p">[</span><span class="n">not_noisy</span><span class="p">]</span>
+            <span class="n">plot_data_mad</span> <span class="o">=</span> <span class="n">overplot_data_mad</span><span class="p">[</span><span class="n">not_noisy</span><span class="p">]</span>
+            <span class="n">plot_flag</span> <span class="o">=</span> <span class="n">overplot_flag</span><span class="p">[</span><span class="n">not_noisy</span><span class="p">]</span>
+            <span class="n">plot_axis</span> <span class="o">=</span> <span class="n">xaxis</span><span class="p">[</span><span class="n">not_noisy</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plot_axis</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">plot_axis</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)],</span>
+                             <span class="n">plot_data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)],</span>
+                             <span class="n">plot_data_mad</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)],</span>
+                             <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span>
+                             <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightblue&#39;</span><span class="p">)</span>
+
+        <span class="n">datemin</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">datemax</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># plot good data as circles</span>
+        <span class="n">plot_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">not_noisy</span><span class="p">]</span>
+        <span class="n">plot_data_mad</span> <span class="o">=</span> <span class="n">data_mad</span><span class="p">[</span><span class="n">not_noisy</span><span class="p">]</span>
+        <span class="n">plot_flag</span> <span class="o">=</span> <span class="n">flag</span><span class="p">[</span><span class="n">not_noisy</span><span class="p">]</span>
+        <span class="n">plot_axis</span> <span class="o">=</span> <span class="n">xaxis</span><span class="p">[</span><span class="n">not_noisy</span><span class="p">]</span>
+
+        <span class="n">good_data</span> <span class="o">=</span> <span class="n">plot_data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)]</span>
+        <span class="n">good_data_mad</span> <span class="o">=</span> <span class="n">plot_data_mad</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">good_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">good_x</span> <span class="o">=</span> <span class="n">plot_axis</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="n">xtitle</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;TIME&#39;</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">good_x</span><span class="p">:</span>
+                    <span class="n">temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+                <span class="n">good_x</span> <span class="o">=</span> <span class="n">temp</span>
+                <span class="n">datemin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">good_x</span><span class="p">)</span>
+                <span class="n">datemax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">good_x</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">good_x</span><span class="p">,</span> <span class="n">good_data</span><span class="p">,</span> <span class="n">good_data_mad</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span>
+                         <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">subtitle</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">xunits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xtitle</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">xtitle</span><span class="p">,</span> <span class="n">xunits</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">plotnumber</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dataunits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">datatype</span><span class="p">,</span> <span class="n">dataunits</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">datatype</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+        <span class="c1"># plot points not valid in blue. Often these will be zero having</span>
+        <span class="c1"># simply not been calculated because the underlying data are bad; this</span>
+        <span class="c1"># screws up the autoscaling. Hence if plotbad is False, plot them</span>
+        <span class="c1"># floating at the correct x position above the bottom of the plot, to</span>
+        <span class="c1"># suggest that the y value is unimportant. If plotbad is True then</span>
+        <span class="c1"># plot the actual value.</span>
+        <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">()</span>
+        <span class="n">yflag</span> <span class="o">=</span> <span class="n">ymin</span> <span class="o">+</span> <span class="p">(</span><span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span><span class="p">)</span> <span class="o">/</span> <span class="mf">10.0</span>
+        <span class="n">bad_data</span> <span class="o">=</span> <span class="n">plot_data</span><span class="p">[</span><span class="n">plot_flag</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bad_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">plotbad</span><span class="p">:</span>
+                <span class="n">bad_data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">yflag</span>
+            <span class="n">bad_x</span> <span class="o">=</span> <span class="n">plot_axis</span><span class="p">[</span><span class="n">plot_flag</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">xtitle</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;TIME&#39;</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">bad_x</span><span class="p">:</span>
+                    <span class="n">temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+                <span class="n">bad_x</span> <span class="o">=</span> <span class="n">temp</span>
+                <span class="k">if</span> <span class="n">datemin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">datemin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">bad_x</span><span class="p">)</span>
+                    <span class="n">datemax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">bad_x</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">datemin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">datemin</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">bad_x</span><span class="p">))</span>
+                    <span class="n">datemax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">datemax</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">bad_x</span><span class="p">))</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">bad_x</span><span class="p">,</span> <span class="n">bad_data</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span>
+                         <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+
+        <span class="c1"># fix the y-scale at the current values, defined by the data we want</span>
+        <span class="c1"># to be sure of seeing</span>
+        <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">()</span>
+
+        <span class="c1"># overplot noisy channels as triangles of the appropriate colour</span>
+        <span class="k">if</span> <span class="n">overplot_spectrum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plot_data</span> <span class="o">=</span> <span class="n">overplot_data</span><span class="p">[</span><span class="n">noisy</span><span class="p">]</span>
+            <span class="n">plot_data_mad</span> <span class="o">=</span> <span class="n">overplot_data_mad</span><span class="p">[</span><span class="n">noisy</span><span class="p">]</span>
+            <span class="n">plot_flag</span> <span class="o">=</span> <span class="n">overplot_flag</span><span class="p">[</span><span class="n">noisy</span><span class="p">]</span>
+            <span class="n">plot_axis</span> <span class="o">=</span> <span class="n">xaxis</span><span class="p">[</span><span class="n">noisy</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">plot_axis</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)],</span>
+                             <span class="n">plot_data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)],</span>
+                             <span class="n">plot_data_mad</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)],</span>
+                             <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span>
+                             <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightblue&#39;</span><span class="p">)</span>
+
+        <span class="c1"># noisy channel data</span>
+        <span class="n">plot_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">noisy</span><span class="p">]</span>
+        <span class="n">plot_data_mad</span> <span class="o">=</span> <span class="n">data_mad</span><span class="p">[</span><span class="n">noisy</span><span class="p">]</span>
+        <span class="n">plot_flag</span> <span class="o">=</span> <span class="n">flag</span><span class="p">[</span><span class="n">noisy</span><span class="p">]</span>
+        <span class="n">plot_axis</span> <span class="o">=</span> <span class="n">xaxis</span><span class="p">[</span><span class="n">noisy</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plot_data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">plot_axis</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)],</span>
+                         <span class="n">plot_data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)],</span>
+                         <span class="n">plot_data_mad</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">plot_flag</span><span class="p">)],</span>
+                         <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span>
+                         <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+        <span class="c1"># flagged noisy channel data</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plot_data</span><span class="p">[</span><span class="n">plot_flag</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">plot_axis</span><span class="p">[</span><span class="n">plot_flag</span><span class="p">],</span>
+                         <span class="n">plot_data</span><span class="p">[</span><span class="n">plot_flag</span><span class="p">],</span>
+                         <span class="n">plot_data_mad</span><span class="p">[</span><span class="n">plot_flag</span><span class="p">],</span>
+                         <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span>
+                         <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">xtitle</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;CHANNEL&#39;</span> <span class="ow">and</span> <span class="n">lineregions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">line_ranges</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">lineregion</span> <span class="ow">in</span> <span class="n">lineregions</span><span class="p">:</span>
+                <span class="n">line_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">lineregion</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">lineregion</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">lineregion</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">broken_barh</span><span class="p">(</span><span class="n">line_ranges</span><span class="p">,</span> <span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="p">(</span><span class="n">ymax</span><span class="o">-</span><span class="n">ymin</span><span class="p">)</span><span class="o">/</span><span class="mf">20.0</span><span class="p">),</span>
+                            <span class="n">facecolors</span><span class="o">=</span><span class="s1">&#39;pink&#39;</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;pink&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">spectrumlineregions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">line_ranges</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">lineregion</span> <span class="ow">in</span> <span class="n">spectrumlineregions</span><span class="p">:</span>
+                <span class="n">qlr0</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">lineregion</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">qlr0</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qlr0</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
+                <span class="n">qlr0</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">qlr0</span><span class="p">)</span>
+                <span class="n">qlr1</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">lineregion</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">qlr1</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qlr1</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
+                <span class="n">qlr1</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">qlr1</span><span class="p">)</span>
+                <span class="n">line_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">qlr0</span><span class="p">,</span> <span class="n">qlr1</span><span class="o">-</span><span class="n">qlr0</span><span class="p">))</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">broken_barh</span><span class="p">(</span><span class="n">line_ranges</span><span class="p">,</span> <span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="p">(</span><span class="n">ymax</span><span class="o">-</span><span class="n">ymin</span><span class="p">)</span><span class="o">/</span><span class="mf">20.0</span><span class="p">),</span>
+                            <span class="n">facecolors</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+
+        <span class="c1"># overplot points flagged in this stage</span>
+        <span class="n">pointsflagged</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">flagcmds</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">flagcmd</span> <span class="ow">in</span> <span class="n">flagcmds</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">flagcmd</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">spectrum</span><span class="p">):</span>
+                <span class="n">bad_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">flagcmd</span><span class="o">.</span><span class="n">flagchannels</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bad_data</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">plotbad</span><span class="p">:</span>
+                    <span class="n">bad_data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">yflag</span>
+                <span class="n">bad_x</span> <span class="o">=</span> <span class="n">xaxis</span><span class="p">[</span><span class="n">flagcmd</span><span class="o">.</span><span class="n">flagchannels</span><span class="p">]</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">bad_x</span><span class="p">,</span> <span class="n">bad_data</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span>
+                             <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                             <span class="n">markerfacecolor</span><span class="o">=</span><span class="n">flag_color</span><span class="p">[</span><span class="n">flagcmd</span><span class="o">.</span><span class="n">rulename</span><span class="p">],</span>
+                             <span class="n">markeredgecolor</span><span class="o">=</span><span class="n">flag_color</span><span class="p">[</span><span class="n">flagcmd</span><span class="o">.</span><span class="n">rulename</span><span class="p">])</span>
+
+        <span class="c1"># overplot points with no data in indigo</span>
+        <span class="n">bad_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">nodata</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bad_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">bad_x</span> <span class="o">=</span> <span class="n">xaxis</span><span class="p">[</span><span class="n">nodata</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">xtitle</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;TIME&#39;</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">bad_x</span><span class="p">:</span>
+                    <span class="n">temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+                <span class="n">bad_x</span> <span class="o">=</span> <span class="n">temp</span>
+            <span class="n">bad_data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">yflag</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">bad_x</span><span class="p">,</span> <span class="n">bad_data</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span>
+                         <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;indigo&#39;</span><span class="p">,</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;indigo&#39;</span><span class="p">,</span>
+                         <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="c1"># set plot y scale to saved values</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span>
+
+        <span class="c1"># turn off possible use of offset in ScalarFormatter on y axis -</span>
+        <span class="c1"># otherwise if the y range is much smaller than the abs value then</span>
+        <span class="c1"># the default ticks are relative to an offset printed at the top of</span>
+        <span class="c1"># the axis, which has led to confusion</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">ScalarFormatter</span><span class="p">(</span>
+          <span class="n">useOffset</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">xtitle</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;TIME&#39;</span><span class="p">:</span>
+
+            <span class="c1"># set the limits of the plot to whole hours</span>
+            <span class="n">datemin</span> <span class="o">=</span> <span class="n">datemin</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="c1"># following will have problems at very end of month</span>
+            <span class="k">if</span> <span class="n">datemax</span><span class="o">.</span><span class="n">hour</span> <span class="o">&lt;</span> <span class="mi">23</span><span class="p">:</span>
+                <span class="n">datemax</span> <span class="o">=</span> <span class="n">datemax</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">hour</span><span class="o">=</span><span class="n">datemax</span><span class="o">.</span><span class="n">hour</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                          <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">datemax</span> <span class="o">=</span> <span class="n">datemax</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="n">datemax</span><span class="o">.</span><span class="n">day</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                          <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">datemin</span><span class="p">,</span> <span class="n">datemax</span><span class="p">)</span>
+
+            <span class="c1"># set major ticks at each hour</span>
+            <span class="n">hours</span> <span class="o">=</span> <span class="n">mdates</span><span class="o">.</span><span class="n">HourLocator</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">minutes</span> <span class="o">=</span> <span class="n">mdates</span><span class="o">.</span><span class="n">MinuteLocator</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">hours</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">mdates</span><span class="o">.</span><span class="n">DateFormatter</span><span class="p">(</span><span class="s1">&#39;%Hh%Mm&#39;</span><span class="p">))</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">minutes</span><span class="p">)</span>
+
+            <span class="c1"># override default x-axis title</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time (hours after MJD start)&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="s1">&#39;ANTENNA&#39;</span> <span class="ow">in</span> <span class="n">xtitle</span><span class="o">.</span><span class="n">upper</span><span class="p">():</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">IndexLocator</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">pointsflagged</span>
+
+<div class="viewcode-block" id="SliceDisplay.plottext">
+<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.slice.SliceDisplay.plottext">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">plottext</span><span class="p">(</span><span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">maxchars</span><span class="p">,</span> <span class="n">ny_subplot</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mult</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Utility method to plot text and put line breaks in to keep the</span>
+<span class="sd">        text within a given limit.</span>
+
+<span class="sd">        Keyword arguments:</span>
+<span class="sd">        xoff       -- world x coord where text is to start.</span>
+<span class="sd">        yoff       -- world y coord where text is to start.</span>
+<span class="sd">        text       -- Text to print.</span>
+<span class="sd">        maxchars   -- Maximum number of characters before a newline is</span>
+<span class="sd">                      inserted.</span>
+<span class="sd">        ny_subplot -- Number of sub-plots along the y-axis of the page.</span>
+<span class="sd">        mult       -- Factor by which the text fontsize is to be multiplied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">rsplit</span><span class="p">()</span>
+        <span class="n">words_in_line</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)):</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="n">words</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+            <span class="n">words_in_line</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">maxchars</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">words_in_line</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">mult</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span>
+                            <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">yoff</span> <span class="o">-=</span> <span class="mf">0.02</span> <span class="o">*</span> <span class="n">ny_subplot</span> <span class="o">*</span> <span class="n">mult</span>
+                    <span class="n">words_in_line</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">mult</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span>
+                            <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">yoff</span> <span class="o">-=</span> <span class="mf">0.02</span> <span class="o">*</span> <span class="n">ny_subplot</span> <span class="o">*</span> <span class="n">mult</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+                    <span class="n">words_in_line</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">temp</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">mult</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span>
+                    <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">yoff</span> <span class="o">-=</span> <span class="mf">0.02</span> <span class="o">*</span> <span class="n">ny_subplot</span> <span class="o">*</span> <span class="n">mult</span>
+        <span class="n">yoff</span> <span class="o">-=</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="n">ny_subplot</span> <span class="o">*</span> <span class="n">mult</span>
+        <span class="k">return</span> <span class="n">yoff</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+pipeline.hsd.tasks.flagging
+===========================
+
+.. automodule:: pipeline.hsd.tasks.flagging
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FlagDeterALMASingleDish
+      SerialFlagDeterALMASingleDish
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   flagdeteralmasd
+   renderer

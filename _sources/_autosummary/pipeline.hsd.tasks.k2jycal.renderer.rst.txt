@@ -1,0 +1,14 @@
+pipeline.hsd.tasks.k2jycal.renderer
+===================================
+
+.. automodule:: pipeline.hsd.tasks.k2jycal.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      JyperKTR
+      JyperKTRV
+      T2_4MDetailsSingleDishK2JyCalRenderer
+   

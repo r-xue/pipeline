@@ -1,0 +1,31 @@
+pipeline.hifa.tasks.importdata.qa
+=================================
+
+.. automodule:: pipeline.hifa.tasks.importdata.qa
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      ous_parallactic_range
+      parallactic_angle_at_epoch
+      parallactic_range_for_field
+      range_after_processing
+      to_positive_definite
+      to_signed
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ALMAImportDataListQAHandler
+      ALMAImportDataQAHandler
+      ALMAImportDataResults
+      Field
+      MeasurementSet
+      ParallacticAngle
+      PositiveDefiniteAngle
+      SignedAngle
+      chain
+   

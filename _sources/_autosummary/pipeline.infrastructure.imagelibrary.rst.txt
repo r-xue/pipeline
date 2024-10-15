@@ -1,0 +1,14 @@
+pipeline.infrastructure.imagelibrary
+====================================
+
+.. automodule:: pipeline.infrastructure.imagelibrary
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ImageItem
+      ImageLibrary
+      ImageMetadata
+   

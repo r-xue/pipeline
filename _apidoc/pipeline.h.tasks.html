@@ -1,0 +1,1065 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.tasks package &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.h.tasks package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/pipeline.h.tasks.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-h-tasks-package">
+<h1>pipeline.h.tasks package<a class="headerlink" href="#pipeline-h-tasks-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.tasks.applycal.html">pipeline.h.tasks.applycal package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.applycal.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.applycal.html#module-pipeline.h.tasks.applycal.applycal">pipeline.h.tasks.applycal.applycal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.Applycal"><code class="docutils literal notranslate"><span class="pre">Applycal</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.Applycal.Inputs"><code class="docutils literal notranslate"><span class="pre">Applycal.Inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.Applycal.Task"><code class="docutils literal notranslate"><span class="pre">Applycal.Task</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalInputs"><code class="docutils literal notranslate"><span class="pre">ApplycalInputs</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalInputs.antenna"><code class="docutils literal notranslate"><span class="pre">ApplycalInputs.antenna</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalInputs.applymode"><code class="docutils literal notranslate"><span class="pre">ApplycalInputs.applymode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalInputs.field"><code class="docutils literal notranslate"><span class="pre">ApplycalInputs.field</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalInputs.flagbackup"><code class="docutils literal notranslate"><span class="pre">ApplycalInputs.flagbackup</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalInputs.flagdetailedsum"><code class="docutils literal notranslate"><span class="pre">ApplycalInputs.flagdetailedsum</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalInputs.flagsum"><code class="docutils literal notranslate"><span class="pre">ApplycalInputs.flagsum</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalInputs.intent"><code class="docutils literal notranslate"><span class="pre">ApplycalInputs.intent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalInputs.parallel"><code class="docutils literal notranslate"><span class="pre">ApplycalInputs.parallel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalInputs.parang"><code class="docutils literal notranslate"><span class="pre">ApplycalInputs.parang</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalInputs.spw"><code class="docutils literal notranslate"><span class="pre">ApplycalInputs.spw</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalInputs.to_casa_args"><code class="docutils literal notranslate"><span class="pre">ApplycalInputs.to_casa_args()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalResults"><code class="docutils literal notranslate"><span class="pre">ApplycalResults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.ApplycalResults.merge_with_context"><code class="docutils literal notranslate"><span class="pre">ApplycalResults.merge_with_context()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.SerialApplycal"><code class="docutils literal notranslate"><span class="pre">SerialApplycal</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.SerialApplycal.Inputs"><code class="docutils literal notranslate"><span class="pre">SerialApplycal.Inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.SerialApplycal.analyse"><code class="docutils literal notranslate"><span class="pre">SerialApplycal.analyse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.SerialApplycal.applied_data_type"><code class="docutils literal notranslate"><span class="pre">SerialApplycal.applied_data_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.SerialApplycal.modify_task_args"><code class="docutils literal notranslate"><span class="pre">SerialApplycal.modify_task_args()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.SerialApplycal.prepare"><code class="docutils literal notranslate"><span class="pre">SerialApplycal.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.applycal.SerialApplycal.process_flagsummary"><code class="docutils literal notranslate"><span class="pre">SerialApplycal.process_flagsummary()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.applycal.html#module-pipeline.h.tasks.applycal.qa">pipeline.h.tasks.applycal.qa module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.qa.ApplycalListQAHandler"><code class="docutils literal notranslate"><span class="pre">ApplycalListQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.qa.ApplycalListQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">ApplycalListQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.qa.ApplycalListQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">ApplycalListQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.qa.ApplycalListQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">ApplycalListQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.qa.ApplycalQAHandler"><code class="docutils literal notranslate"><span class="pre">ApplycalQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.qa.ApplycalQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">ApplycalQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.qa.ApplycalQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">ApplycalQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.qa.ApplycalQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">ApplycalQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.applycal.html#module-pipeline.h.tasks.applycal.renderer">pipeline.h.tasks.applycal.renderer module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPerAntSciencePlotRenderer"><code class="docutils literal notranslate"><span class="pre">ApplycalAmpVsFreqPerAntSciencePlotRenderer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPlotRenderer"><code class="docutils literal notranslate"><span class="pre">ApplycalAmpVsFreqPlotRenderer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqSciencePlotRenderer"><code class="docutils literal notranslate"><span class="pre">ApplycalAmpVsFreqSciencePlotRenderer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsTimePlotRenderer"><code class="docutils literal notranslate"><span class="pre">ApplycalAmpVsTimePlotRenderer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVPlotRenderer"><code class="docutils literal notranslate"><span class="pre">ApplycalAmpVsUVPlotRenderer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVSciencePlotRenderer"><code class="docutils literal notranslate"><span class="pre">ApplycalAmpVsUVSciencePlotRenderer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsFreqPlotRenderer"><code class="docutils literal notranslate"><span class="pre">ApplycalPhaseVsFreqPlotRenderer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsTimePlotRenderer"><code class="docutils literal notranslate"><span class="pre">ApplycalPhaseVsTimePlotRenderer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsUVPlotRenderer"><code class="docutils literal notranslate"><span class="pre">ApplycalPhaseVsUVPlotRenderer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsApplycalRenderer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.calapps_for_result"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsApplycalRenderer.calapps_for_result()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.caltypes_for_result"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsApplycalRenderer.caltypes_for_result()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.create_plots"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsApplycalRenderer.create_plots()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.create_science_plots"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsApplycalRenderer.create_science_plots()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.create_uv_plots"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsApplycalRenderer.create_uv_plots()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.get_gain_solution_type"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsApplycalRenderer.get_gain_solution_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.plots_for_result"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsApplycalRenderer.plots_for_result()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.science_plots_for_result"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsApplycalRenderer.science_plots_for_result()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.update_mako_context"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsApplycalRenderer.update_mako_context()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.copy_callibrary"><code class="docutils literal notranslate"><span class="pre">copy_callibrary()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.deduplicate"><code class="docutils literal notranslate"><span class="pre">deduplicate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.get_brightest_field"><code class="docutils literal notranslate"><span class="pre">get_brightest_field()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.applycal.html#module-pipeline.h.tasks.applycal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.tasks.common.html">pipeline.h.tasks.common package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.displays.html">pipeline.h.tasks.common.displays package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.displays.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.displays.html#module-pipeline.h.tasks.common.displays.applycal">pipeline.h.tasks.common.displays.applycal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.displays.html#module-pipeline.h.tasks.common.displays.bandpass">pipeline.h.tasks.common.displays.bandpass module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.displays.html#module-pipeline.h.tasks.common.displays.common">pipeline.h.tasks.common.displays.common module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.displays.html#module-pipeline.h.tasks.common.displays.flagging">pipeline.h.tasks.common.displays.flagging module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.displays.html#module-pipeline.h.tasks.common.displays.image">pipeline.h.tasks.common.displays.image module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.displays.html#module-pipeline.h.tasks.common.displays.imhist">pipeline.h.tasks.common.displays.imhist module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.displays.html#module-pipeline.h.tasks.common.displays.polcal">pipeline.h.tasks.common.displays.polcal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.displays.html#module-pipeline.h.tasks.common.displays.sky">pipeline.h.tasks.common.displays.sky module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.displays.html#module-pipeline.h.tasks.common.displays.slice">pipeline.h.tasks.common.displays.slice module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.displays.html#module-pipeline.h.tasks.common.displays.tsys">pipeline.h.tasks.common.displays.tsys module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.displays.html#module-pipeline.h.tasks.common.displays">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.arrayflaggerbase">pipeline.h.tasks.common.arrayflaggerbase module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.arrayflaggerbase.FlagCmd"><code class="docutils literal notranslate"><span class="pre">FlagCmd</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.arrayflaggerbase.FlagCmd.flagchannels"><code class="docutils literal notranslate"><span class="pre">FlagCmd.flagchannels</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.arrayflaggerbase.FlagCmd.match"><code class="docutils literal notranslate"><span class="pre">FlagCmd.match()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.arrayflaggerbase.FlagCmd.match_image"><code class="docutils literal notranslate"><span class="pre">FlagCmd.match_image()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.arrayflaggerbase.channel_ranges"><code class="docutils literal notranslate"><span class="pre">channel_ranges()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.arrayflaggerbase.consolidate_flagcmd_channels"><code class="docutils literal notranslate"><span class="pre">consolidate_flagcmd_channels()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.arrayflaggerbase.median_and_mad"><code class="docutils literal notranslate"><span class="pre">median_and_mad()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.atmutil">pipeline.h.tasks.common.atmutil module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.AtmType"><code class="docutils literal notranslate"><span class="pre">AtmType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.AtmType.midLatitudeSummer"><code class="docutils literal notranslate"><span class="pre">AtmType.midLatitudeSummer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.AtmType.midLatitudeWinter"><code class="docutils literal notranslate"><span class="pre">AtmType.midLatitudeWinter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.AtmType.subarcticSummer"><code class="docutils literal notranslate"><span class="pre">AtmType.subarcticSummer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.AtmType.subarcticWinter"><code class="docutils literal notranslate"><span class="pre">AtmType.subarcticWinter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.AtmType.tropical"><code class="docutils literal notranslate"><span class="pre">AtmType.tropical</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.calc_airmass"><code class="docutils literal notranslate"><span class="pre">calc_airmass()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.calc_transmission"><code class="docutils literal notranslate"><span class="pre">calc_transmission()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_altitude"><code class="docutils literal notranslate"><span class="pre">get_altitude()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_dry_opacity"><code class="docutils literal notranslate"><span class="pre">get_dry_opacity()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_median_elevation"><code class="docutils literal notranslate"><span class="pre">get_median_elevation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_representative_elevation"><code class="docutils literal notranslate"><span class="pre">get_representative_elevation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_spw_spec"><code class="docutils literal notranslate"><span class="pre">get_spw_spec()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_table_nrow"><code class="docutils literal notranslate"><span class="pre">get_table_nrow()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_transmission"><code class="docutils literal notranslate"><span class="pre">get_transmission()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_transmission_for_range"><code class="docutils literal notranslate"><span class="pre">get_transmission_for_range()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_wet_opacity"><code class="docutils literal notranslate"><span class="pre">get_wet_opacity()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.init_at"><code class="docutils literal notranslate"><span class="pre">init_at()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.init_atm"><code class="docutils literal notranslate"><span class="pre">init_atm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.init_spw"><code class="docutils literal notranslate"><span class="pre">init_spw()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.plot"><code class="docutils literal notranslate"><span class="pre">plot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.test"><code class="docutils literal notranslate"><span class="pre">test()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline-h-tasks-common-atmutil-test-module">pipeline.h.tasks.common.atmutil_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.calibrationtableaccess">pipeline.h.tasks.common.calibrationtableaccess module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.calibrationtableaccess.CalibrationTableData"><code class="docutils literal notranslate"><span class="pre">CalibrationTableData</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.calibrationtableaccess.CalibrationTableData.addrow"><code class="docutils literal notranslate"><span class="pre">CalibrationTableData.addrow()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.calibrationtableaccess.CalibrationTableData.rows"><code class="docutils literal notranslate"><span class="pre">CalibrationTableData.rows</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.calibrationtableaccess.CalibrationTableData.setvis"><code class="docutils literal notranslate"><span class="pre">CalibrationTableData.setvis()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.calibrationtableaccess.CalibrationTableDataFiller"><code class="docutils literal notranslate"><span class="pre">CalibrationTableDataFiller</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.calibrationtableaccess.CalibrationTableDataFiller.getcal"><code class="docutils literal notranslate"><span class="pre">CalibrationTableDataFiller.getcal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.calibrationtableaccess.CalibrationTableRow"><code class="docutils literal notranslate"><span class="pre">CalibrationTableRow</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.calibrationtableaccess.CalibrationTableRow.get"><code class="docutils literal notranslate"><span class="pre">CalibrationTableRow.get()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.commonfluxresults">pipeline.h.tasks.common.commonfluxresults module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonfluxresults.FluxCalibrationResults"><code class="docutils literal notranslate"><span class="pre">FluxCalibrationResults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonfluxresults.FluxCalibrationResults.merge_with_context"><code class="docutils literal notranslate"><span class="pre">FluxCalibrationResults.merge_with_context()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.commonhelpermethods">pipeline.h.tasks.common.commonhelpermethods module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonhelpermethods.get_antenna_names"><code class="docutils literal notranslate"><span class="pre">get_antenna_names()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonhelpermethods.get_corr_axis"><code class="docutils literal notranslate"><span class="pre">get_corr_axis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonhelpermethods.get_corr_products"><code class="docutils literal notranslate"><span class="pre">get_corr_products()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonhelpermethods.get_pol_id"><code class="docutils literal notranslate"><span class="pre">get_pol_id()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.commonresultobjects">pipeline.h.tasks.common.commonresultobjects module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonresultobjects.ImageResult"><code class="docutils literal notranslate"><span class="pre">ImageResult</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonresultobjects.ImageResult.setflags"><code class="docutils literal notranslate"><span class="pre">ImageResult.setflags()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonresultobjects.QaResult"><code class="docutils literal notranslate"><span class="pre">QaResult</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonresultobjects.QaResult.addview"><code class="docutils literal notranslate"><span class="pre">QaResult.addview()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonresultobjects.QaResult.descriptions"><code class="docutils literal notranslate"><span class="pre">QaResult.descriptions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonresultobjects.QaResult.first"><code class="docutils literal notranslate"><span class="pre">QaResult.first()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonresultobjects.QaResult.flagcmds"><code class="docutils literal notranslate"><span class="pre">QaResult.flagcmds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonresultobjects.QaResult.last"><code class="docutils literal notranslate"><span class="pre">QaResult.last()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonresultobjects.ResultAxis"><code class="docutils literal notranslate"><span class="pre">ResultAxis</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonresultobjects.ResultBase"><code class="docutils literal notranslate"><span class="pre">ResultBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonresultobjects.ResultBase.description"><code class="docutils literal notranslate"><span class="pre">ResultBase.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonresultobjects.ResultBase.fieldname"><code class="docutils literal notranslate"><span class="pre">ResultBase.fieldname</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.commonresultobjects.SpectrumResult"><code class="docutils literal notranslate"><span class="pre">SpectrumResult</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.flaggableviewresults">pipeline.h.tasks.common.flaggableviewresults module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults"><code class="docutils literal notranslate"><span class="pre">FlaggableViewResults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults.add_flag_reason_plane"><code class="docutils literal notranslate"><span class="pre">FlaggableViewResults.add_flag_reason_plane()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults.addflags"><code class="docutils literal notranslate"><span class="pre">FlaggableViewResults.addflags()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults.addview"><code class="docutils literal notranslate"><span class="pre">FlaggableViewResults.addview()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults.descriptions"><code class="docutils literal notranslate"><span class="pre">FlaggableViewResults.descriptions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults.first"><code class="docutils literal notranslate"><span class="pre">FlaggableViewResults.first()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults.flagcmds"><code class="docutils literal notranslate"><span class="pre">FlaggableViewResults.flagcmds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults.flagged"><code class="docutils literal notranslate"><span class="pre">FlaggableViewResults.flagged()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults.importfrom"><code class="docutils literal notranslate"><span class="pre">FlaggableViewResults.importfrom()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults.last"><code class="docutils literal notranslate"><span class="pre">FlaggableViewResults.last()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flaggableviewresults.FlaggableViewResults.sort_flagcmds"><code class="docutils literal notranslate"><span class="pre">FlaggableViewResults.sort_flagcmds()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.flagging_renderer_utils">pipeline.h.tasks.common.flagging_renderer_utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flagging_renderer_utils.FlagTotal"><code class="docutils literal notranslate"><span class="pre">FlagTotal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flagging_renderer_utils.adjust_non_science_totals"><code class="docutils literal notranslate"><span class="pre">adjust_non_science_totals()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flagging_renderer_utils.flags_by_intent"><code class="docutils literal notranslate"><span class="pre">flags_by_intent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flagging_renderer_utils.flags_by_science_spws"><code class="docutils literal notranslate"><span class="pre">flags_by_science_spws()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flagging_renderer_utils.flags_for_result"><code class="docutils literal notranslate"><span class="pre">flags_for_result()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.flagging_renderer_utils.intents_to_summarise"><code class="docutils literal notranslate"><span class="pre">intents_to_summarise()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.manifest">pipeline.h.tasks.common.manifest module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest"><code class="docutils literal notranslate"><span class="pre">PipelineManifest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_antennapos_file"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_antennapos_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_aqua_report"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_aqua_report()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_asdm"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_asdm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_asdm_imlist"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_asdm_imlist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_aux_products_file"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_aux_products_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_auxasdm"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_auxasdm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_auxcaltables"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_auxcaltables()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_caltables"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_caltables()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_casa_cmdlog"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_casa_cmdlog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_casa_version"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_casa_version()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_cont_file"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_cont_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_environment_info"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_environment_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_execution_node"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_execution_node()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_flux_file"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_flux_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_images"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_images()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_manifest"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_manifest()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_pipeline_version"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_pipeline_version()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_pipescript"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_pipescript()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_pprfile"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_pprfile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_procedure_name"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_procedure_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_renorm"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_renorm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_restorescript"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_restorescript()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_weblog"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.add_weblog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_applycals"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.get_applycals()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_asdm"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.get_asdm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_caltables"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.get_caltables()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_casa_version"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.get_casa_version()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_execution_nodes"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.get_execution_nodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_final_flagversions"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.get_final_flagversions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_ous"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.get_ous()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_pipeline_version"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.get_pipeline_version()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_renorm"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.get_renorm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_session"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.get_session()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.import_xml"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.import_xml()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.set_ous"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.set_ous()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.set_session"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.set_session()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.write"><code class="docutils literal notranslate"><span class="pre">PipelineManifest.write()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.mstools">pipeline.h.tasks.common.mstools module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.mstools.compute_mean_flux"><code class="docutils literal notranslate"><span class="pre">compute_mean_flux()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.mstools.read_channel_averaged_data_from_ms"><code class="docutils literal notranslate"><span class="pre">read_channel_averaged_data_from_ms()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.ozone">pipeline.h.tasks.common.ozone module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.ozone.get_ozone_channels_for_spw"><code class="docutils literal notranslate"><span class="pre">get_ozone_channels_for_spw()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.sensitivity">pipeline.h.tasks.common.sensitivity module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.sensitivity.Sensitivity"><code class="docutils literal notranslate"><span class="pre">Sensitivity</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common.viewflaggers">pipeline.h.tasks.common.viewflaggers module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger"><code class="docutils literal notranslate"><span class="pre">MatrixFlagger</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.Inputs"><code class="docutils literal notranslate"><span class="pre">MatrixFlagger.Inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.analyse"><code class="docutils literal notranslate"><span class="pre">MatrixFlagger.analyse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.flag_reason_index"><code class="docutils literal notranslate"><span class="pre">MatrixFlagger.flag_reason_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.flag_reason_key"><code class="docutils literal notranslate"><span class="pre">MatrixFlagger.flag_reason_key</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.flag_view"><code class="docutils literal notranslate"><span class="pre">MatrixFlagger.flag_view()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.generate_flags"><code class="docutils literal notranslate"><span class="pre">MatrixFlagger.generate_flags()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.make_flag_rules"><code class="docutils literal notranslate"><span class="pre">MatrixFlagger.make_flag_rules()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.prepare"><code class="docutils literal notranslate"><span class="pre">MatrixFlagger.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.set_flags"><code class="docutils literal notranslate"><span class="pre">MatrixFlagger.set_flags()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlaggerInputs"><code class="docutils literal notranslate"><span class="pre">MatrixFlaggerInputs</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlaggerInputs.prepend"><code class="docutils literal notranslate"><span class="pre">MatrixFlaggerInputs.prepend</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlaggerInputs.skip_fully_flagged"><code class="docutils literal notranslate"><span class="pre">MatrixFlaggerInputs.skip_fully_flagged</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlaggerInputs.use_antenna_names"><code class="docutils literal notranslate"><span class="pre">MatrixFlaggerInputs.use_antenna_names</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlaggerResults"><code class="docutils literal notranslate"><span class="pre">MatrixFlaggerResults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlaggerResults.merge_with_context"><code class="docutils literal notranslate"><span class="pre">MatrixFlaggerResults.merge_with_context()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger"><code class="docutils literal notranslate"><span class="pre">VectorFlagger</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.Inputs"><code class="docutils literal notranslate"><span class="pre">VectorFlagger.Inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.analyse"><code class="docutils literal notranslate"><span class="pre">VectorFlagger.analyse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.flag_view"><code class="docutils literal notranslate"><span class="pre">VectorFlagger.flag_view()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.generate_flags"><code class="docutils literal notranslate"><span class="pre">VectorFlagger.generate_flags()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.make_flag_rules"><code class="docutils literal notranslate"><span class="pre">VectorFlagger.make_flag_rules()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.prepare"><code class="docutils literal notranslate"><span class="pre">VectorFlagger.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.set_flags"><code class="docutils literal notranslate"><span class="pre">VectorFlagger.set_flags()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlaggerInputs"><code class="docutils literal notranslate"><span class="pre">VectorFlaggerInputs</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlaggerInputs.prepend"><code class="docutils literal notranslate"><span class="pre">VectorFlaggerInputs.prepend</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlaggerInputs.use_antenna_names"><code class="docutils literal notranslate"><span class="pre">VectorFlaggerInputs.use_antenna_names</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlaggerResults"><code class="docutils literal notranslate"><span class="pre">VectorFlaggerResults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlaggerResults.merge_with_context"><code class="docutils literal notranslate"><span class="pre">VectorFlaggerResults.merge_with_context()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.common.html#module-pipeline.h.tasks.common">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.tasks.exportdata.html">pipeline.h.tasks.exportdata package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#module-pipeline.h.tasks.exportdata.aqua">pipeline.h.tasks.exportdata.aqua module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator"><code class="docutils literal notranslate"><span class="pre">AquaXmlGenerator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_calibration_topic"><code class="docutils literal notranslate"><span class="pre">AquaXmlGenerator.get_calibration_topic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_dataset_topic"><code class="docutils literal notranslate"><span class="pre">AquaXmlGenerator.get_dataset_topic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_flagging_topic"><code class="docutils literal notranslate"><span class="pre">AquaXmlGenerator.get_flagging_topic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_imaging_topic"><code class="docutils literal notranslate"><span class="pre">AquaXmlGenerator.get_imaging_topic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_per_stage_qa"><code class="docutils literal notranslate"><span class="pre">AquaXmlGenerator.get_per_stage_qa()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_project_structure"><code class="docutils literal notranslate"><span class="pre">AquaXmlGenerator.get_project_structure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_qa_summary"><code class="docutils literal notranslate"><span class="pre">AquaXmlGenerator.get_qa_summary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_report_xml"><code class="docutils literal notranslate"><span class="pre">AquaXmlGenerator.get_report_xml()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_topics_qa"><code class="docutils literal notranslate"><span class="pre">AquaXmlGenerator.get_topics_qa()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.GenericMetricXmlGenerator"><code class="docutils literal notranslate"><span class="pre">GenericMetricXmlGenerator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.GenericMetricXmlGenerator.handles"><code class="docutils literal notranslate"><span class="pre">GenericMetricXmlGenerator.handles()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.LowestScoreMetricXmlGenerator"><code class="docutils literal notranslate"><span class="pre">LowestScoreMetricXmlGenerator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.LowestScoreMetricXmlGenerator.filter"><code class="docutils literal notranslate"><span class="pre">LowestScoreMetricXmlGenerator.filter()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator"><code class="docutils literal notranslate"><span class="pre">MetricXmlGenerator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.filter"><code class="docutils literal notranslate"><span class="pre">MetricXmlGenerator.filter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.handles"><code class="docutils literal notranslate"><span class="pre">MetricXmlGenerator.handles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.to_xml"><code class="docutils literal notranslate"><span class="pre">MetricXmlGenerator.to_xml()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.export_to_disk"><code class="docutils literal notranslate"><span class="pre">export_to_disk()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.register_aqua_metric"><code class="docutils literal notranslate"><span class="pre">register_aqua_metric()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.sensitivity_xml_for_stages"><code class="docutils literal notranslate"><span class="pre">sensitivity_xml_for_stages()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.vis_to_asdm"><code class="docutils literal notranslate"><span class="pre">vis_to_asdm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.xml_for_sensitivity"><code class="docutils literal notranslate"><span class="pre">xml_for_sensitivity()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.xml_for_sensitivity_stage"><code class="docutils literal notranslate"><span class="pre">xml_for_sensitivity_stage()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.xml_generator_for_metric"><code class="docutils literal notranslate"><span class="pre">xml_generator_for_metric()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#module-pipeline.h.tasks.exportdata.exportdata">pipeline.h.tasks.exportdata.exportdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportData"><code class="docutils literal notranslate"><span class="pre">ExportData</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportData.Inputs"><code class="docutils literal notranslate"><span class="pre">ExportData.Inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportData.NameBuilder"><code class="docutils literal notranslate"><span class="pre">ExportData.NameBuilder</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportData.analyse"><code class="docutils literal notranslate"><span class="pre">ExportData.analyse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportData.get_recipename"><code class="docutils literal notranslate"><span class="pre">ExportData.get_recipename()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportData.is_multi_vis_task"><code class="docutils literal notranslate"><span class="pre">ExportData.is_multi_vis_task</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportData.prepare"><code class="docutils literal notranslate"><span class="pre">ExportData.prepare()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.context"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.context</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.output_dir"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.output_dir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.session"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.session</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.vis"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.vis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.pprfile"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.pprfile</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.calintents"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.calintents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.calimages"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.calimages</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.targetimages"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.targetimages</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.products_dir"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.products_dir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#id0"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.calimages</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#id1"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.calintents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.exportcalprods"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.exportcalprods</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.exportmses"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.exportmses</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.imaging_products_only"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.imaging_products_only</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#id2"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.pprfile</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.processing_data_type"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.processing_data_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#id3"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.products_dir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#id4"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.session</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#id5"><code class="docutils literal notranslate"><span class="pre">ExportDataInputs.targetimages</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataResults"><code class="docutils literal notranslate"><span class="pre">ExportDataResults</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.StdFileProducts"><code class="docutils literal notranslate"><span class="pre">StdFileProducts</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.StdFileProducts.casa_commands_file"><code class="docutils literal notranslate"><span class="pre">StdFileProducts.casa_commands_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.StdFileProducts.casa_pipescript"><code class="docutils literal notranslate"><span class="pre">StdFileProducts.casa_pipescript</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.StdFileProducts.casa_restore_script"><code class="docutils literal notranslate"><span class="pre">StdFileProducts.casa_restore_script</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.StdFileProducts.ppr_file"><code class="docutils literal notranslate"><span class="pre">StdFileProducts.ppr_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.StdFileProducts.weblog_file"><code class="docutils literal notranslate"><span class="pre">StdFileProducts.weblog_file</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#module-pipeline.h.tasks.exportdata.qa">pipeline.h.tasks.exportdata.qa module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.qa.ExportDataListQAHandler"><code class="docutils literal notranslate"><span class="pre">ExportDataListQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.qa.ExportDataListQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">ExportDataListQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.qa.ExportDataListQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">ExportDataListQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.qa.ExportDataListQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">ExportDataListQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.qa.ExportDataQAHandler"><code class="docutils literal notranslate"><span class="pre">ExportDataQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.qa.ExportDataQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">ExportDataQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.qa.ExportDataQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">ExportDataQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.qa.ExportDataQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">ExportDataQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.exportdata.html#module-pipeline.h.tasks.exportdata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.tasks.flagging.html">pipeline.h.tasks.flagging package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.flagging.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.flagging.html#module-pipeline.h.tasks.flagging.flagdatasetter">pipeline.h.tasks.flagging.flagdatasetter module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdatasetter.FlagdataSetter"><code class="docutils literal notranslate"><span class="pre">FlagdataSetter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdatasetter.FlagdataSetter.Inputs"><code class="docutils literal notranslate"><span class="pre">FlagdataSetter.Inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdatasetter.FlagdataSetter.analyse"><code class="docutils literal notranslate"><span class="pre">FlagdataSetter.analyse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdatasetter.FlagdataSetter.flags_to_set"><code class="docutils literal notranslate"><span class="pre">FlagdataSetter.flags_to_set()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdatasetter.FlagdataSetter.prepare"><code class="docutils literal notranslate"><span class="pre">FlagdataSetter.prepare()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdatasetter.FlagdataSetterInputs"><code class="docutils literal notranslate"><span class="pre">FlagdataSetterInputs</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.flagging.html#module-pipeline.h.tasks.flagging.flagdeterbase">pipeline.h.tasks.flagging.flagdeterbase module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase"><code class="docutils literal notranslate"><span class="pre">FlagDeterBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.Inputs"><code class="docutils literal notranslate"><span class="pre">FlagDeterBase.Inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.analyse"><code class="docutils literal notranslate"><span class="pre">FlagDeterBase.analyse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.prepare"><code class="docutils literal notranslate"><span class="pre">FlagDeterBase.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.verify_spw"><code class="docutils literal notranslate"><span class="pre">FlagDeterBase.verify_spw()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.context"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.context</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.vis"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.vis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.output_dir"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.output_dir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.flagbackup"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.flagbackup</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.autocorr"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.autocorr</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.shadow"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.shadow</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.tolerance"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.tolerance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.scan"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.scan</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.scannumber"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.scannumber</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.intents"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.intents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.edgespw"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.edgespw</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.fracspw"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.fracspw</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.online"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.online</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.partialpol"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.partialpol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.fileonline"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.fileonline</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.template"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.template</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.filetemplate"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.filetemplate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.lowtrans"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.lowtrans</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.mintransnonrepspws"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.mintransnonrepspws</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.mintransrepspw"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.mintransrepspw</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id0"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.autocorr</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id1"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.edgespw</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id2"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.fileonline</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id3"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.filetemplate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id4"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.flagbackup</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id5"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.fracspw</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.hm_tbuff"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.hm_tbuff</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.inpfile"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.inpfile</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id6"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.intents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id7"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.lowtrans</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id8"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.mintransnonrepspws</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id9"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.mintransrepspw</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id10"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.online</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id11"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.partialpol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id12"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.scan</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id13"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.scannumber</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id14"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.shadow</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.tbuff"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.tbuff</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id15"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.template</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.to_casa_args"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.to_casa_args()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#id16"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseInputs.tolerance</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseResults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults.flagcmds"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseResults.flagcmds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults.merge_with_context"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseResults.merge_with_context()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.flagging.html#module-pipeline.h.tasks.flagging.qa">pipeline.h.tasks.flagging.qa module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.qa.FlagDeterBaseListQAHandler"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseListQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.qa.FlagDeterBaseListQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseListQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.qa.FlagDeterBaseListQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseListQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.qa.FlagDeterBaseListQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseListQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.qa.FlagDeterBaseQAHandler"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.qa.FlagDeterBaseQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.qa.FlagDeterBaseQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.qa.FlagDeterBaseQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">FlagDeterBaseQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.flagging.html#module-pipeline.h.tasks.flagging.renderer">pipeline.h.tasks.flagging.renderer module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.renderer.T2_4MDetailsFlagDeterBaseRenderer"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsFlagDeterBaseRenderer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.renderer.T2_4MDetailsFlagDeterBaseRenderer.flagplot"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsFlagDeterBaseRenderer.flagplot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.renderer.T2_4MDetailsFlagDeterBaseRenderer.update_mako_context"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsFlagDeterBaseRenderer.update_mako_context()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.flagging.html#module-pipeline.h.tasks.flagging">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.tasks.importdata.html">pipeline.h.tasks.importdata package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.importdata.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.importdata.html#module-pipeline.h.tasks.importdata.fluxes">pipeline.h.tasks.importdata.fluxes module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.CYCLE7_export_flux_from_result"><code class="docutils literal notranslate"><span class="pre">CYCLE7_export_flux_from_result()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.export_flux_from_result"><code class="docutils literal notranslate"><span class="pre">export_flux_from_result()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.get_atoms"><code class="docutils literal notranslate"><span class="pre">get_atoms()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.get_measurement"><code class="docutils literal notranslate"><span class="pre">get_measurement()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.get_setjy_results"><code class="docutils literal notranslate"><span class="pre">get_setjy_results()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.grouper"><code class="docutils literal notranslate"><span class="pre">grouper()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.import_flux"><code class="docutils literal notranslate"><span class="pre">import_flux()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.read_fluxes_nodb"><code class="docutils literal notranslate"><span class="pre">read_fluxes_nodb()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.to_hertz"><code class="docutils literal notranslate"><span class="pre">to_hertz()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.fluxes.to_jansky"><code class="docutils literal notranslate"><span class="pre">to_jansky()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.importdata.html#module-pipeline.h.tasks.importdata.importdata">pipeline.h.tasks.importdata.importdata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportData"><code class="docutils literal notranslate"><span class="pre">ImportData</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportData.Inputs"><code class="docutils literal notranslate"><span class="pre">ImportData.Inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportData.Results"><code class="docutils literal notranslate"><span class="pre">ImportData.Results</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportData.analyse"><code class="docutils literal notranslate"><span class="pre">ImportData.analyse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportData.prepare"><code class="docutils literal notranslate"><span class="pre">ImportData.prepare()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataInputs"><code class="docutils literal notranslate"><span class="pre">ImportDataInputs</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataInputs.asis"><code class="docutils literal notranslate"><span class="pre">ImportDataInputs.asis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataInputs.bdfflags"><code class="docutils literal notranslate"><span class="pre">ImportDataInputs.bdfflags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataInputs.createmms"><code class="docutils literal notranslate"><span class="pre">ImportDataInputs.createmms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataInputs.datacolumns"><code class="docutils literal notranslate"><span class="pre">ImportDataInputs.datacolumns</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataInputs.lazy"><code class="docutils literal notranslate"><span class="pre">ImportDataInputs.lazy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataInputs.nocopy"><code class="docutils literal notranslate"><span class="pre">ImportDataInputs.nocopy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataInputs.ocorr_mode"><code class="docutils literal notranslate"><span class="pre">ImportDataInputs.ocorr_mode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataInputs.overwrite"><code class="docutils literal notranslate"><span class="pre">ImportDataInputs.overwrite</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataInputs.process_caldevice"><code class="docutils literal notranslate"><span class="pre">ImportDataInputs.process_caldevice</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataInputs.save_flagonline"><code class="docutils literal notranslate"><span class="pre">ImportDataInputs.save_flagonline</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataInputs.session"><code class="docutils literal notranslate"><span class="pre">ImportDataInputs.session</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataInputs.to_casa_args"><code class="docutils literal notranslate"><span class="pre">ImportDataInputs.to_casa_args()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataResults"><code class="docutils literal notranslate"><span class="pre">ImportDataResults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.importdata.ImportDataResults.merge_with_context"><code class="docutils literal notranslate"><span class="pre">ImportDataResults.merge_with_context()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.importdata.html#module-pipeline.h.tasks.importdata.qa">pipeline.h.tasks.importdata.qa module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.qa.ImportDataListQAHandler"><code class="docutils literal notranslate"><span class="pre">ImportDataListQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.qa.ImportDataListQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">ImportDataListQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.qa.ImportDataListQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">ImportDataListQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.qa.ImportDataListQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">ImportDataListQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.qa.ImportDataQAHandler"><code class="docutils literal notranslate"><span class="pre">ImportDataQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.qa.ImportDataQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">ImportDataQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.qa.ImportDataQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">ImportDataQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.qa.ImportDataQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">ImportDataQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.importdata.html#module-pipeline.h.tasks.importdata.renderer">pipeline.h.tasks.importdata.renderer module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.FluxTR"><code class="docutils literal notranslate"><span class="pre">FluxTR</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.FluxTR.ageNMP"><code class="docutils literal notranslate"><span class="pre">FluxTR.ageNMP</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.FluxTR.field"><code class="docutils literal notranslate"><span class="pre">FluxTR.field</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.FluxTR.i"><code class="docutils literal notranslate"><span class="pre">FluxTR.i</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.FluxTR.intent"><code class="docutils literal notranslate"><span class="pre">FluxTR.intent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.FluxTR.q"><code class="docutils literal notranslate"><span class="pre">FluxTR.q</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.FluxTR.spix"><code class="docutils literal notranslate"><span class="pre">FluxTR.spix</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.FluxTR.spw"><code class="docutils literal notranslate"><span class="pre">FluxTR.spw</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.FluxTR.u"><code class="docutils literal notranslate"><span class="pre">FluxTR.u</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.FluxTR.v"><code class="docutils literal notranslate"><span class="pre">FluxTR.v</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.FluxTR.vis"><code class="docutils literal notranslate"><span class="pre">FluxTR.vis</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.RepsourceTR"><code class="docutils literal notranslate"><span class="pre">RepsourceTR</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.RepsourceTR.bwidth"><code class="docutils literal notranslate"><span class="pre">RepsourceTR.bwidth</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.RepsourceTR.dynrange"><code class="docutils literal notranslate"><span class="pre">RepsourceTR.dynrange</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.RepsourceTR.rbwidth"><code class="docutils literal notranslate"><span class="pre">RepsourceTR.rbwidth</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.RepsourceTR.rfreq"><code class="docutils literal notranslate"><span class="pre">RepsourceTR.rfreq</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.RepsourceTR.source"><code class="docutils literal notranslate"><span class="pre">RepsourceTR.source</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.RepsourceTR.spwid"><code class="docutils literal notranslate"><span class="pre">RepsourceTR.spwid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.RepsourceTR.vis"><code class="docutils literal notranslate"><span class="pre">RepsourceTR.vis</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.T2_4MDetailsImportDataRenderer"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsImportDataRenderer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.T2_4MDetailsImportDataRenderer.update_mako_context"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsImportDataRenderer.update_mako_context()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.make_flux_table"><code class="docutils literal notranslate"><span class="pre">make_flux_table()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.make_repsource_table"><code class="docutils literal notranslate"><span class="pre">make_repsource_table()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.importdata.html#module-pipeline.h.tasks.importdata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.tasks.mstransform.html">pipeline.h.tasks.mstransform package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#module-pipeline.h.tasks.mstransform.mssplit">pipeline.h.tasks.mstransform.mssplit module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplit"><code class="docutils literal notranslate"><span class="pre">MsSplit</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplit.Inputs"><code class="docutils literal notranslate"><span class="pre">MsSplit.Inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplit.analyse"><code class="docutils literal notranslate"><span class="pre">MsSplit.analyse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplit.prepare"><code class="docutils literal notranslate"><span class="pre">MsSplit.prepare()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplitInputs"><code class="docutils literal notranslate"><span class="pre">MsSplitInputs</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplitInputs.chanbin"><code class="docutils literal notranslate"><span class="pre">MsSplitInputs.chanbin</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplitInputs.datacolumn"><code class="docutils literal notranslate"><span class="pre">MsSplitInputs.datacolumn</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplitInputs.field"><code class="docutils literal notranslate"><span class="pre">MsSplitInputs.field</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplitInputs.intent"><code class="docutils literal notranslate"><span class="pre">MsSplitInputs.intent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplitInputs.outputvis"><code class="docutils literal notranslate"><span class="pre">MsSplitInputs.outputvis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplitInputs.replace"><code class="docutils literal notranslate"><span class="pre">MsSplitInputs.replace</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplitInputs.spw"><code class="docutils literal notranslate"><span class="pre">MsSplitInputs.spw</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplitInputs.timebin"><code class="docutils literal notranslate"><span class="pre">MsSplitInputs.timebin</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplitInputs.to_casa_args"><code class="docutils literal notranslate"><span class="pre">MsSplitInputs.to_casa_args()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplitResults"><code class="docutils literal notranslate"><span class="pre">MsSplitResults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.mssplit.MsSplitResults.merge_with_context"><code class="docutils literal notranslate"><span class="pre">MsSplitResults.merge_with_context()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#module-pipeline.h.tasks.mstransform.qa">pipeline.h.tasks.mstransform.qa module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.qa.MsSplitListQAHandler"><code class="docutils literal notranslate"><span class="pre">MsSplitListQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.qa.MsSplitListQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">MsSplitListQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.qa.MsSplitListQAHandler.generating_task"><code class="docutils literal notranslate"><span class="pre">MsSplitListQAHandler.generating_task</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.qa.MsSplitListQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">MsSplitListQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.qa.MsSplitListQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">MsSplitListQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.qa.MsSplitQAHandler"><code class="docutils literal notranslate"><span class="pre">MsSplitQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.qa.MsSplitQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">MsSplitQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.qa.MsSplitQAHandler.generating_task"><code class="docutils literal notranslate"><span class="pre">MsSplitQAHandler.generating_task</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.qa.MsSplitQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">MsSplitQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.qa.MsSplitQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">MsSplitQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#module-pipeline.h.tasks.mstransform.renderer">pipeline.h.tasks.mstransform.renderer module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.renderer.MsSplitTR"><code class="docutils literal notranslate"><span class="pre">MsSplitTR</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.renderer.MsSplitTR.outputvis"><code class="docutils literal notranslate"><span class="pre">MsSplitTR.outputvis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.renderer.MsSplitTR.vis"><code class="docutils literal notranslate"><span class="pre">MsSplitTR.vis</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.renderer.T2_4MDetailsMsSplitRenderer"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsMsSplitRenderer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.renderer.T2_4MDetailsMsSplitRenderer.update_mako_context"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsMsSplitRenderer.update_mako_context()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#pipeline.h.tasks.mstransform.renderer.make_split_table"><code class="docutils literal notranslate"><span class="pre">make_split_table()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.mstransform.html#module-pipeline.h.tasks.mstransform">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.tasks.restoredata.html">pipeline.h.tasks.restoredata package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#module-pipeline.h.tasks.restoredata.qa">pipeline.h.tasks.restoredata.qa module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.qa.RestoreDataListQAHandler"><code class="docutils literal notranslate"><span class="pre">RestoreDataListQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.qa.RestoreDataListQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">RestoreDataListQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.qa.RestoreDataListQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">RestoreDataListQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.qa.RestoreDataListQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">RestoreDataListQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.qa.RestoreDataQAHandler"><code class="docutils literal notranslate"><span class="pre">RestoreDataQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.qa.RestoreDataQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">RestoreDataQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.qa.RestoreDataQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">RestoreDataQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.qa.RestoreDataQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">RestoreDataQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#module-pipeline.h.tasks.restoredata.restoredata">pipeline.h.tasks.restoredata.restoredata module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreData"><code class="docutils literal notranslate"><span class="pre">RestoreData</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreData.Inputs"><code class="docutils literal notranslate"><span class="pre">RestoreData.Inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreData.analyse"><code class="docutils literal notranslate"><span class="pre">RestoreData.analyse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreData.is_multi_vis_task"><code class="docutils literal notranslate"><span class="pre">RestoreData.is_multi_vis_task</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreData.prepare"><code class="docutils literal notranslate"><span class="pre">RestoreData.prepare()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreDataInputs"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreDataInputs.context"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs.context</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreDataInputs.products_dir"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs.products_dir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreDataInputs.rawdata_dir"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs.rawdata_dir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreDataInputs.output_dir"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs.output_dir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreDataInputs.session"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs.session</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreDataInputs.vis"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs.vis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreDataInputs.asis"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs.asis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreDataInputs.bdfflags"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs.bdfflags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreDataInputs.copytoraw"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs.copytoraw</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreDataInputs.lazy"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs.lazy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreDataInputs.ocorr_mode"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs.ocorr_mode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#id0"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs.products_dir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#id1"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs.rawdata_dir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#id2"><code class="docutils literal notranslate"><span class="pre">RestoreDataInputs.session</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreDataResults"><code class="docutils literal notranslate"><span class="pre">RestoreDataResults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#pipeline.h.tasks.restoredata.restoredata.RestoreDataResults.merge_with_context"><code class="docutils literal notranslate"><span class="pre">RestoreDataResults.merge_with_context()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.restoredata.html#module-pipeline.h.tasks.restoredata">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html">pipeline.h.tasks.tsyscal package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#module-pipeline.h.tasks.tsyscal.qa">pipeline.h.tasks.tsyscal.qa module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.qa.TsyscalListQAHandler"><code class="docutils literal notranslate"><span class="pre">TsyscalListQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.qa.TsyscalListQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">TsyscalListQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.qa.TsyscalListQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">TsyscalListQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.qa.TsyscalListQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">TsyscalListQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.qa.TsyscalQAHandler"><code class="docutils literal notranslate"><span class="pre">TsyscalQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.qa.TsyscalQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">TsyscalQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.qa.TsyscalQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">TsyscalQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.qa.TsyscalQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">TsyscalQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#module-pipeline.h.tasks.tsyscal.renderer">pipeline.h.tasks.tsyscal.renderer module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.T2_4MDetailsTsyscalRenderer"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsTsyscalRenderer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.T2_4MDetailsTsyscalRenderer.update_mako_context"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsTsyscalRenderer.update_mako_context()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.TsysMapTR"><code class="docutils literal notranslate"><span class="pre">TsysMapTR</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.TsysMapTR.science"><code class="docutils literal notranslate"><span class="pre">TsysMapTR.science</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.TsysMapTR.tsys"><code class="docutils literal notranslate"><span class="pre">TsysMapTR.tsys</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.TsysMapTR.vis"><code class="docutils literal notranslate"><span class="pre">TsysMapTR.vis</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.TsysStat"><code class="docutils literal notranslate"><span class="pre">TsysStat</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.TsyscalPlotRenderer"><code class="docutils literal notranslate"><span class="pre">TsyscalPlotRenderer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.TsyscalPlotRenderer.get_stat"><code class="docutils literal notranslate"><span class="pre">TsyscalPlotRenderer.get_stat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.TsyscalPlotRenderer.get_stat_from_calanalysis"><code class="docutils literal notranslate"><span class="pre">TsyscalPlotRenderer.get_stat_from_calanalysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.TsyscalPlotRenderer.update_json_dict"><code class="docutils literal notranslate"><span class="pre">TsyscalPlotRenderer.update_json_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.create_url_fn"><code class="docutils literal notranslate"><span class="pre">create_url_fn()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#module-pipeline.h.tasks.tsyscal.resultobjects">pipeline.h.tasks.tsyscal.resultobjects module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.resultobjects.TsyscalResults"><code class="docutils literal notranslate"><span class="pre">TsyscalResults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.resultobjects.TsyscalResults.merge_with_context"><code class="docutils literal notranslate"><span class="pre">TsyscalResults.merge_with_context()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#module-pipeline.h.tasks.tsyscal.tsyscal">pipeline.h.tasks.tsyscal.tsyscal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.Tsyscal"><code class="docutils literal notranslate"><span class="pre">Tsyscal</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.Tsyscal.Inputs"><code class="docutils literal notranslate"><span class="pre">Tsyscal.Inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.Tsyscal.analyse"><code class="docutils literal notranslate"><span class="pre">Tsyscal.analyse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.Tsyscal.prepare"><code class="docutils literal notranslate"><span class="pre">Tsyscal.prepare()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.TsyscalInputs"><code class="docutils literal notranslate"><span class="pre">TsyscalInputs</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.TsyscalInputs.caltable"><code class="docutils literal notranslate"><span class="pre">TsyscalInputs.caltable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.TsyscalInputs.chantol"><code class="docutils literal notranslate"><span class="pre">TsyscalInputs.chantol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.TsyscalInputs.to_casa_args"><code class="docutils literal notranslate"><span class="pre">TsyscalInputs.to_casa_args()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.tsyscal.html#module-pipeline.h.tasks.tsyscal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html">pipeline.h.tasks.tsysflag package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#module-pipeline.h.tasks.tsysflag.qa">pipeline.h.tasks.tsysflag.qa module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.qa.TsysflagListQAHandler"><code class="docutils literal notranslate"><span class="pre">TsysflagListQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.qa.TsysflagListQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">TsysflagListQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.qa.TsysflagListQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">TsysflagListQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.qa.TsysflagListQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">TsysflagListQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.qa.TsysflagQAHandler"><code class="docutils literal notranslate"><span class="pre">TsysflagQAHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.qa.TsysflagQAHandler.child_cls"><code class="docutils literal notranslate"><span class="pre">TsysflagQAHandler.child_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.qa.TsysflagQAHandler.handle"><code class="docutils literal notranslate"><span class="pre">TsysflagQAHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.qa.TsysflagQAHandler.result_cls"><code class="docutils literal notranslate"><span class="pre">TsysflagQAHandler.result_cls</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#module-pipeline.h.tasks.tsysflag.renderer">pipeline.h.tasks.tsysflag.renderer module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.ComponentRendererMap"><code class="docutils literal notranslate"><span class="pre">ComponentRendererMap</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.ComponentRendererMap.plot_fn"><code class="docutils literal notranslate"><span class="pre">ComponentRendererMap.plot_fn</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.ComponentRendererMap.template"><code class="docutils literal notranslate"><span class="pre">ComponentRendererMap.template</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.PlotDetailRenderer"><code class="docutils literal notranslate"><span class="pre">PlotDetailRenderer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.PlotDetailRenderer.update_json_dict"><code class="docutils literal notranslate"><span class="pre">PlotDetailRenderer.update_json_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.T2_4MDetailsTsysflagRenderer"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsTsysflagRenderer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.T2_4MDetailsTsysflagRenderer.task_intents"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsTsysflagRenderer.task_intents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.T2_4MDetailsTsysflagRenderer.update_mako_context"><code class="docutils literal notranslate"><span class="pre">T2_4MDetailsTsysflagRenderer.update_mako_context()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.convert_field_id_to_field_names"><code class="docutils literal notranslate"><span class="pre">convert_field_id_to_field_names()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.create_plot_detail_page"><code class="docutils literal notranslate"><span class="pre">create_plot_detail_page()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.ensure_vis_in_plot_metadata"><code class="docutils literal notranslate"><span class="pre">ensure_vis_in_plot_metadata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.get_plots"><code class="docutils literal notranslate"><span class="pre">get_plots()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.plot_image_displays"><code class="docutils literal notranslate"><span class="pre">plot_image_displays()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.plot_slice_displays"><code class="docutils literal notranslate"><span class="pre">plot_slice_displays()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.renderer.plot_tsys_spectra"><code class="docutils literal notranslate"><span class="pre">plot_tsys_spectra()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#module-pipeline.h.tasks.tsysflag.resultobjects">pipeline.h.tasks.tsysflag.resultobjects module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.resultobjects.TsysflagDataResults"><code class="docutils literal notranslate"><span class="pre">TsysflagDataResults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.resultobjects.TsysflagDataResults.merge_with_context"><code class="docutils literal notranslate"><span class="pre">TsysflagDataResults.merge_with_context()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.resultobjects.TsysflagResults"><code class="docutils literal notranslate"><span class="pre">TsysflagResults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.resultobjects.TsysflagResults.add"><code class="docutils literal notranslate"><span class="pre">TsysflagResults.add()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.resultobjects.TsysflagResults.merge_with_context"><code class="docutils literal notranslate"><span class="pre">TsysflagResults.merge_with_context()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.resultobjects.TsysflagViewResults"><code class="docutils literal notranslate"><span class="pre">TsysflagViewResults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.resultobjects.TsysflagViewResults.merge_with_context"><code class="docutils literal notranslate"><span class="pre">TsysflagViewResults.merge_with_context()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.resultobjects.TsysflagspectraResults"><code class="docutils literal notranslate"><span class="pre">TsysflagspectraResults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.resultobjects.TsysflagspectraResults.merge_with_context"><code class="docutils literal notranslate"><span class="pre">TsysflagspectraResults.merge_with_context()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#module-pipeline.h.tasks.tsysflag.tsysflag">pipeline.h.tasks.tsysflag.tsysflag module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.Tsysflag"><code class="docutils literal notranslate"><span class="pre">Tsysflag</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.Tsysflag.Inputs"><code class="docutils literal notranslate"><span class="pre">Tsysflag.Inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.Tsysflag.analyse"><code class="docutils literal notranslate"><span class="pre">Tsysflag.analyse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.Tsysflag.prepare"><code class="docutils literal notranslate"><span class="pre">Tsysflag.prepare()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.caltable"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.caltable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fb_sharps_limit"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.fb_sharps_limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fd_max_limit"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.fd_max_limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fe_edge_limit"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.fe_edge_limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.ff_max_limit"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.ff_max_limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.ff_refintent"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.ff_refintent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.filetemplate"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.filetemplate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_birdies"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.flag_birdies</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_derivative"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.flag_derivative</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_edgechans"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.flag_edgechans</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_fieldshape"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.flag_fieldshape</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_nmedian"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.flag_nmedian</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.flag_toomany"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.flag_toomany</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fnm_byfield"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.fnm_byfield</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.fnm_limit"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.fnm_limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.metric_order"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.metric_order</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.normalize_tsys"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.normalize_tsys</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.tmef1_limit"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.tmef1_limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.tmf1_limit"><code class="docutils literal notranslate"><span class="pre">TsysflagInputs.tmf1_limit</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.tasks.tsysflag.html#module-pipeline.h.tasks.tsysflag">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-pipeline.h.tasks">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline.h.tasks" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

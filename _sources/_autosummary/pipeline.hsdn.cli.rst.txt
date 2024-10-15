@@ -1,0 +1,14 @@
+pipeline.hsdn.cli
+=================
+
+.. automodule:: pipeline.hsdn.cli
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      hsdn_exportdata
+      hsdn_importdata
+      hsdn_restoredata
+   

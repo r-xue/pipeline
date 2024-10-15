@@ -1,0 +1,12 @@
+pipeline.hifa.heuristics.exptimes
+=================================
+
+.. automodule:: pipeline.hifa.heuristics.exptimes
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_scan_exptimes
+   

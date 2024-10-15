@@ -1,0 +1,539 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.tasks.uvcontsub.uvcontsub &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.tasks.uvcontsub.uvcontsub</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.tasks.uvcontsub.uvcontsub</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.tablereader</span> <span class="k">as</span> <span class="nn">tablereader</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">nested_dict</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
+
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.makeimlist</span> <span class="kn">import</span> <span class="n">makeimlist</span>
+
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="UVcontSubInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.uvcontsub.qa.UVcontSubInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">UVcontSubInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+    <span class="c1"># Search order of input vis</span>
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
+
+    <span class="n">fitorder</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">{})</span>
+    <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">spw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fitorder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitorder</span> <span class="o">=</span> <span class="n">fitorder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span></div>
+
+
+
+<div class="viewcode-block" id="SerialUVcontSub">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.uvcontsub.qa.SerialUVcontSub">[docs]</a>
+<span class="k">class</span> <span class="nc">SerialUVcontSub</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">UVcontSubInputs</span>
+
+<div class="viewcode-block" id="SerialUVcontSub.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.uvcontsub.qa.SerialUVcontSub.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Define minimal entity object to be able to use some</span>
+        <span class="c1"># of the imaging heuristics methods to convert</span>
+        <span class="c1"># frequency ranges to TOPO.</span>
+        <span class="n">MinimalTcleanHeuristicsInputsGenerator</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;MinimalTcleanHeuristicsInputs&#39;</span><span class="p">,</span> <span class="s1">&#39;vis field intent phasecenter spw spwsel_lsrk specmode&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Check if this stage has been disabled for vla (never set for ALMA)</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">vla_skip_mfs_and_cube_imaging</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">UVcontSubResults</span><span class="p">()</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">skip_stage</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># Check for size mitigation errors.</span>
+        <span class="k">if</span> <span class="s1">&#39;status&#39;</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;ERROR&#39;</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">UVcontSubResults</span><span class="p">()</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">mitigation_error</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># If no field and no spw is specified, use all TARGET intents except</span>
+        <span class="c1"># mitigated sources.</span>
+        <span class="c1"># If field or spw is specified, work on that selection</span>
+
+        <span class="c1"># Determine intent(s) to work on</span>
+        <span class="n">allowed_intents</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">in</span> <span class="n">allowed_intents</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
+                <span class="n">intent</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">UVcontSubResults</span><span class="p">()</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&quot;intent&quot; must be in </span><span class="si">{</span><span class="n">allowed_intents</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">error_msg</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">result</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">intent</span> <span class="o">=</span> <span class="s1">&#39;TARGET&#39;</span>
+
+        <span class="c1"># Determine field IDs to work on</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">field</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># Determine spw IDs to work on</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># Set fitorder lookup dictionary</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fitorder</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">fitorder</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fitorder</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fitorder</span> <span class="o">=</span> <span class="n">nested_dict</span><span class="p">()</span>
+
+        <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">synthesized_beams</span>
+
+        <span class="n">datatype</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">possible_datatype</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">processing_data_type</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">possible_datatype</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">data_column</span><span class="p">:</span>
+                <span class="n">datatype</span> <span class="o">=</span> <span class="n">possible_datatype</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">break</span>
+
+        <span class="c1"># Get list of fields and spw to work on from makeimlist call</span>
+        <span class="c1"># which automatically handles mitigated sources. spw mitigation</span>
+        <span class="c1"># shall not be considered, hence the specmode is mfs.</span>
+
+        <span class="c1"># Create makeimlist inputs</span>
+        <span class="n">makeimlist_inputs</span> <span class="o">=</span> <span class="n">makeimlist</span><span class="o">.</span><span class="n">MakeImListInputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">])</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">datatype</span> <span class="o">=</span> <span class="n">datatype</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">=</span> <span class="s1">&#39;mfs&#39;</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">clearlist</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">makeimlist_inputs</span><span class="o">.</span><span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">known_synthesized_beams</span>
+
+        <span class="c1"># Create imlist</span>
+        <span class="n">makeimlist_task</span> <span class="o">=</span> <span class="n">makeimlist</span><span class="o">.</span><span class="n">MakeImList</span><span class="p">(</span><span class="n">makeimlist_inputs</span><span class="p">)</span>
+        <span class="n">makeimlist_result</span> <span class="o">=</span> <span class="n">makeimlist_task</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+        <span class="n">imlist</span> <span class="o">=</span> <span class="n">makeimlist_result</span><span class="o">.</span><span class="n">targets</span>
+
+        <span class="c1"># Collect datacolumn, fields, spws and fit specifications</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">real_spws</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">fitspec</span> <span class="o">=</span> <span class="n">nested_dict</span><span class="p">()</span>
+        <span class="c1"># Keep list of actual field/intent/spw combinations in hif_makeimlist</span>
+        <span class="c1"># order for weblog. Avoid saving the full list in the results object</span>
+        <span class="c1"># because of the large heuristics objects which would bloat the context.</span>
+        <span class="n">field_intent_spw_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">topo_freq_fitorder_dict</span> <span class="o">=</span> <span class="n">nested_dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">imaging_target</span> <span class="ow">in</span> <span class="n">imlist</span><span class="p">:</span>
+            <span class="n">datacolumn</span> <span class="o">=</span> <span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;datacolumn&#39;</span><span class="p">]</span>
+
+            <span class="c1"># Using virtual spws for task parameter and tclean heuristics calls.</span>
+            <span class="c1"># Need to specify real spws for uvcontsub2021.</span>
+            <span class="n">real_spw</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual2real_spw_id</span><span class="p">(</span><span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">))</span>
+
+            <span class="n">minimal_tclean_inputs</span> <span class="o">=</span> <span class="n">MinimalTcleanHeuristicsInputsGenerator</span><span class="p">(</span><span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">],</span>
+                                                                           <span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span>
+                                                                           <span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">],</span>
+                                                                           <span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">],</span>
+                                                                           <span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span>
+                                                                           <span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;spwsel_lsrk&#39;</span><span class="p">],</span>
+                                                                           <span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">])</span>
+
+            <span class="n">fields</span><span class="p">[</span><span class="n">minimal_tclean_inputs</span><span class="o">.</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">real_spws</span><span class="p">[</span><span class="n">real_spw</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">field_intent_spw_list</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span>
+                                          <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">],</span>
+                                          <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">real_spw</span><span class="p">})</span>
+
+            <span class="c1"># Convert the cont.dat frequency ranges to TOPO</span>
+            <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">spw_topo_freq_param_dict</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;heuristics&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">calc_topo_ranges</span><span class="p">(</span><span class="n">minimal_tclean_inputs</span><span class="p">)</span>
+
+            <span class="n">field_ids</span> <span class="o">=</span> <span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;heuristics&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">minimal_tclean_inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">minimal_tclean_inputs</span><span class="o">.</span><span class="n">field</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">fitspec</span><span class="p">[</span><span class="n">field_ids</span><span class="p">][</span><span class="n">real_spw</span><span class="p">][</span><span class="s1">&#39;chan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_topo_freq_param_dict</span><span class="p">[</span><span class="n">minimal_tclean_inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">minimal_tclean_inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">]</span>
+
+            <span class="c1"># Collect frequency ranges for weblog</span>
+            <span class="n">topo_freq_fitorder_dict</span><span class="p">[</span><span class="n">minimal_tclean_inputs</span><span class="o">.</span><span class="n">field</span><span class="p">][</span><span class="n">real_spw</span><span class="p">][</span><span class="s1">&#39;freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw_topo_freq_param_dict</span><span class="p">[</span><span class="n">minimal_tclean_inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">minimal_tclean_inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">]</span>
+
+            <span class="c1"># Default fit order</span>
+            <span class="n">fitspec</span><span class="p">[</span><span class="n">field_ids</span><span class="p">][</span><span class="n">real_spw</span><span class="p">][</span><span class="s1">&#39;fitorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="c1"># Check for any user specified fit order.</span>
+            <span class="n">user_fitorder</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">minimal_tclean_inputs</span><span class="o">.</span><span class="n">field</span> <span class="ow">in</span> <span class="n">fitorder</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">minimal_tclean_inputs</span><span class="o">.</span><span class="n">spw</span> <span class="ow">in</span> <span class="n">fitorder</span><span class="p">[</span><span class="n">minimal_tclean_inputs</span><span class="o">.</span><span class="n">field</span><span class="p">]:</span>
+                    <span class="n">fitspec</span><span class="p">[</span><span class="n">field_ids</span><span class="p">][</span><span class="n">real_spw</span><span class="p">][</span><span class="s1">&#39;fitorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fitorder</span><span class="p">[</span><span class="n">minimal_tclean_inputs</span><span class="o">.</span><span class="n">field</span><span class="p">][</span><span class="n">minimal_tclean_inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">]</span>
+                    <span class="n">user_fitorder</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># If there was no user defined fit order, check for hif_findcont flags.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">user_fitorder</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;spwsel_low_bandwidth&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="n">imaging_target</span><span class="p">[</span><span class="s1">&#39;spwsel_low_spread&#39;</span><span class="p">]:</span>
+                    <span class="n">fitspec</span><span class="p">[</span><span class="n">field_ids</span><span class="p">][</span><span class="n">real_spw</span><span class="p">][</span><span class="s1">&#39;fitorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># Collect fit order for weblog</span>
+            <span class="n">topo_freq_fitorder_dict</span><span class="p">[</span><span class="n">minimal_tclean_inputs</span><span class="o">.</span><span class="n">field</span><span class="p">][</span><span class="n">real_spw</span><span class="p">][</span><span class="s1">&#39;fitorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fitspec</span><span class="p">[</span><span class="n">field_ids</span><span class="p">][</span><span class="n">real_spw</span><span class="p">][</span><span class="s1">&#39;fitorder&#39;</span><span class="p">]</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">UVcontSubResults</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">field_intent_spw_list</span> <span class="o">=</span> <span class="n">field_intent_spw_list</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">topo_freq_fitorder_dict</span> <span class="o">=</span> <span class="n">topo_freq_fitorder_dict</span>
+
+        <span class="k">if</span> <span class="s1">&#39;_targets&#39;</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">:</span>
+            <span class="n">outputvis</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_targets&#39;</span><span class="p">,</span> <span class="s1">&#39;_targets_line&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">outputvis</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.ms&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">_line.ms&quot;</span>
+        <span class="c1"># Check if it already exists and remove it</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outputvis</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Removing </span><span class="si">{}</span><span class="s1"> from disk&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">outputvis</span><span class="p">))</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">outputvis</span><span class="p">)</span>
+
+        <span class="c1"># Run uvcontsub task</span>
+        <span class="n">uvcontsub_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                          <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="n">datacolumn</span><span class="p">,</span>
+                          <span class="s1">&#39;outputvis&#39;</span><span class="p">:</span> <span class="n">outputvis</span><span class="p">,</span>
+                          <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">to_CASA_intent</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">intent</span><span class="p">),</span>
+                          <span class="s1">&#39;fitspec&#39;</span><span class="p">:</span> <span class="n">fitspec</span><span class="o">.</span><span class="n">as_plain_dict</span><span class="p">(),</span>
+                          <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
+                          <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">real_spws</span><span class="o">.</span><span class="n">keys</span><span class="p">())}</span>
+        <span class="n">uvcontsub_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">uvcontsub</span><span class="p">(</span><span class="o">**</span><span class="n">uvcontsub_args</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">casa_uvcontsub_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">uvcontsub_job</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Caught uvcontsub exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">casa_uvcontsub_result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
+
+        <span class="c1"># Copy across requisite XML files.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_copy_xml_files</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">outputvis</span><span class="p">)</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">outputvis</span> <span class="o">=</span> <span class="n">outputvis</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">casa_uvcontsub_result</span> <span class="o">=</span> <span class="n">casa_uvcontsub_result</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SerialUVcontSub.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.uvcontsub.qa.SerialUVcontSub.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">mitigation_error</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">skip_stage</span><span class="p">:</span>
+            <span class="c1"># Check for existence of the output vis.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">outputvis</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Error creating science targets line MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">outputvis</span><span class="p">)))</span>
+                <span class="k">return</span> <span class="n">result</span>
+
+            <span class="c1"># Import the new measurement set.</span>
+            <span class="n">to_import</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">outputvis</span><span class="p">)</span>
+            <span class="n">observing_run</span> <span class="o">=</span> <span class="n">tablereader</span><span class="o">.</span><span class="n">ObservingRunReader</span><span class="o">.</span><span class="n">get_observing_run</span><span class="p">(</span><span class="n">to_import</span><span class="p">)</span>
+
+            <span class="c1"># Adopt same session as source measurement set</span>
+            <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Setting session to </span><span class="si">%s</span><span class="s1"> for </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">session</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+                <span class="n">ms</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">session</span>
+                <span class="n">ms</span><span class="o">.</span><span class="n">set_data_column</span><span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_LINE_SCIENCE</span><span class="p">,</span> <span class="s1">&#39;DATA&#39;</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">line_mses</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_copy_xml_files</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">outputvis</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">xml_filename</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SpectralWindow.xml&#39;</span><span class="p">,</span> <span class="s1">&#39;DataDescription.xml&#39;</span><span class="p">]:</span>
+            <span class="n">vis_source</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">xml_filename</span><span class="p">)</span>
+            <span class="n">outputvis_target_line</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outputvis</span><span class="p">,</span> <span class="n">xml_filename</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis_source</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outputvis</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Copying </span><span class="si">%s</span><span class="s1"> from original MS to science targets line MS&#39;</span><span class="p">,</span> <span class="n">xml_filename</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Copying </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">xml_filename</span><span class="p">,</span> <span class="n">vis_source</span><span class="p">,</span> <span class="n">outputvis_target_line</span><span class="p">)</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">vis_source</span><span class="p">,</span> <span class="n">outputvis_target_line</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="UVcontSub">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.uvcontsub.qa.UVcontSub">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_uvcontsub&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">UVcontSub</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;UVcontSub class for parallelization.&quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">UVcontSubInputs</span>
+    <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialUVcontSub</span></div>
+
+
+<div class="viewcode-block" id="UVcontSubResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.uvcontsub.qa.UVcontSubResults">[docs]</a>
+<span class="k">class</span> <span class="nc">UVcontSubResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    UVcontSubResults is the results class for the pipeline UVcontSub task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mitigation_error</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip_stage</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputvis</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field_intent_spw_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topo_freq_fitorder_dict</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_mses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">casa_uvcontsub_result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<div class="viewcode-block" id="UVcontSubResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.uvcontsub.qa.UVcontSubResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="c1"># Check to see if this stage was delibrately skipped</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_stage</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Skipping hif_uvcontsub due to VLA spectral lines MS not existing.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Check for an output vis</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_mses</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No hif_uvcontsub results to merge&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">target</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span>
+
+        <span class="c1"># Adding line mses to context</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_mses</span><span class="p">:</span>
+            <span class="c1"># Check if MS with the same name had already been registered and remove it</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">existing_ms</span><span class="o">.</span><span class="n">basename</span> <span class="k">for</span> <span class="n">existing_ms</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Removing </span><span class="si">{}</span><span class="s1"> from context&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="n">target</span><span class="o">.</span><span class="n">measurement_sets</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="c1"># Exception happens if name is not found. No special handling needed.</span>
+                <span class="k">pass</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Adding </span><span class="si">{}</span><span class="s1"> to context&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">target</span><span class="o">.</span><span class="n">add_measurement_set</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+
+        <span class="c1"># Create targets flagging template file if it does not already exist</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_mses</span><span class="p">:</span>
+            <span class="n">template_flagsfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;output_dir&#39;</span><span class="p">],</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.flagtargetstemplate.txt&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_template_flagfile</span><span class="p">(</span><span class="n">template_flagsfile</span><span class="p">,</span> <span class="s1">&#39;User flagging commands file for the imaging pipeline&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Initialize callibrary</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_mses</span><span class="p">:</span>
+            <span class="c1"># TODO: Check for existing entries for the line MS and remove them.</span>
+            <span class="c1">#       This is probably only the case for future selfcal use cases.</span>
+            <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Registering </span><span class="si">{}</span><span class="s1"> with callibrary&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="p">[])</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_make_template_flagfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">titlestr</span><span class="p">):</span>
+        <span class="c1"># Create a new file if overwrite is true and the file</span>
+        <span class="c1"># does not already exist.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outfile</span><span class="p">):</span>
+            <span class="n">template_text</span> <span class="o">=</span> <span class="n">FLAGGING_TEMPLATE_HEADER</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;___TITLESTR___&#39;</span><span class="p">,</span> <span class="n">titlestr</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">template_text</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;UVcontSubResults:</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Continuum subtracted for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="s1">. Line data stored in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">outputvis</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+<span class="n">FLAGGING_TEMPLATE_HEADER</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;#</span>
+<span class="s1"># ___TITLESTR___</span>
+<span class="s1">#</span>
+<span class="s1"># Examples</span>
+<span class="s1"># Note: Do not put spaces inside the reason string !</span>
+<span class="s1">#</span>
+<span class="s1"># mode=&#39;manual&#39; correlation=&#39;YY&#39; antenna=&#39;DV01;DV08;DA43;DA48&amp;DV23&#39; spw=&#39;21:1920~2880&#39; autocorr=False reason=&#39;bad_channels&#39;</span>
+<span class="s1"># mode=&#39;manual&#39; spw=&#39;25:0~3;122~127&#39; reason=&#39;stage8_2&#39;</span>
+<span class="s1"># mode=&#39;manual&#39; antenna=&#39;DV07&#39; timerange=&#39;2013/01/31/08:09:55.248~2013/01/31/08:10:01.296&#39; reason=&#39;quack&#39;</span>
+<span class="s1">#</span>
+<span class="s1">&#39;&#39;&#39;</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

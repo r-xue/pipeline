@@ -1,0 +1,37 @@
+pipeline.hifa.tasks.targetflag package
+======================================
+
+Submodules
+----------
+
+pipeline.hifa.tasks.targetflag.qa module
+----------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.targetflag.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.targetflag.renderer module
+----------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.targetflag.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifa.tasks.targetflag.targetflag module
+------------------------------------------------
+
+.. automodule:: pipeline.hifa.tasks.targetflag.targetflag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifa.tasks.targetflag
+   :members:
+   :undoc-members:
+   :show-inheritance:

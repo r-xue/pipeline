@@ -1,0 +1,22 @@
+pipeline.hifa.tasks.tsysflag\_contamination
+===========================================
+
+.. automodule:: pipeline.hifa.tasks.tsysflag_contamination
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      T2_4MDetailsTsysflagContaminationRenderer
+      TsysFlagContamination
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   qa
+   renderer
+   tsysflagcontamination

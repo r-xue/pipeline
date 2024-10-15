@@ -1,0 +1,45 @@
+pipeline.hifv.tasks.statwt package
+==================================
+
+Submodules
+----------
+
+pipeline.hifv.tasks.statwt.display module
+-----------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.statwt.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.statwt.qa module
+------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.statwt.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.statwt.renderer module
+------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.statwt.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.statwt.statwt module
+----------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.statwt.statwt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifv.tasks.statwt
+   :members:
+   :undoc-members:
+   :show-inheritance:

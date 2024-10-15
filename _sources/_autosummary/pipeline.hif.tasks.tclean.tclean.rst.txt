@@ -1,0 +1,28 @@
+pipeline.hif.tasks.tclean.tclean
+================================
+
+.. automodule:: pipeline.hif.tasks.tclean.tclean
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      label
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AutoMaskThresholdSequence
+      AutoScalThresholdSequence
+      DataType
+      ImageCentreThresholdSequence
+      ManualMaskThresholdSequence
+      NoMaskThresholdSequence
+      Tclean
+      TcleanInputs
+      TcleanResult
+      VlaAutoMaskThresholdSequence
+      VlassMaskThresholdSequence
+   

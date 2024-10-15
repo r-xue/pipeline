@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Run the Pipeline in a Conda environment &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Dependencies of Pipeline" href="dependencies.html" />
+    <link rel="prev" title="Pipeline Releases" href="releases.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Run the Pipeline in a Conda environment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#setup-the-environment-step-by-step">Setup the environment -  step-by-step</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-pipeline">Run Pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#serial-session">Serial session</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parallel-mpicasa-session">Parallel (<code class="docutils literal notranslate"><span class="pre">mpicasa</span></code>) session</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#useful-shorthand">Useful shorthand</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Run the Pipeline in a Conda environment</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modular.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="run-the-pipeline-in-a-conda-environment">
+<h1>Run the Pipeline in a Conda environment<a class="headerlink" href="#run-the-pipeline-in-a-conda-environment" title="Link to this heading"></a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>running and developing the pipeline from a Conda environment is not officially supported or validated for observatory operation, and the information provided here is for demonstration purposes only.</p>
+</div>
+<section id="setup-the-environment-step-by-step">
+<h2>Setup the environment -  step-by-step<a class="headerlink" href="#setup-the-environment-step-by-step" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">Miniforge</span></code>: We recommend the minimal <a class="reference external" href="https://github.com/conda-forge/miniforge">miniforge</a> installer, which only includes the <a class="reference external" href="https://conda-forge.org">conda-forge</a> channel by default.</p></li>
+</ul>
+<ul>
+<li><p>Reproduce a Python environment with modular <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/">CASA6</a> components and their dependency libraries and helper tools, e.g., <a class="reference external" href="https://www.open-mpi.org">openmpi</a>.</p>
+<ul>
+<li><p>Fetch source code:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://open-bitbucket.nrao.edu/scm/pipe/pipeline.git<span class="w"> </span>--branch<span class="w"> </span>PIPE-1669-run-dev-pipeline-with-modular-casa6
+<span class="nb">cd</span><span class="w"> </span>pipeline
+</pre></div>
+</div>
+</li>
+<li><p>Recreate the Conda environment with all CASA6 components for <a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE">Pipeline</a> development:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>--file<span class="o">=</span>pipe1669.yaml
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>pipe1669
+conda<span class="w"> </span>env<span class="w"> </span>update<span class="w"> </span>--file<span class="o">=</span>pipe1669.yaml
+</pre></div>
+</div>
+<p>This will set up a Conda environment named ‘pipe1669’.
+You might also update an existing environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>update<span class="w"> </span>-n<span class="w"> </span>pipe1669<span class="w"> </span>--all
+conda<span class="w"> </span>env<span class="w"> </span>update<span class="w"> </span>--file<span class="o">=</span>pipe1669.yaml
+</pre></div>
+</div>
+<p>To clean up an existing environment and start fresh:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>remove<span class="w"> </span>-n<span class="w"> </span>pipe1669
+</pre></div>
+</div>
+<p>If you just want to remove one component:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>remove<span class="w"> </span>-n<span class="w"> </span>pipe1669<span class="w"> </span>mpi4py
+</pre></div>
+</div>
+</li>
+<li><p>Dev install <a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE">Pipeline</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>pipe1669
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+<p>or to use an add-on library for development and experimental purposes, try:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev<span class="o">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>``pipe1669.yaml`` vs. ``requirements.txt``</strong></p>
+<ul class="simple">
+<li><p>The scope of <code class="docutils literal notranslate"><span class="pre">pipe1669.yaml</span></code> is to create a pseudo-monolithic CASA6-like Python environment.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> + <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> handle <a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE">Pipeline</a> installation within that environment and are designed to work for both monolithic and modular <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/">CASA6</a> cases.</p></li>
+</ul>
+</div>
+</section>
+<section id="run-pipeline">
+<h2>Run <a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE">Pipeline</a><a class="headerlink" href="#run-pipeline" title="Link to this heading"></a></h2>
+<p>Typical use pattern (see more details below):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>pipe1669
+xvfb-run<span class="w"> </span>-a<span class="w"> </span>python<span class="w"> </span>run_pipeline.py
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">run_pipeline.py</span></code> is a demo script. An example context could be:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pipeline.recipereducer</span><span class="o">,</span> <span class="nn">os</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms&#39;</span><span class="p">],</span>
+                              <span class="n">procedure</span><span class="o">=</span><span class="s1">&#39;procedure_hifa_calimage.xml&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="serial-session">
+<h3>Serial session<a class="headerlink" href="#serial-session" title="Link to this heading"></a></h3>
+<ul>
+<li><p>A standard Python session:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PYTHONNOUSERSITE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">8</span><span class="w"> </span>xvfb-run<span class="w"> </span>-a<span class="w"> </span>python<span class="w"> </span>../scripts/run_pipeline.py
+</pre></div>
+</div>
+</li>
+<li><p>Via <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/api/casashell.html">casashell</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PYTHONNOUSERSITE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">8</span><span class="w"> </span>xvfb-run<span class="w"> </span>-a<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>casashell<span class="w"> </span>--nologger<span class="w"> </span>--log2term<span class="w"> </span>--agg<span class="w"> </span>-c<span class="w"> </span>../scripts/run_pipeline.py
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="parallel-mpicasa-session">
+<h3>Parallel (<code class="docutils literal notranslate"><span class="pre">mpicasa</span></code>) session<a class="headerlink" href="#parallel-mpicasa-session" title="Link to this heading"></a></h3>
+<p>As reported in <cite>CAS-14037 &lt;https://open-jira.nrao.edu/browse/CAS-14037&gt;</cite>, to avoid circular imports during the <cite>casampi</cite> process initialization, you need to execute <cite>casampi.private.start_mpi</cite> before and outside the scope of <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/api/casatasks.html">casatasks</a> or <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/api/casashell.html">casashell</a> (which implicitly import <cite>casatasks</cite>). As a workaround, include the following boilerplate command:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">casampi.private.start_mpi</span>  <span class="c1"># assign the client and server roles</span>
+    <span class="kn">import</span> <span class="nn">casatasks</span>                  <span class="c1"># ensure the time-based logfile name</span>
+<span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ul>
+<li><p>A standard Python session:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PYTHONNOUSERSITE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>xvfb-run<span class="w"> </span>-a<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>mpirun<span class="w"> </span>-display-allocation<span class="w"> </span>-display-map<span class="w"> </span>-oversubscribe<span class="w"> </span>--mca<span class="w"> </span>btl_vader_single_copy_mechanism<span class="w"> </span>none<span class="w"> </span>-x<span class="w"> </span>OMP_NUM_THREADS<span class="w"> </span>-n<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import casampi.private.start_mpi; exec(open(&#39;../scripts/run_pipeline.py&#39;).read())&quot;</span>
+</pre></div>
+</div>
+<p>If you run a parallel CASA session without going through <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/api/casashell.html">casashell</a> (e.g., <cite>mpirun -n 4 python run_script.py</cite>), place the code snippet above at the beginning of your Python script before any <cite>casatasks</cite> import actions to avoid deadlocks.</p>
+</li>
+<li><p>Via <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/api/casashell.html">casashell</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PYTHONNOUSERSITE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>xvfb-run<span class="w"> </span>-a<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>mpirun<span class="w"> </span>-display-allocation<span class="w"> </span>-display-map<span class="w"> </span>-oversubscribe<span class="w"> </span>--mca<span class="w"> </span>btl_vader_single_copy_mechanism<span class="w"> </span>none<span class="w"> </span>-x<span class="w"> </span>OMP_NUM_THREADS<span class="w"> </span>-n<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import casampi.private.start_mpi; import casashell.__main__&quot;</span><span class="w"> </span>--nologger<span class="w"> </span>--log2term<span class="w"> </span>--agg<span class="w"> </span>-c<span class="w"> </span>../scripts/run_pipeline.py
+</pre></div>
+</div>
+<p>If you run a parallel CASA session with <cite>casashell</cite>, you need to add the code snippet inside <cite>~/.casa/config.py</cite>. Failure to do so will result in a deadlock the first time <cite>casatasks</cite> is imported. Note that we use <cite>python -c “import casampi.private.start_mpi; import casashell.__main__”</cite> instead of <a href="#id1"><span class="problematic" id="id2">`python -m casashell`_</span></a> so that <cite>start_mpi</cite> runs before <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/api/casatasks.html">casatasks</a> is imported.</p>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Notes on macOS (including Apple Silicon)</strong></p>
+<ul>
+<li><p>Running a <cite>mpicasa</cite> session on macOS</p>
+<p>A parallel Pipeline data processing session might hang on macOS at the compleation of the job due to lingering <cite>casaplotms.app</cite> sub-processes.
+This behavior appears to be different from Linux, potentially caused by the fact that each <code class="docutils literal notranslate"><span class="pre">casaplotms</span></code> process spawned from a MPIserver proceess runs as a macOS “app”.
+Although this doesn’t affect the data processing, to ensure a clean exit, one might need to use the following snippet at the end of your Python job script:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">close_plotms_on_mpiservers</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">casampi.MPIEnvironment</span> <span class="kn">import</span> <span class="n">MPIEnvironment</span>
+        <span class="n">mpi_server_list</span> <span class="o">=</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_server_rank_list</span><span class="p">()</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span><span class="s1">&#39;from casaplotms import plotmstool&#39;</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                    <span class="n">target_server</span><span class="o">=</span><span class="n">mpi_server_list</span><span class="p">)</span>
+        <span class="n">rs_list</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span><span class="s1">&#39;plotmstool.__proc!=None&#39;</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                            <span class="n">target_server</span><span class="o">=</span><span class="n">mpi_server_list</span><span class="p">)</span>
+        <span class="n">servers_with_active_plotms</span> <span class="o">=</span> <span class="p">[</span><span class="n">rs</span><span class="p">[</span><span class="s1">&#39;server&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">rs</span> <span class="ow">in</span> <span class="n">rs_list</span> <span class="k">if</span> <span class="n">rs</span><span class="p">[</span><span class="s1">&#39;ret&#39;</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">servers_with_active_plotms</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;servers with active plotms instances: </span><span class="si">{</span><span class="n">servers_with_active_plotms</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span><span class="s1">&#39;plotmstool.__proc.kill()&#39;</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">target_server</span><span class="o">=</span><span class="n">servers_with_active_plotms</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="n">close_plotms_on_mpiservers</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In addition, <code class="docutils literal notranslate"><span class="pre">xvfb-run</span></code> is unavailable on macOS, therefore, you are not able to use it for headless session. To complete a Pipeline processing session with casaplotms as nesscarity, one has to remotely login in GUI and casaplotms GUI will show up in the desktop GUI end and can’t be forwarded.</p>
+<ul>
+<li><p>With <code class="docutils literal notranslate"><span class="pre">casashell</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PYTHONNOUSERSITE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>mpirun<span class="w"> </span>-display-allocation<span class="w"> </span>-display-map<span class="w"> </span>-oversubscribe<span class="w"> </span>--mca<span class="w"> </span>btl_vader_single_copy_mechanism<span class="w"> </span>none<span class="w"> </span>-x<span class="w"> </span>OMP_NUM_THREADS<span class="w"> </span>-x<span class="w"> </span>PYTHONNOUSERSITE<span class="w"> </span>-n<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import casampi.private.start_mpi; import casashell.__main__&quot;</span><span class="w"> </span>--nologger<span class="w"> </span>--log2term<span class="w"> </span>--agg<span class="w"> </span>-c<span class="w"> </span>../scripts/run_pltest.py
+</pre></div>
+</div>
+</li>
+<li><p>Without <code class="docutils literal notranslate"><span class="pre">casashell</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PYTHONNOUSERSITE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>mpirun<span class="w"> </span>-display-allocation<span class="w"> </span>-display-map<span class="w"> </span>-oversubscribe<span class="w"> </span>--mca<span class="w"> </span>btl_vader_single_copy_mechanism<span class="w"> </span>none<span class="w"> </span>-x<span class="w"> </span>OMP_NUM_THREADS<span class="w"> </span>-x<span class="w"> </span>PYTHONNOUSERSITE<span class="w"> </span>-n<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import casampi.private.start_mpi; exec(open(&#39;../scripts/run_pltest.py&#39;).read())&quot;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x86_64</span></code> vs <code class="docutils literal notranslate"><span class="pre">arm64</span></code></p>
+<ul>
+<li><p><a class="reference external" href="https://casadocs.readthedocs.io/en/stable/api/casatools.html">casatools</a> wheels started become available on both <code class="docutils literal notranslate"><span class="pre">x86_64</span></code> and <code class="docutils literal notranslate"><span class="pre">arm64</span></code> archiectures of macOS (see the <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Compatibility">CASA6 compaibility matrix</a>)</p></li>
+<li><p>Because the <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/api/casatools.html">casatools</a> wheels only start being built from CASA ver&gt;=6.6.4 with Py3.10 on the ARM64 (Apple Silicon) platform:</p>
+<ul class="simple">
+<li><p>If your local conda install architecture is “arm64 (Apple Silicon)” rather than “x86_64”, you have to manually edit “python=3.8”</p></li>
+</ul>
+<p>to “python=3.10” below for the Python version specification. You will also skip the installation of two optional dependencies: “almatasks” and “pybsdf”</p>
+<ul class="simple">
+<li><p>If your local <strong>Conda installation architecture</strong> is “x86_64” (either an Intel Macs or Apple Silicon Macs with the Rosetta 2 emulation layer),</p></li>
+</ul>
+<p>you can keep using the “python=3.8” in the Conda environment for full compatibility and support of all Pipeline features. Note one might need to set
+an environment variable (SYSTEM_VERSION_COMPAT=0) for your Conda command because <a class="reference external" href="https://github.com/pypa/packaging/pull/319">Conda/Python3.8</a> is too old for pip to recognize the macOS version labels. If you local Conda architetuere is “arm64” (native on Apple Silicon Macs), please choose the Python 3.10 setup (as specified in the latest <cite>pipe1669.yaml`</cite>).
+The support of CPU architectures from <a class="reference external" href="https://github.com/conda-forge/miniforge">miniforge</a> can be found <a class="reference external" href="https://github.com/conda-forge/miniforge?tab=readme-ov-file#miniforge3">here</a></p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="useful-shorthand">
+<h2>Useful shorthand<a class="headerlink" href="#useful-shorthand" title="Link to this heading"></a></h2>
+<p>Useful aliases/shortcuts to emulate monolithic CASA executables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>pipe1669
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">casa_omp_num_threads</span><span class="o">=</span><span class="m">4</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">casa_mpi_nproc</span><span class="o">=</span><span class="m">4</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TMPDIR</span><span class="o">=</span>/tmp
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">casa6_opts_custom</span><span class="o">=</span><span class="s1">&#39;--nologger --log2term --agg&#39;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">mpirun_custom</span><span class="o">=</span><span class="s1">&#39;mpirun -display-allocation -display-map -oversubscribe --mca btl_vader_single_copy_mechanism none --mca btl ^openib -x OMP_NUM_THREADS -x PYTHONNOUSERSITE&#39;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">xvfb_run_auto</span><span class="o">=</span><span class="s1">&#39;xvfb-run -a&#39;</span><span class="w"> </span><span class="c1"># Debian, Ubuntu, RedHat8, etc.</span>
+
+<span class="nb">alias</span><span class="w"> </span><span class="nv">casa6</span><span class="o">=</span><span class="s1">&#39;PYTHONNOUSERSITE=1 OMP_NUM_THREADS=${casa_omp_num_threads} python -m casashell&#39;</span>
+<span class="nb">alias</span><span class="w"> </span><span class="nv">casa6mpi</span><span class="o">=</span><span class="s1">&#39;PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 ${mpirun_custom} -n ${casa_mpi_nproc} python -c &quot;import casampi.private.start_mpi; import casashell.__main__&quot;&#39;</span>
+
+<span class="c1"># For Linux only, not applicable on macOS</span>
+<span class="nb">alias</span><span class="w"> </span><span class="nv">casa6_xvfb</span><span class="o">=</span><span class="s1">&#39;PYTHONNOUSERSITE=1 OMP_NUM_THREADS=${casa_omp_num_threads} ${xvfb_run_auto} python -m casashell&#39;</span>
+<span class="nb">alias</span><span class="w"> </span><span class="nv">casa6mpi_xvfb</span><span class="o">=</span><span class="s1">&#39;PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 ${xvfb_run_auto} ${mpirun_custom} -n ${casa_mpi_nproc} python -c &quot;import casampi.private.start_mpi; import casashell.__main__&quot;&#39;</span>
+</pre></div>
+</div>
+<p>For executing a headless parallel Pipeline processing session on Linux, one could try:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>casa6mpi_xvfb<span class="w"> </span><span class="si">${</span><span class="nv">casa6_opts_custom</span><span class="si">}</span><span class="w"> </span>-c<span class="w"> </span>../scripts/run_pltest.py
+</pre></div>
+</div>
+<p>If you prefer running on with a 4-core mpicasa session (1 client + 7 servers), one could do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">casa_mpi_nproc</span><span class="o">=</span><span class="m">8</span><span class="w"> </span>casa6mpi_xvfb<span class="w"> </span><span class="si">${</span><span class="nv">casa6_opts_custom</span><span class="si">}</span><span class="w"> </span>-c<span class="w"> </span>../scripts/run_pltest.py
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="releases.html" class="btn btn-neutral float-left" title="Pipeline Releases" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="dependencies.html" class="btn btn-neutral float-right" title="Dependencies of Pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+pipeline.hifa.tasks.gaincal.qa
+==============================
+
+.. automodule:: pipeline.hifa.tasks.gaincal.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TimegaincalListQAHandler
+      TimegaincalQAHandler
+      TimegaincalQAPool
+   

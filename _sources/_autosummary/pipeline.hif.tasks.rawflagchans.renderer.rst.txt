@@ -1,0 +1,13 @@
+pipeline.hif.tasks.rawflagchans.renderer
+========================================
+
+.. automodule:: pipeline.hif.tasks.rawflagchans.renderer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BaselineVsChannelsPlotRenderer
+      T2_4MDetailsRawflagchansRenderer
+   

@@ -1,0 +1,21 @@
+pipeline.hifv.tasks.selfcal.selfcal
+===================================
+
+.. automodule:: pipeline.hifv.tasks.selfcal.selfcal
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      set_add_model_column_parameters
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      Selfcal
+      SelfcalInputs
+      SelfcalResults
+   

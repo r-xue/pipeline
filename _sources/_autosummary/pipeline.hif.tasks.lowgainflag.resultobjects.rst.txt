@@ -1,0 +1,15 @@
+pipeline.hif.tasks.lowgainflag.resultobjects
+============================================
+
+.. automodule:: pipeline.hif.tasks.lowgainflag.resultobjects
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FullyFlaggedAntennasNotification
+      LowgainflagDataResults
+      LowgainflagResults
+      LowgainflagViewResults
+   

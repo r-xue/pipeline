@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.tasks.common.displays.applycal &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.h.tasks.common.displays.applycal</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.h.tasks.common.displays.applycal.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pipeline.h.tasks.common.displays.applycal">
+<span id="pipeline-h-tasks-common-displays-applycal"></span><h1>pipeline.h.tasks.common.displays.applycal<a class="headerlink" href="#module-pipeline.h.tasks.common.displays.applycal" title="Link to this heading"></a></h1>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_singledish_ms</span></code>(context)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyDetailChart" title="pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyDetailChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmpVsFrequencyDetailChart</span></code></a>(context, ...[, ...])</p></td>
+<td><p>Create an amplitude vs frequency plot for each spw and antenna, overplotting by field.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyFieldSummaryChart" title="pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyFieldSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmpVsFrequencyFieldSummaryChart</span></code></a>(context, ...)</p></td>
+<td><p>Create an amplitude vs time plot for each spw, overplotting by antenna, with separate plots for each field.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyPerBasebandSummaryChart" title="pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyPerBasebandSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmpVsFrequencyPerBasebandSummaryChart</span></code></a>(...[, ...])</p></td>
+<td><p>Create an Amp vs Frequency plot for each baseband, overplotting by antenna.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyPerFieldBasebandSummaryChart" title="pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyPerFieldBasebandSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmpVsFrequencyPerFieldBasebandSummaryChart</span></code></a>(...)</p></td>
+<td><p>Create an amplitude vs time plot for each spw, overplotting by antenna, with separate plots for each field.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.AmpVsFrequencySummaryChart" title="pipeline.h.tasks.common.displays.applycal.AmpVsFrequencySummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmpVsFrequencySummaryChart</span></code></a>(context, ...[, ...])</p></td>
+<td><p>Create an amplitude vs time plot for each spw, overplotting by antenna.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.AmpVsTimeDetailChart" title="pipeline.h.tasks.common.displays.applycal.AmpVsTimeDetailChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmpVsTimeDetailChart</span></code></a>(context, output_dir, calto)</p></td>
+<td><p>Create an amplitude vs time plot for each field, spw and antenna, overplotting by correlation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.AmpVsTimeSummaryChart" title="pipeline.h.tasks.common.displays.applycal.AmpVsTimeSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmpVsTimeSummaryChart</span></code></a>(context, output_dir, calto)</p></td>
+<td><p>Create an amplitude vs time plot for each spw, overplotting by antenna.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.AmpVsUVBasebandSummaryChart" title="pipeline.h.tasks.common.displays.applycal.AmpVsUVBasebandSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmpVsUVBasebandSummaryChart</span></code></a>(context, ...[, ...])</p></td>
+<td><p>Create an amplitude vs UV distance plot for each spw, overplotting by antenna.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.AmpVsUVDetailChart" title="pipeline.h.tasks.common.displays.applycal.AmpVsUVDetailChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmpVsUVDetailChart</span></code></a>(context, output_dir, calto)</p></td>
+<td><p>Create an amplitude vs UV distance plot for each field, spw and antenna</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.AmpVsUVFieldSummaryChart" title="pipeline.h.tasks.common.displays.applycal.AmpVsUVFieldSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmpVsUVFieldSummaryChart</span></code></a>(context, ...[, ...])</p></td>
+<td><p>Create an amplitude vs UV distance plot for each spw, overplotting by antenna, with separate plots for each field.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.AmpVsUVSummaryChart" title="pipeline.h.tasks.common.displays.applycal.AmpVsUVSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmpVsUVSummaryChart</span></code></a>(context, output_dir, calto)</p></td>
+<td><p>Create an amplitude vs UV distance plot for each spw, overplotting by antenna.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.AntComposite" title="pipeline.h.tasks.common.displays.applycal.AntComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AntComposite</span></code></a>(context, output_dir, calto, ...)</p></td>
+<td><p>Create a PlotLeaf for each antenna in the applied calibration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.BasebandComposite" title="pipeline.h.tasks.common.displays.applycal.BasebandComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BasebandComposite</span></code></a>(context, output_dir, ...)</p></td>
+<td><p>Create a PlotLeaf for each baseband in the applied calibration.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.BasebandSummaryChart" title="pipeline.h.tasks.common.displays.applycal.BasebandSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BasebandSummaryChart</span></code></a>(context, output_dir, ...)</p></td>
+<td><p>Base class for executing plotms per baseband</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.CAS9154AmpVsTimeDetailChart" title="pipeline.h.tasks.common.displays.applycal.CAS9154AmpVsTimeDetailChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CAS9154AmpVsTimeDetailChart</span></code></a>(context, ...[, ...])</p></td>
+<td><p>Create an amplitude vs time plot per spw and antenna, overplotting by correlation.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalTo</span></code>([vis, field, spw, antenna, intent])</p></td>
+<td><p>CalTo represents a target data selection to which a calibration can be applied.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code>([name])</p></td>
+<td><p>Context holds all pipeline state, consisting of metadata describing the data set, objects describing the pipeline calibration state, the tree of Results objects summarising the results of each pipeline task, and a small number of internal pipeline variables and objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.CorrectedToModelRatioVsAntenna1SummaryChart" title="pipeline.h.tasks.common.displays.applycal.CorrectedToModelRatioVsAntenna1SummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorrectedToModelRatioVsAntenna1SummaryChart</span></code></a>(...)</p></td>
+<td><p>Create an amplitude vs time plot for each spw, overplotting by antenna.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.CorrectedToModelRatioVsUVDistanceSummaryChart" title="pipeline.h.tasks.common.displays.applycal.CorrectedToModelRatioVsUVDistanceSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorrectedToModelRatioVsUVDistanceSummaryChart</span></code></a>(...)</p></td>
+<td><p>Create an amplitude vs time plot for each spw, overplotting by antenna.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.FieldBasebandSummaryChart" title="pipeline.h.tasks.common.displays.applycal.FieldBasebandSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldBasebandSummaryChart</span></code></a>(context, ...)</p></td>
+<td><p>Like BasebandSummaryChart, but creates separate plots for each field</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.FieldComposite" title="pipeline.h.tasks.common.displays.applycal.FieldComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldComposite</span></code></a>(context, output_dir, calto, ...)</p></td>
+<td><p>Create a PlotLeaf for each field in the applied calibration.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.FieldSpwAntComposite" title="pipeline.h.tasks.common.displays.applycal.FieldSpwAntComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldSpwAntComposite</span></code></a>(context, output_dir, ...)</p></td>
+<td><p>Create a PlotLeaf for each field, spw and antenna in the applied calibration</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.FieldSpwAntDetailChart" title="pipeline.h.tasks.common.displays.applycal.FieldSpwAntDetailChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldSpwAntDetailChart</span></code></a>(context, output_dir, ...)</p></td>
+<td><p>Base class for executing plotms per calibrator field, spw and antenna</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.FieldSpwComposite" title="pipeline.h.tasks.common.displays.applycal.FieldSpwComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldSpwComposite</span></code></a>(context, output_dir, ...)</p></td>
+<td><p>Create a PlotLeaf for each field and spw in the applied calibration</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyDetailChart" title="pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyDetailChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PhaseVsFrequencyDetailChart</span></code></a>(context, ...[, ...])</p></td>
+<td><p>Create a phase vs frequency plot for each spw and antenna, overplotting by field.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyPerBasebandSummaryChart" title="pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyPerBasebandSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PhaseVsFrequencyPerBasebandSummaryChart</span></code></a>(...)</p></td>
+<td><p>Create an Phase vs Frequency plot for each baseband, overplotting by antenna.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyPerFieldBasebandSummaryChart" title="pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyPerFieldBasebandSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PhaseVsFrequencyPerFieldBasebandSummaryChart</span></code></a>(...)</p></td>
+<td><p>Create an Phase vs Frequency plot for each baseband, overplotting by antenna, with separate plots for each field.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyPerSpwSummaryChart" title="pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyPerSpwSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PhaseVsFrequencyPerSpwSummaryChart</span></code></a>(context, ...)</p></td>
+<td><p>Create an amplitude vs time plot for each spw, overplotting by antenna, with separate plots for each field.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PhaseVsTimeDetailChart" title="pipeline.h.tasks.common.displays.applycal.PhaseVsTimeDetailChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PhaseVsTimeDetailChart</span></code></a>(context, output_dir, ...)</p></td>
+<td><p>Create an phase vs time plot for each field, spw and antenna, overplotting by correlation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PhaseVsTimeSummaryChart" title="pipeline.h.tasks.common.displays.applycal.PhaseVsTimeSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PhaseVsTimeSummaryChart</span></code></a>(context, output_dir, ...)</p></td>
+<td><p>Create an amplitude vs time plot for each spw, overplotting by antenna.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PhaseVsUVDetailChart" title="pipeline.h.tasks.common.displays.applycal.PhaseVsUVDetailChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PhaseVsUVDetailChart</span></code></a>(context, output_dir, calto)</p></td>
+<td><p>Create an amplitude vs UV distance plot for each spw and antenna</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PhaseVsUVSummaryChart" title="pipeline.h.tasks.common.displays.applycal.PhaseVsUVSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PhaseVsUVSummaryChart</span></code></a>(context, output_dir, calto)</p></td>
+<td><p>Create an amplitude vs UV distance plot for each spw, overplotting by antenna.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PlotmsAntComposite" title="pipeline.h.tasks.common.displays.applycal.PlotmsAntComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsAntComposite</span></code></a>(context, output_dir, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PlotmsBasebandComposite" title="pipeline.h.tasks.common.displays.applycal.PlotmsBasebandComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsBasebandComposite</span></code></a>(context, output_dir, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PlotmsFieldBasebandComposite" title="pipeline.h.tasks.common.displays.applycal.PlotmsFieldBasebandComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsFieldBasebandComposite</span></code></a>(context, ...[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PlotmsFieldComposite" title="pipeline.h.tasks.common.displays.applycal.PlotmsFieldComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsFieldComposite</span></code></a>(context, output_dir, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PlotmsFieldSpwAntComposite" title="pipeline.h.tasks.common.displays.applycal.PlotmsFieldSpwAntComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsFieldSpwAntComposite</span></code></a>(context, ...[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PlotmsFieldSpwComposite" title="pipeline.h.tasks.common.displays.applycal.PlotmsFieldSpwComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsFieldSpwComposite</span></code></a>(context, output_dir, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PlotmsLeaf" title="pipeline.h.tasks.common.displays.applycal.PlotmsLeaf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsLeaf</span></code></a>(context, output_dir, calto, ...)</p></td>
+<td><p>Class to execute plotms and return a plot wrapper.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PlotmsSpwAntComposite" title="pipeline.h.tasks.common.displays.applycal.PlotmsSpwAntComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsSpwAntComposite</span></code></a>(context, output_dir, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.PlotmsSpwComposite" title="pipeline.h.tasks.common.displays.applycal.PlotmsSpwComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsSpwComposite</span></code></a>(context, output_dir, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.RealVsFrequencyDetailChart" title="pipeline.h.tasks.common.displays.applycal.RealVsFrequencyDetailChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RealVsFrequencyDetailChart</span></code></a>(context, ...[, ...])</p></td>
+<td><p>Create a real vs time plot for each spw and antenna</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.RealVsFrequencySummaryChart" title="pipeline.h.tasks.common.displays.applycal.RealVsFrequencySummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RealVsFrequencySummaryChart</span></code></a>(context, ...[, ...])</p></td>
+<td><p>Create a real vs time plot for each spw, overplotting by antenna.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.SpwAntComposite" title="pipeline.h.tasks.common.displays.applycal.SpwAntComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwAntComposite</span></code></a>(context, output_dir, calto, ...)</p></td>
+<td><p>Create a PlotLeaf for each spw and antenna in the applied calibration</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.SpwAntDetailChart" title="pipeline.h.tasks.common.displays.applycal.SpwAntDetailChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwAntDetailChart</span></code></a>(context, output_dir, ...)</p></td>
+<td><p>Base class for executing plotms per calibrator field and spw</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.SpwComposite" title="pipeline.h.tasks.common.displays.applycal.SpwComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwComposite</span></code></a>(context, output_dir, calto, ...)</p></td>
+<td><p>Create a PlotLeaf for each spw in the applied calibration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.SpwFieldSummaryChart" title="pipeline.h.tasks.common.displays.applycal.SpwFieldSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwFieldSummaryChart</span></code></a>(context, output_dir, ...)</p></td>
+<td><p>Like SpwSummaryChart, but creates separate plots for each field</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.applycal.SpwSummaryChart" title="pipeline.h.tasks.common.displays.applycal.SpwSummaryChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwSummaryChart</span></code></a>(context, output_dir, calto, ...)</p></td>
+<td><p>Base class for executing plotms per calibrator field and spw</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

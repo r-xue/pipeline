@@ -1,0 +1,516 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.recipes.procedure_hifv_calimage_cont &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pipeline.recipes.procedure_hifv_calimage_cont</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.recipes.procedure_hifv_calimage_cont.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pipeline.recipes.procedure_hifv_calimage_cont">
+<span id="pipeline-recipes-procedure-hifv-calimage-cont"></span><h1>pipeline.recipes.procedure_hifv_calimage_cont<a class="headerlink" href="#module-pipeline.recipes.procedure_hifv_calimage_cont" title="Link to this heading"></a></h1>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_applycal</span></code>([vis, field, intent, spw, ...])</p></td>
+<td><p>h_applycal ---- Apply the calibration(s) to the data</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_export_calstate</span></code>([filename, state])</p></td>
+<td><p>h_export_calstate ---- Save the pipeline calibration state to disk</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_exportdata</span></code>([vis, session, ...])</p></td>
+<td><p>h_exportdata ---- Prepare interferometry data for export</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_import_calstate</span></code>(filename)</p></td>
+<td><p>h_import_calstate ---- Import a calibration state from disk</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_importdata</span></code>([vis, session, asis, ...])</p></td>
+<td><p>h_importdata ---- Imports data into the interferometry pipeline</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_init</span></code>([loglevel, plotlevel, weblog])</p></td>
+<td><p>h_init ---- Initialize the pipeline</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_mssplit</span></code>([vis, outputvis, field, intent, ...])</p></td>
+<td><p>h_mssplit ---- Select data from calibrated MS(s) to form new MS(s) for imaging</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_restoredata</span></code>([vis, session, products_dir, ...])</p></td>
+<td><p>h_restoredata ---- Restore flags and calibration state from a pipeline run</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_resume</span></code>([filename])</p></td>
+<td><p>h_resume ---- Restore a save pipeline state</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_save</span></code>([filename])</p></td>
+<td><p>h_save ---- Save the pipeline state to disk</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_show_calstate</span></code>()</p></td>
+<td><p>h_show_calstate ---- Show the current pipeline calibration state</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_tsyscal</span></code>([vis, caltable, chantol])</p></td>
+<td><p>h_tsyscal ---- Derive a Tsys calibration table</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_weblog</span></code>([relpath])</p></td>
+<td><p>h_weblog ---- Open the pipeline weblog in a browser</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_analyzealpha</span></code>([vis, image, alphafile, ...])</p></td>
+<td><p>hif_analyzealpha ---- Extract spectral index from intensity peak in VLA/VLASS images</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_antpos</span></code>([vis, caltable, hm_antpos, ...])</p></td>
+<td><p>hif_antpos ---- Derive an antenna position calibration table</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_applycal</span></code>([vis, field, intent, spw, ...])</p></td>
+<td><p>hif_applycal ---- Apply the calibration(s) to the data</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_bandpass</span></code>([vis, caltable, field, intent, ...])</p></td>
+<td><p>hif_bandpass ---- Compute bandpass calibration solutions</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_checkproductsize</span></code>([vis, maxcubesize, ...])</p></td>
+<td><p>hif_checkproductsize ---- Check imaging product size</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_correctedampflag</span></code>([vis, intent, field, ...])</p></td>
+<td><p>hif_correctedampflag ---- Flag corrected - model amplitudes based on calibrators.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_editimlist</span></code>([imagename, ...])</p></td>
+<td><p>hif_editimlist ---- Add to a list of images to be produced with hif_makeimages()</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_findcont</span></code>([vis, target_list, ...])</p></td>
+<td><p>hif_findcont ---- Find continuum frequency ranges</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_gaincal</span></code>([vis, caltable, field, intent, ...])</p></td>
+<td><p>hif_gaincal ---- Determine temporal gains from calibrator observations</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_lowgainflag</span></code>([vis, intent, spw, refant, ...])</p></td>
+<td><p>hif_lowgainflag ---- Flag antennas with low or high gain</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_makecutoutimages</span></code>([vis, offsetblc, offsettrc])</p></td>
+<td><p>hif_makecutoutimages ---- Cutout central 1 sq.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_makeimages</span></code>([vis, target_list, ...])</p></td>
+<td><p>hif_makeimages ---- Compute clean map</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_makeimlist</span></code>([vis, imagename, intent, ...])</p></td>
+<td><p>hif_makeimlist ---- Compute list of clean images to be produced</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_makermsimages</span></code>([vis])</p></td>
+<td><p>hif_makermsimages ---- Create RMS images for VLASS data.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_mstransform</span></code>([vis, outputvis, field, ...])</p></td>
+<td><p>hif_mstransform ---- Create new MeasurementSets for science target imaging</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_rawflagchans</span></code>([vis, spw, intent, ...])</p></td>
+<td><p>hif_rawflagchans ---- Flag deviant baseline/channels in raw data</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_refant</span></code>([vis, field, spw, intent, ...])</p></td>
+<td><p>hif_refant ---- Select the best reference antennas</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_selfcal</span></code>([vis, field, spw, contfile, ...])</p></td>
+<td><p>hif_selfcal  ---- Determine and apply self-calibration with the science target data</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_setjy</span></code>([vis, field, intent, spw, model, ...])</p></td>
+<td><p>hif_setjy ---- Fill the model column with calibrated visibilities</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_setmodels</span></code>([vis, reference, refintent, ...])</p></td>
+<td><p>hif_setmodels ---- Set calibrator source models</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_transformimagedata</span></code>([vis, outputvis, ...])</p></td>
+<td><p>hif_transformimagedata ---- Extract fields for the desired VLASS image to a new MS and reset weights if desired</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_uvcontsub</span></code>([vis, field, intent, spw, ...])</p></td>
+<td><p>hif_uvcontsub ---- Fit and subtract continuum from the data</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_antpos</span></code>([vis, caltable, hm_antpos, ...])</p></td>
+<td><p>hifa_antpos ---- Derive an antenna position calibration table</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_bandpass</span></code>([vis, caltable, field, ...])</p></td>
+<td><p>hifa_bandpass ---- Compute bandpass calibration solutions</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_bandpassflag</span></code>([vis, caltable, intent, ...])</p></td>
+<td><p>hifa_bandpassflag ---- Bandpass calibration flagging</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_bpsolint</span></code>([vis, field, intent, spw, ...])</p></td>
+<td><p>hifa_bpsolint ---- Compute optimal bandpass calibration solution intervals</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_diffgaincal</span></code>([vis])</p></td>
+<td><p>hifa_diffgaincal ---- Derive SpW phase offsets from differential gain calibrator.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_exportdata</span></code>([vis, session, ...])</p></td>
+<td><p>hifa_exportdata ---- Prepare interferometry data for export</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_flagdata</span></code>([vis, autocorr, shadow, ...])</p></td>
+<td><p>hifa_flagdata ---- Do metadata based flagging of a list of MeasurementSets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_flagtargets</span></code>([vis, template, ...])</p></td>
+<td><p>hifa_flagtargets ---- Do science target flagging</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_fluxcalflag</span></code>([vis, field, intent, spw, ...])</p></td>
+<td><p>hifa_fluxcalflag ---- Locate and flag line regions in solar system flux calibrators</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_gaincalsnr</span></code>([vis, field, intent, spw, ...])</p></td>
+<td><p>hifa_gaincalsnr ---- Compute gaincal signal-to-noise ratios per spw</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_gfluxscale</span></code>([vis, reference, transfer, ...])</p></td>
+<td><p>hifa_gfluxscale ---- Derive flux density scales from standard calibrators</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_gfluxscaleflag</span></code>([vis, intent, ...])</p></td>
+<td><p>hifa_gfluxscaleflag ---- Flag the flux, diffgain, phase calibrators and check source</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_imageprecheck</span></code>([vis, ...])</p></td>
+<td><p>hifa_imageprecheck ---- Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_importdata</span></code>([vis, session, asis, ...])</p></td>
+<td><p>hifa_importdata ---- Imports data into the interferometry pipeline</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_lock_refant</span></code>([vis])</p></td>
+<td><p>hifa_lock_refant ---- Lock reference antenna list</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_polcal</span></code>([vis, minpacov, solint_chavg, ...])</p></td>
+<td><p>hifa_polcal ---- Derive instrumental polarization calibration for ALMA.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_polcalflag</span></code>([vis])</p></td>
+<td><p>hifa_polcalflag ---- Flag polarization calibrators</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_renorm</span></code>([vis, createcaltable, ...])</p></td>
+<td><p>hifa_renorm ---- ALMA renormalization task</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_restoredata</span></code>([vis, session, ...])</p></td>
+<td><p>hifa_restoredata ---- Restore flagged and calibration interferometry data from a pipeline run</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_session_refant</span></code>([vis, phase_threshold])</p></td>
+<td><p>hifa_session_refant ---- Select best reference antenna for session(s)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_spwphaseup</span></code>([vis, caltable, field, ...])</p></td>
+<td><p>hifa_spwphaseup ---- Compute phase calibration spw map and per spw phase offsets</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_targetflag</span></code>([vis])</p></td>
+<td><p>hifa_targetflag ---- Flag target source outliers</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_timegaincal</span></code>([vis, calamptable, ...])</p></td>
+<td><p>hifa_timegaincal ---- Determine temporal gains from calibrator observations</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_tsysflag</span></code>([vis, caltable, flag_nmedian, ...])</p></td>
+<td><p>hifa_tsysflag ---- Flag deviant system temperatures for ALMA interferometry measurements.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_tsysflagcontamination</span></code>([vis, caltable, ...])</p></td>
+<td><p>hifa_tsysflagcontamination ---- Flag line contamination in ALMA interferometric Tsys caltables</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_unlock_refant</span></code>([vis])</p></td>
+<td><p>hifa_unlock_refant ---- Unlock reference antenna list</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_wvrgcal</span></code>([vis, caltable, offsetstable, ...])</p></td>
+<td><p>hifa_wvrgcal ---- Generate a gain table based on Water Vapor Radiometer data, and calculate a QA score based on its effect on the interferometric data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_wvrgcalflag</span></code>([vis, caltable, ...])</p></td>
+<td><p>hifa_wvrgcalflag ---- Generate a gain table based on Water Vapor Radiometer data, interpolating over antennas with bad radiometers.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_analyzestokescubes</span></code>([vis])</p></td>
+<td><p>hifv_analyzestokescubes ---- Characterize stokes IQUV flux densities as a function of frequency for VLASS coarse cube images</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_applycals</span></code>([vis, field, intent, spw, ...])</p></td>
+<td><p>hifv_applycals ---- Apply calibration tables to measurement set</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_calimage_cont</span></code>(vislist[, importonly, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_checkflag</span></code>([vis, checkflagmode, ...])</p></td>
+<td><p>hifv_checkflag ---- Run RFI flagging using flagdata in various modes</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_circfeedpolcal</span></code>([vis, Dterm_solint, ...])</p></td>
+<td><p>hifv_circfeedpolcal ---- Perform polarization calibration for VLA circular feeds.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_exportdata</span></code>([vis, session, ...])</p></td>
+<td><p>hifv_exportdata ---- Prepare and export interferometry and imaging data</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_exportvlassdata</span></code>([vis])</p></td>
+<td><p>hifv_exportvlassdata ---- Export Image data from QL, SE, and Coarse Cube modes of VLASS Survey</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_finalcals</span></code>([vis, weakbp, refantignore, ...])</p></td>
+<td><p>hifv_finalcals ---- Compute final gain calibration tables</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_fixpointing</span></code>([vis])</p></td>
+<td><p>hifv_fixpointing ---- Base fixpointing task</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_flagcal</span></code>([vis, caltable, clipminmax])</p></td>
+<td><p>hifv_flagcal ---- Flagcal task</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_flagdata</span></code>([vis, autocorr, shadow, scan, ...])</p></td>
+<td><p>hifv_flagdata ---- Do basic deterministic flagging of a list of MeasurementSets</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_flagtargetsdata</span></code>([vis, template, ...])</p></td>
+<td><p>hifv_flagtargetsdata ---- Apply a flagtemplate to target data prior to running imaging pipeline tasks</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_fluxboot</span></code>([vis, caltable, fitorder, ...])</p></td>
+<td><p>hifv_fluxboot ---- Fluxboot</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_gaincurves</span></code>([vis, caltable])</p></td>
+<td><p>hifv_gaincurves ---- Runs gencal in gc mode</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_hanning</span></code>([vis, maser_detection])</p></td>
+<td><p>hifv_hanning ---- Hanning smoothing on a dataset</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_importdata</span></code>([vis, session, asis, ...])</p></td>
+<td><p>hifv_importdata ---- Imports data into the VLA pipeline</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_mstransform</span></code>([vis, outputvis, ...])</p></td>
+<td><p>hifv_mstransform ---- Create new MeasurementSets for science target imaging</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_opcal</span></code>([vis, caltable])</p></td>
+<td><p>hifv_opcal ---- Runs gencal in opac mode</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_pbcor</span></code>([vis])</p></td>
+<td><p>hifv_pbcor ---- Apply primary beam correction to VLA and VLASS images</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_plotsummary</span></code>([vis])</p></td>
+<td><p>hifv_plotsummary ---- Create pipeline summary plots</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_priorcals</span></code>([vis, show_tec_maps, ...])</p></td>
+<td><p>hifv_priorcals ---- Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_restoredata</span></code>([vis, session, ...])</p></td>
+<td><p>hifv_restoredata ---- Restore flagged and calibration interferometry data from a pipeline run</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_restorepims</span></code>([vis, reimaging_resources])</p></td>
+<td><p>hifv_restorepims ---- Restore VLASS SE per-image measurement set data, resetting flagging, weights, and applying self-calibration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_rqcal</span></code>([vis, caltable])</p></td>
+<td><p>hifv_rqcal ---- Runs gencal in rq mode</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_selfcal</span></code>([vis, refantignore, combine, ...])</p></td>
+<td><p>hifv_selfcal ---- Perform phase-only self-calibration, per scan row, on VLASS SE images</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_semiFinalBPdcals</span></code>([vis, weakbp, ...])</p></td>
+<td><p>hifv_semiFinalBPdcals ---- Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_solint</span></code>([vis, limit_short_solint, ...])</p></td>
+<td><p>hifv_solint ---- Determines different solution intervals</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_statwt</span></code>([vis, datacolumn, ...])</p></td>
+<td><p>hifv_statwt ---- Compute statistical weights and write them to measurement set</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_swpowcal</span></code>([vis, caltable, spw])</p></td>
+<td><p>hifv_swpowcal ---- Runs gencal in swpow mode</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_syspower</span></code>([vis, clip_sp_template, ...])</p></td>
+<td><p>hifv_syspower ---- Determine amount of gain compression affecting VLA data below Ku-band</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_targetflag</span></code>([vis, intents])</p></td>
+<td><p>hifv_targetflag ---- Targetflag</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_tecmaps</span></code>([vis])</p></td>
+<td><p>hifv_tecmaps ---- Base tecmaps task</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_testBPdcals</span></code>([vis, weakbp, ...])</p></td>
+<td><p>hifv_testBPdcals ---- Runs initial delay and bandpass calibration to setup for RFI flagging</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_vlasetjy</span></code>([vis, field, intent, spw, ...])</p></td>
+<td><p>hifv_vlasetjy ---- Sets flux density scale and fills calibrator model to measurement set</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_vlassmasking</span></code>([vis, vlass_ql_database, ...])</p></td>
+<td><p>hifv_vlassmasking ---- Create clean masks for VLASS Single Epoch (SE) images</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_applycal</span></code>([vis, field, intent, spw, ...])</p></td>
+<td><p>hsd_applycal ---- Apply the calibration(s) to the data</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_atmcor</span></code>([atmtype, dtem_dh, h0, infiles, ...])</p></td>
+<td><p>hsd_atmcor ---- Apply offline ATM correction to the data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_baseline</span></code>([fitfunc, fitorder, ...])</p></td>
+<td><p>hsd_baseline ---- Detect and validate spectral lines, subtract baseline by masking detected lines</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_blflag</span></code>([iteration, edge, flag_tsys, ...])</p></td>
+<td><p>hsd_blflag ---- Flag spectra based on predefined criteria of single dish pipeline</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_exportdata</span></code>([pprfile, targetimages, ...])</p></td>
+<td><p>hsd_exportdata ---- Prepare single dish data for export</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_flagdata</span></code>([vis, autocorr, shadow, scan, ...])</p></td>
+<td><p>hsd_flagdata ---- Do basic flagging of a list of MeasurementSets</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_imaging</span></code>([mode, restfreq, infiles, ...])</p></td>
+<td><p>hsd_imaging ---- Generate single dish images</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_importdata</span></code>([vis, session, ...])</p></td>
+<td><p>hsd_importdata ---- Imports data into the single dish pipeline</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_k2jycal</span></code>([dbservice, endpoint, reffile, ...])</p></td>
+<td><p>hsd_k2jycal ---- Derive Kelvin to Jy calibration tables</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_restoredata</span></code>([vis, session, ...])</p></td>
+<td><p>hsd_restoredata ---- Restore flagged and calibration single dish data from a pipeline run</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_skycal</span></code>([calmode, fraction, noff, width, ...])</p></td>
+<td><p>hsd_skycal ---- Calibrate data</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_tsysflag</span></code>([vis, caltable, flag_nmedian, ...])</p></td>
+<td><p>hsd_tsysflag ---- Flag deviant system temperature measurements</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsdn_exportdata</span></code>([pprfile, targetimages, ...])</p></td>
+<td><p>hsdn_exportdata ---- Prepare single dish data for export</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsdn_importdata</span></code>([vis, session, ...])</p></td>
+<td><p>hsdn_importdata ---- Imports Nobeyama data into the single dish pipeline</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsdn_restoredata</span></code>([vis, caltable, reffile, ...])</p></td>
+<td><p>hsdn_restoredata ---- Restore flagged and calibration single dish data from a pipeline run</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

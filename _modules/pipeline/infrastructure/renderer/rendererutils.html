@@ -1,0 +1,702 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.renderer.rendererutils &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.renderer.rendererutils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.renderer.rendererutils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">html</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.pipelineqa</span> <span class="kn">import</span> <span class="n">QAScore</span><span class="p">,</span> <span class="n">WebLogLocation</span><span class="p">,</span> <span class="n">scores_with_location</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">SCORE_THRESHOLD_ERROR</span> <span class="o">=</span> <span class="mf">0.33</span>
+<span class="n">SCORE_THRESHOLD_WARNING</span> <span class="o">=</span> <span class="mf">0.66</span>
+<span class="n">SCORE_THRESHOLD_SUBOPTIMAL</span> <span class="o">=</span> <span class="mf">0.9</span>
+
+
+<div class="viewcode-block" id="printTsysFlags">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.printTsysFlags">[docs]</a>
+<span class="k">def</span> <span class="nf">printTsysFlags</span><span class="p">(</span><span class="n">tsystable</span><span class="p">,</span> <span class="n">htmlreport</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method that implements a version of printTsysFlags by Todd Hunter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">tsystable</span><span class="p">)</span> <span class="k">as</span> <span class="n">mytb</span><span class="p">:</span>
+        <span class="n">spws</span> <span class="o">=</span> <span class="n">mytb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;SPECTRAL_WINDOW_ID&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">tsystable</span><span class="o">+</span><span class="s2">&quot;/ANTENNA&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mytb</span><span class="p">:</span>
+        <span class="n">ant_names</span> <span class="o">=</span> <span class="n">mytb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;NAME&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">htmlreport</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;html&gt;&#39;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">tsystable</span><span class="p">)</span> <span class="k">as</span> <span class="n">mytb</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">iant</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ant_names</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">spws</span><span class="p">):</span>
+
+                    <span class="c1"># select rows from table for specified antenna and spw</span>
+                    <span class="n">zseltb</span> <span class="o">=</span> <span class="n">mytb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;SPECTRAL_WINDOW_ID==</span><span class="si">{0}</span><span class="s2"> &amp;&amp; ANTENNA1==</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">iant</span><span class="p">))</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">flags</span> <span class="o">=</span> <span class="n">zseltb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;FLAG&quot;</span><span class="p">)</span>
+                        <span class="n">times</span> <span class="o">=</span> <span class="n">zseltb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;TIME&quot;</span><span class="p">)</span>
+                        <span class="n">fields</span> <span class="o">=</span> <span class="n">zseltb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;FIELD_ID&quot;</span><span class="p">)</span>
+                    <span class="k">finally</span><span class="p">:</span>
+                        <span class="n">zseltb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+                    <span class="n">npol</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span>
+                    <span class="n">nchan</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">flags</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">uniqueTimes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npol</span><span class="p">):</span>
+                        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)):</span>
+                            <span class="n">zflag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">flags</span><span class="p">[</span><span class="n">pol</span><span class="p">,</span> <span class="p">:,</span> <span class="n">t</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">zflag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">zflag</span><span class="p">)</span> <span class="o">==</span> <span class="n">nchan</span><span class="p">:</span>
+                                    <span class="n">chans</span> <span class="o">=</span> <span class="s1">&#39;all channels&#39;</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="n">chans</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> channels: &#39;</span> <span class="o">%</span> <span class="p">(</span>
+                                      <span class="nb">len</span><span class="p">(</span><span class="n">zflag</span><span class="p">))</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zflag</span><span class="p">)</span>
+
+                                <span class="n">time_index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">uniqueTimes</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+                                <span class="n">myline</span> <span class="o">=</span> <span class="n">ant_names</span><span class="p">[</span><span class="n">iant</span><span class="p">]</span> <span class="o">+</span> \
+                                  <span class="s2">&quot; (#</span><span class="si">%02d</span><span class="s2">), field </span><span class="si">%d</span><span class="s2">, time </span><span class="si">%d</span><span class="s2">, pol </span><span class="si">%d</span><span class="s2">, spw </span><span class="si">%d</span><span class="s2">, &quot;</span><span class="o">%</span><span class="p">(</span>
+                                  <span class="n">iant</span><span class="p">,</span> <span class="n">fields</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">time_index</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">spw</span><span class="p">)</span> <span class="o">+</span> \
+                                  <span class="n">chans</span> <span class="o">+</span> <span class="s2">&quot;&lt;br&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+                                <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">myline</span><span class="p">)</span>
+
+                <span class="c1"># format break between antennas</span>
+                <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;br&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="renderflagcmds">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.renderflagcmds">[docs]</a>
+<span class="k">def</span> <span class="nf">renderflagcmds</span><span class="p">(</span><span class="n">flagcmds</span><span class="p">,</span> <span class="n">htmlflagcmds</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to render a list of flagcmds into html format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">flagcmd</span> <span class="ow">in</span> <span class="n">flagcmds</span><span class="p">:</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flagcmd</span><span class="o">.</span><span class="n">flagcmd</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">htmlflagcmds</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;html&gt;&#39;</span><span class="p">)</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;head/&gt;&#39;</span><span class="p">)</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;body&gt;&#39;</span><span class="p">)</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;This is the list of flagcmds created by this stage.</span>
+<span class="s1">          &lt;br&gt;&#39;&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&lt;br&gt;&#39;</span> <span class="o">%</span> <span class="n">line</span><span class="p">)</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;/body&gt;&#39;</span><span class="p">)</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;/html&gt;&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_bar_class">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_bar_class">[docs]</a>
+<span class="k">def</span> <span class="nf">get_bar_class</span><span class="p">(</span><span class="n">pqascore</span><span class="p">):</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">pqascore</span><span class="o">.</span><span class="n">score</span>
+    <span class="k">if</span> <span class="n">score</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">elif</span> <span class="n">score</span> <span class="o">&lt;=</span> <span class="n">SCORE_THRESHOLD_ERROR</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39; progress-bar-danger&#39;</span>
+    <span class="k">elif</span> <span class="n">score</span> <span class="o">&lt;=</span> <span class="n">SCORE_THRESHOLD_WARNING</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39; progress-bar-warning&#39;</span>
+    <span class="k">elif</span> <span class="n">score</span> <span class="o">&lt;=</span> <span class="n">SCORE_THRESHOLD_SUBOPTIMAL</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39; progress-bar-info&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39; progress-bar-success&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="get_badge_class">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_badge_class">[docs]</a>
+<span class="k">def</span> <span class="nf">get_badge_class</span><span class="p">(</span><span class="n">pqascore</span><span class="p">):</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">pqascore</span><span class="o">.</span><span class="n">score</span>
+    <span class="k">if</span> <span class="n">score</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">elif</span> <span class="n">score</span> <span class="o">&lt;=</span> <span class="n">SCORE_THRESHOLD_ERROR</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39; alert-danger&#39;</span>
+    <span class="k">elif</span> <span class="n">score</span> <span class="o">&lt;=</span> <span class="n">SCORE_THRESHOLD_WARNING</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39; alert-warning&#39;</span>
+    <span class="k">elif</span> <span class="n">score</span> <span class="o">&lt;=</span> <span class="n">SCORE_THRESHOLD_SUBOPTIMAL</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39; alert-info&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39; alert-success&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="get_bar_width">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_bar_width">[docs]</a>
+<span class="k">def</span> <span class="nf">get_bar_width</span><span class="p">(</span><span class="n">pqascore</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">pqascore</span><span class="o">.</span><span class="n">score</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">5.0</span> <span class="o">+</span> <span class="mf">95.0</span> <span class="o">*</span> <span class="n">pqascore</span><span class="o">.</span><span class="n">score</span></div>
+
+
+
+<div class="viewcode-block" id="format_score">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.format_score">[docs]</a>
+<span class="k">def</span> <span class="nf">format_score</span><span class="p">(</span><span class="n">pqascore</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">pqascore</span><span class="o">.</span><span class="n">score</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;N/A&#39;</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%0.2f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">pqascore</span><span class="o">.</span><span class="n">score</span></div>
+
+
+
+<div class="viewcode-block" id="get_sidebar_style_for_task">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_sidebar_style_for_task">[docs]</a>
+<span class="k">def</span> <span class="nf">get_sidebar_style_for_task</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">qa_score</span><span class="o">.</span><span class="n">score</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">qa_score</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;text-muted&#39;</span>
+    <span class="k">return</span> <span class="s1">&#39;text-dark&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="get_symbol_badge">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_symbol_badge">[docs]</a>
+<span class="k">def</span> <span class="nf">get_symbol_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">get_failures_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+        <span class="n">symbol</span> <span class="o">=</span> <span class="s1">&#39;&lt;span class=&quot;glyphicon glyphicon-minus-sign alert-danger transparent-bg&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&#39;</span>
+    <span class="k">elif</span> <span class="n">get_errors_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+        <span class="n">symbol</span> <span class="o">=</span> <span class="s1">&#39;&lt;span class=&quot;glyphicon glyphicon-remove-sign alert-danger transparent-bg&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&#39;</span>
+    <span class="k">elif</span> <span class="n">get_warnings_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+        <span class="n">symbol</span> <span class="o">=</span> <span class="s1">&#39;&lt;span class=&quot;glyphicon glyphicon-exclamation-sign alert-warning transparent-bg&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&#39;</span>
+    <span class="k">elif</span> <span class="n">get_attentions_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+        <span class="n">symbol</span> <span class="o">=</span> <span class="s1">&#39;&lt;span class=&quot;glyphicon glyphicon-exclamation-sign alert-attention transparent-bg&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&#39;</span>
+    <span class="k">elif</span> <span class="n">get_suboptimal_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+        <span class="n">symbol</span> <span class="o">=</span> <span class="s1">&#39;&lt;span class=&quot;glyphicon glyphicon-question-sign alert-info transparent-bg&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;span class=&quot;glyphicon glyphicon-none&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&#39;</span>
+    <span class="k">return</span> <span class="n">symbol</span></div>
+
+
+
+<div class="viewcode-block" id="get_failures_badge">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_failures_badge">[docs]</a>
+<span class="k">def</span> <span class="nf">get_failures_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+    <span class="n">failure_tracebacks</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_tracebacks</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">failure_tracebacks</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;span class=&quot;badge alert-important pull-right&quot;&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&#39;</span> <span class="o">%</span> <span class="n">n</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="get_attentions_badge">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_attentions_badge">[docs]</a>
+<span class="k">def</span> <span class="nf">get_attentions_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+    <span class="n">attention_logrecords</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_logrecords</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">ATTENTION</span><span class="p">)</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attention_logrecords</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;span class=&quot;badge alert-attention pull-right&quot;&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&#39;</span> <span class="o">%</span> <span class="n">l</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="get_warnings_badge">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_warnings_badge">[docs]</a>
+<span class="k">def</span> <span class="nf">get_warnings_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+    <span class="n">warning_logrecords</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_logrecords</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+    <span class="n">warning_qascores</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_qascores</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">SCORE_THRESHOLD_ERROR</span><span class="p">,</span> <span class="n">SCORE_THRESHOLD_WARNING</span><span class="p">)</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">warning_logrecords</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">warning_qascores</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;span class=&quot;badge alert-warning pull-right&quot;&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&#39;</span> <span class="o">%</span> <span class="n">l</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="get_errors_badge">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_errors_badge">[docs]</a>
+<span class="k">def</span> <span class="nf">get_errors_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+    <span class="n">error_logrecords</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_logrecords</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+    <span class="n">error_qascores</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_qascores</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">SCORE_THRESHOLD_ERROR</span><span class="p">)</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">error_logrecords</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">error_qascores</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;span class=&quot;badge alert-important pull-right&quot;&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&#39;</span> <span class="o">%</span> <span class="n">l</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="get_suboptimal_badge">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_suboptimal_badge">[docs]</a>
+<span class="k">def</span> <span class="nf">get_suboptimal_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+    <span class="n">suboptimal_qascores</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_qascores</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">SCORE_THRESHOLD_WARNING</span><span class="p">,</span> <span class="n">SCORE_THRESHOLD_SUBOPTIMAL</span><span class="p">)</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">suboptimal_qascores</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;span class=&quot;badge alert-info pull-right&quot;&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&#39;</span> <span class="o">%</span> <span class="n">l</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="get_command_markup">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_command_markup">[docs]</a>
+<span class="k">def</span> <span class="nf">get_command_markup</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">command</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="c1"># PIPE-1839: avoid removing &#39;/&#39; symbols if not part of a non-empty directory path</span>
+    <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">report_dir</span><span class="p">:</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="n">ctx</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">output_dir</span><span class="p">:</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="n">ctx</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;#39;&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="format_shortmsg">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.format_shortmsg">[docs]</a>
+<span class="k">def</span> <span class="nf">format_shortmsg</span><span class="p">(</span><span class="n">pqascore</span><span class="p">):</span>
+    <span class="c1"># First check against None. Comparisons of None and float are no longer</span>
+    <span class="c1"># allowed in Python 3.</span>
+    <span class="k">if</span> <span class="n">pqascore</span><span class="o">.</span><span class="n">score</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pqascore</span><span class="o">.</span><span class="n">shortmsg</span>
+    <span class="k">if</span> <span class="n">pqascore</span><span class="o">.</span><span class="n">score</span> <span class="o">&gt;</span> <span class="n">SCORE_THRESHOLD_SUBOPTIMAL</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pqascore</span><span class="o">.</span><span class="n">shortmsg</span></div>
+
+
+
+<div class="viewcode-block" id="sort_row_by">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.sort_row_by">[docs]</a>
+<span class="k">def</span> <span class="nf">sort_row_by</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
+    <span class="c1"># build primary, secondary, tertiary, etc. axis sorting functions</span>
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="n">plot</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="c1"># create a parameter getter for each axis</span>
+    <span class="n">accessors</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="p">(</span><span class="n">axis</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">axes</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+
+    <span class="c1"># sort plots in row, using a generated tuple (p1, p2, p3, ...) for</span>
+    <span class="c1"># secondary sort</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">plot</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">fn</span><span class="p">(</span><span class="n">plot</span><span class="p">)</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">accessors</span><span class="p">]))</span></div>
+
+
+
+<div class="viewcode-block" id="group_plots">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.group_plots">[docs]</a>
+<span class="k">def</span> <span class="nf">group_plots</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="c1"># build primary, secondary, tertiary, etc. axis sorting functions</span>
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="n">plot</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="n">keyfuncs</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">axes</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">_build_rows</span><span class="p">([],</span> <span class="n">data</span><span class="p">,</span> <span class="n">keyfuncs</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_build_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">keyfuncs</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="c1"># if this is a leaf, i.e., we are in the lowest level grouping and there&#39;s</span>
+    <span class="c1"># nothing further to group by, add a new row</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">keyfuncs</span><span class="p">:</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="p">))</span>
+        <span class="k">return</span>
+
+    <span class="c1"># otherwise, this is not the final sorting axis and so proceed to group</span>
+    <span class="c1"># the results starting with the first (or next) axis...</span>
+    <span class="n">keyfunc</span> <span class="o">=</span> <span class="n">keyfuncs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">keyfunc</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">group_value</span><span class="p">,</span> <span class="n">items_with_value_generator</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">keyfunc</span><span class="p">):</span>
+        <span class="c1"># convert to list so we don&#39;t exhaust the generator</span>
+        <span class="n">items_with_value</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">items_with_value_generator</span><span class="p">)</span>
+        <span class="c1"># ... , creating sub-groups for each group as we go</span>
+        <span class="n">_build_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">items_with_value</span><span class="p">,</span> <span class="n">keyfuncs</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">axis</span><span class="o">=</span><span class="n">group_value</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rows</span>
+
+
+<div class="viewcode-block" id="sanitize_data_selection_string">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.sanitize_data_selection_string">[docs]</a>
+<span class="k">def</span> <span class="nf">sanitize_data_selection_string</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">split_text</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">sanitized_text</span> <span class="o">=</span> <span class="s2">&quot;[</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;&amp;quot;</span><span class="si">{}</span><span class="s2">&amp;quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">split_text</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">sanitized_text</span></div>
+
+
+
+<div class="viewcode-block" id="num_lines">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.num_lines">[docs]</a>
+<span class="k">def</span> <span class="nf">num_lines</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Report number of non-empty non-comment lines in a file specified by the</span>
+<span class="sd">    path argument. If the file does not exist, report N/A.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;N/A&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="scores_in_range">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.scores_in_range">[docs]</a>
+<span class="k">def</span> <span class="nf">scores_in_range</span><span class="p">(</span><span class="n">pool</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">],</span> <span class="n">lo</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">hi</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Filter QA scores by range.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">score</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">pool</span>
+            <span class="k">if</span> <span class="n">score</span><span class="o">.</span><span class="n">score</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">lo</span> <span class="o">&lt;</span> <span class="n">score</span><span class="o">.</span><span class="n">score</span> <span class="o">&lt;=</span> <span class="n">hi</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_notification_trs">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_notification_trs">[docs]</a>
+<span class="k">def</span> <span class="nf">get_notification_trs</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">alerts_info</span><span class="p">,</span> <span class="n">alerts_success</span><span class="p">):</span>
+    <span class="c1"># suppress scores not intended for the banner, taking care not to suppress</span>
+    <span class="c1"># legacy scores with a default message destination (=UNSET) so that old</span>
+    <span class="c1"># tasks continue to render as before</span>
+    <span class="n">all_scores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span>
+    <span class="c1"># PIPE-1481 potentially asks for the removal of banner QA notification.</span>
+    <span class="c1"># Thus disabling these for now.</span>
+    <span class="c1">#banner_scores = scores_with_location(all_scores, [WebLogLocation.BANNER, WebLogLocation.UNSET])</span>
+    <span class="n">banner_scores</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">notifications</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">most_severe_render_class</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">banner_scores</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">qa_score</span> <span class="ow">in</span> <span class="n">scores_in_range</span><span class="p">(</span><span class="n">banner_scores</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">SCORE_THRESHOLD_ERROR</span><span class="p">):</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">format_notification</span><span class="p">(</span><span class="s1">&#39;danger alert-danger&#39;</span><span class="p">,</span> <span class="s1">&#39;QA&#39;</span><span class="p">,</span> <span class="n">qa_score</span><span class="o">.</span><span class="n">longmsg</span><span class="p">,</span> <span class="s1">&#39;glyphicon glyphicon-remove-sign&#39;</span><span class="p">)</span>
+            <span class="n">notifications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">most_severe_render_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">most_severe_render_class</span> <span class="o">=</span> <span class="s1">&#39;danger alert-danger&#39;</span>
+        <span class="k">for</span> <span class="n">qa_score</span> <span class="ow">in</span> <span class="n">scores_in_range</span><span class="p">(</span><span class="n">banner_scores</span><span class="p">,</span> <span class="n">SCORE_THRESHOLD_ERROR</span><span class="p">,</span> <span class="n">SCORE_THRESHOLD_WARNING</span><span class="p">):</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">format_notification</span><span class="p">(</span><span class="s1">&#39;warning alert-warning&#39;</span><span class="p">,</span> <span class="s1">&#39;QA&#39;</span><span class="p">,</span> <span class="n">qa_score</span><span class="o">.</span><span class="n">longmsg</span><span class="p">,</span> <span class="s1">&#39;glyphicon glyphicon-exclamation-sign&#39;</span><span class="p">)</span>
+            <span class="n">notifications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">most_severe_render_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">most_severe_render_class</span> <span class="o">=</span> <span class="s1">&#39;warning alert-warning&#39;</span>
+
+    <span class="k">for</span> <span class="n">logrecord</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_logrecords</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">format_notification</span><span class="p">(</span><span class="s1">&#39;danger alert-danger&#39;</span><span class="p">,</span> <span class="s1">&#39;Error!&#39;</span><span class="p">,</span> <span class="n">logrecord</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">notifications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">most_severe_render_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">most_severe_render_class</span> <span class="o">=</span> <span class="s1">&#39;danger alert-danger&#39;</span>
+    <span class="k">for</span> <span class="n">logrecord</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_logrecords</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">format_notification</span><span class="p">(</span><span class="s1">&#39;warning alert-warning&#39;</span><span class="p">,</span> <span class="s1">&#39;Warning!&#39;</span><span class="p">,</span> <span class="n">logrecord</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">notifications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">most_severe_render_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">most_severe_render_class</span> <span class="o">=</span> <span class="s1">&#39;warning alert-warning&#39;</span>
+    <span class="k">for</span> <span class="n">logrecord</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_logrecords</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">ATTENTION</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">format_notification</span><span class="p">(</span><span class="s1">&#39;attention alert-attention&#39;</span><span class="p">,</span> <span class="s1">&#39;Attention!&#39;</span><span class="p">,</span> <span class="n">logrecord</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">notifications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">most_severe_render_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">most_severe_render_class</span> <span class="o">=</span> <span class="s1">&#39;attention alert-attention&#39;</span>
+
+    <span class="k">if</span> <span class="n">alerts_info</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">alerts_info</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">format_notification</span><span class="p">(</span><span class="s1">&#39;info alert-info&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+            <span class="n">notifications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">most_severe_render_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">most_severe_render_class</span> <span class="o">=</span> <span class="s1">&#39;info alert-info&#39;</span>
+    <span class="k">if</span> <span class="n">alerts_success</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">alerts_success</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">format_notification</span><span class="p">(</span><span class="s1">&#39;success alert-success&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+            <span class="n">notifications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">most_severe_render_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">most_severe_render_class</span> <span class="o">=</span> <span class="s1">&#39;success alert-success&#39;</span>
+
+    <span class="k">return</span> <span class="n">notifications</span><span class="p">,</span> <span class="n">most_severe_render_class</span></div>
+
+
+
+<div class="viewcode-block" id="format_notification">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.format_notification">[docs]</a>
+<span class="k">def</span> <span class="nf">format_notification</span><span class="p">(</span><span class="n">tr_class</span><span class="p">,</span> <span class="n">alert</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">icon_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">icon_class</span><span class="p">:</span>
+        <span class="n">icon</span> <span class="o">=</span> <span class="s1">&#39;&lt;span class=&quot;</span><span class="si">%s</span><span class="s1">&quot;&gt;&lt;/span&gt; &#39;</span> <span class="o">%</span> <span class="n">icon_class</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">icon</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">return</span> <span class="s1">&#39;&lt;tr class=&quot;</span><span class="si">%s</span><span class="s1">&quot;&gt;&lt;td&gt;</span><span class="si">%s</span><span class="s1">&lt;strong&gt;</span><span class="si">%s</span><span class="s1">&lt;/strong&gt; </span><span class="si">%s</span><span class="s1">&lt;/td&gt;&lt;/tr&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tr_class</span><span class="p">,</span> <span class="n">icon</span><span class="p">,</span> <span class="n">alert</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_relative_url">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_relative_url">[docs]</a>
+<span class="k">def</span> <span class="nf">get_relative_url</span><span class="p">(</span><span class="n">report_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">stage_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">subpage_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                     <span class="n">allow_nonexistent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return url to weblog subpage relative to the weblog root path, based on</span>
+<span class="sd">    provided report dir, stage dir, and subpage dir. Check for and remove</span>
+<span class="sd">    common path elements and handle either all relative paths, or all absolute</span>
+<span class="sd">    paths.</span>
+
+<span class="sd">    If allow_nonexistent (default: True) is set to False, return None when the</span>
+<span class="sd">    constructed path does not exist.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check whether weblog stage path contains common path</span>
+    <span class="c1"># with report dir, and if so, determine actual relative path.</span>
+    <span class="n">stage_cpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">commonpath</span><span class="p">([</span><span class="n">report_dir</span><span class="p">,</span> <span class="n">stage_dir</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">stage_cpath</span><span class="p">:</span>
+        <span class="n">stage_relpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">stage_cpath</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stage_relpath</span> <span class="o">=</span> <span class="n">stage_dir</span>
+
+    <span class="c1"># Check whether subpage path contains common path with the</span>
+    <span class="c1"># report + weblog stage path, and if so, determine actual</span>
+    <span class="c1"># relative path.</span>
+    <span class="n">subpage_cpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">commonpath</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">report_dir</span><span class="p">,</span> <span class="n">stage_relpath</span><span class="p">),</span> <span class="n">subpage_dir</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">subpage_cpath</span><span class="p">:</span>
+        <span class="n">subpage_relpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">subpage_dir</span><span class="p">,</span> <span class="n">subpage_cpath</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">subpage_relpath</span> <span class="o">=</span> <span class="n">subpage_dir</span>
+
+    <span class="c1"># Combine paths.</span>
+    <span class="n">report_abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">report_dir</span><span class="p">)</span>
+    <span class="n">subpage_abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">report_abspath</span><span class="p">,</span> <span class="n">stage_relpath</span><span class="p">,</span> <span class="n">subpage_relpath</span><span class="p">)</span>
+
+    <span class="c1"># Return relative url if path exists.</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">subpage_abspath</span><span class="p">)</span> <span class="ow">or</span> <span class="n">allow_nonexistent</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">subpage_abspath</span><span class="p">,</span> <span class="n">report_abspath</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="percent_flagged">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.percent_flagged">[docs]</a>
+<span class="k">def</span> <span class="nf">percent_flagged</span><span class="p">(</span><span class="n">flagsummary</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method to output flagging percentages neatly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">flagged</span> <span class="o">=</span> <span class="n">flagsummary</span><span class="o">.</span><span class="n">flagged</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">flagsummary</span><span class="o">.</span><span class="n">total</span>
+
+    <span class="k">if</span> <span class="n">total</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;N/A&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%0.3f%%</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">100.0</span> <span class="o">*</span> <span class="n">flagged</span> <span class="o">/</span> <span class="n">total</span><span class="p">)</span></div>
+
+
+
+<span class="n">_types</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;before&#39;</span><span class="p">:</span> <span class="s1">&#39;Calibrated data before flagging&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;after&#39;</span><span class="p">:</span> <span class="s1">&#39;Calibrated data after flagging&#39;</span>
+<span class="p">}</span>
+
+<div class="viewcode-block" id="plot_type">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.plot_type">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_type</span><span class="p">(</span><span class="n">plot</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Output plot type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">_types</span><span class="p">[</span><span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]]</span></div>
+
+
+
+<div class="viewcode-block" id="summarise_fields">
+<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.summarise_fields">[docs]</a>
+<span class="k">def</span> <span class="nf">summarise_fields</span><span class="p">(</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Output field summary string. List all fields if up to 10,</span>
+<span class="sd">    else first 3 fields and last field.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fields: comma separated list of field names</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Summary string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">field_list</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">numeric_sort</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+
+    <span class="n">max_fields</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">num_fields</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_list</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">num_fields</span> <span class="o">&lt;=</span> <span class="n">max_fields</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">field_list</span><span class="p">])</span>
+
+    <span class="n">field_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">field_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">field_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">field_list</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s1">, ..., </span><span class="si">{</span><span class="n">field_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">return</span> <span class="n">field_str</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

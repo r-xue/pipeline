@@ -1,0 +1,21 @@
+pipeline.hsd package
+====================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pipeline.hsd.cli
+   pipeline.hsd.heuristics
+   pipeline.hsd.tasks
+   pipeline.hsd.templates
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hsd
+   :members:
+   :undoc-members:
+   :show-inheritance:

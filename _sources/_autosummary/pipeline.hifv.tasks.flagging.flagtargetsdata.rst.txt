@@ -1,0 +1,21 @@
+pipeline.hifv.tasks.flagging.flagtargetsdata
+============================================
+
+.. automodule:: pipeline.hifv.tasks.flagging.flagtargetsdata
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      sanitize_for_ms
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataType
+      Flagtargetsdata
+      FlagtargetsdataInputs
+      FlagtargetsdataResults
+   

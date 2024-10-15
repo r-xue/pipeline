@@ -1,0 +1,14 @@
+pipeline.hif.tasks.rawflagchans.resultobjects
+=============================================
+
+.. automodule:: pipeline.hif.tasks.rawflagchans.resultobjects
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      RawflagchansDataResults
+      RawflagchansResults
+      RawflagchansViewResults
+   

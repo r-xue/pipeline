@@ -1,0 +1,22 @@
+pipeline.hifv.tasks.syspower.syspower
+=====================================
+
+.. automodule:: pipeline.hifv.tasks.syspower.syspower
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      deepcopy
+      factorial
+      savitzky_golay
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Syspower
+      SyspowerInputs
+      SyspowerResults
+   

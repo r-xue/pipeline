@@ -1,0 +1,15 @@
+pipeline.hifa.tasks.wvrgcalflag.wvrgcalflagsetter
+=================================================
+
+.. automodule:: pipeline.hifa.tasks.wvrgcalflag.wvrgcalflagsetter
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FlagCmd
+      WvrgcalFlagSetter
+      WvrgcalFlagSetterInputs
+      WvrgcalFlagSetterResult
+   

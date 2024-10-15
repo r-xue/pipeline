@@ -1,0 +1,14 @@
+pipeline.hsd.tasks.atmcor.qa
+============================
+
+.. automodule:: pipeline.hsd.tasks.atmcor.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Context
+      SDATMCorrectionListQAHandler
+      SDATMCorrectionQAHandler
+   

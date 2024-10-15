@@ -1,0 +1,524 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.skycal.renderer &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.skycal.renderer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.skycal.renderer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Renderer module for skycal task.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pipeline.domain.field</span> <span class="kn">import</span> <span class="n">Field</span>
+    <span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+    <span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+    <span class="kn">from</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="kn">import</span> <span class="n">ResultsList</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.basetemplates</span> <span class="k">as</span> <span class="nn">basetemplates</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.datatable</span> <span class="kn">import</span> <span class="n">DataTableImpl</span> <span class="k">as</span> <span class="n">DataTable</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">skycal</span> <span class="k">as</span> <span class="n">skycal_task</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">display</span> <span class="k">as</span> <span class="n">skycal_display</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="T2_4MDetailsSingleDishSkyCalRenderer">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.renderer.T2_4MDetailsSingleDishSkyCalRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">T2_4MDetailsSingleDishSkyCalRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Weblog renderer class for skycal task.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;skycal.mako&#39;</span><span class="p">,</span>
+                 <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Single-Dish Sky Calibration&#39;</span><span class="p">,</span>
+                 <span class="n">always_rerender</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize T2_4MDetailsSingleDishSkyCalRenderer instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            uri: Name of Mako template file. Defaults to &#39;skycal.mako&#39;.</span>
+<span class="sd">            description: Description of the task. This is embedded into the task detail page.</span>
+<span class="sd">                         Defaults to &#39;Single-Dish Sky Calibration&#39;.</span>
+<span class="sd">            always_rerender: Always rerender the page if True. Defaults to False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsSingleDishSkyCalRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
+
+<div class="viewcode-block" id="T2_4MDetailsSingleDishSkyCalRenderer.update_mako_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.renderer.T2_4MDetailsSingleDishSkyCalRenderer.update_mako_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                            <span class="n">ctx</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+                            <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
+                            <span class="n">results</span><span class="p">:</span> <span class="s1">&#39;ResultsList&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update context for weblog rendering.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ctx: Context for weblog rendering.</span>
+<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            results: ResultsList instance. Should hold a list of SDSkyCalResults instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
+                                 <span class="s1">&#39;stage</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">results</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">)</span>
+
+        <span class="c1"># threshold for elevation difference between ON and OFF</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">skycal_task</span><span class="o">.</span><span class="n">SerialSDSkyCal</span><span class="o">.</span><span class="n">ElevationDifferenceThreshold</span>
+
+        <span class="n">applications</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">summary_amp_vs_freq</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">details_amp_vs_freq</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">summary_amp_vs_time</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">details_amp_vs_time</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">summary_interval_vs_time</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">details_interval_vs_time</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">summary_elev_diff</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">details_elev_diff</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">amp_vs_freq_subpages</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">amp_vs_time_subpages</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">interval_vs_time_subpages</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">elev_diff_subpages</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">reference_coords</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># get ms domain object</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+
+            <span class="c1"># calibration table summary</span>
+            <span class="n">ms_applications</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_skycal_applications</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
+            <span class="n">applications</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ms_applications</span><span class="p">)</span>
+
+            <span class="c1"># iterate over CalApplication instances</span>
+            <span class="n">final_original</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span>
+
+            <span class="n">summaries_freq</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">details_freq</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">summaries_time</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">details_time</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">summaries_elev</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">details_elev</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">summaries_interval</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">details_interval</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">final_original</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="p">[</span><span class="n">calapp</span><span class="p">]</span>
+                <span class="n">gainfield</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gainfield</span>
+
+                <span class="c1"># Amp vs. Freq: summary plots</span>
+                <span class="n">summary_plotter</span> <span class="o">=</span> <span class="n">skycal_display</span><span class="o">.</span><span class="n">SingleDishSkyCalAmpVsFreqSummaryChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">gainfield</span><span class="p">)</span>
+                <span class="n">summaries_freq</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">summary_plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
+
+                <span class="c1"># Amp vs. Freq: detail plots</span>
+                <span class="n">detail_plotter</span> <span class="o">=</span> <span class="n">skycal_display</span><span class="o">.</span><span class="n">SingleDishSkyCalAmpVsFreqDetailChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">gainfield</span><span class="p">)</span>
+                <span class="n">details_freq</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">detail_plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
+
+                <span class="c1"># Amp vs. Time: summary plots</span>
+                <span class="n">summary_plotter</span> <span class="o">=</span> <span class="n">skycal_display</span><span class="o">.</span><span class="n">SingleDishSkyCalAmpVsTimeSummaryChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">calapp</span><span class="p">)</span>
+                <span class="n">summaries_time</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">summary_plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
+
+                <span class="c1"># Amp vs. Time: detail plots</span>
+                <span class="n">detail_plotter</span> <span class="o">=</span> <span class="n">skycal_display</span><span class="o">.</span><span class="n">SingleDishSkyCalAmpVsTimeDetailChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">calapp</span><span class="p">)</span>
+                <span class="n">details_time</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">detail_plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
+
+                <span class="c1"># Interval vs. Time: summary plots</span>
+                <span class="n">summary_plotter</span> <span class="o">=</span> <span class="n">skycal_display</span><span class="o">.</span><span class="n">SingleDishSkyCalIntervalVsTimeDisplay</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">calapp</span><span class="p">,</span> <span class="n">figtype</span><span class="o">=</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span>
+                <span class="n">summaries_interval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">summary_plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
+
+                <span class="c1"># Interval vs. Time: detail plots</span>
+                <span class="n">detail_plotter</span> <span class="o">=</span> <span class="n">skycal_display</span><span class="o">.</span><span class="n">SingleDishSkyCalIntervalVsTimeDisplay</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">calapp</span><span class="p">,</span> <span class="n">figtype</span><span class="o">=</span><span class="s1">&#39;detail&#39;</span><span class="p">)</span>
+                <span class="n">details_interval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">detail_plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
+
+                <span class="c1"># reference coordinates</span>
+                <span class="c1">#LOG.debug(&#39;calapp=%s&#39;%(calapp))</span>
+                <span class="n">calmode</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_origin_input_arg</span><span class="p">(</span><span class="n">calapp</span><span class="p">,</span> <span class="s1">&#39;calmode&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;calmode=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">calmode</span><span class="p">))</span>
+                <span class="n">field_domain</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">gainfield</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">calmode</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span><span class="p">:</span>
+                    <span class="n">reference_coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_reference_coord</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">field_domain</span><span class="p">)</span>
+                    <span class="n">reference_coords</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">field_domain</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reference_coord</span>
+
+            <span class="n">result</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="n">final_original</span>
+
+            <span class="c1"># Compute elevation difference</span>
+            <span class="n">eldiff</span> <span class="o">=</span> <span class="n">skycal_task</span><span class="o">.</span><span class="n">compute_elevation_difference</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+            <span class="c1"># Elevation difference</span>
+            <span class="n">elplots</span> <span class="o">=</span> <span class="n">skycal_display</span><span class="o">.</span><span class="n">plot_elevation_difference</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">eldiff</span><span class="p">,</span>
+                                                               <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+            <span class="n">summaries_elev</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">elplots</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;ant&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
+            <span class="n">details_elev</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">elplots</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;ant&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
+
+            <span class="n">summary_amp_vs_freq</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">summaries_freq</span><span class="p">)</span>
+            <span class="n">details_amp_vs_freq</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">details_freq</span><span class="p">)</span>
+            <span class="n">summary_amp_vs_time</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">summaries_time</span><span class="p">)</span>
+            <span class="n">details_amp_vs_time</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">details_time</span><span class="p">)</span>
+            <span class="n">summary_elev_diff</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">summaries_elev</span><span class="p">)</span>
+            <span class="n">details_elev_diff</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">details_elev</span><span class="p">)</span>
+            <span class="n">summary_interval_vs_time</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">summaries_interval</span><span class="p">)</span>
+            <span class="n">details_interval_vs_time</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">details_interval</span><span class="p">)</span>
+
+        <span class="c1"># sort plots</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">summary_amp_vs_freq</span><span class="p">:</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+            <span class="n">name_id_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">f</span><span class="o">.</span><span class="n">clean_name</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">sort_by_field_spw</span><span class="p">(</span><span class="n">plot</span><span class="p">):</span>
+                <span class="n">field_name</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span>
+                <span class="n">spw_id</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span>
+                <span class="n">field_id</span> <span class="o">=</span> <span class="n">name_id_map</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span>
+
+            <span class="k">for</span> <span class="n">summary_dict</span> <span class="ow">in</span> <span class="p">(</span><span class="n">summary_amp_vs_freq</span><span class="p">,</span> <span class="n">summary_amp_vs_time</span><span class="p">,):</span>
+                <span class="k">if</span> <span class="n">vis</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">summary_dict</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">_plot_list</span> <span class="o">=</span> <span class="n">summary_dict</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_plot_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;sorting plot list for </span><span class="si">%s</span><span class="s1"> xaxis </span><span class="si">%s</span><span class="s1"> yaxis </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                         <span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">_plot_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x_axis</span><span class="p">,</span> <span class="n">_plot_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y_axis</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;before: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">[(</span><span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">_plot_list</span><span class="p">])</span>
+                <span class="n">_plot_list</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">sort_by_field_spw</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39; after: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">[(</span><span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">_plot_list</span><span class="p">])</span>
+
+        <span class="c1"># Sky Level vs Frequency</span>
+        <span class="n">flattened</span> <span class="o">=</span> <span class="p">[</span><span class="n">plot</span> <span class="k">for</span> <span class="n">inner</span> <span class="ow">in</span> <span class="n">details_amp_vs_freq</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">inner</span><span class="p">]</span>
+        <span class="n">renderer</span> <span class="o">=</span> <span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;hsd_generic_x_vs_y_ant_field_spw_plots.mako&#39;</span><span class="p">,</span>
+                                                  <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
+                                                  <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
+                                                  <span class="n">plots</span><span class="o">=</span><span class="n">flattened</span><span class="p">,</span>
+                                                  <span class="n">title</span> <span class="o">=</span><span class="s1">&#39;Sky Level vs Frequency&#39;</span><span class="p">,</span>
+                                                  <span class="n">outfile</span><span class="o">=</span><span class="s1">&#39;sky_level_vs_frequency.html&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+            <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">details_amp_vs_freq</span><span class="p">:</span>
+            <span class="n">amp_vs_freq_subpages</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="c1"># Sky Level vs Time</span>
+        <span class="n">flattened</span> <span class="o">=</span> <span class="p">[</span><span class="n">plot</span> <span class="k">for</span> <span class="n">inner</span> <span class="ow">in</span> <span class="n">details_amp_vs_time</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">inner</span><span class="p">]</span>
+        <span class="n">renderer</span> <span class="o">=</span> <span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;hsd_generic_x_vs_y_ant_field_spw_plots.mako&#39;</span><span class="p">,</span>
+                                                  <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
+                                                  <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
+                                                  <span class="n">plots</span><span class="o">=</span><span class="n">flattened</span><span class="p">,</span>
+                                                  <span class="n">title</span> <span class="o">=</span><span class="s1">&#39;Sky Level vs Time&#39;</span><span class="p">,</span>
+                                                  <span class="n">outfile</span><span class="o">=</span><span class="s1">&#39;sky_level_vs_time.html&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+            <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">details_amp_vs_time</span><span class="p">:</span>
+            <span class="n">amp_vs_time_subpages</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="c1"># Interval Ratio (Off-source/On-source) vs Time</span>
+        <span class="n">flattened</span> <span class="o">=</span> <span class="p">[</span><span class="n">plot</span> <span class="k">for</span> <span class="n">inner</span> <span class="ow">in</span> <span class="n">details_interval_vs_time</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">inner</span><span class="p">]</span>
+        <span class="n">renderer</span> <span class="o">=</span> <span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;hsd_generic_x_vs_y_ant_field_spw_plots.mako&#39;</span><span class="p">,</span>
+                                                  <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
+                                                  <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
+                                                  <span class="n">plots</span><span class="o">=</span><span class="n">flattened</span><span class="p">,</span>
+                                                  <span class="n">title</span> <span class="o">=</span><span class="s1">&#39;Interval Ratio (Off-source/On-source) vs Time&#39;</span><span class="p">,</span>
+                                                  <span class="n">outfile</span><span class="o">=</span><span class="s1">&#39;interval_ratio_vs_time.html&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+            <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">details_interval_vs_time</span><span class="p">:</span>
+            <span class="n">interval_vs_time_subpages</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="c1"># Elevation difference</span>
+        <span class="n">flattened</span> <span class="o">=</span> <span class="p">[</span><span class="n">plot</span> <span class="k">for</span> <span class="n">inner</span> <span class="ow">in</span> <span class="n">details_elev_diff</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="n">inner</span><span class="p">]</span>
+        <span class="n">renderer</span> <span class="o">=</span> <span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;generic_x_vs_y_ant_field_plots.mako&#39;</span><span class="p">,</span>
+                                                  <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
+                                                  <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
+                                                  <span class="n">plots</span><span class="o">=</span><span class="n">flattened</span><span class="p">,</span>
+                                                  <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Elevation Difference vs. Time&#39;</span><span class="p">,</span>
+                                                  <span class="n">outfile</span><span class="o">=</span><span class="s1">&#39;elevation_difference_vs_time.html&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+            <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">details_elev_diff</span><span class="p">:</span>
+            <span class="n">elev_diff_subpages</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;reference_coords=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">reference_coords</span><span class="p">)</span>
+
+        <span class="c1"># update Mako context</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;applications&#39;</span><span class="p">:</span> <span class="n">applications</span><span class="p">,</span>
+                    <span class="s1">&#39;summary_amp_vs_freq&#39;</span><span class="p">:</span> <span class="n">summary_amp_vs_freq</span><span class="p">,</span>
+                    <span class="s1">&#39;amp_vs_freq_subpages&#39;</span><span class="p">:</span> <span class="n">amp_vs_freq_subpages</span><span class="p">,</span>
+                    <span class="s1">&#39;summary_amp_vs_time&#39;</span><span class="p">:</span> <span class="n">summary_amp_vs_time</span><span class="p">,</span>
+                    <span class="s1">&#39;amp_vs_time_subpages&#39;</span><span class="p">:</span> <span class="n">amp_vs_time_subpages</span><span class="p">,</span>
+                    <span class="s1">&#39;summary_interval_vs_time&#39;</span><span class="p">:</span> <span class="n">summary_interval_vs_time</span><span class="p">,</span>
+                    <span class="s1">&#39;interval_vs_time_subpages&#39;</span><span class="p">:</span> <span class="n">interval_vs_time_subpages</span><span class="p">,</span>
+                    <span class="s1">&#39;summary_elev_diff&#39;</span><span class="p">:</span> <span class="n">summary_elev_diff</span><span class="p">,</span>
+                    <span class="s1">&#39;elev_diff_subpages&#39;</span><span class="p">:</span> <span class="n">elev_diff_subpages</span><span class="p">,</span>
+                    <span class="s1">&#39;reference_coords&#39;</span><span class="p">:</span> <span class="n">reference_coords</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="T2_4MDetailsSingleDishSkyCalRenderer.get_skycal_applications">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.renderer.T2_4MDetailsSingleDishSkyCalRenderer.get_skycal_applications">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_skycal_applications</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">skycal_task</span><span class="o">.</span><span class="n">SDSkyCalResults</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="s1">&#39;MeasurementSet&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get application information from SDSkyCalResults instance and set them into a list.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            result: SDSkyCalResults instance.</span>
+<span class="sd">            ms: MeasurementSet domain object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list &quot;application&quot; containing dictionary; they are used to a table in skycal.mako file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">applications</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">calmode_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ps&#39;</span><span class="p">:</span> <span class="s1">&#39;Position-switch&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;otfraster&#39;</span><span class="p">:</span> <span class="s1">&#39;OTF raster edge&#39;</span><span class="p">}</span>
+
+        <span class="n">calapps</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">outcome</span>
+        <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">calapps</span><span class="p">:</span>
+            <span class="n">caltype</span> <span class="o">=</span> <span class="n">calmode_map</span><span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">get_origin_input_arg</span><span class="p">(</span><span class="n">calapp</span><span class="p">,</span> <span class="s1">&#39;calmode&#39;</span><span class="p">)]</span>
+            <span class="n">gaintable</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span>
+            <span class="n">spw</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="p">)</span>
+            <span class="n">intent</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="p">)</span>
+            <span class="n">antenna</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">antenna</span>
+            <span class="k">if</span> <span class="n">antenna</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">antenna</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">])</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">field</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+
+            <span class="n">applications</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;ms&#39;</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                                 <span class="s1">&#39;gaintable&#39;</span><span class="p">:</span> <span class="n">gaintable</span><span class="p">,</span>
+                                 <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                                 <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">,</span>
+                                 <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span>
+                                 <span class="s1">&#39;antenna&#39;</span><span class="p">:</span> <span class="n">antenna</span><span class="p">,</span>
+                                 <span class="s1">&#39;caltype&#39;</span><span class="p">:</span> <span class="n">caltype</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="n">applications</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_reference_coord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="s1">&#39;MeasurementSet&#39;</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="s1">&#39;Field&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get celestial coordinates and the reference.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            ms: MeasurementSet domain object.</span>
+<span class="sd">            field: field domain object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Reference, RA and Declination.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: No OFF source data exist for given field in the ms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;_get_reference_coord(</span><span class="si">{ms}</span><span class="s1">, </span><span class="si">{field}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="n">spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">data_desc_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">]</span>
+        <span class="n">reference_states</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">states</span> <span class="k">if</span> <span class="s1">&#39;REFERENCE&#39;</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
+        <span class="n">state_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">reference_states</span><span class="p">]</span>
+        <span class="n">field_id</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ANTENNA1==ANTENNA2 &amp;&amp; FIELD_ID==</span><span class="si">{</span><span class="n">field_id</span><span class="si">}</span><span class="s1"> &amp;&amp; DATA_DESC_ID IN </span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">data_desc_ids</span><span class="p">)</span><span class="si">}</span><span class="s1"> &amp;&amp; STATE_ID IN </span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">state_ids</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No OFF source data for field &quot;</span><span class="si">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; (id </span><span class="si">{</span><span class="n">field_id</span><span class="si">}</span><span class="s1">) in </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">rownumbers</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">rownumbers</span><span class="p">()</span>
+            <span class="n">antenna_id</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;ANTENNA1&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">timestamp</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">timeref</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">,</span> <span class="s1">&#39;MEASINFO&#39;</span><span class="p">)[</span><span class="s1">&#39;Ref&#39;</span><span class="p">]</span>
+            <span class="n">timeunit</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">,</span> <span class="s1">&#39;QuantumUnits&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSMDReader</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">msmd</span><span class="p">:</span>
+            <span class="n">pointing_direction</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">pointingdirection</span><span class="p">(</span><span class="n">rownumbers</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">antenna_position</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">antennaposition</span><span class="p">(</span><span class="n">antenna_id</span><span class="p">)</span>
+        <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+        <span class="n">epoch</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="n">rf</span><span class="o">=</span><span class="n">timeref</span><span class="p">,</span> <span class="n">v0</span><span class="o">=</span><span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">timeunit</span><span class="p">))</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;pointing_direction=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">pointing_direction</span><span class="p">)</span>
+
+        <span class="n">direction</span> <span class="o">=</span> <span class="n">pointing_direction</span><span class="p">[</span><span class="s1">&#39;antenna1&#39;</span><span class="p">][</span><span class="s1">&#39;pointingdirection&#39;</span><span class="p">]</span>
+        <span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">antenna_position</span><span class="p">)</span>
+        <span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+        <span class="c1"># 2018/04/18 TN</span>
+        <span class="c1"># CAS-10874 single dish pipeline should use a direction reference</span>
+        <span class="c1"># taken from input MS</span>
+        <span class="n">origin_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
+        <span class="n">datatable_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_datatable_name</span><span class="p">,</span> <span class="n">origin_basename</span><span class="p">)</span>
+        <span class="n">datatable</span> <span class="o">=</span> <span class="n">DataTable</span><span class="p">()</span>
+        <span class="n">datatable</span><span class="o">.</span><span class="n">importdata</span><span class="p">(</span><span class="n">datatable_name</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">outref</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">direction_ref</span>
+
+        <span class="n">converted</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">rf</span><span class="o">=</span><span class="n">outref</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;converted direction=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">converted</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">outref</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;GALACTIC&#39;</span><span class="p">:</span>
+            <span class="n">xformat</span> <span class="o">=</span> <span class="s1">&#39;dms&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xformat</span> <span class="o">=</span> <span class="s1">&#39;hms&#39;</span>
+        <span class="n">coord</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{ref}</span><span class="s1"> </span><span class="si">{ra}</span><span class="s1"> </span><span class="si">{dec}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ref</span><span class="o">=</span><span class="n">outref</span><span class="p">,</span>
+                                          <span class="n">ra</span><span class="o">=</span><span class="n">qa</span><span class="o">.</span><span class="n">formxxx</span><span class="p">(</span><span class="n">converted</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="n">xformat</span><span class="p">),</span>
+                                          <span class="n">dec</span><span class="o">=</span><span class="n">qa</span><span class="o">.</span><span class="n">formxxx</span><span class="p">(</span><span class="n">converted</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;dms&#39;</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">coord</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

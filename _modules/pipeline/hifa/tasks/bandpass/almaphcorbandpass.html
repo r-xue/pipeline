@@ -1,0 +1,997 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.bandpass.almaphcorbandpass &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.bandpass.almaphcorbandpass</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.bandpass.almaphcorbandpass</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">gaincal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.bandpass</span> <span class="kn">import</span> <span class="n">bandpassmode</span><span class="p">,</span> <span class="n">bandpassworker</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.bandpass.common</span> <span class="kn">import</span> <span class="n">BandpassResults</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifa.tasks.bpsolint</span> <span class="kn">import</span> <span class="n">bpsolint</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">callibrary</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">exceptions</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils.math</span> <span class="kn">import</span> <span class="n">round_up</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;ALMAPhcorBandpassInputs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ALMAPhcorBandpass&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SessionALMAPhcorBandpass&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SessionALMAPhcorBandpassInputs&#39;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="ALMAPhcorBandpassInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.ALMAPhcorBandpassInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">ALMAPhcorBandpassInputs</span><span class="p">(</span><span class="n">bandpassmode</span><span class="o">.</span><span class="n">BandpassModeInputs</span><span class="p">):</span>
+    <span class="n">bpnsols</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">bpsnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">50.0</span><span class="p">)</span>
+    <span class="n">minbpsnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">20.0</span><span class="p">)</span>
+    <span class="n">evenbpints</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Boolean declaring how to populate the bandpass solution parameter</span>
+    <span class="c1"># &quot;fillgaps&quot; (PIPE-2116, also depends on hm_bandpass modes).</span>
+    <span class="n">hm_auto_fillgaps</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Bandpass heuristics, options are &#39;fixed&#39;, &#39;smoothed&#39;, and &#39;snr&#39;</span>
+    <span class="n">hm_bandpass</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;snr&#39;</span><span class="p">)</span>
+
+    <span class="nd">@hm_bandpass</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">hm_bandpass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">allowed</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;fixed&#39;</span><span class="p">,</span> <span class="s1">&#39;smoothed&#39;</span><span class="p">,</span> <span class="s1">&#39;snr&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;</span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Value not in allowed value set (</span><span class="si">{!s}</span><span class="s1">): </span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="c1"># Phaseup heuristics, options are &#39;&#39;, &#39;manual&#39; and &#39;snr&#39;</span>
+    <span class="n">hm_phaseup</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;snr&#39;</span><span class="p">)</span>
+
+    <span class="nd">@hm_phaseup</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span> <span class="nf">hm_phaseup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">allowed</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;manual&#39;</span><span class="p">,</span> <span class="s1">&#39;snr&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;</span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Value not in allowed value set (</span><span class="si">{!s}</span><span class="s1">): </span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="n">maxchannels</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">240</span><span class="p">)</span>
+    <span class="n">phaseupbw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">phaseupnsols</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">phaseupsnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">20.0</span><span class="p">)</span>
+    <span class="n">phaseupsolint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="n">solint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+    <span class="c1"># PIPE-628: new parameter to unregister existing bcals before appending to callibrary </span>
+    <span class="n">unregister_existing</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;channel&#39;</span><span class="p">,</span> <span class="n">hm_phaseup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupbw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">phaseupsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupnsols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_bandpass</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">maxchannels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">evenbpints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bpsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minbpsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bpnsols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unregister_existing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                 <span class="n">hm_auto_fillgaps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ALMAPhcorBandpassInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpnsols</span> <span class="o">=</span> <span class="n">bpnsols</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpsnr</span> <span class="o">=</span> <span class="n">bpsnr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minbpsnr</span> <span class="o">=</span> <span class="n">minbpsnr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evenbpints</span> <span class="o">=</span> <span class="n">evenbpints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_auto_fillgaps</span> <span class="o">=</span> <span class="n">hm_auto_fillgaps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_bandpass</span> <span class="o">=</span> <span class="n">hm_bandpass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_phaseup</span> <span class="o">=</span> <span class="n">hm_phaseup</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxchannels</span> <span class="o">=</span> <span class="n">maxchannels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phaseupbw</span> <span class="o">=</span> <span class="n">phaseupbw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phaseupnsols</span> <span class="o">=</span> <span class="n">phaseupnsols</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phaseupsnr</span> <span class="o">=</span> <span class="n">phaseupsnr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phaseupsolint</span> <span class="o">=</span> <span class="n">phaseupsolint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="n">solint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unregister_existing</span> <span class="o">=</span> <span class="n">unregister_existing</span></div>
+
+
+
+<div class="viewcode-block" id="ALMAPhcorBandpass">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.ALMAPhcorBandpass">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_bandpass&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
+    <span class="s1">&#39;The spectral response of each antenna is calibrated. A short-solint phase gain is calculated to remove &#39;</span>
+    <span class="s1">&#39;decorrelation of the bandpass calibrator before the bandpass is calculated.&#39;</span>
+<span class="p">)</span>
+<span class="k">class</span> <span class="nc">ALMAPhcorBandpass</span><span class="p">(</span><span class="n">bandpassworker</span><span class="o">.</span><span class="n">BandpassWorker</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">ALMAPhcorBandpassInputs</span>
+
+<div class="viewcode-block" id="ALMAPhcorBandpass.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.ALMAPhcorBandpass.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">unregister_existing</span><span class="p">:</span>
+            <span class="c1"># Unregister old bandpass calibrations to stop them from being preapplied</span>
+            <span class="c1"># when calculating phase-ups, etc.</span>
+
+            <span class="c1"># predicate function that triggers when a bandpass caltable is detected</span>
+            <span class="k">def</span> <span class="nf">bandpass_matcher</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalToArgs</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;bandpass&#39;</span> <span class="ow">in</span> <span class="n">calfrom</span><span class="o">.</span><span class="n">caltype</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Temporarily unregistering all previous bandpass calibrations while task executes&#39;</span><span class="p">)</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">unregister_calibrations</span><span class="p">(</span><span class="n">bandpass_matcher</span><span class="p">)</span>
+
+        <span class="c1"># Call the SNR estimater if either</span>
+        <span class="c1">#     hm_phaseup=&#39;snr&#39;</span>
+        <span class="c1"># or</span>
+        <span class="c1">#     hm_bandpass=&#39;snr&#39;</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_phaseup</span> <span class="o">==</span> <span class="s1">&#39;snr&#39;</span> <span class="ow">or</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_bandpass</span> <span class="o">==</span> <span class="s1">&#39;snr&#39;</span><span class="p">:</span>
+            <span class="n">snr_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bpsolints</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">snr_result</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># If requested, execute a phaseup job. This will add the resulting</span>
+        <span class="c1"># caltable to the on-the-fly calibration context, so we don&#39;t need any</span>
+        <span class="c1"># subsequent gaintable manipulation</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_phaseup</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="c1"># Determine the single best phaseup solution interval for the set of</span>
+            <span class="c1"># science spws. The heuristic assumes that the inegration times</span>
+            <span class="c1"># are the same</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_phaseup</span> <span class="o">==</span> <span class="s1">&#39;snr&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">snr_result</span><span class="o">.</span><span class="n">spwids</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;SNR based phaseup solint estimates are unavailable for MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+                    <span class="n">phaseupsolint</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">phaseupsolint</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">phaseupsolint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_best_phaseup_solint</span><span class="p">(</span><span class="n">snr_result</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">phaseupsolint</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">phaseupsolint</span>
+            <span class="n">phaseup_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_phaseup</span><span class="p">(</span><span class="n">phaseupsolint</span><span class="o">=</span><span class="n">phaseupsolint</span><span class="p">)</span>
+
+        <span class="c1"># Now perform the bandpass</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_bandpass</span> <span class="o">==</span> <span class="s1">&#39;snr&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">snr_result</span><span class="o">.</span><span class="n">spwids</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;SNR based bandpass solint estimates are unavailable for MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using SNR based solint estimates&#39;</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_snr_bandpass</span><span class="p">(</span><span class="n">snr_result</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_bandpass</span> <span class="o">==</span> <span class="s1">&#39;smoothed&#39;</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using simple bandpass smoothing solint estimates&#39;</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_smoothed_bandpass</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using fixed solint estimates&#39;</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_bandpass</span><span class="p">()</span>
+
+        <span class="c1"># Attach the preparatory result to the final result so we have a</span>
+        <span class="c1"># complete log of all the executed tasks.</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_phaseup</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">preceding</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phaseup_result</span><span class="o">.</span><span class="n">final</span><span class="p">)</span>
+
+            <span class="c1"># PIPE-1624: Store bandpass phaseup caltable table name so it</span>
+            <span class="c1"># can be saved into the context. Do not use the version in</span>
+            <span class="c1"># preceding.append (above), as it is labeled &quot;deprecated&quot;</span>
+            <span class="k">for</span> <span class="n">cal</span> <span class="ow">in</span> <span class="n">phaseup_result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">phaseup_caltable_for_phase_rms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-628: set whether we should unregister old bandpass calibrators</span>
+        <span class="c1"># on results acceptance</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">unregister_existing</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">unregister_existing</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="c1"># Compute the solints required to match the SNR</span>
+    <span class="k">def</span> <span class="nf">_compute_bpsolints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Note currently the phaseup bandwidth is not supported</span>
+        <span class="n">bpsolint_inputs</span> <span class="o">=</span> <span class="n">bpsolint</span><span class="o">.</span><span class="n">BpSolint</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+            <span class="n">vis</span>            <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="n">field</span>          <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span>
+            <span class="n">intent</span>         <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+            <span class="n">spw</span>            <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
+            <span class="n">phaseupsnr</span>     <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">phaseupsnr</span><span class="p">,</span>
+            <span class="n">minphaseupints</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">phaseupnsols</span><span class="p">,</span>
+            <span class="n">evenbpints</span>     <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">evenbpints</span><span class="p">,</span>
+            <span class="n">bpsnr</span>          <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">bpsnr</span><span class="p">,</span>
+            <span class="n">minbpsnr</span>       <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">minbpsnr</span><span class="p">,</span>
+            <span class="n">minbpnchan</span>    <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">bpnsols</span>
+        <span class="p">)</span>
+
+        <span class="n">bpsolint_task</span> <span class="o">=</span> <span class="n">bpsolint</span><span class="o">.</span><span class="n">BpSolint</span><span class="p">(</span><span class="n">bpsolint_inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">bpsolint_task</span><span class="p">)</span>
+
+    <span class="c1"># Return the best snr estimate for the phaseup solint.</span>
+    <span class="c1"># Revert to the default of a good estimate is not available.</span>
+    <span class="k">def</span> <span class="nf">_get_best_phaseup_solint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snr_result</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Number of expected results.</span>
+        <span class="n">nexpected</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">snr_result</span><span class="o">.</span><span class="n">spwids</span><span class="p">)</span>
+        <span class="n">quanta</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="c1"># Look for missing and bad solutions.</span>
+        <span class="c1">#    Adjust the estimates for poor solutions to the</span>
+        <span class="c1">#    best acceptable value</span>
+        <span class="c1">#    Cap the result to the nearest even multiple of the integration time</span>
+        <span class="c1">#    below 60s</span>
+        <span class="n">nmissing</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">tmpsolints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">max_solint</span> <span class="o">=</span> <span class="s1">&#39;60s&#39;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">snr_result</span><span class="o">.</span><span class="n">spwids</span><span class="p">)):</span>
+
+            <span class="c1"># No solution available</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">snr_result</span><span class="o">.</span><span class="n">phsolints</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">nmissing</span> <span class="o">=</span> <span class="n">nmissing</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No phaseup solint estimate for spw </span><span class="si">%s</span><span class="s1"> in MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                            <span class="p">(</span><span class="n">snr_result</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># An MS might have multiple scans for the phase-up intent.</span>
+            <span class="c1"># Collect the integration intervals for each scan with</span>
+            <span class="c1"># this intent. We expect this to return one integration</span>
+            <span class="c1"># interval</span>
+            <span class="n">scans</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+            <span class="n">solints</span> <span class="o">=</span> <span class="p">{</span><span class="n">scan</span><span class="o">.</span><span class="n">mean_interval</span><span class="p">(</span><span class="n">snr_result</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                       <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span> <span class="k">if</span> <span class="n">snr_result</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">spws</span><span class="p">]}</span>
+
+            <span class="n">timedelta</span> <span class="o">=</span> <span class="n">solints</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="n">timedelta_solint</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="n">timedelta</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+
+            <span class="n">old_solint</span> <span class="o">=</span> <span class="n">snr_result</span><span class="o">.</span><span class="n">phsolints</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">snr_result</span><span class="o">.</span><span class="n">nphsolutions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">inputs</span><span class="o">.</span><span class="n">phaseupnsols</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Phaseup solution for spw </span><span class="si">%s</span><span class="s1"> has only </span><span class="si">%d</span><span class="s1"> points in MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                            <span class="p">(</span><span class="n">snr_result</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">snr_result</span><span class="o">.</span><span class="n">nphsolutions</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                <span class="n">factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">inputs</span><span class="o">.</span><span class="n">phaseupnsols</span>
+
+                <span class="k">if</span> <span class="n">old_solint</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">:</span>
+                    <span class="c1"># We expect an MS to have the same integration interval</span>
+                    <span class="c1"># for each spw in the phase-up scan(s). We can&#39;t rely on</span>
+                    <span class="c1"># this though, so we need to check this assumption on each</span>
+                    <span class="c1"># access</span>
+
+                    <span class="c1"># But if multiple solint were were used for scans with the</span>
+                    <span class="c1"># same intent, bail out again</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">solints</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Expected 1 solution interval for </span><span class="si">%s</span><span class="s1"> scans for spw </span><span class="si">%s</span><span class="s1">. Got </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                                    <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">snr_result</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">solints</span><span class="p">))</span>
+                        <span class="n">tmpsolints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">old_solint</span><span class="p">)</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># OK. We got one solution interval for all scans of the</span>
+                    <span class="c1"># desired intent. Overwrite old_solint with the equivalent</span>
+                    <span class="c1"># time for &#39;int&#39; in seconds. This wil be carried forward</span>
+                    <span class="c1"># to the quanta tool calls.</span>
+                    <span class="c1"># note the extra s to denote units, otherwise the quanta</span>
+                    <span class="c1"># tool can&#39;t make a comparison</span>
+                    <span class="n">old_solint</span> <span class="o">=</span> <span class="n">timedelta_solint</span>
+
+                <span class="n">newsolint</span> <span class="o">=</span> <span class="n">quanta</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">quanta</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">snr_result</span><span class="o">.</span><span class="n">exptimes</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">factor</span><span class="p">)),</span> <span class="mi">3</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Rounding estimated phaseup solint for spw </span><span class="si">%s</span><span class="s1"> from </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1"> in MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                            <span class="p">(</span><span class="n">snr_result</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">snr_result</span><span class="o">.</span><span class="n">phsolints</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">newsolint</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">quanta</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">newsolint</span><span class="p">),</span> <span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">max_solint</span><span class="p">)):</span>
+                    <span class="n">best_solint</span> <span class="o">=</span> <span class="n">_constrain_phaseupsolint</span><span class="p">(</span><span class="n">newsolint</span><span class="p">,</span> <span class="n">timedelta_solint</span><span class="p">,</span> <span class="n">max_solint</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Solution interval for spw </span><span class="si">%s</span><span class="s1"> greater than </span><span class="si">%s</span><span class="s1"> adjusting to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                                <span class="p">(</span><span class="n">snr_result</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">max_solint</span><span class="p">,</span> <span class="n">best_solint</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">best_solint</span> <span class="o">=</span> <span class="n">newsolint</span>
+                <span class="n">tmpsolints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best_solint</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">old_solint</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">:</span>
+                    <span class="n">newsolint</span> <span class="o">=</span> <span class="n">timedelta_solint</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">newsolint</span> <span class="o">=</span> <span class="n">old_solint</span>
+                <span class="k">if</span> <span class="n">quanta</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">newsolint</span><span class="p">),</span> <span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">max_solint</span><span class="p">)):</span>
+                    <span class="n">best_solint</span> <span class="o">=</span> <span class="n">_constrain_phaseupsolint</span><span class="p">(</span><span class="n">newsolint</span><span class="p">,</span> <span class="n">timedelta_solint</span><span class="p">,</span> <span class="n">max_solint</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Solution interval for spw </span><span class="si">%s</span><span class="s1"> greater than </span><span class="si">%s</span><span class="s1"> adjusting to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                                <span class="p">(</span><span class="n">snr_result</span><span class="o">.</span><span class="n">spwids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">max_solint</span><span class="p">,</span> <span class="n">best_solint</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">best_solint</span> <span class="o">=</span> <span class="n">snr_result</span><span class="o">.</span><span class="n">phsolints</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">tmpsolints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best_solint</span><span class="p">)</span>
+
+        <span class="c1"># If all values are missing return default value.</span>
+        <span class="k">if</span> <span class="n">nmissing</span> <span class="o">&gt;=</span> <span class="n">nexpected</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Reverting to phaseup solint default </span><span class="si">%s</span><span class="s1"> for MS </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">phaseupsolint</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">inputs</span><span class="o">.</span><span class="n">phaseupsolint</span>
+
+        <span class="c1"># If phaseup solints are all the same return the first one</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">tmpsolints</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Best phaseup solint estimate is &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">tmpsolints</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">tmpsolints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Find spws with the minimum number of phaseup solutions and</span>
+        <span class="c1"># return the first phaseup solint</span>
+        <span class="n">best_solint</span> <span class="o">=</span> <span class="s1">&#39;0.0s&#39;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tmpsolints</span><span class="p">)):</span>
+            <span class="c1"># Test for pre-existing &#39;int&#39; times</span>
+            <span class="k">if</span> <span class="n">tmpsolints</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">quanta</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">tmpsolints</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">best_solint</span><span class="p">):</span>
+                <span class="n">best_solint</span> <span class="o">=</span> <span class="n">tmpsolints</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">best_solint</span> <span class="o">==</span> <span class="s1">&#39;0.0s&#39;</span><span class="p">:</span>
+            <span class="n">best_solint</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Best phaseup solint estimate is &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">best_solint</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">best_solint</span>
+
+    <span class="c1"># Compute the phaseup solution.</span>
+    <span class="k">def</span> <span class="nf">_do_phaseup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phaseupsolint</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="n">phaseup_inputs</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+            <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="n">field</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span>
+            <span class="n">spw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_phaseup_spw</span><span class="p">(),</span>
+            <span class="n">antenna</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">antenna</span><span class="p">,</span>
+            <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+            <span class="n">solint</span><span class="o">=</span><span class="n">phaseupsolint</span><span class="p">,</span>
+            <span class="n">refant</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span>
+            <span class="n">minblperant</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">minblperant</span><span class="p">,</span>
+            <span class="n">calmode</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">,</span>
+            <span class="n">minsnr</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">minsnr</span>
+        <span class="p">)</span>
+
+        <span class="n">phaseup_task</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">phaseup_inputs</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">phaseup_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No bandpass phaseup solution for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="c1"># Compute a standard bandpass</span>
+    <span class="k">def</span> <span class="nf">_do_bandpass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bandpass_task</span> <span class="o">=</span> <span class="n">bandpassmode</span><span class="o">.</span><span class="n">BandpassMode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">bandpass_task</span><span class="p">)</span>
+
+    <span class="c1"># Compute the smoothed bandpass</span>
+    <span class="k">def</span> <span class="nf">_do_smoothed_bandpass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Store original values of some parameters.</span>
+        <span class="n">orig_spw</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span>
+        <span class="n">orig_solint</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span>
+        <span class="n">orig_append</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">append</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># initialize the caltable and list of spws</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span>
+            <span class="n">spwlist</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">orig_spw</span><span class="p">)</span>
+
+            <span class="c1"># will hold the CalAppOrigins that record how each CalApp was</span>
+            <span class="c1"># generate. Ideally this would be a list on the CalApp itself,</span>
+            <span class="c1"># but we don&#39;t have time to do that right now.</span>
+            <span class="n">calapp_origins</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="c1"># Loop through the spw appending the results of each spw</span>
+            <span class="c1"># to the results of the previous one.</span>
+            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwlist</span><span class="p">:</span>
+
+                <span class="c1"># TDM or FDM</span>
+                <span class="n">dd</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Missing data description for spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="n">ncorr</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dd</span><span class="o">.</span><span class="n">corr_axis</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ncorr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Wrong number of correlations </span><span class="si">%s</span><span class="s1"> for spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                              <span class="p">(</span><span class="n">ncorr</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Smooth if FDM and if it makes sense</span>
+                <span class="k">if</span> <span class="n">ncorr</span> <span class="o">*</span> <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span> <span class="o">&gt;</span> <span class="mi">256</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span> <span class="o">//</span> <span class="n">inputs</span><span class="o">.</span><span class="n">maxchannels</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: Too few channels (</span><span class="si">{</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span><span class="si">}</span><span class="s2">) in SpW </span><span class="si">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> to use&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot; smoothing (maxchannels=</span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxchannels</span><span class="si">}</span><span class="s2">), reverting to default bandpass solint&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">orig_solint</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                        <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="n">orig_solint</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># PIPE-2036: work-around for potential issue caused by:</span>
+                        <span class="c1">#   * PL defined solint as a frequency interval, and</span>
+                        <span class="c1">#     this may correspond to an exact nr. of channels.</span>
+                        <span class="c1">#   * the frequency interval is passed with limited</span>
+                        <span class="c1">#     precision (typically in MHz with 6 decimals, i.e.</span>
+                        <span class="c1">#     a precision of Hz)</span>
+                        <span class="c1">#   * CASA&#39;s bandpass converts the frequency interval</span>
+                        <span class="c1">#     back to nr. of channels and then take the floor</span>
+                        <span class="c1">#</span>
+                        <span class="c1"># This can result in e.g. a required nr. of channels of</span>
+                        <span class="c1"># 5 corresponding to 4.8828125 MHz but getting passed as</span>
+                        <span class="c1"># 4.882812 MHz, then converted back to 4.999999</span>
+                        <span class="c1"># channels, and floored to 4.</span>
+                        <span class="c1">#</span>
+                        <span class="c1"># As a work-around, check whether the frequency interval</span>
+                        <span class="c1"># would trigger this, and if so, then round *up* the</span>
+                        <span class="c1"># frequency interval to nearest Hz.</span>
+                        <span class="n">bandwidth</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">otherUnits</span><span class="o">=</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span>
+                        <span class="n">newsolint</span> <span class="o">=</span> <span class="n">bandwidth</span> <span class="o">/</span> <span class="n">inputs</span><span class="o">.</span><span class="n">maxchannels</span>
+                        <span class="n">chanwidth</span> <span class="o">=</span> <span class="n">bandwidth</span> <span class="o">/</span> <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span>
+                        <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="n">newsolint</span><span class="p">)</span> <span class="o">/</span> <span class="n">chanwidth</span> <span class="o">&lt;</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">newsolint</span> <span class="o">/</span> <span class="n">chanwidth</span><span class="p">):</span>
+                            <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">orig_solint</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">round_up</span><span class="p">(</span><span class="n">newsolint</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1.e-6</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">MHz&quot;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">orig_solint</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">newsolint</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1.e-6</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">MHz&quot;</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: using smoothed bandpass solint </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">solint</span><span class="si">}</span><span class="s2"> for SpW&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="n">orig_solint</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reverting to default bandpass solint </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">solint</span><span class="si">}</span><span class="s2"> for spw </span><span class="si">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> in MS&quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># PIPE-2116: if requested, set fillgaps to a quarter of the</span>
+                <span class="c1"># number of channels of current SpW.</span>
+                <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_auto_fillgaps</span><span class="p">:</span>
+                    <span class="n">inputs</span><span class="o">.</span><span class="n">fillgaps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">inputs</span><span class="o">.</span><span class="n">fillgaps</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="c1"># Compute and append bandpass solution</span>
+                <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
+                <span class="n">bandpass_task</span> <span class="o">=</span> <span class="n">bandpassmode</span><span class="o">.</span><span class="n">BandpassMode</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">bandpass_task</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">append</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
+                    <span class="n">calapp_origins</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+
+            <span class="c1"># Reset the calto spw list</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">calto</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">orig_spw</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">calto</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">orig_spw</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">calapp_origins</span>
+
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">orig_spw</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="n">orig_solint</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">append</span> <span class="o">=</span> <span class="n">orig_append</span>
+
+    <span class="c1"># Compute the bandpass using SNR estimates</span>
+    <span class="k">def</span> <span class="nf">_do_snr_bandpass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snr_result</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">quanta</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="c1"># Store original values of some parameters.</span>
+        <span class="n">orig_spw</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span>
+        <span class="n">orig_solint</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span>
+        <span class="n">orig_append</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">append</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># initialize the caltable and list of spws</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span>
+            <span class="n">spwlist</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">orig_spw</span><span class="p">)</span>
+
+            <span class="c1"># will hold the CalAppOrigins that record how each CalApp was</span>
+            <span class="c1"># generate. Ideally this would be a list on the CalApp itself,</span>
+            <span class="c1"># but we don&#39;t have time to do that right now.</span>
+            <span class="n">calapp_origins</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwlist</span><span class="p">:</span>
+
+                <span class="c1"># TDM or FDM</span>
+                <span class="n">dd</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Missing data description for spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="n">ncorr</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dd</span><span class="o">.</span><span class="n">corr_axis</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ncorr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Wrong number of correlations </span><span class="si">%s</span><span class="s1"> for spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                              <span class="p">(</span><span class="n">ncorr</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Find the best solint for that window</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">solindex</span> <span class="o">=</span> <span class="n">snr_result</span><span class="o">.</span><span class="n">spwids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">solindex</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+                <span class="c1"># Use the optimal solution if it is good enough otherwise</span>
+                <span class="c1"># revert to the default smoothing algorithm</span>
+                <span class="k">if</span> <span class="n">solindex</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+
+                    <span class="k">if</span> <span class="n">snr_result</span><span class="o">.</span><span class="n">nbpsolutions</span><span class="p">[</span><span class="n">solindex</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">inputs</span><span class="o">.</span><span class="n">bpnsols</span><span class="p">:</span>
+                        <span class="c1"># Recompute the solution interval to force the minimum</span>
+                        <span class="c1"># number of solution channels</span>
+                        <span class="n">factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">inputs</span><span class="o">.</span><span class="n">bpnsols</span>
+                        <span class="n">newsolint</span> <span class="o">=</span> <span class="n">quanta</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">quanta</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">snr_result</span><span class="o">.</span><span class="n">bandwidths</span><span class="p">[</span><span class="n">solindex</span><span class="p">],</span> <span class="n">factor</span><span class="p">))</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Too few channels: Changing recommended bandpass solint from </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1"> for spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                                    <span class="p">(</span><span class="n">snr_result</span><span class="o">.</span><span class="n">bpsolints</span><span class="p">[</span><span class="n">solindex</span><span class="p">],</span> <span class="n">newsolint</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                        <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="n">orig_solint</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="n">newsolint</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="n">orig_solint</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span>  \
+                            <span class="n">snr_result</span><span class="o">.</span><span class="n">bpsolints</span><span class="p">[</span><span class="n">solindex</span><span class="p">]</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Setting bandpass solint to </span><span class="si">%s</span><span class="s1"> for spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">solint</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+                <span class="k">elif</span> <span class="n">ncorr</span> <span class="o">*</span> <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span> <span class="o">&gt;</span> <span class="mi">256</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: no SNR based bandpass solint was found for spw </span><span class="si">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">,&quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot; reverting to smoothing algorithm.&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span> <span class="o">//</span> <span class="n">inputs</span><span class="o">.</span><span class="n">maxchannels</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: Too few channels (</span><span class="si">{</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span><span class="si">}</span><span class="s2">) in SpW </span><span class="si">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> to use&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot; smoothing (maxchannels=</span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">maxchannels</span><span class="si">}</span><span class="s2">), reverting to default bandpass solint&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">orig_solint</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                        <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="n">orig_solint</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># PIPE-2036: work-around for potential issue caused by:</span>
+                        <span class="c1">#   * PL defined solint as a frequency interval, and</span>
+                        <span class="c1">#     this may correspond to an exact nr. of channels.</span>
+                        <span class="c1">#   * the frequency interval is passed with limited</span>
+                        <span class="c1">#     precision (typically in MHz with 6 decimals, i.e.</span>
+                        <span class="c1">#     a precision of Hz)</span>
+                        <span class="c1">#   * CASA&#39;s bandpass converts the frequency interval</span>
+                        <span class="c1">#     back to nr. of channels and then take the floor</span>
+                        <span class="c1">#</span>
+                        <span class="c1"># This can result in e.g. a required nr. of channels of</span>
+                        <span class="c1"># 5 corresponding to 4.8828125 MHz but getting passed as</span>
+                        <span class="c1"># 4.882812 MHz, then converted back to 4.999999</span>
+                        <span class="c1"># channels, and floored to 4.</span>
+                        <span class="c1">#</span>
+                        <span class="c1"># As a work-around, check whether the frequency interval</span>
+                        <span class="c1"># would trigger this, and if so, then round *up* the</span>
+                        <span class="c1"># frequency interval to nearest Hz.</span>
+                        <span class="n">bandwidth</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">otherUnits</span><span class="o">=</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span>
+                        <span class="n">newsolint</span> <span class="o">=</span> <span class="n">bandwidth</span> <span class="o">/</span> <span class="n">inputs</span><span class="o">.</span><span class="n">maxchannels</span>
+                        <span class="n">chanwidth</span> <span class="o">=</span> <span class="n">bandwidth</span> <span class="o">/</span> <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span>
+                        <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="n">newsolint</span><span class="p">)</span> <span class="o">/</span> <span class="n">chanwidth</span> <span class="o">&lt;</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">newsolint</span> <span class="o">/</span> <span class="n">chanwidth</span><span class="p">):</span>
+                            <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">orig_solint</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">round_up</span><span class="p">(</span><span class="n">newsolint</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1.e-6</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">MHz&quot;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">orig_solint</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">newsolint</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1.e-6</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">MHz&quot;</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: using smoothed bandpass solint </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">solint</span><span class="si">}</span><span class="s2"> for SpW&quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="n">orig_solint</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Reverting to default bandpass solint </span><span class="si">%s</span><span class="s2"> for spw </span><span class="si">%s</span><span class="s2"> in MS </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                                <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">solint</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+
+                <span class="c1"># PIPE-2116: if requested, set fillgaps to a quarter of the</span>
+                <span class="c1"># number of channels of current SpW.</span>
+                <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_auto_fillgaps</span><span class="p">:</span>
+                    <span class="n">inputs</span><span class="o">.</span><span class="n">fillgaps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">inputs</span><span class="o">.</span><span class="n">fillgaps</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="c1"># Compute and append bandpass solution</span>
+                <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
+                <span class="n">bandpass_task</span> <span class="o">=</span> <span class="n">bandpassmode</span><span class="o">.</span><span class="n">BandpassMode</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">bandpass_task</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">append</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
+                    <span class="n">calapp_origins</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+
+            <span class="c1"># Reset the calto spw list</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">calto</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">orig_spw</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">calto</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">orig_spw</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">calapp_origins</span>
+
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">orig_spw</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="n">orig_solint</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">append</span> <span class="o">=</span> <span class="n">orig_append</span>
+
+    <span class="c1"># Compute spws using bandwidth parameters</span>
+    <span class="k">def</span> <span class="nf">_get_phaseup_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                   ms -- measurement set object</span>
+<span class="sd">               spwstr -- comma delimited list of spw ids</span>
+<span class="sd">            bandwidth -- bandwidth in Hz of central channels used to</span>
+<span class="sd">                         phaseup</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Add the channel ranges in. Note that this currently assumes no prior</span>
+        <span class="c1"># channel selection.</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">phaseupbw</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span>
+
+        <span class="c1"># Convert bandwidth input to CASA quantity and then on to pipeline</span>
+        <span class="c1"># domain Frequency object</span>
+        <span class="n">quanta</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="n">bw_quantity</span> <span class="o">=</span> <span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">phaseupbw</span><span class="p">),</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
+        <span class="n">bandwidth</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="n">quanta</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">bw_quantity</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                                       <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span>
+
+        <span class="c1"># Loop over the spws creating a new list with channel ranges</span>
+        <span class="n">outspw</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">):</span>
+            <span class="n">cen_freq</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">centre_frequency</span>
+            <span class="n">lo_freq</span> <span class="o">=</span> <span class="n">cen_freq</span> <span class="o">-</span> <span class="n">bandwidth</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="n">hi_freq</span> <span class="o">=</span> <span class="n">cen_freq</span> <span class="o">+</span> <span class="n">bandwidth</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="n">minchan</span><span class="p">,</span> <span class="n">maxchan</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">channel_range</span><span class="p">(</span><span class="n">lo_freq</span><span class="p">,</span> <span class="n">hi_freq</span><span class="p">)</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">:</span><span class="si">{1}</span><span class="s1">~</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">minchan</span><span class="p">,</span> <span class="n">maxchan</span><span class="p">)</span>
+            <span class="n">outspw</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outspw</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_constrain_phaseupsolint</span><span class="p">(</span><span class="n">input_solint</span><span class="p">,</span> <span class="n">integration_time</span><span class="p">,</span> <span class="n">max_solint</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constrain the solint to be the largest even number of integrations</span>
+<span class="sd">    which are greater than a specified maximum. The inputs and outputs</span>
+<span class="sd">    are times in seconds in string quanta format &#39;60.0s&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">quanta</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+    <span class="n">input_solint_q</span> <span class="o">=</span> <span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">input_solint</span><span class="p">)</span>
+    <span class="n">integration_time_q</span> <span class="o">=</span> <span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">integration_time</span><span class="p">)</span>
+    <span class="n">max_solint_q</span> <span class="o">=</span> <span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">max_solint</span><span class="p">)</span>
+
+    <span class="n">newsolint_q</span> <span class="o">=</span> <span class="n">input_solint_q</span>
+    <span class="k">while</span> <span class="n">quanta</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">newsolint_q</span><span class="p">,</span> <span class="n">max_solint_q</span><span class="p">):</span>
+        <span class="n">newsolint_q</span> <span class="o">=</span> <span class="n">quanta</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">newsolint_q</span><span class="p">,</span> <span class="n">integration_time_q</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">quanta</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">newsolint_q</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SessionALMAPhcorBandpassInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpassInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">SessionALMAPhcorBandpassInputs</span><span class="p">(</span><span class="n">ALMAPhcorBandpassInputs</span><span class="p">):</span>
+    <span class="c1"># We want to apply bandpass calibrations from BANDPASS scans, not</span>
+    <span class="c1"># fall back to calibration against PHASE or AMPLITUDE scans</span>
+    <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">)</span>
+
+    <span class="c1"># use common implementation for parallel inputs argument</span>
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_phaseup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupbw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">phaseupnsols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_bandpass</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxchannels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">evenbpints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bpsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">minbpsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bpnsols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SessionALMAPhcorBandpassInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">hm_phaseup</span><span class="o">=</span><span class="n">hm_phaseup</span><span class="p">,</span>
+                                                             <span class="n">phaseupbw</span><span class="o">=</span><span class="n">phaseupbw</span><span class="p">,</span> <span class="n">phaseupsolint</span><span class="o">=</span><span class="n">phaseupsolint</span><span class="p">,</span>
+                                                             <span class="n">phaseupsnr</span><span class="o">=</span><span class="n">phaseupsnr</span><span class="p">,</span> <span class="n">phaseupnsols</span><span class="o">=</span><span class="n">phaseupnsols</span><span class="p">,</span>
+                                                             <span class="n">hm_bandpass</span><span class="o">=</span><span class="n">hm_bandpass</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span>
+                                                             <span class="n">maxchannels</span><span class="o">=</span><span class="n">maxchannels</span><span class="p">,</span> <span class="n">evenbpints</span><span class="o">=</span><span class="n">evenbpints</span><span class="p">,</span>
+                                                             <span class="n">bpsnr</span><span class="o">=</span><span class="n">bpsnr</span><span class="p">,</span> <span class="n">minbpsnr</span><span class="o">=</span><span class="n">minbpsnr</span><span class="p">,</span>
+                                                             <span class="n">bpnsols</span><span class="o">=</span><span class="n">bpnsols</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span></div>
+
+
+
+<span class="n">BANDPASS_MISSING</span> <span class="o">=</span> <span class="s1">&#39;___BANDPASS_MISSING___&#39;</span>
+
+
+<div class="viewcode-block" id="SessionALMAPhcorBandpass">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpass">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;session_bandpass&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">SessionALMAPhcorBandpass</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SessionALMAPhcorBandpassInputs</span>
+
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="SessionALMAPhcorBandpass.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpass.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="n">vis_list</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">as_list</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="n">assessed</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">VDPTaskFactory</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">,</span> <span class="n">ALMAPhcorBandpass</span><span class="p">)</span> <span class="k">as</span> <span class="n">factory</span><span class="p">:</span>
+            <span class="n">task_queue</span> <span class="o">=</span> <span class="p">[(</span><span class="n">vis</span><span class="p">,</span> <span class="n">factory</span><span class="o">.</span><span class="n">get_task</span><span class="p">(</span><span class="n">vis</span><span class="p">))</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vis_list</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="p">(</span><span class="n">task_args</span><span class="p">,</span> <span class="n">task</span><span class="p">))</span> <span class="ow">in</span> <span class="n">task_queue</span><span class="p">:</span>
+                <span class="c1"># only launch jobs for MSes with bandpass calibrators.</span>
+                <span class="c1"># The analyse() method will subsequently adopt the</span>
+                <span class="c1"># appropriate bandpass calibration table from one of</span>
+                <span class="c1"># the completed jobs.</span>
+                <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s1">&#39;BANDPASS&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">intents</span><span class="p">:</span>
+                    <span class="n">assessed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">VisResultTuple</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">BANDPASS_MISSING</span><span class="p">))</span>
+                    <span class="k">continue</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">worker_result</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">get_result</span><span class="p">()</span>
+                <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">PipelineException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">assessed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">VisResultTuple</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">assessed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">VisResultTuple</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">worker_result</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">assessed</span></div>
+
+
+<div class="viewcode-block" id="SessionALMAPhcorBandpass.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpass.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assessed</span><span class="p">):</span>
+        <span class="c1"># all results will be added to this object</span>
+        <span class="n">final_result</span> <span class="o">=</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">()</span>
+
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+
+        <span class="n">session_groups</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">group_into_sessions</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">assessed</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">session_id</span><span class="p">,</span> <span class="n">session_results</span> <span class="ow">in</span> <span class="n">session_groups</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># get a list of MeasurementSet domain objects for all MSes</span>
+            <span class="c1"># in this session</span>
+            <span class="n">session_mses</span> <span class="o">=</span> <span class="p">[</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis_result</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="k">for</span> <span class="n">vis_result</span> <span class="ow">in</span> <span class="n">session_results</span><span class="p">]</span>
+
+            <span class="c1"># get a list of all bandpass scans in this session,</span>
+            <span class="c1"># flattening the list of lists to form a single list of</span>
+            <span class="c1"># scan domain objects</span>
+            <span class="n">bandpass_scans</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">session_mses</span><span class="p">]))</span>
+
+            <span class="c1"># create a dict of scan objects to name of the MS</span>
+            <span class="c1"># containing that scan</span>
+            <span class="n">scans_to_vis</span> <span class="o">=</span> <span class="p">{</span><span class="n">scan</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">name</span>
+                            <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">bandpass_scans</span>
+                            <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">session_mses</span>
+                            <span class="k">if</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">scans</span><span class="p">}</span>
+
+            <span class="c1"># create a dict of scan object to results object for the MS</span>
+            <span class="c1"># containing that scan</span>
+            <span class="n">scan_to_result</span> <span class="o">=</span> <span class="p">{</span><span class="n">scan</span><span class="p">:</span> <span class="n">result</span>
+                              <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">session_results</span>
+                              <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">bandpass_scans</span>
+                              <span class="k">if</span> <span class="n">vis</span> <span class="o">==</span> <span class="n">scans_to_vis</span><span class="p">[</span><span class="n">scan</span><span class="p">]}</span>
+
+            <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">vis_result</span> <span class="ow">in</span> <span class="n">session_results</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">vis_result</span> <span class="o">==</span> <span class="n">BANDPASS_MISSING</span><span class="p">:</span>
+                    <span class="c1"># No bandpass calibrator for this MS, so adopt the</span>
+                    <span class="c1"># nearest bandpass calibration in time</span>
+
+                    <span class="c1"># get bandpass closest in time, identified from the</span>
+                    <span class="c1"># centre of the bandpass scan to the centre of this</span>
+                    <span class="c1"># observation</span>
+                    <span class="n">no_bandpass_ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+                    <span class="n">centre_time</span> <span class="o">=</span> <span class="n">centre_datetime_from_epochs</span><span class="p">(</span><span class="n">no_bandpass_ms</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">no_bandpass_ms</span><span class="o">.</span><span class="n">end_time</span><span class="p">)</span>
+                    <span class="n">closest_scan</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">bandpass_scans</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">scan</span><span class="p">:</span> <span class="n">get_time_delta_seconds</span><span class="p">(</span><span class="n">centre_time</span><span class="p">,</span> <span class="n">scan</span><span class="p">))</span>
+
+                    <span class="c1"># identify which result contains this closest scan</span>
+                    <span class="c1"># and adopt its CalApplications</span>
+                    <span class="n">result_to_add</span> <span class="o">=</span> <span class="n">scan_to_result</span><span class="p">[</span><span class="n">closest_scan</span><span class="p">]</span>
+                    <span class="n">adopted_ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result_to_add</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Adopting calibrations from </span><span class="si">{!s}</span><span class="s1"> for </span><span class="si">{!s}</span><span class="s1">&#39;</span>
+                             <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">adopted_ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">no_bandpass_ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                    <span class="n">fake_result</span> <span class="o">=</span> <span class="n">BandpassResults</span><span class="p">(</span><span class="n">applies_adopted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">fake_result</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">task_args</span>
+                    <span class="n">fake_result</span><span class="o">.</span><span class="n">stage_number</span> <span class="o">=</span> <span class="n">result_to_add</span><span class="o">.</span><span class="n">stage_number</span>
+
+                    <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">result_to_add</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+                        <span class="n">session_calto</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calto</span>
+                        <span class="n">session_calfrom</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span>
+
+                        <span class="c1"># remap spectral windows to apply calibration</span>
+                        <span class="c1"># to</span>
+                        <span class="n">my_spw</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">remap_spw_str</span><span class="p">(</span><span class="n">adopted_ms</span><span class="p">,</span> <span class="n">no_bandpass_ms</span><span class="p">,</span> <span class="n">session_calto</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+                        <span class="n">my_calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">my_spw</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+                        <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span> <span class="n">session_calfrom</span><span class="p">:</span>
+                            <span class="c1"># remap spectral windows to take</span>
+                            <span class="c1"># calibration from</span>
+                            <span class="n">my_spwmap</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">remap_spw_int</span><span class="p">(</span><span class="n">adopted_ms</span><span class="p">,</span> <span class="n">no_bandpass_ms</span><span class="p">,</span> <span class="n">cf</span><span class="o">.</span><span class="n">spwmap</span><span class="p">)</span>
+
+                            <span class="n">my_calfrom</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">(</span><span class="n">gaintable</span><span class="o">=</span><span class="n">cf</span><span class="o">.</span><span class="n">gaintable</span><span class="p">,</span>
+                                                            <span class="n">gainfield</span><span class="o">=</span><span class="n">cf</span><span class="o">.</span><span class="n">gainfield</span><span class="p">,</span>
+                                                            <span class="n">interp</span><span class="o">=</span><span class="n">cf</span><span class="o">.</span><span class="n">interp</span><span class="p">,</span>
+                                                            <span class="n">spwmap</span><span class="o">=</span><span class="n">my_spwmap</span><span class="p">,</span>
+                                                            <span class="n">caltype</span><span class="o">=</span><span class="n">cf</span><span class="o">.</span><span class="n">caltype</span><span class="p">,</span>
+                                                            <span class="n">calwt</span><span class="o">=</span><span class="n">cf</span><span class="o">.</span><span class="n">calwt</span><span class="p">)</span>
+
+                            <span class="n">remapped_calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">my_calto</span><span class="p">,</span> <span class="n">my_calfrom</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">calapp</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+                            <span class="n">fake_result</span><span class="o">.</span><span class="n">final</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">remapped_calapp</span><span class="p">)</span>
+
+                        <span class="n">final_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fake_result</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vis_result</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No bandpass solution created for </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">)))</span>
+
+                    <span class="n">fake_result</span> <span class="o">=</span> <span class="n">BandpassResults</span><span class="p">()</span>
+                    <span class="n">fake_result</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">task_args</span>
+
+                    <span class="n">final_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fake_result</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># the bandpass job for an individual MS is wrapped</span>
+                    <span class="c1"># in a ResultsList, hence [0].</span>
+                    <span class="n">final_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vis_result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">final_result</span></div>
+</div>
+
+
+
+<span class="k">def</span> <span class="nf">centre_datetime_from_epochs</span><span class="p">(</span><span class="n">epoch1</span><span class="p">,</span> <span class="n">epoch2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the time midpoint between two epochs.</span>
+
+<span class="sd">    :param epoch1: epoch 1</span>
+<span class="sd">    :param epoch2: epoch 2</span>
+<span class="sd">    :return: time between epoch1 and epoch2</span>
+<span class="sd">    :rtype: datetime.datetime</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">time1</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_epoch_as_datetime</span><span class="p">(</span><span class="n">epoch1</span><span class="p">)</span>
+    <span class="n">time2</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_epoch_as_datetime</span><span class="p">(</span><span class="n">epoch2</span><span class="p">)</span>
+    <span class="c1"># use min &amp; max so it doesn&#39;t depend on correct time ordering of</span>
+    <span class="c1"># arguments</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">time1</span><span class="p">,</span> <span class="n">time2</span><span class="p">])</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">time1</span><span class="p">,</span> <span class="n">time2</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">start</span> <span class="o">+</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+
+<span class="k">def</span> <span class="nf">get_time_delta_seconds</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">scan</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the absolute time difference between a time t and a scan&#39;s time</span>
+<span class="sd">    of observation. The time difference is calculated as the difference</span>
+<span class="sd">    between t and the midpoint of the scan.</span>
+
+<span class="sd">    :param time: time point</span>
+<span class="sd">    :type time: datetime.datetime</span>
+<span class="sd">    :param scan: scan to measure time to</span>
+<span class="sd">    :type scan: Scan domain object</span>
+<span class="sd">    :return: time between time and scan midpoint</span>
+<span class="sd">    :rtype: datetime.timedelta</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scan_centre</span> <span class="o">=</span> <span class="n">centre_datetime_from_epochs</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">scan</span><span class="o">.</span><span class="n">end_time</span><span class="p">)</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">time</span> <span class="o">-</span> <span class="n">scan_centre</span>
+    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

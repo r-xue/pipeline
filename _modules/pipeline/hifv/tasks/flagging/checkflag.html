@@ -1,0 +1,1047 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.flagging.checkflag &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.flagging.checkflag</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.flagging.checkflag</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics</span> <span class="kn">import</span> <span class="p">(</span><span class="n">RflagDevHeuristic</span><span class="p">,</span> <span class="n">mssel_valid</span><span class="p">,</span>
+                                      <span class="n">set_add_model_column_parameters</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="p">(</span><span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span><span class="p">,</span>
+                                     <span class="n">utils</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.contfilehandler</span> <span class="kn">import</span> <span class="n">contfile_to_spwsel</span>
+
+<span class="kn">from</span> <span class="nn">.displaycheckflag</span> <span class="kn">import</span> <span class="n">checkflagSummaryChart</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># CHECKING FLAGGING OF ALL CALIBRATORS</span>
+<span class="c1"># use rflag mode of flagdata</span>
+
+
+<div class="viewcode-block" id="CheckflagInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.checkflag.CheckflagInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">CheckflagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+    <span class="c1"># Search order of input vis</span>
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
+
+    <span class="n">checkflagmode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">overwrite_modelcol</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkflagmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_modelcol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">growflags</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CheckflagInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">=</span> <span class="n">checkflagmode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overwrite_modelcol</span> <span class="o">=</span> <span class="n">overwrite_modelcol</span>
+        <span class="k">if</span> <span class="n">growflags</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">growflags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;semi&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">growflags</span> <span class="o">=</span> <span class="n">growflags</span></div>
+
+
+
+<div class="viewcode-block" id="CheckflagResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.checkflag.CheckflagResults">[docs]</a>
+<span class="k">class</span> <span class="nc">CheckflagResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jobs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">results</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">summaries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis_averaged</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dataselect</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">jobs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">results</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">summaries</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">summaries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">vis_averaged</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vis_averaged</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">dataselect</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dataselect</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">CheckflagResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span> <span class="o">=</span> <span class="n">jobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">summaries</span> <span class="o">=</span> <span class="n">summaries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis_averaged</span> <span class="o">=</span> <span class="n">vis_averaged</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataselect</span> <span class="o">=</span> <span class="n">dataselect</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;Checkflag (rflag mode) results:</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> performed. Statistics to follow?&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+
+<div class="viewcode-block" id="Checkflag">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.checkflag.Checkflag">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_checkflag&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Checkflag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">CheckflagInputs</span>
+
+<div class="viewcode-block" id="Checkflag.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.checkflag.Checkflag.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Checkflag task: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span><span class="p">)))</span>
+
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tint</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_vla_max_integration_time</span><span class="p">()</span>
+
+        <span class="c1"># a list of strings representing polarizations from science spws</span>
+        <span class="n">sci_spwlist</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">sci_spwids</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">sci_spwlist</span><span class="p">]</span>
+        <span class="n">pols_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">polarizations</span><span class="p">[</span><span class="n">dd</span><span class="o">.</span><span class="n">pol_id</span><span class="p">]</span><span class="o">.</span><span class="n">corr_type_string</span> <span class="k">for</span> <span class="n">dd</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">data_descriptions</span> <span class="k">if</span> <span class="n">dd</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">sci_spwids</span><span class="p">]</span>
+        <span class="n">pols</span> <span class="o">=</span> <span class="p">[</span><span class="n">pol</span> <span class="k">for</span> <span class="n">pols</span> <span class="ow">in</span> <span class="n">pols_list</span> <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pols</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corr_type_string</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">pols</span><span class="p">))</span>
+
+        <span class="c1"># a string representing selected polarizations, only parallel hands</span>
+        <span class="c1"># this is only preserved to maintain the existing behavior of checkflagmode=&#39;&#39;/&#39;semi&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corrstring</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_vla_corrstring</span><span class="p">()</span>
+
+        <span class="c1"># a string representing science spws</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sci_spws</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)])</span>
+
+        <span class="n">summaries</span> <span class="o">=</span> <span class="p">[]</span>      <span class="c1"># Flagging statistics summaries for VLA QA scoring (CAS-10910/10916/10921)</span>
+        <span class="n">vis_averaged</span> <span class="o">=</span> <span class="p">{}</span>   <span class="c1"># Time-averaged MS and stats for summary plots</span>
+
+
+        <span class="c1"># abort if the mode selection is not recognized</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;bpd-vla&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals-vla&#39;</span><span class="p">,</span> <span class="s1">&#39;target-vla&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;semi&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;bpd&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;bpd-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;target-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;vlass-imaging&#39;</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Unrecognized option for checkflagmode. RFI flagging not executed.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CheckflagResults</span><span class="p">(</span><span class="n">summaries</span><span class="o">=</span><span class="n">summaries</span><span class="p">)</span>
+
+        <span class="n">fieldselect</span><span class="p">,</span> <span class="n">scanselect</span><span class="p">,</span> <span class="n">intentselect</span><span class="p">,</span> <span class="n">columnselect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_data</span><span class="p">()</span>
+
+        <span class="c1"># PIPE-1335: abort if both fieldselect and scanselect are empty strings.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">fieldselect</span> <span class="ow">or</span> <span class="n">scanselect</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No scans with selected intent(s) from checkflagmode=</span><span class="si">{!r}</span><span class="s2">. RFI flagging not executed.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">CheckflagResults</span><span class="p">(</span><span class="n">summaries</span><span class="o">=</span><span class="n">summaries</span><span class="p">)</span>
+
+        <span class="c1"># abort if the data selection criteria lead to NUll selection</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mssel_valid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">fieldselect</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scanselect</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intentselect</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sci_spws</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Null data selection from checkflagmode=</span><span class="si">{!r}</span><span class="s2">. RFI flagging not executed.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">CheckflagResults</span><span class="p">(</span><span class="n">summaries</span><span class="o">=</span><span class="n">summaries</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;vlass-imaging&#39;</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Checking for model column&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_modelcolumn</span><span class="p">()</span>
+
+        <span class="c1"># PIPE-502/995: run the before-flagging summary in most checkflagmodes, including &#39;vlass-imaging&#39;</span>
+        <span class="c1"># PIPE-757: skip in all VLASS calibration checkflagmodes: &#39;bpd-vlass&#39;, &#39;allcals-vlass&#39;, and &#39;target-vlass&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;bpd-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;target-vlass&#39;</span><span class="p">):</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;before&#39;</span><span class="p">,</span>
+                                      <span class="n">field</span><span class="o">=</span><span class="n">fieldselect</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scanselect</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intentselect</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sci_spws</span><span class="p">)</span>
+            <span class="n">summarydict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">summarydict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">summaries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">summarydict</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-502/995/987: save before-flagging time-averged MS and its amp-related stats for weblog</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;allcals-vla&#39;</span><span class="p">,</span> <span class="s1">&#39;bpd-vla&#39;</span><span class="p">,</span> <span class="s1">&#39;target-vla&#39;</span><span class="p">,</span>
+                                         <span class="s1">&#39;bpd&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals&#39;</span><span class="p">,</span>
+                                         <span class="s1">&#39;bpd-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;vlass-imaging&#39;</span><span class="p">):</span>
+            <span class="n">vis_averaged_before</span><span class="p">,</span> <span class="n">vis_ampstats_before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_timeavg_ms</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;before&#39;</span><span class="p">)</span>
+            <span class="n">vis_averaged</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">before</span><span class="o">=</span><span class="n">vis_averaged_before</span><span class="p">,</span> <span class="n">before_amp</span><span class="o">=</span><span class="n">vis_ampstats_before</span><span class="p">)</span>
+            <span class="n">plotms_dataselect</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;field&#39;</span><span class="p">:</span>  <span class="n">fieldselect</span><span class="p">,</span>
+                                 <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scanselect</span><span class="p">,</span>
+                                 <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sci_spws</span><span class="p">,</span>
+                                 <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intentselect</span><span class="p">,</span>
+                                 <span class="s1">&#39;ydatacolumn&#39;</span><span class="p">:</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrstring</span><span class="p">}</span>
+            <span class="n">vis_averaged</span><span class="p">[</span><span class="s1">&#39;plotms_dataselect&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plotms_dataselect</span>
+            <span class="c1"># plots[&#39;before&#39;] = self._create_summaryplots(suffix=&#39;before&#39;, plotms_args=plot_selectdata)</span>
+
+        <span class="c1"># PIPE-987: backup flagversion before rfi flagging</span>
+        <span class="n">now_str</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M%S&quot;</span><span class="p">)</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;save&#39;</span><span class="p">,</span>
+                                     <span class="n">versionname</span><span class="o">=</span><span class="s1">&#39;hifv_checkflag_</span><span class="si">{}</span><span class="s1">_stage</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span><span class="p">,</span> <span class="n">now_str</span><span class="p">),</span>
+                                     <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;flagversion before running hifv_checkflag()&#39;</span><span class="p">,</span>
+                                     <span class="n">merge</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="c1"># decide on if we use cont.dat for target-vla</span>
+        <span class="n">use_contdat</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;target-vla&#39;</span><span class="p">:</span>
+            <span class="n">fielddict</span> <span class="o">=</span> <span class="n">contfile_to_spwsel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">fielddict</span> <span class="o">!=</span> <span class="p">{}:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;cont.dat file present.  Using VLA Spectral Line Heuristics for checkflagmode=target-vla.&#39;</span><span class="p">)</span>
+                <span class="n">use_contdat</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">use_contdat</span><span class="p">:</span>
+            <span class="c1"># cont.dat is present for target-vla, do the field-by-field flagging</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fielddict</span><span class="p">:</span>
+                <span class="n">fieldselect_cont</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">fieldname_for_casa</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">do_rfi_flag</span><span class="p">(</span><span class="n">fieldselect</span><span class="o">=</span><span class="n">fieldselect_cont</span><span class="p">,</span> <span class="n">scanselect</span><span class="o">=</span><span class="n">scanselect</span><span class="p">,</span>
+                                 <span class="n">intentselect</span><span class="o">=</span><span class="n">intentselect</span><span class="p">,</span> <span class="n">spwselect</span><span class="o">=</span><span class="n">fielddict</span><span class="p">[</span><span class="n">field</span><span class="p">])</span>
+                <span class="c1"># PIPE-1342: do a second pass of rflag in the &#39;target-vla&#39; mode (equivalent to running hifv_targetvla)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;target-vla&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">do_vla_targetflag</span><span class="p">(</span><span class="n">fieldselect</span><span class="o">=</span><span class="n">fieldselect_cont</span><span class="p">,</span> <span class="n">scanselect</span><span class="o">=</span><span class="n">scanselect</span><span class="p">,</span>
+                                           <span class="n">intentselect</span><span class="o">=</span><span class="n">intentselect</span><span class="p">,</span> <span class="n">spwselect</span><span class="o">=</span><span class="n">fielddict</span><span class="p">[</span><span class="n">field</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># all other situations</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_rfi_flag</span><span class="p">(</span><span class="n">fieldselect</span><span class="o">=</span><span class="n">fieldselect</span><span class="p">,</span> <span class="n">scanselect</span><span class="o">=</span><span class="n">scanselect</span><span class="p">,</span>
+                             <span class="n">intentselect</span><span class="o">=</span><span class="n">intentselect</span><span class="p">,</span> <span class="n">spwselect</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sci_spws</span><span class="p">)</span>
+            <span class="c1"># PIPE-1342: do a second pass of rflag in the &#39;target-vla&#39; mode (equivalent to running hifv_targetvla)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;target-vla&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">do_vla_targetflag</span><span class="p">(</span><span class="n">fieldselect</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">scanselect</span><span class="o">=</span><span class="n">scanselect</span><span class="p">,</span>
+                                       <span class="n">intentselect</span><span class="o">=</span><span class="n">intentselect</span><span class="p">,</span> <span class="n">spwselect</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-502/757/995: get after-flagging statistics, NOT for bpd-vlass and allcals-vlass</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;bpd-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals-vlass&#39;</span><span class="p">):</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;after&#39;</span><span class="p">,</span>
+                                      <span class="n">field</span><span class="o">=</span><span class="n">fieldselect</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scanselect</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intentselect</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sci_spws</span><span class="p">)</span>
+            <span class="n">summarydict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">summarydict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">summaries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">summarydict</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-502/995/987: save after-flagging time-averaged MS and its amp-related stats for weblog</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;allcals-vla&#39;</span><span class="p">,</span> <span class="s1">&#39;bpd-vla&#39;</span><span class="p">,</span> <span class="s1">&#39;target-vla&#39;</span><span class="p">,</span>
+                                         <span class="s1">&#39;bpd&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals&#39;</span><span class="p">,</span>
+                                         <span class="s1">&#39;bpd-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;vlass-imaging&#39;</span><span class="p">):</span>
+            <span class="n">vis_averaged_after</span><span class="p">,</span> <span class="n">vis_ampstats_after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_timeavg_ms</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;after&#39;</span><span class="p">)</span>
+            <span class="n">vis_averaged</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">after</span><span class="o">=</span><span class="n">vis_averaged_after</span><span class="p">,</span> <span class="n">after_amp</span><span class="o">=</span><span class="n">vis_ampstats_after</span><span class="p">)</span>
+
+        <span class="n">checkflag_result</span> <span class="o">=</span> <span class="n">CheckflagResults</span><span class="p">()</span>
+        <span class="n">checkflag_result</span><span class="o">.</span><span class="n">summaries</span> <span class="o">=</span> <span class="n">summaries</span>
+        <span class="n">checkflag_result</span><span class="o">.</span><span class="n">vis_averaged</span> <span class="o">=</span> <span class="n">vis_averaged</span>
+        <span class="n">checkflag_result</span><span class="o">.</span><span class="n">dataselect</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">fieldselect</span><span class="p">,</span>
+                                       <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scanselect</span><span class="p">,</span>
+                                       <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intentselect</span><span class="p">,</span>
+                                       <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sci_spws</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">checkflag_result</span></div>
+
+
+<div class="viewcode-block" id="Checkflag.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.checkflag.Checkflag.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_extendflag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;extend&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="n">scan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                       <span class="n">ntime</span><span class="o">=</span><span class="s1">&#39;scan&#39;</span><span class="p">,</span> <span class="n">extendpols</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                       <span class="n">growtime</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">growfreq</span><span class="o">=</span><span class="mf">60.0</span><span class="p">,</span> <span class="n">growaround</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                       <span class="n">flagneartime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flagnearfreq</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                     <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="n">mode</span><span class="p">,</span>
+                     <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span>
+                     <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scan</span><span class="p">,</span>
+                     <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">,</span>
+                     <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                     <span class="s1">&#39;ntime&#39;</span><span class="p">:</span> <span class="n">ntime</span><span class="p">,</span>
+                     <span class="s1">&#39;combinescans&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;extendpols&#39;</span><span class="p">:</span> <span class="n">extendpols</span><span class="p">,</span>
+                     <span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="n">growtime</span><span class="p">,</span>
+                     <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="n">growfreq</span><span class="p">,</span>
+                     <span class="s1">&#39;growaround&#39;</span><span class="p">:</span> <span class="n">growaround</span><span class="p">,</span>
+                     <span class="s1">&#39;flagneartime&#39;</span><span class="p">:</span> <span class="n">flagneartime</span><span class="p">,</span>
+                     <span class="s1">&#39;flagnearfreq&#39;</span><span class="p">:</span> <span class="n">flagnearfreq</span><span class="p">,</span>
+                     <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;extendflags&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="n">flagbackup</span><span class="p">,</span>
+                     <span class="s1">&#39;savepars&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">job</span><span class="p">,</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_do_tfcropflag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;tfcrop&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">correlation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                       <span class="n">ntime</span><span class="o">=</span><span class="mf">0.45</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                       <span class="n">freqcutoff</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">timecutoff</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">savepars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                       <span class="n">extendflags</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="c1"># pass &#39;extendflags&#39; to flagdata(mode=&#39;tfcrop&#39;) if boolean</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extendflags</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="n">extendflags_tfcrop</span> <span class="o">=</span> <span class="n">extendflags</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">extendflags_tfcrop</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                     <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="n">mode</span><span class="p">,</span>
+                     <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span>
+                     <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="n">correlation</span><span class="p">,</span>
+                     <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scan</span><span class="p">,</span>
+                     <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">,</span>
+                     <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                     <span class="s1">&#39;ntime&#39;</span><span class="p">:</span> <span class="n">ntime</span><span class="p">,</span>
+                     <span class="s1">&#39;combinescans&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="n">datacolumn</span><span class="p">,</span>
+                     <span class="s1">&#39;freqcutoff&#39;</span><span class="p">:</span> <span class="n">freqcutoff</span><span class="p">,</span>
+                     <span class="s1">&#39;timecutoff&#39;</span><span class="p">:</span> <span class="n">timecutoff</span><span class="p">,</span>
+                     <span class="s1">&#39;freqfit&#39;</span><span class="p">:</span> <span class="s1">&#39;line&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;flagdimension&#39;</span><span class="p">:</span> <span class="s1">&#39;freq&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;extendflags&#39;</span><span class="p">:</span> <span class="n">extendflags_tfcrop</span><span class="p">,</span>
+                     <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="n">flagbackup</span><span class="p">,</span>
+                     <span class="s1">&#39;savepars&#39;</span><span class="p">:</span> <span class="n">savepars</span><span class="p">}</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="c1"># a seperate flagdata(mode=&#39;extent&#39;,...) call if &#39;extendflags&#39; is a dictionary</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extendflags</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_extendflag</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scan</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span> <span class="o">**</span><span class="n">extendflags</span><span class="p">)</span>
+
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_do_rflag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rflag&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">correlation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                  <span class="n">ntime</span><span class="o">=</span><span class="s1">&#39;scan&#39;</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timedevscale</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
+                  <span class="n">freqdevscale</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">timedev</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">freqdev</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">savepars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                  <span class="n">calcftdev</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">useheuristic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_sefd</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                  <span class="n">extendflags</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run rflag heuristics.</span>
+
+<span class="sd">        calcftdev: a single-pass &#39;rflag&#39; (False) or a &#39;calculate&#39;-&gt;&#39;apply&#39; aips-style two-pass operation (True)</span>
+<span class="sd">        useheuristics: run the freqdev/timedev threshold heuristics (True), or act as a pass-through (False)</span>
+<span class="sd">                       only affect operation when calcftdev is True.</span>
+<span class="sd">        extendflags: set the &quot;extendflags&quot; plan.</span>
+<span class="sd">            True/False: toggle the &#39;extendflags&#39; argument in the &#39;rflag&#39; flagdata() call</span>
+<span class="sd">            Dictionary: do flag extension with a seperate flagdata() call</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pass &#39;extendflags&#39; to flagdata(mode=&#39;rflag&#39;) if boolean</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extendflags</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="n">extendflags_rflag</span> <span class="o">=</span> <span class="n">extendflags</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">extendflags_rflag</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                     <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="n">mode</span><span class="p">,</span>
+                     <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span>
+                     <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="n">correlation</span><span class="p">,</span>
+                     <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scan</span><span class="p">,</span>
+                     <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">,</span>
+                     <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw</span><span class="p">,</span>
+                     <span class="s1">&#39;ntime&#39;</span><span class="p">:</span> <span class="n">ntime</span><span class="p">,</span>
+                     <span class="s1">&#39;combinescans&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="n">datacolumn</span><span class="p">,</span>
+                     <span class="s1">&#39;winsize&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                     <span class="s1">&#39;timedevscale&#39;</span><span class="p">:</span> <span class="n">timedevscale</span><span class="p">,</span>
+                     <span class="s1">&#39;freqdevscale&#39;</span><span class="p">:</span> <span class="n">freqdevscale</span><span class="p">,</span>
+                     <span class="s1">&#39;timedev&#39;</span><span class="p">:</span> <span class="n">timedev</span><span class="p">,</span>
+                     <span class="s1">&#39;freqdev&#39;</span><span class="p">:</span> <span class="n">freqdev</span><span class="p">,</span>
+                     <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;extendflags&#39;</span><span class="p">:</span> <span class="n">extendflags_rflag</span><span class="p">,</span>
+                     <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="n">flagbackup</span><span class="p">,</span>
+                     <span class="s1">&#39;savepars&#39;</span><span class="p">:</span> <span class="n">savepars</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">calcftdev</span><span class="p">:</span>
+            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;calculate&#39;</span>
+
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+            <span class="n">jobresult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">jobresult</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;This is likely a dryrun test! Proceed with timedev/freqdev=&#39;&#39;.&quot;</span><span class="p">)</span>
+                <span class="n">ftdev</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">jobresult</span><span class="p">[</span><span class="s1">&#39;nreport&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Null data selection for the Rflag sequence. Continue.&quot;</span><span class="p">)</span>
+                    <span class="k">return</span>
+                <span class="k">if</span> <span class="n">useheuristic</span><span class="p">:</span>
+                    <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+                    <span class="n">rflagdev</span> <span class="o">=</span> <span class="n">RflagDevHeuristic</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">ignore_sefd</span><span class="o">=</span><span class="n">ignore_sefd</span><span class="p">)</span>
+                    <span class="n">ftdev</span> <span class="o">=</span> <span class="n">rflagdev</span><span class="p">(</span><span class="n">jobresult</span><span class="p">[</span><span class="s1">&#39;report0&#39;</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ftdev</span> <span class="o">=</span> <span class="n">jobresult</span><span class="p">[</span><span class="s1">&#39;report0&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">ftdev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;timedev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ftdev</span><span class="p">[</span><span class="s1">&#39;timedev&#39;</span><span class="p">]</span>
+                <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;freqdev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ftdev</span><span class="p">[</span><span class="s1">&#39;freqdev&#39;</span><span class="p">]</span>
+            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;apply&#39;</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+        <span class="n">jobresult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="c1"># a seperate flagdata(mode=&#39;extent&#39;,...) call if &#39;extendflags&#39; is a dictionary</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extendflags</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_extendflag</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scan</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span> <span class="o">**</span><span class="n">extendflags</span><span class="p">)</span>
+
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="Checkflag.do_rfi_flag">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.checkflag.Checkflag.do_rfi_flag">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_rfi_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldselect</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">scanselect</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intentselect</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spwselect</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Do RFI flagging using multiple passes of rflag/tfcrop/extend.&quot;&quot;&quot;</span>
+
+        <span class="n">rflag_standard</span><span class="p">,</span> <span class="n">tfcrop_standard</span><span class="p">,</span> <span class="n">growflag_standard</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_rfi_standard</span><span class="p">()</span>
+        <span class="n">flagbackup</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">calcftdev</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># set ignore_sedf=True/flagbackup=False to maintain the same behavior as the deprecated do_*vlass() methods</span>
+        <span class="n">ignore_sefd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;target-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;bpd-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;vlass-imaging&#39;</span><span class="p">)</span>
+
+        <span class="c1"># set calcftdev=False to turn off the new heuristic for some older modes</span>
+        <span class="n">calcftdev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;semi&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="s1">&#39;bpd&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">rflag_standard</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">datacolumn</span><span class="p">,</span> <span class="n">correlation</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">extendflags</span> <span class="ow">in</span> <span class="n">rflag_standard</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;_&#39;</span> <span class="ow">in</span> <span class="n">correlation</span><span class="p">:</span>
+                    <span class="n">polselect</span> <span class="o">=</span> <span class="n">correlation</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">polselect</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">corr_type_string</span> <span class="ow">or</span> <span class="n">polselect</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrstring</span><span class="p">):</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">mssel_valid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">fieldselect</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spwselect</span><span class="p">,</span> <span class="n">correlation</span><span class="o">=</span><span class="n">polselect</span><span class="p">,</span>
+                                       <span class="n">scan</span><span class="o">=</span><span class="n">scanselect</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intentselect</span><span class="p">):</span>
+                        <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">datacolumn</span> <span class="o">==</span> <span class="s1">&#39;residual&#39;</span><span class="p">:</span>
+                    <span class="c1"># PIPE-1256: determine if we can use the &#39;RESIDUAL&#39; column in the &#39;bpd-vlass/vla&#39; mode.</span>
+                    <span class="c1">#   The usage of &#39;RESIDUAL&#39; is only valid if the model of bpd source(s) is properly filled *AND*</span>
+                    <span class="c1">#   the first-order gain/passband calibration has been applied in &#39;CORRECTED&#39;.</span>
+                    <span class="c1">#   Here we check each field from the data selection and see if they all meet the above requirements.</span>
+                    <span class="c1">#   We only examine the parallel hand amplitude:</span>
+                    <span class="c1">#       - setjy() has only I models for 3C48/3C138/3C286/3C147.</span>
+                    <span class="c1">#       - setjy(fluxdensity=-1) will fill the cross-hand with zero values.</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Determining if we can use the RESIDUAL column for rflag:&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_model_setjy</span><span class="p">():</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  MODEL_DATA is present and none of the model(s) from selected data is a 1Jy point source.&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">datacolumn</span> <span class="o">=</span> <span class="s1">&#39;corrected&#39;</span>
+                        <span class="n">correlation</span> <span class="o">=</span> <span class="n">correlation</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;REAL_&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_&#39;</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  MODEL_DATA s not found or the model(s) from selected data contains 1Jy point source(s).&quot;</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  Use the </span><span class="si">{}</span><span class="s2"> column and correlation = </span><span class="si">{!r}</span><span class="s2"> for rflag&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datacolumn</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">correlation</span><span class="p">))</span>
+                <span class="n">method_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;rflag&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">fieldselect</span><span class="p">,</span>
+                               <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="n">correlation</span><span class="p">,</span>
+                               <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scanselect</span><span class="p">,</span>
+                               <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intentselect</span><span class="p">,</span>
+                               <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spwselect</span><span class="p">,</span>
+                               <span class="s1">&#39;ntime&#39;</span><span class="p">:</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;timedevscale&#39;</span><span class="p">:</span> <span class="n">scale</span><span class="p">,</span>
+                               <span class="s1">&#39;freqdevscale&#39;</span><span class="p">:</span> <span class="n">scale</span><span class="p">,</span>
+                               <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="n">datacolumn</span><span class="p">,</span>
+                               <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="n">flagbackup</span><span class="p">,</span>
+                               <span class="s1">&#39;savepars&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                               <span class="s1">&#39;calcftdev&#39;</span><span class="p">:</span> <span class="n">calcftdev</span><span class="p">,</span>
+                               <span class="s1">&#39;useheuristic&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                               <span class="s1">&#39;ignore_sefd&#39;</span><span class="p">:</span> <span class="n">ignore_sefd</span><span class="p">,</span>
+                               <span class="s1">&#39;extendflags&#39;</span><span class="p">:</span> <span class="n">extendflags</span><span class="p">}</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_do_rflag</span><span class="p">(</span><span class="o">**</span><span class="n">method_args</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tfcrop_standard</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">datacolumn</span><span class="p">,</span> <span class="n">correlation</span><span class="p">,</span> <span class="n">tfcropThreshMultiplier</span><span class="p">,</span> <span class="n">extendflags</span> <span class="ow">in</span> <span class="n">tfcrop_standard</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;_&#39;</span> <span class="ow">in</span> <span class="n">correlation</span><span class="p">:</span>
+                    <span class="n">polselect</span> <span class="o">=</span> <span class="n">correlation</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">polselect</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">corr_type_string</span> <span class="ow">or</span> <span class="n">polselect</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrstring</span><span class="p">):</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">mssel_valid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">fieldselect</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spwselect</span><span class="p">,</span> <span class="n">correlation</span><span class="o">=</span><span class="n">polselect</span><span class="p">,</span>
+                                       <span class="n">scan</span><span class="o">=</span><span class="n">scanselect</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intentselect</span><span class="p">):</span>
+                        <span class="k">continue</span>
+                <span class="n">timecutoff</span> <span class="o">=</span> <span class="mf">4.</span> <span class="k">if</span> <span class="n">tfcropThreshMultiplier</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">tfcropThreshMultiplier</span>
+                <span class="n">freqcutoff</span> <span class="o">=</span> <span class="mf">3.</span> <span class="k">if</span> <span class="n">tfcropThreshMultiplier</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">tfcropThreshMultiplier</span>
+                <span class="n">method_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;tfcrop&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">fieldselect</span><span class="p">,</span>
+                               <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="n">correlation</span><span class="p">,</span>
+                               <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scanselect</span><span class="p">,</span>
+                               <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intentselect</span><span class="p">,</span>
+                               <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spwselect</span><span class="p">,</span>
+                               <span class="s1">&#39;timecutoff&#39;</span><span class="p">:</span> <span class="n">timecutoff</span><span class="p">,</span>
+                               <span class="s1">&#39;freqcutoff&#39;</span><span class="p">:</span> <span class="n">freqcutoff</span><span class="p">,</span>
+                               <span class="s1">&#39;ntime&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tint</span><span class="p">,</span>
+                               <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="n">datacolumn</span><span class="p">,</span>
+                               <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="n">flagbackup</span><span class="p">,</span>
+                               <span class="s1">&#39;savepars&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                               <span class="s1">&#39;extendflags&#39;</span><span class="p">:</span> <span class="n">extendflags</span><span class="p">}</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_do_tfcropflag</span><span class="p">(</span><span class="o">**</span><span class="n">method_args</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">growflag_standard</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_extendflag</span><span class="p">(</span>
+                <span class="n">field</span><span class="o">=</span><span class="n">fieldselect</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scanselect</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intentselect</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spwselect</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="n">flagbackup</span><span class="p">,</span> <span class="o">**</span><span class="n">growflag_standard</span><span class="p">)</span>
+
+        <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="Checkflag.do_vla_targetflag">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.checkflag.Checkflag.do_vla_targetflag">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_vla_targetflag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldselect</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">scanselect</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intentselect</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spwselect</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;Perform a simple second &#39;rflag&#39; pass.</span>
+
+<span class="sd">        This method is equivalent to hifv_targetflag(intents=&#39;*TARGET*&#39;), which is phasing out.</span>
+<span class="sd">        See PIPE-1342.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                     <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;rflag&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">fieldselect</span><span class="p">,</span>
+                     <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="s1">&#39;ABS_&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">corrstring</span><span class="p">,</span>
+                     <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scanselect</span><span class="p">,</span>
+                     <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intentselect</span><span class="p">,</span>
+                     <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spwselect</span><span class="p">,</span>
+                     <span class="s1">&#39;ntime&#39;</span><span class="p">:</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;combinescans&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;winsize&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                     <span class="s1">&#39;timedevscale&#39;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span>
+                     <span class="s1">&#39;freqdevscale&#39;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span>
+                     <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;extendflags&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s1">&#39;savepars&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_select_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Selects data according to the specified checkflagmode.</span>
+
+<span class="sd">        This method constructs selection strings for fields, scans, and intents based on the </span>
+<span class="sd">        `checkflagmode` input. It also determines the appropriate data column to use </span>
+<span class="sd">        (&#39;corrected&#39; or &#39;data&#39;).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: A tuple containing:</span>
+<span class="sd">                - field_select_string (str): Comma-separated list of field IDs.</span>
+<span class="sd">                - scan_select_string (str): Comma-separated list of scan IDs.</span>
+<span class="sd">                - intent_select_string (str): String representing the intent selection.</span>
+<span class="sd">                - column_select_string (str): String representing the data column selection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># start with default</span>
+        <span class="n">fieldselect</span> <span class="o">=</span> <span class="n">scanselect</span> <span class="o">=</span> <span class="n">intentselect</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">columnselect</span> <span class="o">=</span> <span class="s1">&#39;corrected&#39;</span>
+
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">msinfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evla</span><span class="p">[</span><span class="s1">&#39;msinfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">sci_spw_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+
+        <span class="c1"># Select Bandpass/Delay (BPD) calibrators</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;bpd-vla&#39;</span><span class="p">,</span> <span class="s1">&#39;bpd-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;bpd&#39;</span><span class="p">):</span>
+            <span class="n">fieldselect</span> <span class="o">=</span> <span class="n">msinfo</span><span class="o">.</span><span class="n">checkflagfields</span>
+            <span class="c1"># PIPE-1335: down-select scans using both msinfo.checkflagfields and msinfo.testgainscans.</span>
+            <span class="c1"># msinfo.testgainscans alone may include scans of fields not in msinfo.checkflagfields</span>
+            <span class="c1"># (e.g., second calibrators with bandpass or delay intents). See the 21A-311 case from PIPE-1335.</span>
+            <span class="k">if</span> <span class="n">msinfo</span><span class="o">.</span><span class="n">testgainscans</span><span class="p">:</span>
+                <span class="n">testpbd_scans</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">s</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span>
+                        <span class="n">scan_id</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">msinfo</span><span class="o">.</span><span class="n">testgainscans</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))),</span>
+                        <span class="n">field</span><span class="o">=</span><span class="n">msinfo</span><span class="o">.</span><span class="n">checkflagfields</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">sci_spw_list</span><span class="p">)}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">testpbd_scans</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">scanselect</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">testpbd_scans</span><span class="p">)))</span>
+
+        <span class="c1"># Select all calibrators excluding BPD calibrators</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;allcals-vla&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">msinfo</span><span class="o">.</span><span class="n">testgainscans</span><span class="p">:</span>
+                <span class="n">testpbd_scans</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">s</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span>
+                        <span class="n">scan_id</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">msinfo</span><span class="o">.</span><span class="n">testgainscans</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))),</span>
+                        <span class="n">field</span><span class="o">=</span><span class="n">msinfo</span><span class="o">.</span><span class="n">checkflagfields</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">sci_spw_list</span><span class="p">)}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">testpbd_scans</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">allcals_scans</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span>
+                    <span class="n">scan_id</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">msinfo</span><span class="o">.</span><span class="n">calibrator_scan_select_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))),</span>
+                    <span class="n">field</span><span class="o">=</span><span class="n">msinfo</span><span class="o">.</span><span class="n">calibrator_field_select_string</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">sci_spw_list</span><span class="p">)}</span>
+            <span class="n">scanselect</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">allcals_scans</span><span class="o">-</span><span class="n">testpbd_scans</span><span class="p">)))</span>
+
+            <span class="c1"># PIPE-1335: only construct the field selection string if the scan selection string is not empty.</span>
+            <span class="c1"># Note that an exclusion based on msinfo.checkflagfield might accidentaly reject fields observed</span>
+            <span class="c1"># in different intents across scans. See the 21B-136 case from PIPE-1335.</span>
+            <span class="k">if</span> <span class="n">scanselect</span><span class="p">:</span>
+                <span class="n">fields_in_scans</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span>
+                        <span class="n">scan_id</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">allcals_scans</span> <span class="o">-</span> <span class="n">testpbd_scans</span><span class="p">),</span>
+                        <span class="n">field</span><span class="o">=</span><span class="n">msinfo</span><span class="o">.</span><span class="n">calibrator_field_select_string</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">sci_spw_list</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">fields</span><span class="p">}</span>
+                <span class="n">fieldselect</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fields_in_scans</span><span class="p">)))</span>
+
+        <span class="c1"># select targets</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;target-vla&#39;</span><span class="p">,</span> <span class="s1">&#39;target-vlass&#39;</span><span class="p">,</span> <span class="s1">&#39;vlass-imaging&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">):</span>
+            <span class="n">fieldids</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)]</span>
+            <span class="n">fieldselect</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">fieldid</span><span class="p">)</span> <span class="k">for</span> <span class="n">fieldid</span> <span class="ow">in</span> <span class="n">fieldids</span><span class="p">])</span>
+            <span class="n">intentselect</span> <span class="o">=</span> <span class="s1">&#39;*TARGET*&#39;</span>
+
+        <span class="c1"># select all calibrators</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;semi&#39;</span><span class="p">:</span>
+            <span class="n">fieldselect</span> <span class="o">=</span> <span class="n">msinfo</span><span class="o">.</span><span class="n">calibrator_field_select_string</span>
+            <span class="n">scanselect</span> <span class="o">=</span> <span class="n">msinfo</span><span class="o">.</span><span class="n">calibrator_scan_select_string</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;vlass-imaging&#39;</span><span class="p">:</span>
+            <span class="c1"># use the &#39;data&#39; column by default as &#39;vlass-imaging&#39; is working on target-only MS.</span>
+            <span class="n">columnselect</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;FieldSelect:  </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">fieldselect</span><span class="p">)))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ScanSelect:   </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">scanselect</span><span class="p">)))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;IntentSelect: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">intentselect</span><span class="p">)))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ColumnSelect: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">columnselect</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">fieldselect</span><span class="p">,</span> <span class="n">scanselect</span><span class="p">,</span> <span class="n">intentselect</span><span class="p">,</span> <span class="n">columnselect</span>
+
+    <span class="k">def</span> <span class="nf">_select_rfi_standard</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set rflag data selection and threshold-multiplier in individual rflag iterations.</span>
+
+<span class="sd">        Note from BK:</span>
+<span class="sd">        Set up threshold multiplier values for calibrators and targets separately.</span>
+<span class="sd">        Xpol are used for cross-hands, Ppol are used for parallel hands. As</span>
+<span class="sd">        noted above, I&#39;m still refining these values; I suppose they could be</span>
+<span class="sd">        input parameters for the task, if needed.</span>
+
+<span class="sd">        rflag_standard: list of tuple, with each tuple (a, b, c, d) describing the specifications of one self._do_rflag call:</span>
+
+<span class="sd">                            a) data column selection</span>
+<span class="sd">                            b) correlation selection</span>
+<span class="sd">                            c) ftdev threshold multiplier</span>
+<span class="sd">                            d) extendflag setting</span>
+<span class="sd">                                Boolean (True/False):</span>
+<span class="sd">                                    use the default basic extendflagging scheme; see the &#39;extendflags&#39; subprameter of flagdata(mode=&#39;rflag&#39;.</span>
+<span class="sd">                                A dictionary (e.g. {&#39;growtime&#39;:100,&#39;growfreq&#39;:100,&#39;&#39;)</span>
+<span class="sd">                                    do extendflag using seperate flagdata(mode=&#39;extend&#39;,..) call following flagdata(model=&#39;rflag&#39;,extendflags=False,..)</span>
+
+<span class="sd">        tfcrop_standard: list of tuple, with each tuple (a, b, c, d) describing the specifications of one self._do_rflag call:</span>
+
+<span class="sd">                            a) data column selection</span>
+<span class="sd">                            b) correlation selection</span>
+<span class="sd">                            c) tfcrop threshold multiplier</span>
+<span class="sd">                            d) extendflag setting</span>
+<span class="sd">                                Boolean (True/False):</span>
+<span class="sd">                                    use the default basic extendflagging scheme; see the &#39;extendflags&#39; subprameter of flagdata(mode=&#39;rflag&#39;.</span>
+<span class="sd">                                A dictionary (e.g. {&#39;growtime&#39;:100,&#39;growfreq&#39;:100,&#39;&#39;)</span>
+<span class="sd">                                    do extendflag using seperate flagdata(mode=&#39;extend&#39;,..) call following flagdata(model=&#39;rflag&#39;,extendflags=False,..</span>
+
+<span class="sd">        growflag_standrd: dictionary to specify the final optional &quot;growflags&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rflag_standard</span> <span class="o">=</span> <span class="n">tfcrop_standard</span> <span class="o">=</span> <span class="n">growflag_standard</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;bpd-vla&#39;</span><span class="p">:</span>
+            <span class="c1"># PIPE-987: follow the VLASS flagging scheme described in CAS-11598.</span>
+            <span class="c1">#           with an optional growflag step specified by the &#39;growflags&#39; task argument</span>
+            <span class="n">rflag_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="s1">&#39;REAL_RR&#39;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="s1">&#39;REAL_LL&#39;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">})]</span>
+            <span class="n">tfcrop_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">})]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">growflags</span><span class="p">:</span>
+                <span class="n">growflag_standard</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                                     <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                                     <span class="s1">&#39;growaround&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="s1">&#39;flagneartime&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                     <span class="s1">&#39;flagnearfreq&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;bpd-vlass&#39;</span><span class="p">:</span>
+            <span class="c1"># PIPE-987: follow the VLASS flagging scheme described in CAS-11598.</span>
+            <span class="n">rflag_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="s1">&#39;REAL_RR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="s1">&#39;REAL_LL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">})]</span>
+            <span class="n">tfcrop_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">})]</span>
+            <span class="n">growflag_standard</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                                 <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                                 <span class="s1">&#39;growaround&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                 <span class="s1">&#39;flagneartime&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                 <span class="s1">&#39;flagnearfreq&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;allcals-vla&#39;</span><span class="p">:</span>
+            <span class="c1"># PIPE-987: follow the VLASS flagging scheme described in CAS-11598.</span>
+            <span class="c1">#           with an optional growflag step specified by the &#39;growflags&#39; task argument</span>
+            <span class="n">rflag_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">})]</span>
+            <span class="n">tfcrop_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">})]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">growflags</span><span class="p">:</span>
+                <span class="n">growflag_standard</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                                     <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                                     <span class="s1">&#39;growaround&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="s1">&#39;flagneartime&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                     <span class="s1">&#39;flagnearfreq&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;allcals-vlass&#39;</span><span class="p">:</span>
+            <span class="c1"># PIPE-987: follow the VLASS flagging scheme described in CAS-11598.</span>
+            <span class="n">rflag_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">})]</span>
+            <span class="n">tfcrop_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">})]</span>
+            <span class="n">growflag_standard</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                                 <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                                 <span class="s1">&#39;growaround&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                 <span class="s1">&#39;flagneartime&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                 <span class="s1">&#39;flagnearfreq&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;target-vla&#39;</span><span class="p">:</span>
+            <span class="c1"># PIPE-685: follow the VLASS flagging scheme described in CAS-11598</span>
+            <span class="c1"># PIPE-987: disable growflags</span>
+            <span class="n">rflag_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">})]</span>
+            <span class="n">tfcrop_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">})]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;target-vlass&#39;</span><span class="p">:</span>
+            <span class="c1"># PIPE-987: follow the VLASS flagging scheme described in CAS-11598.</span>
+            <span class="n">rflag_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">})]</span>
+            <span class="n">tfcrop_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">})]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;vlass-imaging&#39;</span><span class="p">:</span>
+            <span class="c1"># PIPE-987: follow the VLASS flagging scheme described in CAS-11598.</span>
+            <span class="n">rflag_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;residual_data&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;residual_data&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">})]</span>
+            <span class="n">tfcrop_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">})]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span>
+            <span class="n">rflag_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">})]</span>
+            <span class="n">tfcrop_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">})]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;bpd&#39;</span><span class="p">:</span>
+            <span class="c1"># PIPE-987: follow the VLASS flagging scheme described in CAS-11598.</span>
+            <span class="n">rflag_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="s1">&#39;REAL_RR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="s1">&#39;REAL_LL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">})]</span>
+            <span class="n">tfcrop_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">})]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">growflags</span><span class="p">:</span>
+                <span class="n">growflag_standard</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                                     <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                                     <span class="s1">&#39;growaround&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="s1">&#39;flagneartime&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="s1">&#39;flagnearfreq&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s1">&#39;allcals&#39;</span><span class="p">:</span>
+            <span class="c1"># PIPE-987: follow the VLASS flagging scheme described in CAS-11598.</span>
+            <span class="n">rflag_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                              <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">})]</span>
+            <span class="n">tfcrop_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RL&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LR&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_RR&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">}),</span>
+                               <span class="p">(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_LL&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mf">60.</span><span class="p">})]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">growflags</span><span class="p">:</span>
+                <span class="n">growflag_standard</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                                     <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                                     <span class="s1">&#39;growaround&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="s1">&#39;flagneartime&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="s1">&#39;flagnearfreq&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;semi&#39;</span><span class="p">):</span>
+            <span class="n">rflag_standard</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">corrstring</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="kc">False</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">growflags</span><span class="p">:</span>
+                <span class="n">growflag_standard</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;growtime&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                                     <span class="s1">&#39;growfreq&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                                     <span class="s1">&#39;growaround&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="s1">&#39;flagneartime&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="s1">&#39;flagnearfreq&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;rflag_standard:     </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">rflag_standard</span><span class="p">)))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;tfcrop_standard:    </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">tfcrop_standard</span><span class="p">)))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;growflag_standard:  </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">growflag_standard</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">rflag_standard</span><span class="p">,</span> <span class="n">tfcrop_standard</span><span class="p">,</span> <span class="n">growflag_standard</span>
+
+    <span class="k">def</span> <span class="nf">_check_for_modelcolumn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;MODEL_DATA&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">colnames</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">overwrite_modelcol</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Writing model data to </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                <span class="n">imaging_parameters</span> <span class="o">=</span> <span class="n">set_add_model_column_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">tclean</span><span class="p">(</span><span class="o">**</span><span class="n">imaging_parameters</span><span class="p">)</span>
+                <span class="n">tclean_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using existing MODEL_DATA column found in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_create_timeavg_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;before&#39;</span><span class="p">):</span>
+
+        <span class="n">stage_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span>
+        <span class="n">vis_averaged_name</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="s1">&#39;hifv_checkflag&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">stage_number</span><span class="p">),</span>
+                             <span class="n">suffix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span><span class="p">,</span> <span class="s1">&#39;averaged&#39;</span><span class="p">]</span>
+        <span class="n">vis_averaged_name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis_averaged_name</span><span class="p">)))</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Saving the time-averaged visibility of selected data to </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vis_averaged_name</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Estimating the amplitude range of unflagged averaged data for </span><span class="si">{}</span><span class="s1"> : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vis_averaged_name</span><span class="p">,</span> <span class="n">suffix</span><span class="p">))</span>
+
+        <span class="c1"># do cross-scan averging for calibrator checkflagmodes</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;target-vla&#39;</span><span class="p">,</span> <span class="s1">&#39;vlass-imaging&#39;</span><span class="p">):</span>
+            <span class="n">timespan</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">timespan</span> <span class="o">=</span> <span class="s1">&#39;scan&#39;</span>
+
+        <span class="n">fieldselect</span><span class="p">,</span> <span class="n">scanselect</span><span class="p">,</span> <span class="n">intentselect</span><span class="p">,</span> <span class="n">columnselect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_data</span><span class="p">()</span>
+
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">vis_averaged_name</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">mstransform</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">outputvis</span><span class="o">=</span><span class="n">vis_averaged_name</span><span class="p">,</span>
+                                     <span class="n">field</span><span class="o">=</span><span class="n">fieldselect</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sci_spws</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scanselect</span><span class="p">,</span>
+                                     <span class="n">intent</span><span class="o">=</span><span class="n">intentselect</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="n">columnselect</span><span class="p">,</span>
+                                     <span class="n">correlation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">corrstring</span><span class="p">,</span>
+                                     <span class="n">timeaverage</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timebin</span><span class="o">=</span><span class="s1">&#39;1e8&#39;</span><span class="p">,</span> <span class="n">timespan</span><span class="o">=</span><span class="n">timespan</span><span class="p">,</span>
+                                     <span class="n">keepflags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reindex</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="n">vis_averaged_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">msfile</span><span class="p">:</span>
+            <span class="n">vis_ampstats</span> <span class="o">=</span> <span class="n">msfile</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">complex_value</span><span class="o">=</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="n">useweights</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useflags</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                             <span class="n">reportingaxes</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">doquantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                             <span class="n">timeaverage</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timebin</span><span class="o">=</span><span class="s1">&#39;0s&#39;</span><span class="p">,</span> <span class="n">timespan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">vis_averaged_name</span><span class="p">,</span> <span class="n">vis_ampstats</span>
+
+    <span class="k">def</span> <span class="nf">_create_summaryplots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;before&#39;</span><span class="p">,</span> <span class="n">plotms_args</span><span class="o">=</span><span class="p">{}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Preload the display class to generate before-flagging plot(s).&quot;&quot;&quot;</span>
+        <span class="n">summary_plots</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">results_tmp</span> <span class="o">=</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">()</span>
+        <span class="n">results_tmp</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+        <span class="n">results_tmp</span><span class="o">.</span><span class="n">stage_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span>
+        <span class="n">results_tmp</span><span class="o">.</span><span class="n">plots</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">summary_plots</span> <span class="o">=</span> <span class="n">checkflagSummaryChart</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">results_tmp</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">,</span> <span class="n">plotms_args</span><span class="o">=</span><span class="n">plotms_args</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">summary_plots</span>
+
+    <span class="k">def</span> <span class="nf">_is_model_setjy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the model column status of selected fields.</span>
+
+<span class="sd">        return True, if the below requirements are met:</span>
+<span class="sd">            - the model column is present.</span>
+<span class="sd">            - none of selected field(s) contain a model of 1Jy point source at the phasecenter (in the parallel hands)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fieldselect</span><span class="p">,</span> <span class="n">scanselect</span><span class="p">,</span> <span class="n">intentselect</span><span class="p">,</span> <span class="n">columnselect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_data</span><span class="p">()</span>
+        <span class="n">is_model_setjy</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># set False if the MODEL column is not present.</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;MODEL_DATA&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">colnames</span><span class="p">():</span>
+                <span class="n">is_model_setjy</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">is_model_setjy</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">msfile</span><span class="p">:</span>
+                <span class="c1"># we expect fieldselect is not an empty string here...</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fieldselect</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                    <span class="n">staql</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sci_spws</span><span class="p">,</span> <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scanselect</span><span class="p">,</span>
+                             <span class="s1">&#39;scanintent&#39;</span><span class="p">:</span> <span class="n">intentselect</span><span class="p">,</span> <span class="s1">&#39;polarization&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;uvdist&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+                    <span class="k">if</span> <span class="n">msfile</span><span class="o">.</span><span class="n">msselect</span><span class="p">(</span><span class="n">staql</span><span class="p">,</span> <span class="n">onlyparse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                        <span class="n">vis_ampstats</span> <span class="o">=</span> <span class="n">msfile</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scanselect</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intentselect</span><span class="p">,</span>
+                                                         <span class="n">correlation</span><span class="o">=</span><span class="s1">&#39;RR,LL&#39;</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span>
+                                                         <span class="n">complex_value</span><span class="o">=</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="n">useweights</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useflags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                         <span class="n">reportingaxes</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">doquantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                         <span class="n">timeaverage</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timebin</span><span class="o">=</span><span class="s1">&#39;0s&#39;</span><span class="p">,</span> <span class="n">timespan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                        <span class="n">vis_ampstats</span> <span class="o">=</span> <span class="n">vis_ampstats</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;checking the MODEL amplitude stats of field = </span><span class="si">{!r}</span><span class="s1">:</span><span class="se">\n</span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">field</span><span class="p">,</span> <span class="n">vis_ampstats</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="n">vis_ampstats</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">vis_ampstats</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">is_model_setjy</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="k">break</span>
+                    <span class="n">msfile</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">is_model_setjy</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

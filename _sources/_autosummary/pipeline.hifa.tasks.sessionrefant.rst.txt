@@ -1,0 +1,22 @@
+pipeline.hifa.tasks.sessionrefant
+=================================
+
+.. automodule:: pipeline.hifa.tasks.sessionrefant
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SessionRefAnt
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   qa
+   renderer
+   resultobjects
+   sessionrefant

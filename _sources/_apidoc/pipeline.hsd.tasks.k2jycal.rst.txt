@@ -1,0 +1,53 @@
+pipeline.hsd.tasks.k2jycal package
+==================================
+
+Submodules
+----------
+
+pipeline.hsd.tasks.k2jycal.display module
+-----------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.k2jycal.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.k2jycal.jyperkreader module
+----------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.k2jycal.jyperkreader
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.k2jycal.k2jycal module
+-----------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.k2jycal.k2jycal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.k2jycal.qa module
+------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.k2jycal.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hsd.tasks.k2jycal.renderer module
+------------------------------------------
+
+.. automodule:: pipeline.hsd.tasks.k2jycal.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hsd.tasks.k2jycal
+   :members:
+   :undoc-members:
+   :show-inheritance:

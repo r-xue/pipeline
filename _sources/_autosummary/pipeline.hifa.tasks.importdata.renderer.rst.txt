@@ -1,0 +1,22 @@
+pipeline.hifa.tasks.importdata.renderer
+=======================================
+
+.. automodule:: pipeline.hifa.tasks.importdata.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_relative_url
+      make_parang_plots
+      sanitize
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Executor
+      T2_4MDetailsALMAImportDataRenderer
+      T2_4MDetailsImportDataRenderer
+   

@@ -1,0 +1,698 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on 01 Jun 2017</span>
+
+<span class="sd">@author: Vincent Geers (UKATC)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.displays</span> <span class="kn">import</span> <span class="n">applycal</span> <span class="k">as</span> <span class="n">applycal_displays</span>
+<span class="kn">from</span> <span class="nn">pipeline.h.tasks.flagging.flagdatasetter</span> <span class="kn">import</span> <span class="n">FlagdataSetter</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">applycal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">correctedampflag</span>
+<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">gaincal</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="kn">import</span> <span class="n">CalTo</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">GfluxscaleflagResults</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;GfluxscaleflagInputs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;GfluxscaleflagResults&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Gfluxscaleflag&#39;</span>
+<span class="p">]</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="GfluxscaleflagInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gfluxscaleflag.html#pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag.GfluxscaleflagInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">GfluxscaleflagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    GfluxscaleflagInputs defines the inputs for the Gfluxscaleflag pipeline task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Lower sigma threshold for identifying outliers as a result of &quot;bad</span>
+    <span class="c1"># baselines&quot; and/or &quot;bad antennas&quot; within baselines (across all</span>
+    <span class="c1"># timestamps); equivalent to:</span>
+    <span class="c1"># catchNegativeOutliers[&#39;scalardiff&#39;]</span>
+    <span class="n">antblnegsig</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">3.4</span><span class="p">)</span>
+
+    <span class="c1"># Upper sigma threshold for identifying outliers as a result of &quot;bad</span>
+    <span class="c1"># baselines&quot; and/or &quot;bad antennas&quot; within baselines (across all</span>
+    <span class="c1"># timestamps); equivalent to:</span>
+    <span class="c1"># flag_nsigma[&#39;scalardiff&#39;]</span>
+    <span class="n">antblpossig</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">3.2</span><span class="p">)</span>
+
+    <span class="c1"># Lower sigma threshold for identifying outliers as a result of bad</span>
+    <span class="c1"># antennas within individual timestamps; equivalent to:</span>
+    <span class="c1"># relaxationSigma</span>
+    <span class="n">antnegsig</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">4.0</span><span class="p">)</span>
+
+    <span class="c1"># Upper sigma threshold for identifying outliers as a result of bad</span>
+    <span class="c1"># antennas within individual timestamps; equivalent to:</span>
+    <span class="c1"># positiveSigmaAntennaBased</span>
+    <span class="n">antpossig</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">4.6</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># By default, return the fields corresponding to the input</span>
+        <span class="c1"># intents.</span>
+        <span class="n">fieldids</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span>
+                    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fieldids</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># By default, this task will run for AMPLITUDE, PHASE, CHECK, and</span>
+        <span class="c1"># DIFFGAIN* intents.</span>
+        <span class="n">intents_to_flag</span> <span class="o">=</span> <span class="s1">&#39;AMPLITUDE,PHASE,CHECK,DIFFGAINREF,DIFFGAINSRC&#39;</span>
+
+        <span class="c1"># Check if any of the AMPLITUDE intent fields were also used for</span>
+        <span class="c1"># BANDPASS, in which case it has already been flagged by</span>
+        <span class="c1"># hifa_bandpassflag, and this task will just do PHASE, CHECK, and</span>
+        <span class="c1"># DIFFGAIN* fields. This assumes that there will only be 1 field for</span>
+        <span class="c1"># BANDPASS and 1 field for AMPLITUDE (which can be the same), which is</span>
+        <span class="c1"># valid as of Cycle 5.</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">fieldintent</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;BANDPASS&#39;</span> <span class="ow">in</span> <span class="n">fieldintent</span><span class="p">:</span>
+                    <span class="n">intents_to_flag</span> <span class="o">=</span> <span class="s1">&#39;PHASE,CHECK,DIFFGAINREF,DIFFGAINSRC&#39;</span>
+        <span class="k">return</span> <span class="n">intents_to_flag</span>
+
+    <span class="n">minsnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">niter</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">phaseupsolint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="n">refant</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Relaxed value to set the threshold scaling factor to under certain</span>
+    <span class="c1"># conditions; equivalent to:</span>
+    <span class="c1"># relaxationFactor</span>
+    <span class="n">relaxed_factor</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+
+    <span class="n">solint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">science_spws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span>
+            <span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">])</span>
+
+    <span class="c1"># Threshold for maximum fraction of timestamps that are allowed</span>
+    <span class="c1"># to contain outliers; equivalent to:</span>
+    <span class="c1"># checkForAntennaBasedBadIntegrations</span>
+    <span class="n">tmantint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.063</span><span class="p">)</span>
+
+    <span class="c1"># Initial threshold for maximum fraction of &quot;bad baselines&quot; over &quot;all</span>
+    <span class="c1"># baselines&quot; that an antenna may be a part of; equivalent to:</span>
+    <span class="c1"># tooManyBaselinesFraction</span>
+    <span class="n">tmbl</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.175</span><span class="p">)</span>
+
+    <span class="c1"># Initial threshold for maximum fraction of &quot;outlier timestamps&quot; over</span>
+    <span class="c1"># &quot;total timestamps&quot; that a baseline may be a part of; equivalent to:</span>
+    <span class="c1"># tooManyIntegrationsFraction</span>
+    <span class="n">tmint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.085</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">phaseupsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antnegsig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antpossig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmantint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">tmint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmbl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antblnegsig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antblpossig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">relaxed_factor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GfluxscaleflagInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># pipeline inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="c1"># vis must be set first, as other properties may depend on it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+
+        <span class="c1"># data selection arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+
+        <span class="c1"># gaincal parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="n">solint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phaseupsolint</span> <span class="o">=</span> <span class="n">phaseupsolint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minsnr</span> <span class="o">=</span> <span class="n">minsnr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refant</span> <span class="o">=</span> <span class="n">refant</span>
+
+        <span class="c1"># flagging parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antnegsig</span> <span class="o">=</span> <span class="n">antnegsig</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antpossig</span> <span class="o">=</span> <span class="n">antpossig</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmantint</span> <span class="o">=</span> <span class="n">tmantint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmint</span> <span class="o">=</span> <span class="n">tmint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmbl</span> <span class="o">=</span> <span class="n">tmbl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antblnegsig</span> <span class="o">=</span> <span class="n">antblnegsig</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antblpossig</span> <span class="o">=</span> <span class="n">antblpossig</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relaxed_factor</span> <span class="o">=</span> <span class="n">relaxed_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">niter</span> <span class="o">=</span> <span class="n">niter</span></div>
+
+
+
+<div class="viewcode-block" id="Gfluxscaleflag">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gfluxscaleflag.html#pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag.Gfluxscaleflag">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_gfluxscaleflag&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
+    <span class="s1">&#39;This task calls hif_correctedampflag to evaluate flagging heuristics on the phase calibrator and flux calibrator, &#39;</span>
+    <span class="s1">&#39;looking for outlier visibility points by statistically examining the scalar difference of corrected amplitudes &#39;</span>
+    <span class="s1">&#39;minus model amplitudes, and flagging those outliers.&#39;</span>
+<span class="p">)</span>
+<span class="k">class</span> <span class="nc">Gfluxscaleflag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">GfluxscaleflagInputs</span>
+
+<div class="viewcode-block" id="Gfluxscaleflag.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gfluxscaleflag.html#pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag.Gfluxscaleflag.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Initialize results.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">GfluxscaleflagResults</span><span class="p">()</span>
+
+        <span class="c1"># Store the vis in the result</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">plots</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="c1"># create a shortcut to the plotting function that pre-supplies the inputs and context</span>
+        <span class="n">plot_fn</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">create_plots</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># Create back-up of flags.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating back-up of &quot;pre-gfluxscaleflag&quot; flagging state&#39;</span><span class="p">)</span>
+        <span class="n">flag_backup_name_pregfsf</span> <span class="o">=</span> <span class="s1">&#39;before_gfsflag&#39;</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span>
+            <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;save&#39;</span><span class="p">,</span> <span class="n">versionname</span><span class="o">=</span><span class="n">flag_backup_name_pregfsf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="c1"># Create phase caltable(s) and merge into the local context.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_phasecal</span><span class="p">()</span>
+
+        <span class="c1"># Create amplitude caltable and merge it into the local context.</span>
+        <span class="c1"># CAS-10491: for scan-based (solint=&#39;inf&#39;) amplitude solves that</span>
+        <span class="c1"># will be applied to the calibrator, set interp to &#39;nearest&#39;.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Compute amplitude gaincal table.&#39;</span><span class="p">)</span>
+        <span class="n">amp_interp</span> <span class="o">=</span> <span class="s1">&#39;nearest,linear&#39;</span> <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">solint</span> <span class="o">==</span> <span class="s1">&#39;inf&#39;</span> <span class="k">else</span> <span class="s1">&#39;linear,linear&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">calmode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">solint</span><span class="p">,</span>
+                         <span class="n">minsnr</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">minsnr</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="n">amp_interp</span><span class="p">)</span>
+
+        <span class="c1"># Ensure that any flagging applied to the MS by this applycal are</span>
+        <span class="c1"># reverted at the end, even in the case of exceptions.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Apply the new caltables to the MS.</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Applying phase-up, bandpass, and amplitude cal tables.&#39;</span><span class="p">)</span>
+            <span class="c1"># Apply the calibrations.</span>
+            <span class="n">callib_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_applycal</span><span class="p">(</span><span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># copy across the vis:callibrary dict to our result. This dict </span>
+            <span class="c1"># will be inspected by the renderer to know if/which callibrary</span>
+            <span class="c1"># files should be copied across to the weblog stage directory</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">callib_map</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">callib_map</span><span class="p">)</span>
+
+            <span class="c1"># Make &quot;after calibration, before flagging&quot; plots for the weblog</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating &quot;after calibration, before flagging&quot; plots&#39;</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="s1">&#39;before&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot_fn</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;before&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Run correctedampflag to identify outliers for intents specified in</span>
+            <span class="c1"># intents_for_flagging; let &quot;field&quot; and &quot;spw&quot; be initialized</span>
+            <span class="c1"># automatically based on intents and context.</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Running correctedampflag to identify outliers to flag.&#39;</span><span class="p">)</span>
+            <span class="n">cafinputs</span> <span class="o">=</span> <span class="n">correctedampflag</span><span class="o">.</span><span class="n">Correctedampflag</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span>
+                <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+                <span class="n">antnegsig</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">antnegsig</span><span class="p">,</span> <span class="n">antpossig</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">antpossig</span><span class="p">,</span>
+                <span class="n">tmantint</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">tmantint</span><span class="p">,</span> <span class="n">tmint</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">tmint</span><span class="p">,</span> <span class="n">tmbl</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">tmbl</span><span class="p">,</span>
+                <span class="n">antblnegsig</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">antblnegsig</span><span class="p">,</span> <span class="n">antblpossig</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">antblpossig</span><span class="p">,</span>
+                <span class="n">relaxed_factor</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">relaxed_factor</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">niter</span><span class="p">)</span>
+            <span class="n">caftask</span> <span class="o">=</span> <span class="n">correctedampflag</span><span class="o">.</span><span class="n">Correctedampflag</span><span class="p">(</span><span class="n">cafinputs</span><span class="p">)</span>
+            <span class="n">cafresult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">caftask</span><span class="p">)</span>
+
+            <span class="c1"># If flags were found in the bandpass calibrator...</span>
+            <span class="n">cafflags</span> <span class="o">=</span> <span class="n">cafresult</span><span class="o">.</span><span class="n">flagcmds</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">cafflags</span><span class="p">:</span>
+                <span class="c1"># Create the &quot;after calibration, after flagging&quot; plots for the weblog.</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating &quot;after calibration, after flagging&quot; plots&#39;</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="s1">&#39;after&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot_fn</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;after&#39;</span><span class="p">)</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># Restore the &quot;pre-gfluxscaleflag&quot; backup of the flagging state, to</span>
+            <span class="c1"># undo any flags that were propagated from caltables to the MS by</span>
+            <span class="c1"># the applycal call.</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Restoring back-up of &quot;pre-gfluxscaleflag&quot; flagging state.&#39;</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span>
+                <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;restore&#39;</span><span class="p">,</span> <span class="n">versionname</span><span class="o">=</span><span class="n">flag_backup_name_pregfsf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="c1"># If new outliers were identified...</span>
+        <span class="k">if</span> <span class="n">cafflags</span><span class="p">:</span>
+            <span class="c1"># Re-apply the newly found flags from correctedampflag.</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Re-applying flags from correctedampflag.&#39;</span><span class="p">)</span>
+            <span class="n">fsinputs</span> <span class="o">=</span> <span class="n">FlagdataSetter</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span>
+                <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                <span class="n">inpfile</span><span class="o">=</span><span class="p">[])</span>
+            <span class="n">fstask</span> <span class="o">=</span> <span class="n">FlagdataSetter</span><span class="p">(</span><span class="n">fsinputs</span><span class="p">)</span>
+            <span class="n">fstask</span><span class="o">.</span><span class="n">flags_to_set</span><span class="p">(</span><span class="n">cafflags</span><span class="p">)</span>
+            <span class="n">fsresult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">fstask</span><span class="p">)</span>
+
+        <span class="c1"># Store flagging task result.</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">cafresult</span> <span class="o">=</span> <span class="n">cafresult</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="Gfluxscaleflag.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gfluxscaleflag.html#pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag.Gfluxscaleflag.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">merge</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># SJW - always just one job</span>
+        <span class="n">ac_intents</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">]</span>
+
+        <span class="n">applycal_tasks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">ac_intents</span><span class="p">:</span>
+            <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">applycal</span><span class="o">.</span><span class="n">IFApplycalInputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">flagsum</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                    <span class="n">flagbackup</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">applycal</span><span class="o">.</span><span class="n">SerialIFApplycal</span><span class="p">(</span><span class="n">task_inputs</span><span class="p">)</span>
+            <span class="n">applycal_tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="n">callib_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">applycal_tasks</span><span class="p">:</span>
+            <span class="n">applycal_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="n">merge</span><span class="p">)</span>
+            <span class="n">callib_map</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">applycal_result</span><span class="o">.</span><span class="n">callib_map</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">callib_map</span>
+
+    <span class="k">def</span> <span class="nf">_do_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span>
+                    <span class="n">calmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">combine</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">minsnr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">interp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
+
+        <span class="c1"># Identify which science spws were selected by inputs parameter.</span>
+        <span class="n">request_spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+
+        <span class="c1"># Identify which scans covered the requested intent, field, and any of</span>
+        <span class="c1"># the requested spws.</span>
+        <span class="n">targeted_scans</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="c1"># Among the requested spws, identify which have a scan among the</span>
+        <span class="c1"># targeted scans.</span>
+        <span class="n">scan_spws</span> <span class="o">=</span> <span class="p">{</span><span class="n">spw</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">targeted_scans</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">spws</span> <span class="k">if</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">request_spws</span><span class="p">}</span>
+
+        <span class="c1"># Create separate phase caltables for each spectral spec.</span>
+        <span class="k">for</span> <span class="n">spectral_spec</span><span class="p">,</span> <span class="n">tuning_spw_ids</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_spectralspec_to_spwid_map</span><span class="p">(</span><span class="n">scan_spws</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">tuning_spw_str</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">tuning_spw_ids</span><span class="p">)])</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Processing spectral spec </span><span class="si">{}</span><span class="s1">, spws </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spectral_spec</span><span class="p">,</span> <span class="n">tuning_spw_str</span><span class="p">))</span>
+
+            <span class="n">scans_with_data</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">tuning_spw_str</span><span class="p">,</span> <span class="n">scan_intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">scans_with_data</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No data to process for spectral spec </span><span class="si">{}</span><span class="s1">. Continuing...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spectral_spec</span><span class="p">))</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># of the fields that we are about to process, does any field have</span>
+            <span class="c1"># multiple intents?</span>
+            <span class="n">mixed_intents</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">fields_in_scans</span> <span class="o">=</span> <span class="p">{</span><span class="n">fld</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans_with_data</span> <span class="k">for</span> <span class="n">fld</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">fields</span><span class="p">}</span>
+            <span class="n">singular_intents</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">singular_intents</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">fld</span> <span class="ow">in</span> <span class="n">fields_in_scans</span><span class="p">:</span>
+                    <span class="n">intents_to_scans</span> <span class="o">=</span> <span class="p">{</span><span class="n">si</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">si</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">fld</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">tuning_spw_str</span><span class="p">)</span>
+                                        <span class="k">for</span> <span class="n">si</span> <span class="ow">in</span> <span class="n">singular_intents</span><span class="p">}</span>
+                    <span class="n">valid_intents</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">intents_to_scans</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_intents</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">mixed_intents</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+
+            <span class="k">if</span> <span class="n">mixed_intents</span> <span class="ow">and</span> <span class="n">solint</span> <span class="o">==</span> <span class="s1">&#39;inf&#39;</span><span class="p">:</span>
+                <span class="c1"># multiple items, one for each intent. Each intent will result</span>
+                <span class="c1"># in a separate job.</span>
+                <span class="c1"># Make sure data for the intent exists (PIPE-367)</span>
+                <span class="n">intents_to_scans</span> <span class="o">=</span> <span class="p">{</span><span class="n">si</span><span class="p">:</span> <span class="p">[</span><span class="n">scan</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans_with_data</span> <span class="k">if</span> <span class="n">si</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
+                                    <span class="k">for</span> <span class="n">si</span> <span class="ow">in</span> <span class="n">singular_intents</span><span class="p">}</span>
+                <span class="n">valid_intents</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">intents_to_scans</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">]</span>
+                <span class="n">task_intents</span> <span class="o">=</span> <span class="n">valid_intents</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># one item, and hence one job, with &#39;PHASE,BANDPASS,...&#39;</span>
+                <span class="n">task_intents</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">singular_intents</span><span class="p">)]</span>
+
+            <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">task_intents</span><span class="p">:</span>
+                <span class="c1"># Initialize gaincal inputs.</span>
+                <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span>
+                    <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+                    <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                    <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span>
+                    <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span>
+                    <span class="n">spw</span><span class="o">=</span><span class="n">tuning_spw_str</span><span class="p">,</span>
+                    <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span>
+                    <span class="n">gaintype</span><span class="o">=</span><span class="n">gaintype</span><span class="p">,</span>
+                    <span class="n">calmode</span><span class="o">=</span><span class="n">calmode</span><span class="p">,</span>
+                    <span class="n">minsnr</span><span class="o">=</span><span class="n">minsnr</span><span class="p">,</span>
+                    <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span>
+                    <span class="n">refant</span><span class="o">=</span><span class="n">refant</span><span class="p">,</span>
+                    <span class="n">solnorm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+                <span class="c1"># if we need to generate multiple caltables, make the caltable</span>
+                <span class="c1"># names unique by inserting the intent to prevent them overwriting</span>
+                <span class="c1"># each other</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">task_intents</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">task_inputs</span><span class="o">.</span><span class="n">caltable</span><span class="p">)</span>
+                    <span class="n">task_inputs</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{!s}</span><span class="s1">.</span><span class="si">{!s}{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
+
+                <span class="c1"># Modify output table filename to append &quot;prelim&quot;.</span>
+                <span class="k">if</span> <span class="n">task_inputs</span><span class="o">.</span><span class="n">caltable</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.tbl&#39;</span><span class="p">):</span>
+                    <span class="n">task_inputs</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">task_inputs</span><span class="o">.</span><span class="n">caltable</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.prelim.tbl&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">task_inputs</span><span class="o">.</span><span class="n">caltable</span> <span class="o">+=</span> <span class="s1">&#39;.prelim&#39;</span>
+
+                <span class="c1"># Initialize and execute gaincal task.</span>
+                <span class="n">task</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">task_inputs</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+                <span class="c1"># modify the result so that this caltable is only applied to</span>
+                <span class="c1"># the intent from which the calibration was derived</span>
+                <span class="n">calapp_overrides</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)</span>
+
+                <span class="c1"># Phase solution caltables should be registered with</span>
+                <span class="c1"># calwt=False (PIPE-1154).</span>
+                <span class="k">if</span> <span class="n">calmode</span> <span class="o">==</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span>
+                    <span class="n">calapp_overrides</span><span class="p">[</span><span class="s1">&#39;calwt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="c1"># Adjust the field if provided.</span>
+                <span class="k">if</span> <span class="n">field</span><span class="p">:</span>
+                    <span class="n">calapp_overrides</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+
+                <span class="c1"># Adjust the interp if provided.</span>
+                <span class="k">if</span> <span class="n">interp</span><span class="p">:</span>
+                    <span class="n">calapp_overrides</span><span class="p">[</span><span class="s1">&#39;interp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interp</span>
+
+                <span class="c1"># Adjust the spw map if provided.</span>
+                <span class="k">if</span> <span class="n">spwmap</span><span class="p">:</span>
+                    <span class="n">calapp_overrides</span><span class="p">[</span><span class="s1">&#39;spwmap&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spwmap</span>
+
+                <span class="c1"># Create modified CalApplication and replace CalApp in result</span>
+                <span class="c1"># with this new one.</span>
+                <span class="n">original_calapp</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">modified_calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">copy_calapplication</span><span class="p">(</span><span class="n">original_calapp</span><span class="p">,</span> <span class="o">**</span><span class="n">calapp_overrides</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">modified_calapp</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">modified_calapp</span>
+
+                <span class="c1"># Merge the result to the local context to register new caltable</span>
+                <span class="c1"># in local context callibrary.</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_phasecal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Note: at present, phaseupsolint is specified as a fixed</span>
+        <span class="c1"># value, defined in inputs. In the future, phaseupsolint may</span>
+        <span class="c1"># need to be set based on exposure times; if so, see discussion</span>
+        <span class="c1"># in CAS-10158 and logic in hifa.tasks.fluxscale.GcorFluxscale.</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># PIPE-1154: the phase solves for flux calibrator should always use</span>
+        <span class="c1"># combine=&#39;&#39;, gaintype=&#39;G&#39;, and no spwmap or interp.</span>
+        <span class="k">if</span> <span class="s1">&#39;AMPLITUDE&#39;</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Compute phase gaincal table for flux calibrator.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="n">calmode</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">phaseupsolint</span><span class="p">,</span>
+                             <span class="n">minsnr</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">minsnr</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-2082: the phase solves for the diffgain calibrator should always</span>
+        <span class="c1"># use combine=&#39;&#39;, gaintype=&#39;G&#39;, and no spwmap or interp.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;DIFFGAINSRC&#39;</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span> <span class="ow">or</span> <span class="s1">&#39;DIFFGAINREF&#39;</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span> \
+                <span class="ow">and</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINREF,DIFFGAINSRC&#39;</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Compute phase gaincal table for diffgain calibrator.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINREF,DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="n">calmode</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="n">solint</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">phaseupsolint</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">minsnr</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-1154: for PHASE calibrator and CHECK source fields, create</span>
+        <span class="c1"># separate phase solutions for each combination of intent, field, and</span>
+        <span class="c1"># use optimal gaincal parameters based on spwmapping registered in the</span>
+        <span class="c1"># measurement set.</span>
+        <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_do_phasecal_per_field_for_intent</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_phasecal_per_field_for_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># Create separate phase solutions for each field covered by requested</span>
+        <span class="c1"># intent.</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">):</span>
+            <span class="c1"># Get optimal phase solution parameters for current intent and</span>
+            <span class="c1"># field, based on spw mapping info in MS.</span>
+            <span class="n">combine</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">spwmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_phasecal_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="c1"># Create phase caltable and merge it into the local context.</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Compute phase gaincal table for intent=</span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s1">, field=</span><span class="si">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="n">calmode</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span>
+                             <span class="n">solint</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">phaseupsolint</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">minsnr</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">refant</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmap</span><span class="p">,</span>
+                             <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_phasecal_params</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">]:</span>
+        <span class="c1"># By default, no spw mapping or combining, no interp.</span>
+        <span class="n">combine</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">interp</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">spwmap</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Try to fetch spwmapping info from MS for requested intent and field.</span>
+        <span class="n">spwmapping</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">spwmaps</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># If a mapping was found, use the spwmap, and update combine and interp</span>
+        <span class="c1"># depending on whether it is a combine spw mapping.</span>
+        <span class="k">if</span> <span class="n">spwmapping</span><span class="p">:</span>
+            <span class="n">spwmap</span> <span class="o">=</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">spwmap</span>
+            <span class="k">if</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">combine</span><span class="p">:</span>
+                <span class="n">combine</span> <span class="o">=</span> <span class="s1">&#39;spw&#39;</span>
+                <span class="n">interp</span> <span class="o">=</span> <span class="s1">&#39;linearPD,linear&#39;</span>
+
+        <span class="k">return</span> <span class="n">combine</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">spwmap</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">create_plots</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return amplitude vs time and amplitude vs UV distance plots for the given</span>
+<span class="sd">    intents.</span>
+
+<span class="sd">    :param inputs: pipeline inputs</span>
+<span class="sd">    :param context: pipeline context</span>
+<span class="sd">    :param intents: intents to plot</span>
+<span class="sd">    :param suffix: optional component to add to the plot filenames</span>
+<span class="sd">    :return: dict of (x axis type =&gt; str, [plots,...])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Exit early if weblog generation has been disabled</span>
+    <span class="k">if</span> <span class="n">basetask</span><span class="o">.</span><span class="n">DISABLE_WEBLOG</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[],</span> <span class="p">[]</span>
+
+    <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
+    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">output_dir</span>
+
+    <span class="n">amp_uvdist_plots</span><span class="p">,</span> <span class="n">amp_time_plots</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intents</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+        <span class="n">amp_uvdist_plots</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="n">AmpVsXChart</span><span class="p">(</span><span class="s1">&#39;uvdist&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
+        <span class="n">amp_time_plots</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="n">AmpVsXChart</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;uvdist&#39;</span><span class="p">:</span> <span class="n">amp_uvdist_plots</span><span class="p">,</span>
+        <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">amp_time_plots</span>
+    <span class="p">}</span>
+
+
+<span class="k">class</span> <span class="nc">AmpVsXChart</span><span class="p">(</span><span class="n">applycal_displays</span><span class="o">.</span><span class="n">PlotmsFieldSpwComposite</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plotting class that creates an amplitude vs X plot for each field and spw,</span>
+<span class="sd">    where X is given as a constructor argument.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">calto</span><span class="p">:</span> <span class="n">CalTo</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">):</span>
+        <span class="n">plot_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;ydatacolumn&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;avgtime&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;avgscan&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s1">&#39;avgbaseline&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s1">&#39;avgchannel&#39;</span><span class="p">:</span> <span class="s1">&#39;9000&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;coloraxis&#39;</span><span class="p">:</span> <span class="s1">&#39;corr&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;overwrite&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s1">&#39;plotrange&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="n">plot_args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">overrides</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">AmpVsXChart</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">xaxis</span><span class="o">=</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span>
+                                          <span class="o">**</span><span class="n">plot_args</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

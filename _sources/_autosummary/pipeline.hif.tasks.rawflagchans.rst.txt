@@ -1,0 +1,22 @@
+pipeline.hif.tasks.rawflagchans
+===============================
+
+.. automodule:: pipeline.hif.tasks.rawflagchans
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Rawflagchans
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   qa
+   rawflagchans
+   renderer
+   resultobjects

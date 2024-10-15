@@ -1,0 +1,24 @@
+pipeline.hsd.tasks.baseline.worker
+==================================
+
+.. automodule:: pipeline.hsd.tasks.baseline.worker
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      relative_path
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BaselineFitParamConfig
+      BaselineSubtractionResults
+      BaselineSubtractionWorker
+      BaselineSubtractionWorkerInputs
+      DataTable
+      DataType
+      SerialBaselineSubtractionWorker
+   

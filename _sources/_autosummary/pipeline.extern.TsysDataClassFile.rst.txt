@@ -1,0 +1,29 @@
+pipeline.extern.TsysDataClassFile
+=================================
+
+.. automodule:: pipeline.extern.TsysDataClassFile
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      ATMtrans
+      chanfreq_records_to_functions
+      getImageSBFreqs
+      getband
+      tsysspwmap
+      weather_function
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TsysData
+      attool
+      metool
+      msmdtool
+      mstool
+      qatool
+      tbtool
+   

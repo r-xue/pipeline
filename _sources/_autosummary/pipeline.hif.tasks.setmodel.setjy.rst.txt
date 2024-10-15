@@ -1,0 +1,13 @@
+pipeline.hif.tasks.setmodel.setjy
+=================================
+
+.. automodule:: pipeline.hif.tasks.setmodel.setjy
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Setjy
+      SetjyInputs
+   

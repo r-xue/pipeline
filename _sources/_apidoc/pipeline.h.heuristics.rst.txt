@@ -1,0 +1,69 @@
+pipeline.h.heuristics package
+=============================
+
+Submodules
+----------
+
+pipeline.h.heuristics.caltable module
+-------------------------------------
+
+.. automodule:: pipeline.h.heuristics.caltable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.heuristics.echoheuristic module
+------------------------------------------
+
+.. automodule:: pipeline.h.heuristics.echoheuristic
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.heuristics.fieldnames module
+---------------------------------------
+
+.. automodule:: pipeline.h.heuristics.fieldnames
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.heuristics.linefinder module
+---------------------------------------
+
+.. automodule:: pipeline.h.heuristics.linefinder
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.heuristics.linefinder\_test module
+---------------------------------------------
+
+.. automodule:: pipeline.h.heuristics.linefinder_test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.heuristics.tsysnormalize module
+------------------------------------------
+
+.. automodule:: pipeline.h.heuristics.tsysnormalize
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.h.heuristics.tsysspwmap module
+---------------------------------------
+
+.. automodule:: pipeline.h.heuristics.tsysspwmap
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.h.heuristics
+   :members:
+   :undoc-members:
+   :show-inheritance:

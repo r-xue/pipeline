@@ -1,0 +1,189 @@
+pipeline.hif.heuristics package
+===============================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pipeline.hif.heuristics.auto_selfcal
+
+Submodules
+----------
+
+pipeline.hif.heuristics.bandpass module
+---------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.bandpass
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.bporder module
+--------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.bporder
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.checkproductsize module
+-----------------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.checkproductsize
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.cleanbox module
+---------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.cleanbox
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.findcont module
+---------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.findcont
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.findrefant module
+-----------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.findrefant
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.gaincal module
+--------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.gaincal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.imageparams\_alma module
+------------------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.imageparams_alma
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.imageparams\_alma\_scal module
+------------------------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.imageparams_alma_scal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.imageparams\_alma\_srdp module
+------------------------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.imageparams_alma_srdp
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.imageparams\_base module
+------------------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.imageparams_base
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.imageparams\_factory module
+---------------------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.imageparams_factory
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.imageparams\_vla module
+-----------------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.imageparams_vla
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.imageparams\_vla\_scal module
+-----------------------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.imageparams_vla_scal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.imageparams\_vlass\_quick\_look module
+--------------------------------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.imageparams_vlass_quick_look
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.imageparams\_vlass\_single\_epoch\_continuum module
+---------------------------------------------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.imageparams\_vlass\_single\_epoch\_cube module
+----------------------------------------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.imageparams\_vlass\_single\_epoch\_taper module
+-----------------------------------------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.mosaicoverlap module
+--------------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.mosaicoverlap
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.solint module
+-------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.solint
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.heuristics.standard module
+---------------------------------------
+
+.. automodule:: pipeline.hif.heuristics.standard
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hif.heuristics
+   :members:
+   :undoc-members:
+   :show-inheritance:

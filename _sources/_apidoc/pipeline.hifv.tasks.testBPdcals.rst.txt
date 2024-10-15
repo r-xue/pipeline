@@ -1,0 +1,45 @@
+pipeline.hifv.tasks.testBPdcals package
+=======================================
+
+Submodules
+----------
+
+pipeline.hifv.tasks.testBPdcals.display module
+----------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.testBPdcals.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.testBPdcals.qa module
+-----------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.testBPdcals.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.testBPdcals.renderer module
+-----------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.testBPdcals.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.testBPdcals.testBPdcals module
+--------------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.testBPdcals.testBPdcals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifv.tasks.testBPdcals
+   :members:
+   :undoc-members:
+   :show-inheritance:

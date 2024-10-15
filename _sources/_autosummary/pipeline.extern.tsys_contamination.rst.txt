@@ -1,0 +1,66 @@
+pipeline.extern.tsys\_contamination
+===================================
+
+.. automodule:: pipeline.extern.tsys_contamination
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      basic_atm_asymmetric_fit
+      below_fit
+      co_telluric_intervals
+      complement_intervals
+      copy2
+      copytree
+      cross_model
+      detect_tsys_contamination
+      difference_intervals
+      exp_rescale
+      find_peaks
+      find_prominent_peaks_in_atm
+      find_repeated_peaks
+      gaussian_line_fit
+      get_tsys_contaminated_intervals
+      gline_and_baseline
+      intersection_intervals
+      intervals_to_casa_string
+      label
+      legendre
+      linear_trend
+      lower_hug
+      main
+      make_tsyscontamination_html_log
+      max_without_outliers
+      median_abs_deviation
+      merge_intervals
+      minimize
+      model_break
+      modified_atmospheric_profile
+      no_nans
+      peak_prominences
+      peak_widths
+      plot_source_bp_normalized_residuals
+      positive_line_intervals
+      puff
+      refitting_intervals_bp_to_source
+      save_tsysdata
+      savgol_filter
+      search_expanded_interval
+      separate_non_intersecting_sci_spw
+      shift_bp_to_source
+      smoother
+      smoother_sigma
+      union_intervals
+      width_fit_filter
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Bounds
+      ConvexHull
+      Rectangle
+      TsysData
+   

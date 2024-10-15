@@ -1,0 +1,13 @@
+pipeline.hif.tasks.makeimlist.qa
+================================
+
+.. automodule:: pipeline.hif.tasks.makeimlist.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MakeImListListQAHandler
+      MakeImListQAHandler
+   

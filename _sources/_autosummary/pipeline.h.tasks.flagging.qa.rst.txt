@@ -1,0 +1,13 @@
+pipeline.h.tasks.flagging.qa
+============================
+
+.. automodule:: pipeline.h.tasks.flagging.qa
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FlagDeterBaseListQAHandler
+      FlagDeterBaseQAHandler
+   

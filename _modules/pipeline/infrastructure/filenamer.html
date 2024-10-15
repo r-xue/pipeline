@@ -1,0 +1,1589 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.filenamer &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.filenamer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.filenamer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+
+<span class="n">_valid_chars</span> <span class="o">=</span> <span class="s2">&quot;_.-+</span><span class="si">%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span><span class="p">,</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span>
+
+<span class="n">_known_intents</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;BANDPASS&#39;</span><span class="p">:</span> <span class="s1">&#39;bp&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">:</span> <span class="s1">&#39;flux&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;PHASE&#39;</span><span class="p">:</span> <span class="s1">&#39;ph&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;TARGET&#39;</span><span class="p">:</span> <span class="s1">&#39;sci&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CHECK&#39;</span><span class="p">:</span> <span class="s1">&#39;chk&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">:</span> <span class="s1">&#39;pol&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;POLANGLE&#39;</span><span class="p">:</span> <span class="s1">&#39;pang&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">:</span> <span class="s1">&#39;plk&#39;</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">_char_replacer</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">valid_chars</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A small utility function that echoes the argument or returns &#39;_&#39; if the</span>
+<span class="sd">    argument is in a list of forbidden characters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_chars</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;_&#39;</span>
+    <span class="k">return</span> <span class="n">s</span>
+
+
+<span class="c1"># Allow _target.ms, _targets.ms or .ms endings: needed to import</span>
+<span class="c1"># Measurement Sets (see PIPE-579, PIPE-1082, PIPE-1112, PIPE-1544)</span>
+<div class="viewcode-block" id="sanitize_for_ms">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.sanitize_for_ms">[docs]</a>
+<span class="k">def</span> <span class="nf">sanitize_for_ms</span><span class="p">(</span><span class="n">vis_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove suffix from MS name.</span>
+
+<span class="sd">    Sanitized name is generated from input MS name by removing</span>
+<span class="sd">    suffix. This method recognizes &quot;.ms&quot;, &quot;_target.ms&quot;, and</span>
+<span class="sd">    &quot;_targets.ms&quot; as suffix.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        vis_name: Name of MS</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Sanitized name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">msend</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;_target.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;_targets.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;.ms&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">vis_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">msend</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">sanitize_for_ms</span><span class="p">(</span><span class="n">vis_name</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">msend</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">vis_name</span></div>
+
+
+
+<div class="viewcode-block" id="sanitize">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.sanitize">[docs]</a>
+<span class="k">def</span> <span class="nf">sanitize</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">valid_chars</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">valid_chars</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">valid_chars</span> <span class="o">=</span> <span class="n">_valid_chars</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_char_replacer</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">valid_chars</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">filename</span></div>
+
+
+
+<div class="viewcode-block" id="fitsname">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.fitsname">[docs]</a>
+<span class="k">def</span> <span class="nf">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Strip off stage and iter information to generate</span>
+<span class="sd">       FITS file name.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Need to remove stage / iter information</span>
+    <span class="c1"># fitsname = re.sub(r&#39;\.s\d+.*\.iter.*\.&#39;, &#39;.&#39;, imagename)</span>
+    <span class="n">fitsname</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.s\d+[_]\d+\.&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">imagename</span><span class="p">)</span>
+    <span class="n">fitsname</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.iter\d+\.image&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fitsname</span><span class="p">)</span>
+    <span class="n">fitsname</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.iter\d+\.image.sd&#39;</span><span class="p">,</span> <span class="s1">&#39;.sd&#39;</span><span class="p">,</span> <span class="n">fitsname</span><span class="p">)</span>
+    <span class="n">fitsname</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.iter\d+\.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.pbcor&#39;</span><span class="p">,</span> <span class="n">fitsname</span><span class="p">)</span>
+    <span class="n">fitsname</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.iter\d+\.mask&#39;</span><span class="p">,</span> <span class="s1">&#39;.mask&#39;</span><span class="p">,</span> <span class="n">fitsname</span><span class="p">)</span>
+    <span class="n">fitsname</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.iter\d+\.alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;.alpha&#39;</span><span class="p">,</span> <span class="n">fitsname</span><span class="p">)</span>
+    <span class="c1"># .pb must be tried after .pbcor.image !</span>
+    <span class="n">fitsname</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.iter\d+\.pb&#39;</span><span class="p">,</span> <span class="s1">&#39;.pb&#39;</span><span class="p">,</span> <span class="n">fitsname</span><span class="p">)</span>
+    <span class="n">fitsfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span>
+                            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fitsname</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.fits&#39;</span><span class="p">)</span>
+
+    <span class="c1"># update fitsname</span>
+    <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">aa</span><span class="p">,</span> <span class="n">bb</span><span class="p">)</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">fitsfile</span><span class="p">)</span>
+        <span class="n">fitsfile</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">aa</span><span class="p">,</span> <span class="s1">&#39;.v&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">),</span> <span class="n">bb</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">fitsfile</span></div>
+
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder">[docs]</a>
+<span class="k">class</span> <span class="nc">FileNameComponentBuilder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_asdm</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_task</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extension</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_intent</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iteration</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_line_region</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_datatype</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_dir</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_polarization</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_antenna</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_source</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spectral_window</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spectral_window_nochan</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_band</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_specmode</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># these associations are not in the file naming proposal, but are used</span>
+        <span class="c1"># for temporary files and output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flag_marks</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_method</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solint</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_smooth</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stage</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="FileNameComponentBuilder.build">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.build">[docs]</a>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># The file names will be assembled using the order of the attributes</span>
+        <span class="c1"># given here</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_asdm</span><span class="p">),</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_task</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_stage</span><span class="p">,</span>
+                      <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_source</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_intent</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]),</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_spectral_window</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_spectral_window_nochan</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_band</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_specmode</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_line_region</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_datatype</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_polarization</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_antenna</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_solint</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_smooth</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_extension</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_iteration</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_flag_marks</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">)</span>
+        <span class="n">basename</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">sanitize</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">attributes</span>
+                             <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_dir</span><span class="p">,</span> <span class="n">basename</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">basename</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.asdm">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.asdm">[docs]</a>
+    <span class="k">def</span> <span class="nf">asdm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uid</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_asdm</span> <span class="o">=</span> <span class="n">uid</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.task">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.task">[docs]</a>
+    <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_task</span> <span class="o">=</span> <span class="n">task</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.output_dir">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.output_dir">[docs]</a>
+    <span class="k">def</span> <span class="nf">output_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.extension">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.extension">[docs]</a>
+    <span class="k">def</span> <span class="nf">extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extension</span> <span class="o">=</span> <span class="n">extension</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.flag_marks">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.flag_marks">[docs]</a>
+    <span class="k">def</span> <span class="nf">flag_marks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_marks</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">flag_marks</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">flag_marks</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_flag_marks</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_flag_marks</span> <span class="o">=</span> <span class="s1">&#39;fm&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">flag_marks</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.format">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.format">[docs]</a>
+    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">=</span> <span class="nb">format</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.intent">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.intent">[docs]</a>
+    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_intent</span> <span class="o">=</span> <span class="n">intent</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.iteration">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.iteration">[docs]</a>
+    <span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iteration</span> <span class="o">=</span> <span class="s1">&#39;iter&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">iteration</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.line_region">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.line_region">[docs]</a>
+    <span class="k">def</span> <span class="nf">line_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_channel</span><span class="p">,</span> <span class="n">end_channel</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_line_region</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">start_channel</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">end_channel</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.method">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.method">[docs]</a>
+    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">method</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_method</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_method</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.datatype">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.datatype">[docs]</a>
+    <span class="k">def</span> <span class="nf">datatype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatype</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_datatype</span> <span class="o">=</span> <span class="n">datatype</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.polarization">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.polarization">[docs]</a>
+    <span class="k">def</span> <span class="nf">polarization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polarization</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_polarization</span> <span class="o">=</span> <span class="n">polarization</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.antenna">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.antenna">[docs]</a>
+    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_antenna</span> <span class="o">=</span> <span class="n">antenna</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.solint">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.solint">[docs]</a>
+    <span class="k">def</span> <span class="nf">solint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solint</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">solint</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">solint</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_solint</span> <span class="o">=</span> <span class="s1">&#39;solint&#39;</span> <span class="o">+</span> <span class="n">v</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_solint</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.smooth">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.smooth">[docs]</a>
+    <span class="k">def</span> <span class="nf">smooth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">smooth</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">smooth</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">smooth</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_smooth</span> <span class="o">=</span> <span class="s1">&#39;sm&#39;</span> <span class="o">+</span> <span class="n">v</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_smooth</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.source">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.source">[docs]</a>
+    <span class="k">def</span> <span class="nf">source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_source</span> <span class="o">=</span> <span class="n">source_name</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.spectral_window_nochan">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.spectral_window_nochan">[docs]</a>
+    <span class="k">def</span> <span class="nf">spectral_window_nochan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="n">virtspw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">window</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
+            <span class="n">spw_inlist</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="n">spw_outlist</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spw_inlist</span><span class="p">:</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">spw_outlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">virtspw</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_spectral_window</span> <span class="o">=</span> <span class="s1">&#39;virtspw&#39;</span> <span class="o">+</span> <span class="n">sort_spws</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spw_outlist</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_spectral_window</span> <span class="o">=</span> <span class="s1">&#39;spw&#39;</span> <span class="o">+</span> <span class="n">sort_spws</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spw_outlist</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spectral_window</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.spectral_window">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.spectral_window">[docs]</a>
+    <span class="k">def</span> <span class="nf">spectral_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="n">virtspw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">window</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">virtspw</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_spectral_window</span> <span class="o">=</span> <span class="s1">&#39;virtspw&#39;</span> <span class="o">+</span> <span class="n">sort_spws</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">window</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_spectral_window</span> <span class="o">=</span> <span class="s1">&#39;spw&#39;</span> <span class="o">+</span> <span class="n">sort_spws</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">window</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spectral_window</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.band">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.band">[docs]</a>
+    <span class="k">def</span> <span class="nf">band</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">band</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_band</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_band</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.specmode">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.specmode">[docs]</a>
+    <span class="k">def</span> <span class="nf">specmode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specmode</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">specmode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_specmode</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">specmode</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_specmode</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.stage">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.stage">[docs]</a>
+    <span class="k">def</span> <span class="nf">stage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">stage</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stage</span> <span class="o">=</span> <span class="s1">&#39;s&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stage</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stage</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="FileNameComponentBuilder.type">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FileNameComponentBuilder.type">[docs]</a>
+    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="nb">type</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="sort_spws">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.sort_spws">[docs]</a>
+<span class="k">def</span> <span class="nf">sort_spws</span><span class="p">(</span><span class="n">unsorted</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unsorted</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;,&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unsorted</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">unsorted</span>
+    <span class="n">vals</span> <span class="o">=</span> <span class="n">unsorted</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">numeric_sort</span><span class="p">(</span><span class="n">vals</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="NamingTemplate">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.NamingTemplate">[docs]</a>
+<span class="k">class</span> <span class="nc">NamingTemplate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class used for all naming templates.&quot;&quot;&quot;</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span> <span class="o">=</span> <span class="n">FileNameComponentBuilder</span><span class="p">()</span>
+
+<div class="viewcode-block" id="NamingTemplate.get_filename">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.NamingTemplate.get_filename">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assembles and returns the final filename.&quot;&quot;&quot;</span>
+        <span class="n">filename_components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">filename_components</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">filename</span></div>
+
+
+<div class="viewcode-block" id="NamingTemplate.output_dir">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.NamingTemplate.output_dir">[docs]</a>
+    <span class="k">def</span> <span class="nf">output_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the base output directory for this template.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">output_dir</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_filename</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="ASDM">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.ASDM">[docs]</a>
+<span class="k">class</span> <span class="nc">ASDM</span><span class="p">(</span><span class="n">NamingTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Defines the ASDM naming scheme.</span>
+
+<span class="sd">    ASDM file names have the syntax &lt;project code&gt;.&lt;ASDM UID&gt;.asdm,</span>
+<span class="sd">    eg. pcode.uid___X02_X3d737_X1.asdm.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new ASDM naming template.</span>
+
+<span class="sd">        If another naming template is given as a constructor argument,</span>
+<span class="sd">        the new ASDM template will be initialized using applicable</span>
+<span class="sd">        filename components copied from the given constructor argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ASDM</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;asdm&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">asdm</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">_asdm</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ASDM.asdm">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.ASDM.asdm">[docs]</a>
+    <span class="k">def</span> <span class="nf">asdm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the ASDM UID for this template, eg. uid://X03/XA83C/X02.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">asdm</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MeasurementSet">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.MeasurementSet">[docs]</a>
+<span class="k">class</span> <span class="nc">MeasurementSet</span><span class="p">(</span><span class="n">NamingTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Defines the measurement set naming scheme.</span>
+
+<span class="sd">    File names have the syntax:</span>
+<span class="sd">    &lt;project code&gt;.&lt;ASDM UID&gt;.ms.tbl, eg. pcode.uid___X02_X3d737_X1.ms.tbl.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new measurement set naming template.</span>
+
+<span class="sd">        If another naming template is given as a constructor argument,</span>
+<span class="sd">        the new measurement set template will be initialized using</span>
+<span class="sd">        applicable filename components copied from the given</span>
+<span class="sd">        constructor argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MeasurementSet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;ms&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;tbl&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">asdm</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">_asdm</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MeasurementSet.asdm">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.MeasurementSet.asdm">[docs]</a>
+    <span class="k">def</span> <span class="nf">asdm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the ASDM UID for this template, eg. uid://X03/XA83C/X02.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">asdm</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FlaggingTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FlaggingTable">[docs]</a>
+<span class="k">class</span> <span class="nc">FlaggingTable</span><span class="p">(</span><span class="n">NamingTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Defines the flagging table naming scheme.</span>
+
+<span class="sd">    File names have the syntax:</span>
+<span class="sd">    &lt;ASDM UID&gt;.flags.tbl, eg. uid___X02_X3d737_X1.flags.tbl.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new measurement set naming template.</span>
+
+<span class="sd">        If another naming template is given as a constructor argument,</span>
+<span class="sd">        the new measurement set template will be initialized using</span>
+<span class="sd">        applicable filename components copied from the given</span>
+<span class="sd">        constructor argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FlaggingTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;flags&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;tbl&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">asdm</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">_asdm</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FlaggingTable.asdm">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FlaggingTable.asdm">[docs]</a>
+    <span class="k">def</span> <span class="nf">asdm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the ASDM UID for this template, eg. uid://X03/XA83C/X02.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">asdm</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">CalibrationTable</span><span class="p">(</span><span class="n">NamingTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defines the calibration table naming scheme.</span>
+
+<span class="sd">    File names have the syntax:</span>
+<span class="sd">    &lt;ASDM UID&gt;.&lt;spgrp&gt;.&lt;pol&gt;.&lt;fit&gt;.&lt;type&gt;.&lt;format&gt;,</span>
+<span class="sd">    eg. uid___X02_X3d737_X1.spwgrp1.X.channel.bcal.tbl.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_extensions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bcal&#39;</span><span class="p">,</span> <span class="s1">&#39;dcal&#39;</span><span class="p">,</span> <span class="s1">&#39;fcal&#39;</span><span class="p">,</span> <span class="s1">&#39;gcal&#39;</span><span class="p">,</span> <span class="s1">&#39;gacal&#39;</span><span class="p">,</span> <span class="s1">&#39;gpcal&#39;</span><span class="p">,</span> <span class="s1">&#39;pcal&#39;</span><span class="p">]</span>
+    <span class="n">_type</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;channel&#39;</span><span class="p">,</span> <span class="s1">&#39;poly&#39;</span><span class="p">,</span> <span class="s1">&#39;spline&#39;</span><span class="p">,</span> <span class="s1">&#39;tseries&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="o">.</span><span class="n">task</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;tbl&#39;</span><span class="p">)</span>
+
+        <span class="c1"># if we&#39;ve been given another namer to base ourselves on, we copy only</span>
+        <span class="c1"># those parameters that are relevant to calibration tables.</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">asdm</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">_asdm</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">_spectral_window</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">_spectral_window</span>
+            <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">_type</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">polarization</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">_polarization</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">_extension</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extensions</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">_extension</span><span class="p">)</span>
+
+        <span class="c1"># should we also copy flag_marks, method etc.?</span>
+
+<div class="viewcode-block" id="CalibrationTable.asdm">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.asdm">[docs]</a>
+    <span class="k">def</span> <span class="nf">asdm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the ALMA project code for this template, eg. 2010.03.S.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">asdm</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.extension">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.extension">[docs]</a>
+    <span class="k">def</span> <span class="nf">extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the extension for this calibration table.</span>
+
+<span class="sd">        The extension is not validated against the known set of</span>
+<span class="sd">        calibration table extensions, so where possible it is</span>
+<span class="sd">        preferable that you use one of the calibration type convenience</span>
+<span class="sd">        methods: bandpass_cal(), focus_cal(), delay_cal() etc.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.flag_marks">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.flag_marks">[docs]</a>
+    <span class="k">def</span> <span class="nf">flag_marks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_marks</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the flag marks tag for this calibration table.</span>
+
+<span class="sd">        The flag marks tag is a free parameter, and is not currently</span>
+<span class="sd">        part of the file naming scheme proposal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">flag_marks</span><span class="p">(</span><span class="n">flag_marks</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.method">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.method">[docs]</a>
+    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the calibration method for this calibration table.</span>
+
+<span class="sd">        The method argument is a free parameter, and is not currently</span>
+<span class="sd">        part of the file naming scheme proposal. It is used to show how</span>
+<span class="sd">        a particular calibration was calculated - in addition to the</span>
+<span class="sd">        &#39;type&#39; parameter that should also be set on a calibration table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.polarization">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.polarization">[docs]</a>
+    <span class="k">def</span> <span class="nf">polarization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polarization</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the polarization for this calibration table,</span>
+<span class="sd">        eg. &#39;XX&#39;, &#39;YY&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">polarization</span><span class="p">(</span><span class="n">polarization</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.solint">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.solint">[docs]</a>
+    <span class="k">def</span> <span class="nf">solint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solint</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the solution interval tag for this calibration table.</span>
+
+<span class="sd">        The solution interval tag is a free parameter, and is not</span>
+<span class="sd">        currently part of the file naming scheme proposal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">solint</span><span class="p">(</span><span class="n">solint</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.smooth">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.smooth">[docs]</a>
+    <span class="k">def</span> <span class="nf">smooth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">smooth</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the smoothing width for this calibration table.</span>
+
+<span class="sd">        The smoothing width is a free parameter, and is not currently</span>
+<span class="sd">        part of the file naming scheme proposal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">smooth</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.source">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.source">[docs]</a>
+    <span class="k">def</span> <span class="nf">source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.spectral_window">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.spectral_window">[docs]</a>
+    <span class="k">def</span> <span class="nf">spectral_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">spectral_window</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.spectral_window_nochan">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.spectral_window_nochan">[docs]</a>
+    <span class="k">def</span> <span class="nf">spectral_window_nochan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">spectral_window_nochan</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.stage">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.stage">[docs]</a>
+    <span class="k">def</span> <span class="nf">stage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">stage</span><span class="p">(</span><span class="n">stage</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.type">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.type">[docs]</a>
+    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the type component for this calibration table.</span>
+
+<span class="sd">        The type is not validated, so where possible it is preferable</span>
+<span class="sd">        that you use one of the fit type convenience methods, eg.</span>
+<span class="sd">        channel_fit(), poly_fit(), spline_fit() etc.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="c1"># Calibration type convenience methods ------------------------------------</span>
+
+<div class="viewcode-block" id="CalibrationTable.amplitude_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.amplitude_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">amplitude_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for an amplitude</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;ampcal&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.bandpass_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.bandpass_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">bandpass_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a bandpass</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;bcal&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.delay_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.delay_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">delay_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a delay</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;dcal&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.flux_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.flux_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">flux_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a flux</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;fcal&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.gain_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.gain_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">gain_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a gain</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;gcal&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.phase_only_gain_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.phase_only_gain_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">phase_only_gain_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a phase-only</span>
+<span class="sd">        gain calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;gpcal&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.amplitude_only_gain_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.amplitude_only_gain_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">amplitude_only_gain_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for an</span>
+<span class="sd">        amplitude-only gain calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;gacal&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.polarization_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.polarization_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">polarization_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a polarization</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;pcal&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.antpos_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.antpos_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">antpos_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for an antpos</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;ants&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.uvcont_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.uvcont_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">uvcont_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a uv continuum</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;uvcont&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.tsys_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.tsys_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">tsys_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a tsys</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;tsyscal&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.opac_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.opac_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">opac_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a opac</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;opac&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.gc_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.gc_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">gc_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a gc</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;gc&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.rq_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.rq_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">rq_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a rq</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;rq&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.swpow_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.swpow_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">swpow_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a swpow</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;swpow&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.tecim_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.tecim_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">tecim_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a tecmaps</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;tecim&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.wvrg_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.wvrg_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">wvrg_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a wvr</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;wvrcal&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.xyf0_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.xyf0_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">xyf0_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a wvr</span>
+<span class="sd">        calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;xyf0cal&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.sdsky_cal">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.sdsky_cal">[docs]</a>
+    <span class="k">def</span> <span class="nf">sdsky_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a single</span>
+<span class="sd">        dish sky calibration.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;skycal&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.sdbaseline">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.sdbaseline">[docs]</a>
+    <span class="k">def</span> <span class="nf">sdbaseline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the filename extension as appropriate for a single</span>
+<span class="sd">        dish baseline subtraction.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;bl&#39;</span><span class="p">)</span></div>
+
+
+    <span class="c1"># Fit type convenience methods --------------------------------------------</span>
+
+<div class="viewcode-block" id="CalibrationTable.channel_fit">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.channel_fit">[docs]</a>
+    <span class="k">def</span> <span class="nf">channel_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the &#39;type&#39; filename component for a per-channel</span>
+<span class="sd">        calibration fit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="s1">&#39;channel&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.poly_fit">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.poly_fit">[docs]</a>
+    <span class="k">def</span> <span class="nf">poly_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the &#39;type&#39; filename component for a polynomial</span>
+<span class="sd">        calibration fit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="s1">&#39;poly&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.spline_fit">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.spline_fit">[docs]</a>
+    <span class="k">def</span> <span class="nf">spline_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the &#39;type&#39; filename component for a spline calibration</span>
+<span class="sd">        fit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="s1">&#39;spline&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationTable.time_series_fit">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CalibrationTable.time_series_fit">[docs]</a>
+    <span class="k">def</span> <span class="nf">time_series_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the &#39;type&#39; filename component for a time-series</span>
+<span class="sd">        calibration fit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="s1">&#39;tseries&#39;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CASALog">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.CASALog">[docs]</a>
+<span class="k">class</span> <span class="nc">CASALog</span><span class="p">(</span><span class="n">NamingTemplate</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CASALog</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;txt&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="s1">&#39;casapy&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Image">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image">[docs]</a>
+<span class="k">class</span> <span class="nc">Image</span><span class="p">(</span><span class="n">NamingTemplate</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">virtspw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># If virtspw is True, the filename will contain &quot;virtspw&quot; instead of &quot;spw&quot;.</span>
+        <span class="c1"># It was considered for PL2021, but deferred to later. In that case the</span>
+        <span class="c1"># above default should be changed to True.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">virtspw</span> <span class="o">=</span> <span class="n">virtspw</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Image</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Image.flag_marks">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.flag_marks">[docs]</a>
+    <span class="k">def</span> <span class="nf">flag_marks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_marks</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the flag marks tag for this image.</span>
+
+<span class="sd">        The flag marks tag is a free parameter, and is not currently</span>
+<span class="sd">        part of the file naming scheme proposal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">flag_marks</span><span class="p">(</span><span class="n">flag_marks</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.intent">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.intent">[docs]</a>
+    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">_known_intents</span><span class="p">:</span>
+            <span class="n">intent</span> <span class="o">=</span> <span class="n">_known_intents</span><span class="p">[</span><span class="n">intent</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">intent</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.iteration">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.iteration">[docs]</a>
+    <span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">iteration</span><span class="p">(</span><span class="n">iteration</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.line_region">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.line_region">[docs]</a>
+    <span class="k">def</span> <span class="nf">line_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_channel</span><span class="p">,</span> <span class="n">end_channel</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">line_region</span><span class="p">(</span><span class="n">start_channel</span><span class="p">,</span> <span class="n">end_channel</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.datatype">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.datatype">[docs]</a>
+    <span class="k">def</span> <span class="nf">datatype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatype</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">datatype</span><span class="p">(</span><span class="n">datatype</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.polarization">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.polarization">[docs]</a>
+    <span class="k">def</span> <span class="nf">polarization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polarization</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">polarization</span><span class="p">(</span><span class="n">polarization</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.source">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.source">[docs]</a>
+    <span class="k">def</span> <span class="nf">source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="n">source_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.stage">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.stage">[docs]</a>
+    <span class="k">def</span> <span class="nf">stage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">stage</span><span class="p">(</span><span class="n">stage</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.spectral_window">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.spectral_window">[docs]</a>
+    <span class="k">def</span> <span class="nf">spectral_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">spectral_window</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">virtspw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">virtspw</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.specmode">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.specmode">[docs]</a>
+    <span class="k">def</span> <span class="nf">specmode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specmode</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">specmode</span><span class="p">(</span><span class="n">specmode</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.type">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.type">[docs]</a>
+    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.band">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.band">[docs]</a>
+    <span class="k">def</span> <span class="nf">band</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">band</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.antenna">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.antenna">[docs]</a>
+    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">antenna</span><span class="p">(</span><span class="n">antenna</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="c1"># Association convenience methods ----------------------------------------</span>
+
+<div class="viewcode-block" id="Image.continuum_image">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.continuum_image">[docs]</a>
+    <span class="k">def</span> <span class="nf">continuum_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;cim&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.spectral_image">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.spectral_image">[docs]</a>
+    <span class="k">def</span> <span class="nf">spectral_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;spim&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.clean">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.clean">[docs]</a>
+    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;clean&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.clean_mask">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.clean_mask">[docs]</a>
+    <span class="k">def</span> <span class="nf">clean_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;mask&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.dirty">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.dirty">[docs]</a>
+    <span class="k">def</span> <span class="nf">dirty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;dirty&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.model">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.model">[docs]</a>
+    <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.residual">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.residual">[docs]</a>
+    <span class="k">def</span> <span class="nf">residual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;residual&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.psf">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.psf">[docs]</a>
+    <span class="k">def</span> <span class="nf">psf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;psf&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.integrated_fluxscale">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.integrated_fluxscale">[docs]</a>
+    <span class="k">def</span> <span class="nf">integrated_fluxscale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;ifxscl&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.fluxscale">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.fluxscale">[docs]</a>
+    <span class="k">def</span> <span class="nf">fluxscale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;fxscl&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.flat_flux_clean">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.flat_flux_clean">[docs]</a>
+    <span class="k">def</span> <span class="nf">flat_flux_clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;ffcln&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.flat_flux_residual">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.flat_flux_residual">[docs]</a>
+    <span class="k">def</span> <span class="nf">flat_flux_residual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;ffres&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Image.single_dish">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.single_dish">[docs]</a>
+    <span class="k">def</span> <span class="nf">single_dish</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;sd&#39;</span><span class="p">)</span></div>
+
+
+    <span class="c1"># Intent convenience methods --------------------------------------------</span>
+
+<div class="viewcode-block" id="Image.bandpass">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.bandpass">[docs]</a>
+    <span class="k">def</span> <span class="nf">bandpass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">(</span><span class="s1">&#39;bp&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Image.flux">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.flux">[docs]</a>
+    <span class="k">def</span> <span class="nf">flux</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">(</span><span class="s1">&#39;flux&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Image.gain">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.gain">[docs]</a>
+    <span class="k">def</span> <span class="nf">gain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">(</span><span class="s1">&#39;gain&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Image.science">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Image.science">[docs]</a>
+    <span class="k">def</span> <span class="nf">science</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">(</span><span class="s1">&#39;sci&#39;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MosaicImage">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.MosaicImage">[docs]</a>
+<span class="k">class</span> <span class="nc">MosaicImage</span><span class="p">(</span><span class="n">Image</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MosaicImage.flag_marks">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.MosaicImage.flag_marks">[docs]</a>
+    <span class="k">def</span> <span class="nf">flag_marks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_marks</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the flag marks tag for this image.</span>
+
+<span class="sd">        The flag marks tag is a free parameter, and is not currently</span>
+<span class="sd">        part of the file naming scheme proposal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+<span class="c1">#        self._associations.flag_marks(flag_marks)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AmplitudeCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.AmplitudeCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">AmplitudeCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AmplitudeCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amplitude_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="AntposCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.AntposCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">AntposCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AntposCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antpos_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="UVcontCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.UVcontCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">UVcontCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">UVcontCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uvcont_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="BandpassCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.BandpassCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">BandpassCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BandpassCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bandpass_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="DelayCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.DelayCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">DelayCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DelayCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delay_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="PolCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.PolCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">PolCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">polarization_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="FluxCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.FluxCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">FluxCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FluxCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flux_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="GainCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.GainCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">GainCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GainCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gain_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="XYf0CalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.XYf0CalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">XYf0CalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">XYf0CalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyf0_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="TsysCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.TsysCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">TsysCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TsysCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tsys_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="OpCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.OpCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">OpCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">OpCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opac_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="GainCurvesCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.GainCurvesCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">GainCurvesCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GainCurvesCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="RqCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.RqCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">RqCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RqCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rq_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="TecMapsCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.TecMapsCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">TecMapsCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TecMapsCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tecim_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="SwpowCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.SwpowCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">SwpowCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SwpowCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swpow_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="WvrgCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.WvrgCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">WvrgCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WvrgCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wvrg_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="SDSkyCalibrationTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.SDSkyCalibrationTable">[docs]</a>
+<span class="k">class</span> <span class="nc">SDSkyCalibrationTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDSkyCalibrationTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sdsky_cal</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="SDBaselineTable">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.SDBaselineTable">[docs]</a>
+<span class="k">class</span> <span class="nc">SDBaselineTable</span><span class="p">(</span><span class="n">CalibrationTable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDBaselineTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sdbaseline</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># product name utility</span>
+<div class="viewcode-block" id="PipelineProductNameBuilder">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.PipelineProductNameBuilder">[docs]</a>
+<span class="k">class</span> <span class="nc">PipelineProductNameBuilder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__build</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;separator&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">separator</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;separator&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">separator</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span>
+        <span class="k">return</span> <span class="n">separator</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_join_dir</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">output_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">name</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_build_from_oussid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ousstatus_entity_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">basename</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__build</span><span class="p">(</span><span class="n">ousstatus_entity_id</span><span class="p">,</span> <span class="n">basename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_join_dir</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_build_from_ps_oussid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">project_structure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">project_structure</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">basename</span>
+        <span class="k">elif</span> <span class="n">project_structure</span><span class="o">.</span><span class="n">ousstatus_entity_id</span> <span class="o">==</span> <span class="s1">&#39;unknown&#39;</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">basename</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_build_from_oussid</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span> <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="n">ousstatus_entity_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_join_dir</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_build_from_oussid_session</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__build</span><span class="p">(</span><span class="n">ousstatus_entity_id</span><span class="p">,</span> <span class="n">session_name</span><span class="p">,</span> <span class="n">basename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_join_dir</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_build_calproduct_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">aux_product</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">aux_product</span><span class="p">:</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;auxcal&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;cal&#39;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__build</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_join_dir</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_build_from_vis</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__build</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">),</span> <span class="n">basename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_join_dir</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PipelineProductNameBuilder.weblog">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.PipelineProductNameBuilder.weblog">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">weblog</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">project_structure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_build_from_ps_oussid</span><span class="p">(</span><span class="s1">&#39;weblog.tgz&#39;</span><span class="p">,</span>
+                                         <span class="n">project_structure</span><span class="o">=</span><span class="n">project_structure</span><span class="p">,</span>
+                                         <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="n">ousstatus_entity_id</span><span class="p">,</span>
+                                         <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PipelineProductNameBuilder.casa_script">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.PipelineProductNameBuilder.casa_script">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">casa_script</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">project_structure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_build_from_ps_oussid</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span>
+                                         <span class="n">project_structure</span><span class="o">=</span><span class="n">project_structure</span><span class="p">,</span>
+                                         <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="n">ousstatus_entity_id</span><span class="p">,</span>
+                                         <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PipelineProductNameBuilder.manifest">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.PipelineProductNameBuilder.manifest">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">manifest</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">ousstatus_entity_id</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_build_from_oussid</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span>
+                                      <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="n">ousstatus_entity_id</span><span class="p">,</span>
+                                      <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PipelineProductNameBuilder.calapply_list">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.PipelineProductNameBuilder.calapply_list">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">calapply_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">aux_product</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">basename</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_build_calproduct_name</span><span class="p">(</span><span class="s1">&#39;apply.txt&#39;</span><span class="p">,</span> <span class="n">aux_product</span><span class="o">=</span><span class="n">aux_product</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_build_from_vis</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PipelineProductNameBuilder.caltables">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.PipelineProductNameBuilder.caltables">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">caltables</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aux_product</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">basename</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_build_calproduct_name</span><span class="p">(</span><span class="s1">&#39;tables.tgz&#39;</span><span class="p">,</span> <span class="n">aux_product</span><span class="o">=</span><span class="n">aux_product</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_build_from_oussid_session</span><span class="p">(</span><span class="n">basename</span><span class="o">=</span><span class="n">basename</span><span class="p">,</span>
+                                              <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="n">ousstatus_entity_id</span><span class="p">,</span>
+                                              <span class="n">session_name</span><span class="o">=</span><span class="n">session_name</span><span class="p">,</span>
+                                              <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PipelineProductNameBuilder.auxiliary_products">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.PipelineProductNameBuilder.auxiliary_products">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">auxiliary_products</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_build_from_oussid</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span>
+                                      <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="n">ousstatus_entity_id</span><span class="p">,</span>
+                                      <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PipelineProductNameBuilder.aqua_report">
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.PipelineProductNameBuilder.aqua_report">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">aqua_report</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">aqua_report_name</span><span class="p">,</span> <span class="n">project_structure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_build_from_ps_oussid</span><span class="p">(</span><span class="n">aqua_report_name</span><span class="p">,</span>
+                                         <span class="n">project_structure</span><span class="o">=</span><span class="n">project_structure</span><span class="p">,</span>
+                                         <span class="n">ousstatus_entity_id</span><span class="o">=</span><span class="n">ousstatus_entity_id</span><span class="p">,</span>
+                                         <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">CASALog</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">log</span><span class="o">.</span><span class="n">get_filename</span><span class="p">())</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">CalibrationTable</span><span class="p">(</span><span class="n">log</span><span class="p">)</span><span class="o">.</span><span class="n">phase_only_gain_cal</span><span class="p">()</span><span class="o">.</span><span class="n">spectral_window</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">polarization</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_filename</span><span class="p">())</span>
+
+    <span class="n">x</span><span class="o">.</span><span class="n">polarization</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">spectral_window</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_filename</span><span class="p">())</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

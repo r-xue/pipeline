@@ -1,0 +1,23 @@
+pipeline.h.tasks.common.viewflaggers
+====================================
+
+.. automodule:: pipeline.h.tasks.common.viewflaggers
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      find_ranges
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MatrixFlagger
+      MatrixFlaggerInputs
+      MatrixFlaggerResults
+      VectorFlagger
+      VectorFlaggerInputs
+      VectorFlaggerResults
+   

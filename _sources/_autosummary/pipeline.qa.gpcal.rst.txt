@@ -1,0 +1,14 @@
+pipeline.qa.gpcal
+=================
+
+.. automodule:: pipeline.qa.gpcal
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      gpcal
+      gpcal_calc
+      gpcal_score
+   

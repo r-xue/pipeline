@@ -1,0 +1,22 @@
+pipeline.domain.spectralwindow
+==============================
+
+.. automodule:: pipeline.domain.spectralwindow
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      compress
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ArithmeticProgression
+      Channel
+      ChannelList
+      SpectralWindow
+      SpectralWindowWithChannelSelection
+   

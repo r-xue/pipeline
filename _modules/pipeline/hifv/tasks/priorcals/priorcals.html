@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifv.tasks.priorcals.priorcals &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifv.tasks.priorcals.priorcals</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifv.tasks.priorcals.priorcals</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Example usage:</span>
+
+<span class="sd">inputs = pipeline.vla.tasks.priorcals.Priorcals.Inputs(context)</span>
+<span class="sd">task = pipeline.vla.tasks.priorcals.Priocals(inputs)</span>
+<span class="sd">result = task.execute()</span>
+<span class="sd">result.accept(context)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.gaincurves</span> <span class="kn">import</span> <span class="n">GainCurves</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.opcal</span> <span class="kn">import</span> <span class="n">Opcal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.rqcal</span> <span class="kn">import</span> <span class="n">Rqcal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.swpowcal</span> <span class="kn">import</span> <span class="n">Swpowcal</span>
+<span class="kn">from</span> <span class="nn">pipeline.hifv.tasks.tecmaps</span> <span class="kn">import</span> <span class="n">TecMaps</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span> <span class="nn">casatasks.private.correct_ant_posns_evla</span> <span class="kn">import</span> <span class="n">correct_ant_posns_evla</span> <span class="k">as</span> <span class="n">correct_ant_posns</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">resultobjects</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">vlaantpos</span>
+
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PriorcalsInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.priorcals.html#pipeline.hifv.tasks.priorcals.priorcals.PriorcalsInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">PriorcalsInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for the hifv_priorcals pipeline task.  Used on VLA measurement sets.</span>
+
+<span class="sd">    The class inherits from vdp.StandardInputs.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">swpow_spw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">show_tec_maps</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">apply_tec_correction</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">apply_gaincurves</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">apply_opcal</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">apply_rqcal</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">apply_antpos</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">apply_swpowcal</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">ant_pos_time_limit</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_tec_maps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_tec_correction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_gaincurves</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_opcal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">apply_rqcal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_antpos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_swpowcal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">swpow_spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ant_pos_time_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            context (:obj:): Pipeline context</span>
+<span class="sd">            vis(str):  Measurement set</span>
+<span class="sd">            show_tec_maps(bool):    Display the plot output from the CASA tec_maps recipe function</span>
+<span class="sd">            apply_tec_correction:   CASA tec_maps recipe function is executed - this bool determines if gencal is</span>
+<span class="sd">                                    executed and the resulting table applied</span>
+<span class="sd">            apply_gaincurves(bool): Flag to apply gain curves correction. Default is True.</span>
+<span class="sd">            apply_opcal(bool):      Flag to apply opacities correction. Default is True.</span>
+<span class="sd">            apply_rqcal(bool):      Flag to apply requantizer gains correction. Default is True.</span>
+<span class="sd">            apply_antpos(bool):     Flag to apply antenna position correction. Default is True.</span>
+<span class="sd">            apply_swpowcal(bool):   Flag to apply switched power table. Default is False. If set True,</span>
+<span class="sd">                                    apply_rqcal is ignored and no requantizer gain correction will be applied.</span>
+<span class="sd">            swpow_spw(str):         spws for switched power</span>
+<span class="sd">            ant_pos_time_limit(int): Antenna position time limit in days. Default is 150 days.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_tec_maps</span> <span class="o">=</span> <span class="n">show_tec_maps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_tec_correction</span> <span class="o">=</span> <span class="n">apply_tec_correction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swpow_spw</span> <span class="o">=</span> <span class="n">swpow_spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ant_pos_time_limit</span> <span class="o">=</span> <span class="n">ant_pos_time_limit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_gaincurves</span> <span class="o">=</span> <span class="n">apply_gaincurves</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_opcal</span> <span class="o">=</span> <span class="n">apply_opcal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_rqcal</span> <span class="o">=</span> <span class="n">apply_rqcal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_antpos</span> <span class="o">=</span> <span class="n">apply_antpos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_swpowcal</span> <span class="o">=</span> <span class="n">apply_swpowcal</span>
+        <span class="c1"># PIPE-1665: comment from the ticket</span>
+        <span class="c1"># If I can added a requirement, there should also be the ability to apply the switched power table.</span>
+        <span class="c1"># The default for the switched power table should be to not apply it. However, if a user sets application</span>
+        <span class="c1"># of switched power to true, this should implicity turn off the requantizer table, because switched power</span>
+        <span class="c1"># includes the requantizer gain information implicitly.</span>
+        <span class="k">if</span> <span class="n">apply_swpowcal</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">apply_rqcal</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="PriorcalsInputs.to_casa_args">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.priorcals.html#pipeline.hifv.tasks.priorcals.priorcals.PriorcalsInputs.to_casa_args">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Priorcals">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.priorcals.html#pipeline.hifv.tasks.priorcals.priorcals.Priorcals">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_priorcals&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Priorcals</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for the Priorcals pipeline task.  Used on VLA measurement sets.</span>
+
+<span class="sd">    The class inherits from basetask.StandardTaskTemplate</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">PriorcalsInputs</span>
+
+<div class="viewcode-block" id="Priorcals.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.priorcals.html#pipeline.hifv.tasks.priorcals.priorcals.Priorcals.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">callist</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">gc_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincurves</span><span class="p">()</span>
+        <span class="n">oc_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_opcal</span><span class="p">()</span>
+        <span class="n">rq_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_rqcal</span><span class="p">()</span>
+        <span class="n">sw_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_swpowcal</span><span class="p">()</span>
+        <span class="n">antpos_result</span><span class="p">,</span> <span class="n">antcorrect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_antpos</span><span class="p">()</span>
+        <span class="n">tecmaps_result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">show_tec_maps</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">apply_tec_correction</span><span class="p">:</span>
+            <span class="n">tecmaps_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_tecmaps</span><span class="p">(</span><span class="n">show_tec_maps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">show_tec_maps</span><span class="p">,</span>
+                                              <span class="n">apply_tec_correction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">apply_tec_correction</span><span class="p">)</span>
+
+        <span class="c1"># try:</span>
+        <span class="c1">#    antpos_result.merge_withcontext(self.inputs.context)</span>
+        <span class="c1"># except:</span>
+        <span class="c1">#    LOG.error(&#39;No antenna position corrections.&#39;)</span>
+
+        <span class="k">return</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">PriorcalsResults</span><span class="p">(</span><span class="n">pool</span><span class="o">=</span><span class="n">callist</span><span class="p">,</span> <span class="n">gc_result</span><span class="o">=</span><span class="n">gc_result</span><span class="p">,</span>
+                                              <span class="n">oc_result</span><span class="o">=</span><span class="n">oc_result</span><span class="p">,</span> <span class="n">rq_result</span><span class="o">=</span><span class="n">rq_result</span><span class="p">,</span>
+                                              <span class="n">antpos_result</span><span class="o">=</span><span class="n">antpos_result</span><span class="p">,</span> <span class="n">antcorrect</span><span class="o">=</span><span class="n">antcorrect</span><span class="p">,</span>
+                                              <span class="n">tecmaps_result</span><span class="o">=</span><span class="n">tecmaps_result</span><span class="p">,</span> <span class="n">sw_result</span><span class="o">=</span><span class="n">sw_result</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Priorcals.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.priorcals.html#pipeline.hifv.tasks.priorcals.priorcals.Priorcals.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_gaincurves</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run gaincurves task&quot;&quot;&quot;</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">GainCurves</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">GainCurves</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_opcal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run opcal task&quot;&quot;&quot;</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">Opcal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">Opcal</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_rqcal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run requantizer gains task&quot;&quot;&quot;</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">Rqcal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">Rqcal</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_swpowcal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run switched power task&quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">Swpowcal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">swpow_spw</span><span class="p">)</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">Swpowcal</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_antpos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run hif_antpos to correct for antenna positions&quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">vlaantpos</span><span class="o">.</span><span class="n">VLAAntpos</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">ant_pos_time_limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ant_pos_time_limit</span><span class="p">)</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">vlaantpos</span><span class="o">.</span><span class="n">VLAAntpos</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="n">antcorrect</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">antpos_caltable</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">antpos_caltable</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start antenna position corrections&quot;</span><span class="p">)</span>
+                <span class="n">antparamlist</span> <span class="o">=</span> <span class="n">correct_ant_posns</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">print_offsets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">time_limit</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">ant_pos_time_limit</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;End antenna position corrections&quot;</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_check_tropdelay</span><span class="p">(</span><span class="n">antpos_caltable</span><span class="p">)</span>
+
+                <span class="n">antList</span> <span class="o">=</span> <span class="n">antparamlist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                <span class="n">N</span> <span class="o">=</span> <span class="mi">3</span>
+                <span class="n">subList</span> <span class="o">=</span> <span class="p">[</span><span class="n">antparamlist</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">+</span><span class="n">N</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">antparamlist</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">N</span><span class="p">)]</span>
+                <span class="n">antcorrect</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">antList</span><span class="p">,</span> <span class="n">subList</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No offsets found. No caltable created.&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="n">fracantcorrect</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">antcorrect</span><span class="p">))</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">antennas</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">fracantcorrect</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:5.2f}</span><span class="s2"> percent of antennas needed position corrections.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">100.0</span> <span class="o">*</span> <span class="n">fracantcorrect</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">antcorrect</span>
+
+    <span class="k">def</span> <span class="nf">_do_tecmaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_tec_maps</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">apply_tec_correction</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run tec_maps function&quot;&quot;&quot;</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">TecMaps</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">show_tec_maps</span><span class="o">=</span><span class="n">show_tec_maps</span><span class="p">,</span>
+                                <span class="n">apply_tec_correction</span><span class="o">=</span><span class="n">apply_tec_correction</span><span class="p">)</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">TecMaps</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_check_tropdelay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antpos_caltable</span><span class="p">):</span>
+
+        <span class="c1"># Insert value if required for testing</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        #print &quot;ADDED TEST TROP VALUE&quot;</span>
+<span class="sd">        trdelscale = 1.23</span>
+<span class="sd">        tb = casa_tools.table()</span>
+<span class="sd">        tb.open(antpos_caltable, nomodify=False)</span>
+<span class="sd">        tb.putkeyword(&#39;VLATrDelCorr&#39;, trdelscale)</span>
+<span class="sd">        tb.close()</span>
+<span class="sd">        #print &quot;END OF ADDING TEST TROP VALUE&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Detect EVLA 16B Trop Del Corr</span>
+        <span class="c1"># (Silent if required keyword absent, or has value=0.0)</span>
+        <span class="c1"># antpostable = &#39;cal.antpos&#39;</span>
+        <span class="n">trdelkw</span> <span class="o">=</span> <span class="s1">&#39;VLATrDelCorr&#39;</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">antpos_caltable</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tb</span><span class="o">.</span><span class="n">keywordnames</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">trdelkw</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">trdelscale</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getkeyword</span><span class="p">(</span><span class="n">trdelkw</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">trdelscale</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+                    <span class="n">warning_message</span> <span class="o">=</span> <span class="s2">&quot;NB: This EVLA dataset appears to fall within the period of semester 16B &quot;</span> \
+                                      <span class="s2">&quot;during which the online tropospheric delay model was mis-applied. &quot;</span> \
+                                      <span class="s2">&quot;A correction for the online tropospheric delay model error WILL BE APPLIED!  &quot;</span> \
+                                      <span class="s2">&quot;Tropospheric delay error correction coefficient=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="o">-</span><span class="n">trdelscale</span><span class="o">/</span><span class="mf">1000.0</span><span class="p">)</span><span class="o">+</span> <span class="s2">&quot; (ps/m) &quot;</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;EVLA 16B Online Trop Del Corr is ON, scale=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">trdelscale</span><span class="p">))</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warning_message</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

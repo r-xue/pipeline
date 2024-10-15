@@ -1,0 +1,23 @@
+pipeline.hifv.heuristics.rfi
+============================
+
+.. automodule:: pipeline.hifv.heuristics.rfi
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_amp_range
+      mssel_valid
+      plotms_get_autorange
+      plotms_get_xyrange
+      test_checkflag_dataselect
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      RflagDevHeuristic
+      VLAScanHeuristics
+   

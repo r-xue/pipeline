@@ -1,0 +1,25 @@
+pipeline.hsd.tasks.baseline.display
+===================================
+
+.. automodule:: pipeline.hsd.tasks.baseline.display
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      casa5style_plot
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ClusterDisplay
+      ClusterDisplayWorker
+      ClusterPropertyDisplay
+      ClusterValidationAxesManager
+      ClusterValidationDisplay
+      DataTable
+      MapAxesManagerBase
+      SingleDishDisplayInputs
+   

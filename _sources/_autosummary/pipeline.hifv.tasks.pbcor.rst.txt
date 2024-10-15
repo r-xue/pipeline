@@ -1,0 +1,21 @@
+pipeline.hifv.tasks.pbcor
+=========================
+
+.. automodule:: pipeline.hifv.tasks.pbcor
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Pbcor
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   display
+   pbcor
+   renderer

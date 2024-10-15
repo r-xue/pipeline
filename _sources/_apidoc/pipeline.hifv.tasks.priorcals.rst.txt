@@ -1,0 +1,69 @@
+pipeline.hifv.tasks.priorcals package
+=====================================
+
+Submodules
+----------
+
+pipeline.hifv.tasks.priorcals.opacitiesdisplay module
+-----------------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.priorcals.opacitiesdisplay
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.priorcals.priorcals module
+----------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.priorcals.priorcals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.priorcals.qa module
+---------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.priorcals.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.priorcals.renderer module
+---------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.priorcals.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.priorcals.resultobjects module
+--------------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.priorcals.resultobjects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.priorcals.swpowdisplay module
+-------------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.priorcals.swpowdisplay
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hifv.tasks.priorcals.vlaantpos module
+----------------------------------------------
+
+.. automodule:: pipeline.hifv.tasks.priorcals.vlaantpos
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hifv.tasks.priorcals
+   :members:
+   :undoc-members:
+   :show-inheritance:

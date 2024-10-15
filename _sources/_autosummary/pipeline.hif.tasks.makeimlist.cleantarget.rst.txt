@@ -1,0 +1,13 @@
+pipeline.hif.tasks.makeimlist.cleantarget
+=========================================
+
+.. automodule:: pipeline.hif.tasks.makeimlist.cleantarget
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CleanTarget
+      ScalTarget
+   

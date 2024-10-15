@@ -1,0 +1,22 @@
+pipeline.hsd.tasks.imaging.detectcontamination
+==============================================
+
+.. automodule:: pipeline.hsd.tasks.imaging.detectcontamination
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      ceil
+      detect_contamination
+      namedtuple
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DirectionSpec
+      FrequencySpec
+      NAxis
+   

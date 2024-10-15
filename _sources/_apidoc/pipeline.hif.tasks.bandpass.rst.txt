@@ -1,0 +1,77 @@
+pipeline.hif.tasks.bandpass package
+===================================
+
+Submodules
+----------
+
+pipeline.hif.tasks.bandpass.adapters module
+-------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.bandpass.adapters
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.bandpass.bandpassmode module
+-----------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.bandpass.bandpassmode
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.bandpass.bandpassworker module
+-------------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.bandpass.bandpassworker
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.bandpass.channelbandpass module
+--------------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.bandpass.channelbandpass
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.bandpass.common module
+-----------------------------------------
+
+.. automodule:: pipeline.hif.tasks.bandpass.common
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.bandpass.phcorbandpass module
+------------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.bandpass.phcorbandpass
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.bandpass.qa module
+-------------------------------------
+
+.. automodule:: pipeline.hif.tasks.bandpass.qa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pipeline.hif.tasks.bandpass.renderer module
+-------------------------------------------
+
+.. automodule:: pipeline.hif.tasks.bandpass.renderer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hif.tasks.bandpass
+   :members:
+   :undoc-members:
+   :show-inheritance:

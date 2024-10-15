@@ -1,0 +1,12 @@
+pipeline.infrastructure.renderer.registry
+=========================================
+
+.. automodule:: pipeline.infrastructure.renderer.registry
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      RendererRegistry
+   

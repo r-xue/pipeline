@@ -1,0 +1,24 @@
+pipeline.hifa.tasks.flagging
+============================
+
+.. automodule:: pipeline.hifa.tasks.flagging
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FlagDeterALMA
+      FlagTargetsALMA
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   flagdeteralma
+   flagdeteralma_test
+   flagtargetsalma
+   qa
+   renderer

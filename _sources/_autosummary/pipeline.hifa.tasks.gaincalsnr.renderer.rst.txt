@@ -1,0 +1,19 @@
+pipeline.hifa.tasks.gaincalsnr.renderer
+=======================================
+
+.. automodule:: pipeline.hifa.tasks.gaincalsnr.renderer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      make_gaincalsnr_table
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GaincalSnrTR
+      T2_4MDetailsGaincalSnrRenderer
+   

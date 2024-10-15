@@ -1,0 +1,12 @@
+pipeline.hifa.tasks.spwphaseup.display
+======================================
+
+.. automodule:: pipeline.hifa.tasks.spwphaseup.display
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SpatialStructureFunctionChart
+   

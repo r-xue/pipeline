@@ -1,0 +1,818 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.imaging.gridding &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task (sphinx-autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.imaging.gridding</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.imaging.gridding</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">pipeline.domain.datatable</span> <span class="kn">import</span> <span class="n">DataTableIndexer</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">compress</span>
+
+<span class="kn">from</span> <span class="nn">.accumulator</span> <span class="kn">import</span> <span class="n">Accumulator</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">observatory_policy</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">DO_TEST</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<div class="viewcode-block" id="gridding_factory">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.gridding_factory">[docs]</a>
+<span class="k">def</span> <span class="nf">gridding_factory</span><span class="p">(</span><span class="n">observing_pattern</span><span class="p">):</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;ObsPattern = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">observing_pattern</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">observing_pattern</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;RASTER&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RasterGridding</span>
+    <span class="k">elif</span> <span class="n">observing_pattern</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;SINGLE-POINT&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SinglePointGridding</span>
+    <span class="k">elif</span> <span class="n">observing_pattern</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;MULTI-POINT&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">MultiPointGridding</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;observing_pattern </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> is invalid.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">observing_pattern</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="GriddingInputs">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.GriddingInputs">[docs]</a>
+<span class="k">class</span> <span class="nc">GriddingInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+    <span class="c1"># Search order of input vis</span>
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">BASELINED</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">ATMCORR</span><span class="p">,</span>
+                            <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span> <span class="p">]</span>
+
+    <span class="n">infiles</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">null_input</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]])</span>
+    <span class="n">antennaids</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">fieldids</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">spwids</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">poltypes</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Synchronization between infiles and vis is still necessary</span>
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span> <span class="nf">vis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">infiles</span><span class="p">,</span> <span class="n">antennaids</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">,</span> <span class="n">spwids</span><span class="p">,</span> <span class="n">poltypes</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GriddingInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span> <span class="o">=</span> <span class="n">infiles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antennaids</span> <span class="o">=</span> <span class="n">antennaids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fieldids</span> <span class="o">=</span> <span class="n">fieldids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwids</span> <span class="o">=</span> <span class="n">spwids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">poltypes</span> <span class="o">=</span> <span class="n">poltypes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nx</span> <span class="o">=</span> <span class="n">nx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ny</span> <span class="o">=</span> <span class="n">ny</span></div>
+
+
+
+<div class="viewcode-block" id="GriddingResults">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.GriddingResults">[docs]</a>
+<span class="k">class</span> <span class="nc">GriddingResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GriddingResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GriddingResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.GriddingResults.merge_with_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GriddingResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># return [image.imagename for image in self.outcome]</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
+
+
+
+<span class="c1"># Creates a dictionary of gridded RMS and the number of valid spectra</span>
+<span class="c1"># in each grid. This module collects data from DataTable. Pass parent</span>
+<span class="c1"># MS names as an input (although parent name is internally resolved in</span>
+<span class="c1"># the class).</span>
+<div class="viewcode-block" id="GriddingBase">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.GriddingBase">[docs]</a>
+<span class="k">class</span> <span class="nc">GriddingBase</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">GriddingInputs</span>
+    <span class="n">Rule</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;WeightDistance&#39;</span><span class="p">:</span> <span class="s1">&#39;Gauss&#39;</span><span class="p">,</span> \
+            <span class="s1">&#39;Clipping&#39;</span><span class="p">:</span> <span class="s1">&#39;MinMaxReject&#39;</span><span class="p">,</span> \
+            <span class="s1">&#39;WeightRMS&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> \
+            <span class="s1">&#39;WeightTsysExptime&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="GriddingBase.prepare">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.GriddingBase.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatable_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">datatable_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">antennaids</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="o">.</span><span class="n">antennaids</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">antennaids</span>
+        <span class="c1"># Use work MS</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">infiles</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="o">.</span><span class="n">infiles</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">infiles</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">spwids</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="o">.</span><span class="n">spwids</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spwids</span>
+        <span class="c1"># maps variety of spwid among MSes (not supposed to happen)</span>
+        <span class="n">ms_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msidxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">ms_list</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwmap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msidxs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">fieldids</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="o">.</span><span class="n">fieldids</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fieldids</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">poltypes</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">poltype</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="o">.</span><span class="n">poltypes</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">poltype</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">poltypes</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;self.files=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;self.msidxs=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msidxs</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;self.antenna=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">antenna</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;self.spw=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;self.field=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;self.poltype=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">poltype</span><span class="p">))</span>
+        <span class="c1"># create a map of MS index in context/datatable and polid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">polid</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)):</span>
+            <span class="n">msidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msidxs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">spwid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">poltype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">poltype</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">ddobj</span> <span class="o">=</span> <span class="n">ms_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spwid</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">polid</span><span class="p">[</span><span class="n">msidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">ddobj</span><span class="o">.</span><span class="n">get_polarization_id</span><span class="p">(</span><span class="n">poltype</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Members to be processed:&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ms_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">poltype</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">%s</span><span class="s1"> Antenna </span><span class="si">%s</span><span class="s1"> Spw </span><span class="si">%s</span><span class="s1"> Pol </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+
+        <span class="n">reference_data</span> <span class="o">=</span> <span class="n">ms_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">reference_spw</span> <span class="o">=</span> <span class="n">reference_data</span><span class="o">.</span><span class="n">spectral_windows</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">is_eph_obj</span> <span class="o">=</span> <span class="n">reference_data</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_eph_obj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nchan</span> <span class="o">=</span> <span class="n">reference_spw</span><span class="o">.</span><span class="n">num_channels</span>
+        <span class="c1"># beam size</span>
+        <span class="n">grid_size</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">reference_data</span><span class="o">.</span><span class="n">beam_sizes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">antenna</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">imaging_policy</span> <span class="o">=</span> <span class="n">observatory_policy</span><span class="o">.</span><span class="n">get_imaging_policy</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="n">grid_factor</span> <span class="o">=</span> <span class="n">imaging_policy</span><span class="o">.</span><span class="n">get_beam_size_pixel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid_ra</span> <span class="o">=</span> <span class="n">grid_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid_dec</span> <span class="o">=</span> <span class="n">grid_size</span>
+
+        <span class="n">combine_radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_ra</span>
+        <span class="n">kernel_width</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">combine_radius</span>
+        <span class="n">allowance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_ra</span> <span class="o">*</span> <span class="mf">0.1</span>
+        <span class="n">spacing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_ra</span> <span class="o">/</span> <span class="n">grid_factor</span>
+        <span class="n">DataIn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;DataIn=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">DataIn</span><span class="p">))</span>
+        <span class="n">grid_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dogrid</span><span class="p">(</span><span class="n">DataIn</span><span class="p">,</span> <span class="n">kernel_width</span><span class="p">,</span> <span class="n">combine_radius</span><span class="p">,</span> <span class="n">allowance</span><span class="p">,</span> <span class="n">spacing</span><span class="p">,</span> <span class="n">is_eph_obj</span><span class="p">,</span> <span class="n">datatable_dict</span><span class="o">=</span><span class="n">datatable_dict</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;execute: elapsed time </span><span class="si">%s</span><span class="s1"> sec&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">GriddingResults</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+                                 <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">outcome</span><span class="o">=</span><span class="n">compress</span><span class="o">.</span><span class="n">CompressedObj</span><span class="p">(</span><span class="n">grid_table</span><span class="p">))</span>
+        <span class="k">del</span> <span class="n">grid_table</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="GriddingBase.analyse">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.GriddingBase.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="GriddingBase.dogrid">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.GriddingBase.dogrid">[docs]</a>
+    <span class="k">def</span> <span class="nf">dogrid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DataIn</span><span class="p">,</span> <span class="n">kernel_width</span><span class="p">,</span> <span class="n">combine_radius</span><span class="p">,</span> <span class="n">allowance_radius</span><span class="p">,</span> <span class="n">grid_spacing</span><span class="p">,</span> <span class="n">is_eph_obj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">datatable_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The process does re-map and combine spectrum for each position</span>
+<span class="sd">        GridTable format:</span>
+<span class="sd">          [[[IF0,...,IFN],POL,0,0,RAcent,DECcent,[[index0,r0,RMS0,ant0],[index1,r1,RMS1,ant1],..,[indexN,rN,RMSN,antn]]]</span>
+<span class="sd">           [[IF0,...,IFN],POL,0,1,RAcent,DECcent,[[index0,r0,RMS0,ant0],[index1,r1,RMS1,index1,ant1],..,[indexN,rN,RMSN,antn]]]</span>
+<span class="sd">                        ......</span>
+<span class="sd">           [[IF0,...,IFN],POL,M,N,RAcent,DECcent,[[index0,r0,RMS0,ant0],[index1,r1,RMS1,ant1],..,[indexN,rowN,rN,RMSN,antn]]]]</span>
+<span class="sd">         where row0,row1,...,rowN should be combined to one for better S/N spectra</span>
+<span class="sd">               &#39;r&#39; is a distance from grid position</span>
+<span class="sd">        &#39;weight&#39; can be &#39;CONST&#39;, &#39;GAUSS&#39;, or &#39;LINEAR&#39;</span>
+<span class="sd">        &#39;clip&#39; can be &#39;none&#39; or &#39;minmaxreject&#39;</span>
+<span class="sd">        &#39;rms_weight&#39; is either True or False. If True, NewRMS is used for additional weight</span>
+<span class="sd">          Number of spectra output is len(GridTable)</span>
+<span class="sd">        OutputTable format:</span>
+<span class="sd">           [[IF, POL, X, Y, RA, DEC, # of Combined Sp., # of flagged Sp., RMS]</span>
+<span class="sd">            [IF, POL, X, Y, RA, DEC, # of Combined Sp., # of flagged Sp., RMS]</span>
+<span class="sd">                    ......</span>
+<span class="sd">            [IF, POL, X, Y, RA, DEC, # of Combined Sp., # of flagged Sp., RMS]]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+        <span class="n">mses</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span>
+        <span class="n">dt_dict</span> <span class="o">=</span> <span class="n">datatable_dict</span>
+        <span class="n">index_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">index_dict_key</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">msid</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">fld</span><span class="p">,</span> <span class="n">spw</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msidxs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">):</span>
+            <span class="n">basename</span> <span class="o">=</span> <span class="n">mses</span><span class="p">[</span><span class="n">msid</span><span class="p">]</span><span class="o">.</span><span class="n">basename</span>
+            <span class="n">origin_vis</span> <span class="o">=</span> <span class="n">mses</span><span class="p">[</span><span class="n">msid</span><span class="p">]</span><span class="o">.</span><span class="n">origin_ms</span>
+            <span class="n">_index_list</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">get_index_list_for_ms</span><span class="p">(</span><span class="n">dt_dict</span><span class="p">[</span><span class="n">basename</span><span class="p">],</span> <span class="p">[</span><span class="n">origin_vis</span><span class="p">],</span> <span class="p">[</span><span class="n">ant</span><span class="p">],</span> <span class="p">[</span><span class="n">fld</span><span class="p">],</span> <span class="p">[</span><span class="n">spw</span><span class="p">])</span>
+            <span class="n">index_dict</span><span class="p">[</span><span class="n">index_dict_key</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_index_list</span><span class="p">)</span>
+            <span class="n">index_dict_key</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">indexer</span> <span class="o">=</span> <span class="n">DataTableIndexer</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">_g</span><span class="p">():</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Yield a serial row ID of datatable to process for all rows to process.&quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">index_dict_key</span><span class="p">):</span>
+                <span class="n">msid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msidxs</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                <span class="n">origin_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">mses</span><span class="p">[</span><span class="n">msid</span><span class="p">]</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index_dict</span><span class="p">[</span><span class="n">x</span><span class="p">]:</span>
+                    <span class="k">yield</span> <span class="n">indexer</span><span class="o">.</span><span class="n">perms2serial</span><span class="p">(</span><span class="n">origin_basename</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+        <span class="c1"># list of all datatable serial row ID to process</span>
+        <span class="n">index_list</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">_g</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">num_spectra</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># no valid data, return empty table</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">def</span> <span class="nf">_g2</span><span class="p">(</span><span class="n">colname</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Yield a datatable cell of a given colname for all rows to process.&quot;&quot;&quot;</span>
+            <span class="c1"># ms_map: key=basename of origin MS, value=basename of work MS.</span>
+            <span class="n">ms_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">mses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">),</span> <span class="n">mses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">msidxs</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index_list</span><span class="p">:</span>
+                <span class="n">origin_basename</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">indexer</span><span class="o">.</span><span class="n">serial2perms</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">datatable</span> <span class="o">=</span> <span class="n">dt_dict</span><span class="p">[</span> <span class="n">ms_map</span><span class="p">[</span><span class="n">origin_basename</span><span class="p">]</span> <span class="p">]</span>
+                <span class="k">yield</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="n">colname</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">_g3</span><span class="p">(</span><span class="n">colname</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Yield a given datatable column of rows to process for each MS.&quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">msid</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msidxs</span><span class="p">):</span>
+                <span class="n">datatable</span> <span class="o">=</span> <span class="n">dt_dict</span><span class="p">[</span><span class="n">mses</span><span class="p">[</span><span class="n">msid</span><span class="p">]</span><span class="o">.</span><span class="n">basename</span><span class="p">]</span>
+                <span class="n">_list</span> <span class="o">=</span> <span class="n">index_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="k">yield</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="n">colname</span><span class="p">)</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">_list</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1">#vislist = map(lambda x: x.basename, mses)</span>
+        <span class="c1">#LOG.info(&#39;self.msidxs={0}&#39;.format(self.msidxs))</span>
+        <span class="c1">#num_spectra_per_data = dict((i,len(index_dict[vislist[i]])) for i in self.msidxs)</span>
+        <span class="c1">#num_spectra_per_data = dict((i,len(index_dict[v])) for i,v in enumerate(vislist))</span>
+        <span class="c1">#LOG.info(&#39;num_spectra_per_data={0}&#39;.format(num_spectra_per_data))</span>
+        <span class="c1">#msids = numpy.asarray([i for i in self.msidxs for j in xrange(num_spectra_per_data[i])])</span>
+        <span class="n">msids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msidxs</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]))])</span>
+        <span class="c1">#LOG.info(&#39;msids={}&#39;.format(msids))</span>
+        <span class="k">if</span> <span class="n">is_eph_obj</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">racol</span> <span class="o">=</span> <span class="s1">&#39;OFS_RA&#39;</span>
+            <span class="n">deccol</span> <span class="o">=</span> <span class="s1">&#39;OFS_DEC&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">racol</span> <span class="o">=</span> <span class="s1">&#39;RA&#39;</span>
+            <span class="n">deccol</span> <span class="o">=</span> <span class="s1">&#39;DEC&#39;</span>
+        <span class="n">ras</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">_g2</span><span class="p">(</span><span class="n">racol</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">num_spectra</span><span class="p">)</span>
+        <span class="n">decs</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">_g2</span><span class="p">(</span><span class="n">deccol</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">num_spectra</span><span class="p">)</span>
+        <span class="n">exposure</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">_g2</span><span class="p">(</span><span class="s1">&#39;EXPOSURE&#39;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">num_spectra</span><span class="p">)</span>
+        <span class="n">polids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">polid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">msids</span><span class="p">])</span>
+        <span class="c1"># TSYS and FLAG_SUMMARY cols have NPOL x nrow elements</span>
+        <span class="n">ttsys</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_g3</span><span class="p">(</span><span class="s1">&#39;TSYS&#39;</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">tnet_flag</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_g3</span><span class="p">(</span><span class="s1">&#39;FLAG_SUMMARY&#39;</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># STATISTICS col has NPOL x 7 x nrow elements -&gt; stats 7 x selected nrow elements</span>
+        <span class="n">tstats</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_g3</span><span class="p">(</span><span class="s1">&#39;STATISTICS&#39;</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1">#LOG.info(&#39;ttsys.shape={0}&#39;.format(list(ttsys.shape)))</span>
+        <span class="c1">#LOG.info(&#39;tnet_flag.shape={0}&#39;.format(list(tnet_flag.shape)))</span>
+        <span class="c1">#LOG.info(&#39;tstats.shape={0}&#39;.format(list(tstats.shape)))</span>
+        <span class="c1"># filter polid of each row</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">polids</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">tsys</span> <span class="o">=</span> <span class="n">ttsys</span><span class="p">[</span><span class="n">polids</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">net_flag</span> <span class="o">=</span> <span class="n">tnet_flag</span><span class="p">[</span><span class="n">polids</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">stats</span> <span class="o">=</span> <span class="n">tstats</span><span class="p">[</span><span class="n">polids</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># variable polids need to go hard way</span>
+            <span class="n">tsys</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">num_spectra</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">net_flag</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">num_spectra</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">stats</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">tstats</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)):</span>
+                <span class="n">ipol</span> <span class="o">=</span> <span class="n">polids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">tsys</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttsys</span><span class="p">[</span><span class="n">ipol</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+                <span class="n">net_flag</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">tnet_flag</span><span class="p">[</span><span class="n">ipol</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+                <span class="n">stats</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">tstats</span><span class="p">[</span><span class="n">ipol</span><span class="p">,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">ttsys</span><span class="p">,</span> <span class="n">tnet_flag</span><span class="p">,</span> <span class="n">tstats</span><span class="p">,</span> <span class="n">polids</span>
+
+        <span class="c1">### test code (to check selected index_list meets selection)</span>
+        <span class="k">if</span> <span class="n">DO_TEST</span><span class="p">:</span>
+            <span class="n">ants</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">_g2</span><span class="p">(</span><span class="s1">&#39;ANTENNA&#39;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">num_spectra</span><span class="p">)</span>
+            <span class="n">fids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">_g2</span><span class="p">(</span><span class="s1">&#39;FIELD_ID&#39;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">num_spectra</span><span class="p">)</span>
+            <span class="n">ifnos</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">_g2</span><span class="p">(</span><span class="s1">&#39;IF&#39;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">num_spectra</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)):</span>
+                <span class="n">_msid</span> <span class="o">=</span> <span class="n">msids</span><span class="p">[</span><span class="n">_i</span><span class="p">]</span>
+                <span class="n">_ant</span> <span class="o">=</span> <span class="n">ants</span><span class="p">[</span><span class="n">_i</span><span class="p">]</span>
+                <span class="n">_spw</span> <span class="o">=</span> <span class="n">ifnos</span><span class="p">[</span><span class="n">_i</span><span class="p">]</span>
+                <span class="n">_fid</span> <span class="o">=</span> <span class="n">fids</span><span class="p">[</span><span class="n">_i</span><span class="p">]</span>
+                <span class="c1"># search for the elements of msnames that points MS of the row</span>
+                <span class="n">_j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msidxs</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">_msid</span><span class="p">)</span>
+                <span class="n">valid_ants</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">antenna</span><span class="p">)[</span><span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msidxs</span><span class="p">)</span><span class="o">==</span><span class="n">_msid</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
+                <span class="k">assert</span> <span class="n">_ant</span> <span class="ow">in</span> <span class="n">valid_ants</span><span class="p">,</span> <span class="s1">&#39;row </span><span class="si">%s</span><span class="s1"> is bad selection: ANTENNA not in process list (actual </span><span class="si">%s</span><span class="s1"> expected </span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">index_list</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span> <span class="n">_ant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span><span class="p">[</span><span class="n">_j</span><span class="p">])</span>
+                <span class="k">assert</span> <span class="n">_fid</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">[</span><span class="n">_j</span><span class="p">],</span> <span class="s1">&#39;row </span><span class="si">%s</span><span class="s1"> is bad selection: FIELD_ID not in process list (actual </span><span class="si">%s</span><span class="s1"> expected </span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">index_list</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span> <span class="n">_fid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">[</span><span class="n">_j</span><span class="p">])</span>
+                <span class="k">assert</span> <span class="n">_spw</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">[</span><span class="n">_j</span><span class="p">],</span> <span class="s1">&#39;row </span><span class="si">%s</span><span class="s1"> is bad selection: IFNO not in process list (actual </span><span class="si">%s</span><span class="s1"> expected </span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">index_list</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span> <span class="n">_spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">[</span><span class="n">_j</span><span class="p">])</span>
+            <span class="k">del</span> <span class="n">ants</span><span class="p">,</span> <span class="n">fids</span><span class="p">,</span> <span class="n">ifnos</span>
+
+        <span class="c1"># Re-Gridding</span>
+        <span class="c1"># 2008/09/20 Spacing should be identical between RA and DEC direction</span>
+        <span class="c1"># Curvature has not been taken account</span>
+        <span class="n">dec_corr</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">decs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mf">180.0</span> <span class="o">*</span> <span class="mf">3.141592653</span><span class="p">)</span>
+
+<span class="c1">###### TODO: Proper handling of POL</span>
+        <span class="n">GridTable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="p">(</span><span class="n">index_list</span><span class="p">,</span> <span class="n">msids</span><span class="p">,</span> <span class="n">ras</span><span class="p">,</span> <span class="n">decs</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span> <span class="n">combine_radius</span><span class="p">,</span> <span class="n">allowance_radius</span><span class="p">,</span> <span class="n">grid_spacing</span><span class="p">,</span> <span class="n">dec_corr</span><span class="p">)</span>
+
+        <span class="c1"># create storage</span>
+        <span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">num_spectra_per_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">msidxs</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_spectra</span><span class="p">):</span>
+            <span class="n">num_spectra_per_data</span><span class="p">[</span><span class="n">msids</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;num_spectra_per_data=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">num_spectra_per_data</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Processing </span><span class="si">%d</span><span class="s1"> spectra...&#39;</span> <span class="o">%</span> <span class="n">num_spectra</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nchan</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">accum</span> <span class="o">=</span> <span class="n">Accumulator</span><span class="p">(</span><span class="n">minmaxclip</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Rule</span><span class="p">[</span><span class="s1">&#39;Clipping&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">==</span><span class="s1">&#39;MINMAXREJECT&#39;</span><span class="p">),</span>
+                                <span class="n">weight_rms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Rule</span><span class="p">[</span><span class="s1">&#39;WeightRMS&#39;</span><span class="p">],</span>
+                                <span class="n">weight_tintsys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Rule</span><span class="p">[</span><span class="s1">&#39;WeightTsysExptime&#39;</span><span class="p">],</span>
+                                <span class="n">kernel_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Rule</span><span class="p">[</span><span class="s1">&#39;WeightDistance&#39;</span><span class="p">],</span>
+                                <span class="n">kernel_width</span><span class="o">=</span><span class="n">kernel_width</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">accum</span> <span class="o">=</span> <span class="n">Accumulator</span><span class="p">(</span><span class="n">minmaxclip</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                <span class="n">weight_rms</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                <span class="n">weight_tintsys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="n">kernel_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Rule</span><span class="p">[</span><span class="s1">&#39;WeightDistance&#39;</span><span class="p">],</span>
+                                <span class="n">kernel_width</span><span class="o">=</span><span class="n">kernel_width</span><span class="p">)</span>
+
+        <span class="n">num_grid</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">GridTable</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Accumulate nearby spectrum for each Grid position...&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Processing </span><span class="si">%d</span><span class="s1"> spectra...&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">num_grid</span><span class="p">))</span>
+        <span class="n">OutputTable</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># create storage for output</span>
+        <span class="c1"># 2011/11/12 DataIn and rowsSel are [list]</span>
+        <span class="n">IDX2StorageID</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">StorageID</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msidxs</span><span class="p">):</span>
+            <span class="c1"># read data to SpStorage</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_spectra_per_data</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">index_list</span><span class="p">[</span><span class="n">StorageID</span><span class="p">]</span>
+                <span class="n">IDX2StorageID</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">StorageID</span>
+                <span class="n">StorageID</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Create progress timer</span>
+        <span class="n">Timer</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">ProgressTimer</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="n">num_grid</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">)</span>
+        <span class="n">ID</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">IFS</span><span class="p">,</span> <span class="n">POL</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">RAcent</span><span class="p">,</span> <span class="n">DECcent</span><span class="p">,</span> <span class="n">RowDelta</span><span class="p">)</span> <span class="ow">in</span> <span class="n">GridTable</span><span class="p">:</span>
+            <span class="n">IF</span> <span class="o">=</span> <span class="n">IFS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># RowDelta is numpy array</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">RowDelta</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">indexlist</span> <span class="o">=</span> <span class="p">()</span>
+                <span class="n">deltalist</span> <span class="o">=</span> <span class="p">()</span>
+                <span class="n">rmslist</span> <span class="o">=</span> <span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">indexlist</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">IDX2StorageID</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">idx</span><span class="p">)]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">RowDelta</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]])</span>
+                <span class="n">valid_index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">net_flag</span><span class="p">[</span><span class="n">indexlist</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">indexlist</span> <span class="o">=</span> <span class="n">indexlist</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">valid_index</span><span class="p">)</span>
+                <span class="n">deltalist</span> <span class="o">=</span> <span class="n">RowDelta</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">valid_index</span><span class="p">)</span>
+                <span class="n">rmslist</span> <span class="o">=</span> <span class="n">RowDelta</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">valid_index</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">valid_index</span>
+            <span class="n">num_valid</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indexlist</span><span class="p">)</span>
+            <span class="n">num_flagged</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">RowDelta</span><span class="p">)</span> <span class="o">-</span> <span class="n">num_valid</span>
+            <span class="k">if</span> <span class="n">num_valid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># No valid Spectra at the position</span>
+                <span class="n">RMS</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">elif</span> <span class="n">num_valid</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># One valid Spectrum at the position</span>
+                <span class="n">RMS</span> <span class="o">=</span> <span class="n">rmslist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># More than one valid Spectra at the position</span>
+                <span class="c1"># Data accumulation by Accumulator</span>
+                <span class="n">accum</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indexlist</span><span class="p">))</span>
+                <span class="n">accum</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="n">indexlist</span><span class="p">,</span> <span class="n">rmslist</span><span class="p">,</span> <span class="n">deltalist</span><span class="p">,</span> <span class="n">tsys</span><span class="p">,</span> <span class="n">exposure</span><span class="p">)</span>
+
+                <span class="n">RMS</span> <span class="o">=</span> <span class="n">accum</span><span class="o">.</span><span class="n">rms</span>
+
+            <span class="n">OutputTable</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">IF</span><span class="p">,</span> <span class="n">POL</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">RAcent</span><span class="p">,</span> <span class="n">DECcent</span><span class="p">,</span> <span class="n">num_valid</span><span class="p">,</span> <span class="n">num_flagged</span><span class="p">,</span> <span class="n">RMS</span><span class="p">))</span>
+            <span class="n">ID</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">del</span> <span class="n">indexlist</span><span class="p">,</span> <span class="n">deltalist</span><span class="p">,</span> <span class="n">rmslist</span>
+
+            <span class="c1"># Countup progress timer</span>
+            <span class="n">Timer</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+
+        <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;dogrid: elapsed time </span><span class="si">%s</span><span class="s1"> sec&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">))</span>
+        <span class="k">del</span> <span class="n">GridTable</span>
+        <span class="k">return</span> <span class="n">OutputTable</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RasterGridding">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.RasterGridding">[docs]</a>
+<span class="k">class</span> <span class="nc">RasterGridding</span><span class="p">(</span><span class="n">GriddingBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">msids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">ras</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+               <span class="n">decs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">stats</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+               <span class="n">CombineRadius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Allowance</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">GridSpacing</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+               <span class="n">DecCorrection</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Grid STATISTICS by RA/DEC position for raster map.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index_list: List of DataTable indices to process</span>
+<span class="sd">            msids: Indices of MS in context for each element of index_list</span>
+<span class="sd">            ras: RA of each element of index_list</span>
+<span class="sd">            decs: DEC of each element of index_list</span>
+<span class="sd">            stats: STATISTICS in DataTable of each element of index_list</span>
+<span class="sd">            CombineRadius: Radius to combine data together</span>
+<span class="sd">            Allowance: Allowance to combine data together (not used)</span>
+<span class="sd">            GridSpacing: Spacing between each grid center</span>
+<span class="sd">            DecCorrection: A decrination correction flactor</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            GridTable data structure. Each element of list stores data for each</span>
+<span class="sd">            grid position. The data of each grid position consists of,</span>
+<span class="sd">            [SpwID of each data gridded], POL, XID, YID, RA, DEC,</span>
+<span class="sd">            [index_list, distance of poining from grid center, stat,</span>
+<span class="sd">            msids of each data gridded].</span>
+<span class="sd">            See also documentation of GriddingBase.dogrid for more details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">GridTable</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">NROW</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span>
+
+        <span class="n">ThresholdR</span> <span class="o">=</span> <span class="n">CombineRadius</span> <span class="o">*</span> <span class="n">CombineRadius</span>
+        <span class="n">MinRA</span> <span class="o">=</span> <span class="n">ras</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">MaxRA</span> <span class="o">=</span> <span class="n">ras</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">MinDEC</span> <span class="o">=</span> <span class="n">decs</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">MaxDEC</span> <span class="o">=</span> <span class="n">decs</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="c1"># Check if the distribution crosses over the RA=0</span>
+        <span class="k">if</span> <span class="n">MinRA</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="ow">and</span> <span class="n">MaxRA</span> <span class="o">&gt;</span> <span class="mi">350</span><span class="p">:</span>
+            <span class="n">ras</span> <span class="o">=</span> <span class="n">ras</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">ras</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span> <span class="o">*</span> <span class="mf">360.0</span>
+            <span class="n">MinRA</span> <span class="o">=</span> <span class="n">ras</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">MaxRA</span> <span class="o">=</span> <span class="n">ras</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="c1"># (RAcenter, DECcenter) to be the center of the grid</span>
+        <span class="n">nx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">nx</span>
+        <span class="n">ny</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ny</span>
+        <span class="k">if</span> <span class="n">nx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">NGridRA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">MaxRA</span> <span class="o">-</span> <span class="n">MinRA</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">GridSpacing</span> <span class="o">*</span> <span class="n">DecCorrection</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">NGridRA</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">NGridRA</span> <span class="o">+=</span> <span class="mi">2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">NGridRA</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">NGridRA</span> <span class="o">=</span> <span class="n">nx</span>
+        <span class="k">if</span> <span class="n">ny</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">NGridDEC</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">MaxDEC</span> <span class="o">-</span> <span class="n">MinDEC</span><span class="p">)</span> <span class="o">/</span> <span class="n">GridSpacing</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">NGridDEC</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">NGridDEC</span> <span class="o">+=</span> <span class="mi">2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">NGridDEC</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">NGridDEC</span> <span class="o">=</span> <span class="n">ny</span>
+        <span class="n">MinRA</span> <span class="o">=</span> <span class="p">(</span><span class="n">MinRA</span> <span class="o">+</span> <span class="n">MaxRA</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">NGridRA</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">GridSpacing</span> <span class="o">*</span> <span class="n">DecCorrection</span>
+        <span class="n">MinDEC</span> <span class="o">=</span> <span class="p">(</span><span class="n">MinDEC</span> <span class="o">+</span> <span class="n">MaxDEC</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">NGridDEC</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">GridSpacing</span>
+
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NGridDEC</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">NROW</span> <span class="o">&gt;</span> <span class="mi">10000</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Progress: </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">) : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">NGridDEC</span><span class="p">,</span> <span class="n">NGridRA</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">()))</span>
+            <span class="n">DEC</span> <span class="o">=</span> <span class="n">MinDEC</span> <span class="o">+</span> <span class="n">GridSpacing</span> <span class="o">*</span> <span class="n">y</span>
+            <span class="n">DeltaDEC</span> <span class="o">=</span> <span class="n">decs</span> <span class="o">-</span> <span class="n">DEC</span>
+            <span class="n">SelectD</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">DeltaDEC</span> <span class="o">&lt;</span> <span class="n">CombineRadius</span><span class="p">,</span> <span class="n">DeltaDEC</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">CombineRadius</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">sDeltaDEC</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">DeltaDEC</span><span class="p">,</span> <span class="n">SelectD</span><span class="p">)</span>
+            <span class="n">sRA</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">ras</span><span class="p">,</span> <span class="n">SelectD</span><span class="p">)</span>
+            <span class="n">sIDX</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">index_list</span><span class="p">,</span> <span class="n">SelectD</span><span class="p">)</span>
+            <span class="c1"># TODO: select proper stat element</span>
+            <span class="n">sRMS</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="n">SelectD</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">sMS</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">msids</span><span class="p">,</span> <span class="n">SelectD</span><span class="p">)</span>
+            <span class="c1">#LOG.debug(&#39;Combine Spectra: %s&#39; % len(sRMS))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Combine Spectra: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">sRA</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NGridRA</span><span class="p">):</span>
+                <span class="n">RA</span> <span class="o">=</span> <span class="n">MinRA</span> <span class="o">+</span> <span class="n">GridSpacing</span> <span class="o">*</span> <span class="n">DecCorrection</span> <span class="o">*</span> <span class="n">x</span>
+                <span class="n">sDeltaRA</span> <span class="o">=</span> <span class="p">(</span><span class="n">sRA</span> <span class="o">-</span> <span class="n">RA</span><span class="p">)</span> <span class="o">/</span> <span class="n">DecCorrection</span>
+                <span class="n">Delta</span> <span class="o">=</span> <span class="n">sDeltaDEC</span> <span class="o">*</span> <span class="n">sDeltaDEC</span> <span class="o">+</span> <span class="n">sDeltaRA</span> <span class="o">*</span> <span class="n">sDeltaRA</span>
+                <span class="n">SelectR</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Delta</span> <span class="o">&lt;</span> <span class="n">ThresholdR</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">SelectR</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="n">ssRMS</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">sRMS</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">SelectR</span><span class="p">)</span>
+                    <span class="n">ssIDX</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">sIDX</span><span class="p">,</span> <span class="n">SelectR</span><span class="p">)</span>
+                    <span class="n">ssMS</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">sMS</span><span class="p">,</span> <span class="n">SelectR</span><span class="p">)</span>
+                    <span class="n">ssDelta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">Delta</span><span class="p">,</span> <span class="n">SelectR</span><span class="p">))</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">spwmap</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ssMS</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">poltype</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">RA</span><span class="p">,</span> <span class="n">DEC</span><span class="p">,</span>
+                            <span class="n">numpy</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="n">ssIDX</span><span class="p">,</span> <span class="n">ssDelta</span><span class="p">,</span> <span class="n">ssRMS</span><span class="p">,</span> <span class="n">ssMS</span><span class="p">]))</span>
+                    <span class="k">del</span> <span class="n">ssRMS</span><span class="p">,</span> <span class="n">ssIDX</span><span class="p">,</span> <span class="n">ssMS</span><span class="p">,</span> <span class="n">ssDelta</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">poltype</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">RA</span><span class="p">,</span> <span class="n">DEC</span><span class="p">,</span> <span class="p">())</span>
+                <span class="n">GridTable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">SelectR</span>
+                <span class="c1">#LOG.debug(&quot;GridTable: %s&quot; % line)</span>
+            <span class="k">del</span> <span class="n">SelectD</span><span class="p">,</span> <span class="n">sDeltaDEC</span><span class="p">,</span> <span class="n">sRA</span><span class="p">,</span> <span class="n">sIDX</span><span class="p">,</span> <span class="n">sRMS</span><span class="p">,</span> <span class="n">sMS</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;NGridRA = </span><span class="si">%s</span><span class="s1">  NGridDEC = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">NGridRA</span><span class="p">,</span> <span class="n">NGridDEC</span><span class="p">))</span>
+
+        <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;_group: elapsed time </span><span class="si">%s</span><span class="s1"> sec&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">GridTable</span></div>
+
+
+
+<div class="viewcode-block" id="SinglePointGridding">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.SinglePointGridding">[docs]</a>
+<span class="k">class</span> <span class="nc">SinglePointGridding</span><span class="p">(</span><span class="n">GriddingBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">msids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">ras</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+               <span class="n">decs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">stats</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+               <span class="n">CombineRadius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Allowance</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">GridSpacing</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+               <span class="n">DecCorrection</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Grid STATISTICS by RA/DEC position for single pointing data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index_list: List of DataTable indices to process</span>
+<span class="sd">            msids: Indices of MS in context for each element of index_list</span>
+<span class="sd">            ras: RA of each element of index_list</span>
+<span class="sd">            decs: DEC of each element of index_list</span>
+<span class="sd">            stats: STATISTICS in DataTable of each element of index_list</span>
+<span class="sd">            CombineRadius: Radius to combine data together (not used)</span>
+<span class="sd">            Allowance: Allowance to combine data together</span>
+<span class="sd">            GridSpacing: Spacing between each grid center (not used)</span>
+<span class="sd">            DecCorrection: A decrination correction flactor (not used)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            GridTable data structure. Each element of list stores data for each</span>
+<span class="sd">            grid position. The data of each grid position consists of,</span>
+<span class="sd">            [SpwID of each data gridded], POL, XID, YID, RA, DEC,</span>
+<span class="sd">            [index_list, distance of poining from grid center, stat,</span>
+<span class="sd">            msids of each data gridded]</span>
+<span class="sd">            See also documentation of GriddingBase.dogrid for more details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">GridTable</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">NGridRA</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">NGridDEC</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">CenterRA</span> <span class="o">=</span> <span class="n">ras</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">CenterDEC</span> <span class="o">=</span> <span class="n">decs</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="p">[[],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pol</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">CenterRA</span><span class="p">,</span> <span class="n">CenterDEC</span><span class="p">,</span> <span class="p">[]]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)):</span>
+            <span class="n">Delta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">ras</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">-</span> <span class="n">CenterRA</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">decs</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">-</span> <span class="n">CenterDEC</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">Delta</span> <span class="o">&lt;=</span> <span class="n">Allowance</span><span class="p">:</span>
+                <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spwmap</span><span class="p">[</span><span class="n">msids</span><span class="p">[</span><span class="n">x</span><span class="p">]])</span>
+                <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">index_list</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">Delta</span><span class="p">,</span> <span class="n">stats</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">msids</span><span class="p">[</span><span class="n">x</span><span class="p">]])</span>
+        <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">GridTable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="c1">#LOG.debug(&quot;GridTable: %s&quot; % line)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;NGridRA = </span><span class="si">%s</span><span class="s1">  NGridDEC = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">NGridRA</span><span class="p">,</span> <span class="n">NGridDEC</span><span class="p">))</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;_group: elapsed time </span><span class="si">%s</span><span class="s1"> sec&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">GridTable</span></div>
+
+
+
+<div class="viewcode-block" id="MultiPointGridding">
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.MultiPointGridding">[docs]</a>
+<span class="k">class</span> <span class="nc">MultiPointGridding</span><span class="p">(</span><span class="n">GriddingBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">msids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">ras</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+               <span class="n">decs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">stats</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+               <span class="n">CombineRadius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Allowance</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">GridSpacing</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+               <span class="n">DecCorrection</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Grid STATISTICS by RA/DEC position for multi-pointing data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index_list: List of DataTable indices to process</span>
+<span class="sd">            msids: Indices of MS in context for each element of index_list</span>
+<span class="sd">            ras: RA of each element of index_list</span>
+<span class="sd">            decs: DEC of each element of index_list</span>
+<span class="sd">            stats: STATISTICS in DataTable of each element of index_list</span>
+<span class="sd">            CombineRadius: Radius to combine data together (not used)</span>
+<span class="sd">            Allowance: Allowance to combine data together</span>
+<span class="sd">            GridSpacing: Spacing between each grid center (not used)</span>
+<span class="sd">            DecCorrection: A decrination correction flactor (not used)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            GridTable data structure. Each element of list stores data for each</span>
+<span class="sd">            grid position. The data of each grid position consists of,</span>
+<span class="sd">            [SpwID of each data gridded], POL, XID, YID, RA, DEC,</span>
+<span class="sd">            [index_list, distance of poining from grid center, stat,</span>
+<span class="sd">            msids of each data gridded]</span>
+<span class="sd">            See also documentation of GriddingBase.dogrid for more details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">GridTable</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">NGridRA</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">NGridDEC</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">Flag</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">))</span>
+        <span class="k">while</span> <span class="n">Flag</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">Flag</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">RA</span> <span class="o">=</span> <span class="n">ras</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                    <span class="n">DEC</span> <span class="o">=</span> <span class="n">decs</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                    <span class="n">RAtmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">RA</span><span class="p">]</span>
+                    <span class="n">DECtmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">DEC</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)):</span>
+                        <span class="k">if</span> <span class="n">Flag</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">Delta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">RA</span> <span class="o">-</span> <span class="n">ras</span><span class="p">[</span><span class="n">y</span><span class="p">])</span> <span class="o">**</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">DEC</span> <span class="o">-</span> <span class="n">decs</span><span class="p">[</span><span class="n">y</span><span class="p">])</span> <span class="o">**</span> <span class="mf">2.0</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">Delta</span> <span class="o">&lt;=</span> <span class="n">Allowance</span><span class="p">:</span>
+                                <span class="n">RAtmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ras</span><span class="p">[</span><span class="n">y</span><span class="p">])</span>
+                                <span class="n">DECtmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">decs</span><span class="p">[</span><span class="n">y</span><span class="p">])</span>
+                    <span class="n">CenterRA</span> <span class="o">=</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">RAtmp</span><span class="p">))</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                    <span class="n">CenterDEC</span> <span class="o">=</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">DECtmp</span><span class="p">))</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="p">[[],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pol</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">NGridRA</span><span class="p">,</span> <span class="n">CenterRA</span><span class="p">,</span> <span class="n">CenterDEC</span><span class="p">,</span> <span class="p">[]]</span>
+                    <span class="n">NGridRA</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)):</span>
+                        <span class="k">if</span> <span class="n">Flag</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">Delta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">ras</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">-</span> <span class="n">CenterRA</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">decs</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">-</span> <span class="n">CenterDEC</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">Delta</span> <span class="o">&lt;=</span> <span class="n">Allowance</span><span class="p">:</span>
+                                <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spwmap</span><span class="p">[</span><span class="n">msids</span><span class="p">[</span><span class="n">x</span><span class="p">]])</span>
+                                <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">index_list</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">Delta</span><span class="p">,</span> <span class="n">stats</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">msids</span><span class="p">[</span><span class="n">x</span><span class="p">]])</span>
+                                <span class="n">Flag</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+                    <span class="n">GridTable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="c1">#LOG.debug(&quot;GridTable: %s&quot; % line)</span>
+        <span class="k">del</span> <span class="n">Flag</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;NGridRA = </span><span class="si">%s</span><span class="s1">  NGridDEC = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">NGridRA</span><span class="p">,</span> <span class="n">NGridDEC</span><span class="p">))</span>
+
+        <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;_group: elapsed time </span><span class="si">%s</span><span class="s1"> sec&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">GridTable</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

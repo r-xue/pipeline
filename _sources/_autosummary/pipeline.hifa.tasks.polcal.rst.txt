@@ -1,0 +1,21 @@
+pipeline.hifa.tasks.polcal
+==========================
+
+.. automodule:: pipeline.hifa.tasks.polcal
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Polcal
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   polcal
+   qa
+   renderer

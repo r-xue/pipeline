@@ -1,0 +1,19 @@
+pipeline.infrastructure.displays
+================================
+
+.. automodule:: pipeline.infrastructure.displays
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   plotmosaic
+   plotpwv
+   plotstyle
+   plotsuntrack
+   plotweather
+   pointing
+   summary

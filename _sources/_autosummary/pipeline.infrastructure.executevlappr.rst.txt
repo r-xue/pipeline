@@ -1,0 +1,13 @@
+pipeline.infrastructure.executevlappr
+=====================================
+
+.. automodule:: pipeline.infrastructure.executevlappr
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      executeppr
+      save_existing_context
+   

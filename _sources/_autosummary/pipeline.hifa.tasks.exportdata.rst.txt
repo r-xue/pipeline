@@ -1,0 +1,20 @@
+pipeline.hifa.tasks.exportdata
+==============================
+
+.. automodule:: pipeline.hifa.tasks.exportdata
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ALMAExportData
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   almaexportdata
+   almaifaqua

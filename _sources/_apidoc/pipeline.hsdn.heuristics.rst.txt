@@ -1,0 +1,10 @@
+pipeline.hsdn.heuristics package
+================================
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hsdn.heuristics
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,30 @@
+pipeline.hsd.tasks package
+==========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pipeline.hsd.tasks.applycal
+   pipeline.hsd.tasks.atmcor
+   pipeline.hsd.tasks.baseline
+   pipeline.hsd.tasks.baselineflag
+   pipeline.hsd.tasks.common
+   pipeline.hsd.tasks.exportdata
+   pipeline.hsd.tasks.flagging
+   pipeline.hsd.tasks.imaging
+   pipeline.hsd.tasks.importdata
+   pipeline.hsd.tasks.k2jycal
+   pipeline.hsd.tasks.restoredata
+   pipeline.hsd.tasks.skycal
+   pipeline.hsd.tasks.tsysflag
+
+Module contents
+---------------
+
+.. automodule:: pipeline.hsd.tasks
+   :members:
+   :undoc-members:
+   :show-inheritance:
